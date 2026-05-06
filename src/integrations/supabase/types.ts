@@ -795,14 +795,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_invite_code: { Args: { _code: string }; Returns: Json }
       consume_credits: {
         Args: { _seller_id: string; _session_type: string }
         Returns: Json
       }
+      create_company_for_manager: { Args: { _name: string }; Returns: Json }
       current_company_id: { Args: never; Returns: string }
       current_role: { Args: never; Returns: string }
       is_manager: { Args: never; Returns: boolean }
       owns_seller: { Args: { _seller_id: string }; Returns: boolean }
+      register_invite_failed_attempt: {
+        Args: { _code: string }
+        Returns: undefined
+      }
+      validate_invite_code: { Args: { _code: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
