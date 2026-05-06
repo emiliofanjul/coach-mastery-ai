@@ -75,7 +75,7 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
             <div className="px-5 py-5 space-y-3 max-h-[55vh] overflow-y-auto">
               {/* Mensaje semilla del coach */}
               <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-full bg-coach/20 text-coach flex items-center justify-center flex-shrink-0">
+                <div className="h-8 w-8 rounded-full bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
                   <MessageCircle className="h-4 w-4" />
                 </div>
                 <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 text-sm leading-relaxed">
