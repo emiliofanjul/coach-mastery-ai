@@ -157,7 +157,11 @@ function SignupScreen() {
     }
 
     setLoading(false);
-    navigate({ to: "/" });
+    if (role === "manager") {
+      navigate({ to: "/onboarding/manager" });
+    } else {
+      navigate({ to: "/" });
+    }
   };
 
   const handleGoogle = async () => {
