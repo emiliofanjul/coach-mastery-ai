@@ -473,7 +473,7 @@ function CalibrationStep({ brain, loading, error, onBack, onNext, onRetry }: { b
     <div style={{ animation: "fade-up 400ms ease both" }}>
       <h2 style={{ fontFamily: "Syne", fontWeight: 800, fontSize: "1.4rem", color: "#F0F0F5", margin: 0 }}>Así va a hablar tu cliente IA</h2>
       <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: 8, marginBottom: 20 }}>
-        Closer analizó lo que nos compartiste y calibró a Don Ramón. Verifica que suene como tus clientes reales.
+        Closer analizó lo que nos compartiste y calibró a tu cliente IA. Verifica que suene como tus clientes reales.
       </p>
 
       <div style={{ background: "#111118", border: "1px solid #252535", borderRadius: 14, padding: "1rem" }}>
@@ -491,7 +491,7 @@ function CalibrationStep({ brain, loading, error, onBack, onNext, onRetry }: { b
             <Bubble side="left">{brain.DON_RAMON_RESPUESTA || "Pues a ver, cuénteme rápido."}</Bubble>
             <Bubble side="right">Le traigo algo que les puede ayudar con eso. ¿Tiene 3 minutos?</Bubble>
             <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>
-              Don Ramón responde según el perfil de tu cliente típico
+              Tu cliente IA responde según el perfil de tu cliente típico
             </p>
           </>
         )}
