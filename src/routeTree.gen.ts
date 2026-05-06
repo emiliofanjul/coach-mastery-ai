@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoleRouteImport } from './routes/role'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
 
 const SignupRoute = SignupRouteImport.update({
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingSellerRoute = OnboardingSellerRouteImport.update({
+  id: '/onboarding/seller',
+  path: '/onboarding/seller',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingManagerRoute = OnboardingManagerRouteImport.update({
   id: '/onboarding/manager',
   path: '/onboarding/manager',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
+  '/onboarding/seller': typeof OnboardingSellerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
+  '/onboarding/seller': typeof OnboardingSellerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,33 @@ export interface FileRoutesById {
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
+  '/onboarding/seller': typeof OnboardingSellerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/role' | '/signup' | '/onboarding/manager'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/role'
+    | '/signup'
+    | '/onboarding/manager'
+    | '/onboarding/seller'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/role' | '/signup' | '/onboarding/manager'
-  id: '__root__' | '/' | '/login' | '/role' | '/signup' | '/onboarding/manager'
+  to:
+    | '/'
+    | '/login'
+    | '/role'
+    | '/signup'
+    | '/onboarding/manager'
+    | '/onboarding/seller'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/role'
+    | '/signup'
+    | '/onboarding/manager'
+    | '/onboarding/seller'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +105,7 @@ export interface RootRouteChildren {
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
   OnboardingManagerRoute: typeof OnboardingManagerRoute
+  OnboardingSellerRoute: typeof OnboardingSellerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/seller': {
+      id: '/onboarding/seller'
+      path: '/onboarding/seller'
+      fullPath: '/onboarding/seller'
+      preLoaderRoute: typeof OnboardingSellerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/manager': {
       id: '/onboarding/manager'
       path: '/onboarding/manager'
@@ -125,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
   OnboardingManagerRoute: OnboardingManagerRoute,
+  OnboardingSellerRoute: OnboardingSellerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

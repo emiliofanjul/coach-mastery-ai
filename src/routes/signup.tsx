@@ -161,7 +161,7 @@ function SignupScreen() {
     if (role === "manager") {
       navigate({ to: "/onboarding/manager" });
     } else {
-      navigate({ to: "/" });
+      navigate({ to: "/onboarding/seller" });
     }
   };
 
