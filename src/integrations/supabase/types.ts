@@ -62,6 +62,69 @@ export type Database = {
           },
         ]
       }
+      client_archetypes: {
+        Row: {
+          base_prompt: string
+          buying_signal_style: string
+          created_at: string
+          difficulty_base: number
+          id: string
+          is_boss_eligible: boolean
+          objection_patterns: Json
+          type: string
+          variations: Json
+          worlds_available: number[]
+        }
+        Insert: {
+          base_prompt: string
+          buying_signal_style: string
+          created_at?: string
+          difficulty_base: number
+          id?: string
+          is_boss_eligible?: boolean
+          objection_patterns?: Json
+          type: string
+          variations?: Json
+          worlds_available?: number[]
+        }
+        Update: {
+          base_prompt?: string
+          buying_signal_style?: string
+          created_at?: string
+          difficulty_base?: number
+          id?: string
+          is_boss_eligible?: boolean
+          objection_patterns?: Json
+          type?: string
+          variations?: Json
+          worlds_available?: number[]
+        }
+        Relationships: []
+      }
+      client_names: {
+        Row: {
+          avatar_style: string
+          created_at: string
+          gender: string
+          id: string
+          name: string
+        }
+        Insert: {
+          avatar_style: string
+          created_at?: string
+          gender: string
+          id?: string
+          name: string
+        }
+        Update: {
+          avatar_style?: string
+          created_at?: string
+          gender?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           company_sales_brain: Json | null
@@ -574,6 +637,79 @@ export type Database = {
           },
         ]
       }
+      seller_archetype_performance: {
+        Row: {
+          archetype_id: string
+          avg_score: number
+          company_id: string
+          consecutive_above_avg: number
+          consecutive_below_avg: number
+          created_at: string
+          id: string
+          improvement_trend: string
+          is_in_reinforcement_mode: boolean
+          last_practiced_at: string | null
+          last_score: number | null
+          seller_id: string
+          sessions_count: number
+          times_assigned: number
+        }
+        Insert: {
+          archetype_id: string
+          avg_score?: number
+          company_id: string
+          consecutive_above_avg?: number
+          consecutive_below_avg?: number
+          created_at?: string
+          id?: string
+          improvement_trend?: string
+          is_in_reinforcement_mode?: boolean
+          last_practiced_at?: string | null
+          last_score?: number | null
+          seller_id: string
+          sessions_count?: number
+          times_assigned?: number
+        }
+        Update: {
+          archetype_id?: string
+          avg_score?: number
+          company_id?: string
+          consecutive_above_avg?: number
+          consecutive_below_avg?: number
+          created_at?: string
+          id?: string
+          improvement_trend?: string
+          is_in_reinforcement_mode?: boolean
+          last_practiced_at?: string | null
+          last_score?: number | null
+          seller_id?: string
+          sessions_count?: number
+          times_assigned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_archetype_performance_archetype_id_fkey"
+            columns: ["archetype_id"]
+            isOneToOne: false
+            referencedRelation: "client_archetypes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "seller_archetype_performance_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "seller_archetype_performance_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seller_arsenal: {
         Row: {
           bullet_text: string
@@ -819,6 +955,10 @@ export type Database = {
           _question_text: string
         }
         Returns: undefined
+      }
+      select_archetype_for_session: {
+        Args: { _node_id: string; _seller_id: string; _world_id: number }
+        Returns: string
       }
       update_company_brain: { Args: { _brain: Json }; Returns: Json }
       validate_invite_code: { Args: { _code: string }; Returns: Json }
