@@ -36,8 +36,8 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
         className={cn(
           "fixed bottom-5 right-5 z-40",
           "h-14 w-14 rounded-full",
-          "bg-coach text-coach-foreground",
-          "shadow-[0_12px_30px_-8px_oklch(0.72_0.12_230_/_0.6)]",
+          "bg-primary text-primary-foreground",
+          "glow-orange",
           "flex items-center justify-center",
           "transition-transform duration-200 hover:scale-105 active:scale-95",
           open && "opacity-0 pointer-events-none",
