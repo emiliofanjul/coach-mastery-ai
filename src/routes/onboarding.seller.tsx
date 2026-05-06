@@ -147,16 +147,23 @@ function SellerOnboarding() {
           .eq("id", sellerId);
 
         if (companyId) {
-          await supabase
+          const { data: existingMem } = await supabase
             .from("seller_memory")
-            .upsert(
-              {
-                seller_id: sellerId,
-                company_id: companyId,
-                progress_summary: res.mensaje,
-              },
-              { onConflict: "seller_id" },
-            );
+            .select("id")
+            .eq("seller_id", sellerId)
+            .maybeSingle();
+          if (existingMem) {
+            await supabase
+              .from("seller_memory")
+              .update({ progress_summary: res.mensaje })
+              .eq("id", existingMem.id);
+          } else {
+            await supabase.from("seller_memory").insert({
+              seller_id: sellerId,
+              company_id: companyId,
+              progress_summary: res.mensaje,
+            });
+          }
         }
       }
     } catch (e) {
