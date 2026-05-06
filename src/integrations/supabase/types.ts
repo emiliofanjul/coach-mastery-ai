@@ -803,12 +803,24 @@ export type Database = {
       create_company_for_manager: { Args: { _name: string }; Returns: Json }
       current_company_id: { Args: never; Returns: string }
       current_role: { Args: never; Returns: string }
+      generate_company_invite: { Args: never; Returns: Json }
+      get_active_company_invite: { Args: never; Returns: Json }
       is_manager: { Args: never; Returns: boolean }
       owns_seller: { Args: { _seller_id: string }; Returns: boolean }
       register_invite_failed_attempt: {
         Args: { _code: string }
         Returns: undefined
       }
+      save_onboarding_answer: {
+        Args: {
+          _answer: string
+          _block_number: number
+          _question_id: string
+          _question_text: string
+        }
+        Returns: undefined
+      }
+      update_company_brain: { Args: { _brain: Json }; Returns: Json }
       validate_invite_code: { Args: { _code: string }; Returns: Json }
     }
     Enums: {
