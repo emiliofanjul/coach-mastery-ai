@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
-import { generateCompanyBrain } from "@/server/onboarding.functions";
+import { generateCompanyBrain } from "@/utils/onboarding.functions";
 import {
   QUESTIONS,
   TOTAL_STEPS,
