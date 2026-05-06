@@ -103,11 +103,11 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Escribe tu pregunta..."
-                className="flex-1 h-11 rounded-full bg-input border border-border px-4 text-sm focus:outline-none focus:ring-2 focus:ring-coach"
+                className="flex-1 h-11 rounded-full bg-input border border-border px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <Button
                 type="submit"
-                variant="coach"
+                variant="primary"
                 size="icon"
                 disabled={!draft.trim()}
                 aria-label="Enviar"
