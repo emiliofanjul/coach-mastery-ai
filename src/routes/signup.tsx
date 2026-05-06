@@ -41,12 +41,13 @@ const baseSchema = z.object({
 
 function SignupScreen() {
   const navigate = useNavigate();
-  const role = getSelectedRole();
+  const [role, setRole] = useState<ReturnType<typeof getSelectedRole>>(null);
 
-  // Si llegan sin rol seleccionado, mandarlos a /role.
   useEffect(() => {
-    if (!role) navigate({ to: "/role" });
-  }, [role, navigate]);
+    const r = getSelectedRole();
+    if (!r) navigate({ to: "/role" });
+    else setRole(r);
+  }, [navigate]);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -157,7 +158,11 @@ function SignupScreen() {
     }
 
     setLoading(false);
-    navigate({ to: "/" });
+    if (role === "manager") {
+      navigate({ to: "/onboarding/manager" });
+    } else {
+      navigate({ to: "/" });
+    }
   };
 
   const handleGoogle = async () => {
