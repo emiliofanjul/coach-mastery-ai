@@ -36,8 +36,8 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
         className={cn(
           "fixed bottom-5 right-5 z-40",
           "h-14 w-14 rounded-full",
-          "bg-coach text-coach-foreground",
-          "shadow-[0_12px_30px_-8px_oklch(0.72_0.12_230_/_0.6)]",
+          "bg-primary text-primary-foreground",
+          "glow-orange",
           "flex items-center justify-center",
           "transition-transform duration-200 hover:scale-105 active:scale-95",
           open && "opacity-0 pointer-events-none",
@@ -75,7 +75,7 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
             <div className="px-5 py-5 space-y-3 max-h-[55vh] overflow-y-auto">
               {/* Mensaje semilla del coach */}
               <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-full bg-coach/20 text-coach flex items-center justify-center flex-shrink-0">
+                <div className="h-8 w-8 rounded-full bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
                   <MessageCircle className="h-4 w-4" />
                 </div>
                 <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 text-sm leading-relaxed">
@@ -103,11 +103,11 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Escribe tu pregunta..."
-                className="flex-1 h-11 rounded-full bg-input border border-border px-4 text-sm focus:outline-none focus:ring-2 focus:ring-coach"
+                className="flex-1 h-11 rounded-full bg-input border border-border px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <Button
                 type="submit"
-                variant="coach"
+                variant="primary"
                 size="icon"
                 disabled={!draft.trim()}
                 aria-label="Enviar"
