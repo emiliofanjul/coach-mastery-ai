@@ -101,7 +101,7 @@ function MapIntro() {
         .update({ declaration, onboarding_completed: true })
         .eq("id", sellerId);
     }
-    navigate({ to: "/" });
+    navigate({ to: "/mapa" });
   };
 
   if (!authReady) {
