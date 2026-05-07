@@ -56,7 +56,7 @@ type DisplayNode = NodeRow & {
   score: number | null;
 };
 
-const UNLOCKED_WORLDS = [0, 1];
+const UNLOCKED_WORLDS = [0];
 const NODE_RADIUS = 28; // 56 px
 const BOSS_RADIUS = 36; // 72 px
 const MAP_WIDTH = 320;
@@ -289,10 +289,65 @@ function MapaPage() {
             .filter((n) => n.world_id === world.id)
             .sort((a, b) => a.order_index - b.order_index);
           const isUnlocked = UNLOCKED_WORLDS.includes(world.id);
+          const showHeader = isUnlocked || world.id === 1;
           const isCurrent = world.id === 0; // anchor
-          const sectionHeight = isUnlocked
-            ? PADDING_TOP + worldNodes.length * ROW_HEIGHT + 40
-            : 180;
+          const sectionHeight =
+            PADDING_TOP + worldNodes.length * ROW_HEIGHT + 40;
+
+          // Mundos 2-9: tarjeta compacta de altura fija, sin header ni nodos
+          if (!showHeader) {
+            return (
+              <section
+                key={world.id}
+                style={{
+                  position: "relative",
+                  background: world.color ? `${world.color}14` : "transparent",
+                  paddingTop: 24,
+                  paddingBottom: 24,
+                  borderTop: "1px solid #15151F",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  minHeight: 120,
+                  backdropFilter: "blur(4px)",
+                  WebkitBackdropFilter: "blur(4px)",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 700,
+                    fontSize: "1.1rem",
+                    color: world.color ?? "#FFFFFF",
+                    opacity: 0.55,
+                    letterSpacing: "0.01em",
+                    textAlign: "center",
+                    padding: "0 1.2rem",
+                  }}
+                >
+                  {world.name}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 14px",
+                    borderRadius: 99,
+                    background: "rgba(26,26,38,0.9)",
+                    border: "1px solid #252535",
+                    color: "#5A5A8A",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "0.75rem",
+                  }}
+                >
+                  <Lock size={14} /> Bloqueado
+                </div>
+              </section>
+            );
+          }
 
           return (
             <section
@@ -302,7 +357,7 @@ function MapaPage() {
               style={{
                 position: "relative",
                 background: world.color
-                  ? `${world.color}14` // tinte muy sutil (~8% alpha)
+                  ? `${world.color}14`
                   : "transparent",
                 paddingBottom: 24,
                 borderTop: "1px solid #15151F",
@@ -355,7 +410,6 @@ function MapaPage() {
                   const x = xForIndex(i);
                   const y = yForIndex(i, worldNodes.length);
                   const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
-                  // Tour anchors: solo en Mundo 0
                   let tour: string | undefined;
                   if (world.id === 0) {
                     if (node.is_boss) tour = "boss-node";
@@ -389,45 +443,22 @@ function MapaPage() {
                     </div>
                   );
                 })}
-              </div>
 
-              {/* Niebla para mundos 3-9 */}
-              {!isUnlocked && (
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    backdropFilter: "blur(4px)",
-                    WebkitBackdropFilter: "blur(4px)",
-                    background: "rgba(8,8,15,0.65)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    pointerEvents: "auto",
-                  }}
-                >
+                {/* Overlay de bloqueo solo sobre los nodos (Mundo 1) */}
+                {!isUnlocked && (
                   <div
                     style={{
+                      position: "absolute",
+                      inset: 0,
+                      backdropFilter: "blur(4px)",
+                      WebkitBackdropFilter: "blur(4px)",
+                      background: "rgba(8,8,15,0.65)",
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
-                      gap: 10,
-                      padding: "0 1.2rem",
-                      textAlign: "center",
+                      justifyContent: "center",
+                      pointerEvents: "auto",
                     }}
                   >
-                    <div
-                      style={{
-                        fontFamily: "Syne, sans-serif",
-                        fontWeight: 700,
-                        fontSize: "1.1rem",
-                        color: world.color ?? "#FFFFFF",
-                        opacity: 0.55,
-                        letterSpacing: "0.01em",
-                      }}
-                    >
-                      {world.name}
-                    </div>
                     <div
                       style={{
                         display: "flex",
@@ -445,8 +476,8 @@ function MapaPage() {
                       <Lock size={14} /> Bloqueado
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </section>
           );
         })}
