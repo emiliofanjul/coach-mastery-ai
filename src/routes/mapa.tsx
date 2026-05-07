@@ -427,39 +427,6 @@ function MapaPage() {
                   );
                 })}
 
-                {/* Overlay de bloqueo solo sobre los nodos (Mundo 1) */}
-                {!isUnlocked && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      backdropFilter: "blur(4px)",
-                      WebkitBackdropFilter: "blur(4px)",
-                      background: "rgba(8,8,15,0.65)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      pointerEvents: "auto",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        padding: "8px 14px",
-                        borderRadius: 99,
-                        background: "rgba(26,26,38,0.9)",
-                        border: "1px solid #252535",
-                        color: "#5A5A8A",
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      <Lock size={14} /> Bloqueado
-                    </div>
-                  </div>
-                )}
               </div>
             </section>
           );
