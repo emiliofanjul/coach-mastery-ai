@@ -58,7 +58,7 @@ function SellerOnboarding() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState<string>("");
-  const [mission, setMission] = useState<string>("");
+  const [expectativa, setExpectativa] = useState<string>("");
   const [fade, setFade] = useState(true);
 
   // Verificar auth + cargar seller
@@ -132,7 +132,7 @@ function SellerOnboarding() {
         },
       });
       setWelcomeMsg(res.mensaje);
-      setMission(res.mision);
+      setExpectativa(res.expectativa);
 
       // Persistir en sellers + seller_memory
       if (sellerId) {
@@ -235,7 +235,7 @@ function SellerOnboarding() {
             loading={loadingAI}
             error={aiError}
             message={welcomeMsg}
-            mission={mission}
+            expectativa={expectativa}
             onRetry={() => experience && challenge && handleSubmitFinal(experience, challenge)}
             onContinue={() => navigate({ to: "/" })}
           />
@@ -386,7 +386,7 @@ function PersonalMessage({
   loading,
   error,
   message,
-  mission,
+  expectativa,
   onRetry,
   onContinue,
 }: {
@@ -394,7 +394,7 @@ function PersonalMessage({
   loading: boolean;
   error: string | null;
   message: string;
-  mission: string;
+  expectativa: string;
   onRetry: () => void;
   onContinue: () => void;
 }) {
@@ -456,7 +456,7 @@ function PersonalMessage({
           >
             {message}
           </p>
-          {mission && (
+          {expectativa && (
             <div
               style={{
                 width: "100%",
@@ -478,7 +478,7 @@ function PersonalMessage({
                   marginBottom: "0.4rem",
                 }}
               >
-                Tu primer objetivo
+                Lo que vas a construir
               </div>
               <div
                 style={{
@@ -489,7 +489,7 @@ function PersonalMessage({
                   lineHeight: 1.5,
                 }}
               >
-                {mission}
+                {expectativa}
               </div>
             </div>
           )}
