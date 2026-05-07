@@ -21,16 +21,16 @@ const WORLDS: Array<{
   name: string;
   color: string;
 }> = [
-  { id: 0, icon: "🏕️", name: "El Campo de Entrenamiento", color: "#5a8a3a" },
-  { id: 1, icon: "🌆", name: "La Primera Impresión", color: "#3a6a9a" },
-  { id: 2, icon: "🚪", name: "Abre la Puerta", color: "#3a8a5a" },
-  { id: 3, icon: "🔍", name: "Lee al Cliente", color: "#8a7a2a" },
-  { id: 4, icon: "🏗️", name: "Construye el Valor", color: "#8a5a2a" },
-  { id: 5, icon: "🔥", name: "Enciende el Impulso", color: "#8a2a2a" },
-  { id: 6, icon: "🎯", name: "El Momento de la Verdad", color: "#8a7a1a" },
-  { id: 7, icon: "🛡️", name: "Convierte los No en Sí", color: "#6a3a8a" },
-  { id: 8, icon: "🏆", name: "Sella la Victoria", color: "#2a7a7a" },
-  { id: 9, icon: "👑", name: "El Vendedor Elite", color: "#ffd166" },
+  { id: 0, icon: "🏕️", name: "Mentalidad", color: "#5a8a3a" },
+  { id: 1, icon: "🌆", name: "La Introducción", color: "#3a6a9a" },
+  { id: 2, icon: "🚪", name: "Historia Breve", color: "#3a8a5a" },
+  { id: 3, icon: "🔍", name: "Lectura del Cliente", color: "#8a7a2a" },
+  { id: 4, icon: "🏗️", name: "La Presentación", color: "#8a5a2a" },
+  { id: 5, icon: "🔥", name: "Factores de Impulso", color: "#8a2a2a" },
+  { id: 6, icon: "🎯", name: "El Cierre", color: "#8a7a1a" },
+  { id: 7, icon: "🛡️", name: "Manejo de Objeciones", color: "#6a3a8a" },
+  { id: 8, icon: "🏆", name: "Consolidación", color: "#2a7a7a" },
+  { id: 9, icon: "👑", name: "Certificación Elite", color: "#ffd166" },
 ];
 
 const COMMITMENTS = [
