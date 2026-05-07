@@ -9,7 +9,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Lock, Check, Star, Trophy, Play, BookOpen } from "lucide-react";
+import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
