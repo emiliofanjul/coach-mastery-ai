@@ -128,17 +128,38 @@ function MapaPage() {
     }
   }, [loading]);
 
+  // Mario Bros progression: sequential. A node unlocks only when prev is completed.
+  // Boss locked until all non-boss nodes in its world are completed.
+  // World N+1 locked until boss of World N completed.
   const computeStatus = (node: NodeRow): NodeStatus => {
-    if (!UNLOCKED_WORLDS.includes(node.world_id)) return "locked";
     const p = progress[node.id];
     if (p?.status === "completed") return "completed";
-    // Mundo activo = current_world del seller; nodo current = current_node
-    if (seller && node.world_id === seller.current_world) {
-      if (node.id === seller.current_node) return "active";
-      // Mundo 0: todos disponibles excepto los completados/active. Otros mundos: bloqueado hasta secuencia.
-      if (node.world_id === 0) return "available";
+
+    // Check that all previous worlds' bosses are completed
+    for (let w = 0; w < node.world_id; w++) {
+      const boss = nodes.find((n) => n.world_id === w && n.is_boss);
+      if (!boss || progress[boss.id]?.status !== "completed") return "locked";
     }
-    // Mundos desbloqueados pero no actuales → bloqueados
+
+    const worldNodes = nodes
+      .filter((n) => n.world_id === node.world_id)
+      .sort((a, b) => a.order_index - b.order_index);
+
+    // Boss requires all normal nodes of this world completed
+    if (node.is_boss) {
+      const allDone = worldNodes
+        .filter((n) => !n.is_boss)
+        .every((n) => progress[n.id]?.status === "completed");
+      if (!allDone) return "locked";
+      // Boss unlocked → active (it's the next step)
+      return "active";
+    }
+
+    // Sequential within the world
+    const idx = worldNodes.findIndex((n) => n.id === node.id);
+    if (idx === 0) return "active"; // first node, no predecessor
+    const prev = worldNodes[idx - 1];
+    if (progress[prev.id]?.status === "completed") return "active";
     return "locked";
   };
 
