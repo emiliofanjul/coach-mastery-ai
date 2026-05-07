@@ -58,15 +58,24 @@ function MapIntro() {
         navigate({ to: "/login" });
         return;
       }
-      const { data: seller } = await supabase
-        .from("sellers")
-        .select("id, full_name, declaration")
-        .eq("profile_id", session.user.id)
-        .single();
+      const [{ data: seller }, { data: profile }] = await Promise.all([
+        supabase
+          .from("sellers")
+          .select("id, full_name, declaration")
+          .eq("profile_id", session.user.id)
+          .maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("id", session.user.id)
+          .maybeSingle(),
+      ]);
       if (!active) return;
+      const resolvedName =
+        seller?.full_name?.trim() || profile?.full_name?.trim() || "";
+      if (resolvedName) setName(resolvedName.split(" ")[0]);
       if (seller) {
         setSellerId(seller.id);
-        if (seller.full_name) setName(seller.full_name.split(" ")[0]);
         if (seller.declaration) setDeclaration(seller.declaration);
       }
       setAuthReady(true);
