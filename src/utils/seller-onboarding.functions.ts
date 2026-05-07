@@ -35,32 +35,33 @@ export const generateSellerWelcome = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
-    const systemPrompt = `Eres Closer, el mejor entrenador de ventas del mundo. Tu tono es directo, honesto y exigente porque crees en el vendedor. Nunca dices "bienvenido" de forma genérica. Nunca usas exclamaciones exageradas. Hablas directo, como un entrenador de alto rendimiento que cree genuinamente en la persona que tiene enfrente.`;
+    const systemPrompt = `Eres Closer, el mejor entrenador de ventas del mundo. Tu tono es directo y honesto. Crees en el vendedor pero no lo adulas. Nunca usas exclamaciones. Nunca dices bienvenido de forma genérica.`;
 
-    const userPrompt = `Genera un mensaje personalizado de máximo 3 oraciones para ${data.name}.
-Nivel: ${EXPERIENCE_LABELS[data.experience] ?? data.experience}.
+    const userPrompt = `Genera un mensaje para ${data.name}.
+Nivel de experiencia: ${EXPERIENCE_LABELS[data.experience] ?? data.experience}.
 Mayor reto: ${CHALLENGE_LABELS[data.challenge] ?? data.challenge}.
 Empresa: ${data.companyName || "su empresa"}.
 
-Reglas:
-- Oración 1: reconoce específicamente su nivel con honestidad, no adulación.
-- Oración 2: nombra su reto y por qué Closer es la solución exacta.
-- Oración 3: la promesa concreta de lo que va a lograr.
+El mensaje tiene 2 partes:
 
-Después genera una misión inicial siguiendo ESTAS REGLAS ESTRICTAS:
-- UNA sola acción, DENTRO de la app, completable en menos de 10 minutos.
-- Siempre invita a entrar al Mapa AHORA y completar el primer nodo / primera lección del Mundo 0.
-- NUNCA pide hacer algo fuera de la app, ni algo complejo, ni tarea para "mañana".
-- 1 a 2 oraciones máximo. Conecta el primer nodo con el reto específico del vendedor.
+PARTE 1 — El mensaje principal (máximo 3 oraciones):
+- Oración 1: Reconoce su reto específico con honestidad. No con adulación.
+- Oración 2: Explícale que ese reto no se resuelve con un truco o una técnica aislada. Se resuelve dominando el sistema completo de ventas paso a paso.
+- Oración 3: La promesa concreta de lo que va a lograr cuando complete el camino.
 
-Ejemplos según reto:
-- cierre: "Completa el primer nodo del Mapa. Toma menos de 10 minutos y es la base de todo lo que sigue."
-- objeciones: "Entra al Mundo 0 y completa la primera lección. Ahí empieza el sistema que cambia cómo respondes cuando el cliente dice no."
-- prospeccion: "Completa tu primer nodo hoy. En 10 minutos vas a tener algo concreto que aplicar mañana."
-- retencion: "Entra al Mapa y completa el primer nodo. Es el primer paso para convertir clientes que compran una vez en clientes que siempre regresan."
+PARTE 2 — La expectativa (1 oración):
+Explícale que el mapa que está a punto de ver no es una lista de tips. Es el sistema completo que va a convertir su mayor reto en su mayor fortaleza. Esta oración debe hacer que el vendedor entre al mapa con la mentalidad correcta: esto toma tiempo y esfuerzo, pero cada paso tiene una razón de ser.
+
+Ejemplos del tono correcto:
+
+Para vendedor con experiencia que quiere cerrar más:
+"Carlos, llevas años llegando casi al final y perdiendo la venta en el último momento. Ese problema no se arregla solo aprendiendo a cerrar — se arregla construyendo todo lo que viene antes del cierre, que es donde realmente se gana o se pierde. El mapa que vas a ver ahora es el sistema completo: cada mundo que completes te acerca más al punto donde cerrar se vuelve la consecuencia natural de todo lo que hiciste bien antes."
+
+Para vendedor nuevo que quiere manejar objeciones:
+"Juan, las objeciones no se manejan memorizando respuestas. Se manejan entendiendo por qué el cliente las da y qué está buscando realmente cuando las dice. Para llegar ahí necesitas construir la base primero: cómo entrar, cómo leer al cliente, cómo crear valor antes de que aparezca la objeción. El mapa que vas a ver te lleva por ese camino exacto, en el orden correcto."
 
 Responde SOLO con JSON válido, sin markdown:
-{"mensaje":"...","mision":"..."}`;
+{"mensaje":"texto completo de las 3 oraciones","expectativa":"la oración de expectativa"}`;
 
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -87,13 +88,13 @@ Responde SOLO con JSON válido, sin markdown:
 
     const json = await res.json();
     const content: string = json.choices?.[0]?.message?.content ?? "{}";
-    let parsed: { mensaje: string; mision: string };
+    let parsed: { mensaje: string; expectativa: string };
     try {
       parsed = JSON.parse(content);
     } catch {
       parsed = {
-        mensaje: `${data.name}, hoy empieza tu entrenamiento real. Vamos a trabajar específicamente lo que más te cuesta. En las próximas semanas vas a ver resultados que no esperabas.`,
-        mision: "Completa tu primera sesión de práctica de voz con tu cliente IA.",
+        mensaje: `${data.name}, tu reto es real y no se resuelve con un truco aislado. Se resuelve dominando el sistema completo de ventas paso a paso, en el orden correcto. Cuando completes el camino, lo que hoy te cuesta se va a convertir en tu mayor fortaleza.`,
+        expectativa: "El mapa que vas a ver no es una lista de tips: es el sistema completo que convierte tu mayor reto en tu mayor fortaleza.",
       };
     }
     return parsed;
