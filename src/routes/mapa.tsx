@@ -438,7 +438,7 @@ function MapaPage() {
         onOpenChange={(o) => !o && setSelectedNode(null)}
       />
 
-      <CoachBubble hidden={showTutorial} context="mapa" />
+      <CoachBubble context="mapa" />
 
       <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
 

@@ -33,6 +33,7 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Hablar con tu coach"
+        data-tour="coach-bubble"
         className={cn(
           "fixed bottom-5 right-5 z-40",
           "h-14 w-14 rounded-full",

@@ -13,6 +13,7 @@ type TargetSpec =
 type Step = {
   target: TargetSpec;
   text: string;
+  subtext?: string;
   title?: string;
   state: "normal" | "motivation" | "support" | "celebration" | "correction";
 };
@@ -55,17 +56,10 @@ export function MapTutorial({ open, onClose }: Props) {
       state: "motivation",
     },
     {
-      target: {
-        rect: {
-          top: typeof window !== "undefined" ? window.innerHeight - 76 : 0,
-          left: typeof window !== "undefined" ? window.innerWidth - 76 : 0,
-          width: 56,
-          height: 56,
-        },
-      },
-      title: "Tu coach personal.",
-      text:
-        "Una IA entrenada exclusivamente en ventas. Pregúntale lo que sea, cuando sea.\n\nPero recuerda: saber no es dominar.\nPara dominar está el mapa.",
+      target: { selector: "[data-tour='coach-bubble']" },
+      title: "Tu coach. Siempre aquí.",
+      text: "Conoce cada técnica del mapa.",
+      subtext: "Pregúntale lo que necesites.",
       state: "support",
     },
   ];
@@ -301,7 +295,7 @@ export function MapTutorial({ open, onClose }: Props) {
             <div
               style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 400,
+                fontWeight: steps[step].subtext ? 500 : 400,
                 fontSize: "0.88rem",
                 color: "#F0F0F5",
                 lineHeight: 1.6,
@@ -310,6 +304,20 @@ export function MapTutorial({ open, onClose }: Props) {
             >
               {steps[step].text}
             </div>
+            {steps[step].subtext && (
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontWeight: 400,
+                  fontSize: "0.84rem",
+                  color: "#5A5A8A",
+                  lineHeight: 1.6,
+                  marginTop: 4,
+                }}
+              >
+                {steps[step].subtext}
+              </div>
+            )}
           </div>
         </div>
 
