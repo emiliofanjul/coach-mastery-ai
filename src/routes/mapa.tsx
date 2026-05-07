@@ -9,7 +9,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Lock, Check, Star, Trophy, Play, BookOpen } from "lucide-react";
+import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -36,6 +36,7 @@ type NodeRow = {
   technique: string | null;
   order_index: number;
   is_boss: boolean;
+  difficulty_level: number;
 };
 
 type ProgressRow = {
@@ -127,17 +128,26 @@ function MapaPage() {
     }
   }, [loading]);
 
+  // Mario Bros progression: estrictamente secuencial en orden global.
+  // El primer nodo no completado = active. El siguiente = available (carrot). Resto = locked.
+  const orderedNodes = [...nodes].sort((a, b) =>
+    a.world_id !== b.world_id
+      ? a.world_id - b.world_id
+      : a.order_index - b.order_index,
+  );
+  const activeIdx = orderedNodes.findIndex(
+    (n) => progress[n.id]?.status !== "completed",
+  );
+  const activeId = activeIdx >= 0 ? orderedNodes[activeIdx].id : null;
+  const availableId =
+    activeIdx >= 0 && activeIdx + 1 < orderedNodes.length
+      ? orderedNodes[activeIdx + 1].id
+      : null;
+
   const computeStatus = (node: NodeRow): NodeStatus => {
-    if (!UNLOCKED_WORLDS.includes(node.world_id)) return "locked";
-    const p = progress[node.id];
-    if (p?.status === "completed") return "completed";
-    // Mundo activo = current_world del seller; nodo current = current_node
-    if (seller && node.world_id === seller.current_world) {
-      if (node.id === seller.current_node) return "active";
-      // Mundo 0: todos disponibles excepto los completados/active. Otros mundos: bloqueado hasta secuencia.
-      if (node.world_id === 0) return "available";
-    }
-    // Mundos desbloqueados pero no actuales → bloqueados
+    if (progress[node.id]?.status === "completed") return "completed";
+    if (node.id === activeId) return "active";
+    if (node.id === availableId) return "available";
     return "locked";
   };
 
@@ -426,9 +436,10 @@ function MapNode({
       styles.background = "rgba(255,209,102,0.2)";
     } else if (status === "available") {
       styles.background = "#1A1A26";
+      styles.opacity = 0.75;
     } else {
       styles.background = "#111118";
-      styles.opacity = 0.4;
+      styles.opacity = 0.5;
     }
   } else {
     if (status === "active") {
@@ -440,12 +451,13 @@ function MapNode({
       styles.borderColor = "#FF6B2B";
       styles.boxShadow = "0 0 16px -4px rgba(255,107,43,0.4)";
     } else if (status === "available") {
-      styles.background = "#1A1A26";
-      styles.borderColor = "#252535";
+      styles.background = "#1F1F2E";
+      styles.borderColor = "#3A3A52";
+      styles.opacity = 0.85;
     } else {
       styles.background = "#111118";
       styles.borderColor = "#1A1A26";
-      styles.opacity = 0.4;
+      styles.opacity = 0.5;
     }
   }
 
@@ -511,7 +523,9 @@ function MapNode({
         style={{
           marginTop: 6,
           fontFamily: "'DM Sans', sans-serif",
-          fontSize: "0.62rem",
+          fontSize: status === "locked" ? "0.72rem" : "0.62rem",
+          fontWeight:
+            status === "locked" ? 400 : status === "active" ? 600 : 500,
           color:
             status === "active"
               ? "#FFFFFF"
@@ -521,10 +535,9 @@ function MapNode({
           textAlign: "center",
           maxWidth: 90,
           lineHeight: 1.15,
-          fontWeight: status === "active" ? 600 : 500,
         }}
       >
-        {status === "locked" ? "—" : node.name}
+        {node.name}
       </div>
     </div>
   );
@@ -699,6 +712,11 @@ function NodeSheetBody({
         </SheetDescription>
       </SheetHeader>
 
+      <DifficultyMeter
+        level={node.difficulty_level}
+        worldId={node.world_id}
+      />
+
       {isBoss && (
         <div
           style={{
@@ -716,14 +734,64 @@ function NodeSheetBody({
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
         <Button block size="lg">
           <Play size={18} />
-          {isBoss ? "Entrar al Boss" : "Empezar práctica"}
+          {isBoss ? "Entrar al Boss" : "Empezar →"}
         </Button>
-        {!isBoss && (
-          <Button block variant="ghost">
-            <BookOpen size={16} />
-            Ver teoría primero
-          </Button>
-        )}
+      </div>
+    </div>
+  );
+}
+
+// ───────────────────────── Difficulty Meter ─────────────────────────
+
+function difficultyColor(worldId: number): string {
+  if (worldId <= 1) return "#06D6A0";
+  if (worldId <= 3) return "#FFD166";
+  if (worldId <= 5) return "#FF6B2B";
+  if (worldId <= 7) return "#EF476F";
+  return "#B57BEE";
+}
+
+function DifficultyMeter({
+  level,
+  worldId,
+}: {
+  level: number;
+  worldId: number;
+}) {
+  const color = difficultyColor(worldId);
+  const safe = Math.max(1, Math.min(5, level || 1));
+  return (
+    <div
+      style={{
+        marginTop: 16,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 6,
+      }}
+    >
+      <div style={{ display: "flex", gap: 6 }}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div
+            key={i}
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              background: i <= safe ? color : "#252535",
+            }}
+          />
+        ))}
+      </div>
+      <div
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: "0.68rem",
+          fontWeight: 400,
+          color: "#5A5A8A",
+        }}
+      >
+        Dificultad {safe}/5
       </div>
     </div>
   );

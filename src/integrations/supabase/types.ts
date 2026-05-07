@@ -421,6 +421,7 @@ export type Database = {
       nodes: {
         Row: {
           checkpoints: Json | null
+          difficulty_level: number
           id: string
           is_boss: boolean
           name: string
@@ -431,6 +432,7 @@ export type Database = {
         }
         Insert: {
           checkpoints?: Json | null
+          difficulty_level?: number
           id: string
           is_boss?: boolean
           name: string
@@ -441,6 +443,7 @@ export type Database = {
         }
         Update: {
           checkpoints?: Json | null
+          difficulty_level?: number
           id?: string
           is_boss?: boolean
           name?: string
