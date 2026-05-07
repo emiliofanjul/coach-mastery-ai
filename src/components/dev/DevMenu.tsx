@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 const ROUTES: Array<{ to: string; label: string }> = [
-  { to: "/", label: "/ (mapa)" },
+  { to: "/", label: "/ (splash)" },
+  { to: "/mapa", label: "/mapa" },
   { to: "/home", label: "/home" },
   { to: "/dashboard", label: "/dashboard (manager)" },
   { to: "/role", label: "/role" },
