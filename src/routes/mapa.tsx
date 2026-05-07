@@ -412,6 +412,58 @@ function MapaPage() {
 
       <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
 
+      {unlockNotice && (
+        <div
+          style={{
+            position: "fixed",
+            top: 80,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 50,
+            background: "#1A1A26",
+            borderLeft: "3px solid #FF6B2B",
+            borderRadius: 12,
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            maxWidth: 340,
+            width: "calc(100vw - 32px)",
+            boxShadow: "0 12px 32px -8px rgba(0,0,0,0.6)",
+            animation: "unlockFade 3s ease-in-out forwards",
+          }}
+        >
+          <CloserCharacter state="celebration" size={48} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                color: "#FFFFFF",
+                marginBottom: 2,
+              }}
+            >
+              {unlockNotice.name} desbloqueado
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "0.72rem",
+                color: "#9090B0",
+                lineHeight: 1.3,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {unlockNotice.description?.split(".")[0] ?? ""}
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
         @keyframes pulseOrange {
           0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.55); }
