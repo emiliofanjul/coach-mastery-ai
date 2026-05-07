@@ -13,6 +13,7 @@ type TargetSpec =
 type Step = {
   target: TargetSpec;
   text: string;
+  title?: string;
   state: "normal" | "motivation" | "support" | "celebration" | "correction";
 };
 
@@ -62,8 +63,9 @@ export function MapTutorial({ open, onClose }: Props) {
           height: 56,
         },
       },
+      title: "Tu coach personal.",
       text:
-        "Este es tu coach personal. Es una IA entrenada en ventas que conoce cada técnica del mapa. Puedes preguntarle cualquier cosa en cualquier momento. El coach te dará respuestas directas y útiles, pero siempre te dirá en qué parte del mapa puedes practicar esa habilidad de verdad. Saber la respuesta no es lo mismo que dominarla. Para eso está el entrenamiento.",
+        "Una IA entrenada exclusivamente en ventas. Pregúntale lo que sea, cuando sea.\n\nPero recuerda: saber no es dominar.\nPara dominar está el mapa.",
       state: "support",
     },
   ];
@@ -283,7 +285,31 @@ export function MapTutorial({ open, onClose }: Props) {
               lineHeight: 1.45,
             }}
           >
-            {steps[step].text}
+            {steps[step].title && (
+              <div
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  color: "#FF6B2B",
+                  marginBottom: 6,
+                }}
+              >
+                {steps[step].title}
+              </div>
+            )}
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontWeight: 400,
+                fontSize: "0.88rem",
+                color: "#F0F0F5",
+                lineHeight: 1.6,
+                whiteSpace: "pre-line",
+              }}
+            >
+              {steps[step].text}
+            </div>
           </div>
         </div>
 
