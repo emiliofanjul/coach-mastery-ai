@@ -229,33 +229,58 @@ function MapaPage() {
           background:
             "linear-gradient(180deg, #08080F 0%, #08080F 70%, transparent 100%)",
           padding: "1rem 1.2rem 1.2rem",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        <h1
+        <div>
+          <h1
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 800,
+              fontSize: "1.4rem",
+              color: "#FF6B2B",
+              letterSpacing: "-0.02em",
+              margin: 0,
+            }}
+          >
+            MAPA
+          </h1>
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "0.7rem",
+              color: "#5A5A8A",
+              margin: "2px 0 0",
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+            }}
+          >
+            Camino al Vendedor Elite
+          </p>
+        </div>
+        <button
+          onClick={() => setShowTutorial(true)}
           style={{
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 800,
-            fontSize: "1.4rem",
+            background: "rgba(255,107,43,0.1)",
+            border: "1px solid rgba(255,107,43,0.4)",
             color: "#FF6B2B",
-            letterSpacing: "-0.02em",
-            margin: 0,
-          }}
-        >
-          MAPA
-        </h1>
-        <p
-          style={{
             fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 600,
             fontSize: "0.7rem",
-            color: "#5A5A8A",
-            margin: "2px 0 0",
-            letterSpacing: "0.05em",
-            textTransform: "uppercase",
+            padding: "0.4rem 0.7rem",
+            borderRadius: 99,
+            cursor: "pointer",
+            letterSpacing: "0.03em",
+            whiteSpace: "nowrap",
           }}
         >
-          Camino al Vendedor Elite
-        </p>
+          ¿Cómo funciona?
+        </button>
       </header>
+
 
       {/* Apilados de abajo hacia arriba: render reverso */}
       <div style={{ display: "flex", flexDirection: "column-reverse" }}>
