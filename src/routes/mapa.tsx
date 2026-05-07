@@ -56,7 +56,7 @@ type DisplayNode = NodeRow & {
   score: number | null;
 };
 
-const UNLOCKED_WORLDS = [0, 1, 2];
+const UNLOCKED_WORLDS = [0, 1];
 const NODE_RADIUS = 28; // 56 px
 const BOSS_RADIUS = 36; // 72 px
 const MAP_WIDTH = 320;
@@ -408,18 +408,41 @@ function MapaPage() {
                   <div
                     style={{
                       display: "flex",
+                      flexDirection: "column",
                       alignItems: "center",
-                      gap: 8,
-                      padding: "8px 14px",
-                      borderRadius: 99,
-                      background: "rgba(26,26,38,0.9)",
-                      border: "1px solid #252535",
-                      color: "#5A5A8A",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "0.75rem",
+                      gap: 10,
+                      padding: "0 1.2rem",
+                      textAlign: "center",
                     }}
                   >
-                    <Lock size={14} /> Bloqueado
+                    <div
+                      style={{
+                        fontFamily: "Syne, sans-serif",
+                        fontWeight: 700,
+                        fontSize: "1.1rem",
+                        color: world.color ?? "#FFFFFF",
+                        opacity: 0.55,
+                        letterSpacing: "0.01em",
+                      }}
+                    >
+                      {world.name}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "8px 14px",
+                        borderRadius: 99,
+                        background: "rgba(26,26,38,0.9)",
+                        border: "1px solid #252535",
+                        color: "#5A5A8A",
+                        fontFamily: "'DM Sans', sans-serif",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      <Lock size={14} /> Bloqueado
+                    </div>
                   </div>
                 </div>
               )}
