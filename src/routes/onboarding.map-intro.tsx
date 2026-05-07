@@ -228,7 +228,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                     textAlign: "center",
                   }}
                 >
-                  El Campo de Entrenamiento
+                  Mentalidad
                 </div>
               )}
               {idx < WORLDS.length - 1 && (
