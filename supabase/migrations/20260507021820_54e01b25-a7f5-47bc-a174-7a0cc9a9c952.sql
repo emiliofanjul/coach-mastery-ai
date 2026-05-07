@@ -1,0 +1,1 @@
+ALTER TABLE public.sellers ADD COLUMN IF NOT EXISTS map_tutorial_completed boolean NOT NULL DEFAULT false;
