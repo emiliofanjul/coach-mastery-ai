@@ -142,6 +142,32 @@ function MapaPage() {
     }
   }, [loading]);
 
+  // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
+  useEffect(() => {
+    if (loading || worlds.length === 0 || nodes.length === 0) return;
+    const bossCompleted = new Set<number>();
+    nodes
+      .filter((n) => n.is_boss)
+      .forEach((n) => {
+        if (progress[n.id]?.status === "completed") bossCompleted.add(n.world_id);
+      });
+    const prev = prevBossCompletedRef.current;
+    if (prev) {
+      // Encuentra el primer mundo recién desbloqueado
+      for (const wid of bossCompleted) {
+        if (!prev.has(wid)) {
+          const next = worlds.find((w) => w.id === wid + 1);
+          if (next) {
+            setUnlockNotice(next);
+            setTimeout(() => setUnlockNotice(null), 3000);
+          }
+          break;
+        }
+      }
+    }
+    prevBossCompletedRef.current = bossCompleted;
+  }, [progress, nodes, worlds, loading]);
+
   const handleTutorialClose = async () => {
     setShowTutorial(false);
     if (seller) {
