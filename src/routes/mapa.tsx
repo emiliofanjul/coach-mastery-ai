@@ -299,9 +299,18 @@ function MapaPage() {
                   const x = xForIndex(i);
                   const y = yForIndex(i, worldNodes.length);
                   const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
+                  // Tour anchors: solo en Mundo 0
+                  let tour: string | undefined;
+                  if (world.id === 0) {
+                    if (node.is_boss) tour = "boss-node";
+                    else if (status === "active") tour = "active-node";
+                    else if (status === "locked" || status === "available")
+                      tour = tour ?? "locked-node";
+                  }
                   return (
                     <div
                       key={node.id}
+                      data-tour={tour}
                       style={{
                         position: "absolute",
                         left: x - r,
