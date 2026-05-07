@@ -253,9 +253,9 @@ function MapaPage() {
                     if (i === 0) return null;
                     const prev = worldNodes[i - 1];
                     const x1 = xForIndex(i - 1);
-                    const y1 = yForIndex(i - 1);
+                    const y1 = yForIndex(i - 1, worldNodes.length);
                     const x2 = xForIndex(i);
-                    const y2 = yForIndex(i);
+                    const y2 = yForIndex(i, worldNodes.length);
                     const cx = (x1 + x2) / 2;
                     const path = `M ${x1} ${y1} Q ${cx} ${y1 + (y2 - y1) / 2} ${x2} ${y2}`;
                     const prevDone =
