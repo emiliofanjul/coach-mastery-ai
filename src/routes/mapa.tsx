@@ -473,6 +473,11 @@ function MapaPage() {
           0%, 100% { box-shadow: 0 0 0 0 rgba(255,209,102,0.55); }
           50% { box-shadow: 0 0 0 14px rgba(255,209,102,0); }
         }
+        @keyframes unlockFade {
+          0% { opacity: 0; transform: translate(-50%, -8px); }
+          15%, 85% { opacity: 1; transform: translate(-50%, 0); }
+          100% { opacity: 0; transform: translate(-50%, -8px); }
+        }
       `}</style>
     </main>
   );
