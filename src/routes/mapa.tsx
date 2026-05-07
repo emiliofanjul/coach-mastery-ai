@@ -120,17 +120,31 @@ function MapaPage() {
         const map: Record<string, ProgressRow> = {};
         (p as ProgressRow[] | null)?.forEach((r) => (map[r.node_id] = r));
         setProgress(map);
+        if (!(s as { map_tutorial_completed?: boolean }).map_tutorial_completed) {
+          // pequeño delay para que el mapa se renderice antes
+          setTimeout(() => setShowTutorial(true), 600);
+        }
       }
       setLoading(false);
     })();
   }, [navigate]);
 
-  // Scroll inicial al Mundo 0
+  // Scroll inicial: Mundo 0 está abajo. Posicionar scroll al fondo.
   useEffect(() => {
     if (!loading && mundo0Ref.current) {
-      mundo0Ref.current.scrollIntoView({ block: "start", behavior: "auto" });
+      mundo0Ref.current.scrollIntoView({ block: "end", behavior: "auto" });
     }
   }, [loading]);
+
+  const handleTutorialClose = async () => {
+    setShowTutorial(false);
+    if (seller) {
+      await supabase
+        .from("sellers")
+        .update({ map_tutorial_completed: true })
+        .eq("id", seller.id);
+    }
+  };
 
   // Mario Bros progression: estrictamente secuencial en orden global.
   // El primer nodo no completado = active. El siguiente = available (carrot). Resto = locked.
