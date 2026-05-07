@@ -235,7 +235,7 @@ function SellerOnboarding() {
             loading={loadingAI}
             error={aiError}
             message={welcomeMsg}
-            mission={mission}
+            expectativa={expectativa}
             onRetry={() => experience && challenge && handleSubmitFinal(experience, challenge)}
             onContinue={() => navigate({ to: "/" })}
           />
