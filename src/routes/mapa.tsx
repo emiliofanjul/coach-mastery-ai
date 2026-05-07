@@ -378,6 +378,10 @@ function MapaPage() {
         onOpenChange={(o) => !o && setSelectedNode(null)}
       />
 
+      <CoachBubble hidden={showTutorial} context="mapa" />
+
+      <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
+
       <style>{`
         @keyframes pulseOrange {
           0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.55); }
