@@ -436,9 +436,10 @@ function MapNode({
       styles.background = "rgba(255,209,102,0.2)";
     } else if (status === "available") {
       styles.background = "#1A1A26";
+      styles.opacity = 0.75;
     } else {
       styles.background = "#111118";
-      styles.opacity = 0.4;
+      styles.opacity = 0.5;
     }
   } else {
     if (status === "active") {
@@ -450,12 +451,13 @@ function MapNode({
       styles.borderColor = "#FF6B2B";
       styles.boxShadow = "0 0 16px -4px rgba(255,107,43,0.4)";
     } else if (status === "available") {
-      styles.background = "#1A1A26";
-      styles.borderColor = "#252535";
+      styles.background = "#1F1F2E";
+      styles.borderColor = "#3A3A52";
+      styles.opacity = 0.85;
     } else {
       styles.background = "#111118";
       styles.borderColor = "#1A1A26";
-      styles.opacity = 0.4;
+      styles.opacity = 0.5;
     }
   }
 
