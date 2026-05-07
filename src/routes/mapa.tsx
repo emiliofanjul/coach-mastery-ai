@@ -128,38 +128,26 @@ function MapaPage() {
     }
   }, [loading]);
 
-  // Mario Bros progression: sequential. A node unlocks only when prev is completed.
-  // Boss locked until all non-boss nodes in its world are completed.
-  // World N+1 locked until boss of World N completed.
+  // Mario Bros progression: estrictamente secuencial en orden global.
+  // El primer nodo no completado = active. El siguiente = available (carrot). Resto = locked.
+  const orderedNodes = [...nodes].sort((a, b) =>
+    a.world_id !== b.world_id
+      ? a.world_id - b.world_id
+      : a.order_index - b.order_index,
+  );
+  const activeIdx = orderedNodes.findIndex(
+    (n) => progress[n.id]?.status !== "completed",
+  );
+  const activeId = activeIdx >= 0 ? orderedNodes[activeIdx].id : null;
+  const availableId =
+    activeIdx >= 0 && activeIdx + 1 < orderedNodes.length
+      ? orderedNodes[activeIdx + 1].id
+      : null;
+
   const computeStatus = (node: NodeRow): NodeStatus => {
-    const p = progress[node.id];
-    if (p?.status === "completed") return "completed";
-
-    // Check that all previous worlds' bosses are completed
-    for (let w = 0; w < node.world_id; w++) {
-      const boss = nodes.find((n) => n.world_id === w && n.is_boss);
-      if (!boss || progress[boss.id]?.status !== "completed") return "locked";
-    }
-
-    const worldNodes = nodes
-      .filter((n) => n.world_id === node.world_id)
-      .sort((a, b) => a.order_index - b.order_index);
-
-    // Boss requires all normal nodes of this world completed
-    if (node.is_boss) {
-      const allDone = worldNodes
-        .filter((n) => !n.is_boss)
-        .every((n) => progress[n.id]?.status === "completed");
-      if (!allDone) return "locked";
-      // Boss unlocked → active (it's the next step)
-      return "active";
-    }
-
-    // Sequential within the world
-    const idx = worldNodes.findIndex((n) => n.id === node.id);
-    if (idx === 0) return "active"; // first node, no predecessor
-    const prev = worldNodes[idx - 1];
-    if (progress[prev.id]?.status === "completed") return "active";
+    if (progress[node.id]?.status === "completed") return "completed";
+    if (node.id === activeId) return "active";
+    if (node.id === availableId) return "available";
     return "locked";
   };
 
