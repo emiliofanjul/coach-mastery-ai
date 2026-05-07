@@ -456,7 +456,7 @@ function PersonalMessage({
           >
             {message}
           </p>
-          {mission && (
+          {expectativa && (
             <div
               style={{
                 width: "100%",
@@ -478,7 +478,7 @@ function PersonalMessage({
                   marginBottom: "0.4rem",
                 }}
               >
-                Tu primer objetivo
+                Lo que vas a construir
               </div>
               <div
                 style={{
@@ -489,7 +489,7 @@ function PersonalMessage({
                   lineHeight: 1.5,
                 }}
               >
-                {mission}
+                {expectativa}
               </div>
             </div>
           )}
