@@ -58,7 +58,7 @@ function SellerOnboarding() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState<string>("");
-  const [mission, setMission] = useState<string>("");
+  const [expectativa, setExpectativa] = useState<string>("");
   const [fade, setFade] = useState(true);
 
   // Verificar auth + cargar seller
