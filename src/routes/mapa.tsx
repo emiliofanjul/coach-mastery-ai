@@ -523,7 +523,9 @@ function MapNode({
         style={{
           marginTop: 6,
           fontFamily: "'DM Sans', sans-serif",
-          fontSize: "0.62rem",
+          fontSize: status === "locked" ? "0.72rem" : "0.62rem",
+          fontWeight:
+            status === "locked" ? 400 : status === "active" ? 600 : 500,
           color:
             status === "active"
               ? "#FFFFFF"
@@ -533,10 +535,9 @@ function MapNode({
           textAlign: "center",
           maxWidth: 90,
           lineHeight: 1.15,
-          fontWeight: status === "active" ? 600 : 500,
         }}
       >
-        {status === "locked" ? "—" : node.name}
+        {node.name}
       </div>
     </div>
   );
