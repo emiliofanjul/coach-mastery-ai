@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { DevMenu } from "@/components/dev/DevMenu";
 
 function NotFoundComponent() {
   return (
