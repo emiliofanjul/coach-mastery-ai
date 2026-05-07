@@ -278,7 +278,7 @@ function MapaPage() {
                 {worldNodes.map((node, i) => {
                   const status = computeStatus(node);
                   const x = xForIndex(i);
-                  const y = yForIndex(i);
+                  const y = yForIndex(i, worldNodes.length);
                   const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
                   return (
                     <div
