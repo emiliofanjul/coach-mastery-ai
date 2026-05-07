@@ -36,6 +36,7 @@ type NodeRow = {
   technique: string | null;
   order_index: number;
   is_boss: boolean;
+  difficulty_level: number;
 };
 
 type ProgressRow = {
