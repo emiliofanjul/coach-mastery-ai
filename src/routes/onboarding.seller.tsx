@@ -132,7 +132,7 @@ function SellerOnboarding() {
         },
       });
       setWelcomeMsg(res.mensaje);
-      setMission(res.mision);
+      setExpectativa(res.expectativa);
 
       // Persistir en sellers + seller_memory
       if (sellerId) {
