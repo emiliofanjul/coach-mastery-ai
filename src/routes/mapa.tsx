@@ -290,8 +290,9 @@ function MapaPage() {
             .sort((a, b) => a.order_index - b.order_index);
           const isUnlocked = UNLOCKED_WORLDS.includes(world.id);
           const isCurrent = world.id === 0; // anchor
-          const sectionHeight =
-            PADDING_TOP + worldNodes.length * ROW_HEIGHT + 40;
+          const sectionHeight = isUnlocked
+            ? PADDING_TOP + worldNodes.length * ROW_HEIGHT + 40
+            : 180;
 
           return (
             <section
