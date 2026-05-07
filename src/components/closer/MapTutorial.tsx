@@ -295,7 +295,7 @@ export function MapTutorial({ open, onClose }: Props) {
             <div
               style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 400,
+                fontWeight: steps[step].subtext ? 500 : 400,
                 fontSize: "0.88rem",
                 color: "#F0F0F5",
                 lineHeight: 1.6,
@@ -304,6 +304,20 @@ export function MapTutorial({ open, onClose }: Props) {
             >
               {steps[step].text}
             </div>
+            {steps[step].subtext && (
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontWeight: 400,
+                  fontSize: "0.84rem",
+                  color: "#5A5A8A",
+                  lineHeight: 1.6,
+                  marginTop: 4,
+                }}
+              >
+                {steps[step].subtext}
+              </div>
+            )}
           </div>
         </div>
 
