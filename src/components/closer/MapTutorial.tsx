@@ -63,8 +63,9 @@ export function MapTutorial({ open, onClose }: Props) {
           height: 56,
         },
       },
+      title: "Tu coach personal.",
       text:
-        "Este es tu coach personal. Es una IA entrenada en ventas que conoce cada técnica del mapa. Puedes preguntarle cualquier cosa en cualquier momento. El coach te dará respuestas directas y útiles, pero siempre te dirá en qué parte del mapa puedes practicar esa habilidad de verdad. Saber la respuesta no es lo mismo que dominarla. Para eso está el entrenamiento.",
+        "Una IA entrenada exclusivamente en ventas. Pregúntale lo que sea, cuando sea.\n\nPero recuerda: saber no es dominar.\nPara dominar está el mapa.",
       state: "support",
     },
   ];
