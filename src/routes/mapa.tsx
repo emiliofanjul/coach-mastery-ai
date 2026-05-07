@@ -92,6 +92,8 @@ function MapaPage() {
   const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<DisplayNode | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [unlockNotice, setUnlockNotice] = useState<World | null>(null);
+  const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
