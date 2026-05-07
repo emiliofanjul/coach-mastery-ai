@@ -248,7 +248,7 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
         ))}
       </div>
       <p style={{ fontSize: "0.8rem", color: "#5A5A8A", textAlign: "center", marginTop: 16 }}>
-        Con eso Closer entrena a Don Ramón para que sea el cliente exacto que enfrentan tus vendedores.
+        Con eso Closer calibra clientes IA con diferentes perfiles para que sean los clientes exactos que enfrentan tus vendedores.
       </p>
       <PrimaryButton onClick={onNext} style={{ marginTop: 28 }}>Empezar configuración →</PrimaryButton>
     </div>
@@ -520,7 +520,7 @@ function PreviewSkeleton() {
       {[0, 1, 2].map((i) => (
         <div key={i} style={{ alignSelf: i % 2 === 0 ? "flex-end" : "flex-start", width: "70%", height: 38, borderRadius: 14, background: "linear-gradient(90deg, #1A1A26 0%, #252535 50%, #1A1A26 100%)", backgroundSize: "200% 100%", animation: "pulse-orange 1.4s ease-in-out infinite" }} />
       ))}
-      <p style={{ fontSize: "0.76rem", color: "#5A5A8A", textAlign: "center", marginTop: 8 }}>Closer está calibrando a Don Ramón…</p>
+      <p style={{ fontSize: "0.76rem", color: "#5A5A8A", textAlign: "center", marginTop: 8 }}>Closer está calibrando a tu cliente IA…</p>
     </div>
   );
 }
