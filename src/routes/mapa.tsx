@@ -66,8 +66,10 @@ function xForIndex(i: number) {
   return X_PATTERN[i % X_PATTERN.length] * MAP_WIDTH;
 }
 
-function yForIndex(i: number) {
-  return PADDING_TOP + i * ROW_HEIGHT;
+// Y invertida: nodo 0 abajo, último nodo arriba.
+// total = número de nodos del mundo, i = índice (0 = primero).
+function yForIndex(i: number, total: number) {
+  return PADDING_TOP + (total - 1 - i) * ROW_HEIGHT;
 }
 
 // ───────────────────────── Page ─────────────────────────
