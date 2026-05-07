@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Lock, Check, Star, Trophy, Play } from "lucide-react";
+import { MapTutorial } from "@/components/closer/MapTutorial";
+import { CoachBubble } from "@/components/closer/CoachBubble";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -66,8 +68,10 @@ function xForIndex(i: number) {
   return X_PATTERN[i % X_PATTERN.length] * MAP_WIDTH;
 }
 
-function yForIndex(i: number) {
-  return PADDING_TOP + i * ROW_HEIGHT;
+// Y invertida: nodo 0 abajo, último nodo arriba.
+// total = número de nodos del mundo, i = índice (0 = primero).
+function yForIndex(i: number, total: number) {
+  return PADDING_TOP + (total - 1 - i) * ROW_HEIGHT;
 }
 
 // ───────────────────────── Page ─────────────────────────
@@ -81,9 +85,11 @@ function MapaPage() {
     id: string;
     current_world: number;
     current_node: string;
+    map_tutorial_completed?: boolean;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<DisplayNode | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -99,7 +105,7 @@ function MapaPage() {
         supabase.from("nodes").select("*").order("order_index"),
         supabase
           .from("sellers")
-          .select("id, current_world, current_node")
+          .select("id, current_world, current_node, map_tutorial_completed")
           .eq("profile_id", auth.user.id)
           .maybeSingle(),
       ]);
@@ -116,17 +122,31 @@ function MapaPage() {
         const map: Record<string, ProgressRow> = {};
         (p as ProgressRow[] | null)?.forEach((r) => (map[r.node_id] = r));
         setProgress(map);
+        if (!(s as { map_tutorial_completed?: boolean }).map_tutorial_completed) {
+          // pequeño delay para que el mapa se renderice antes
+          setTimeout(() => setShowTutorial(true), 600);
+        }
       }
       setLoading(false);
     })();
   }, [navigate]);
 
-  // Scroll inicial al Mundo 0
+  // Scroll inicial: Mundo 0 está abajo. Posicionar scroll al fondo.
   useEffect(() => {
     if (!loading && mundo0Ref.current) {
-      mundo0Ref.current.scrollIntoView({ block: "start", behavior: "auto" });
+      mundo0Ref.current.scrollIntoView({ block: "end", behavior: "auto" });
     }
   }, [loading]);
+
+  const handleTutorialClose = async () => {
+    setShowTutorial(false);
+    if (seller) {
+      await supabase
+        .from("sellers")
+        .update({ map_tutorial_completed: true })
+        .eq("id", seller.id);
+    }
+  };
 
   // Mario Bros progression: estrictamente secuencial en orden global.
   // El primer nodo no completado = active. El siguiente = available (carrot). Resto = locked.
@@ -222,6 +242,7 @@ function MapaPage() {
             <section
               key={world.id}
               ref={isCurrent ? mundo0Ref : undefined}
+              data-tour={world.id === 1 ? "world-next" : undefined}
               style={{
                 position: "relative",
                 background: world.color
@@ -251,9 +272,9 @@ function MapaPage() {
                     if (i === 0) return null;
                     const prev = worldNodes[i - 1];
                     const x1 = xForIndex(i - 1);
-                    const y1 = yForIndex(i - 1);
+                    const y1 = yForIndex(i - 1, worldNodes.length);
                     const x2 = xForIndex(i);
-                    const y2 = yForIndex(i);
+                    const y2 = yForIndex(i, worldNodes.length);
                     const cx = (x1 + x2) / 2;
                     const path = `M ${x1} ${y1} Q ${cx} ${y1 + (y2 - y1) / 2} ${x2} ${y2}`;
                     const prevDone =
@@ -276,11 +297,20 @@ function MapaPage() {
                 {worldNodes.map((node, i) => {
                   const status = computeStatus(node);
                   const x = xForIndex(i);
-                  const y = yForIndex(i);
+                  const y = yForIndex(i, worldNodes.length);
                   const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
+                  // Tour anchors: solo en Mundo 0
+                  let tour: string | undefined;
+                  if (world.id === 0) {
+                    if (node.is_boss) tour = "boss-node";
+                    else if (status === "active") tour = "active-node";
+                    else if (status === "locked" || status === "available")
+                      tour = tour ?? "locked-node";
+                  }
                   return (
                     <div
                       key={node.id}
+                      data-tour={tour}
                       style={{
                         position: "absolute",
                         left: x - r,
@@ -347,6 +377,10 @@ function MapaPage() {
         node={selectedNode}
         onOpenChange={(o) => !o && setSelectedNode(null)}
       />
+
+      <CoachBubble hidden={showTutorial} context="mapa" />
+
+      <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
 
       <style>{`
         @keyframes pulseOrange {

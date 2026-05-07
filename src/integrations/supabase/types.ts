@@ -833,6 +833,7 @@ export type Database = {
           is_active: boolean
           last_practice_date: string | null
           main_challenge: string | null
+          map_tutorial_completed: boolean
           onboarding_completed: boolean
           profile_id: string
           streak_days: number
@@ -852,6 +853,7 @@ export type Database = {
           is_active?: boolean
           last_practice_date?: string | null
           main_challenge?: string | null
+          map_tutorial_completed?: boolean
           onboarding_completed?: boolean
           profile_id: string
           streak_days?: number
@@ -871,6 +873,7 @@ export type Database = {
           is_active?: boolean
           last_practice_date?: string | null
           main_challenge?: string | null
+          map_tutorial_completed?: boolean
           onboarding_completed?: boolean
           profile_id?: string
           streak_days?: number
