@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Lock, Check, Star, Trophy, Play } from "lucide-react";
+import { MapTutorial } from "@/components/closer/MapTutorial";
+import { CoachBubble } from "@/components/closer/CoachBubble";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
