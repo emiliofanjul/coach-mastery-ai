@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
+import { CloserCharacter } from "@/components/closer/CloserCharacter";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -26,6 +27,7 @@ type World = {
   id: number;
   name: string;
   emotional_name: string | null;
+  description: string | null;
   color: string | null;
   icon: string | null;
   order_index: number;
@@ -90,6 +92,8 @@ function MapaPage() {
   const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<DisplayNode | null>(null);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [unlockNotice, setUnlockNotice] = useState<World | null>(null);
+  const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -137,6 +141,32 @@ function MapaPage() {
       mundo0Ref.current.scrollIntoView({ block: "end", behavior: "auto" });
     }
   }, [loading]);
+
+  // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
+  useEffect(() => {
+    if (loading || worlds.length === 0 || nodes.length === 0) return;
+    const bossCompleted = new Set<number>();
+    nodes
+      .filter((n) => n.is_boss)
+      .forEach((n) => {
+        if (progress[n.id]?.status === "completed") bossCompleted.add(n.world_id);
+      });
+    const prev = prevBossCompletedRef.current;
+    if (prev) {
+      // Encuentra el primer mundo recién desbloqueado
+      for (const wid of bossCompleted) {
+        if (!prev.has(wid)) {
+          const next = worlds.find((w) => w.id === wid + 1);
+          if (next) {
+            setUnlockNotice(next);
+            setTimeout(() => setUnlockNotice(null), 3000);
+          }
+          break;
+        }
+      }
+    }
+    prevBossCompletedRef.current = bossCompleted;
+  }, [progress, nodes, worlds, loading]);
 
   const handleTutorialClose = async () => {
     setShowTutorial(false);
@@ -382,6 +412,58 @@ function MapaPage() {
 
       <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
 
+      {unlockNotice && (
+        <div
+          style={{
+            position: "fixed",
+            top: 80,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 50,
+            background: "#1A1A26",
+            borderLeft: "3px solid #FF6B2B",
+            borderRadius: 12,
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            maxWidth: 340,
+            width: "calc(100vw - 32px)",
+            boxShadow: "0 12px 32px -8px rgba(0,0,0,0.6)",
+            animation: "unlockFade 3s ease-in-out forwards",
+          }}
+        >
+          <CloserCharacter state="celebration" size={48} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: "0.85rem",
+                color: "#FFFFFF",
+                marginBottom: 2,
+              }}
+            >
+              {unlockNotice.name} desbloqueado
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "0.72rem",
+                color: "#9090B0",
+                lineHeight: 1.3,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {unlockNotice.description?.split(".")[0] ?? ""}
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
         @keyframes pulseOrange {
           0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.55); }
@@ -390,6 +472,11 @@ function MapaPage() {
         @keyframes pulseGold {
           0%, 100% { box-shadow: 0 0 0 0 rgba(255,209,102,0.55); }
           50% { box-shadow: 0 0 0 14px rgba(255,209,102,0); }
+        }
+        @keyframes unlockFade {
+          0% { opacity: 0; transform: translate(-50%, -8px); }
+          15%, 85% { opacity: 1; transform: translate(-50%, 0); }
+          100% { opacity: 0; transform: translate(-50%, -8px); }
         }
       `}</style>
     </main>
@@ -403,7 +490,7 @@ function WorldHeader({ world }: { world: World }) {
     <div
       style={{
         textAlign: "center",
-        padding: "1.4rem 1rem 0.6rem",
+        padding: "1.4rem 1.2rem 0.6rem",
       }}
     >
       <div style={{ fontSize: "2rem", lineHeight: 1 }}>{world.icon ?? "•"}</div>
@@ -431,6 +518,27 @@ function WorldHeader({ world }: { world: World }) {
       >
         Mundo {world.id}
       </div>
+      {world.description && (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: "0.78rem",
+            color: "#5A5A8A",
+            marginTop: 8,
+            lineHeight: 1.35,
+            maxWidth: 320,
+            marginLeft: "auto",
+            marginRight: "auto",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {world.description}
+        </div>
+      )}
     </div>
   );
 }
