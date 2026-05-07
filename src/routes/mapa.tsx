@@ -103,7 +103,7 @@ function MapaPage() {
         supabase.from("nodes").select("*").order("order_index"),
         supabase
           .from("sellers")
-          .select("id, current_world, current_node")
+          .select("id, current_world, current_node, map_tutorial_completed")
           .eq("profile_id", auth.user.id)
           .maybeSingle(),
       ]);
