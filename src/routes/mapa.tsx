@@ -502,7 +502,7 @@ function MapNode({
         type="button"
         onClick={status === "locked" ? undefined : onClick}
         disabled={status === "locked"}
-        style={{ ...styles, padding: 0, all: "unset", ...styles }}
+        style={styles}
         aria-label={node.name}
       >
         {icon}
