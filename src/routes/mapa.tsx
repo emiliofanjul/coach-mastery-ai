@@ -83,9 +83,11 @@ function MapaPage() {
     id: string;
     current_world: number;
     current_node: string;
+    map_tutorial_completed?: boolean;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<DisplayNode | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
