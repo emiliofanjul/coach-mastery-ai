@@ -237,7 +237,7 @@ function SellerOnboarding() {
             message={welcomeMsg}
             expectativa={expectativa}
             onRetry={() => experience && challenge && handleSubmitFinal(experience, challenge)}
-            onContinue={() => navigate({ to: "/" })}
+            onContinue={() => navigate({ to: "/onboarding/map-intro" })}
           />
         )}
       </div>
