@@ -405,7 +405,7 @@ function WorldHeader({ world }: { world: World }) {
     <div
       style={{
         textAlign: "center",
-        padding: "1.4rem 1rem 0.6rem",
+        padding: "1.4rem 1.2rem 0.6rem",
       }}
     >
       <div style={{ fontSize: "2rem", lineHeight: 1 }}>{world.icon ?? "•"}</div>
@@ -433,6 +433,27 @@ function WorldHeader({ world }: { world: World }) {
       >
         Mundo {world.id}
       </div>
+      {world.description && (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: "0.78rem",
+            color: "#5A5A8A",
+            marginTop: 8,
+            lineHeight: 1.35,
+            maxWidth: 320,
+            marginLeft: "auto",
+            marginRight: "auto",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {world.description}
+        </div>
+      )}
     </div>
   );
 }
