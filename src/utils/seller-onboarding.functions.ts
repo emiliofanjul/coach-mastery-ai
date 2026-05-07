@@ -47,7 +47,17 @@ Reglas:
 - Oración 2: nombra su reto y por qué Closer es la solución exacta.
 - Oración 3: la promesa concreta de lo que va a lograr.
 
-Después genera una misión inicial de UNA sola oración accionable según su reto.
+Después genera una misión inicial siguiendo ESTAS REGLAS ESTRICTAS:
+- UNA sola acción, DENTRO de la app, completable en menos de 10 minutos.
+- Siempre invita a entrar al Mapa AHORA y completar el primer nodo / primera lección del Mundo 0.
+- NUNCA pide hacer algo fuera de la app, ni algo complejo, ni tarea para "mañana".
+- 1 a 2 oraciones máximo. Conecta el primer nodo con el reto específico del vendedor.
+
+Ejemplos según reto:
+- cierre: "Completa el primer nodo del Mapa. Toma menos de 10 minutos y es la base de todo lo que sigue."
+- objeciones: "Entra al Mundo 0 y completa la primera lección. Ahí empieza el sistema que cambia cómo respondes cuando el cliente dice no."
+- prospeccion: "Completa tu primer nodo hoy. En 10 minutos vas a tener algo concreto que aplicar mañana."
+- retencion: "Entra al Mapa y completa el primer nodo. Es el primer paso para convertir clientes que compran una vez en clientes que siempre regresan."
 
 Responde SOLO con JSON válido, sin markdown:
 {"mensaje":"...","mision":"..."}`;
