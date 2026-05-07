@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoleRouteImport } from './routes/role'
+import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
@@ -25,6 +26,11 @@ const SignupRoute = SignupRouteImport.update({
 const RoleRoute = RoleRouteImport.update({
   id: '/role',
   path: '/role',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaRoute = MapaRouteImport.update({
+  id: '/mapa',
+  path: '/mapa',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -56,6 +62,7 @@ const OnboardingManagerRoute = OnboardingManagerRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/mapa'
     | '/role'
     | '/signup'
     | '/onboarding/manager'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/mapa'
     | '/role'
     | '/signup'
     | '/onboarding/manager'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/login'
+    | '/mapa'
     | '/role'
     | '/signup'
     | '/onboarding/manager'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  MapaRoute: typeof MapaRoute
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
   OnboardingManagerRoute: typeof OnboardingManagerRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/role'
       fullPath: '/role'
       preLoaderRoute: typeof RoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa': {
+      id: '/mapa'
+      path: '/mapa'
+      fullPath: '/mapa'
+      preLoaderRoute: typeof MapaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  MapaRoute: MapaRoute,
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
   OnboardingManagerRoute: OnboardingManagerRoute,
@@ -187,3 +208,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
