@@ -2,16 +2,16 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 const ROUTES: Array<{ to: string; label: string }> = [
-  { to: "/", label: "/ (splash)" },
-  { to: "/mapa", label: "/mapa" },
-  { to: "/home", label: "/home" },
-  { to: "/dashboard", label: "/dashboard (manager)" },
-  { to: "/role", label: "/role" },
-  { to: "/login", label: "/login" },
-  { to: "/signup", label: "/signup" },
   { to: "/onboarding/manager", label: "/onboarding/manager" },
   { to: "/onboarding/seller", label: "/onboarding/seller" },
   { to: "/onboarding/map-intro", label: "/onboarding/map-intro" },
+  { to: "/mapa", label: "/mapa (el mapa)" },
+  { to: "/home", label: "/home" },
+  { to: "/dashboard", label: "/dashboard (manager)" },
+  { to: "/", label: "/ (splash)" },
+  { to: "/role", label: "/role" },
+  { to: "/login", label: "/login" },
+  { to: "/signup", label: "/signup" },
 ];
 
 export function DevMenu() {
