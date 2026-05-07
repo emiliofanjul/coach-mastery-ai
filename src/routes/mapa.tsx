@@ -27,6 +27,7 @@ type World = {
   id: number;
   name: string;
   emotional_name: string | null;
+  description: string | null;
   color: string | null;
   icon: string | null;
   order_index: number;
