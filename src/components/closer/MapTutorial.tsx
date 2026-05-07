@@ -13,6 +13,7 @@ type TargetSpec =
 type Step = {
   target: TargetSpec;
   text: string;
+  title?: string;
   state: "normal" | "motivation" | "support" | "celebration" | "correction";
 };
 
