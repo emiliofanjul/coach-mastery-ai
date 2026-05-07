@@ -285,7 +285,31 @@ export function MapTutorial({ open, onClose }: Props) {
               lineHeight: 1.45,
             }}
           >
-            {steps[step].text}
+            {steps[step].title && (
+              <div
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  color: "#FF6B2B",
+                  marginBottom: 6,
+                }}
+              >
+                {steps[step].title}
+              </div>
+            )}
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontWeight: 400,
+                fontSize: "0.88rem",
+                color: "#F0F0F5",
+                lineHeight: 1.6,
+                whiteSpace: "pre-line",
+              }}
+            >
+              {steps[step].text}
+            </div>
           </div>
         </div>
 
