@@ -386,7 +386,7 @@ function PersonalMessage({
   loading,
   error,
   message,
-  mission,
+  expectativa,
   onRetry,
   onContinue,
 }: {
@@ -394,7 +394,7 @@ function PersonalMessage({
   loading: boolean;
   error: string | null;
   message: string;
-  mission: string;
+  expectativa: string;
   onRetry: () => void;
   onContinue: () => void;
 }) {
