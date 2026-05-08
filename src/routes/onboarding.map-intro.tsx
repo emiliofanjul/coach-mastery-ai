@@ -21,8 +21,8 @@ const WORLDS: Array<{
   name: string;
   color: string;
 }> = [
-  { id: 0, icon: "🏕️", name: "Mentalidad", color: "#5a8a3a" },
-  { id: 1, icon: "🌆", name: "La Introducción", color: "#3a6a9a" },
+  { id: 0, icon: "🌆", name: "La Introducción", color: "#3a6a9a" },
+  { id: 1, icon: "🏕️", name: "Mentalidad", color: "#5a8a3a" },
   { id: 2, icon: "🚪", name: "Historia Breve", color: "#3a8a5a" },
   { id: 3, icon: "🔍", name: "Lectura del Cliente", color: "#8a7a2a" },
   { id: 4, icon: "🏗️", name: "La Presentación", color: "#8a5a2a" },
@@ -215,7 +215,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                   animation: isFirst ? "breathe 2.4s ease-in-out infinite" : undefined,
                 }}
               >
-                {isFirst ? "🏕️" : isCrown ? <span style={{ opacity: 0.2 }}>👑</span> : ""}
+                {isFirst ? w.icon : isCrown ? <span style={{ opacity: 0.2 }}>👑</span> : ""}
               </div>
               {isFirst && (
                 <div
@@ -228,7 +228,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                     textAlign: "center",
                   }}
                 >
-                  Mentalidad
+                  {w.name}
                 </div>
               )}
               {idx < WORLDS.length - 1 && (
