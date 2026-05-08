@@ -95,6 +95,26 @@ function MapaPage() {
   const [unlockNotice, setUnlockNotice] = useState<World | null>(null);
   const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
+  const [glowActive, setGlowActive] = useState(false);
+
+  // Smooth scroll con duración custom hasta el nodo activo
+  const scrollToActiveNode = (duration: number) => {
+    const el = document.querySelector<HTMLElement>("[data-active-node]");
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const targetY =
+      window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+    const startY = window.scrollY;
+    const diff = targetY - startY;
+    const startT = performance.now();
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const step = (now: number) => {
+      const t = Math.min(1, (now - startT) / duration);
+      window.scrollTo(0, startY + diff * ease(t));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
 
   useEffect(() => {
     (async () => {
@@ -135,11 +155,11 @@ function MapaPage() {
     })();
   }, [navigate]);
 
-  // Scroll inicial: Mundo 0 está abajo. Posicionar scroll al fondo.
+  // Scroll inicial al nodo activo (status='current' en node_progress)
   useEffect(() => {
-    if (!loading && mundo0Ref.current) {
-      mundo0Ref.current.scrollIntoView({ block: "end", behavior: "auto" });
-    }
+    if (loading) return;
+    const t = setTimeout(() => scrollToActiveNode(500), 100);
+    return () => clearTimeout(t);
   }, [loading]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
@@ -176,6 +196,14 @@ function MapaPage() {
         .update({ map_tutorial_completed: true })
         .eq("id", seller.id);
     }
+    // Scroll suave al nodo activo + glow pulse
+    setTimeout(() => {
+      scrollToActiveNode(600);
+      setTimeout(() => {
+        setGlowActive(true);
+        setTimeout(() => setGlowActive(false), 1000);
+      }, 600);
+    }, 50);
   };
 
   // Mario Bros progression: estrictamente secuencial en orden global.
@@ -404,12 +432,18 @@ function MapaPage() {
                     <div
                       key={node.id}
                       data-tour={tour}
+                      data-active-node={status === "active" ? "true" : undefined}
                       style={{
                         position: "absolute",
                         left: x - r,
                         top: y - r,
                         width: r * 2,
                         height: r * 2 + 28,
+                        borderRadius: "50%",
+                        animation:
+                          status === "active" && glowActive
+                            ? "glowPulse 1s ease-out"
+                            : undefined,
                       }}
                     >
                       <MapNode
@@ -507,6 +541,10 @@ function MapaPage() {
           0% { opacity: 0; transform: translate(-50%, -8px); }
           15%, 85% { opacity: 1; transform: translate(-50%, 0); }
           100% { opacity: 0; transform: translate(-50%, -8px); }
+        }
+        @keyframes glowPulse {
+          0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 24px 8px rgba(255,107,43,0.6); }
+          100% { box-shadow: 0 0 0 24px rgba(255,107,43,0), 0 0 0 0 rgba(255,107,43,0); }
         }
       `}</style>
     </main>
