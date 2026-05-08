@@ -432,12 +432,18 @@ function MapaPage() {
                     <div
                       key={node.id}
                       data-tour={tour}
+                      data-active-node={status === "active" ? "true" : undefined}
                       style={{
                         position: "absolute",
                         left: x - r,
                         top: y - r,
                         width: r * 2,
                         height: r * 2 + 28,
+                        borderRadius: "50%",
+                        animation:
+                          status === "active" && glowActive
+                            ? "glowPulse 1s ease-out"
+                            : undefined,
                       }}
                     >
                       <MapNode
