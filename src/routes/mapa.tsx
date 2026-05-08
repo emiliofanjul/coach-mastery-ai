@@ -95,6 +95,26 @@ function MapaPage() {
   const [unlockNotice, setUnlockNotice] = useState<World | null>(null);
   const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
+  const [glowActive, setGlowActive] = useState(false);
+
+  // Smooth scroll con duración custom hasta el nodo activo
+  const scrollToActiveNode = (duration: number) => {
+    const el = document.querySelector<HTMLElement>("[data-active-node]");
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const targetY =
+      window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+    const startY = window.scrollY;
+    const diff = targetY - startY;
+    const startT = performance.now();
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const step = (now: number) => {
+      const t = Math.min(1, (now - startT) / duration);
+      window.scrollTo(0, startY + diff * ease(t));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
 
   useEffect(() => {
     (async () => {
