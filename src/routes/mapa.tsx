@@ -542,6 +542,10 @@ function MapaPage() {
           15%, 85% { opacity: 1; transform: translate(-50%, 0); }
           100% { opacity: 0; transform: translate(-50%, -8px); }
         }
+        @keyframes glowPulse {
+          0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 24px 8px rgba(255,107,43,0.6); }
+          100% { box-shadow: 0 0 0 24px rgba(255,107,43,0), 0 0 0 0 rgba(255,107,43,0); }
+        }
       `}</style>
     </main>
   );
