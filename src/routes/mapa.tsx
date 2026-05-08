@@ -196,6 +196,14 @@ function MapaPage() {
         .update({ map_tutorial_completed: true })
         .eq("id", seller.id);
     }
+    // Scroll suave al nodo activo + glow pulse
+    setTimeout(() => {
+      scrollToActiveNode(600);
+      setTimeout(() => {
+        setGlowActive(true);
+        setTimeout(() => setGlowActive(false), 1000);
+      }, 600);
+    }, 50);
   };
 
   // Mario Bros progression: estrictamente secuencial en orden global.
