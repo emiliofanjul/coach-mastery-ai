@@ -215,7 +215,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                   animation: isFirst ? "breathe 2.4s ease-in-out infinite" : undefined,
                 }}
               >
-                {isFirst ? "🏕️" : isCrown ? <span style={{ opacity: 0.2 }}>👑</span> : ""}
+                {isFirst ? w.icon : isCrown ? <span style={{ opacity: 0.2 }}>👑</span> : ""}
               </div>
               {isFirst && (
                 <div
@@ -228,7 +228,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                     textAlign: "center",
                   }}
                 >
-                  Mentalidad
+                  {w.name}
                 </div>
               )}
               {idx < WORLDS.length - 1 && (
