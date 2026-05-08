@@ -155,11 +155,11 @@ function MapaPage() {
     })();
   }, [navigate]);
 
-  // Scroll inicial: Mundo 0 está abajo. Posicionar scroll al fondo.
+  // Scroll inicial al nodo activo (status='current' en node_progress)
   useEffect(() => {
-    if (!loading && mundo0Ref.current) {
-      mundo0Ref.current.scrollIntoView({ block: "end", behavior: "auto" });
-    }
+    if (loading) return;
+    const t = setTimeout(() => scrollToActiveNode(500), 100);
+    return () => clearTimeout(t);
   }, [loading]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
