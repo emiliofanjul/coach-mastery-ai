@@ -21,8 +21,8 @@ const WORLDS: Array<{
   name: string;
   color: string;
 }> = [
-  { id: 0, icon: "🏕️", name: "Mentalidad", color: "#5a8a3a" },
-  { id: 1, icon: "🌆", name: "La Introducción", color: "#3a6a9a" },
+  { id: 0, icon: "🌆", name: "La Introducción", color: "#3a6a9a" },
+  { id: 1, icon: "🏕️", name: "Mentalidad", color: "#5a8a3a" },
   { id: 2, icon: "🚪", name: "Historia Breve", color: "#3a8a5a" },
   { id: 3, icon: "🔍", name: "Lectura del Cliente", color: "#8a7a2a" },
   { id: 4, icon: "🏗️", name: "La Presentación", color: "#8a5a2a" },
