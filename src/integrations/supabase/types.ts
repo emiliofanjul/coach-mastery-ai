@@ -357,6 +357,47 @@ export type Database = {
           },
         ]
       }
+      node_cards: {
+        Row: {
+          body: string
+          card_order: number
+          card_type: string
+          created_at: string
+          flip_back_text: string | null
+          id: string
+          node_id: string
+          title: string | null
+        }
+        Insert: {
+          body: string
+          card_order: number
+          card_type: string
+          created_at?: string
+          flip_back_text?: string | null
+          id?: string
+          node_id: string
+          title?: string | null
+        }
+        Update: {
+          body?: string
+          card_order?: number
+          card_type?: string
+          created_at?: string
+          flip_back_text?: string | null
+          id?: string
+          node_id?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "node_cards_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       node_progress: {
         Row: {
           company_id: string
