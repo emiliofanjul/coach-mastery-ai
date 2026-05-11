@@ -422,7 +422,7 @@ export type Database = {
         Row: {
           boss_goal: string | null
           checkpoints: Json | null
-          conversation_scope: string
+          conversation_scope: string | null
           description: string | null
           difficulty_level: number
           engine_type: string | null
@@ -439,7 +439,7 @@ export type Database = {
         Insert: {
           boss_goal?: string | null
           checkpoints?: Json | null
-          conversation_scope?: string
+          conversation_scope?: string | null
           description?: string | null
           difficulty_level?: number
           engine_type?: string | null
@@ -456,7 +456,7 @@ export type Database = {
         Update: {
           boss_goal?: string | null
           checkpoints?: Json | null
-          conversation_scope?: string
+          conversation_scope?: string | null
           description?: string | null
           difficulty_level?: number
           engine_type?: string | null
