@@ -1,0 +1,652 @@
+import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, RotateCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/nodo/$nodeId")({
+  component: NodoCardsPage,
+  head: () => ({
+    meta: [{ title: "Tarjetas — Closer" }],
+  }),
+});
+
+type CardType = "concept" | "why_it_works" | "good_example" | "bad_example" | "cta";
+
+interface NodeCard {
+  id: string;
+  card_order: number;
+  card_type: CardType;
+  title: string | null;
+  body: string;
+  flip_back_text: string | null;
+}
+
+interface NodeRow {
+  id: string;
+  name: string;
+  node_type: string | null;
+}
+
+function NodoCardsPage() {
+  const { nodeId } = useParams({ from: "/nodo/$nodeId" });
+  const navigate = useNavigate();
+
+  const [node, setNode] = useState<NodeRow | null>(null);
+  const [cards, setCards] = useState<NodeCard[] | null>(null);
+  const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const [flipped, setFlipped] = useState(false);
+
+  // Carga de nodo + tarjetas
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const [{ data: n }, { data: c }] = await Promise.all([
+        supabase.from("nodes").select("id,name,node_type").eq("id", nodeId).maybeSingle(),
+        supabase
+          .from("node_cards")
+          .select("id,card_order,card_type,title,body,flip_back_text")
+          .eq("node_id", nodeId)
+          .order("card_order", { ascending: true }),
+      ]);
+      if (!alive) return;
+      setNode((n as NodeRow | null) ?? null);
+      setCards((c as NodeCard[] | null) ?? []);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [nodeId]);
+
+  const total = cards?.length ?? 0;
+  const current = cards?.[index];
+
+  // Reset flip al cambiar de tarjeta
+  useEffect(() => {
+    setFlipped(false);
+  }, [index]);
+
+  function goBack() {
+    navigate({ to: "/mapa" });
+  }
+
+  function next() {
+    if (index < total - 1) {
+      setDirection(1);
+      setIndex(index + 1);
+    }
+  }
+  function prev() {
+    if (index > 0) {
+      setDirection(-1);
+      setIndex(index - 1);
+    }
+  }
+
+  const isFlipCard = current?.card_type === "good_example" || current?.card_type === "bad_example";
+  const isCta = current?.card_type === "cta";
+  const showNextButton = !isFlipCard || flipped;
+
+  // ───── Render ─────
+  return (
+    <motion.div
+      initial={{ y: "100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "100%" }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "#08080F",
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        zIndex: 50,
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          flexShrink: 0,
+          display: "grid",
+          gridTemplateColumns: "44px 1fr 60px",
+          alignItems: "center",
+          padding: "14px 1.2rem",
+          gap: 8,
+        }}
+      >
+        <button
+          onClick={goBack}
+          aria-label="Volver al mapa"
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "#fff",
+            padding: 8,
+            margin: -8,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <div
+          style={{
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: "1rem",
+            color: "#fff",
+            textAlign: "center",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {node?.name ?? ""}
+        </div>
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.82rem",
+            color: "rgba(255,255,255,0.5)",
+            textAlign: "right",
+          }}
+        >
+          {total > 0 ? `${index + 1} de ${total}` : ""}
+        </div>
+      </div>
+
+      {/* Card area */}
+      <div
+        style={{
+          flex: 1,
+          width: "100%",
+          maxWidth: 560,
+          margin: "0 auto",
+          padding: "0 1.2rem",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          minHeight: 0,
+          overflow: "hidden",
+        }}
+      >
+        {cards === null ? null : cards.length === 0 ? (
+          <FallbackEmpty />
+        ) : (
+          <CardSwiper
+            card={current!}
+            direction={direction}
+            flipped={flipped}
+            setFlipped={setFlipped}
+            onSwipeLeft={next}
+            onSwipeRight={prev}
+            canSwipeLeft={index < total - 1}
+            canSwipeRight={index > 0}
+          />
+        )}
+
+        {/* Dots */}
+        {cards && cards.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 6,
+              marginTop: 24,
+              marginBottom: 8,
+            }}
+          >
+            {cards.map((_, i) => (
+              <span
+                key={i}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 99,
+                  background: i === index ? "#fff" : "rgba(255,255,255,0.2)",
+                  transition: "background 0.2s ease",
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom button */}
+      <div
+        style={{
+          flexShrink: 0,
+          padding: "16px 1.2rem calc(20px + env(safe-area-inset-bottom))",
+          width: "100%",
+          maxWidth: 560,
+          margin: "0 auto",
+          minHeight: 84,
+        }}
+      >
+        {cards && cards.length > 0 && showNextButton && (
+          <BottomButton card={current!} nodeType={node?.node_type ?? "knowledge"} isLast={index === total - 1} onNext={next} />
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+// ───────────────────────── Card Swiper ─────────────────────────
+
+function CardSwiper({
+  card,
+  direction,
+  flipped,
+  setFlipped,
+  onSwipeLeft,
+  onSwipeRight,
+  canSwipeLeft,
+  canSwipeRight,
+}: {
+  card: NodeCard;
+  direction: 1 | -1;
+  flipped: boolean;
+  setFlipped: (v: boolean) => void;
+  onSwipeLeft: () => void;
+  onSwipeRight: () => void;
+  canSwipeLeft: boolean;
+  canSwipeRight: boolean;
+}) {
+  const startX = useRef<number | null>(null);
+  const startY = useRef<number | null>(null);
+  const moved = useRef(false);
+
+  const isFlipCard = card.card_type === "good_example" || card.card_type === "bad_example";
+
+  function onPointerDown(e: React.PointerEvent) {
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+    moved.current = false;
+  }
+  function onPointerMove(e: React.PointerEvent) {
+    if (startX.current == null) return;
+    const dx = e.clientX - startX.current;
+    if (Math.abs(dx) > 10) moved.current = true;
+  }
+  function onPointerUp(e: React.PointerEvent) {
+    if (startX.current == null) return;
+    const dx = e.clientX - startX.current;
+    const dy = e.clientY - (startY.current ?? 0);
+    startX.current = null;
+    startY.current = null;
+    // swipe horizontal claro
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0 && canSwipeLeft) onSwipeLeft();
+      else if (dx > 0 && canSwipeRight) onSwipeRight();
+      return;
+    }
+    // tap (no se movió)
+    if (!moved.current && isFlipCard) {
+      setFlipped(!flipped);
+    }
+  }
+
+  return (
+    <div style={{ position: "relative", width: "100%", minHeight: 360 }}>
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={card.id}
+          custom={direction}
+          initial={{ x: direction * 320, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: direction * -320, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.8 }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          style={{
+            width: "100%",
+            touchAction: "pan-y",
+            userSelect: "none",
+          }}
+        >
+          <CardView card={card} flipped={flipped} setFlipped={setFlipped} />
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ───────────────────────── Card View ─────────────────────────
+
+const CARD_STYLES: Record<CardType, { border: string; bg: string }> = {
+  concept: { border: "rgba(255,255,255,0.08)", bg: "transparent" },
+  why_it_works: { border: "rgba(77,171,247,0.4)", bg: "rgba(77,171,247,0.04)" },
+  good_example: { border: "rgba(6,214,160,0.4)", bg: "rgba(6,214,160,0.04)" },
+  bad_example: { border: "rgba(239,71,111,0.4)", bg: "rgba(239,71,111,0.04)" },
+  cta: { border: "rgba(255,107,43,0.35)", bg: "linear-gradient(180deg, rgba(255,107,43,0.10) 0%, rgba(255,107,43,0.04) 100%)" },
+};
+
+function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void }) {
+  const isFlip = card.card_type === "good_example" || card.card_type === "bad_example";
+  const isCta = card.card_type === "cta";
+
+  if (isCta) {
+    return <CtaFace card={card} />;
+  }
+
+  if (!isFlip) {
+    return <StaticFace card={card} />;
+  }
+
+  // Flip card
+  return (
+    <div style={{ perspective: 1200, width: "100%" }}>
+      <motion.div
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position: "relative",
+          width: "100%",
+          transformStyle: "preserve-3d",
+          minHeight: 360,
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden" }}>
+          <FlipFront card={card} />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+          }}
+        >
+          <FlipBack card={card} onFlipBack={() => setFlipped(false)} />
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ───────────────────────── Faces ─────────────────────────
+
+function StaticFace({ card }: { card: NodeCard }) {
+  const styles = CARD_STYLES[card.card_type];
+  return (
+    <div
+      style={{
+        border: `1px solid ${styles.border}`,
+        background: styles.bg,
+        borderRadius: 14,
+        padding: 24,
+        minHeight: 360,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+      }}
+    >
+      {card.card_type === "concept" && <Badge label="CONCEPTO" color="rgba(255,255,255,0.4)" bg="rgba(255,255,255,0.06)" />}
+      {card.card_type === "why_it_works" && <Badge label="💡 POR QUÉ FUNCIONA" color="#4DABF7" bg="rgba(77,171,247,0.10)" />}
+      {card.title && (
+        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, color: "#fff", lineHeight: 1.2 }}>
+          {card.title}
+        </div>
+      )}
+      <div
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 400,
+          fontSize: 15,
+          color: "rgba(255,255,255,0.75)",
+          lineHeight: 1.6,
+        }}
+      >
+        {card.body}
+      </div>
+    </div>
+  );
+}
+
+function FlipFront({ card }: { card: NodeCard }) {
+  const styles = CARD_STYLES[card.card_type];
+  const isGood = card.card_type === "good_example";
+  return (
+    <div
+      style={{
+        border: `1px solid ${styles.border}`,
+        background: styles.bg,
+        borderRadius: 14,
+        padding: 24,
+        minHeight: 360,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        position: "relative",
+      }}
+    >
+      <Badge
+        label={isGood ? "✓ EJEMPLO BUENO" : "✗ EJEMPLO MALO"}
+        color={isGood ? "#06D6A0" : "#EF476F"}
+        bg={isGood ? "rgba(6,214,160,0.10)" : "rgba(239,71,111,0.10)"}
+      />
+      <div
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 400,
+          fontSize: 15,
+          color: "rgba(255,255,255,0.85)",
+          lineHeight: 1.6,
+          fontStyle: "italic",
+        }}
+      >
+        {card.body}
+      </div>
+      <div style={{ flex: 1 }} />
+      <div
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 11,
+          color: "rgba(255,255,255,0.35)",
+          textAlign: "right",
+        }}
+      >
+        🔄 Toca para descubrir por qué
+      </div>
+    </div>
+  );
+}
+
+function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void }) {
+  const styles = CARD_STYLES[card.card_type];
+  const isGood = card.card_type === "good_example";
+  return (
+    <div
+      style={{
+        border: `1px solid ${styles.border}`,
+        background: "rgba(255,255,255,0.03)",
+        borderRadius: 14,
+        padding: 24,
+        minHeight: 360,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        position: "relative",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Badge
+          label={isGood ? "¿Por qué funciona?" : "¿Por qué falla?"}
+          color={isGood ? "#06D6A0" : "#EF476F"}
+          bg={isGood ? "rgba(6,214,160,0.10)" : "rgba(239,71,111,0.10)"}
+        />
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onFlipBack();
+          }}
+          aria-label="Voltear de regreso"
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+            padding: 4,
+            display: "flex",
+          }}
+        >
+          <RotateCw size={16} />
+        </button>
+      </div>
+      <div
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 400,
+          fontSize: 15,
+          color: "rgba(255,255,255,0.85)",
+          lineHeight: 1.6,
+        }}
+      >
+        {card.flip_back_text}
+      </div>
+    </div>
+  );
+}
+
+function CtaFace({ card }: { card: NodeCard }) {
+  const styles = CARD_STYLES.cta;
+  return (
+    <div
+      style={{
+        border: `1px solid ${styles.border}`,
+        background: styles.bg,
+        borderRadius: 14,
+        padding: 36,
+        minHeight: 400,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "Syne, sans-serif",
+          fontWeight: 700,
+          fontSize: 22,
+          color: "#fff",
+          lineHeight: 1.3,
+        }}
+      >
+        {card.body}
+      </div>
+    </div>
+  );
+}
+
+function Badge({ label, color, bg }: { label: string; color: string; bg: string }) {
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignSelf: "flex-start",
+        background: bg,
+        color,
+        fontFamily: "'DM Sans', sans-serif",
+        fontWeight: 600,
+        fontSize: 11,
+        letterSpacing: "1.5px",
+        borderRadius: 99,
+        padding: "4px 12px",
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+// ───────────────────────── Bottom Button ─────────────────────────
+
+function BottomButton({
+  card,
+  nodeType,
+  isLast,
+  onNext,
+}: {
+  card: NodeCard;
+  nodeType: string;
+  isLast: boolean;
+  onNext: () => void;
+}) {
+  const ctaConfig = useMemo(() => {
+    if (card.card_type !== "cta") return null;
+    switch (nodeType) {
+      case "skill_drill":
+        return { label: "Practicar →", color: "#FF6B2B" };
+      case "full_sim":
+        return { label: "Ver demostración →", color: "#FF6B2B" };
+      case "boss":
+        return { label: "Entrar →", color: "#EF476F" };
+      case "knowledge":
+      default:
+        return { label: "Ponlo a prueba →", color: "#FF6B2B" };
+    }
+  }, [card.card_type, nodeType]);
+
+  const isCta = card.card_type === "cta";
+  const isFlipBack = card.card_type === "good_example" || card.card_type === "bad_example";
+
+  return (
+    <motion.button
+      key={`${card.id}-${isCta ? "cta" : "next"}`}
+      initial={isFlipBack ? { opacity: 0 } : { opacity: 1 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      onClick={isCta ? () => {} : onNext}
+      style={{
+        width: "100%",
+        height: 52,
+        borderRadius: 99,
+        border: "none",
+        background: ctaConfig?.color ?? "#FF6B2B",
+        color: "#08080F",
+        fontFamily: "Syne, sans-serif",
+        fontWeight: 700,
+        fontSize: 16,
+        cursor: "pointer",
+        boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+      }}
+    >
+      {isCta ? ctaConfig!.label : "Siguiente →"}
+    </motion.button>
+  );
+}
+
+// ───────────────────────── Fallback ─────────────────────────
+
+function FallbackEmpty() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+        padding: 40,
+        textAlign: "center",
+      }}
+    >
+      <div style={{ fontSize: 36 }}>🔧</div>
+      <div
+        style={{
+          fontFamily: "'DM Sans', sans-serif",
+          color: "rgba(255,255,255,0.4)",
+          fontSize: 15,
+        }}
+      >
+        Contenido en preparación.
+      </div>
+    </div>
+  );
+}
