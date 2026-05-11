@@ -790,6 +790,7 @@ function NodeSheetBody({
   node: DisplayNode;
   onClose: () => void;
 }) {
+  const navigate = useNavigate();
   const isBoss = node.is_boss;
 
   if (node.status === "locked") {
