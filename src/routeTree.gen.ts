@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
 import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
+import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -58,6 +59,11 @@ const OnboardingManagerRoute = OnboardingManagerRouteImport.update({
   path: '/onboarding/manager',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NodoNodeIdRoute = NodoNodeIdRouteImport.update({
+  id: '/nodo/$nodeId',
+  path: '/nodo/$nodeId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/nodo/$nodeId': typeof NodoNodeIdRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/nodo/$nodeId': typeof NodoNodeIdRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/nodo/$nodeId': typeof NodoNodeIdRoute
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/role'
     | '/signup'
+    | '/nodo/$nodeId'
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/role'
     | '/signup'
+    | '/nodo/$nodeId'
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/role'
     | '/signup'
+    | '/nodo/$nodeId'
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   MapaRoute: typeof MapaRoute
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
+  NodoNodeIdRoute: typeof NodoNodeIdRoute
   OnboardingManagerRoute: typeof OnboardingManagerRoute
   OnboardingMapIntroRoute: typeof OnboardingMapIntroRoute
   OnboardingSellerRoute: typeof OnboardingSellerRoute
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingManagerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nodo/$nodeId': {
+      id: '/nodo/$nodeId'
+      path: '/nodo/$nodeId'
+      fullPath: '/nodo/$nodeId'
+      preLoaderRoute: typeof NodoNodeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapaRoute: MapaRoute,
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
+  NodoNodeIdRoute: NodoNodeIdRoute,
   OnboardingManagerRoute: OnboardingManagerRoute,
   OnboardingMapIntroRoute: OnboardingMapIntroRoute,
   OnboardingSellerRoute: OnboardingSellerRoute,
@@ -208,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
