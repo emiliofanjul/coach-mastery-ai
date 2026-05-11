@@ -943,7 +943,7 @@ function NodeSheetBody({
       )}
 
       <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
-        <Button block size="lg">
+        <Button block size="lg" onClick={() => navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } })}>
           <Play size={18} />
           {isBoss ? "Entrar al Boss" : "Empezar →"}
         </Button>
