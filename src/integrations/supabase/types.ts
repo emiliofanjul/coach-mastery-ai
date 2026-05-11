@@ -420,33 +420,51 @@ export type Database = {
       }
       nodes: {
         Row: {
+          boss_goal: string | null
           checkpoints: Json | null
+          conversation_scope: string
+          description: string | null
           difficulty_level: number
+          engine_type: string | null
+          field_mission: string | null
           id: string
           is_boss: boolean
           name: string
+          node_type: string
           order_index: number
           reps_required: number
           technique: string | null
           world_id: number
         }
         Insert: {
+          boss_goal?: string | null
           checkpoints?: Json | null
+          conversation_scope?: string
+          description?: string | null
           difficulty_level?: number
+          engine_type?: string | null
+          field_mission?: string | null
           id: string
           is_boss?: boolean
           name: string
+          node_type?: string
           order_index: number
           reps_required?: number
           technique?: string | null
           world_id: number
         }
         Update: {
+          boss_goal?: string | null
           checkpoints?: Json | null
+          conversation_scope?: string
+          description?: string | null
           difficulty_level?: number
+          engine_type?: string | null
+          field_mission?: string | null
           id?: string
           is_boss?: boolean
           name?: string
+          node_type?: string
           order_index?: number
           reps_required?: number
           technique?: string | null
@@ -524,6 +542,7 @@ export type Database = {
           manually_saved: boolean
           mission_generated: string | null
           node_id: string | null
+          pitch_stage_reached: string | null
           practice_type: string | null
           score: number | null
           score_breakdown: Json | null
@@ -544,6 +563,7 @@ export type Database = {
           manually_saved?: boolean
           mission_generated?: string | null
           node_id?: string | null
+          pitch_stage_reached?: string | null
           practice_type?: string | null
           score?: number | null
           score_breakdown?: Json | null
@@ -564,6 +584,7 @@ export type Database = {
           manually_saved?: boolean
           mission_generated?: string | null
           node_id?: string | null
+          pitch_stage_reached?: string | null
           practice_type?: string | null
           score?: number | null
           score_breakdown?: Json | null
