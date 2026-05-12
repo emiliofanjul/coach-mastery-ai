@@ -360,6 +360,7 @@ export type Database = {
       node_cards: {
         Row: {
           body: string
+          card_content_type: string
           card_order: number
           card_type: string
           created_at: string
@@ -370,6 +371,7 @@ export type Database = {
         }
         Insert: {
           body: string
+          card_content_type?: string
           card_order: number
           card_type: string
           created_at?: string
@@ -380,6 +382,7 @@ export type Database = {
         }
         Update: {
           body?: string
+          card_content_type?: string
           card_order?: number
           card_type?: string
           created_at?: string
