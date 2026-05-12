@@ -115,7 +115,7 @@ function NodoQuizPage() {
         }
       }
     } finally {
-      navigate({ to: "/mapa", search: { focus: nodeId } as never });
+      navigate({ to: "/mapa" });
     }
   }
 
