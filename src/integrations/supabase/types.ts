@@ -462,6 +462,59 @@ export type Database = {
           },
         ]
       }
+      node_quiz_questions: {
+        Row: {
+          correct_option: string
+          created_at: string
+          explanation_correct: string
+          explanation_wrong: string
+          id: string
+          node_id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_order: number
+          question_text: string
+        }
+        Insert: {
+          correct_option: string
+          created_at?: string
+          explanation_correct: string
+          explanation_wrong: string
+          id?: string
+          node_id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_order: number
+          question_text: string
+        }
+        Update: {
+          correct_option?: string
+          created_at?: string
+          explanation_correct?: string
+          explanation_wrong?: string
+          id?: string
+          node_id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question_order?: number
+          question_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "node_quiz_questions_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nodes: {
         Row: {
           boss_goal: string | null
