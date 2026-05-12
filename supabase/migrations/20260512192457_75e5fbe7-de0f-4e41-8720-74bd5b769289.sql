@@ -1,0 +1,1 @@
+ALTER TABLE public.node_cards ADD COLUMN card_content_type text NOT NULL DEFAULT 'static';
