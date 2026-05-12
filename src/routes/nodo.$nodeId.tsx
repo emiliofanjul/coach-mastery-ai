@@ -583,11 +583,13 @@ function BottomButton({
   nodeType,
   isLast,
   onNext,
+  onCta,
 }: {
   card: NodeCard;
   nodeType: string;
   isLast: boolean;
   onNext: () => void;
+  onCta?: () => void;
 }) {
   const ctaConfig = useMemo(() => {
     if (card.card_type !== "cta") return null;
@@ -613,7 +615,7 @@ function BottomButton({
       initial={isFlipBack ? { opacity: 0 } : { opacity: 1 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      onClick={isCta ? () => {} : onNext}
+      onClick={isCta ? () => onCta?.() : onNext}
       style={{
         width: "100%",
         height: 52,
