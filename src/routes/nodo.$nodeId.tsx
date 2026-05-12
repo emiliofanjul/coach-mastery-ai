@@ -228,7 +228,18 @@ function NodoCardsPage() {
         }}
       >
         {cards && cards.length > 0 && showNextButton && (
-          <BottomButton card={current!} nodeType={node?.node_type ?? "knowledge"} isLast={index === total - 1} onNext={next} />
+          <BottomButton
+            card={current!}
+            nodeType={node?.node_type ?? "knowledge"}
+            isLast={index === total - 1}
+            onNext={next}
+            onCta={() => {
+              const nt = node?.node_type ?? "knowledge";
+              if (nt === "knowledge") {
+                navigate({ to: "/nodo/$nodeId/quiz", params: { nodeId } });
+              }
+            }}
+          />
         )}
       </div>
     </motion.div>
@@ -572,11 +583,13 @@ function BottomButton({
   nodeType,
   isLast,
   onNext,
+  onCta,
 }: {
   card: NodeCard;
   nodeType: string;
   isLast: boolean;
   onNext: () => void;
+  onCta?: () => void;
 }) {
   const ctaConfig = useMemo(() => {
     if (card.card_type !== "cta") return null;
@@ -602,7 +615,7 @@ function BottomButton({
       initial={isFlipBack ? { opacity: 0 } : { opacity: 1 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      onClick={isCta ? () => {} : onNext}
+      onClick={isCta ? () => onCta?.() : onNext}
       style={{
         width: "100%",
         height: 52,
