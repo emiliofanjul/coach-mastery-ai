@@ -228,7 +228,18 @@ function NodoCardsPage() {
         }}
       >
         {cards && cards.length > 0 && showNextButton && (
-          <BottomButton card={current!} nodeType={node?.node_type ?? "knowledge"} isLast={index === total - 1} onNext={next} />
+          <BottomButton
+            card={current!}
+            nodeType={node?.node_type ?? "knowledge"}
+            isLast={index === total - 1}
+            onNext={next}
+            onCta={() => {
+              const nt = node?.node_type ?? "knowledge";
+              if (nt === "knowledge") {
+                navigate({ to: "/nodo/$nodeId/quiz", params: { nodeId } });
+              }
+            }}
+          />
         )}
       </div>
     </motion.div>
