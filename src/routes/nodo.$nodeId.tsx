@@ -411,6 +411,7 @@ function StaticFace({ card }: { card: NodeCard }) {
           fontSize: 15,
           color: "rgba(255,255,255,0.75)",
           lineHeight: 1.6,
+          whiteSpace: "pre-line",
         }}
       >
         {card.body}
