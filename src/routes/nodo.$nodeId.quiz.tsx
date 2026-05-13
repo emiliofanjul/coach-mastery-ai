@@ -76,43 +76,111 @@ function NodoQuizPage() {
     }
   }
 
+  function resetQuiz() {
+    setIndex(0);
+    setSelected(null);
+    setCorrectCount(0);
+    setFinished(false);
+  }
+
   async function markCompletedAndExit() {
     setSaving(true);
     try {
       const { data: auth } = await supabase.auth.getUser();
       const userId = auth?.user?.id;
-      if (userId) {
-        const { data: seller } = await supabase
-          .from("sellers")
-          .select("id, company_id")
-          .eq("profile_id", userId)
+      if (!userId) return;
+
+      const { data: seller } = await supabase
+        .from("sellers")
+        .select("id, company_id")
+        .eq("profile_id", userId)
+        .maybeSingle();
+      if (!seller) return;
+
+      // 1. Marcar nodo actual como completed
+      const { data: existing } = await supabase
+        .from("node_progress")
+        .select("id")
+        .eq("seller_id", seller.id)
+        .eq("node_id", nodeId)
+        .maybeSingle();
+      if (existing) {
+        await supabase
+          .from("node_progress")
+          .update({
+            status: "completed",
+            last_practiced_at: new Date().toISOString(),
+          })
+          .eq("id", existing.id);
+      } else {
+        await supabase.from("node_progress").insert({
+          seller_id: seller.id,
+          company_id: seller.company_id,
+          node_id: nodeId,
+          status: "completed",
+          last_practiced_at: new Date().toISOString(),
+        });
+      }
+
+      // 2. Buscar siguiente nodo: mismo mundo > order_index, o primer nodo del siguiente mundo
+      const { data: currentNode } = await supabase
+        .from("nodes")
+        .select("world_id, order_index")
+        .eq("id", nodeId)
+        .maybeSingle();
+
+      let nextNodeId: string | null = null;
+      if (currentNode) {
+        const { data: nextSame } = await supabase
+          .from("nodes")
+          .select("id")
+          .eq("world_id", currentNode.world_id)
+          .gt("order_index", currentNode.order_index)
+          .order("order_index", { ascending: true })
+          .limit(1)
           .maybeSingle();
-        if (seller) {
-          // Upsert node_progress
-          const { data: existing } = await supabase
-            .from("node_progress")
+        if (nextSame) {
+          nextNodeId = nextSame.id;
+        } else {
+          const { data: nextWorld } = await supabase
+            .from("nodes")
             .select("id")
-            .eq("seller_id", seller.id)
-            .eq("node_id", nodeId)
+            .gt("world_id", currentNode.world_id)
+            .order("world_id", { ascending: true })
+            .order("order_index", { ascending: true })
+            .limit(1)
             .maybeSingle();
-          if (existing) {
+          if (nextWorld) nextNodeId = nextWorld.id;
+        }
+      }
+
+      // 3. Desbloquear siguiente nodo y actualizar current_node del seller
+      if (nextNodeId) {
+        const { data: nextProg } = await supabase
+          .from("node_progress")
+          .select("id, status")
+          .eq("seller_id", seller.id)
+          .eq("node_id", nextNodeId)
+          .maybeSingle();
+        if (nextProg) {
+          if (nextProg.status === "locked") {
             await supabase
               .from("node_progress")
-              .update({
-                status: "completed",
-                last_practiced_at: new Date().toISOString(),
-              })
-              .eq("id", existing.id);
-          } else {
-            await supabase.from("node_progress").insert({
-              seller_id: seller.id,
-              company_id: seller.company_id,
-              node_id: nodeId,
-              status: "completed",
-              last_practiced_at: new Date().toISOString(),
-            });
+              .update({ status: "active" })
+              .eq("id", nextProg.id);
           }
+        } else {
+          await supabase.from("node_progress").insert({
+            seller_id: seller.id,
+            company_id: seller.company_id,
+            node_id: nextNodeId,
+            status: "active",
+          });
         }
+        await supabase
+          .from("sellers")
+          .update({ current_node: nextNodeId })
+          .eq("id", seller.id);
       }
     } finally {
       navigate({ to: "/mapa" });
