@@ -286,7 +286,7 @@ function NodoQuizPage() {
             score={correctCount}
             total={total}
             onContinue={markCompletedAndExit}
-            onReview={backToCards}
+            onRetry={resetQuiz}
             saving={saving}
           />
         ) : !current ? (
