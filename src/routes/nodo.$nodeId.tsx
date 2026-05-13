@@ -411,6 +411,7 @@ function StaticFace({ card }: { card: NodeCard }) {
           fontSize: 15,
           color: "rgba(255,255,255,0.75)",
           lineHeight: 1.6,
+          whiteSpace: "pre-line",
         }}
       >
         {card.body}
@@ -449,6 +450,7 @@ function FlipFront({ card }: { card: NodeCard }) {
           color: "rgba(255,255,255,0.85)",
           lineHeight: 1.6,
           fontStyle: "italic",
+          whiteSpace: "pre-line",
         }}
       >
         {card.body}
@@ -516,6 +518,7 @@ function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void
           fontSize: 15,
           color: "rgba(255,255,255,0.85)",
           lineHeight: 1.6,
+          whiteSpace: "pre-line",
         }}
       >
         {card.flip_back_text}
@@ -547,6 +550,7 @@ function CtaFace({ card }: { card: NodeCard }) {
           fontSize: 22,
           color: "#fff",
           lineHeight: 1.3,
+          whiteSpace: "pre-line",
         }}
       >
         {card.body}
