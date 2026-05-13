@@ -518,6 +518,7 @@ function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void
           fontSize: 15,
           color: "rgba(255,255,255,0.85)",
           lineHeight: 1.6,
+          whiteSpace: "pre-line",
         }}
       >
         {card.flip_back_text}
