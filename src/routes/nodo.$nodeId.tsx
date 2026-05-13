@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -90,6 +90,7 @@ function NodoCardsPage() {
 
   // ───── Render ─────
   return (
+    <>
     <motion.div
       initial={{ y: "100%" }}
       animate={{ y: 0 }}
@@ -243,6 +244,8 @@ function NodoCardsPage() {
         )}
       </div>
     </motion.div>
+    <Outlet />
+    </>
   );
 }
 
