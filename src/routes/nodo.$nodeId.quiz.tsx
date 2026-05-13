@@ -76,43 +76,111 @@ function NodoQuizPage() {
     }
   }
 
+  function resetQuiz() {
+    setIndex(0);
+    setSelected(null);
+    setCorrectCount(0);
+    setFinished(false);
+  }
+
   async function markCompletedAndExit() {
     setSaving(true);
     try {
       const { data: auth } = await supabase.auth.getUser();
       const userId = auth?.user?.id;
-      if (userId) {
-        const { data: seller } = await supabase
-          .from("sellers")
-          .select("id, company_id")
-          .eq("profile_id", userId)
+      if (!userId) return;
+
+      const { data: seller } = await supabase
+        .from("sellers")
+        .select("id, company_id")
+        .eq("profile_id", userId)
+        .maybeSingle();
+      if (!seller) return;
+
+      // 1. Marcar nodo actual como completed
+      const { data: existing } = await supabase
+        .from("node_progress")
+        .select("id")
+        .eq("seller_id", seller.id)
+        .eq("node_id", nodeId)
+        .maybeSingle();
+      if (existing) {
+        await supabase
+          .from("node_progress")
+          .update({
+            status: "completed",
+            last_practiced_at: new Date().toISOString(),
+          })
+          .eq("id", existing.id);
+      } else {
+        await supabase.from("node_progress").insert({
+          seller_id: seller.id,
+          company_id: seller.company_id,
+          node_id: nodeId,
+          status: "completed",
+          last_practiced_at: new Date().toISOString(),
+        });
+      }
+
+      // 2. Buscar siguiente nodo: mismo mundo > order_index, o primer nodo del siguiente mundo
+      const { data: currentNode } = await supabase
+        .from("nodes")
+        .select("world_id, order_index")
+        .eq("id", nodeId)
+        .maybeSingle();
+
+      let nextNodeId: string | null = null;
+      if (currentNode) {
+        const { data: nextSame } = await supabase
+          .from("nodes")
+          .select("id")
+          .eq("world_id", currentNode.world_id)
+          .gt("order_index", currentNode.order_index)
+          .order("order_index", { ascending: true })
+          .limit(1)
           .maybeSingle();
-        if (seller) {
-          // Upsert node_progress
-          const { data: existing } = await supabase
-            .from("node_progress")
+        if (nextSame) {
+          nextNodeId = nextSame.id;
+        } else {
+          const { data: nextWorld } = await supabase
+            .from("nodes")
             .select("id")
-            .eq("seller_id", seller.id)
-            .eq("node_id", nodeId)
+            .gt("world_id", currentNode.world_id)
+            .order("world_id", { ascending: true })
+            .order("order_index", { ascending: true })
+            .limit(1)
             .maybeSingle();
-          if (existing) {
+          if (nextWorld) nextNodeId = nextWorld.id;
+        }
+      }
+
+      // 3. Desbloquear siguiente nodo y actualizar current_node del seller
+      if (nextNodeId) {
+        const { data: nextProg } = await supabase
+          .from("node_progress")
+          .select("id, status")
+          .eq("seller_id", seller.id)
+          .eq("node_id", nextNodeId)
+          .maybeSingle();
+        if (nextProg) {
+          if (nextProg.status === "locked") {
             await supabase
               .from("node_progress")
-              .update({
-                status: "completed",
-                last_practiced_at: new Date().toISOString(),
-              })
-              .eq("id", existing.id);
-          } else {
-            await supabase.from("node_progress").insert({
-              seller_id: seller.id,
-              company_id: seller.company_id,
-              node_id: nodeId,
-              status: "completed",
-              last_practiced_at: new Date().toISOString(),
-            });
+              .update({ status: "active" })
+              .eq("id", nextProg.id);
           }
+        } else {
+          await supabase.from("node_progress").insert({
+            seller_id: seller.id,
+            company_id: seller.company_id,
+            node_id: nextNodeId,
+            status: "active",
+          });
         }
+        await supabase
+          .from("sellers")
+          .update({ current_node: nextNodeId })
+          .eq("id", seller.id);
       }
     } finally {
       navigate({ to: "/mapa" });
@@ -218,7 +286,7 @@ function NodoQuizPage() {
             score={correctCount}
             total={total}
             onContinue={markCompletedAndExit}
-            onReview={backToCards}
+            onRetry={resetQuiz}
             saving={saving}
           />
         ) : !current ? (
@@ -416,27 +484,20 @@ function ResultView({
   score,
   total,
   onContinue,
-  onReview,
+  onRetry,
   saving,
 }: {
   score: number;
   total: number;
   onContinue: () => void;
-  onReview: () => void;
+  onRetry: () => void;
   saving: boolean;
 }) {
-  const ratio = total === 0 ? 0 : score / total;
-  const passed = score >= 2;
-
-  let message = "Repasa las tarjetas antes de continuar.";
-  let color = RED;
-  if (ratio === 1) {
-    message = "Perfecto. Tienes el mapa claro.";
-    color = GREEN;
-  } else if (score === 2) {
-    message = "Bien. Sigue adelante.";
-    color = YELLOW;
-  }
+  const passed = total > 0 && score === total;
+  const message = passed
+    ? "Perfecto. Tienes el mapa claro."
+    : "Casi. Ya sabes dónde mejorar.";
+  const color = passed ? GREEN : YELLOW;
 
   return (
     <motion.div
@@ -467,57 +528,41 @@ function ResultView({
       </div>
       <div
         style={{
-          fontFamily: "Syne, sans-serif",
-          fontWeight: 700,
-          fontSize: 18,
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 500,
+          fontSize: 16,
           color,
           maxWidth: 320,
-          lineHeight: 1.3,
+          lineHeight: 1.4,
         }}
       >
         {message}
       </div>
       <div style={{ width: "100%", marginTop: 12 }}>
-        {passed ? (
-          <button
-            onClick={onContinue}
-            disabled={saving}
-            style={{
-              width: "100%",
-              height: 52,
-              borderRadius: 99,
-              border: "none",
-              background: ORANGE,
-              color: "#08080F",
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: saving ? "wait" : "pointer",
-              boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
-              opacity: saving ? 0.7 : 1,
-            }}
-          >
-            {saving ? "Guardando..." : "Continuar →"}
-          </button>
-        ) : (
-          <button
-            onClick={onReview}
-            style={{
-              width: "100%",
-              height: 52,
-              borderRadius: 99,
-              border: `1px solid ${ORANGE}`,
-              background: "transparent",
-              color: ORANGE,
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: "pointer",
-            }}
-          >
-            Repasar →
-          </button>
-        )}
+        <button
+          onClick={passed ? onContinue : onRetry}
+          disabled={saving}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 99,
+            border: "none",
+            background: ORANGE,
+            color: "#08080F",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: saving ? "wait" : "pointer",
+            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            opacity: saving ? 0.7 : 1,
+          }}
+        >
+          {passed
+            ? saving
+              ? "Guardando..."
+              : "Continuar →"
+            : "Intentar de nuevo →"}
+        </button>
       </div>
     </motion.div>
   );
