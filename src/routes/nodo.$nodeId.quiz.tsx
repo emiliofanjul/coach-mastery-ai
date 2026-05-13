@@ -484,27 +484,20 @@ function ResultView({
   score,
   total,
   onContinue,
-  onReview,
+  onRetry,
   saving,
 }: {
   score: number;
   total: number;
   onContinue: () => void;
-  onReview: () => void;
+  onRetry: () => void;
   saving: boolean;
 }) {
-  const ratio = total === 0 ? 0 : score / total;
-  const passed = score >= 2;
-
-  let message = "Repasa las tarjetas antes de continuar.";
-  let color = RED;
-  if (ratio === 1) {
-    message = "Perfecto. Tienes el mapa claro.";
-    color = GREEN;
-  } else if (score === 2) {
-    message = "Bien. Sigue adelante.";
-    color = YELLOW;
-  }
+  const passed = total > 0 && score === total;
+  const message = passed
+    ? "Perfecto. Tienes el mapa claro."
+    : "Casi. Ya sabes dónde mejorar.";
+  const color = passed ? GREEN : YELLOW;
 
   return (
     <motion.div
@@ -535,57 +528,41 @@ function ResultView({
       </div>
       <div
         style={{
-          fontFamily: "Syne, sans-serif",
-          fontWeight: 700,
-          fontSize: 18,
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 500,
+          fontSize: 16,
           color,
           maxWidth: 320,
-          lineHeight: 1.3,
+          lineHeight: 1.4,
         }}
       >
         {message}
       </div>
       <div style={{ width: "100%", marginTop: 12 }}>
-        {passed ? (
-          <button
-            onClick={onContinue}
-            disabled={saving}
-            style={{
-              width: "100%",
-              height: 52,
-              borderRadius: 99,
-              border: "none",
-              background: ORANGE,
-              color: "#08080F",
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: saving ? "wait" : "pointer",
-              boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
-              opacity: saving ? 0.7 : 1,
-            }}
-          >
-            {saving ? "Guardando..." : "Continuar →"}
-          </button>
-        ) : (
-          <button
-            onClick={onReview}
-            style={{
-              width: "100%",
-              height: 52,
-              borderRadius: 99,
-              border: `1px solid ${ORANGE}`,
-              background: "transparent",
-              color: ORANGE,
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: "pointer",
-            }}
-          >
-            Repasar →
-          </button>
-        )}
+        <button
+          onClick={passed ? onContinue : onRetry}
+          disabled={saving}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 99,
+            border: "none",
+            background: ORANGE,
+            color: "#08080F",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: saving ? "wait" : "pointer",
+            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            opacity: saving ? 0.7 : 1,
+          }}
+        >
+          {passed
+            ? saving
+              ? "Guardando..."
+              : "Continuar →"
+            : "Intentar de nuevo →"}
+        </button>
       </div>
     </motion.div>
   );
