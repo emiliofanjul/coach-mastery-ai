@@ -550,6 +550,7 @@ function CtaFace({ card }: { card: NodeCard }) {
           fontSize: 22,
           color: "#fff",
           lineHeight: 1.3,
+          whiteSpace: "pre-line",
         }}
       >
         {card.body}
