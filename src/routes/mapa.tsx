@@ -785,12 +785,17 @@ function MapNode({
   const isBoss = node.is_boss;
   const size = isBoss ? 72 : 56;
 
-  // Durante la fase 4 (1.2s) y antes de fase 5 (1.5s) el candado del siguiente
-  // hace fade-out; en fase 5 el nodo aparece con scale + glow.
+  // Animación del nodo siguiente:
+  // phase < 6 → candado visible; phase === 6 → lockShakeOut; phase >= 7 → nodo aparece con scale-bounce + glow
   const animatingNext = isNewlyActive && status === "active";
-  const showLockOnNext = animatingNext && animationPhase < 4;
-  const hideNextNode = animatingNext && animationPhase < 4;
-  const scaleInNext = animatingNext && animationPhase >= 4 && animationPhase < 5;
+  const showLockOnNext = animatingNext && animationPhase < 6;
+  const lockShakingOut = animatingNext && animationPhase === 6;
+  const nextNodeAppearing = animatingNext && animationPhase >= 7;
+
+  // Animación del nodo recién completado:
+  // phase >= 1 → check con bounce; phase === 4 → vibración del nodo
+  const justCompletedAnim = isJustCompleted && status === "completed";
+  const completedShake = justCompletedAnim && animationPhase === 4;
 
   const styles: React.CSSProperties = {
     width: size,
@@ -838,19 +843,25 @@ function MapNode({
     }
   }
 
-  // Mientras animamos la aparición del siguiente nodo, lo "ocultamos" como locked
+  // Mientras el siguiente sigue siendo "candado", lo pintamos como locked
   if (showLockOnNext) {
     styles.background = "#111118";
     styles.borderColor = "#1A1A26";
     styles.opacity = 0.5;
     styles.animation = undefined;
+  } else if (lockShakingOut) {
+    styles.background = "#111118";
+    styles.borderColor = "#1A1A26";
+    styles.animation = "lockShakeOut 0.4s ease-out forwards";
+  } else if (nextNodeAppearing) {
+    // Scale bounce + glow naranja + pulse activo encadenados
+    styles.animation =
+      "nodeScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both, nextNodeGlow 0.8s ease-out 0.3s both, pulseOrange 1.6s ease-in-out 1.1s infinite";
   }
-  if (hideNextNode) {
-    styles.transform = "scale(0)";
-  } else if (scaleInNext) {
-    styles.transform = "scale(1.2)";
-  } else {
-    styles.transform = "scale(1)";
+
+  // Vibración del nodo recién completado en fase 4
+  if (completedShake) {
+    styles.animation = "nodeShake 0.4s ease-in-out";
   }
 
   let icon: React.ReactNode;
