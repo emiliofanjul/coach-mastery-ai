@@ -873,15 +873,27 @@ function MapNode({
         color={status === "active" ? "#FFFFFF" : "#FFD166"}
       />
     );
-  else if (status === "completed")
-    icon = (
-      <Check
-        size={22}
-        color="#FFFFFF"
-        strokeWidth={3}
-      />
+  else if (status === "completed") {
+    const checkInner = (
+      <Check size={22} color="#FFFFFF" strokeWidth={3} />
     );
-  else
+    icon = justCompletedAnim ? (
+      <span
+        style={{
+          display: "inline-flex",
+          transform: animationPhase < 1 ? "scale(0)" : undefined,
+          animation:
+            animationPhase >= 1
+              ? "checkBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) both"
+              : undefined,
+        }}
+      >
+        {checkInner}
+      </span>
+    ) : (
+      checkInner
+    );
+  } else
     icon = (
       <Star
         size={20}
@@ -892,8 +904,10 @@ function MapNode({
 
   // Estrellas debajo del nombre — para todos los nodos completados, incluidos Boss
   const showStars = status === "completed" && stars > 0;
-  // Si es el nodo recién completado y estamos animando, controlar cuántas mostrar
-  const visibleStars = isJustCompleted ? Math.min(stars, animationPhase) : stars;
+  // Si es el nodo recién completado y estamos animando: phase 2→1, phase 3→2, phase>=4→3
+  const animStars =
+    animationPhase >= 4 ? 3 : Math.max(0, animationPhase - 1);
+  const visibleStars = isJustCompleted ? Math.min(stars, animStars) : stars;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
