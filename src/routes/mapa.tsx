@@ -284,18 +284,13 @@ function MapaPage() {
       : a.order_index - b.order_index,
   );
   const activeIdx = orderedNodes.findIndex(
-    (n) => progress[n.id]?.status !== "completed",
+    (n) => progress[n.id]?.status !== "done",
   );
   const activeId = activeIdx >= 0 ? orderedNodes[activeIdx].id : null;
-  const availableId =
-    activeIdx >= 0 && activeIdx + 1 < orderedNodes.length
-      ? orderedNodes[activeIdx + 1].id
-      : null;
 
   const computeStatus = (node: NodeRow): NodeStatus => {
-    if (progress[node.id]?.status === "completed") return "completed";
+    if (progress[node.id]?.status === "done") return "completed";
     if (node.id === activeId) return "active";
-    if (node.id === availableId) return "available";
     return "locked";
   };
 
