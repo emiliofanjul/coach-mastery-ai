@@ -495,6 +495,7 @@ function MapaPage() {
                   return (
                     <div
                       key={node.id}
+                      data-node-id={node.id}
                       data-tour={tour}
                       data-active-node={status === "active" ? "true" : undefined}
                       style={{
