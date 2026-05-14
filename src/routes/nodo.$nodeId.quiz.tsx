@@ -97,14 +97,19 @@ function NodoQuizPage() {
   }
 
   async function handleContinueToMap() {
+    console.log("[quiz→mapa] handler START", { nodeId, saving });
     setSaving(true);
     const fail = (where: string, err: unknown) => {
       console.error(`[quiz→mapa] ${where} falló:`, err);
-      toast.error("Algo salió mal. Intenta de nuevo.");
+      try {
+        console.error(`[quiz→mapa] detalle:`, JSON.stringify(err, null, 2));
+      } catch {}
+      toast.error(`Algo salió mal en: ${where}. Revisa la consola.`);
       setSaving(false);
     };
     try {
       const stars: 1 | 2 | 3 = 3;
+      console.log("[quiz→mapa] llamando supabase.auth.getUser()");
 
       const { data: auth, error: authErr } = await supabase.auth.getUser();
       if (authErr || !auth?.user?.id) {
