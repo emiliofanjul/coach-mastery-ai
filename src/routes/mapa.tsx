@@ -773,19 +773,19 @@ function MapNode({
 
   let icon: React.ReactNode;
   if (status === "locked" || showLockOnNext) icon = <Lock size={isBoss ? 22 : 18} color="#5A5A8A" />;
-  else if (status === "completed")
-    icon = (
-      <Check
-        size={isBoss ? 28 : 22}
-        color={isBoss ? "#FFD166" : "#FFFFFF"}
-        strokeWidth={3}
-      />
-    );
   else if (isBoss)
     icon = (
       <Trophy
         size={28}
         color={status === "active" ? "#FFFFFF" : "#FFD166"}
+      />
+    );
+  else if (status === "completed")
+    icon = (
+      <Check
+        size={22}
+        color="#FFFFFF"
+        strokeWidth={3}
       />
     );
   else
@@ -797,8 +797,8 @@ function MapNode({
       />
     );
 
-  // Estrellas debajo del nombre — solo para nodos completados (no boss)
-  const showStars = status === "completed" && stars > 0 && !isBoss;
+  // Estrellas debajo del nombre — para todos los nodos completados, incluidos Boss
+  const showStars = status === "completed" && stars > 0;
   // Si es el nodo recién completado y estamos animando, controlar cuántas mostrar
   const visibleStars = isJustCompleted ? Math.min(stars, animationPhase) : stars;
 
