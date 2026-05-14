@@ -117,6 +117,8 @@ function NodoQuizPage() {
       }
       const userId = auth.user.id;
 
+      console.log("[quiz→mapa] userId:", userId);
+
       const { data: seller, error: sellerErr } = await supabase
         .from("sellers")
         .select("id, company_id")
@@ -124,6 +126,7 @@ function NodoQuizPage() {
         .maybeSingle();
       if (sellerErr) return fail("select sellers", sellerErr);
       if (!seller) return fail("seller no encontrado", { userId });
+      console.log("[quiz→mapa] seller:", seller);
 
       const { data: existing, error: existingErr } = await supabase
         .from("node_progress")
@@ -132,6 +135,7 @@ function NodoQuizPage() {
         .eq("node_id", nodeId)
         .maybeSingle();
       if (existingErr) return fail("select node_progress actual", existingErr);
+      console.log("[quiz→mapa] node_progress existing:", existing);
 
       const wasCompleted = existing?.status === "completed";
       const previousStars = (existing?.stars as number | null) ?? 0;
