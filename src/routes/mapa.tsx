@@ -165,8 +165,12 @@ function MapaPage() {
   }, [navigate]);
 
   // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).
+  const animConsumedRef = useRef(false);
   useEffect(() => {
     if (loading) return;
+    if (nodes.length === 0) return; // esperar a que los nodos estén poblados
+    if (animConsumedRef.current) return; // guardia anti doble-mount (StrictMode)
+    animConsumedRef.current = true;
     const sig = consumeNodeCompletionSignal();
     if (sig) {
       let nextId: string | null = null;
