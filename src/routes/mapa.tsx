@@ -981,6 +981,7 @@ function MapNode({
                 key={i}
                 style={{
                   color: earned ? "#FFD166" : "rgba(255,255,255,0.15)",
+                  filter: earned ? "drop-shadow(0 0 4px #FFD166)" : undefined,
                   display: "inline-block",
                   opacity: visible ? 1 : 0,
                   transform: visible ? "scale(1)" : "scale(0)",

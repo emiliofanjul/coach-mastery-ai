@@ -1,3 +1,5 @@
+import { CloserCharacter } from "@/components/closer/CloserCharacter";
+
 interface RetryScreenProps {
   title: string;
   subtitle: string;
@@ -40,13 +42,20 @@ export default function RetryScreen({
       >
         <div
           style={{
-            fontSize: 56,
-            lineHeight: 1,
-            color: GOLD,
+            display: "flex",
+            justifyContent: "center",
+            transformOrigin: "bottom center",
+            animation: "closerSway 2s ease-in-out infinite",
           }}
         >
-          💪
+          <CloserCharacter state="motivation" size={86} />
         </div>
+        <style>{`
+          @keyframes closerSway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg); }
+          }
+        `}</style>
 
         <div
           style={{
