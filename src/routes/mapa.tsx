@@ -164,11 +164,66 @@ function MapaPage() {
     })();
   }, [navigate]);
 
-  // Scroll inicial al nodo activo (status='current' en node_progress)
+  // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).
   useEffect(() => {
     if (loading) return;
+    const sig = consumeNodeCompletionSignal();
+    if (sig) {
+      let nextId: string | null = null;
+      const ordered = [...nodes].sort((a, b) =>
+        a.world_id !== b.world_id
+          ? a.world_id - b.world_id
+          : a.order_index - b.order_index,
+      );
+      const idx = ordered.findIndex((n) => n.id === sig.nodeId);
+      if (idx >= 0 && idx + 1 < ordered.length) nextId = ordered[idx + 1].id;
+      setAnimSignal(sig);
+      setAnimNextNodeId(nextId);
+      setAnimPhase(0);
+      const animateStars = !sig.isReplay || sig.improved;
+      const timers: ReturnType<typeof setTimeout>[] = [];
+      timers.push(
+        setTimeout(() => {
+          const el = document.querySelector<HTMLElement>(
+            `[data-node-id="${sig.nodeId}"]`,
+          );
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const targetY =
+            window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+          window.scrollTo({ top: targetY, behavior: "smooth" });
+        }, 80),
+      );
+      if (animateStars) {
+        timers.push(setTimeout(() => setAnimPhase(1), 300));
+        timers.push(setTimeout(() => setAnimPhase(2), 500));
+        timers.push(setTimeout(() => setAnimPhase(3), 700));
+      } else {
+        timers.push(setTimeout(() => setAnimPhase(3), 300));
+      }
+      timers.push(setTimeout(() => setAnimPhase(4), 1200));
+      timers.push(setTimeout(() => setAnimPhase(5), 1500));
+      timers.push(
+        setTimeout(() => {
+          if (!sig.isReplay) {
+            const el = document.querySelector<HTMLElement>("[data-active-node]");
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              const targetY =
+                window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+              window.scrollTo({ top: targetY, behavior: "smooth" });
+            }
+          }
+          setAnimSignal(null);
+          setAnimNextNodeId(null);
+          setAnimPhase(0);
+        }, 1900),
+      );
+      return () => timers.forEach(clearTimeout);
+    }
     const t = setTimeout(() => scrollToActiveNode(500), 100);
     return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
