@@ -114,10 +114,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NodeCompletionProvider>
-        <DevMenu />
-        <Outlet />
-      </NodeCompletionProvider>
+      <DevMenu />
+      <Outlet />
     </QueryClientProvider>
   );
 }
