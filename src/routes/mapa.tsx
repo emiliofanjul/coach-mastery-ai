@@ -660,6 +660,44 @@ function MapaPage() {
           0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 24px 8px rgba(255,107,43,0.6); }
           100% { box-shadow: 0 0 0 24px rgba(255,107,43,0), 0 0 0 0 rgba(255,107,43,0); }
         }
+        @keyframes checkBounce {
+          0% { transform: scale(0); }
+          60% { transform: scale(1.3); }
+          100% { transform: scale(1); }
+        }
+        @keyframes starPop {
+          0% { transform: scale(0); opacity: 0; }
+          60% { transform: scale(1.2); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes nodeShake {
+          0%, 100% { transform: translateX(0); }
+          15% { transform: translateX(-3px); }
+          30% { transform: translateX(3px); }
+          45% { transform: translateX(-3px); }
+          60% { transform: translateX(3px); }
+          75% { transform: translateX(-2px); }
+        }
+        @keyframes lineDraw {
+          from { stroke-dashoffset: 260; }
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes lockShakeOut {
+          0% { transform: rotate(0); opacity: 1; }
+          25% { transform: rotate(-10deg); opacity: 1; }
+          75% { transform: rotate(10deg); opacity: 0.5; }
+          100% { transform: rotate(0); opacity: 0; }
+        }
+        @keyframes nodeScaleIn {
+          0% { transform: scale(0); }
+          60% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        @keyframes nextNodeGlow {
+          0% { box-shadow: 0 0 0 0 rgba(255,107,43,0); }
+          50% { box-shadow: 0 0 24px 8px rgba(255,107,43,0.7); }
+          100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.4); }
+        }
       `}</style>
     </main>
   );
