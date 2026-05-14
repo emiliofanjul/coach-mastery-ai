@@ -235,7 +235,7 @@ function NodoQuizPage() {
         }
       }
 
-      setNodeCompletionSignal({
+      setCompletionSignal({
         nodeId,
         stars: newStars as 1 | 2 | 3,
         isReplay: wasCompleted,
