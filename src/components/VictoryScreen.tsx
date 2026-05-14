@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
+import { CloserCharacter } from "@/components/closer/CloserCharacter";
 
 interface VictoryScreenProps {
   stars: 1 | 2 | 3;
@@ -66,6 +67,16 @@ export default function VictoryScreen({
         <div
           style={{
             display: "flex",
+            justifyContent: "center",
+            marginBottom: 12,
+            animation: "closerBounce 1.5s ease-in-out infinite",
+          }}
+        >
+          <CloserCharacter state="celebration" size={86} />
+        </div>
+        <div
+          style={{
+            display: "flex",
             gap: 12,
             justifyContent: "center",
           }}
@@ -82,6 +93,9 @@ export default function VictoryScreen({
                   fontSize: 48,
                   lineHeight: 1,
                   color: earned ? GOLD : "rgba(255,255,255,0.15)",
+                  filter: earned
+                    ? "drop-shadow(0 0 8px #FFD166) drop-shadow(0 0 16px #FFD166)"
+                    : undefined,
                 }}
               >
                 ★
@@ -89,6 +103,12 @@ export default function VictoryScreen({
             );
           })}
         </div>
+        <style>{`
+          @keyframes closerBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+          }
+        `}</style>
 
         <div
           style={{
