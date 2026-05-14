@@ -203,15 +203,24 @@ function MapaPage() {
           window.scrollTo({ top: targetY, behavior: "smooth" });
         }, 80),
       );
+      // Fases:
+      // 1=check bounce, 2=★1, 3=★2, 4=★3+shake, 5=línea, 6=candado shake-out, 7=siguiente nodo aparece
       if (animateStars) {
-        timers.push(setTimeout(() => setAnimPhase(1), 300));
-        timers.push(setTimeout(() => setAnimPhase(2), 500));
-        timers.push(setTimeout(() => setAnimPhase(3), 700));
+        timers.push(setTimeout(() => setAnimPhase(1), 500));   // ✓ bounce
+        timers.push(setTimeout(() => setAnimPhase(2), 1200));  // ★1
+        timers.push(setTimeout(() => setAnimPhase(3), 1700));  // ★2
+        timers.push(setTimeout(() => setAnimPhase(4), 2200));  // ★3 + node shake
+        timers.push(setTimeout(() => setAnimPhase(5), 2800));  // línea
+        timers.push(setTimeout(() => setAnimPhase(6), 3600));  // candado fuera
+        timers.push(setTimeout(() => setAnimPhase(7), 4000));  // siguiente nodo
       } else {
-        timers.push(setTimeout(() => setAnimPhase(3), 300));
+        timers.push(setTimeout(() => setAnimPhase(1), 300));
+        timers.push(setTimeout(() => setAnimPhase(4), 600));
+        timers.push(setTimeout(() => setAnimPhase(5), 1000));
+        timers.push(setTimeout(() => setAnimPhase(6), 1600));
+        timers.push(setTimeout(() => setAnimPhase(7), 2000));
       }
-      timers.push(setTimeout(() => setAnimPhase(4), 1200));
-      timers.push(setTimeout(() => setAnimPhase(5), 1500));
+      const scrollAt = animateStars ? 4500 : 2400;
       timers.push(
         setTimeout(() => {
           if (!sig.isReplay) {
@@ -223,10 +232,14 @@ function MapaPage() {
               window.scrollTo({ top: targetY, behavior: "smooth" });
             }
           }
+        }, scrollAt),
+      );
+      timers.push(
+        setTimeout(() => {
           setAnimSignal(null);
           setAnimNextNodeId(null);
           setAnimPhase(0);
-        }, 1900),
+        }, scrollAt + 800),
       );
       return () => timers.forEach(clearTimeout);
     }
@@ -467,15 +480,45 @@ function MapaPage() {
                     const prevDone =
                       computeStatus(prev) === "completed" &&
                       computeStatus(node) !== "locked";
+                    const isAnimLine =
+                      !!animSignal &&
+                      prev.id === animSignal.nodeId &&
+                      node.id === animNextNodeId;
+                    const showOrangeStatic = prevDone && !isAnimLine;
+                    const showOrangeAnimated = isAnimLine && animPhase >= 5;
                     return (
-                      <path
-                        key={`line-${node.id}`}
-                        d={path}
-                        stroke={prevDone ? "rgba(255,107,43,0.6)" : "#252535"}
-                        strokeWidth={3}
-                        fill="none"
-                        strokeLinecap="round"
-                      />
+                      <g key={`line-${node.id}`}>
+                        <path
+                          d={path}
+                          stroke="#252535"
+                          strokeWidth={3}
+                          fill="none"
+                          strokeLinecap="round"
+                        />
+                        {showOrangeStatic && (
+                          <path
+                            d={path}
+                            stroke="rgba(255,107,43,0.6)"
+                            strokeWidth={3}
+                            fill="none"
+                            strokeLinecap="round"
+                          />
+                        )}
+                        {showOrangeAnimated && (
+                          <path
+                            d={path}
+                            stroke="rgba(255,107,43,0.85)"
+                            strokeWidth={3}
+                            fill="none"
+                            strokeLinecap="round"
+                            style={{
+                              strokeDasharray: 260,
+                              strokeDashoffset: 260,
+                              animation: "lineDraw 0.8s ease-in-out forwards",
+                            }}
+                          />
+                        )}
+                      </g>
                     );
                   })}
                 </svg>
@@ -617,6 +660,44 @@ function MapaPage() {
           0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 24px 8px rgba(255,107,43,0.6); }
           100% { box-shadow: 0 0 0 24px rgba(255,107,43,0), 0 0 0 0 rgba(255,107,43,0); }
         }
+        @keyframes checkBounce {
+          0% { transform: scale(0); }
+          60% { transform: scale(1.3); }
+          100% { transform: scale(1); }
+        }
+        @keyframes starPop {
+          0% { transform: scale(0); opacity: 0; }
+          60% { transform: scale(1.2); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes nodeShake {
+          0%, 100% { transform: translateX(0); }
+          15% { transform: translateX(-3px); }
+          30% { transform: translateX(3px); }
+          45% { transform: translateX(-3px); }
+          60% { transform: translateX(3px); }
+          75% { transform: translateX(-2px); }
+        }
+        @keyframes lineDraw {
+          from { stroke-dashoffset: 260; }
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes lockShakeOut {
+          0% { transform: rotate(0); opacity: 1; }
+          25% { transform: rotate(-10deg); opacity: 1; }
+          75% { transform: rotate(10deg); opacity: 0.5; }
+          100% { transform: rotate(0); opacity: 0; }
+        }
+        @keyframes nodeScaleIn {
+          0% { transform: scale(0); }
+          60% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        @keyframes nextNodeGlow {
+          0% { box-shadow: 0 0 0 0 rgba(255,107,43,0); }
+          50% { box-shadow: 0 0 24px 8px rgba(255,107,43,0.7); }
+          100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.4); }
+        }
       `}</style>
     </main>
   );
@@ -704,12 +785,17 @@ function MapNode({
   const isBoss = node.is_boss;
   const size = isBoss ? 72 : 56;
 
-  // Durante la fase 4 (1.2s) y antes de fase 5 (1.5s) el candado del siguiente
-  // hace fade-out; en fase 5 el nodo aparece con scale + glow.
+  // Animación del nodo siguiente:
+  // phase < 6 → candado visible; phase === 6 → lockShakeOut; phase >= 7 → nodo aparece con scale-bounce + glow
   const animatingNext = isNewlyActive && status === "active";
-  const showLockOnNext = animatingNext && animationPhase < 4;
-  const hideNextNode = animatingNext && animationPhase < 4;
-  const scaleInNext = animatingNext && animationPhase >= 4 && animationPhase < 5;
+  const showLockOnNext = animatingNext && animationPhase < 6;
+  const lockShakingOut = animatingNext && animationPhase === 6;
+  const nextNodeAppearing = animatingNext && animationPhase >= 7;
+
+  // Animación del nodo recién completado:
+  // phase >= 1 → check con bounce; phase === 4 → vibración del nodo
+  const justCompletedAnim = isJustCompleted && status === "completed";
+  const completedShake = justCompletedAnim && animationPhase === 4;
 
   const styles: React.CSSProperties = {
     width: size,
@@ -757,19 +843,25 @@ function MapNode({
     }
   }
 
-  // Mientras animamos la aparición del siguiente nodo, lo "ocultamos" como locked
+  // Mientras el siguiente sigue siendo "candado", lo pintamos como locked
   if (showLockOnNext) {
     styles.background = "#111118";
     styles.borderColor = "#1A1A26";
     styles.opacity = 0.5;
     styles.animation = undefined;
+  } else if (lockShakingOut) {
+    styles.background = "#111118";
+    styles.borderColor = "#1A1A26";
+    styles.animation = "lockShakeOut 0.4s ease-out forwards";
+  } else if (nextNodeAppearing) {
+    // Scale bounce + glow naranja + pulse activo encadenados
+    styles.animation =
+      "nodeScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both, nextNodeGlow 0.8s ease-out 0.3s both, pulseOrange 1.6s ease-in-out 1.1s infinite";
   }
-  if (hideNextNode) {
-    styles.transform = "scale(0)";
-  } else if (scaleInNext) {
-    styles.transform = "scale(1.2)";
-  } else {
-    styles.transform = "scale(1)";
+
+  // Vibración del nodo recién completado en fase 4
+  if (completedShake) {
+    styles.animation = "nodeShake 0.4s ease-in-out";
   }
 
   let icon: React.ReactNode;
@@ -781,15 +873,27 @@ function MapNode({
         color={status === "active" ? "#FFFFFF" : "#FFD166"}
       />
     );
-  else if (status === "completed")
-    icon = (
-      <Check
-        size={22}
-        color="#FFFFFF"
-        strokeWidth={3}
-      />
+  else if (status === "completed") {
+    const checkInner = (
+      <Check size={22} color="#FFFFFF" strokeWidth={3} />
     );
-  else
+    icon = justCompletedAnim ? (
+      <span
+        style={{
+          display: "inline-flex",
+          transform: animationPhase < 1 ? "scale(0)" : undefined,
+          animation:
+            animationPhase >= 1
+              ? "checkBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) both"
+              : undefined,
+        }}
+      >
+        {checkInner}
+      </span>
+    ) : (
+      checkInner
+    );
+  } else
     icon = (
       <Star
         size={20}
@@ -800,8 +904,10 @@ function MapNode({
 
   // Estrellas debajo del nombre — para todos los nodos completados, incluidos Boss
   const showStars = status === "completed" && stars > 0;
-  // Si es el nodo recién completado y estamos animando, controlar cuántas mostrar
-  const visibleStars = isJustCompleted ? Math.min(stars, animationPhase) : stars;
+  // Si es el nodo recién completado y estamos animando: phase 2→1, phase 3→2, phase>=4→3
+  const animStars =
+    animationPhase >= 4 ? 3 : Math.max(0, animationPhase - 1);
+  const visibleStars = isJustCompleted ? Math.min(stars, animStars) : stars;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -875,11 +981,15 @@ function MapNode({
                 key={i}
                 style={{
                   color: earned ? "#FFD166" : "rgba(255,255,255,0.15)",
-                  opacity: visible ? 1 : 0,
-                  transform: justAppeared ? "scale(1.4)" : "scale(1)",
-                  transition:
-                    "transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease",
                   display: "inline-block",
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "scale(1)" : "scale(0)",
+                  animation: justAppeared
+                    ? "starPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both"
+                    : undefined,
+                  transition: justAppeared
+                    ? undefined
+                    : "opacity 0.2s ease, transform 0.25s ease",
                 }}
               >
                 ★
