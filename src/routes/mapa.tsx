@@ -227,8 +227,7 @@ function MapaPage() {
     }
     const t = setTimeout(() => scrollToActiveNode(500), 100);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [loading, nodes.length]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
   useEffect(() => {
