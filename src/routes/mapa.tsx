@@ -13,7 +13,7 @@ import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
-import { consumeNodeCompletionSignal } from "@/lib/node-completion";
+import { useNodeCompletion, type NodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
