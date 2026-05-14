@@ -35,6 +35,7 @@ const RED = "#EF476F";
 function NodoQuizPage() {
   const { nodeId } = useParams({ from: "/nodo/$nodeId/quiz" });
   const navigate = useNavigate();
+  const { setSignal: setCompletionSignal } = useNodeCompletion();
 
   const [questions, setQuestions] = useState<QuizQuestion[] | null>(null);
   const [index, setIndex] = useState(0);
