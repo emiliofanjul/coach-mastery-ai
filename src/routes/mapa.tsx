@@ -233,9 +233,7 @@ function MapaPage() {
       );
       return () => timers.forEach(clearTimeout);
     }
-    const t = setTimeout(() => scrollToActiveNode(500), 100);
-    return () => clearTimeout(t);
-  }, [loading, nodes.length]);
+  }, [loading, nodes.length, pendingSignal, clearSignal]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
   useEffect(() => {
