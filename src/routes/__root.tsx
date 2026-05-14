@@ -10,6 +10,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
+import { NodeCompletionProvider } from "@/lib/node-completion";
 
 function NotFoundComponent() {
   return (
