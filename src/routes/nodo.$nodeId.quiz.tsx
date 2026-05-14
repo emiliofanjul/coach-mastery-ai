@@ -97,20 +97,27 @@ function NodoQuizPage() {
   }
 
   async function handleContinueToMap() {
+    console.log("[quiz→mapa] handler START", { nodeId, saving });
     setSaving(true);
     const fail = (where: string, err: unknown) => {
       console.error(`[quiz→mapa] ${where} falló:`, err);
-      toast.error("Algo salió mal. Intenta de nuevo.");
+      try {
+        console.error(`[quiz→mapa] detalle:`, JSON.stringify(err, null, 2));
+      } catch {}
+      toast.error(`Algo salió mal en: ${where}. Revisa la consola.`);
       setSaving(false);
     };
     try {
       const stars: 1 | 2 | 3 = 3;
+      console.log("[quiz→mapa] llamando supabase.auth.getUser()");
 
       const { data: auth, error: authErr } = await supabase.auth.getUser();
       if (authErr || !auth?.user?.id) {
         return fail("auth.getUser", authErr ?? "no user");
       }
       const userId = auth.user.id;
+
+      console.log("[quiz→mapa] userId:", userId);
 
       const { data: seller, error: sellerErr } = await supabase
         .from("sellers")
@@ -119,6 +126,7 @@ function NodoQuizPage() {
         .maybeSingle();
       if (sellerErr) return fail("select sellers", sellerErr);
       if (!seller) return fail("seller no encontrado", { userId });
+      console.log("[quiz→mapa] seller:", seller);
 
       const { data: existing, error: existingErr } = await supabase
         .from("node_progress")
@@ -127,6 +135,7 @@ function NodoQuizPage() {
         .eq("node_id", nodeId)
         .maybeSingle();
       if (existingErr) return fail("select node_progress actual", existingErr);
+      console.log("[quiz→mapa] node_progress existing:", existing);
 
       const wasCompleted = existing?.status === "completed";
       const previousStars = (existing?.stars as number | null) ?? 0;
