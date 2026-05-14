@@ -1,0 +1,1 @@
+ALTER TABLE public.sellers ALTER COLUMN current_node SET DEFAULT '0.0';

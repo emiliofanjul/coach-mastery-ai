@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import VictoryScreen from "@/components/VictoryScreen";
 import RetryScreen from "@/components/RetryScreen";
@@ -97,32 +98,35 @@ function NodoQuizPage() {
 
   async function handleContinueToMap() {
     setSaving(true);
+    const fail = (where: string, err: unknown) => {
+      console.error(`[quiz→mapa] ${where} falló:`, err);
+      toast.error("Algo salió mal. Intenta de nuevo.");
+      setSaving(false);
+    };
     try {
-      const stars: 1 | 2 | 3 = 3; // quiz solo muestra Victory cuando es 3/3
-      const { data: auth } = await supabase.auth.getUser();
-      const userId = auth?.user?.id;
-      if (!userId) {
-        navigate({ to: "/mapa" });
-        return;
-      }
+      const stars: 1 | 2 | 3 = 3;
 
-      const { data: seller } = await supabase
+      const { data: auth, error: authErr } = await supabase.auth.getUser();
+      if (authErr || !auth?.user?.id) {
+        return fail("auth.getUser", authErr ?? "no user");
+      }
+      const userId = auth.user.id;
+
+      const { data: seller, error: sellerErr } = await supabase
         .from("sellers")
         .select("id, company_id")
         .eq("profile_id", userId)
         .maybeSingle();
-      if (!seller) {
-        navigate({ to: "/mapa" });
-        return;
-      }
+      if (sellerErr) return fail("select sellers", sellerErr);
+      if (!seller) return fail("seller no encontrado", { userId });
 
-      // 1. Obtener progreso actual para detectar replay / mejora
-      const { data: existing } = await supabase
+      const { data: existing, error: existingErr } = await supabase
         .from("node_progress")
         .select("id, status, stars")
         .eq("seller_id", seller.id)
         .eq("node_id", nodeId)
         .maybeSingle();
+      if (existingErr) return fail("select node_progress actual", existingErr);
 
       const wasCompleted = existing?.status === "completed";
       const previousStars = (existing?.stars as number | null) ?? 0;
@@ -130,7 +134,7 @@ function NodoQuizPage() {
       const newStars = Math.max(stars, previousStars);
 
       if (existing) {
-        await supabase
+        const { error } = await supabase
           .from("node_progress")
           .update({
             status: "completed",
@@ -138,8 +142,9 @@ function NodoQuizPage() {
             last_practiced_at: new Date().toISOString(),
           })
           .eq("id", existing.id);
+        if (error) return fail("update node_progress", error);
       } else {
-        await supabase.from("node_progress").insert({
+        const { error } = await supabase.from("node_progress").insert({
           seller_id: seller.id,
           company_id: seller.company_id,
           node_id: nodeId,
@@ -147,19 +152,20 @@ function NodoQuizPage() {
           stars: newStars,
           last_practiced_at: new Date().toISOString(),
         });
+        if (error) return fail("insert node_progress", error);
       }
 
-      // 2. Si NO era replay, desbloquear el siguiente nodo y avanzar current_node
       if (!wasCompleted) {
-        const { data: currentNode } = await supabase
+        const { data: currentNode, error: cnErr } = await supabase
           .from("nodes")
           .select("world_id, order_index")
           .eq("id", nodeId)
           .maybeSingle();
+        if (cnErr) return fail("select nodes (actual)", cnErr);
 
         let nextNodeId: string | null = null;
         if (currentNode) {
-          const { data: nextSame } = await supabase
+          const { data: nextSame, error: nsErr } = await supabase
             .from("nodes")
             .select("id")
             .eq("world_id", currentNode.world_id)
@@ -167,10 +173,11 @@ function NodoQuizPage() {
             .order("order_index", { ascending: true })
             .limit(1)
             .maybeSingle();
+          if (nsErr) return fail("select siguiente nodo (mismo mundo)", nsErr);
           if (nextSame) {
             nextNodeId = nextSame.id;
           } else {
-            const { data: nextWorld } = await supabase
+            const { data: nextWorld, error: nwErr } = await supabase
               .from("nodes")
               .select("id")
               .gt("world_id", currentNode.world_id)
@@ -178,48 +185,56 @@ function NodoQuizPage() {
               .order("order_index", { ascending: true })
               .limit(1)
               .maybeSingle();
+            if (nwErr) return fail("select siguiente nodo (siguiente mundo)", nwErr);
             if (nextWorld) nextNodeId = nextWorld.id;
           }
         }
 
         if (nextNodeId) {
-          const { data: nextProg } = await supabase
+          const { data: nextProg, error: npErr } = await supabase
             .from("node_progress")
             .select("id, status")
             .eq("seller_id", seller.id)
             .eq("node_id", nextNodeId)
             .maybeSingle();
+          if (npErr) return fail("select node_progress siguiente", npErr);
+
           if (nextProg) {
             if (nextProg.status === "locked") {
-              await supabase
+              const { error } = await supabase
                 .from("node_progress")
                 .update({ status: "active" })
                 .eq("id", nextProg.id);
+              if (error) return fail("update siguiente node_progress a active", error);
             }
           } else {
-            await supabase.from("node_progress").insert({
+            const { error } = await supabase.from("node_progress").insert({
               seller_id: seller.id,
               company_id: seller.company_id,
               node_id: nextNodeId,
               status: "active",
             });
+            if (error) return fail("insert siguiente node_progress", error);
           }
-          await supabase
+
+          const { error: updSellerErr } = await supabase
             .from("sellers")
             .update({ current_node: nextNodeId })
             .eq("id", seller.id);
+          if (updSellerErr) return fail("update sellers.current_node", updSellerErr);
         }
       }
 
-      // 3. Señalizar al mapa para correr la animación
       setNodeCompletionSignal({
         nodeId,
         stars: newStars as 1 | 2 | 3,
         isReplay: wasCompleted,
         improved,
       });
-    } finally {
+
       navigate({ to: "/mapa" });
+    } catch (e) {
+      fail("excepción inesperada", e);
     }
   }
 
