@@ -203,15 +203,24 @@ function MapaPage() {
           window.scrollTo({ top: targetY, behavior: "smooth" });
         }, 80),
       );
+      // Fases:
+      // 1=check bounce, 2=★1, 3=★2, 4=★3+shake, 5=línea, 6=candado shake-out, 7=siguiente nodo aparece
       if (animateStars) {
-        timers.push(setTimeout(() => setAnimPhase(1), 300));
-        timers.push(setTimeout(() => setAnimPhase(2), 500));
-        timers.push(setTimeout(() => setAnimPhase(3), 700));
+        timers.push(setTimeout(() => setAnimPhase(1), 500));   // ✓ bounce
+        timers.push(setTimeout(() => setAnimPhase(2), 1200));  // ★1
+        timers.push(setTimeout(() => setAnimPhase(3), 1700));  // ★2
+        timers.push(setTimeout(() => setAnimPhase(4), 2200));  // ★3 + node shake
+        timers.push(setTimeout(() => setAnimPhase(5), 2800));  // línea
+        timers.push(setTimeout(() => setAnimPhase(6), 3600));  // candado fuera
+        timers.push(setTimeout(() => setAnimPhase(7), 4000));  // siguiente nodo
       } else {
-        timers.push(setTimeout(() => setAnimPhase(3), 300));
+        timers.push(setTimeout(() => setAnimPhase(1), 300));
+        timers.push(setTimeout(() => setAnimPhase(4), 600));
+        timers.push(setTimeout(() => setAnimPhase(5), 1000));
+        timers.push(setTimeout(() => setAnimPhase(6), 1600));
+        timers.push(setTimeout(() => setAnimPhase(7), 2000));
       }
-      timers.push(setTimeout(() => setAnimPhase(4), 1200));
-      timers.push(setTimeout(() => setAnimPhase(5), 1500));
+      const scrollAt = animateStars ? 4500 : 2400;
       timers.push(
         setTimeout(() => {
           if (!sig.isReplay) {
@@ -223,10 +232,14 @@ function MapaPage() {
               window.scrollTo({ top: targetY, behavior: "smooth" });
             }
           }
+        }, scrollAt),
+      );
+      timers.push(
+        setTimeout(() => {
           setAnimSignal(null);
           setAnimNextNodeId(null);
           setAnimPhase(0);
-        }, 1900),
+        }, scrollAt + 800),
       );
       return () => timers.forEach(clearTimeout);
     }
