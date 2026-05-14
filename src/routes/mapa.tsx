@@ -102,7 +102,8 @@ function MapaPage() {
 
   // ─── Animación al regresar del quiz ───
   // phase 0: nada todavía. 1: 1ª estrella. 2: 2ª. 3: 3ª. 4: candado fuera. 5: nuevo nodo activo visible.
-  const [animSignal, setAnimSignal] = useState<ReturnType<typeof consumeNodeCompletionSignal>>(null);
+  const [animSignal, setAnimSignal] = useState<NodeCompletionSignal | null>(null);
+  const { signal: pendingSignal, clearSignal } = useNodeCompletion();
   const [animPhase, setAnimPhase] = useState(0);
   const [animNextNodeId, setAnimNextNodeId] = useState<string | null>(null);
 
