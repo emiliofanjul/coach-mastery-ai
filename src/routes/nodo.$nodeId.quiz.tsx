@@ -137,7 +137,7 @@ function NodoQuizPage() {
       if (existingErr) return fail("select node_progress actual", existingErr);
       console.log("[quiz→mapa] node_progress existing:", existing);
 
-      const wasCompleted = existing?.status === "completed";
+      const wasCompleted = existing?.status === "done";
       const previousStars = (existing?.stars as number | null) ?? 0;
       const improved = stars > previousStars;
       const newStars = Math.max(stars, previousStars);
@@ -146,7 +146,7 @@ function NodoQuizPage() {
         const { error } = await supabase
           .from("node_progress")
           .update({
-            status: "completed",
+            status: "done",
             stars: newStars,
             last_practiced_at: new Date().toISOString(),
           })
@@ -157,7 +157,7 @@ function NodoQuizPage() {
           seller_id: seller.id,
           company_id: seller.company_id,
           node_id: nodeId,
-          status: "completed",
+          status: "done",
           stars: newStars,
           last_practiced_at: new Date().toISOString(),
         });
@@ -212,7 +212,7 @@ function NodoQuizPage() {
             if (nextProg.status === "locked") {
               const { error } = await supabase
                 .from("node_progress")
-                .update({ status: "active" })
+                .update({ status: "current" })
                 .eq("id", nextProg.id);
               if (error) return fail("update siguiente node_progress a active", error);
             }
@@ -221,7 +221,7 @@ function NodoQuizPage() {
               seller_id: seller.id,
               company_id: seller.company_id,
               node_id: nextNodeId,
-              status: "active",
+              status: "current",
             });
             if (error) return fail("insert siguiente node_progress", error);
           }
