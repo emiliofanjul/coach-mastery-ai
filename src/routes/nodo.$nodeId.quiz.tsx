@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import VictoryScreen from "@/components/VictoryScreen";
 import RetryScreen from "@/components/RetryScreen";
-import { useNodeCompletion } from "@/lib/node-completion";
+import { setNodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/nodo/$nodeId/quiz")({
   component: NodoQuizPage,
@@ -35,7 +35,7 @@ const RED = "#EF476F";
 function NodoQuizPage() {
   const { nodeId } = useParams({ from: "/nodo/$nodeId/quiz" });
   const navigate = useNavigate();
-  const { setSignal: setCompletionSignal } = useNodeCompletion();
+  // sessionStorage signal — see lib/node-completion.ts
 
   const [questions, setQuestions] = useState<QuizQuestion[] | null>(null);
   const [index, setIndex] = useState(0);
@@ -235,7 +235,7 @@ function NodoQuizPage() {
         }
       }
 
-      setCompletionSignal({
+      setNodeCompletionSignal({
         nodeId,
         stars: newStars as 1 | 2 | 3,
         isReplay: wasCompleted,

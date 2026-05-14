@@ -10,7 +10,6 @@ import {
 
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
-import { NodeCompletionProvider } from "@/lib/node-completion";
 
 function NotFoundComponent() {
   return (
@@ -115,10 +114,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NodeCompletionProvider>
-        <DevMenu />
-        <Outlet />
-      </NodeCompletionProvider>
+      <DevMenu />
+      <Outlet />
     </QueryClientProvider>
   );
 }

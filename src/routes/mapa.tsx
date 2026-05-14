@@ -13,7 +13,7 @@ import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
-import { useNodeCompletion, type NodeCompletionSignal } from "@/lib/node-completion";
+import { consumeNodeCompletionSignal, type NodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -103,7 +103,6 @@ function MapaPage() {
   // ─── Animación al regresar del quiz ───
   // phase 0: nada todavía. 1: 1ª estrella. 2: 2ª. 3: 3ª. 4: candado fuera. 5: nuevo nodo activo visible.
   const [animSignal, setAnimSignal] = useState<NodeCompletionSignal | null>(null);
-  const { signal: pendingSignal, clearSignal } = useNodeCompletion();
   const [animPhase, setAnimPhase] = useState(0);
   const [animNextNodeId, setAnimNextNodeId] = useState<string | null>(null);
 
@@ -171,15 +170,13 @@ function MapaPage() {
     if (loading) return;
     if (nodes.length === 0) return; // esperar a que los nodos estén poblados
     if (animConsumedRef.current) return; // guardia anti doble-mount (StrictMode)
-    const sig = pendingSignal;
+    animConsumedRef.current = true;
+    const sig = consumeNodeCompletionSignal();
     if (!sig) {
       // No venimos del quiz — solo scroll inicial
-      animConsumedRef.current = true;
       const t = setTimeout(() => scrollToActiveNode(500), 100);
       return () => clearTimeout(t);
     }
-    animConsumedRef.current = true;
-    clearSignal();
     {
       let nextId: string | null = null;
       const ordered = [...nodes].sort((a, b) =>
@@ -233,7 +230,7 @@ function MapaPage() {
       );
       return () => timers.forEach(clearTimeout);
     }
-  }, [loading, nodes.length, pendingSignal, clearSignal]);
+  }, [loading, nodes.length]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
   useEffect(() => {
