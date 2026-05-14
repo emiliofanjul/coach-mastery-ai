@@ -981,11 +981,15 @@ function MapNode({
                 key={i}
                 style={{
                   color: earned ? "#FFD166" : "rgba(255,255,255,0.15)",
-                  opacity: visible ? 1 : 0,
-                  transform: justAppeared ? "scale(1.4)" : "scale(1)",
-                  transition:
-                    "transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease",
                   display: "inline-block",
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "scale(1)" : "scale(0)",
+                  animation: justAppeared
+                    ? "starPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both"
+                    : undefined,
+                  transition: justAppeared
+                    ? undefined
+                    : "opacity 0.2s ease, transform 0.25s ease",
                 }}
               >
                 ★
