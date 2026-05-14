@@ -170,15 +170,13 @@ function MapaPage() {
     if (loading) return;
     if (nodes.length === 0) return; // esperar a que los nodos estén poblados
     if (animConsumedRef.current) return; // guardia anti doble-mount (StrictMode)
-    const sig = pendingSignal;
+    animConsumedRef.current = true;
+    const sig = consumeNodeCompletionSignal();
     if (!sig) {
       // No venimos del quiz — solo scroll inicial
-      animConsumedRef.current = true;
       const t = setTimeout(() => scrollToActiveNode(500), 100);
       return () => clearTimeout(t);
     }
-    animConsumedRef.current = true;
-    clearSignal();
     {
       let nextId: string | null = null;
       const ordered = [...nodes].sort((a, b) =>
