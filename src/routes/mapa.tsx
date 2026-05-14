@@ -13,6 +13,7 @@ import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
+import { consumeNodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -47,6 +48,7 @@ type ProgressRow = {
   node_id: string;
   status: string;
   consistency_score: number | null;
+  stars: number | null;
 };
 
 type NodeStatus = "completed" | "active" | "available" | "locked";
@@ -54,6 +56,7 @@ type NodeStatus = "completed" | "active" | "available" | "locked";
 type DisplayNode = NodeRow & {
   status: NodeStatus;
   score: number | null;
+  stars: number;
 };
 
 const UNLOCKED_WORLDS = [0];
