@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import VictoryScreen from "@/components/VictoryScreen";
 import RetryScreen from "@/components/RetryScreen";
-import { useNodeCompletion } from "@/lib/node-completion";
+import { setNodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/nodo/$nodeId/quiz")({
   component: NodoQuizPage,
