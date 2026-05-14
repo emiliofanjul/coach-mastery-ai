@@ -144,7 +144,7 @@ function MapaPage() {
         setSeller(s as typeof seller);
         const { data: p } = await supabase
           .from("node_progress")
-          .select("node_id, status, consistency_score")
+          .select("node_id, status, consistency_score, stars")
           .eq("seller_id", (s as { id: string }).id);
         const map: Record<string, ProgressRow> = {};
         (p as ProgressRow[] | null)?.forEach((r) => (map[r.node_id] = r));
@@ -452,11 +452,16 @@ function MapaPage() {
                       <MapNode
                         node={node}
                         status={status}
+                        stars={(progress[node.id]?.stars as number | null) ?? 0}
+                        animationPhase={animPhase}
+                        isJustCompleted={animSignal?.nodeId === node.id}
+                        isNewlyActive={animNextNodeId === node.id}
                         onClick={() =>
                           setSelectedNode({
                             ...node,
                             status,
                             score: progress[node.id]?.consistency_score ?? null,
+                            stars: (progress[node.id]?.stars as number | null) ?? 0,
                           })
                         }
                       />
