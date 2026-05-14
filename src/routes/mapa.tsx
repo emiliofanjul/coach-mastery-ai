@@ -13,6 +13,7 @@ import { Lock, Check, Star, Trophy, Play } from "lucide-react";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
+import { consumeNodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -47,6 +48,7 @@ type ProgressRow = {
   node_id: string;
   status: string;
   consistency_score: number | null;
+  stars: number | null;
 };
 
 type NodeStatus = "completed" | "active" | "available" | "locked";
@@ -54,6 +56,7 @@ type NodeStatus = "completed" | "active" | "available" | "locked";
 type DisplayNode = NodeRow & {
   status: NodeStatus;
   score: number | null;
+  stars: number;
 };
 
 const UNLOCKED_WORLDS = [0];
@@ -96,6 +99,12 @@ function MapaPage() {
   const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
   const [glowActive, setGlowActive] = useState(false);
+
+  // ─── Animación al regresar del quiz ───
+  // phase 0: nada todavía. 1: 1ª estrella. 2: 2ª. 3: 3ª. 4: candado fuera. 5: nuevo nodo activo visible.
+  const [animSignal, setAnimSignal] = useState<ReturnType<typeof consumeNodeCompletionSignal>>(null);
+  const [animPhase, setAnimPhase] = useState(0);
+  const [animNextNodeId, setAnimNextNodeId] = useState<string | null>(null);
 
   // Smooth scroll con duración custom hasta el nodo activo
   const scrollToActiveNode = (duration: number) => {
@@ -141,7 +150,7 @@ function MapaPage() {
         setSeller(s as typeof seller);
         const { data: p } = await supabase
           .from("node_progress")
-          .select("node_id, status, consistency_score")
+          .select("node_id, status, consistency_score, stars")
           .eq("seller_id", (s as { id: string }).id);
         const map: Record<string, ProgressRow> = {};
         (p as ProgressRow[] | null)?.forEach((r) => (map[r.node_id] = r));
@@ -155,11 +164,66 @@ function MapaPage() {
     })();
   }, [navigate]);
 
-  // Scroll inicial al nodo activo (status='current' en node_progress)
+  // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).
   useEffect(() => {
     if (loading) return;
+    const sig = consumeNodeCompletionSignal();
+    if (sig) {
+      let nextId: string | null = null;
+      const ordered = [...nodes].sort((a, b) =>
+        a.world_id !== b.world_id
+          ? a.world_id - b.world_id
+          : a.order_index - b.order_index,
+      );
+      const idx = ordered.findIndex((n) => n.id === sig.nodeId);
+      if (idx >= 0 && idx + 1 < ordered.length) nextId = ordered[idx + 1].id;
+      setAnimSignal(sig);
+      setAnimNextNodeId(nextId);
+      setAnimPhase(0);
+      const animateStars = !sig.isReplay || sig.improved;
+      const timers: ReturnType<typeof setTimeout>[] = [];
+      timers.push(
+        setTimeout(() => {
+          const el = document.querySelector<HTMLElement>(
+            `[data-node-id="${sig.nodeId}"]`,
+          );
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const targetY =
+            window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+          window.scrollTo({ top: targetY, behavior: "smooth" });
+        }, 80),
+      );
+      if (animateStars) {
+        timers.push(setTimeout(() => setAnimPhase(1), 300));
+        timers.push(setTimeout(() => setAnimPhase(2), 500));
+        timers.push(setTimeout(() => setAnimPhase(3), 700));
+      } else {
+        timers.push(setTimeout(() => setAnimPhase(3), 300));
+      }
+      timers.push(setTimeout(() => setAnimPhase(4), 1200));
+      timers.push(setTimeout(() => setAnimPhase(5), 1500));
+      timers.push(
+        setTimeout(() => {
+          if (!sig.isReplay) {
+            const el = document.querySelector<HTMLElement>("[data-active-node]");
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              const targetY =
+                window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2;
+              window.scrollTo({ top: targetY, behavior: "smooth" });
+            }
+          }
+          setAnimSignal(null);
+          setAnimNextNodeId(null);
+          setAnimPhase(0);
+        }, 1900),
+      );
+      return () => timers.forEach(clearTimeout);
+    }
     const t = setTimeout(() => scrollToActiveNode(500), 100);
     return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
@@ -431,6 +495,7 @@ function MapaPage() {
                   return (
                     <div
                       key={node.id}
+                      data-node-id={node.id}
                       data-tour={tour}
                       data-active-node={status === "active" ? "true" : undefined}
                       style={{
@@ -449,11 +514,16 @@ function MapaPage() {
                       <MapNode
                         node={node}
                         status={status}
+                        stars={(progress[node.id]?.stars as number | null) ?? 0}
+                        animationPhase={animPhase}
+                        isJustCompleted={animSignal?.nodeId === node.id}
+                        isNewlyActive={animNextNodeId === node.id}
                         onClick={() =>
                           setSelectedNode({
                             ...node,
                             status,
                             score: progress[node.id]?.consistency_score ?? null,
+                            stars: (progress[node.id]?.stars as number | null) ?? 0,
                           })
                         }
                       />
@@ -616,14 +686,29 @@ function WorldHeader({ world }: { world: World }) {
 function MapNode({
   node,
   status,
+  stars,
+  animationPhase,
+  isJustCompleted,
+  isNewlyActive,
   onClick,
 }: {
   node: NodeRow;
   status: NodeStatus;
+  stars: number;
+  animationPhase: number;
+  isJustCompleted: boolean;
+  isNewlyActive: boolean;
   onClick: () => void;
 }) {
   const isBoss = node.is_boss;
   const size = isBoss ? 72 : 56;
+
+  // Durante la fase 4 (1.2s) y antes de fase 5 (1.5s) el candado del siguiente
+  // hace fade-out; en fase 5 el nodo aparece con scale + glow.
+  const animatingNext = isNewlyActive && status === "active";
+  const showLockOnNext = animatingNext && animationPhase < 4;
+  const hideNextNode = animatingNext && animationPhase < 4;
+  const scaleInNext = animatingNext && animationPhase >= 4 && animationPhase < 5;
 
   const styles: React.CSSProperties = {
     width: size,
@@ -633,7 +718,7 @@ function MapNode({
     alignItems: "center",
     justifyContent: "center",
     cursor: status === "locked" ? "not-allowed" : "pointer",
-    transition: "transform 0.15s ease",
+    transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease",
     border: "2px solid",
   };
 
@@ -671,8 +756,23 @@ function MapNode({
     }
   }
 
+  // Mientras animamos la aparición del siguiente nodo, lo "ocultamos" como locked
+  if (showLockOnNext) {
+    styles.background = "#111118";
+    styles.borderColor = "#1A1A26";
+    styles.opacity = 0.5;
+    styles.animation = undefined;
+  }
+  if (hideNextNode) {
+    styles.transform = "scale(0)";
+  } else if (scaleInNext) {
+    styles.transform = "scale(1.2)";
+  } else {
+    styles.transform = "scale(1)";
+  }
+
   let icon: React.ReactNode;
-  if (status === "locked") icon = <Lock size={isBoss ? 22 : 18} color="#5A5A8A" />;
+  if (status === "locked" || showLockOnNext) icon = <Lock size={isBoss ? 22 : 18} color="#5A5A8A" />;
   else if (status === "completed")
     icon = (
       <Check
@@ -696,6 +796,11 @@ function MapNode({
         fill={status === "active" ? "#FFFFFF" : "transparent"}
       />
     );
+
+  // Estrellas debajo del nombre — solo para nodos completados (no boss)
+  const showStars = status === "completed" && stars > 0 && !isBoss;
+  // Si es el nodo recién completado y estamos animando, controlar cuántas mostrar
+  const visibleStars = isJustCompleted ? Math.min(stars, animationPhase) : stars;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -723,7 +828,7 @@ function MapNode({
       <button
         type="button"
         onClick={status === "locked" ? undefined : onClick}
-        disabled={status === "locked"}
+        disabled={status === "locked" || showLockOnNext}
         style={styles}
         aria-label={node.name}
       >
@@ -749,6 +854,39 @@ function MapNode({
       >
         {node.name}
       </div>
+      {showStars && (
+        <div
+          style={{
+            marginTop: 3,
+            display: "flex",
+            gap: 1,
+            fontSize: 10,
+            lineHeight: 1,
+          }}
+        >
+          {[0, 1, 2].map((i) => {
+            const earned = i < stars;
+            const visible = i < visibleStars;
+            const justAppeared =
+              isJustCompleted && i === visibleStars - 1 && visibleStars > 0;
+            return (
+              <span
+                key={i}
+                style={{
+                  color: earned ? "#FFD166" : "rgba(255,255,255,0.15)",
+                  opacity: visible ? 1 : 0,
+                  transform: justAppeared ? "scale(1.4)" : "scale(1)",
+                  transition:
+                    "transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease",
+                  display: "inline-block",
+                }}
+              >
+                ★
+              </span>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -831,40 +969,54 @@ function NodeSheetBody({
           <SheetTitle
             style={{
               fontFamily: "Syne, sans-serif",
-              color: "#10B981",
+              color: "#FFFFFF",
               textAlign: "center",
+              fontSize: "1.2rem",
             }}
           >
-            <Check size={36} style={{ margin: "0 auto 8px" }} strokeWidth={3} />
-            <div>Completado</div>
+            {node.name}
           </SheetTitle>
           <SheetDescription
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              color: "#FFFFFF",
+              color: "#9090B0",
               textAlign: "center",
-              fontSize: "1rem",
+              fontSize: "0.85rem",
             }}
           >
-            {node.name}
+            Completado
           </SheetDescription>
         </SheetHeader>
-        {node.score != null && (
-          <div
-            style={{
-              marginTop: 16,
-              fontFamily: "Syne, sans-serif",
-              fontSize: "2rem",
-              color: "#FF6B2B",
-              fontWeight: 800,
-            }}
-          >
-            {node.score}
-            <span style={{ fontSize: "1rem", color: "#5A5A8A" }}>/100</span>
-          </div>
-        )}
-        <Button block onClick={onClose} style={{ marginTop: 24 }}>
-          Practicar de nuevo
+        <div
+          style={{
+            marginTop: 18,
+            display: "flex",
+            justifyContent: "center",
+            gap: 8,
+            fontSize: 32,
+            lineHeight: 1,
+          }}
+        >
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              style={{
+                color: i < node.stars ? "#FFD166" : "rgba(255,255,255,0.15)",
+              }}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+        <Button
+          block
+          onClick={() => {
+            onClose();
+            navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } });
+          }}
+          style={{ marginTop: 24 }}
+        >
+          Mejorar →
         </Button>
       </div>
     );

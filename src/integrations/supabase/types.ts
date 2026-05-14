@@ -412,6 +412,7 @@ export type Database = {
           reps_completed: number
           seller_id: string
           sessions_count: number
+          stars: number
           status: string
         }
         Insert: {
@@ -424,6 +425,7 @@ export type Database = {
           reps_completed?: number
           seller_id: string
           sessions_count?: number
+          stars?: number
           status?: string
         }
         Update: {
@@ -436,6 +438,7 @@ export type Database = {
           reps_completed?: number
           seller_id?: string
           sessions_count?: number
+          stars?: number
           status?: string
         }
         Relationships: [
