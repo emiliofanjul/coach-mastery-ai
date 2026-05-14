@@ -239,7 +239,7 @@ function MapaPage() {
     nodes
       .filter((n) => n.is_boss)
       .forEach((n) => {
-        if (progress[n.id]?.status === "completed") bossCompleted.add(n.world_id);
+        if (progress[n.id]?.status === "done") bossCompleted.add(n.world_id);
       });
     const prev = prevBossCompletedRef.current;
     if (prev) {
