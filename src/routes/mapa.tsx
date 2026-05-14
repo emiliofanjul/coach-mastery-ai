@@ -969,40 +969,54 @@ function NodeSheetBody({
           <SheetTitle
             style={{
               fontFamily: "Syne, sans-serif",
-              color: "#10B981",
+              color: "#FFFFFF",
               textAlign: "center",
+              fontSize: "1.2rem",
             }}
           >
-            <Check size={36} style={{ margin: "0 auto 8px" }} strokeWidth={3} />
-            <div>Completado</div>
+            {node.name}
           </SheetTitle>
           <SheetDescription
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              color: "#FFFFFF",
+              color: "#9090B0",
               textAlign: "center",
-              fontSize: "1rem",
+              fontSize: "0.85rem",
             }}
           >
-            {node.name}
+            Completado
           </SheetDescription>
         </SheetHeader>
-        {node.score != null && (
-          <div
-            style={{
-              marginTop: 16,
-              fontFamily: "Syne, sans-serif",
-              fontSize: "2rem",
-              color: "#FF6B2B",
-              fontWeight: 800,
-            }}
-          >
-            {node.score}
-            <span style={{ fontSize: "1rem", color: "#5A5A8A" }}>/100</span>
-          </div>
-        )}
-        <Button block onClick={onClose} style={{ marginTop: 24 }}>
-          Practicar de nuevo
+        <div
+          style={{
+            marginTop: 18,
+            display: "flex",
+            justifyContent: "center",
+            gap: 8,
+            fontSize: 32,
+            lineHeight: 1,
+          }}
+        >
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              style={{
+                color: i < node.stars ? "#FFD166" : "rgba(255,255,255,0.15)",
+              }}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+        <Button
+          block
+          onClick={() => {
+            onClose();
+            navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } });
+          }}
+          style={{ marginTop: 24 }}
+        >
+          Mejorar →
         </Button>
       </div>
     );
