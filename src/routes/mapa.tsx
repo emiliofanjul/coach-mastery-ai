@@ -230,7 +230,7 @@ function MapaPage() {
       );
       return () => timers.forEach(clearTimeout);
     }
-  }, [loading, nodes.length, pendingSignal, clearSignal]);
+  }, [loading, nodes.length]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
   useEffect(() => {
