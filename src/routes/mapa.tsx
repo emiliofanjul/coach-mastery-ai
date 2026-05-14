@@ -480,15 +480,45 @@ function MapaPage() {
                     const prevDone =
                       computeStatus(prev) === "completed" &&
                       computeStatus(node) !== "locked";
+                    const isAnimLine =
+                      !!animSignal &&
+                      prev.id === animSignal.nodeId &&
+                      node.id === animNextNodeId;
+                    const showOrangeStatic = prevDone && !isAnimLine;
+                    const showOrangeAnimated = isAnimLine && animPhase >= 5;
                     return (
-                      <path
-                        key={`line-${node.id}`}
-                        d={path}
-                        stroke={prevDone ? "rgba(255,107,43,0.6)" : "#252535"}
-                        strokeWidth={3}
-                        fill="none"
-                        strokeLinecap="round"
-                      />
+                      <g key={`line-${node.id}`}>
+                        <path
+                          d={path}
+                          stroke="#252535"
+                          strokeWidth={3}
+                          fill="none"
+                          strokeLinecap="round"
+                        />
+                        {showOrangeStatic && (
+                          <path
+                            d={path}
+                            stroke="rgba(255,107,43,0.6)"
+                            strokeWidth={3}
+                            fill="none"
+                            strokeLinecap="round"
+                          />
+                        )}
+                        {showOrangeAnimated && (
+                          <path
+                            d={path}
+                            stroke="rgba(255,107,43,0.85)"
+                            strokeWidth={3}
+                            fill="none"
+                            strokeLinecap="round"
+                            style={{
+                              strokeDasharray: 260,
+                              strokeDashoffset: 260,
+                              animation: "lineDraw 0.8s ease-in-out forwards",
+                            }}
+                          />
+                        )}
+                      </g>
                     );
                   })}
                 </svg>
