@@ -165,8 +165,12 @@ function MapaPage() {
   }, [navigate]);
 
   // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).
+  const animConsumedRef = useRef(false);
   useEffect(() => {
     if (loading) return;
+    if (nodes.length === 0) return; // esperar a que los nodos estén poblados
+    if (animConsumedRef.current) return; // guardia anti doble-mount (StrictMode)
+    animConsumedRef.current = true;
     const sig = consumeNodeCompletionSignal();
     if (sig) {
       let nextId: string | null = null;
@@ -223,8 +227,7 @@ function MapaPage() {
     }
     const t = setTimeout(() => scrollToActiveNode(500), 100);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [loading, nodes.length]);
 
   // Detectar boss completados nuevos → mostrar notificación de mundo desbloqueado.
   useEffect(() => {
