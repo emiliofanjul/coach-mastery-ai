@@ -686,14 +686,29 @@ function WorldHeader({ world }: { world: World }) {
 function MapNode({
   node,
   status,
+  stars,
+  animationPhase,
+  isJustCompleted,
+  isNewlyActive,
   onClick,
 }: {
   node: NodeRow;
   status: NodeStatus;
+  stars: number;
+  animationPhase: number;
+  isJustCompleted: boolean;
+  isNewlyActive: boolean;
   onClick: () => void;
 }) {
   const isBoss = node.is_boss;
   const size = isBoss ? 72 : 56;
+
+  // Durante la fase 4 (1.2s) y antes de fase 5 (1.5s) el candado del siguiente
+  // hace fade-out; en fase 5 el nodo aparece con scale + glow.
+  const animatingNext = isNewlyActive && status === "active";
+  const showLockOnNext = animatingNext && animationPhase < 4;
+  const hideNextNode = animatingNext && animationPhase < 4;
+  const scaleInNext = animatingNext && animationPhase >= 4 && animationPhase < 5;
 
   const styles: React.CSSProperties = {
     width: size,
@@ -703,7 +718,7 @@ function MapNode({
     alignItems: "center",
     justifyContent: "center",
     cursor: status === "locked" ? "not-allowed" : "pointer",
-    transition: "transform 0.15s ease",
+    transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease",
     border: "2px solid",
   };
 
@@ -741,8 +756,23 @@ function MapNode({
     }
   }
 
+  // Mientras animamos la aparición del siguiente nodo, lo "ocultamos" como locked
+  if (showLockOnNext) {
+    styles.background = "#111118";
+    styles.borderColor = "#1A1A26";
+    styles.opacity = 0.5;
+    styles.animation = undefined;
+  }
+  if (hideNextNode) {
+    styles.transform = "scale(0)";
+  } else if (scaleInNext) {
+    styles.transform = "scale(1.2)";
+  } else {
+    styles.transform = "scale(1)";
+  }
+
   let icon: React.ReactNode;
-  if (status === "locked") icon = <Lock size={isBoss ? 22 : 18} color="#5A5A8A" />;
+  if (status === "locked" || showLockOnNext) icon = <Lock size={isBoss ? 22 : 18} color="#5A5A8A" />;
   else if (status === "completed")
     icon = (
       <Check
@@ -766,6 +796,11 @@ function MapNode({
         fill={status === "active" ? "#FFFFFF" : "transparent"}
       />
     );
+
+  // Estrellas debajo del nombre — solo para nodos completados (no boss)
+  const showStars = status === "completed" && stars > 0 && !isBoss;
+  // Si es el nodo recién completado y estamos animando, controlar cuántas mostrar
+  const visibleStars = isJustCompleted ? Math.min(stars, animationPhase) : stars;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -793,7 +828,7 @@ function MapNode({
       <button
         type="button"
         onClick={status === "locked" ? undefined : onClick}
-        disabled={status === "locked"}
+        disabled={status === "locked" || showLockOnNext}
         style={styles}
         aria-label={node.name}
       >
@@ -819,6 +854,39 @@ function MapNode({
       >
         {node.name}
       </div>
+      {showStars && (
+        <div
+          style={{
+            marginTop: 3,
+            display: "flex",
+            gap: 1,
+            fontSize: 10,
+            lineHeight: 1,
+          }}
+        >
+          {[0, 1, 2].map((i) => {
+            const earned = i < stars;
+            const visible = i < visibleStars;
+            const justAppeared =
+              isJustCompleted && i === visibleStars - 1 && visibleStars > 0;
+            return (
+              <span
+                key={i}
+                style={{
+                  color: earned ? "#FFD166" : "rgba(255,255,255,0.15)",
+                  opacity: visible ? 1 : 0,
+                  transform: justAppeared ? "scale(1.4)" : "scale(1)",
+                  transition:
+                    "transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease",
+                  display: "inline-block",
+                }}
+              >
+                ★
+              </span>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
