@@ -47,26 +47,42 @@ function PracticaPage() {
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
-  const conversation = useConversation({
-    onMessage: (msg: any) => {
-      const text: string = msg.message ?? msg.agent_response ?? msg.text ?? "";
-      const role: "agent" | "user" = msg.source === "user" ? "user" : "agent";
-      if (text) {
-        setTranscriptFull((prev) => [
-          ...prev,
-          { role, text, phase: currentPhaseRef.current },
-        ]);
-      }
-      if (role === "agent" && text.toLowerCase().includes("ahora es tu turno")) {
-        setCurrentPhase("you_do");
-        currentPhaseRef.current = "you_do";
-      }
-      if (role === "agent" && text.toLowerCase().includes("vamos al detalle")) {
-        handleSessionEnd();
-      }
-    },
-    onError: (err: any) => console.error("ElevenLabs error:", err),
-  });
+  let conversation: any = {
+    isSpeaking: false,
+    startSession: async () => {},
+    endSession: async () => {},
+  };
+  try {
+    conversation = useConversation({
+      onMessage: (msg: any) => {
+        const text: string = msg.message ?? msg.agent_response ?? msg.text ?? "";
+        const role: "agent" | "user" = msg.source === "user" ? "user" : "agent";
+        if (text) {
+          setTranscriptFull((prev) => [
+            ...prev,
+            { role, text, phase: currentPhaseRef.current },
+          ]);
+        }
+        if (role === "agent" && text.toLowerCase().includes("ahora es tu turno")) {
+          setCurrentPhase("you_do");
+          currentPhaseRef.current = "you_do";
+        }
+        if (role === "agent" && text.toLowerCase().includes("vamos al detalle")) {
+          handleSessionEnd();
+        }
+      },
+      onError: (err: any) => {
+        console.error("[practica] ElevenLabs error:", err);
+        setInitError(`ElevenLabs error: ${err?.message ?? JSON.stringify(err)}`);
+      },
+    });
+  } catch (err: any) {
+    console.error("[practica] useConversation init failed:", err);
+    if (!initError) {
+      // Defer state update to avoid setting state during render
+      queueMicrotask(() => setInitError(`useConversation init failed: ${err?.message ?? String(err)}`));
+    }
+  }
 
   // Pedir micrófono al montar
   useEffect(() => {
