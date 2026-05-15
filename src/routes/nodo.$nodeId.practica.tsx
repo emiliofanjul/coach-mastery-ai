@@ -137,6 +137,7 @@ MOMENTO 2 — YOU DO:
 Tú eres el cliente. El vendedor practica la apertura solo. Reacciona de forma natural. No des ayuda ni hints. Cuando el scope "${nodeData.conversation_scope}" se cumpla o falle claramente, sal del personaje, da feedback verbal BUILD BREAK BUILD en máximo 3 frases — BUILD: qué funcionó específico, BREAK: una sola oportunidad de mejora, BUILD: proyección hacia adelante. Termina con exactamente estas palabras: "Vamos al detalle."`;
 
     try {
+      console.log("[voice] intentando conectar con agentId:", AGENT_ID);
       await conversation.startSession({
         agentId: AGENT_ID,
         connectionType: "webrtc",
@@ -146,8 +147,10 @@ Tú eres el cliente. El vendedor practica la apertura solo. Reacciona de forma n
           },
         },
       } as any);
+      console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
-      console.error("startSession failed:", err);
+      console.error("[voice] startSession failed:", err);
+      alert("Error al conectar: " + JSON.stringify(err, Object.getOwnPropertyNames(err as any)));
     }
   }
 
