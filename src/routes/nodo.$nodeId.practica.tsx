@@ -29,11 +29,9 @@ interface TranscriptItem {
 }
 
 function PracticaPage() {
-  console.log("[practica] PracticaPage mounted");
   const { nodeId } = useParams({ from: "/nodo/$nodeId/practica" });
   const navigate = useNavigate();
 
-  const [initError, setInitError] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("prep");
   const [micGranted, setMicGranted] = useState(false);
   const [sellerData, setSellerData] = useState<any>(null);
@@ -47,42 +45,26 @@ function PracticaPage() {
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
-  let conversation: any = {
-    isSpeaking: false,
-    startSession: async () => {},
-    endSession: async () => {},
-  };
-  try {
-    conversation = useConversation({
-      onMessage: (msg: any) => {
-        const text: string = msg.message ?? msg.agent_response ?? msg.text ?? "";
-        const role: "agent" | "user" = msg.source === "user" ? "user" : "agent";
-        if (text) {
-          setTranscriptFull((prev) => [
-            ...prev,
-            { role, text, phase: currentPhaseRef.current },
-          ]);
-        }
-        if (role === "agent" && text.toLowerCase().includes("ahora es tu turno")) {
-          setCurrentPhase("you_do");
-          currentPhaseRef.current = "you_do";
-        }
-        if (role === "agent" && text.toLowerCase().includes("vamos al detalle")) {
-          handleSessionEnd();
-        }
-      },
-      onError: (err: any) => {
-        console.error("[practica] ElevenLabs error:", err);
-        setInitError(`ElevenLabs error: ${err?.message ?? JSON.stringify(err)}`);
-      },
-    });
-  } catch (err: any) {
-    console.error("[practica] useConversation init failed:", err);
-    if (!initError) {
-      // Defer state update to avoid setting state during render
-      queueMicrotask(() => setInitError(`useConversation init failed: ${err?.message ?? String(err)}`));
-    }
-  }
+  const conversation = useConversation({
+    onMessage: (msg: any) => {
+      const text: string = msg.message ?? msg.agent_response ?? msg.text ?? "";
+      const role: "agent" | "user" = msg.source === "user" ? "user" : "agent";
+      if (text) {
+        setTranscriptFull((prev) => [
+          ...prev,
+          { role, text, phase: currentPhaseRef.current },
+        ]);
+      }
+      if (role === "agent" && text.toLowerCase().includes("ahora es tu turno")) {
+        setCurrentPhase("you_do");
+        currentPhaseRef.current = "you_do";
+      }
+      if (role === "agent" && text.toLowerCase().includes("vamos al detalle")) {
+        handleSessionEnd();
+      }
+    },
+    onError: (err: any) => console.error("ElevenLabs error:", err),
+  });
 
   // Pedir micrófono al montar
   useEffect(() => {
@@ -215,15 +197,6 @@ Tú eres el cliente. El vendedor practica la apertura solo. Reacciona de forma n
   }
 
   // ─── Render ───
-  if (initError) {
-    return (
-      <div style={{ position: "fixed", inset: 0, background: BG, color: "#fff", zIndex: 60, padding: 24, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 20, color: RED }}>Error al iniciar práctica</div>
-        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{initError}</div>
-        <button onClick={() => navigate({ to: "/mapa" })} style={{ alignSelf: "flex-start", marginTop: 12, height: 44, padding: "0 20px", borderRadius: 99, border: "none", background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, cursor: "pointer" }}>Volver al mapa</button>
-      </div>
-    );
-  }
   return (
     <div
       style={{

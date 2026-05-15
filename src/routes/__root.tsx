@@ -8,6 +8,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 
+import { ConversationProvider } from "@elevenlabs/react";
+
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
 
@@ -114,8 +116,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DevMenu />
-      <Outlet />
+      <ConversationProvider>
+        <DevMenu />
+        <Outlet />
+      </ConversationProvider>
     </QueryClientProvider>
   );
 }
