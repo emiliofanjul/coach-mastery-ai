@@ -31,8 +31,10 @@ function SplashScreen() {
     const t1 = setTimeout(() => setLogoIn(true), 30);
     const t2 = setTimeout(() => setTaglineIn(true), 230);
     const t3 = setTimeout(() => setFadeOut(true), 2100);
-    const t4 = setTimeout(() => {
-      navigate({ to: "/role" }).catch(() => {});
+    const t4 = setTimeout(async () => {
+      const { data } = await supabase.auth.getSession();
+      const dest = data.session ? "/mapa" : "/role";
+      navigate({ to: dest }).catch(() => {});
     }, 2500);
     return () => {
       clearTimeout(t1);
