@@ -29,9 +29,11 @@ interface TranscriptItem {
 }
 
 function PracticaPage() {
+  console.log("[practica] PracticaPage mounted");
   const { nodeId } = useParams({ from: "/nodo/$nodeId/practica" });
   const navigate = useNavigate();
 
+  const [initError, setInitError] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("prep");
   const [micGranted, setMicGranted] = useState(false);
   const [sellerData, setSellerData] = useState<any>(null);
