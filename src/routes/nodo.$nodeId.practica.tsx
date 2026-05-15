@@ -124,7 +124,7 @@ function PracticaPage() {
       console.log("[voice] intentando conectar con agentId:", AGENT_ID);
       await conversation.startSession({
         agentId: AGENT_ID,
-        connectionType: "webrtc",
+        connectionType: "websocket",
         overrides: {
           agent: {
             firstMessage,
