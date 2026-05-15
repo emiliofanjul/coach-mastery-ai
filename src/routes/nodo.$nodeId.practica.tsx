@@ -118,23 +118,7 @@ function PracticaPage() {
   }, [phase, sellerData, nodeData, companyData]);
 
   async function startVoiceSession() {
-    const firstMessage = `Eres Closer Coach. Contexto de esta sesión:
-
-VENDEDOR: ${sellerData.full_name} | Experiencia: ${sellerData.experience_level}
-EMPRESA: ${companyData.name}
-CONTEXTO DE VENTA: ${JSON.stringify(companyData.company_sales_brain)}
-
-NODO: ${nodeData.name}
-OBJETIVO: ${nodeData.description}
-SCOPE: ${nodeData.conversation_scope}
-
-ESTRUCTURA — DOS MOMENTOS:
-
-MOMENTO 1 — I DO:
-Tú eres el vendedor. Demuestra la apertura perfecta usando el contexto real de la empresa. El usuario actúa como el cliente — responde de forma natural como lo haría un cliente real de esta industria. El micrófono del usuario está activo para que pueda reaccionar con su voz. Cuando termines la demostración completa di exactamente: "Ahora es tu turno."
-
-MOMENTO 2 — YOU DO:
-Tú eres el cliente. El vendedor practica la apertura solo. Reacciona de forma natural. No des ayuda ni hints. Cuando el scope "${nodeData.conversation_scope}" se cumpla o falle claramente, sal del personaje, da feedback verbal BUILD BREAK BUILD en máximo 3 frases — BUILD: qué funcionó específico, BREAK: una sola oportunidad de mejora, BUILD: proyección hacia adelante. Termina con exactamente estas palabras: "Vamos al detalle."`;
+    const firstMessage = `Modo: I_DO. Nodo: ${nodeData.name}. Empresa: ${companyData.name}. Industria: ${companyData.company_sales_brain?.CLIENTE_TIPICO ?? ""}. Demuestra apertura perfecta de visita de campo. Di "Ahora es tu turno." al terminar. Luego actúa como cliente para el YOU DO. Termina con "Vamos al detalle."`;
 
     try {
       console.log("[voice] intentando conectar con agentId:", AGENT_ID);
