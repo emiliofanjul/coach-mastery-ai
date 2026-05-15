@@ -51,7 +51,7 @@ function LoginScreen() {
       setError("Correo o contraseña incorrectos. Inténtalo de nuevo.");
       return;
     }
-    navigate({ to: "/" });
+    navigate({ to: "/mapa" });
   };
 
   const handleGoogle = async () => {
