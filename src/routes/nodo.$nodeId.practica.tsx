@@ -127,18 +127,11 @@ function PracticaPage() {
   }, [phase, sellerData, nodeData, companyData]);
 
   async function startVoiceSession() {
-    const firstMessage = `Modo: I_DO. Nodo: ${nodeData.name}. Empresa: ${companyData.name}. Industria: ${companyData.company_sales_brain?.CLIENTE_TIPICO ?? ""}. Demuestra apertura perfecta de visita de campo. Di "Ahora es tu turno." al terminar. Luego actúa como cliente para el YOU DO. Termina con "Vamos al detalle."`;
-
     try {
       console.log("[voice] intentando conectar con agentId:", AGENT_ID);
       await conversation.startSession({
         agentId: AGENT_ID,
         connectionType: "websocket",
-        overrides: {
-          agent: {
-            firstMessage,
-          },
-        },
       } as any);
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
@@ -146,6 +139,7 @@ function PracticaPage() {
       alert("Error al conectar: " + JSON.stringify(err, Object.getOwnPropertyNames(err as any)));
     }
   }
+
 
   async function handleSessionEnd() {
     try {
