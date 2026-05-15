@@ -19,6 +19,7 @@ import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
 import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
 import { Route as NodoNodeIdQuizRouteImport } from './routes/nodo.$nodeId.quiz'
+import { Route as NodoNodeIdPracticaRouteImport } from './routes/nodo.$nodeId.practica'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -70,6 +71,11 @@ const NodoNodeIdQuizRoute = NodoNodeIdQuizRouteImport.update({
   path: '/quiz',
   getParentRoute: () => NodoNodeIdRoute,
 } as any)
+const NodoNodeIdPracticaRoute = NodoNodeIdPracticaRouteImport.update({
+  id: '/practica',
+  path: '/practica',
+  getParentRoute: () => NodoNodeIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   fileRoutesById: FileRoutesById
 }
@@ -231,14 +243,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NodoNodeIdQuizRouteImport
       parentRoute: typeof NodoNodeIdRoute
     }
+    '/nodo/$nodeId/practica': {
+      id: '/nodo/$nodeId/practica'
+      path: '/practica'
+      fullPath: '/nodo/$nodeId/practica'
+      preLoaderRoute: typeof NodoNodeIdPracticaRouteImport
+      parentRoute: typeof NodoNodeIdRoute
+    }
   }
 }
 
 interface NodoNodeIdRouteChildren {
+  NodoNodeIdPracticaRoute: typeof NodoNodeIdPracticaRoute
   NodoNodeIdQuizRoute: typeof NodoNodeIdQuizRoute
 }
 
 const NodoNodeIdRouteChildren: NodoNodeIdRouteChildren = {
+  NodoNodeIdPracticaRoute: NodoNodeIdPracticaRoute,
   NodoNodeIdQuizRoute: NodoNodeIdQuizRoute,
 }
 
@@ -260,13 +281,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

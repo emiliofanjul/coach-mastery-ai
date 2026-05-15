@@ -238,6 +238,8 @@ function NodoCardsPage() {
               const nt = node?.node_type ?? "knowledge";
               if (nt === "knowledge") {
                 navigate({ to: "/nodo/$nodeId/quiz", params: { nodeId } });
+              } else {
+                navigate({ to: "/nodo/$nodeId/practica", params: { nodeId } });
               }
             }}
           />
