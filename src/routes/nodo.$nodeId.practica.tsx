@@ -197,15 +197,6 @@ Tú eres el cliente. El vendedor practica la apertura solo. Reacciona de forma n
   }
 
   // ─── Render ───
-  if (initError) {
-    return (
-      <div style={{ position: "fixed", inset: 0, background: BG, color: "#fff", zIndex: 60, padding: 24, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 20, color: RED }}>Error al iniciar práctica</div>
-        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{initError}</div>
-        <button onClick={() => navigate({ to: "/mapa" })} style={{ alignSelf: "flex-start", marginTop: 12, height: 44, padding: "0 20px", borderRadius: 99, border: "none", background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, cursor: "pointer" }}>Volver al mapa</button>
-      </div>
-    );
-  }
   return (
     <div
       style={{
