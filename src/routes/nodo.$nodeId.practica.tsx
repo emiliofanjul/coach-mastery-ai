@@ -46,6 +46,15 @@ function PracticaPage() {
   const [showExitDialog, setShowExitDialog] = useState(false);
 
   const conversation = useConversation({
+    onConnect: () => console.log("[voice] onConnect"),
+    onDisconnect: (reason: any) => {
+      console.error("[voice] onDisconnect:", reason);
+      try {
+        alert("Desconectado: " + JSON.stringify(reason, Object.getOwnPropertyNames(reason ?? {})));
+      } catch {
+        alert("Desconectado: " + String(reason));
+      }
+    },
     onMessage: (msg: any) => {
       const text: string = msg.message ?? msg.agent_response ?? msg.text ?? "";
       const role: "agent" | "user" = msg.source === "user" ? "user" : "agent";
