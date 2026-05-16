@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { coachChat } from "@/lib/coach-chat.functions";
+
+type ChatMsg = { role: "user" | "assistant"; content: string };
 
 /**
  * CoachBubble — botón flotante del coach.
@@ -23,6 +26,37 @@ interface CoachBubbleProps {
 export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, loading, open]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const text = draft.trim();
+    if (!text || loading) return;
+    const next = [...messages, { role: "user" as const, content: text }];
+    setMessages(next);
+    setDraft("");
+    setLoading(true);
+    try {
+      const res = await coachChat({ data: { messages: next, context } });
+      setMessages((m) => [...m, { role: "assistant", content: res.reply || "..." }]);
+    } catch (err: any) {
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: "No pude responder ahora. Intenta de nuevo en un momento." },
+      ]);
+      console.error("[coach-chat]", err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   if (hidden) return null;
 
@@ -73,8 +107,7 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
               </button>
             </header>
 
-            <div className="px-5 py-5 space-y-3 max-h-[55vh] overflow-y-auto">
-              {/* Mensaje semilla del coach */}
+            <div ref={scrollRef} className="px-5 py-5 space-y-3 max-h-[55vh] overflow-y-auto">
               <div className="flex gap-3">
                 <div className="h-8 w-8 rounded-full bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
                   <MessageCircle className="h-4 w-4" />
@@ -82,22 +115,50 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
                 <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 text-sm leading-relaxed">
                   Estoy aquí. Cualquier duda sobre lo que estás aprendiendo —
                   o algo que viste hoy en campo — pregúntame.
-                  {context && (
-                    <span className="block mt-2 text-muted-foreground text-xs">
-                      Contexto: {context}
-                    </span>
-                  )}
                 </div>
               </div>
+
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "flex gap-3",
+                    m.role === "user" && "flex-row-reverse"
+                  )}
+                >
+                  {m.role === "assistant" && (
+                    <div className="h-8 w-8 rounded-full bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
+                      <MessageCircle className="h-4 w-4" />
+                    </div>
+                  )}
+                  <div
+                    className={cn(
+                      "rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[80%] whitespace-pre-wrap",
+                      m.role === "assistant"
+                        ? "bg-muted rounded-tl-sm"
+                        : "bg-primary text-primary-foreground rounded-tr-sm"
+                    )}
+                  >
+                    {m.content}
+                  </div>
+                </div>
+              ))}
+
+              {loading && (
+                <div className="flex gap-3">
+                  <div className="h-8 w-8 rounded-full bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="h-4 w-4" />
+                  </div>
+                  <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 text-sm text-muted-foreground flex items-center gap-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" /> Pensando…
+                  </div>
+                </div>
+              )}
             </div>
 
             <form
               className="flex items-center gap-2 px-4 py-3 border-t border-border bg-surface-elevated"
-              onSubmit={(e) => {
-                e.preventDefault();
-                // Wired al backend en su fase. Por ahora solo limpia.
-                setDraft("");
-              }}
+              onSubmit={handleSubmit}
             >
               <input
                 type="text"
