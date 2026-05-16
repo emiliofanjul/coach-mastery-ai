@@ -171,7 +171,7 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
                 type="submit"
                 variant="primary"
                 size="icon"
-                disabled={!draft.trim()}
+                disabled={!draft.trim() || loading}
                 aria-label="Enviar"
               >
                 <Send className="h-4 w-4" />
