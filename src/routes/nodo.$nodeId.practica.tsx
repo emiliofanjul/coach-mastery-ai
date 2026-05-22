@@ -44,6 +44,7 @@ function PracticaPage() {
   const [, setYouDoTranscript] = useState<TranscriptItem[]>([]);
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   const conversation = useConversation({
     onConnect: () => console.log("[voice] onConnect"),
@@ -128,6 +129,7 @@ function PracticaPage() {
 
   async function startVoiceSession() {
     try {
+      setConnectionError(null);
       console.log("[voice] intentando conectar con agentId:", AGENT_ID);
       await conversation.startSession({
         agentId: AGENT_ID,
@@ -136,7 +138,7 @@ function PracticaPage() {
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
       console.error("[voice] startSession failed:", err);
-      alert("Error al conectar: " + JSON.stringify(err, Object.getOwnPropertyNames(err as any)));
+      setConnectionError("No se pudo conectar. Toca para intentar de nuevo.");
     }
   }
 
@@ -214,6 +216,8 @@ function PracticaPage() {
             key="voice"
             currentPhase={currentPhase}
             isSpeaking={conversation.isSpeaking}
+            connectionError={connectionError}
+            onRetry={() => { setConnectionError(null); startVoiceSession(); }}
             onReplay={handleReplay}
             onExitClick={() => setShowExitDialog(true)}
           />
@@ -469,11 +473,15 @@ function PrepPhase({
 function VoicePhase({
   currentPhase,
   isSpeaking,
+  connectionError,
+  onRetry,
   onReplay,
   onExitClick,
 }: {
   currentPhase: TurnPhase;
   isSpeaking: boolean;
+  connectionError: string | null;
+  onRetry: () => void;
   onReplay: () => void;
   onExitClick: () => void;
 }) {
@@ -591,6 +599,31 @@ function VoicePhase({
             }}
           >
             Escucha con atención
+          </div>
+        )}
+
+        {connectionError && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 8 }}>
+            <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>
+              {connectionError}
+            </p>
+            <button
+              onClick={onRetry}
+              style={{
+                background: ORANGE,
+                color: "#08080F",
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: 14,
+                border: "none",
+                borderRadius: 99,
+                padding: "10px 24px",
+                cursor: "pointer",
+                boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+              }}
+            >
+              Reintentar
+            </button>
           </div>
         )}
       </div>
