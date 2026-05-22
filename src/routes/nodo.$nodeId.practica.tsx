@@ -130,6 +130,11 @@ function PracticaPage() {
   async function startVoiceSession() {
     try {
       setConnectionError(null);
+      const firstMessage = `Modo: I_DO. Nodo: ${nodeData?.name}. Empresa: ${companyData?.name}. Industria: ${companyData?.company_sales_brain?.CLIENTE_TIPICO ?? ""}. Demuestra apertura perfecta de visita de campo. Di "Ahora es tu turno." al terminar. Luego actúa como cliente para el YOU DO. Termina con "Vamos al detalle."`;
+      console.log("[voice] firstMessage:", firstMessage);
+      console.log("[voice] sellerData:", sellerData);
+      console.log("[voice] nodeData:", nodeData);
+      console.log("[voice] companyData:", companyData);
       console.log("[voice] intentando conectar con agentId:", AGENT_ID);
       await conversation.startSession({
         agentId: AGENT_ID,
