@@ -47,7 +47,7 @@ function PracticaPage() {
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
   const conversation = useConversation({
-    onConnect: () => console.log("[voice] onConnect"),
+    onConnect: () => console.log("[voice] CONECTADO ✓"),
     onDisconnect: (reason: any) => {
       console.error("[voice] onDisconnect:", reason);
       try {
