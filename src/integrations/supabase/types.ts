@@ -676,6 +676,7 @@ export type Database = {
           company_id: string
           created_at: string
           credits_consumed: number | null
+          end_reason: string | null
           id: string
           interruption_count: number
           is_boss_level: boolean
@@ -697,6 +698,7 @@ export type Database = {
           company_id: string
           created_at?: string
           credits_consumed?: number | null
+          end_reason?: string | null
           id?: string
           interruption_count?: number
           is_boss_level?: boolean
@@ -718,6 +720,7 @@ export type Database = {
           company_id?: string
           created_at?: string
           credits_consumed?: number | null
+          end_reason?: string | null
           id?: string
           interruption_count?: number
           is_boss_level?: boolean
