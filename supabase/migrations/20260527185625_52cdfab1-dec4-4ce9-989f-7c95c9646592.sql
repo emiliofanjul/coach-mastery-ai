@@ -1,0 +1,1 @@
+ALTER TABLE public.practice_sessions ADD COLUMN IF NOT EXISTS end_reason text;
