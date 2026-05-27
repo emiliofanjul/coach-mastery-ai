@@ -108,7 +108,7 @@ function PracticaPage() {
     const [{ data: node }, { data: company }] = await Promise.all([
       supabase
         .from("nodes")
-        .select("name, description, conversation_scope, node_type")
+        .select("id, name, description, conversation_scope, node_type, technique, boss_goal, field_mission, world_id, difficulty_level, is_boss, practice_script")
         .eq("id", nodeId)
         .maybeSingle(),
       supabase
@@ -119,6 +119,7 @@ function PracticaPage() {
     ]);
     setSellerData(seller);
     setNodeData(node);
+    nodeDataRef.current = node;
     setCompanyData(company);
     setPhase("voice");
   }
