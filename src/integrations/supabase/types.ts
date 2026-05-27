@@ -518,6 +518,44 @@ export type Database = {
           },
         ]
       }
+      node_skills: {
+        Row: {
+          created_at: string
+          id: string
+          is_primary: boolean
+          node_id: string
+          relation: string
+          skill_id: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          node_id: string
+          relation: string
+          skill_id: string
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          node_id?: string
+          relation?: string
+          skill_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "node_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nodes: {
         Row: {
           boss_goal: string | null
@@ -942,6 +980,77 @@ export type Database = {
           },
         ]
       }
+      seller_skill_state: {
+        Row: {
+          company_id: string
+          created_at: string
+          current_score: number
+          evaluations_count: number
+          id: string
+          last_evaluated_at: string | null
+          last_evidence: Json | null
+          mastered: boolean
+          mastered_at: string | null
+          recurring_errors: Json
+          reinforcement_needed: boolean
+          reinforcement_reason: string | null
+          seller_id: string
+          skill_id: string
+          trend: string
+          unlocked_concepts: Json
+          updated_at: string
+          xp_in_skill: number
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          current_score?: number
+          evaluations_count?: number
+          id?: string
+          last_evaluated_at?: string | null
+          last_evidence?: Json | null
+          mastered?: boolean
+          mastered_at?: string | null
+          recurring_errors?: Json
+          reinforcement_needed?: boolean
+          reinforcement_reason?: string | null
+          seller_id: string
+          skill_id: string
+          trend?: string
+          unlocked_concepts?: Json
+          updated_at?: string
+          xp_in_skill?: number
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          current_score?: number
+          evaluations_count?: number
+          id?: string
+          last_evaluated_at?: string | null
+          last_evidence?: Json | null
+          mastered?: boolean
+          mastered_at?: string | null
+          recurring_errors?: Json
+          reinforcement_needed?: boolean
+          reinforcement_reason?: string | null
+          seller_id?: string
+          skill_id?: string
+          trend?: string
+          unlocked_concepts?: Json
+          updated_at?: string
+          xp_in_skill?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_skill_state_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sellers: {
         Row: {
           company_id: string
@@ -1016,6 +1125,127 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_evaluations: {
+        Row: {
+          company_id: string
+          created_at: string
+          evaluator_version: string
+          failure_hits: Json
+          id: string
+          node_id: string | null
+          notes_for_seller: string | null
+          notes_internal: string | null
+          score: number
+          seller_id: string
+          session_id: string
+          skill_id: string
+          success_hits: Json
+          verdict: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          evaluator_version?: string
+          failure_hits?: Json
+          id?: string
+          node_id?: string | null
+          notes_for_seller?: string | null
+          notes_internal?: string | null
+          score: number
+          seller_id: string
+          session_id: string
+          skill_id: string
+          success_hits?: Json
+          verdict: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          evaluator_version?: string
+          failure_hits?: Json
+          id?: string
+          node_id?: string | null
+          notes_for_seller?: string | null
+          notes_internal?: string | null
+          score?: number
+          seller_id?: string
+          session_id?: string
+          skill_id?: string
+          success_hits?: Json
+          verdict?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_evaluations_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skills: {
+        Row: {
+          category: string
+          code: string
+          created_at: string
+          default_allowed_concepts: Json
+          default_forbidden_concepts: Json
+          failure_signals: Json
+          id: string
+          level_required: string
+          mastery_threshold: number
+          name: string
+          parent_skill_id: string | null
+          reinforcement_threshold: number
+          short_description: string | null
+          success_signals: Json
+          world_id_introduced: number
+        }
+        Insert: {
+          category: string
+          code: string
+          created_at?: string
+          default_allowed_concepts?: Json
+          default_forbidden_concepts?: Json
+          failure_signals?: Json
+          id: string
+          level_required?: string
+          mastery_threshold?: number
+          name: string
+          parent_skill_id?: string | null
+          reinforcement_threshold?: number
+          short_description?: string | null
+          success_signals?: Json
+          world_id_introduced: number
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string
+          default_allowed_concepts?: Json
+          default_forbidden_concepts?: Json
+          failure_signals?: Json
+          id?: string
+          level_required?: string
+          mastery_threshold?: number
+          name?: string
+          parent_skill_id?: string | null
+          reinforcement_threshold?: number
+          short_description?: string | null
+          success_signals?: Json
+          world_id_introduced?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skills_parent_skill_id_fkey"
+            columns: ["parent_skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
             referencedColumns: ["id"]
           },
         ]
