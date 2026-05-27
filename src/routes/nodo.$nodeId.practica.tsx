@@ -161,14 +161,23 @@ function PracticaPage() {
     }
     const youDo = transcriptFull.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
+    const nodeType: string = nodeData?.node_type ?? "skill_drill";
+    const practiceType =
+      nodeType === "boss"
+        ? "boss"
+        : nodeType === "full_sim"
+          ? "full_sim"
+          : "skill_drill";
+    const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
     const { data: session } = await supabase
       .from("practice_sessions")
       .insert({
         seller_id: sellerData.id,
         company_id: sellerData.company_id,
         node_id: nodeId,
-        world_id: 0,
-        practice_type: "skill_drill",
+        world_id: nodeData?.world_id ?? 0,
+        practice_type: practiceType,
+        is_boss_level: isBossLevel,
         transcript: JSON.stringify(transcriptFull),
       })
       .select()
