@@ -65,11 +65,14 @@ function PracticaPage() {
           { role, text, phase: currentPhaseRef.current },
         ]);
       }
-      if (role === "agent" && text.toLowerCase().includes("ahora es tu turno")) {
+      const script = nodeDataRef.current?.practice_script;
+      const transitionPhrase: string = (script?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
+      const endPhrase: string = (script?.end_phrase ?? "Vamos al detalle").toLowerCase();
+      if (role === "agent" && text.toLowerCase().includes(transitionPhrase)) {
         setCurrentPhase("you_do");
         currentPhaseRef.current = "you_do";
       }
-      if (role === "agent" && text.toLowerCase().includes("vamos al detalle")) {
+      if (role === "agent" && text.toLowerCase().includes(endPhrase)) {
         handleSessionEnd();
       }
     },
