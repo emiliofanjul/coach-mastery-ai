@@ -532,6 +532,7 @@ export type Database = {
           name: string
           node_type: string
           order_index: number
+          practice_script: Json | null
           reps_required: number
           technique: string | null
           world_id: number
@@ -549,6 +550,7 @@ export type Database = {
           name: string
           node_type?: string
           order_index: number
+          practice_script?: Json | null
           reps_required?: number
           technique?: string | null
           world_id: number
@@ -566,6 +568,7 @@ export type Database = {
           name?: string
           node_type?: string
           order_index?: number
+          practice_script?: Json | null
           reps_required?: number
           technique?: string | null
           world_id?: number
