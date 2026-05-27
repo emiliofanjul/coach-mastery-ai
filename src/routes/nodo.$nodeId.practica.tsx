@@ -40,6 +40,7 @@ function PracticaPage() {
   const [transcriptFull, setTranscriptFull] = useState<TranscriptItem[]>([]);
   const [currentPhase, setCurrentPhase] = useState<TurnPhase>("i_do");
   const currentPhaseRef = useRef<TurnPhase>("i_do");
+  const nodeDataRef = useRef<any>(null);
   const [, setSessionId] = useState<string | null>(null);
   const [, setYouDoTranscript] = useState<TranscriptItem[]>([]);
   const [, setSaving] = useState(false);
