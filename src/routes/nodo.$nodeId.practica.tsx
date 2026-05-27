@@ -69,8 +69,8 @@ function PracticaPage() {
         ]);
       }
       const script = nodeDataRef.current?.practice_script;
-      const transitionPhrase: string = (script?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
-      const endPhrase: string = (script?.end_phrase ?? "Vamos al detalle").toLowerCase();
+      const transitionPhrase: string = (script?.phases?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
+      const endPhrase: string = (script?.phases?.end_phrase ?? "Vamos al detalle").toLowerCase();
       if (role === "agent" && text.toLowerCase().includes(transitionPhrase)) {
         setCurrentPhase("you_do");
         currentPhaseRef.current = "you_do";
