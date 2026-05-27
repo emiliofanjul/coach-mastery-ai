@@ -37,6 +37,8 @@ function PracticaPage() {
   const [sellerData, setSellerData] = useState<any>(null);
   const [nodeData, setNodeData] = useState<any>(null);
   const [companyData, setCompanyData] = useState<any>(null);
+  const [skillsContext, setSkillsContext] = useState<any>(null);
+  const skillsContextRef = useRef<any>(null);
   const [transcriptFull, setTranscriptFull] = useState<TranscriptItem[]>([]);
   const [currentPhase, setCurrentPhase] = useState<TurnPhase>("i_do");
   const currentPhaseRef = useRef<TurnPhase>("i_do");
@@ -67,8 +69,8 @@ function PracticaPage() {
         ]);
       }
       const script = nodeDataRef.current?.practice_script;
-      const transitionPhrase: string = (script?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
-      const endPhrase: string = (script?.end_phrase ?? "Vamos al detalle").toLowerCase();
+      const transitionPhrase: string = (script?.phases?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
+      const endPhrase: string = (script?.phases?.end_phrase ?? "Vamos al detalle").toLowerCase();
       if (role === "agent" && text.toLowerCase().includes(transitionPhrase)) {
         setCurrentPhase("you_do");
         currentPhaseRef.current = "you_do";
@@ -105,7 +107,7 @@ function PracticaPage() {
       .eq("profile_id", auth.user.id)
       .maybeSingle();
     if (!seller) return;
-    const [{ data: node }, { data: company }] = await Promise.all([
+    const [{ data: node }, { data: company }, { data: nodeSkillsRows }] = await Promise.all([
       supabase
         .from("nodes")
         .select("id, name, description, conversation_scope, node_type, technique, boss_goal, field_mission, world_id, difficulty_level, is_boss, practice_script")
@@ -116,34 +118,136 @@ function PracticaPage() {
         .select("name, company_sales_brain")
         .eq("id", seller.company_id)
         .maybeSingle(),
+      supabase
+        .from("node_skills")
+        .select("relation, is_primary, weight, skill:skills(id, code, name, category, default_allowed_concepts, default_forbidden_concepts)")
+        .eq("node_id", nodeId),
     ]);
+
+    // Build skillsContext
+    const script: any = (node as any)?.practice_script ?? null;
+    const rows: any[] = (nodeSkillsRows as any[]) ?? [];
+    const practiceOrAssess = rows.filter(
+      (r) => r.relation === "practices" || r.relation === "assesses",
+    );
+    const skillsForFallback = practiceOrAssess.length > 0 ? practiceOrAssess : rows;
+    const inFocusFromScript: string[] | null = Array.isArray(script?.scope?.skills_in_focus)
+      ? script.scope.skills_in_focus
+      : null;
+    const skillsInFocus: string[] =
+      inFocusFromScript ?? skillsForFallback.map((r) => r.skill?.id).filter(Boolean);
+    const skillCodes: string[] = skillsForFallback.map((r) => r.skill?.code).filter(Boolean);
+    const primarySkillId: string | null =
+      rows.find((r) => r.is_primary)?.skill?.id ?? skillsInFocus[0] ?? null;
+    const focusSkillsForDefaults = skillsForFallback.filter((r) =>
+      skillsInFocus.includes(r.skill?.id),
+    );
+    const unionDefaults = (key: "default_allowed_concepts" | "default_forbidden_concepts") => {
+      const set = new Set<string>();
+      focusSkillsForDefaults.forEach((r) => {
+        const arr = r.skill?.[key];
+        if (Array.isArray(arr)) arr.forEach((v: string) => set.add(v));
+      });
+      return Array.from(set);
+    };
+    const allowedConcepts: string[] = Array.isArray(script?.scope?.allowed_concepts)
+      ? script.scope.allowed_concepts
+      : unionDefaults("default_allowed_concepts");
+    const forbiddenConcepts: string[] = Array.isArray(script?.scope?.forbidden_concepts)
+      ? script.scope.forbidden_concepts
+      : unionDefaults("default_forbidden_concepts");
+    const successCriteria = Array.isArray(script?.success_criteria)
+      ? script.success_criteria
+      : [];
+    const failureCriteria = Array.isArray(script?.failure_criteria)
+      ? script.failure_criteria
+      : [];
+
+    const ctx = {
+      primarySkillId,
+      skillsInFocus,
+      skillCodes,
+      allowedConcepts,
+      forbiddenConcepts,
+      successCriteria,
+      failureCriteria,
+    };
+
     setSellerData(seller);
     setNodeData(node);
     nodeDataRef.current = node;
     setCompanyData(company);
+    setSkillsContext(ctx);
+    skillsContextRef.current = ctx;
     setPhase("voice");
   }
 
   // Iniciar sesión de voz
   useEffect(() => {
-    if (phase === "voice" && sellerData && nodeData && companyData) {
+    if (phase === "voice" && sellerData && nodeData && companyData && skillsContext) {
       startVoiceSession();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, sellerData, nodeData, companyData]);
+  }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
   async function startVoiceSession() {
     try {
       setConnectionError(null);
-      const firstMessage = `Modo: I_DO. Nodo: ${nodeData?.name}. Empresa: ${companyData?.name}. Industria: ${companyData?.company_sales_brain?.CLIENTE_TIPICO ?? ""}. Demuestra apertura perfecta de visita de campo. Di "Ahora es tu turno." al terminar. Luego actúa como cliente para el YOU DO. Termina con "Vamos al detalle."`;
+      const script: any = nodeData?.practice_script ?? null;
+      const hasIDo = !!script?.phases?.i_do?.prompt;
+      const firstMessage: string =
+        script?.phases?.i_do?.prompt ??
+        `Modo: ${nodeData?.node_type ?? "skill_drill"}. Nodo: ${nodeData?.name ?? ""}. Empresa: ${companyData?.name ?? ""}. Sigue la técnica del nodo y termina con la frase de transición acordada.`;
+      const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
+      const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
+      const currentMode = hasIDo ? "i_do" : (nodeData?.node_type ?? "skill_drill");
+      const ctx = skillsContextRef.current ?? skillsContext ?? {
+        skillsInFocus: [],
+        skillCodes: [],
+        allowedConcepts: [],
+        forbiddenConcepts: [],
+        successCriteria: [],
+        failureCriteria: [],
+        primarySkillId: null,
+      };
+
+      const dynamicVariables: Record<string, any> = {
+        node_id: nodeData?.id ?? nodeId,
+        node_name: nodeData?.name ?? "",
+        node_type: nodeData?.node_type ?? "skill_drill",
+        conversation_scope: nodeData?.conversation_scope ?? "",
+        current_mode: currentMode,
+        world_number: nodeData?.world_id ?? 0,
+        company_name: companyData?.name ?? "",
+        company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
+        seller_name: sellerData?.full_name ?? "",
+        seller_experience: sellerData?.experience_level ?? "",
+        skills_in_focus: JSON.stringify(ctx.skillsInFocus ?? []),
+        skill_codes: JSON.stringify(ctx.skillCodes ?? []),
+        allowed_concepts: JSON.stringify(ctx.allowedConcepts ?? []),
+        forbidden_concepts: JSON.stringify(ctx.forbiddenConcepts ?? []),
+        success_criteria: JSON.stringify(ctx.successCriteria ?? []),
+        failure_criteria: JSON.stringify(ctx.failureCriteria ?? []),
+        transition_phrase: transitionPhrase,
+        end_phrase: endPhrase,
+      };
+
       console.log("[voice] firstMessage:", firstMessage);
-      console.log("[voice] sellerData:", sellerData);
+      console.log("[voice] dynamicVariables:", dynamicVariables);
+      console.log("[voice] skillsContext:", ctx);
       console.log("[voice] nodeData:", nodeData);
-      console.log("[voice] companyData:", companyData);
       console.log("[voice] intentando conectar con agentId:", AGENT_ID);
+
       await conversation.startSession({
         agentId: AGENT_ID,
         connectionType: "websocket",
+        overrides: {
+          agent: {
+            firstMessage,
+            language: "es",
+          },
+        },
+        dynamicVariables,
       } as any);
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
