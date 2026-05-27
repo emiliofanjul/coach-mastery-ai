@@ -1,0 +1,1 @@
+ALTER TABLE public.nodes ADD COLUMN IF NOT EXISTS practice_script jsonb;

@@ -40,6 +40,7 @@ function PracticaPage() {
   const [transcriptFull, setTranscriptFull] = useState<TranscriptItem[]>([]);
   const [currentPhase, setCurrentPhase] = useState<TurnPhase>("i_do");
   const currentPhaseRef = useRef<TurnPhase>("i_do");
+  const nodeDataRef = useRef<any>(null);
   const [, setSessionId] = useState<string | null>(null);
   const [, setYouDoTranscript] = useState<TranscriptItem[]>([]);
   const [, setSaving] = useState(false);
@@ -65,11 +66,14 @@ function PracticaPage() {
           { role, text, phase: currentPhaseRef.current },
         ]);
       }
-      if (role === "agent" && text.toLowerCase().includes("ahora es tu turno")) {
+      const script = nodeDataRef.current?.practice_script;
+      const transitionPhrase: string = (script?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
+      const endPhrase: string = (script?.end_phrase ?? "Vamos al detalle").toLowerCase();
+      if (role === "agent" && text.toLowerCase().includes(transitionPhrase)) {
         setCurrentPhase("you_do");
         currentPhaseRef.current = "you_do";
       }
-      if (role === "agent" && text.toLowerCase().includes("vamos al detalle")) {
+      if (role === "agent" && text.toLowerCase().includes(endPhrase)) {
         handleSessionEnd();
       }
     },
@@ -104,7 +108,7 @@ function PracticaPage() {
     const [{ data: node }, { data: company }] = await Promise.all([
       supabase
         .from("nodes")
-        .select("name, description, conversation_scope, node_type")
+        .select("id, name, description, conversation_scope, node_type, technique, boss_goal, field_mission, world_id, difficulty_level, is_boss, practice_script")
         .eq("id", nodeId)
         .maybeSingle(),
       supabase
@@ -115,6 +119,7 @@ function PracticaPage() {
     ]);
     setSellerData(seller);
     setNodeData(node);
+    nodeDataRef.current = node;
     setCompanyData(company);
     setPhase("voice");
   }
@@ -156,14 +161,23 @@ function PracticaPage() {
     }
     const youDo = transcriptFull.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
+    const nodeType: string = nodeData?.node_type ?? "skill_drill";
+    const practiceType =
+      nodeType === "boss"
+        ? "boss"
+        : nodeType === "full_sim"
+          ? "full_sim"
+          : "skill_drill";
+    const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
     const { data: session } = await supabase
       .from("practice_sessions")
       .insert({
         seller_id: sellerData.id,
         company_id: sellerData.company_id,
         node_id: nodeId,
-        world_id: 0,
-        practice_type: "skill_drill",
+        world_id: nodeData?.world_id ?? 0,
+        practice_type: practiceType,
+        is_boss_level: isBossLevel,
         transcript: JSON.stringify(transcriptFull),
       })
       .select()
