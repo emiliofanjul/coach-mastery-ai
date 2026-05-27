@@ -37,6 +37,8 @@ function PracticaPage() {
   const [sellerData, setSellerData] = useState<any>(null);
   const [nodeData, setNodeData] = useState<any>(null);
   const [companyData, setCompanyData] = useState<any>(null);
+  const [skillsContext, setSkillsContext] = useState<any>(null);
+  const skillsContextRef = useRef<any>(null);
   const [transcriptFull, setTranscriptFull] = useState<TranscriptItem[]>([]);
   const [currentPhase, setCurrentPhase] = useState<TurnPhase>("i_do");
   const currentPhaseRef = useRef<TurnPhase>("i_do");
