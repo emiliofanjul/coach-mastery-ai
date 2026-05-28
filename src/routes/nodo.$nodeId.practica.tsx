@@ -255,26 +255,7 @@ function PracticaPage() {
     }
   }
 
-        },
-        dynamicVariables,
-      } as any);
 
-      setTimeout(async () => {
-        try {
-          await conversation.sendContextualUpdate(
-            "SYSTEM_TRANSITION: intro_complete -> enter_i_do"
-          );
-        } catch (e) {
-          console.error("[voice] contextualUpdate error:", e);
-        }
-      }, 500);
-
-      console.log("[voice] sesión iniciada, status:", conversation.status);
-    } catch (err) {
-      console.error("[voice] startSession failed:", err);
-      setConnectionError("No se pudo conectar. Toca para intentar de nuevo.");
-    }
-  }
 
 
   async function handleSessionEnd() {
