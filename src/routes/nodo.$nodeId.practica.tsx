@@ -662,7 +662,7 @@ function PrepPhase({
             boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
           }}
         >
-          Listo →
+          Ver demostración →
         </button>
       </div>
     </motion.div>
