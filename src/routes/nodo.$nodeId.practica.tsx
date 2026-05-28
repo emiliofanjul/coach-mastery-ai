@@ -230,6 +230,14 @@ function PracticaPage() {
         technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
       };
 
+      const sellerFirstName = sellerData?.full_name?.split(" ")?.[0] ?? "";
+      const nodeName = nodeData?.name ?? "esta práctica";
+
+      const firstMessage: string =
+        (script?.first_message ?? script?.phases?.intro?.first_message ?? "")
+          .replace("{{seller_name}}", sellerFirstName)
+        || `${sellerFirstName ? sellerFirstName + ", " : ""}vamos a practicar ${nodeName}. Primero te muestro cómo se ve y después lo haces tú.`;
+
       console.log("[voice] dynamicVariables:", dynamicVariables);
       console.log("[voice] skillsContext:", ctx);
       console.log("[voice] nodeData:", nodeData);
@@ -241,10 +249,12 @@ function PracticaPage() {
         overrides: {
           agent: {
             language: "es",
+            firstMessage,
           },
         },
         dynamicVariables,
       } as any);
+
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
       console.error("[voice] startSession failed:", err);
