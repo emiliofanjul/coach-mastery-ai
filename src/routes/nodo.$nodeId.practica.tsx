@@ -217,7 +217,7 @@ function PracticaPage() {
       const script: any = nodeData?.practice_script ?? null;
       const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
       const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
-      const currentMode: TurnPhase = "i_do";
+      const currentMode: TurnPhase = "you_do";
       const ctx = skillsContextRef.current ?? skillsContext ?? {
         skillsInFocus: [],
         skillCodes: [],
@@ -271,6 +271,8 @@ function PracticaPage() {
         dynamicVariables,
       } as any);
 
+      setCurrentPhase("you_do");
+      currentPhaseRef.current = "you_do";
 
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
