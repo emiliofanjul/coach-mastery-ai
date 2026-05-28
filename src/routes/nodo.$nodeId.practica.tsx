@@ -230,6 +230,7 @@ function PracticaPage() {
         failure_criteria: JSON.stringify(ctx.failureCriteria ?? []),
         transition_phrase: transitionPhrase,
         end_phrase: endPhrase,
+        technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
       };
 
       console.log("[voice] firstMessage:", firstMessage);
