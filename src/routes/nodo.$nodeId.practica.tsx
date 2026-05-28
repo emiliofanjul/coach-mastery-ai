@@ -348,11 +348,13 @@ function PracticaPage() {
           <PrepPhase
             key="prep"
             micGranted={micGranted}
+            nodeData={nodeData}
             onRetry={requestMic}
             onListo={handleListo}
             onExit={() => navigate({ to: "/mapa" })}
           />
         )}
+
         {phase === "voice" && (
           <VoicePhase
             key="voice"
