@@ -193,7 +193,25 @@ function PracticaPage() {
       failureCriteria,
     };
 
+    setSellerData(seller);
+    setNodeData(node);
+    nodeDataRef.current = node;
+    setCompanyData(company);
+    setSkillsContext(ctx);
+    skillsContextRef.current = ctx;
+    setPhase("voice");
+  }
+
+  // Iniciar sesión de voz
+  useEffect(() => {
+    if (phase === "voice" && sellerData && nodeData && companyData && skillsContext) {
+      startVoiceSession();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, sellerData, nodeData, companyData, skillsContext]);
+
   async function startVoiceSession() {
+
     try {
       setConnectionError(null);
       const script: any = nodeData?.practice_script ?? null;
