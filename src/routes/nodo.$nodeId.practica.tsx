@@ -196,8 +196,8 @@ function PracticaPage() {
       const script: any = nodeData?.practice_script ?? null;
       const hasIDo = !!script?.phases?.i_do?.prompt;
       const firstMessage: string =
-        script?.phases?.i_do?.prompt ??
-        `Modo: ${nodeData?.node_type ?? "skill_drill"}. Nodo: ${nodeData?.name ?? ""}. Empresa: ${companyData?.name ?? ""}. Sigue la técnica del nodo y termina con la frase de transición acordada.`;
+        script?.phases?.intro?.prompt ??
+        `Hola ${sellerData?.full_name ?? ""}. Vamos a practicar. Empecemos.`;
       const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
       const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
       const currentMode = hasIDo ? "i_do" : (nodeData?.node_type ?? "skill_drill");
