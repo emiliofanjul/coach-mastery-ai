@@ -89,6 +89,25 @@ function PracticaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Cargar info básica del nodo para mostrar en prep
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data: node } = await supabase
+        .from("nodes")
+        .select("id, name, description")
+        .eq("id", nodeId)
+        .maybeSingle();
+      if (!alive) return;
+      if (node) {
+        setNodeData((prev: any) => prev ?? node);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [nodeId]);
+
   async function requestMic() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -97,6 +116,7 @@ function PracticaPage() {
       setMicGranted(false);
     }
   }
+
 
   async function handleListo() {
     const { data: auth } = await supabase.auth.getUser();
@@ -191,13 +211,13 @@ function PracticaPage() {
   }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
   async function startVoiceSession() {
+
     try {
       setConnectionError(null);
       const script: any = nodeData?.practice_script ?? null;
-      const hasIDo = !!script?.phases?.i_do?.prompt;
       const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
       const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
-      const currentMode = hasIDo ? "i_do" : (nodeData?.node_type ?? "skill_drill");
+      const currentMode: TurnPhase = "i_do";
       const ctx = skillsContextRef.current ?? skillsContext ?? {
         skillsInFocus: [],
         skillCodes: [],
@@ -230,14 +250,6 @@ function PracticaPage() {
         technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
       };
 
-      const sellerFirstName = sellerData?.full_name?.split(" ")?.[0] ?? "";
-      const nodeName = nodeData?.name ?? "esta práctica";
-
-      const firstMessage: string =
-        (script?.first_message ?? script?.phases?.intro?.first_message ?? "")
-          .replace("{{seller_name}}", sellerFirstName)
-        || `${sellerFirstName ? sellerFirstName + ", " : ""}vamos a practicar ${nodeName}. Primero te muestro cómo se ve y después lo haces tú.`;
-
       console.log("[voice] dynamicVariables:", dynamicVariables);
       console.log("[voice] skillsContext:", ctx);
       console.log("[voice] nodeData:", nodeData);
@@ -249,21 +261,10 @@ function PracticaPage() {
         overrides: {
           agent: {
             language: "es",
-            firstMessage,
           },
         },
         dynamicVariables,
       } as any);
-
-      setTimeout(async () => {
-        try {
-          await conversation.sendContextualUpdate(
-            "SYSTEM_TRANSITION: intro_complete -> enter_i_do"
-          );
-        } catch (e) {
-          console.error("[voice] contextualUpdate error:", e);
-        }
-      }, 500);
 
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
@@ -271,6 +272,8 @@ function PracticaPage() {
       setConnectionError("No se pudo conectar. Toca para intentar de nuevo.");
     }
   }
+
+
 
 
   async function handleSessionEnd() {
@@ -345,11 +348,13 @@ function PracticaPage() {
           <PrepPhase
             key="prep"
             micGranted={micGranted}
+            nodeData={nodeData}
             onRetry={requestMic}
             onListo={handleListo}
             onExit={() => navigate({ to: "/mapa" })}
           />
         )}
+
         {phase === "voice" && (
           <VoicePhase
             key="voice"
@@ -437,15 +442,18 @@ function PracticaPage() {
 
 function PrepPhase({
   micGranted,
+  nodeData,
   onRetry,
   onListo,
   onExit,
 }: {
   micGranted: boolean;
+  nodeData: any;
   onRetry: () => void;
   onListo: () => void;
   onExit: () => void;
 }) {
+
   const checks = [
     {
       ok: micGranted,
@@ -554,6 +562,60 @@ function PrepPhase({
           ))}
         </div>
 
+        {nodeData && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.4 }}
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 14,
+              padding: "18px 18px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: 18,
+                lineHeight: 1.3,
+                color: "#fff",
+              }}
+            >
+              {nodeData.name}
+            </div>
+            {nodeData.description && (
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  color: "rgba(255,255,255,0.75)",
+                }}
+              >
+                <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Objetivo: </span>
+                {nodeData.description}
+              </div>
+            )}
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 14,
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.75)",
+              }}
+            >
+              <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Formato: </span>
+              Closer demuestra primero y luego tú practicas.
+            </div>
+          </motion.div>
+        )}
+
+
         {!micGranted && (
           <button
             onClick={onRetry}
@@ -600,7 +662,7 @@ function PrepPhase({
             boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
           }}
         >
-          Listo →
+          Ver demostración →
         </button>
       </div>
     </motion.div>
