@@ -562,6 +562,60 @@ function PrepPhase({
           ))}
         </div>
 
+        {nodeData && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.4 }}
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 14,
+              padding: "18px 18px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: 18,
+                lineHeight: 1.3,
+                color: "#fff",
+              }}
+            >
+              {nodeData.name}
+            </div>
+            {nodeData.description && (
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  color: "rgba(255,255,255,0.75)",
+                }}
+              >
+                <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Objetivo: </span>
+                {nodeData.description}
+              </div>
+            )}
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 14,
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.75)",
+              }}
+            >
+              <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Formato: </span>
+              Closer demuestra primero y luego tú practicas.
+            </div>
+          </motion.div>
+        )}
+
+
         {!micGranted && (
           <button
             onClick={onRetry}
