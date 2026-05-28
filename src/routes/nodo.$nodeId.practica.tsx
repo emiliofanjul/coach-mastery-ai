@@ -442,15 +442,18 @@ function PracticaPage() {
 
 function PrepPhase({
   micGranted,
+  nodeData,
   onRetry,
   onListo,
   onExit,
 }: {
   micGranted: boolean;
+  nodeData: any;
   onRetry: () => void;
   onListo: () => void;
   onExit: () => void;
 }) {
+
   const checks = [
     {
       ok: micGranted,
