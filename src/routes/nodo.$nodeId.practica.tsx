@@ -89,6 +89,25 @@ function PracticaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Cargar info básica del nodo para mostrar en prep
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data: node } = await supabase
+        .from("nodes")
+        .select("id, name, description")
+        .eq("id", nodeId)
+        .maybeSingle();
+      if (!alive) return;
+      if (node) {
+        setNodeData((prev: any) => prev ?? node);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [nodeId]);
+
   async function requestMic() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -97,6 +116,7 @@ function PracticaPage() {
       setMicGranted(false);
     }
   }
+
 
   async function handleListo() {
     const { data: auth } = await supabase.auth.getUser();
