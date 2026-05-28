@@ -193,31 +193,13 @@ function PracticaPage() {
       failureCriteria,
     };
 
-    setSellerData(seller);
-    setNodeData(node);
-    nodeDataRef.current = node;
-    setCompanyData(company);
-    setSkillsContext(ctx);
-    skillsContextRef.current = ctx;
-    setPhase("voice");
-  }
-
-  // Iniciar sesión de voz
-  useEffect(() => {
-    if (phase === "voice" && sellerData && nodeData && companyData && skillsContext) {
-      startVoiceSession();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, sellerData, nodeData, companyData, skillsContext]);
-
   async function startVoiceSession() {
     try {
       setConnectionError(null);
       const script: any = nodeData?.practice_script ?? null;
-      const hasIDo = !!script?.phases?.i_do?.prompt;
       const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
       const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
-      const currentMode = hasIDo ? "i_do" : (nodeData?.node_type ?? "skill_drill");
+      const currentMode: TurnPhase = "i_do";
       const ctx = skillsContextRef.current ?? skillsContext ?? {
         skillsInFocus: [],
         skillCodes: [],
@@ -250,14 +232,6 @@ function PracticaPage() {
         technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
       };
 
-      const sellerFirstName = sellerData?.full_name?.split(" ")?.[0] ?? "";
-      const nodeName = nodeData?.name ?? "esta práctica";
-
-      const firstMessage: string =
-        (script?.first_message ?? script?.phases?.intro?.first_message ?? "")
-          .replace("{{seller_name}}", sellerFirstName)
-        || `${sellerFirstName ? sellerFirstName + ", " : ""}vamos a practicar ${nodeName}. Primero te muestro cómo se ve y después lo haces tú.`;
-
       console.log("[voice] dynamicVariables:", dynamicVariables);
       console.log("[voice] skillsContext:", ctx);
       console.log("[voice] nodeData:", nodeData);
@@ -269,8 +243,18 @@ function PracticaPage() {
         overrides: {
           agent: {
             language: "es",
-            firstMessage,
           },
+        },
+        dynamicVariables,
+      } as any);
+
+      console.log("[voice] sesión iniciada, status:", conversation.status);
+    } catch (err) {
+      console.error("[voice] startSession failed:", err);
+      setConnectionError("No se pudo conectar. Toca para intentar de nuevo.");
+    }
+  }
+
         },
         dynamicVariables,
       } as any);
