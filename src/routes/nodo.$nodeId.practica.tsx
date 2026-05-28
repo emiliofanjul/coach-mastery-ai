@@ -195,9 +195,6 @@ function PracticaPage() {
       setConnectionError(null);
       const script: any = nodeData?.practice_script ?? null;
       const hasIDo = !!script?.phases?.i_do?.prompt;
-      const firstMessage: string =
-        script?.phases?.intro?.prompt ??
-        `Hola ${sellerData?.full_name ?? ""}. Vamos a practicar. Empecemos.`;
       const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
       const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
       const currentMode = hasIDo ? "i_do" : (nodeData?.node_type ?? "skill_drill");
@@ -233,7 +230,6 @@ function PracticaPage() {
         technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
       };
 
-      console.log("[voice] firstMessage:", firstMessage);
       console.log("[voice] dynamicVariables:", dynamicVariables);
       console.log("[voice] skillsContext:", ctx);
       console.log("[voice] nodeData:", nodeData);
@@ -244,7 +240,6 @@ function PracticaPage() {
         connectionType: "websocket",
         overrides: {
           agent: {
-            firstMessage,
             language: "es",
           },
         },
