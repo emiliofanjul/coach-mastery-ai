@@ -250,6 +250,10 @@ function PracticaPage() {
         technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
       };
 
+      const firstMessage: string =
+        script?.phases?.i_do?.first_message
+        ?? `Buenos días, ¿cómo está? Mucho gusto, soy ${sellerData?.full_name ?? "Carlos"} de ${companyData?.name ?? "la empresa"}. Qué bueno encontrarlo — justo quería platicar un momento con usted.`;
+
       console.log("[voice] dynamicVariables:", dynamicVariables);
       console.log("[voice] skillsContext:", ctx);
       console.log("[voice] nodeData:", nodeData);
@@ -261,10 +265,12 @@ function PracticaPage() {
         overrides: {
           agent: {
             language: "es",
+            firstMessage,
           },
         },
         dynamicVariables,
       } as any);
+
 
       console.log("[voice] sesión iniciada, status:", conversation.status);
     } catch (err) {
