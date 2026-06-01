@@ -477,6 +477,7 @@ function PracticaPage() {
         practice_type: practiceType,
         is_boss_level: isBossLevel,
         transcript: JSON.stringify(transcriptFullRef.current),
+        conversation_history: conversationHistoryRef.current as any,
       })
       .select()
       .maybeSingle();
