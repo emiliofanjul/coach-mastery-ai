@@ -62,8 +62,9 @@ function PracticaPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<any>(null);
   const conversationHistoryRef = useRef<{ role: string; content: string }[]>([]);
-  const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("you_do");
+  const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("i_do");
   const sessionEndedRef = useRef(false);
+  const iDoUserTurnsRef = useRef(0);
 
 
   // Pedir micrófono al montar
