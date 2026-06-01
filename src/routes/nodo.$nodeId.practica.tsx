@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useConversation } from "@elevenlabs/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
@@ -17,7 +16,11 @@ const ORANGE = "#FF6B2B";
 const BLUE = "#4DABF7";
 const GREEN = "#06D6A0";
 const RED = "#EF476F";
-const AGENT_ID = "agent_0901krktpk9pfjztj3djbc6en2fc";
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+const TTS_URL = `${SUPABASE_URL}/functions/v1/closer-tts`;
+const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
 
 type Phase = "prep" | "voice" | "feedback";
 type TurnPhase = "i_do" | "you_do";
