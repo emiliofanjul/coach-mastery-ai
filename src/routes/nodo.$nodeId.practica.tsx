@@ -1121,6 +1121,104 @@ function VoicePhase({
   );
 }
 
+// ───────────────────────── TRANSITION ─────────────────────────
+
+function TransitionPhase({
+  onContinue,
+  onExitClick,
+}: {
+  onContinue: () => void;
+  onExitClick: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        padding: "1.2rem",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <button
+          onClick={onExitClick}
+          aria-label="Salir"
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "#fff",
+            fontSize: 22,
+            cursor: "pointer",
+            padding: 8,
+            margin: -8,
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div
+        style={{
+          flex: 1,
+          maxWidth: 560,
+          width: "100%",
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 24,
+          textAlign: "center",
+        }}
+      >
+        <CloserCharacter size={120} state="motivation" />
+        <div
+          style={{
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 26,
+            lineHeight: 1.2,
+            color: "#fff",
+          }}
+        >
+          Cerraste la demo. Ahora es tu turno.
+        </div>
+      </div>
+
+      <div
+        style={{
+          maxWidth: 560,
+          width: "100%",
+          margin: "0 auto",
+          paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
+        }}
+      >
+        <button
+          onClick={onContinue}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 99,
+            border: "none",
+            background: ORANGE,
+            color: "#08080F",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: "pointer",
+            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+          }}
+        >
+          Yo soy el vendedor →
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
 // ───────────────────────── FEEDBACK ─────────────────────────
 
 const ANALYSIS_MESSAGES = [
