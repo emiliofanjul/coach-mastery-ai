@@ -468,11 +468,33 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
-    // Show feedback IMMEDIATELY so a slow/failed insert never strands the user.
-    setPhase("feedback");
     try {
       const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
       setYouDoTranscript(youDo);
+      const evaluateRes = await fetch(VOICE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({
+          transcript: "",
+          phase: "evaluate",
+          practice_script: nodeDataRef.current?.practice_script ?? null,
+          company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
+          seller_name: sellerData?.full_name ?? "",
+          conversation_history: conversationHistoryRef.current,
+        }),
+      });
+      if (!evaluateRes.ok) throw new Error(`closer-voice evaluate HTTP ${evaluateRes.status}`);
+      const evaluation = await evaluateRes.json();
+      setFeedbackResult({
+        score: Number(evaluation.score),
+        stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
+        observations: Array.isArray(evaluation.observations) ? evaluation.observations.slice(0, 3) : [],
+      });
+      setPhase("feedback");
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
         nodeType === "boss"
@@ -499,6 +521,7 @@ function PracticaPage() {
       setSessionId(session?.id ?? null);
     } catch (err) {
       console.error("[practica] handleSessionEnd error:", err);
+      setConnectionError("No se pudo generar el feedback. Toca para reintentar.");
     }
   }
 
