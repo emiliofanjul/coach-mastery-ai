@@ -1,1 +1,4 @@
 project_id = "ydkvssqmaawnbxsdfxss"
+
+[functions.closer-voice]
+verify_jwt = false
