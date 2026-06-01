@@ -43,6 +43,7 @@ function PracticaPage() {
   const [skillsContext, setSkillsContext] = useState<any>(null);
   const skillsContextRef = useRef<any>(null);
   const [transcriptFull, setTranscriptFull] = useState<TranscriptItem[]>([]);
+  const transcriptFullRef = useRef<TranscriptItem[]>([]);
   const [currentPhase, setCurrentPhase] = useState<TurnPhase>("i_do");
   const currentPhaseRef = useRef<TurnPhase>("i_do");
   const nodeDataRef = useRef<any>(null);
@@ -52,38 +53,17 @@ function PracticaPage() {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
-  const conversation = useConversation({
-    onConnect: () => console.log("[voice] CONECTADO ✓"),
-    onDisconnect: (reason: any) => {
-      console.error("[voice] onDisconnect:", reason);
-      try {
-        alert("Desconectado: " + JSON.stringify(reason, Object.getOwnPropertyNames(reason ?? {})));
-      } catch {
-        alert("Desconectado: " + String(reason));
-      }
-    },
-    onMessage: (msg: any) => {
-      const text: string = msg.message ?? msg.agent_response ?? msg.text ?? "";
-      const role: "agent" | "user" = msg.source === "user" ? "user" : "agent";
-      if (text) {
-        setTranscriptFull((prev) => [
-          ...prev,
-          { role, text, phase: currentPhaseRef.current },
-        ]);
-      }
-      const script = nodeDataRef.current?.practice_script;
-      const transitionPhrase: string = (script?.phases?.transition_phrase ?? "Ahora es tu turno").toLowerCase();
-      const endPhrase: string = (script?.phases?.end_phrase ?? "Vamos al detalle").toLowerCase();
-      if (role === "agent" && text.toLowerCase().includes(transitionPhrase)) {
-        setCurrentPhase("you_do");
-        currentPhaseRef.current = "you_do";
-      }
-      if (role === "agent" && text.toLowerCase().includes(endPhrase)) {
-        handleSessionEnd();
-      }
-    },
-    onError: (err: any) => console.error("ElevenLabs error:", err),
-  });
+  // Nuevo flujo voz: TTS + STT + closer-voice
+  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
+  const [isUserListening, setIsUserListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [interimTranscript, setInterimTranscript] = useState("");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<any>(null);
+  const conversationHistoryRef = useRef<{ role: string; content: string }[]>([]);
+  const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("you_do");
+  const sessionEndedRef = useRef(false);
+
 
   // Pedir micrófono al montar
   useEffect(() => {
