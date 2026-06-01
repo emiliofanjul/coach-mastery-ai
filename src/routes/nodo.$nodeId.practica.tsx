@@ -184,14 +184,14 @@ function PracticaPage() {
     setCompanyData(company);
     setSkillsContext(ctx);
     skillsContextRef.current = ctx;
-    setPhase("voice");
+    setPhase("i_do");
   }
 
-  // Iniciar sesión de voz
+  // Iniciar sesión de voz según fase
   useEffect(() => {
-    if (phase === "voice" && sellerData && nodeData && companyData && skillsContext) {
-      startVoiceSession();
-    }
+    if (!sellerData || !nodeData || !companyData || !skillsContext) return;
+    if (phase === "i_do") startIDoSession();
+    else if (phase === "you_do") startYouDoSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
