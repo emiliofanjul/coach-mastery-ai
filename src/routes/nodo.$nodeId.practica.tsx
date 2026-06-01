@@ -22,8 +22,9 @@ const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 const TTS_URL = `${SUPABASE_URL}/functions/v1/closer-tts`;
 const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
 
-type Phase = "prep" | "voice" | "feedback";
+type Phase = "prep" | "i_do" | "transition" | "you_do" | "feedback";
 type TurnPhase = "i_do" | "you_do";
+const MAX_I_DO_USER_TURNS = 3;
 
 interface TranscriptItem {
   role: "agent" | "user";
@@ -61,8 +62,9 @@ function PracticaPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<any>(null);
   const conversationHistoryRef = useRef<{ role: string; content: string }[]>([]);
-  const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("you_do");
+  const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("i_do");
   const sessionEndedRef = useRef(false);
+  const iDoUserTurnsRef = useRef(0);
 
 
   // Pedir micrófono al montar
@@ -182,14 +184,14 @@ function PracticaPage() {
     setCompanyData(company);
     setSkillsContext(ctx);
     skillsContextRef.current = ctx;
-    setPhase("voice");
+    setPhase("i_do");
   }
 
-  // Iniciar sesión de voz
+  // Iniciar sesión de voz según fase
   useEffect(() => {
-    if (phase === "voice" && sellerData && nodeData && companyData && skillsContext) {
-      startVoiceSession();
-    }
+    if (!sellerData || !nodeData || !companyData || !skillsContext) return;
+    if (phase === "i_do") startIDoSession();
+    else if (phase === "you_do") startYouDoSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
@@ -316,6 +318,10 @@ function PracticaPage() {
       { role: "user", content: userText },
     ];
 
+    if (claudePhaseRef.current === "i_do") {
+      iDoUserTurnsRef.current += 1;
+    }
+
     try {
       const res = await fetch(VOICE_URL, {
         method: "POST",
@@ -357,16 +363,31 @@ function PracticaPage() {
         setIsProcessing(false);
       }
 
-      if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
-        claudePhaseRef.current = nextPhase as any;
+      const inIDo = claudePhaseRef.current === "i_do";
+
+      // i_do termina: por end_session, por next_phase de Claude, o por límite de turnos
+      if (inIDo) {
+        const turnsReached = iDoUserTurnsRef.current >= MAX_I_DO_USER_TURNS;
+        const claudeWantsNext = nextPhase === "you_do" || nextPhase === "closing" || nextPhase === "end";
+        if (endSession || claudeWantsNext || turnsReached) {
+          sessionEndedRef.current = true;
+          stopRecognition();
+          stopAudio();
+          setPhase("transition");
+          return;
+        }
+      } else {
+        // you_do / boss_sim / closing
+        if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
+          claudePhaseRef.current = nextPhase as any;
+        }
+        if (endSession || nextPhase === "end") {
+          await handleSessionEnd();
+          return;
+        }
       }
 
-      if (endSession || nextPhase === "end") {
-        await handleSessionEnd();
-        return;
-      }
-
-      // Siguiente turno del vendedor
+      // Siguiente turno del usuario
       startRecognition();
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
@@ -375,23 +396,23 @@ function PracticaPage() {
     }
   }
 
-  async function startVoiceSession() {
+  async function startIDoSession() {
     try {
       setConnectionError(null);
       sessionEndedRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
-      claudePhaseRef.current = "you_do";
-      setCurrentPhase("you_do");
-      currentPhaseRef.current = "you_do";
+      iDoUserTurnsRef.current = 0;
+      claudePhaseRef.current = "i_do";
+      setCurrentPhase("i_do");
+      currentPhaseRef.current = "i_do";
 
-      const script: any = nodeData?.practice_script ?? null;
+      const script: any = nodeDataRef.current?.practice_script ?? null;
       const firstMessage: string =
         script?.phases?.i_do?.first_message
         ?? `Buenos días, ¿cómo está? Mucho gusto, soy ${sellerData?.full_name ?? "Carlos"} de ${companyData?.name ?? "la empresa"}. Qué bueno encontrarlo — justo quería platicar un momento con usted.`;
 
-      // Registrar i_do (demostración) en la historia para que Claude tenga contexto
       const agentItem: TranscriptItem = {
         role: "agent",
         text: firstMessage,
@@ -408,7 +429,26 @@ function PracticaPage() {
       if (sessionEndedRef.current) return;
       startRecognition();
     } catch (err) {
-      console.error("[voice] startVoiceSession failed:", err);
+      console.error("[voice] startIDoSession failed:", err);
+      setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
+    }
+  }
+
+  async function startYouDoSession() {
+    try {
+      setConnectionError(null);
+      sessionEndedRef.current = false;
+      conversationHistoryRef.current = [];
+      transcriptFullRef.current = [];
+      setTranscriptFull([]);
+      claudePhaseRef.current = "you_do";
+      setCurrentPhase("you_do");
+      currentPhaseRef.current = "you_do";
+
+      // El vendedor (usuario) abre. Arrancamos escuchando.
+      startRecognition();
+    } catch (err) {
+      console.error("[voice] startYouDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
     }
   }
@@ -448,7 +488,11 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
-    await startVoiceSession();
+    if (claudePhaseRef.current === "i_do") {
+      await startIDoSession();
+    } else {
+      await startYouDoSession();
+    }
   }
 
   async function handleExitConfirm() {
@@ -493,9 +537,9 @@ function PracticaPage() {
           />
         )}
 
-        {phase === "voice" && (
+        {(phase === "i_do" || phase === "you_do") && (
           <VoicePhase
-            key="voice"
+            key={phase}
             currentPhase={currentPhase}
             isAgentSpeaking={isAgentSpeaking}
             isUserListening={isUserListening}
@@ -506,8 +550,23 @@ function PracticaPage() {
               if (isUserListening) stopRecognition();
               else if (!isAgentSpeaking && !isProcessing) startRecognition();
             }}
-            onRetry={() => { setConnectionError(null); startVoiceSession(); }}
+            onRetry={() => {
+              setConnectionError(null);
+              if (phase === "i_do") startIDoSession();
+              else startYouDoSession();
+            }}
             onReplay={handleReplay}
+            onExitClick={() => setShowExitDialog(true)}
+          />
+        )}
+
+        {phase === "transition" && (
+          <TransitionPhase
+            key="transition"
+            onContinue={() => {
+              sessionEndedRef.current = false;
+              setPhase("you_do");
+            }}
             onExitClick={() => setShowExitDialog(true)}
           />
         )}
@@ -1056,6 +1115,104 @@ function VoicePhase({
           }}
         >
           Reiniciar práctica
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ───────────────────────── TRANSITION ─────────────────────────
+
+function TransitionPhase({
+  onContinue,
+  onExitClick,
+}: {
+  onContinue: () => void;
+  onExitClick: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        padding: "1.2rem",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <button
+          onClick={onExitClick}
+          aria-label="Salir"
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "#fff",
+            fontSize: 22,
+            cursor: "pointer",
+            padding: 8,
+            margin: -8,
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div
+        style={{
+          flex: 1,
+          maxWidth: 560,
+          width: "100%",
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 24,
+          textAlign: "center",
+        }}
+      >
+        <CloserCharacter size={120} state="motivation" />
+        <div
+          style={{
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 26,
+            lineHeight: 1.2,
+            color: "#fff",
+          }}
+        >
+          Cerraste la demo. Ahora es tu turno.
+        </div>
+      </div>
+
+      <div
+        style={{
+          maxWidth: 560,
+          width: "100%",
+          margin: "0 auto",
+          paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
+        }}
+      >
+        <button
+          onClick={onContinue}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 99,
+            border: "none",
+            background: ORANGE,
+            color: "#08080F",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: "pointer",
+            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+          }}
+        >
+          Yo soy el vendedor →
         </button>
       </div>
     </motion.div>
