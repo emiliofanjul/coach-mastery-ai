@@ -139,12 +139,14 @@ export default function VictoryScreen({
           {subtitle}
         </div>
 
+        {extra ? <div style={{ width: "100%", marginTop: 24 }}>{extra}</div> : null}
+
         <button
           onClick={onContinue}
           style={{
             width: "100%",
             height: 52,
-            marginTop: 40,
+            marginTop: extra ? 24 : 40,
             borderRadius: 99,
             border: "none",
             background: ORANGE,
