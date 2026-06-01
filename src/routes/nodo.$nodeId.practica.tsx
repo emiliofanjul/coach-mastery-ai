@@ -193,87 +193,231 @@ function PracticaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
-  async function startVoiceSession() {
+  // Helpers para el nuevo flujo de voz ───────────────────────
+
+  function stopRecognition() {
+    try {
+      recognitionRef.current?.stop?.();
+    } catch {
+      /* noop */
+    }
+    recognitionRef.current = null;
+    setIsUserListening(false);
+  }
+
+  function stopAudio() {
+    try {
+      audioRef.current?.pause();
+    } catch {
+      /* noop */
+    }
+    audioRef.current = null;
+    setIsAgentSpeaking(false);
+  }
+
+  async function playTTS(text: string): Promise<void> {
+    stopAudio();
+    setIsAgentSpeaking(true);
+    try {
+      const res = await fetch(TTS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      await new Promise<void>((resolve, reject) => {
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("audio error"));
+        };
+        audio.play().catch(reject);
+      });
+    } catch (err) {
+      console.error("[voice] playTTS failed:", err);
+    } finally {
+      setIsAgentSpeaking(false);
+      audioRef.current = null;
+    }
+  }
+
+  function startRecognition() {
+    if (sessionEndedRef.current) return;
+    const SR: any =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      setConnectionError("Tu navegador no soporta reconocimiento de voz.");
+      return;
+    }
+    const rec = new SR();
+    rec.lang = "es-ES";
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.maxAlternatives = 1;
+
+    let finalText = "";
+    rec.onresult = (event: any) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const r = event.results[i];
+        if (r.isFinal) finalText += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      setInterimTranscript(finalText + interim);
+    };
+    rec.onerror = (e: any) => {
+      console.error("[voice] STT error:", e?.error ?? e);
+      setIsUserListening(false);
+    };
+    rec.onend = () => {
+      setIsUserListening(false);
+      recognitionRef.current = null;
+      const text = finalText.trim();
+      setInterimTranscript("");
+      if (text) {
+        void sendToCloser(text);
+      }
+    };
+    recognitionRef.current = rec;
+    setInterimTranscript("");
+    setIsUserListening(true);
+    try {
+      rec.start();
+    } catch (err) {
+      console.error("[voice] rec.start failed:", err);
+      setIsUserListening(false);
+    }
+  }
+
+  async function sendToCloser(userText: string) {
+    if (sessionEndedRef.current) return;
+    setIsProcessing(true);
+
+    const userItem: TranscriptItem = {
+      role: "user",
+      text: userText,
+      phase: currentPhaseRef.current,
+    };
+    transcriptFullRef.current = [...transcriptFullRef.current, userItem];
+    setTranscriptFull([...transcriptFullRef.current]);
+    conversationHistoryRef.current = [
+      ...conversationHistoryRef.current,
+      { role: "user", content: userText },
+    ];
 
     try {
+      const res = await fetch(VOICE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({
+          transcript: userText,
+          phase: claudePhaseRef.current,
+          practice_script: nodeDataRef.current?.practice_script ?? null,
+          company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
+          seller_name: sellerData?.full_name ?? "",
+          conversation_history: conversationHistoryRef.current.slice(0, -1),
+        }),
+      });
+      if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
+      const data = await res.json();
+      const message: string = data?.message ?? "";
+      const nextPhase: string = data?.next_phase ?? claudePhaseRef.current;
+      const endSession: boolean = !!data?.end_session;
+
+      if (message) {
+        const agentItem: TranscriptItem = {
+          role: "agent",
+          text: message,
+          phase: currentPhaseRef.current,
+        };
+        transcriptFullRef.current = [...transcriptFullRef.current, agentItem];
+        setTranscriptFull([...transcriptFullRef.current]);
+        conversationHistoryRef.current = [
+          ...conversationHistoryRef.current,
+          { role: "assistant", content: message },
+        ];
+        setIsProcessing(false);
+        await playTTS(message);
+      } else {
+        setIsProcessing(false);
+      }
+
+      if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
+        claudePhaseRef.current = nextPhase as any;
+      }
+
+      if (endSession || nextPhase === "end") {
+        await handleSessionEnd();
+        return;
+      }
+
+      // Siguiente turno del vendedor
+      startRecognition();
+    } catch (err) {
+      console.error("[voice] sendToCloser failed:", err);
+      setIsProcessing(false);
+      setConnectionError("Error al hablar con Closer. Toca para reintentar.");
+    }
+  }
+
+  async function startVoiceSession() {
+    try {
       setConnectionError(null);
+      sessionEndedRef.current = false;
+      conversationHistoryRef.current = [];
+      transcriptFullRef.current = [];
+      setTranscriptFull([]);
+      claudePhaseRef.current = "you_do";
+      setCurrentPhase("you_do");
+      currentPhaseRef.current = "you_do";
+
       const script: any = nodeData?.practice_script ?? null;
-      const transitionPhrase: string = script?.phases?.transition_phrase ?? "Ahora es tu turno";
-      const endPhrase: string = script?.phases?.end_phrase ?? "Vamos al detalle";
-      const currentMode: TurnPhase = "you_do";
-      const ctx = skillsContextRef.current ?? skillsContext ?? {
-        skillsInFocus: [],
-        skillCodes: [],
-        allowedConcepts: [],
-        forbiddenConcepts: [],
-        successCriteria: [],
-        failureCriteria: [],
-        primarySkillId: null,
-      };
-
-      const dynamicVariables: Record<string, any> = {
-        node_id: nodeData?.id ?? nodeId,
-        node_name: nodeData?.name ?? "",
-        node_type: nodeData?.node_type ?? "skill_drill",
-        conversation_scope: nodeData?.conversation_scope ?? "",
-        current_mode: currentMode,
-        world_number: nodeData?.world_id ?? 0,
-        company_name: companyData?.name ?? "",
-        company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
-        seller_name: sellerData?.full_name ?? "",
-        seller_experience: sellerData?.experience_level ?? "",
-        skills_in_focus: JSON.stringify(ctx.skillsInFocus ?? []),
-        skill_codes: JSON.stringify(ctx.skillCodes ?? []),
-        allowed_concepts: JSON.stringify(ctx.allowedConcepts ?? []),
-        forbidden_concepts: JSON.stringify(ctx.forbiddenConcepts ?? []),
-        success_criteria: JSON.stringify(ctx.successCriteria ?? []),
-        failure_criteria: JSON.stringify(ctx.failureCriteria ?? []),
-        transition_phrase: transitionPhrase,
-        end_phrase: endPhrase,
-        technique: (nodeData as any)?.technique ?? nodeData?.name ?? "",
-      };
-
       const firstMessage: string =
         script?.phases?.i_do?.first_message
         ?? `Buenos días, ¿cómo está? Mucho gusto, soy ${sellerData?.full_name ?? "Carlos"} de ${companyData?.name ?? "la empresa"}. Qué bueno encontrarlo — justo quería platicar un momento con usted.`;
 
-      console.log("[voice] dynamicVariables:", dynamicVariables);
-      console.log("[voice] skillsContext:", ctx);
-      console.log("[voice] nodeData:", nodeData);
-      console.log("[voice] intentando conectar con agentId:", AGENT_ID);
+      // Registrar i_do (demostración) en la historia para que Claude tenga contexto
+      const agentItem: TranscriptItem = {
+        role: "agent",
+        text: firstMessage,
+        phase: "i_do",
+      };
+      transcriptFullRef.current = [agentItem];
+      setTranscriptFull([agentItem]);
+      conversationHistoryRef.current = [
+        { role: "assistant", content: firstMessage },
+      ];
 
-      await conversation.startSession({
-        agentId: AGENT_ID,
-        connectionType: "websocket",
-        overrides: {
-          agent: {
-            language: "es",
-            firstMessage,
-          },
-        },
-        dynamicVariables,
-      } as any);
+      await playTTS(firstMessage);
 
-      setCurrentPhase("you_do");
-      currentPhaseRef.current = "you_do";
-
-      console.log("[voice] sesión iniciada, status:", conversation.status);
+      if (sessionEndedRef.current) return;
+      startRecognition();
     } catch (err) {
-      console.error("[voice] startSession failed:", err);
-      setConnectionError("No se pudo conectar. Toca para intentar de nuevo.");
+      console.error("[voice] startVoiceSession failed:", err);
+      setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
     }
   }
 
-
-
-
   async function handleSessionEnd() {
-    try {
-      await conversation.endSession();
-    } catch {
-      /* noop */
-    }
-    const youDo = transcriptFull.filter((m) => m.phase === "you_do");
+    sessionEndedRef.current = true;
+    stopRecognition();
+    stopAudio();
+    const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
     const nodeType: string = nodeData?.node_type ?? "skill_drill";
     const practiceType =
@@ -292,7 +436,7 @@ function PracticaPage() {
         world_id: nodeData?.world_id ?? 0,
         practice_type: practiceType,
         is_boss_level: isBossLevel,
-        transcript: JSON.stringify(transcriptFull),
+        transcript: JSON.stringify(transcriptFullRef.current),
       })
       .select()
       .maybeSingle();
@@ -301,25 +445,28 @@ function PracticaPage() {
   }
 
   async function handleReplay() {
-    try {
-      await conversation.endSession();
-    } catch {
-      /* noop */
-    }
-    setTranscriptFull([]);
-    setCurrentPhase("i_do");
-    currentPhaseRef.current = "i_do";
+    sessionEndedRef.current = true;
+    stopRecognition();
+    stopAudio();
     await startVoiceSession();
   }
 
   async function handleExitConfirm() {
-    try {
-      await conversation.endSession();
-    } catch {
-      /* noop */
-    }
+    sessionEndedRef.current = true;
+    stopRecognition();
+    stopAudio();
     navigate({ to: "/mapa" });
   }
+
+  // Cleanup al desmontar
+  useEffect(() => {
+    return () => {
+      sessionEndedRef.current = true;
+      stopRecognition();
+      stopAudio();
+    };
+  }, []);
+
 
   // ─── Render ───
   return (
