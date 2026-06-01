@@ -21,6 +21,7 @@ export default function VictoryScreen({
   subtitle,
   buttonText,
   onContinue,
+  extra,
 }: VictoryScreenProps) {
   useEffect(() => {
     const colors = ["#FF6B2B", "#FFD166", "#06D6A0", "#B57BEE", "#ffffff"];
