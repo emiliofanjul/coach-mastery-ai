@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type Phase = "i_do" | "you_do" | "boss_sim" | "closing";
+type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate";
 type NextPhase = Phase | "end";
 
 interface ReqBody {
@@ -23,6 +23,36 @@ interface CloserResponse {
   message: string;
   next_phase: NextPhase;
   end_session: boolean;
+}
+
+interface EvaluationResponse {
+  score: number;
+  stars: 1 | 2 | 3;
+  observations: string[];
+  end_session: true;
+}
+
+function buildEvaluateSystemPrompt(practice_script: any): string {
+  const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
+  const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
+  const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
+
+  return `Evalúa esta conversación de práctica de ventas.
+Criterios del nodo: ${successStr}
+Errores críticos: ${failureStr}
+
+Evalúa ÚNICAMENTE los criterios del nodo. No menciones conceptos que el vendedor no ha aprendido.
+
+Responde JSON:
+{
+  "score": número del 0 al 100,
+  "stars": 1, 2 o 3 según score (1=<60, 2=60-84, 3=85+),
+  "observations": ["observación 1", "observación 2", "observación 3"],
+  "end_session": true
+}
+
+No incluyas texto fuera del JSON.`;
 }
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any): string {
@@ -101,7 +131,7 @@ RESPONDE SIEMPRE JSON VÁLIDO:
 Sin texto fuera del JSON. Sin markdown. Solo JSON.`;
 }
 
-function extractJson(text: string): CloserResponse {
+function extractJson<T>(text: string): T {
   const trimmed = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
   try {
     return JSON.parse(trimmed);
@@ -129,16 +159,23 @@ Deno.serve(async (req) => {
     const body = (await req.json()) as ReqBody;
     const { transcript, phase, practice_script, company_brain, seller_name, conversation_history } = body;
 
-    if (!transcript || !phase) {
+    if (!phase || (phase !== "evaluate" && !transcript)) {
       return new Response(JSON.stringify({ error: "Missing transcript or phase" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const system = buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
+    const system = phase === "evaluate"
+      ? buildEvaluateSystemPrompt(practice_script)
+      : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
 
-    const messages = [
+    const messages = phase === "evaluate" ? [
+      {
+        role: "user",
+        content: `conversation_history:\n${JSON.stringify(Array.isArray(conversation_history) ? conversation_history : [], null, 2)}`,
+      },
+    ] : [
       ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
         content: m.content,
@@ -173,9 +210,9 @@ Deno.serve(async (req) => {
     const claudeJson = await claudeRes.json();
     const text: string = claudeJson?.content?.[0]?.text ?? "";
 
-    let parsed: CloserResponse;
+    let parsed: CloserResponse | EvaluationResponse;
     try {
-      parsed = extractJson(text);
+      parsed = extractJson<CloserResponse | EvaluationResponse>(text);
     } catch (e) {
       console.error("[closer-voice] parse error:", e, "raw:", text);
       return new Response(
@@ -184,14 +221,36 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (typeof parsed.message !== "string" || typeof parsed.next_phase !== "string" || typeof parsed.end_session !== "boolean") {
+    if (phase === "evaluate") {
+      const evaluation = parsed as EvaluationResponse;
+      if (
+        typeof evaluation.score !== "number" ||
+        ![1, 2, 3].includes(evaluation.stars) ||
+        !Array.isArray(evaluation.observations) ||
+        evaluation.observations.length !== 3 ||
+        evaluation.end_session !== true
+      ) {
+        return new Response(
+          JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      return new Response(JSON.stringify(evaluation), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const closerResponse = parsed as CloserResponse;
+    if (typeof closerResponse.message !== "string" || typeof closerResponse.next_phase !== "string" || typeof closerResponse.end_session !== "boolean") {
       return new Response(
         JSON.stringify({ error: "Malformed Closer response", parsed }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    return new Response(JSON.stringify(parsed), {
+    return new Response(JSON.stringify(closerResponse), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -32,6 +32,12 @@ interface TranscriptItem {
   phase: TurnPhase;
 }
 
+interface FeedbackResult {
+  score: number;
+  stars: 1 | 2 | 3;
+  observations: string[];
+}
+
 function PracticaPage() {
   const { nodeId } = useParams({ from: "/nodo/$nodeId/practica" });
   const navigate = useNavigate();
@@ -53,6 +59,7 @@ function PracticaPage() {
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
 
   // Nuevo flujo voz: TTS + STT + closer-voice
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
@@ -440,6 +447,7 @@ function PracticaPage() {
   async function startYouDoSession() {
     try {
       setConnectionError(null);
+      setFeedbackResult(null);
       sessionEndedRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
@@ -460,11 +468,33 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
-    // Show feedback IMMEDIATELY so a slow/failed insert never strands the user.
-    setPhase("feedback");
     try {
       const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
       setYouDoTranscript(youDo);
+      const evaluateRes = await fetch(VOICE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({
+          transcript: "",
+          phase: "evaluate",
+          practice_script: nodeDataRef.current?.practice_script ?? null,
+          company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
+          seller_name: sellerData?.full_name ?? "",
+          conversation_history: conversationHistoryRef.current,
+        }),
+      });
+      if (!evaluateRes.ok) throw new Error(`closer-voice evaluate HTTP ${evaluateRes.status}`);
+      const evaluation = await evaluateRes.json();
+      setFeedbackResult({
+        score: Number(evaluation.score),
+        stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
+        observations: Array.isArray(evaluation.observations) ? evaluation.observations.slice(0, 3) : [],
+      });
+      setPhase("feedback");
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
         nodeType === "boss"
@@ -491,6 +521,7 @@ function PracticaPage() {
       setSessionId(session?.id ?? null);
     } catch (err) {
       console.error("[practica] handleSessionEnd error:", err);
+      setConnectionError("No se pudo generar el feedback. Toca para reintentar.");
     }
   }
 
@@ -585,7 +616,8 @@ function PracticaPage() {
           <FeedbackPhase
             key="feedback"
             conversation={conversationHistoryRef.current}
-            onContinue={async () => {
+            feedback={feedbackResult}
+            onContinue={async (stars) => {
               setSaving(true);
               await supabase.from("node_progress").upsert(
                 {
@@ -593,7 +625,7 @@ function PracticaPage() {
                   company_id: sellerData.company_id,
                   node_id: nodeId,
                   status: "done",
-                  stars: 2,
+                  stars,
                   last_practiced_at: new Date().toISOString(),
                 },
                 { onConflict: "seller_id,node_id" },
@@ -634,7 +666,7 @@ function PracticaPage() {
 
               setNodeCompletionSignal({
                 nodeId,
-                stars: 2,
+                stars,
                 isReplay: false,
                 improved: true,
               });
@@ -1248,9 +1280,11 @@ type FeedbackStep = "analyzing" | "result" | "victory";
 function FeedbackPhase({
   onContinue,
   conversation,
+  feedback,
 }: {
-  onContinue: () => void;
+  onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
+  feedback: FeedbackResult | null;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
@@ -1268,16 +1302,9 @@ function FeedbackPhase({
     return () => clearInterval(i);
   }, [step]);
 
-  // Score derivado simple basado en cantidad de turnos del vendedor
-  const userTurns = conversation.filter((m) => m.role === "user").length;
-  const score = Math.min(100, 60 + userTurns * 8);
-  const stars: 1 | 2 | 3 = score >= 85 ? 3 : score >= 70 ? 2 : 1;
-
-  const observations = [
-    "Mantuviste el control de la conversación.",
-    "Buena estructura en la apertura.",
-    "Sigue trabajando el cierre con autoridad.",
-  ];
+  const score = feedback?.score ?? 0;
+  const stars: 1 | 2 | 3 = feedback?.stars ?? 1;
+  const observations = feedback?.observations ?? [];
 
   if (step === "victory") {
     return (
@@ -1287,7 +1314,7 @@ function FeedbackPhase({
           title="¡Práctica completada!"
           subtitle="Sigue avanzando."
           buttonText="Volver al mapa →"
-          onContinue={onContinue}
+          onContinue={() => onContinue(stars)}
         />
       </motion.div>
     );
