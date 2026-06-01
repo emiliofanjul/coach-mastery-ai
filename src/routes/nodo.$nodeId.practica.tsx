@@ -573,6 +573,7 @@ function PracticaPage() {
         {phase === "feedback" && (
           <FeedbackPhase
             key="feedback"
+            conversation={conversationHistoryRef.current}
             onContinue={async () => {
               setSaving(true);
               await supabase.from("node_progress").upsert(
@@ -1227,7 +1228,13 @@ const ANALYSIS_MESSAGES = [
   "Casi listo...",
 ];
 
-function FeedbackPhase({ onContinue }: { onContinue: () => void }) {
+function FeedbackPhase({
+  onContinue,
+  conversation,
+}: {
+  onContinue: () => void;
+  conversation: { role: string; content: string }[];
+}) {
   const [showVictory, setShowVictory] = useState(false);
   const [msgIdx, setMsgIdx] = useState(0);
 
@@ -1257,6 +1264,7 @@ function FeedbackPhase({ onContinue }: { onContinue: () => void }) {
           subtitle="Sigue avanzando."
           buttonText="Ver mapa →"
           onContinue={onContinue}
+          extra={<ConversationTranscript conversation={conversation} />}
         />
       </motion.div>
     );
@@ -1412,6 +1420,109 @@ function ExitDialog({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ConversationTranscript({
+  conversation,
+}: {
+  conversation: { role: string; content: string }[];
+}) {
+  const [open, setOpen] = useState(false);
+  const items = conversation.filter(
+    (m) => (m.role === "user" || m.role === "assistant") && m.content?.trim(),
+  );
+  if (items.length === 0) return null;
+
+  return (
+    <div style={{ width: "100%", textAlign: "left" }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: "100%",
+          height: 44,
+          borderRadius: 99,
+          border: "1px solid rgba(255,255,255,0.15)",
+          background: "transparent",
+          color: "rgba(255,255,255,0.85)",
+          fontFamily: "Syne, sans-serif",
+          fontWeight: 600,
+          fontSize: 14,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+        }}
+      >
+        {open ? "Ocultar conversación" : "Ver conversación completa"}
+        <span style={{ fontSize: 12, opacity: 0.7 }}>{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && (
+        <div
+          style={{
+            marginTop: 14,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            padding: 14,
+            borderRadius: 14,
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            maxHeight: 360,
+            overflowY: "auto",
+          }}
+        >
+          {items.map((m, i) => {
+            const isAgent = m.role === "assistant";
+            return (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 4,
+                  alignItems: isAgent ? "flex-start" : "flex-end",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "Syne, sans-serif",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: 0.5,
+                    textTransform: "uppercase",
+                    color: isAgent ? ORANGE : "rgba(255,255,255,0.5)",
+                  }}
+                >
+                  {isAgent ? "Closer" : "Tú"}
+                </div>
+                <div
+                  style={{
+                    maxWidth: "85%",
+                    padding: "10px 14px",
+                    borderRadius: 14,
+                    background: isAgent
+                      ? "rgba(255,107,43,0.12)"
+                      : "rgba(255,255,255,0.08)",
+                    color: "#fff",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    textAlign: "left",
+                  }}
+                >
+                  {m.content}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

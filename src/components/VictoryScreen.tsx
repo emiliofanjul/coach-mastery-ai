@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
@@ -9,6 +9,7 @@ interface VictoryScreenProps {
   subtitle: string;
   buttonText: string;
   onContinue: () => void;
+  extra?: ReactNode;
 }
 
 const ORANGE = "#FF6B2B";
@@ -20,6 +21,7 @@ export default function VictoryScreen({
   subtitle,
   buttonText,
   onContinue,
+  extra,
 }: VictoryScreenProps) {
   useEffect(() => {
     const colors = ["#FF6B2B", "#FFD166", "#06D6A0", "#B57BEE", "#ffffff"];
@@ -48,9 +50,12 @@ export default function VictoryScreen({
         background: "#08080F",
         color: "#fff",
         display: "flex",
-        alignItems: "center",
+        alignItems: extra ? "flex-start" : "center",
         justifyContent: "center",
         padding: "1.2rem",
+        paddingTop: extra ? "2.4rem" : "1.2rem",
+        paddingBottom: "2.4rem",
+        overflowY: "auto",
         zIndex: 60,
       }}
     >
@@ -137,12 +142,14 @@ export default function VictoryScreen({
           {subtitle}
         </div>
 
+        {extra ? <div style={{ width: "100%", marginTop: 24 }}>{extra}</div> : null}
+
         <button
           onClick={onContinue}
           style={{
             width: "100%",
             height: 52,
-            marginTop: 40,
+            marginTop: extra ? 24 : 40,
             borderRadius: 99,
             border: "none",
             background: ORANGE,
