@@ -318,6 +318,10 @@ function PracticaPage() {
       { role: "user", content: userText },
     ];
 
+    if (claudePhaseRef.current === "i_do") {
+      iDoUserTurnsRef.current += 1;
+    }
+
     try {
       const res = await fetch(VOICE_URL, {
         method: "POST",
@@ -359,16 +363,31 @@ function PracticaPage() {
         setIsProcessing(false);
       }
 
-      if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
-        claudePhaseRef.current = nextPhase as any;
+      const inIDo = claudePhaseRef.current === "i_do";
+
+      // i_do termina: por end_session, por next_phase de Claude, o por límite de turnos
+      if (inIDo) {
+        const turnsReached = iDoUserTurnsRef.current >= MAX_I_DO_USER_TURNS;
+        const claudeWantsNext = nextPhase === "you_do" || nextPhase === "closing" || nextPhase === "end";
+        if (endSession || claudeWantsNext || turnsReached) {
+          sessionEndedRef.current = true;
+          stopRecognition();
+          stopAudio();
+          setPhase("transition");
+          return;
+        }
+      } else {
+        // you_do / boss_sim / closing
+        if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
+          claudePhaseRef.current = nextPhase as any;
+        }
+        if (endSession || nextPhase === "end") {
+          await handleSessionEnd();
+          return;
+        }
       }
 
-      if (endSession || nextPhase === "end") {
-        await handleSessionEnd();
-        return;
-      }
-
-      // Siguiente turno del vendedor
+      // Siguiente turno del usuario
       startRecognition();
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
@@ -377,23 +396,23 @@ function PracticaPage() {
     }
   }
 
-  async function startVoiceSession() {
+  async function startIDoSession() {
     try {
       setConnectionError(null);
       sessionEndedRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
-      claudePhaseRef.current = "you_do";
-      setCurrentPhase("you_do");
-      currentPhaseRef.current = "you_do";
+      iDoUserTurnsRef.current = 0;
+      claudePhaseRef.current = "i_do";
+      setCurrentPhase("i_do");
+      currentPhaseRef.current = "i_do";
 
-      const script: any = nodeData?.practice_script ?? null;
+      const script: any = nodeDataRef.current?.practice_script ?? null;
       const firstMessage: string =
         script?.phases?.i_do?.first_message
         ?? `Buenos días, ¿cómo está? Mucho gusto, soy ${sellerData?.full_name ?? "Carlos"} de ${companyData?.name ?? "la empresa"}. Qué bueno encontrarlo — justo quería platicar un momento con usted.`;
 
-      // Registrar i_do (demostración) en la historia para que Claude tenga contexto
       const agentItem: TranscriptItem = {
         role: "agent",
         text: firstMessage,
@@ -410,7 +429,26 @@ function PracticaPage() {
       if (sessionEndedRef.current) return;
       startRecognition();
     } catch (err) {
-      console.error("[voice] startVoiceSession failed:", err);
+      console.error("[voice] startIDoSession failed:", err);
+      setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
+    }
+  }
+
+  async function startYouDoSession() {
+    try {
+      setConnectionError(null);
+      sessionEndedRef.current = false;
+      conversationHistoryRef.current = [];
+      transcriptFullRef.current = [];
+      setTranscriptFull([]);
+      claudePhaseRef.current = "you_do";
+      setCurrentPhase("you_do");
+      currentPhaseRef.current = "you_do";
+
+      // El vendedor (usuario) abre. Arrancamos escuchando.
+      startRecognition();
+    } catch (err) {
+      console.error("[voice] startYouDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
     }
   }
