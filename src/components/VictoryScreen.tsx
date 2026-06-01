@@ -50,9 +50,12 @@ export default function VictoryScreen({
         background: "#08080F",
         color: "#fff",
         display: "flex",
-        alignItems: "center",
+        alignItems: extra ? "flex-start" : "center",
         justifyContent: "center",
         padding: "1.2rem",
+        paddingTop: extra ? "2.4rem" : "1.2rem",
+        paddingBottom: "2.4rem",
+        overflowY: "auto",
         zIndex: 60,
       }}
     >
