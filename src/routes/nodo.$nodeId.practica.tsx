@@ -818,26 +818,44 @@ function PrepPhase({
 
 function VoicePhase({
   currentPhase,
-  isSpeaking,
+  isAgentSpeaking,
+  isUserListening,
+  isProcessing,
+  interimTranscript,
   connectionError,
+  onMicClick,
   onRetry,
   onReplay,
   onExitClick,
 }: {
   currentPhase: TurnPhase;
-  isSpeaking: boolean;
+  isAgentSpeaking: boolean;
+  isUserListening: boolean;
+  isProcessing: boolean;
+  interimTranscript: string;
   connectionError: string | null;
+  onMicClick: () => void;
   onRetry: () => void;
   onReplay: () => void;
   onExitClick: () => void;
 }) {
   const isIDo = currentPhase === "i_do";
-  const ringColor = isSpeaking
+  const ringColor = isAgentSpeaking
     ? BLUE
-    : currentPhase === "you_do"
+    : isUserListening
       ? ORANGE
       : "rgba(255,255,255,0.15)";
-  const animatePulse = isSpeaking || currentPhase === "you_do";
+  const animatePulse = isAgentSpeaking || isUserListening;
+
+  const micDisabled = isAgentSpeaking || isProcessing;
+  const micBg = isUserListening ? RED : ORANGE;
+  const micLabel = isUserListening
+    ? "Toca para enviar"
+    : isAgentSpeaking
+      ? "Closer está hablando…"
+      : isProcessing
+        ? "Pensando…"
+        : "Toca para hablar";
 
   return (
     <motion.div
@@ -895,7 +913,7 @@ function VoicePhase({
         }}
       >
         {isIDo
-          ? "Closer demuestra — Reacciona como tu cliente lo haría"
+          ? "Closer demuestra — Escucha con atención"
           : "Tu turno — Hazlo solo."}
       </div>
 
@@ -936,15 +954,18 @@ function VoicePhase({
           <CloserCharacter size={120} state="normal" />
         </div>
 
-        {isIDo && isSpeaking && (
+        {interimTranscript && (
           <div
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 13,
-              color: "rgba(255,255,255,0.3)",
+              fontSize: 14,
+              color: "rgba(255,255,255,0.75)",
+              textAlign: "center",
+              maxWidth: 480,
+              minHeight: 20,
             }}
           >
-            Escucha con atención
+            "{interimTranscript}"
           </div>
         )}
 
@@ -981,26 +1002,61 @@ function VoicePhase({
           margin: "0 auto",
           paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
           display: "flex",
-          justifyContent: "center",
-          minHeight: 40,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 12,
         }}
       >
-        {isIDo && (
-          <button
-            onClick={onReplay}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "rgba(255,255,255,0.5)",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              cursor: "pointer",
-              padding: 8,
-            }}
-          >
-            Ver de nuevo
-          </button>
-        )}
+        <button
+          onClick={onMicClick}
+          disabled={micDisabled}
+          aria-label={micLabel}
+          style={{
+            width: 84,
+            height: 84,
+            borderRadius: 99,
+            border: "none",
+            background: micBg,
+            color: "#08080F",
+            fontSize: 32,
+            cursor: micDisabled ? "not-allowed" : "pointer",
+            opacity: micDisabled ? 0.4 : 1,
+            boxShadow: `0 10px 30px -8px ${micBg}55`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: isUserListening
+              ? "practica-pulse 1.2s ease-in-out infinite"
+              : undefined,
+          }}
+        >
+          {isUserListening ? "■" : "🎤"}
+        </button>
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 13,
+            color: "rgba(255,255,255,0.6)",
+            textAlign: "center",
+            minHeight: 18,
+          }}
+        >
+          {micLabel}
+        </div>
+        <button
+          onClick={onReplay}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "rgba(255,255,255,0.4)",
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 13,
+            cursor: "pointer",
+            padding: 4,
+          }}
+        >
+          Reiniciar práctica
+        </button>
       </div>
     </motion.div>
   );
