@@ -1280,9 +1280,11 @@ type FeedbackStep = "analyzing" | "result" | "victory";
 function FeedbackPhase({
   onContinue,
   conversation,
+  feedback,
 }: {
-  onContinue: () => void;
+  onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
+  feedback: FeedbackResult | null;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
@@ -1300,16 +1302,9 @@ function FeedbackPhase({
     return () => clearInterval(i);
   }, [step]);
 
-  // Score derivado simple basado en cantidad de turnos del vendedor
-  const userTurns = conversation.filter((m) => m.role === "user").length;
-  const score = Math.min(100, 60 + userTurns * 8);
-  const stars: 1 | 2 | 3 = score >= 85 ? 3 : score >= 70 ? 2 : 1;
-
-  const observations = [
-    "Mantuviste el control de la conversación.",
-    "Buena estructura en la apertura.",
-    "Sigue trabajando el cierre con autoridad.",
-  ];
+  const score = feedback?.score ?? 0;
+  const stars: 1 | 2 | 3 = feedback?.stars ?? 1;
+  const observations = feedback?.observations ?? [];
 
   if (step === "victory") {
     return (
@@ -1319,7 +1314,7 @@ function FeedbackPhase({
           title="¡Práctica completada!"
           subtitle="Sigue avanzando."
           buttonText="Volver al mapa →"
-          onContinue={onContinue}
+          onContinue={() => onContinue(stars)}
         />
       </motion.div>
     );
