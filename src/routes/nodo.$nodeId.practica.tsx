@@ -457,32 +457,38 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
-    const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
-    setYouDoTranscript(youDo);
-    const nodeType: string = nodeData?.node_type ?? "skill_drill";
-    const practiceType =
-      nodeType === "boss"
-        ? "boss"
-        : nodeType === "full_sim"
-          ? "full_sim"
-          : "skill_drill";
-    const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
-    const { data: session } = await supabase
-      .from("practice_sessions")
-      .insert({
-        seller_id: sellerData.id,
-        company_id: sellerData.company_id,
-        node_id: nodeId,
-        world_id: nodeData?.world_id ?? 0,
-        practice_type: practiceType,
-        is_boss_level: isBossLevel,
-        transcript: JSON.stringify(transcriptFullRef.current),
-        conversation_history: conversationHistoryRef.current as any,
-      })
-      .select()
-      .maybeSingle();
-    setSessionId(session?.id ?? null);
+    // Show feedback IMMEDIATELY so a slow/failed insert never strands the user.
     setPhase("feedback");
+    try {
+      const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
+      setYouDoTranscript(youDo);
+      const nodeType: string = nodeData?.node_type ?? "skill_drill";
+      const practiceType =
+        nodeType === "boss"
+          ? "boss"
+          : nodeType === "full_sim"
+            ? "full_sim"
+            : "skill_drill";
+      const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
+      const { data: session, error } = await supabase
+        .from("practice_sessions")
+        .insert({
+          seller_id: sellerData.id,
+          company_id: sellerData.company_id,
+          node_id: nodeId,
+          world_id: nodeData?.world_id ?? 0,
+          practice_type: practiceType,
+          is_boss_level: isBossLevel,
+          transcript: JSON.stringify(transcriptFullRef.current),
+          conversation_history: conversationHistoryRef.current as any,
+        })
+        .select()
+        .maybeSingle();
+      if (error) console.error("[practica] insert practice_sessions failed:", error);
+      setSessionId(session?.id ?? null);
+    } catch (err) {
+      console.error("[practica] handleSessionEnd error:", err);
+    }
   }
 
   async function handleReplay() {
