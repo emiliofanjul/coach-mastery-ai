@@ -32,6 +32,12 @@ interface TranscriptItem {
   phase: TurnPhase;
 }
 
+interface FeedbackResult {
+  score: number;
+  stars: 1 | 2 | 3;
+  observations: string[];
+}
+
 function PracticaPage() {
   const { nodeId } = useParams({ from: "/nodo/$nodeId/practica" });
   const navigate = useNavigate();
@@ -53,6 +59,7 @@ function PracticaPage() {
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
 
   // Nuevo flujo voz: TTS + STT + closer-voice
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
@@ -440,6 +447,7 @@ function PracticaPage() {
   async function startYouDoSession() {
     try {
       setConnectionError(null);
+      setFeedbackResult(null);
       sessionEndedRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
