@@ -616,7 +616,8 @@ function PracticaPage() {
           <FeedbackPhase
             key="feedback"
             conversation={conversationHistoryRef.current}
-            onContinue={async () => {
+            feedback={feedbackResult}
+            onContinue={async (stars) => {
               setSaving(true);
               await supabase.from("node_progress").upsert(
                 {
@@ -624,7 +625,7 @@ function PracticaPage() {
                   company_id: sellerData.company_id,
                   node_id: nodeId,
                   status: "done",
-                  stars: 2,
+                  stars,
                   last_practiced_at: new Date().toISOString(),
                 },
                 { onConflict: "seller_id,node_id" },
@@ -665,7 +666,7 @@ function PracticaPage() {
 
               setNodeCompletionSignal({
                 nodeId,
-                stars: 2,
+                stars,
                 isReplay: false,
                 improved: true,
               });
