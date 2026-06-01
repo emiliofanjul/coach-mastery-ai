@@ -1228,7 +1228,13 @@ const ANALYSIS_MESSAGES = [
   "Casi listo...",
 ];
 
-function FeedbackPhase({ onContinue }: { onContinue: () => void }) {
+function FeedbackPhase({
+  onContinue,
+  conversation,
+}: {
+  onContinue: () => void;
+  conversation: { role: string; content: string }[];
+}) {
   const [showVictory, setShowVictory] = useState(false);
   const [msgIdx, setMsgIdx] = useState(0);
 
