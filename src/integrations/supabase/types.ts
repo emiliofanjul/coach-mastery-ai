@@ -674,6 +674,7 @@ export type Database = {
           ai_summary: string | null
           audio_url: string | null
           company_id: string
+          conversation_history: Json | null
           created_at: string
           credits_consumed: number | null
           end_reason: string | null
@@ -696,6 +697,7 @@ export type Database = {
           ai_summary?: string | null
           audio_url?: string | null
           company_id: string
+          conversation_history?: Json | null
           created_at?: string
           credits_consumed?: number | null
           end_reason?: string | null
@@ -718,6 +720,7 @@ export type Database = {
           ai_summary?: string | null
           audio_url?: string | null
           company_id?: string
+          conversation_history?: Json | null
           created_at?: string
           credits_consumed?: number | null
           end_reason?: string | null
