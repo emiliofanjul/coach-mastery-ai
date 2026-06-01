@@ -22,8 +22,9 @@ const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 const TTS_URL = `${SUPABASE_URL}/functions/v1/closer-tts`;
 const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
 
-type Phase = "prep" | "voice" | "feedback";
+type Phase = "prep" | "i_do" | "transition" | "you_do" | "feedback";
 type TurnPhase = "i_do" | "you_do";
+const MAX_I_DO_USER_TURNS = 3;
 
 interface TranscriptItem {
   role: "agent" | "user";
