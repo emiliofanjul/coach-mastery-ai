@@ -1264,6 +1264,7 @@ function FeedbackPhase({
           subtitle="Sigue avanzando."
           buttonText="Ver mapa →"
           onContinue={onContinue}
+          extra={<ConversationTranscript conversation={conversation} />}
         />
       </motion.div>
     );
