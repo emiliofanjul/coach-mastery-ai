@@ -27,6 +27,19 @@ interface CloserResponse {
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
+  const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
+  const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
+  const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
+
+  const evalBlock = `EVALUACIÓN — REGLA CRÍTICA:
+Evalúa ÚNICAMENTE los criterios del practice_script de este nodo.
+No menciones ni evalúes conceptos que no estén en success_criteria.
+No uses lenguaje de técnicas que el vendedor no ha aprendido todavía.
+Los criterios de este nodo son: ${successStr}
+Los errores críticos son: ${failureStr}
+El feedback debe ser específico a estos criterios únicamente.
+Esto aplica tanto al message durante la conversación como a las observaciones finales del feedback.`;
 
   let roleBlock = "";
   if (phase === "i_do") {
@@ -54,6 +67,8 @@ NO eres un asistente. NO eres un chatbot. NO tienes conversaciones libres.
 Ejecutas prácticas estructuradas de ventas. Nada más.
 
 ${roleBlock}
+
+${evalBlock}
 
 FILOSOFÍA:
 Closer opera como Doctor Vendedor — diagnostica antes de recetar.
