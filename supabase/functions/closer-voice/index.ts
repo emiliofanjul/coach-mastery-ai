@@ -242,14 +242,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (typeof parsed.message !== "string" || typeof parsed.next_phase !== "string" || typeof parsed.end_session !== "boolean") {
+    const closerResponse = parsed as CloserResponse;
+    if (typeof closerResponse.message !== "string" || typeof closerResponse.next_phase !== "string" || typeof closerResponse.end_session !== "boolean") {
       return new Response(
         JSON.stringify({ error: "Malformed Closer response", parsed }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    return new Response(JSON.stringify(parsed), {
+    return new Response(JSON.stringify(closerResponse), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
