@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
@@ -9,6 +9,7 @@ interface VictoryScreenProps {
   subtitle: string;
   buttonText: string;
   onContinue: () => void;
+  extra?: ReactNode;
 }
 
 const ORANGE = "#FF6B2B";
