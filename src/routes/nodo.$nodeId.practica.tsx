@@ -537,9 +537,9 @@ function PracticaPage() {
           />
         )}
 
-        {phase === "voice" && (
+        {(phase === "i_do" || phase === "you_do") && (
           <VoicePhase
-            key="voice"
+            key={phase}
             currentPhase={currentPhase}
             isAgentSpeaking={isAgentSpeaking}
             isUserListening={isUserListening}
@@ -550,8 +550,23 @@ function PracticaPage() {
               if (isUserListening) stopRecognition();
               else if (!isAgentSpeaking && !isProcessing) startRecognition();
             }}
-            onRetry={() => { setConnectionError(null); startVoiceSession(); }}
+            onRetry={() => {
+              setConnectionError(null);
+              if (phase === "i_do") startIDoSession();
+              else startYouDoSession();
+            }}
             onReplay={handleReplay}
+            onExitClick={() => setShowExitDialog(true)}
+          />
+        )}
+
+        {phase === "transition" && (
+          <TransitionPhase
+            key="transition"
+            onContinue={() => {
+              sessionEndedRef.current = false;
+              setPhase("you_do");
+            }}
             onExitClick={() => setShowExitDialog(true)}
           />
         )}
