@@ -159,16 +159,23 @@ Deno.serve(async (req) => {
     const body = (await req.json()) as ReqBody;
     const { transcript, phase, practice_script, company_brain, seller_name, conversation_history } = body;
 
-    if (!transcript || !phase) {
+    if (!phase || (phase !== "evaluate" && !transcript)) {
       return new Response(JSON.stringify({ error: "Missing transcript or phase" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const system = buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
+    const system = phase === "evaluate"
+      ? buildEvaluateSystemPrompt(practice_script)
+      : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
 
-    const messages = [
+    const messages = phase === "evaluate" ? [
+      {
+        role: "user",
+        content: `conversation_history:\n${JSON.stringify(Array.isArray(conversation_history) ? conversation_history : [], null, 2)}`,
+      },
+    ] : [
       ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
         content: m.content,
@@ -203,15 +210,36 @@ Deno.serve(async (req) => {
     const claudeJson = await claudeRes.json();
     const text: string = claudeJson?.content?.[0]?.text ?? "";
 
-    let parsed: CloserResponse;
+    let parsed: CloserResponse | EvaluationResponse;
     try {
-      parsed = extractJson(text);
+      parsed = extractJson<CloserResponse | EvaluationResponse>(text);
     } catch (e) {
       console.error("[closer-voice] parse error:", e, "raw:", text);
       return new Response(
         JSON.stringify({ error: "Invalid JSON from Claude", raw: text }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
+    }
+
+    if (phase === "evaluate") {
+      const evaluation = parsed as EvaluationResponse;
+      if (
+        typeof evaluation.score !== "number" ||
+        ![1, 2, 3].includes(evaluation.stars) ||
+        !Array.isArray(evaluation.observations) ||
+        evaluation.observations.length !== 3 ||
+        evaluation.end_session !== true
+      ) {
+        return new Response(
+          JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      return new Response(JSON.stringify(evaluation), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     if (typeof parsed.message !== "string" || typeof parsed.next_phase !== "string" || typeof parsed.end_session !== "boolean") {
