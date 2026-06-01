@@ -573,6 +573,7 @@ function PracticaPage() {
         {phase === "feedback" && (
           <FeedbackPhase
             key="feedback"
+            conversation={conversationHistoryRef.current}
             onContinue={async () => {
               setSaving(true);
               await supabase.from("node_progress").upsert(
