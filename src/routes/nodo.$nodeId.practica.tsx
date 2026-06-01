@@ -1240,6 +1240,8 @@ const ANALYSIS_MESSAGES = [
   "Casi listo...",
 ];
 
+type FeedbackStep = "analyzing" | "result" | "victory";
+
 function FeedbackPhase({
   onContinue,
   conversation,
@@ -1247,41 +1249,193 @@ function FeedbackPhase({
   onContinue: () => void;
   conversation: { role: string; content: string }[];
 }) {
-  const [showVictory, setShowVictory] = useState(false);
+  const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowVictory(true), 3000);
+    const t = setTimeout(() => setStep("result"), 3000);
     return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {
-    if (showVictory) return;
+    if (step !== "analyzing") return;
     const i = setInterval(() => {
       setMsgIdx((p) => (p + 1) % ANALYSIS_MESSAGES.length);
     }, 2000);
     return () => clearInterval(i);
-  }, [showVictory]);
+  }, [step]);
 
-  if (showVictory) {
+  // Score derivado simple basado en cantidad de turnos del vendedor
+  const userTurns = conversation.filter((m) => m.role === "user").length;
+  const score = Math.min(100, 60 + userTurns * 8);
+  const stars: 1 | 2 | 3 = score >= 85 ? 3 : score >= 70 ? 2 : 1;
+
+  const observations = [
+    "Mantuviste el control de la conversación.",
+    "Buena estructura en la apertura.",
+    "Sigue trabajando el cierre con autoridad.",
+  ];
+
+  if (step === "victory") {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        style={{ flex: 1 }}
-      >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1 }}>
         <VictoryScreen
-          stars={2}
+          stars={stars}
           title="¡Práctica completada!"
           subtitle="Sigue avanzando."
-          buttonText="Ver mapa →"
+          buttonText="Volver al mapa →"
           onContinue={onContinue}
-          extra={<ConversationTranscript conversation={conversation} />}
         />
       </motion.div>
     );
   }
 
+  if (step === "result") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          padding: "1.2rem",
+          overflowY: "auto",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 560,
+            width: "100%",
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 20,
+            paddingTop: 16,
+            paddingBottom: 24,
+          }}
+        >
+          <CloserCharacter size={86} state="motivation" />
+          <div
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 800,
+              fontSize: 26,
+              color: "#fff",
+              textAlign: "center",
+            }}
+          >
+            Tu práctica
+          </div>
+
+          {/* Score */}
+          <div
+            style={{
+              width: "100%",
+              padding: "20px 18px",
+              borderRadius: 14,
+              background: "rgba(255,107,43,0.10)",
+              border: `1px solid ${ORANGE}55`,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 12,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.6)",
+              }}
+            >
+              Score
+            </div>
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 800,
+                fontSize: 48,
+                color: ORANGE,
+                lineHeight: 1,
+              }}
+            >
+              {score}
+            </div>
+          </div>
+
+          {/* Observaciones */}
+          <div
+            style={{
+              width: "100%",
+              padding: 16,
+              borderRadius: 14,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: 14,
+                color: "#fff",
+              }}
+            >
+              Observaciones de Closer
+            </div>
+            {observations.map((o, i) => (
+              <div
+                key={i}
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                  color: "rgba(255,255,255,0.8)",
+                  display: "flex",
+                  gap: 8,
+                }}
+              >
+                <span style={{ color: ORANGE }}>•</span>
+                <span>{o}</span>
+              </div>
+            ))}
+          </div>
+
+          <ConversationTranscript conversation={conversation} />
+
+          <button
+            onClick={() => setStep("victory")}
+            style={{
+              width: "100%",
+              height: 52,
+              marginTop: 8,
+              borderRadius: 99,
+              border: "none",
+              background: ORANGE,
+              color: "#08080F",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: 16,
+              cursor: "pointer",
+              boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            }}
+          >
+            Ver resultado →
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // analyzing
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -1349,6 +1503,7 @@ function FeedbackPhase({
     </motion.div>
   );
 }
+
 
 // ───────────────────────── EXIT DIALOG ─────────────────────────
 
