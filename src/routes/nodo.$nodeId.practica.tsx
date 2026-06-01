@@ -323,6 +323,9 @@ function PracticaPage() {
     }
 
     try {
+      console.log("[closer-voice] company_brain:", companyData?.company_sales_brain);
+      console.log("[closer-voice] practice_script:", nodeDataRef.current?.practice_script);
+      console.log("[closer-voice] phase:", claudePhaseRef.current);
       const res = await fetch(VOICE_URL, {
         method: "POST",
         headers: {
