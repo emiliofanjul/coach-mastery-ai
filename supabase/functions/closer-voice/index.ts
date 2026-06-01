@@ -34,6 +34,10 @@ Vendedor: ${seller_name}
 practice_script del nodo:
 ${JSON.stringify(practice_script ?? {}, null, 2)}
 
+Reglas de formato de respuesta:
+- Responde en texto plano. Sin markdown, sin asteriscos, sin negritas.
+- Máximo 2-3 frases. Respuestas cortas que suenen naturales en voz.
+
 Responde ÚNICAMENTE con JSON válido:
 {
   "message": "lo que Closer dice",
