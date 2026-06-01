@@ -477,6 +477,7 @@ function PracticaPage() {
         practice_type: practiceType,
         is_boss_level: isBossLevel,
         transcript: JSON.stringify(transcriptFullRef.current),
+        conversation_history: conversationHistoryRef.current as any,
       })
       .select()
       .maybeSingle();
@@ -563,6 +564,7 @@ function PracticaPage() {
         {phase === "transition" && (
           <TransitionPhase
             key="transition"
+            technique={nodeData?.technique ?? null}
             onContinue={() => {
               sessionEndedRef.current = false;
               setPhase("you_do");
@@ -1127,9 +1129,11 @@ function VoicePhase({
 function TransitionPhase({
   onContinue,
   onExitClick,
+  technique,
 }: {
   onContinue: () => void;
   onExitClick: () => void;
+  technique: string | null;
 }) {
   return (
     <motion.div
@@ -1185,7 +1189,9 @@ function TransitionPhase({
             color: "#fff",
           }}
         >
-          Cerraste la demo. Ahora es tu turno.
+          {technique
+            ? `Eso fue Closer demostrando ${technique}. Ahora es tu turno.`
+            : "Eso fue Closer demostrando. Ahora es tu turno."}
         </div>
       </div>
 
