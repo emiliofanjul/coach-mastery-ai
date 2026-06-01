@@ -497,8 +497,15 @@ function PracticaPage() {
           <VoicePhase
             key="voice"
             currentPhase={currentPhase}
-            isSpeaking={conversation.isSpeaking}
+            isAgentSpeaking={isAgentSpeaking}
+            isUserListening={isUserListening}
+            isProcessing={isProcessing}
+            interimTranscript={interimTranscript}
             connectionError={connectionError}
+            onMicClick={() => {
+              if (isUserListening) stopRecognition();
+              else if (!isAgentSpeaking && !isProcessing) startRecognition();
+            }}
             onRetry={() => { setConnectionError(null); startVoiceSession(); }}
             onReplay={handleReplay}
             onExitClick={() => setShowExitDialog(true)}
