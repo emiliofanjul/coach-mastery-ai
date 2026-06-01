@@ -488,7 +488,11 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
-    await startVoiceSession();
+    if (claudePhaseRef.current === "i_do") {
+      await startIDoSession();
+    } else {
+      await startYouDoSession();
+    }
   }
 
   async function handleExitConfirm() {
