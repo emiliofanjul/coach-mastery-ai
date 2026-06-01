@@ -563,6 +563,7 @@ function PracticaPage() {
         {phase === "transition" && (
           <TransitionPhase
             key="transition"
+            technique={nodeData?.technique ?? null}
             onContinue={() => {
               sessionEndedRef.current = false;
               setPhase("you_do");
