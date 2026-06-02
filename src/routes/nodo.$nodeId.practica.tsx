@@ -24,7 +24,7 @@ const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
 
 type Phase = "prep" | "i_do" | "transition" | "you_do" | "feedback";
 type TurnPhase = "i_do" | "you_do";
-const MAX_I_DO_USER_TURNS = 3;
+const MAX_I_DO_USER_TURNS = 2;
 
 interface TranscriptItem {
   role: "agent" | "user";
@@ -471,6 +471,15 @@ function PracticaPage() {
     try {
       const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
       setYouDoTranscript(youDo);
+      const evaluatePayload = {
+        transcript: "",
+        phase: "evaluate" as const,
+        practice_script: nodeDataRef.current?.practice_script ?? null,
+        company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
+        seller_name: sellerData?.full_name ?? "",
+        conversation_history: conversationHistoryRef.current,
+      };
+      console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
         method: "POST",
         headers: {
@@ -478,21 +487,30 @@ function PracticaPage() {
           apikey: SUPABASE_ANON,
           Authorization: `Bearer ${SUPABASE_ANON}`,
         },
-        body: JSON.stringify({
-          transcript: "",
-          phase: "evaluate",
-          practice_script: nodeDataRef.current?.practice_script ?? null,
-          company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
-          seller_name: sellerData?.full_name ?? "",
-          conversation_history: conversationHistoryRef.current,
-        }),
+        body: JSON.stringify(evaluatePayload),
       });
-      if (!evaluateRes.ok) throw new Error(`closer-voice evaluate HTTP ${evaluateRes.status}`);
-      const evaluation = await evaluateRes.json();
+      const rawText = await evaluateRes.text();
+      console.log("[closer-voice evaluate] ← status", evaluateRes.status, "body:", rawText);
+      if (!evaluateRes.ok) throw new Error(`closer-voice evaluate HTTP ${evaluateRes.status}: ${rawText}`);
+      let evaluation: any;
+      try {
+        evaluation = JSON.parse(rawText);
+      } catch (e) {
+        throw new Error("closer-voice evaluate returned invalid JSON");
+      }
+      console.log("[closer-voice evaluate] parsed:", evaluation);
+      if (
+        typeof evaluation?.score !== "number" ||
+        ![1, 2, 3].includes(evaluation?.stars) ||
+        !Array.isArray(evaluation?.observations) ||
+        evaluation.observations.length === 0
+      ) {
+        throw new Error("closer-voice evaluate response malformed");
+      }
       setFeedbackResult({
         score: Number(evaluation.score),
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
-        observations: Array.isArray(evaluation.observations) ? evaluation.observations.slice(0, 3) : [],
+        observations: evaluation.observations.slice(0, 3),
       });
       setPhase("feedback");
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
@@ -521,6 +539,8 @@ function PracticaPage() {
       setSessionId(session?.id ?? null);
     } catch (err) {
       console.error("[practica] handleSessionEnd error:", err);
+      setFeedbackResult(null);
+      setPhase("feedback");
       setConnectionError("No se pudo generar el feedback. Toca para reintentar.");
     }
   }
@@ -1421,22 +1441,35 @@ function FeedbackPhase({
             >
               Observaciones de Closer
             </div>
-            {observations.map((o, i) => (
+            {observations.length === 0 ? (
               <div
-                key={i}
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
                   lineHeight: 1.5,
-                  color: "rgba(255,255,255,0.8)",
-                  display: "flex",
-                  gap: 8,
+                  color: "rgba(255,180,180,0.9)",
                 }}
               >
-                <span style={{ color: ORANGE }}>•</span>
-                <span>{o}</span>
+                No se pudo generar el feedback de esta sesión. Intenta de nuevo más tarde.
               </div>
-            ))}
+            ) : (
+              observations.map((o, i) => (
+                <div
+                  key={i}
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                    color: "rgba(255,255,255,0.8)",
+                    display: "flex",
+                    gap: 8,
+                  }}
+                >
+                  <span style={{ color: ORANGE }}>•</span>
+                  <span>{o}</span>
+                </div>
+              ))
+            )}
           </div>
 
           <ConversationTranscript conversation={conversation} />
