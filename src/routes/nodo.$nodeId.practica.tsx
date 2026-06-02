@@ -24,7 +24,7 @@ const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
 
 type Phase = "prep" | "i_do" | "transition" | "you_do" | "feedback";
 type TurnPhase = "i_do" | "you_do";
-const MAX_I_DO_USER_TURNS = 3;
+const MAX_I_DO_USER_TURNS = 2;
 
 interface TranscriptItem {
   role: "agent" | "user";
