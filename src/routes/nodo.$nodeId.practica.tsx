@@ -1441,22 +1441,35 @@ function FeedbackPhase({
             >
               Observaciones de Closer
             </div>
-            {observations.map((o, i) => (
+            {observations.length === 0 ? (
               <div
-                key={i}
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
                   lineHeight: 1.5,
-                  color: "rgba(255,255,255,0.8)",
-                  display: "flex",
-                  gap: 8,
+                  color: "rgba(255,180,180,0.9)",
                 }}
               >
-                <span style={{ color: ORANGE }}>•</span>
-                <span>{o}</span>
+                No se pudo generar el feedback de esta sesión. Intenta de nuevo más tarde.
               </div>
-            ))}
+            ) : (
+              observations.map((o, i) => (
+                <div
+                  key={i}
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                    color: "rgba(255,255,255,0.8)",
+                    display: "flex",
+                    gap: 8,
+                  }}
+                >
+                  <span style={{ color: ORANGE }}>•</span>
+                  <span>{o}</span>
+                </div>
+              ))
+            )}
           </div>
 
           <ConversationTranscript conversation={conversation} />
