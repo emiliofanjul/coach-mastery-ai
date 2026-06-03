@@ -86,7 +86,7 @@ CUÁNDO TERMINAR EN I_DO:
 El scope de esta demostración está definido en practice_script.scope.skills_in_focus.
 Demuestra ÚNICAMENTE las skills en ese scope.
 Cuando hayas cubierto el scope completamente y el cliente haya respondido al menos una vez, termina con end_session: true.
-NO avances a skills o pasos que no estén en skills_in_focus.
+NO avances a skills o pasos que no estén en skills_in_focus.`;
   } else if (phase === "you_do") {
     roleBlock = `ERES EL CLIENTE. Actúa SOLO como cliente. Nunca como vendedor.
 En you_do el usuario es el vendedor que practica. Tú reaccionas como cliente real.
