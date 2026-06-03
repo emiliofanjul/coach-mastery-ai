@@ -1694,6 +1694,85 @@ const ANALYSIS_MESSAGES = [
 
 type FeedbackStep = "analyzing" | "result" | "victory";
 
+function ObservationCard({ obs }: { obs: ObservationItem }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      style={{
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.10)",
+        borderRadius: 12,
+        overflow: "hidden",
+      }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: "100%",
+          background: "transparent",
+          border: "none",
+          padding: "12px 14px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <span
+          style={{
+            flex: 1,
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 14,
+            lineHeight: 1.4,
+            color: "#fff",
+            fontWeight: 500,
+          }}
+        >
+          {obs.error}
+        </span>
+        <span
+          style={{
+            color: "rgba(255,255,255,0.6)",
+            fontSize: 14,
+            transform: open ? "rotate(90deg)" : "rotate(0deg)",
+            transition: "transform 0.2s ease",
+            display: "inline-block",
+          }}
+        >
+          ›
+        </span>
+      </button>
+      {open && (
+        <div style={{ padding: "0 14px 14px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: ORANGE,
+              fontWeight: 600,
+            }}
+          >
+            {obs.mejora}
+          </div>
+          <div
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: "rgba(255,255,255,0.6)",
+              fontStyle: "italic",
+            }}
+          >
+            "{obs.ejemplo}"
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FeedbackPhase({
   onContinue,
   conversation,
