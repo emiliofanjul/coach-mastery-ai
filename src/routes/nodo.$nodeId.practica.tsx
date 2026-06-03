@@ -376,15 +376,14 @@ function PracticaPage() {
 
       const inIDo = claudePhaseRef.current === "i_do";
 
-      // i_do termina: por end_session, por next_phase de Claude, o por límite de turnos
       if (inIDo) {
-        const turnsReached = iDoUserTurnsRef.current >= MAX_I_DO_USER_TURNS;
-        const claudeWantsNext = nextPhase === "you_do" || nextPhase === "closing" || nextPhase === "end";
-        if (endSession || claudeWantsNext || turnsReached) {
+        // i_do termina cuando Claude decide que demostró suficiente.
+        // Mostramos el botón "Listo, ahora yo →" en vez de ir directo a transición.
+        if (endSession) {
           sessionEndedRef.current = true;
           stopRecognition();
           stopAudio();
-          setPhase("transition");
+          setIDoDemoDone(true);
           return;
         }
       } else {
