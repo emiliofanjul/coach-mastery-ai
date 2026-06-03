@@ -398,8 +398,11 @@ function PracticaPage() {
         }
       }
 
-      // Siguiente turno del usuario
-      startRecognition();
+      // En YOU DO, reactivamos el micrófono automáticamente.
+      // En I DO, el usuario debe tocar manualmente para responder como cliente.
+      if (!inIDo) {
+        startRecognition();
+      }
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
