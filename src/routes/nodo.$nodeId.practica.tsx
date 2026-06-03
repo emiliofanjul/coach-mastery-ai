@@ -1852,23 +1852,48 @@ function FeedbackPhase({
               </div>
             ) : (
               observations.map((o, i) => (
-                <div
-                  key={i}
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: 14,
-                    lineHeight: 1.5,
-                    color: "rgba(255,255,255,0.8)",
-                    display: "flex",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ color: ORANGE }}>•</span>
-                  <span>{o}</span>
-                </div>
+                <ObservationCard key={i} obs={o} />
               ))
             )}
           </div>
+
+          {feedback?.mision && (
+            <div
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 14,
+                background: "rgba(255,107,43,0.10)",
+                border: `1px solid ${ORANGE}`,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "Syne, sans-serif",
+                  fontWeight: 800,
+                  fontSize: 14,
+                  color: ORANGE,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.8,
+                }}
+              >
+                Tu misión
+              </div>
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                  color: "#fff",
+                }}
+              >
+                {feedback.mision}
+              </div>
+            </div>
+          )}
 
           <ConversationTranscript conversation={conversation} />
 
