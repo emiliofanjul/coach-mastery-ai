@@ -477,7 +477,9 @@ function PracticaPage() {
         practice_script: nodeDataRef.current?.practice_script ?? null,
         company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
         seller_name: sellerData?.full_name ?? "",
-        conversation_history: conversationHistoryRef.current,
+        conversation_history: transcriptFullRef.current
+          .filter((m) => m.phase === "you_do")
+          .map((m) => ({ role: m.role === "Closer" ? "assistant" : "user", content: m.text })),
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
