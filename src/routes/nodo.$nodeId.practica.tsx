@@ -466,8 +466,16 @@ function PracticaPage() {
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
-      // I DO: el usuario decide cuándo hablar tocando el micrófono manualmente.
+
+      const iDoType: string = script?.i_do_type ?? "roleplay";
+      if (iDoType === "demo") {
+        // Demo pura: mostrar botón inmediatamente sin esperar a Claude
+        setIDoDemoDone(true);
+        return;
+      }
+      // Roleplay: el usuario decide cuándo hablar tocando el micrófono manualmente.
       // El botón "Listo, ahora yo →" aparece cuando Claude termina con end_session.
+
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
