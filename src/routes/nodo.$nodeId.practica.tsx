@@ -512,14 +512,12 @@ function PracticaPage() {
       setCurrentPhase("you_do");
       currentPhaseRef.current = "you_do";
 
-      // El vendedor (usuario) abre. Arrancamos escuchando.
+      // El vendedor (usuario) abre. Mic 100% manual: el usuario toca el botón cuando quiera hablar.
       const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
       if (!seen) {
-        
         setShowVoiceTutorial(true);
         return;
       }
-      startRecognition();
     } catch (err) {
 
       console.error("[voice] startYouDoSession failed:", err);
