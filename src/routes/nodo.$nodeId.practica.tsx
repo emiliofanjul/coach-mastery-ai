@@ -512,7 +512,7 @@ function PracticaPage() {
       // El vendedor (usuario) abre. Arrancamos escuchando.
       const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
       if (!seen) {
-        setVoiceTutorialStep(1);
+        
         setShowVoiceTutorial(true);
         return;
       }
