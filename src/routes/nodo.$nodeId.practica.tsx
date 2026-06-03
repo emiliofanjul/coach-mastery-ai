@@ -376,15 +376,14 @@ function PracticaPage() {
 
       const inIDo = claudePhaseRef.current === "i_do";
 
-      // i_do termina: por end_session, por next_phase de Claude, o por límite de turnos
       if (inIDo) {
-        const turnsReached = iDoUserTurnsRef.current >= MAX_I_DO_USER_TURNS;
-        const claudeWantsNext = nextPhase === "you_do" || nextPhase === "closing" || nextPhase === "end";
-        if (endSession || claudeWantsNext || turnsReached) {
+        // i_do termina cuando Claude decide que demostró suficiente.
+        // Mostramos el botón "Listo, ahora yo →" en vez de ir directo a transición.
+        if (endSession) {
           sessionEndedRef.current = true;
           stopRecognition();
           stopAudio();
-          setPhase("transition");
+          setIDoDemoDone(true);
           return;
         }
       } else {
@@ -439,9 +438,9 @@ function PracticaPage() {
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
-      // I DO es solo una demostración: no abrimos micrófono.
-      // El usuario presiona "Listo, ahora yo →" para ir a transición.
-      setIDoDemoDone(true);
+      // I DO ahora es interactivo: el usuario puede reaccionar como cliente.
+      // El botón "Listo, ahora yo →" aparece cuando Claude termina con end_session.
+      startRecognition();
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
@@ -615,7 +614,6 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
-                if (phase === "i_do") return;
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking && !isProcessing) startRecognition();
               }}
@@ -1095,7 +1093,7 @@ function VoicePhase({
         }}
       >
         {isIDo
-          ? "Closer demuestra — Escucha con atención"
+          ? "Closer demuestra — reacciona como cliente"
           : "Tu turno — Hazlo solo."}
       </div>
 
