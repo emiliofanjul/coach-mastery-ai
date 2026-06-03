@@ -487,8 +487,10 @@ function FlipFront({ card }: { card: NodeCard }) {
           left: 0,
           right: 0,
           bottom: 16,
+          width: "100%",
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
           pointerEvents: "none",
         }}
       >
