@@ -745,9 +745,9 @@ function PracticaPage() {
 
               setNodeCompletionSignal({
                 nodeId,
-                stars,
-                isReplay: false,
-                improved: true,
+                stars: bestStars as 1 | 2 | 3,
+                isReplay: previousStars > 0,
+                improved: stars > previousStars,
               });
               navigate({ to: "/mapa" });
             }}
