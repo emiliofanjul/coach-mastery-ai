@@ -430,6 +430,7 @@ function PracticaPage() {
   }
 
   async function startIDoSession() {
+    console.log('[i_do] practice_script:', JSON.stringify(nodeDataRef.current?.practice_script));
     try {
       setConnectionError(null);
       setIDoDemoDone(false);
