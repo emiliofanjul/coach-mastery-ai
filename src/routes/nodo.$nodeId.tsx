@@ -480,23 +480,73 @@ function FlipFront({ card }: { card: NodeCard }) {
         {card.body}
       </div>
       <div style={{ flex: 1 }} />
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <style>{`@keyframes corner-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.92); } }`}</style>
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          bottom: 0,
+          width: 72,
+          height: 72,
+          borderBottomRightRadius: 14,
+          overflow: "hidden",
+          pointerEvents: "none",
+          animation: "corner-pulse 3s ease-in-out infinite",
+          transformOrigin: "bottom right",
+        }}
+      >
         <div
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
+            position: "absolute",
+            right: 0,
+            bottom: 0,
+            width: 0,
+            height: 0,
+            borderStyle: "solid",
+            borderColor: `transparent transparent #08080F transparent`,
+            borderWidth: "0 0 72px 72px",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            right: 0,
+            bottom: 0,
+            width: 0,
+            height: 0,
+            borderStyle: "solid",
+            borderColor: `transparent transparent ${isGood ? "#06D6A0" : "#EF476F"} transparent`,
+            borderWidth: "0 0 64px 64px",
+            opacity: 0.85,
+          }}
+        />
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#08080F"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ position: "absolute", right: 8, bottom: 22 }}
+        >
+          <polyline points="9 14 4 9 9 4" />
+          <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+        </svg>
+        <div
+          style={{
+            position: "absolute",
+            right: 6,
+            bottom: 6,
             fontFamily: "'DM Sans', sans-serif",
-            fontSize: 11,
-            color: "rgba(255,255,255,0.7)",
-            background: "rgba(255,255,255,0.08)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: 99,
-            padding: "6px 14px",
+            fontWeight: 700,
+            fontSize: 8,
+            letterSpacing: "0.5px",
+            color: "#08080F",
           }}
         >
-          <span>↩</span>
-          <span>Toca para descubrir por qué</span>
+          VOLTEAR
         </div>
       </div>
     </div>
