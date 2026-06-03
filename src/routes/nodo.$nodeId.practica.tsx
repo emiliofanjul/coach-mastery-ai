@@ -56,6 +56,7 @@ function PracticaPage() {
   const nodeDataRef = useRef<any>(null);
   const [, setSessionId] = useState<string | null>(null);
   const [, setYouDoTranscript] = useState<TranscriptItem[]>([]);
+  const [youDoHistory, setYouDoHistory] = useState<{ role: string; content: string }[]>([]);
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
