@@ -473,6 +473,11 @@ function PracticaPage() {
     stopAudio();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
+    const youDoConv = youDo.map((m) => ({
+      role: m.role === "agent" ? "assistant" : "user",
+      content: m.text,
+    }));
+    setYouDoHistory(youDoConv);
     // 1) Show feedback (loading) screen immediately
     setPhase("feedback");
     // 2) Run evaluation in background
