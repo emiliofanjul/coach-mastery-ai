@@ -486,8 +486,8 @@ function FlipFront({ card }: { card: NodeCard }) {
           position: "absolute",
           right: 0,
           bottom: 0,
-          width: 72,
-          height: 72,
+          width: 90,
+          height: 90,
           borderBottomRightRadius: 14,
           overflow: "hidden",
           pointerEvents: "none",
@@ -504,7 +504,7 @@ function FlipFront({ card }: { card: NodeCard }) {
             height: 0,
             borderStyle: "solid",
             borderColor: `transparent transparent #08080F transparent`,
-            borderWidth: "0 0 72px 72px",
+            borderWidth: "0 0 90px 90px",
           }}
         />
         <div
@@ -516,8 +516,8 @@ function FlipFront({ card }: { card: NodeCard }) {
             height: 0,
             borderStyle: "solid",
             borderColor: `transparent transparent ${isGood ? "#06D6A0" : "#EF476F"} transparent`,
-            borderWidth: "0 0 64px 64px",
-            opacity: 0.85,
+            borderWidth: "0 0 80px 80px",
+            opacity: 0.4,
           }}
         />
         <svg
@@ -537,8 +537,8 @@ function FlipFront({ card }: { card: NodeCard }) {
         <div
           style={{
             position: "absolute",
-            right: 6,
-            bottom: 6,
+            right: 8,
+            bottom: 10,
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 700,
             fontSize: 8,
@@ -549,6 +549,7 @@ function FlipFront({ card }: { card: NodeCard }) {
           VOLTEAR
         </div>
       </div>
+
     </div>
   );
 }
