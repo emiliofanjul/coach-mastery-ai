@@ -471,9 +471,12 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
+    setYouDoTranscript(youDo);
+    // 1) Show feedback (loading) screen immediately
+    setPhase("feedback");
+    // 2) Run evaluation in background
     try {
-      const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
-      setYouDoTranscript(youDo);
       const evaluatePayload = {
         transcript: "",
         phase: "evaluate" as const,
@@ -517,7 +520,6 @@ function PracticaPage() {
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
         observations: evaluation.observations.slice(0, 3),
       });
-      setPhase("feedback");
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
         nodeType === "boss"
@@ -545,10 +547,10 @@ function PracticaPage() {
     } catch (err) {
       console.error("[practica] handleSessionEnd error:", err);
       setFeedbackResult(null);
-      setPhase("feedback");
       setConnectionError("No se pudo generar el feedback. Toca para reintentar.");
     }
   }
+
 
   async function handleReplay() {
     sessionEndedRef.current = true;
