@@ -432,7 +432,10 @@ function PracticaPage() {
 
       // BUG 2 fix: no reactivar mic si la sesión terminó.
       if (sessionEndedRef.current) return;
-      startRecognition();
+      // En you_do el mic es 100% manual — el usuario toca el botón cuando quiera hablar.
+      if (claudePhaseRef.current !== "you_do") {
+        startRecognition();
+      }
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
