@@ -470,7 +470,7 @@ function PracticaPage() {
 
       if (sessionEndedRef.current) return;
 
-      const iDoType: string = script?.i_do_type ?? "roleplay";
+      const iDoType: string = script?.i_do_type ?? script?.phases?.i_do?.mode ?? "roleplay";
       if (iDoType === "demo") {
         // Demo pura: mostrar botón inmediatamente sin esperar a Claude
         setIDoDemoDone(true);
