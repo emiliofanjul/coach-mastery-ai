@@ -510,8 +510,14 @@ function PracticaPage() {
       currentPhaseRef.current = "you_do";
 
       // El vendedor (usuario) abre. Arrancamos escuchando.
+      const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
+      if (!seen) {
+        setShowVoiceTutorial(true);
+        return;
+      }
       startRecognition();
     } catch (err) {
+
       console.error("[voice] startYouDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
     }
