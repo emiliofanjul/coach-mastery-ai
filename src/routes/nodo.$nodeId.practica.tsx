@@ -687,13 +687,24 @@ function PracticaPage() {
             feedback={feedbackResult}
             onContinue={async (stars) => {
               setSaving(true);
+
+              const { data: existingProgress } = await supabase
+                .from("node_progress")
+                .select("stars")
+                .eq("seller_id", sellerData.id)
+                .eq("node_id", nodeId)
+                .maybeSingle();
+
+              const previousStars = (existingProgress?.stars as number | null) ?? 0;
+              const bestStars = Math.max(previousStars, stars);
+
               await supabase.from("node_progress").upsert(
                 {
                   seller_id: sellerData.id,
                   company_id: sellerData.company_id,
                   node_id: nodeId,
                   status: "done",
-                  stars,
+                  stars: bestStars,
                   last_practiced_at: new Date().toISOString(),
                 },
                 { onConflict: "seller_id,node_id" },
@@ -734,9 +745,9 @@ function PracticaPage() {
 
               setNodeCompletionSignal({
                 nodeId,
-                stars,
-                isReplay: false,
-                improved: true,
+                stars: bestStars as 1 | 2 | 3,
+                isReplay: previousStars > 0,
+                improved: stars > previousStars,
               });
               navigate({ to: "/mapa" });
             }}
