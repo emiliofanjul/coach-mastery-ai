@@ -678,10 +678,6 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
-                if (showVoiceTutorial) {
-                  try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
-                  setShowVoiceTutorial(false);
-                }
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
@@ -736,45 +732,245 @@ function PracticaPage() {
               <div
                 style={{
                   position: "fixed",
-                  left: 0,
-                  right: 0,
-                  bottom: "calc(env(safe-area-inset-bottom, 0px) + 200px)",
-                  zIndex: 100,
-                  pointerEvents: "none",
+                  inset: 0,
+                  background: "#08080F",
+                  zIndex: 200,
+                  overflowY: "auto",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: 8,
-                  textAlign: "center",
+                  padding: "1.6rem 1.2rem calc(env(safe-area-inset-bottom, 0px) + 1.6rem)",
                 }}
               >
                 <style>{`
-                  @keyframes closerArrowBounce {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(12px); }
+                  @keyframes closerBluePulse {
+                    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6), 0 0 32px rgba(59,130,246,0.5); }
+                    50% { box-shadow: 0 0 0 18px rgba(59,130,246,0), 0 0 48px rgba(59,130,246,0.35); }
                   }
                 `}</style>
                 <div
                   style={{
-                    color: "#fff",
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 20,
-                    textShadow: "0 2px 12px rgba(0,0,0,0.85)",
+                    width: "100%",
+                    maxWidth: 560,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
                   }}
                 >
-                  Toca aquí para hablar
-                </div>
-                <div
-                  style={{
-                    color: "#FF6B2B",
-                    fontSize: 56,
-                    lineHeight: 1,
-                    animation: "closerArrowBounce 1.2s ease-in-out infinite",
-                    textShadow: "0 2px 12px rgba(0,0,0,0.6)",
-                  }}
-                >
-                  ↓
+                  <h2
+                    style={{
+                      color: "#fff",
+                      fontFamily: "Syne, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 24,
+                      margin: "8px 0 8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    Así funciona la práctica por voz
+                  </h2>
+
+                  {/* Tarjeta 1 */}
+                  <div
+                    style={{
+                      background: "#14141C",
+                      border: "1px solid rgba(255,107,43,0.3)",
+                      borderRadius: 14,
+                      padding: "1.2rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "Syne, sans-serif",
+                        fontWeight: 700,
+                        fontSize: 16,
+                        color: "#FF6B2B",
+                      }}
+                    >
+                      Closer habla primero
+                    </div>
+                    <div
+                      style={{
+                        width: 72,
+                        height: 72,
+                        borderRadius: "50%",
+                        background: "#3B82F6",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        animation: "closerBluePulse 1.6s ease-in-out infinite",
+                        margin: "4px 0",
+                      }}
+                    >
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" y1="19" x2="12" y2="23" />
+                        <line x1="8" y1="23" x2="16" y2="23" />
+                      </svg>
+                    </div>
+                    <div
+                      style={{
+                        color: "#F0F0F5",
+                        fontFamily: "DM Sans, sans-serif",
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Cuando el círculo pulsa en azul, Closer está hablando. Solo escucha.
+                    </div>
+                  </div>
+
+                  {/* Tarjeta 2 */}
+                  <div
+                    style={{
+                      background: "#14141C",
+                      borderRadius: 14,
+                      padding: "1.2rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "Syne, sans-serif",
+                        fontWeight: 700,
+                        fontSize: 16,
+                        color: "#FF6B2B",
+                      }}
+                    >
+                      Toca para hablar
+                    </div>
+                    <div style={{ display: "flex", gap: 18, margin: "4px 0" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                        <div
+                          style={{
+                            width: 64,
+                            height: 64,
+                            borderRadius: "50%",
+                            background: "#FF6B2B",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                            <line x1="12" y1="19" x2="12" y2="23" />
+                            <line x1="8" y1="23" x2="16" y2="23" />
+                          </svg>
+                        </div>
+                        <div style={{ color: "#F0F0F5", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Toca</div>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", color: "#5A5A8A", fontSize: 20 }}>→</div>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                        <div
+                          style={{
+                            width: 64,
+                            height: 64,
+                            borderRadius: "50%",
+                            background: "#E0322B",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <div style={{ width: 18, height: 18, background: "#fff", borderRadius: 3 }} />
+                        </div>
+                        <div style={{ color: "#F0F0F5", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Escuchando</div>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        color: "#F0F0F5",
+                        fontFamily: "DM Sans, sans-serif",
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Cuando sea tu turno, toca el botón naranja. El botón se pone rojo mientras te escucha.
+                    </div>
+                  </div>
+
+                  {/* Tarjeta 3 */}
+                  <div
+                    style={{
+                      background: "#14141C",
+                      borderRadius: 14,
+                      padding: "1.2rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 12,
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "Syne, sans-serif",
+                        fontWeight: 700,
+                        fontSize: 16,
+                        color: "#FF6B2B",
+                      }}
+                    >
+                      Termina de hablar
+                    </div>
+                    <div
+                      style={{
+                        color: "#F0F0F5",
+                        fontFamily: "DM Sans, sans-serif",
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Cuando termines, haz una pausa de 2 segundos. Closer detecta el silencio y responde automáticamente.
+                    </div>
+                    <div
+                      style={{
+                        background: "rgba(34,197,94,0.12)",
+                        border: "1px solid rgba(34,197,94,0.35)",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                        color: "#86EFAC",
+                        fontFamily: "DM Sans, sans-serif",
+                        fontSize: 13,
+                        lineHeight: 1.45,
+                      }}
+                    >
+                      No necesitas tocar nada para enviar — el silencio lo hace automático.
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
+                      setShowVoiceTutorial(false);
+                      startRecognition();
+                    }}
+                    style={{
+                      background: "#FF6B2B",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 99,
+                      padding: "16px 28px",
+                      fontFamily: "Syne, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 16,
+                      cursor: "pointer",
+                      width: "100%",
+                      marginTop: 8,
+                    }}
+                  >
+                    Entendido, practicar →
+                  </button>
                 </div>
               </div>
             )}
