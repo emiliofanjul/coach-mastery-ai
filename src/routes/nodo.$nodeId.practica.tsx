@@ -605,27 +605,69 @@ function PracticaPage() {
         )}
 
         {(phase === "i_do" || phase === "you_do") && (
-          <VoicePhase
-            key={phase}
-            currentPhase={currentPhase}
-            isAgentSpeaking={isAgentSpeaking}
-            isUserListening={isUserListening}
-            isProcessing={isProcessing}
-            interimTranscript={interimTranscript}
-            connectionError={connectionError}
-            onMicClick={() => {
-              if (isUserListening) stopRecognition();
-              else if (!isAgentSpeaking && !isProcessing) startRecognition();
-            }}
-            onRetry={() => {
-              setConnectionError(null);
-              if (phase === "i_do") startIDoSession();
-              else startYouDoSession();
-            }}
-            onReplay={handleReplay}
-            onExitClick={() => setShowExitDialog(true)}
-          />
+          <>
+            <VoicePhase
+              key={phase}
+              currentPhase={currentPhase}
+              isAgentSpeaking={isAgentSpeaking}
+              isUserListening={isUserListening}
+              isProcessing={isProcessing}
+              interimTranscript={interimTranscript}
+              connectionError={connectionError}
+              onMicClick={() => {
+                if (phase === "i_do") return;
+                if (isUserListening) stopRecognition();
+                else if (!isAgentSpeaking && !isProcessing) startRecognition();
+              }}
+              onRetry={() => {
+                setConnectionError(null);
+                if (phase === "i_do") startIDoSession();
+                else startYouDoSession();
+              }}
+              onReplay={handleReplay}
+              onExitClick={() => setShowExitDialog(true)}
+            />
+            {phase === "i_do" && iDoDemoDone && (
+              <div
+                style={{
+                  position: "fixed",
+                  left: 0,
+                  right: 0,
+                  bottom: 24,
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "0 1.2rem",
+                  zIndex: 50,
+                }}
+              >
+                <button
+                  onClick={() => {
+                    stopAudio();
+                    stopRecognition();
+                    setIDoDemoDone(false);
+                    setPhase("transition");
+                  }}
+                  style={{
+                    background: "#FF6B2B",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 99,
+                    padding: "16px 28px",
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    width: "100%",
+                    maxWidth: 560,
+                  }}
+                >
+                  Listo, ahora yo →
+                </button>
+              </div>
+            )}
+          </>
         )}
+
 
         {phase === "transition" && (
           <TransitionPhase
