@@ -615,7 +615,7 @@ function PracticaPage() {
               connectionError={connectionError}
               onMicClick={() => {
                 if (isUserListening) stopRecognition();
-                else if (!isAgentSpeaking && !isProcessing) startRecognition();
+                else if (!isAgentSpeaking) startRecognition();
               }}
               onRetry={() => {
                 setConnectionError(null);
