@@ -345,6 +345,19 @@ const CARD_STYLES: Record<CardType, { border: string; bg: string }> = {
 function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void }) {
   const isFlip = card.card_type === "good_example" || card.card_type === "bad_example";
   const isCta = card.card_type === "cta";
+  const [hintActive, setHintActive] = useState(false);
+
+  useEffect(() => {
+    if (!isFlip) return;
+    if (typeof window === "undefined") return;
+    if (window.localStorage.getItem("closer_flip_hint_seen") === "true") return;
+    const t = setTimeout(() => {
+      setHintActive(true);
+      try { window.localStorage.setItem("closer_flip_hint_seen", "true"); } catch {}
+      setTimeout(() => setHintActive(false), 700);
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [isFlip]);
 
   if (isCta) {
     return <CtaFace card={card} />;
@@ -354,12 +367,17 @@ function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: bool
     return <StaticFace card={card} />;
   }
 
+  const animateRotate = flipped ? 180 : (hintActive ? [0, 15, 0] : 0);
+  const transition = hintActive && !flipped
+    ? { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
+    : { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
+
   // Flip card
   return (
     <div style={{ perspective: 1200, width: "100%" }}>
       <motion.div
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        animate={{ rotateY: animateRotate }}
+        transition={transition}
         style={{
           position: "relative",
           width: "100%",
@@ -384,6 +402,7 @@ function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: bool
     </div>
   );
 }
+
 
 // ───────────────────────── Faces ─────────────────────────
 
