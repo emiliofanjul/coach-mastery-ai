@@ -480,74 +480,35 @@ function FlipFront({ card }: { card: NodeCard }) {
         {card.body}
       </div>
       <div style={{ flex: 1 }} />
-      <style>{`@keyframes corner-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.92); } }`}</style>
+      <style>{`@keyframes chip-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.75; transform: scale(0.96); } }`}</style>
       <div
         style={{
           position: "absolute",
-          right: 0,
-          bottom: 0,
-          width: 90,
-          height: 90,
-          borderBottomRightRadius: 14,
-          overflow: "hidden",
+          left: "50%",
+          bottom: 16,
+          transform: "translateX(-50%)",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "6px 14px",
+          borderRadius: 99,
+          background: isGood ? "rgba(6,214,160,0.12)" : "rgba(239,71,111,0.12)",
+          border: `1px solid ${isGood ? "#06D6A0" : "#EF476F"}`,
+          color: isGood ? "#06D6A0" : "#EF476F",
+          fontFamily: "'DM Sans', sans-serif",
+          fontWeight: 700,
+          fontSize: 10,
+          letterSpacing: "0.5px",
+          animation: "chip-pulse 2s ease-in-out infinite",
           pointerEvents: "none",
-          animation: "corner-pulse 3s ease-in-out infinite",
-          transformOrigin: "bottom right",
+          whiteSpace: "nowrap",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            bottom: 0,
-            width: 0,
-            height: 0,
-            borderStyle: "solid",
-            borderColor: `transparent transparent #14141C transparent`,
-            borderWidth: "0 0 90px 90px",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            bottom: 0,
-            width: 0,
-            height: 0,
-            borderStyle: "solid",
-            borderColor: `transparent transparent ${isGood ? "#06D6A0" : "#EF476F"} transparent`,
-            borderWidth: "0 0 80px 80px",
-            opacity: 0.7,
-          }}
-        />
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={isGood ? "#06D6A0" : "#EF476F"}
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ position: "absolute", right: 8, bottom: 22 }}
-        >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 14 4 9 9 4" />
           <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
         </svg>
-        <div
-          style={{
-            position: "absolute",
-            right: 8,
-            bottom: 10,
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 700,
-            fontSize: 8,
-            letterSpacing: "0.5px",
-            color: isGood ? "#06D6A0" : "#EF476F",
-          }}
-        >
-          VOLTEAR
-        </div>
+        DESCUBRE POR QUÉ
       </div>
 
     </div>
