@@ -733,18 +733,19 @@ function PracticaPage() {
                 </button>
               </div>
             )}
-            {phase === "you_do" && showVoiceTutorial && voiceTutorialStep === 1 && (
+            {phase === "you_do" && showVoiceTutorial && (
               <div
                 style={{
                   position: "fixed",
-                  inset: 0,
-                  background: "rgba(0,0,0,0.82)",
+                  left: 0,
+                  right: 0,
+                  bottom: "calc(env(safe-area-inset-bottom, 0px) + 200px)",
                   zIndex: 100,
+                  pointerEvents: "none",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center",
-                  padding: "1.2rem",
+                  gap: 8,
                   textAlign: "center",
                 }}
               >
@@ -754,118 +755,28 @@ function PracticaPage() {
                     50% { transform: translateY(12px); }
                   }
                 `}</style>
-                <h2
+                <div
                   style={{
                     color: "#fff",
                     fontFamily: "Syne, sans-serif",
                     fontWeight: 700,
-                    fontSize: 24,
-                    marginBottom: 32,
-                    maxWidth: 360,
+                    fontSize: 20,
+                    textShadow: "0 2px 12px rgba(0,0,0,0.85)",
                   }}
                 >
-                  Toca el botón naranja para empezar a hablar
-                </h2>
+                  Toca aquí para hablar
+                </div>
                 <div
                   style={{
                     color: "#FF6B2B",
-                    fontSize: 64,
+                    fontSize: 56,
                     lineHeight: 1,
-                    marginBottom: 16,
                     animation: "closerArrowBounce 1.2s ease-in-out infinite",
+                    textShadow: "0 2px 12px rgba(0,0,0,0.6)",
                   }}
                 >
                   ↓
                 </div>
-                <div
-                  style={{
-                    width: 96,
-                    height: 96,
-                    borderRadius: "50%",
-                    background: "#FF6B2B",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: 40,
-                    opacity: 0.6,
-                  }}
-                >
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                    <line x1="12" y1="19" x2="12" y2="23" />
-                    <line x1="8" y1="23" x2="16" y2="23" />
-                  </svg>
-                </div>
-                <button
-                  onClick={() => setVoiceTutorialStep(2)}
-                  style={{
-                    background: "#FF6B2B",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 99,
-                    padding: "16px 28px",
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 16,
-                    cursor: "pointer",
-                    width: "100%",
-                    maxWidth: 360,
-                  }}
-                >
-                  Entendido →
-                </button>
-              </div>
-            )}
-            {phase === "you_do" && showVoiceTutorial && voiceTutorialStep === 2 && (
-              <div
-                style={{
-                  position: "fixed",
-                  inset: 0,
-                  zIndex: 100,
-                  pointerEvents: "none",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  paddingTop: "18vh",
-                  textAlign: "center",
-                }}
-              >
-                <style>{`
-                  @keyframes closerMicPulseTut {
-                    0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 40px rgba(255,107,43,0.6); }
-                    70% { box-shadow: 0 0 0 32px rgba(255,107,43,0), 0 0 60px rgba(255,107,43,0.4); }
-                    100% { box-shadow: 0 0 0 0 rgba(255,107,43,0), 0 0 40px rgba(255,107,43,0.6); }
-                  }
-                `}</style>
-                <h2
-                  style={{
-                    color: "#fff",
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 28,
-                    margin: 0,
-                    padding: "0 1.2rem",
-                    textShadow: "0 2px 12px rgba(0,0,0,0.8)",
-                  }}
-                >
-                  Ahora tócalo tú
-                </h2>
-                {/* Pulso animado superpuesto al botón del mic real (centro inferior) */}
-                <div
-                  style={{
-                    position: "fixed",
-                    left: "50%",
-                    bottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)",
-                    transform: "translate(-50%, 0)",
-                    width: 96,
-                    height: 96,
-                    borderRadius: "50%",
-                    animation: "closerMicPulseTut 1.4s ease-out infinite",
-                    pointerEvents: "none",
-                  }}
-                />
               </div>
             )}
           </>
