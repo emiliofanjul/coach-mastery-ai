@@ -479,7 +479,7 @@ function PracticaPage() {
         seller_name: sellerData?.full_name ?? "",
         conversation_history: transcriptFullRef.current
           .filter((m) => m.phase === "you_do")
-          .map((m) => ({ role: m.role === "Closer" ? "assistant" : "user", content: m.text })),
+          .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
