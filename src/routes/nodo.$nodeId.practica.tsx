@@ -364,6 +364,7 @@ function PracticaPage() {
       if (inIDo && endSession) {
         sessionEndedRef.current = true;
         stopRecognition();
+        stopAudio();
         if (message) {
           const agentItem: TranscriptItem = {
             role: "agent",
