@@ -42,6 +42,10 @@ function buildEvaluateSystemPrompt(practice_script: any): string {
 Criterios del nodo: ${successStr}
 Errores críticos: ${failureStr}
 
+IMPORTANTE: El vendedor es el 'user' en el historial. Closer es el 'assistant'.
+Evalúa ÚNICAMENTE el desempeño del 'user' (el vendedor).
+No evalúes ni menciones el comportamiento del 'assistant' (Closer).
+
 Evalúa ÚNICAMENTE los criterios del nodo. No menciones conceptos que el vendedor no ha aprendido.
 
 Responde JSON:
@@ -54,6 +58,7 @@ Responde JSON:
 
 No incluyas texto fuera del JSON.`;
 }
+
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
