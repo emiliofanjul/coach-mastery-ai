@@ -664,6 +664,7 @@ function PracticaPage() {
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
+              iDoDemoDone={iDoDemoDone}
               onRetry={() => {
                 setConnectionError(null);
                 if (phase === "i_do") startIDoSession();
