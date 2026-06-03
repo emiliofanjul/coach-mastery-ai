@@ -484,30 +484,37 @@ function FlipFront({ card }: { card: NodeCard }) {
       <div
         style={{
           position: "absolute",
-          left: "50%",
+          left: 0,
+          right: 0,
           bottom: 16,
-          transform: "translateX(-50%)",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "6px 14px",
-          borderRadius: 99,
-          background: isGood ? "#06D6A0" : "#EF476F",
-          color: "#08080F",
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 800,
-          fontSize: 11,
-          letterSpacing: "0.8px",
-          animation: "chip-pulse 2s ease-in-out infinite",
+          display: "flex",
+          justifyContent: "center",
           pointerEvents: "none",
-          whiteSpace: "nowrap",
         }}
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#08080F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="7" y1="17" x2="17" y2="7" />
-          <polyline points="8 7 17 7 17 16" />
-        </svg>
-        DESCUBRE POR QUÉ
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "6px 14px",
+            borderRadius: 99,
+            background: isGood ? "#06D6A0" : "#EF476F",
+            color: "#08080F",
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 800,
+            fontSize: 11,
+            letterSpacing: "0.8px",
+            animation: "chip-pulse 2s ease-in-out infinite",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#08080F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7" />
+            <polyline points="8 7 17 7 17 16" />
+          </svg>
+          DESCUBRE POR QUÉ
+        </div>
       </div>
 
     </div>
