@@ -1027,7 +1027,7 @@ function VoicePhase({
       : "rgba(255,255,255,0.15)";
   const animatePulse = isAgentSpeaking || isUserListening;
 
-  const micDisabled = isAgentSpeaking || isProcessing;
+  const micDisabled = isAgentSpeaking;
   const micBg = isUserListening ? RED : ORANGE;
   const micLabel = isUserListening
     ? "Toca para enviar"
