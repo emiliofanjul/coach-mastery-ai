@@ -278,6 +278,7 @@ function PracticaPage() {
     rec.maxAlternatives = 1;
 
     let finalText = "";
+    let sendTimer: ReturnType<typeof setTimeout> | null = null;
     rec.onresult = (event: any) => {
       let interim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -286,12 +287,18 @@ function PracticaPage() {
         else interim += r[0].transcript;
       }
       setInterimTranscript(finalText + interim);
+
+      if (sendTimer) clearTimeout(sendTimer);
+      sendTimer = setTimeout(() => {
+        try { rec.stop(); } catch {}
+      }, 1500);
     };
     rec.onerror = (e: any) => {
       console.error("[voice] STT error:", e?.error ?? e);
       setIsUserListening(false);
     };
     rec.onend = () => {
+      if (sendTimer) clearTimeout(sendTimer);
       setIsUserListening(false);
       recognitionRef.current = null;
       const text = finalText.trim();
@@ -300,6 +307,7 @@ function PracticaPage() {
         void sendToCloser(text);
       }
     };
+
     recognitionRef.current = rec;
     setInterimTranscript("");
     setIsUserListening(true);
