@@ -63,7 +63,6 @@ function PracticaPage() {
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
-  const [voiceTutorialStep, setVoiceTutorialStep] = useState<1 | 2>(1);
 
 
   // Nuevo flujo voz: TTS + STT + closer-voice
