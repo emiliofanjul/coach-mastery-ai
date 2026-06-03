@@ -443,6 +443,8 @@ function PracticaPage() {
       currentPhaseRef.current = "i_do";
 
       const script: any = nodeDataRef.current?.practice_script ?? null;
+      console.log("[i_do] nodeDataRef.current:", JSON.stringify(nodeDataRef.current?.practice_script?.i_do_type));
+      console.log("[i_do] script:", JSON.stringify(script?.i_do_type));
       const briefing: string | undefined = script?.phases?.i_do?.briefing;
       const firstMessage: string =
         script?.phases?.i_do?.first_message
