@@ -438,9 +438,9 @@ function PracticaPage() {
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
-      // I DO es solo una demostración: no abrimos micrófono.
-      // El usuario presiona "Listo, ahora yo →" para ir a transición.
-      setIDoDemoDone(true);
+      // I DO ahora es interactivo: el usuario puede reaccionar como cliente.
+      // El botón "Listo, ahora yo →" aparece cuando Claude termina con end_session.
+      startRecognition();
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
