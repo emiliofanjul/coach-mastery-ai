@@ -492,21 +492,20 @@ function FlipFront({ card }: { card: NodeCard }) {
           gap: 6,
           padding: "6px 14px",
           borderRadius: 99,
-          background: isGood ? "rgba(6,214,160,0.12)" : "rgba(239,71,111,0.12)",
-          border: `1px solid ${isGood ? "#06D6A0" : "#EF476F"}`,
-          color: isGood ? "#06D6A0" : "#EF476F",
+          background: isGood ? "#06D6A0" : "#EF476F",
+          color: "#08080F",
           fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 700,
-          fontSize: 10,
-          letterSpacing: "0.5px",
+          fontWeight: 800,
+          fontSize: 11,
+          letterSpacing: "0.8px",
           animation: "chip-pulse 2s ease-in-out infinite",
           pointerEvents: "none",
           whiteSpace: "nowrap",
         }}
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 14 4 9 9 4" />
-          <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#08080F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="7" y1="17" x2="17" y2="7" />
+          <polyline points="8 7 17 7 17 16" />
         </svg>
         DESCUBRE POR QUÉ
       </div>
