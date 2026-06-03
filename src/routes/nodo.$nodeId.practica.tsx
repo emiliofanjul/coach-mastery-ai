@@ -357,6 +357,35 @@ function PracticaPage() {
       const nextPhase: string = data?.next_phase ?? claudePhaseRef.current;
       const endSession: boolean = !!data?.end_session;
 
+      const inIDo = claudePhaseRef.current === "i_do";
+
+      // BUG 1 fix: en i_do, si Claude termina, marcamos sessionEnded ANTES de TTS
+      // para que el micrófono no se ilumine al mismo tiempo que aparece "Listo, ahora yo".
+      if (inIDo && endSession) {
+        sessionEndedRef.current = true;
+        stopRecognition();
+        if (message) {
+          const agentItem: TranscriptItem = {
+            role: "agent",
+            text: message,
+            phase: currentPhaseRef.current,
+          };
+          transcriptFullRef.current = [...transcriptFullRef.current, agentItem];
+          setTranscriptFull([...transcriptFullRef.current]);
+          conversationHistoryRef.current = [
+            ...conversationHistoryRef.current,
+            { role: "assistant", content: message },
+          ];
+          setIsProcessing(false);
+          await playTTS(message);
+        } else {
+          setIsProcessing(false);
+        }
+        stopAudio();
+        setIDoDemoDone(true);
+        return;
+      }
+
       if (message) {
         const agentItem: TranscriptItem = {
           role: "agent",
@@ -375,34 +404,24 @@ function PracticaPage() {
         setIsProcessing(false);
       }
 
-      const inIDo = claudePhaseRef.current === "i_do";
-
       if (inIDo) {
-        // i_do termina cuando Claude decide que demostró suficiente.
-        // Mostramos el botón "Listo, ahora yo →" en vez de ir directo a transición.
-        if (endSession) {
-          sessionEndedRef.current = true;
-          stopRecognition();
-          stopAudio();
-          setIDoDemoDone(true);
-          return;
-        }
-      } else {
-        // you_do / boss_sim / closing
-        if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
-          claudePhaseRef.current = nextPhase as any;
-        }
-        if (endSession || nextPhase === "end") {
-          await handleSessionEnd();
-          return;
-        }
+        // En i_do sin endSession: el usuario decide si responder. No auto-activar mic.
+        setIsProcessing(false);
+        return;
       }
 
-      // En YOU DO, reactivamos el micrófono automáticamente.
-      // En I DO, el usuario debe tocar manualmente para responder como cliente.
-      if (!inIDo) {
-        startRecognition();
+      // you_do / boss_sim / closing
+      if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
+        claudePhaseRef.current = nextPhase as any;
       }
+      if (endSession || nextPhase === "end") {
+        await handleSessionEnd();
+        return;
+      }
+
+      // BUG 2 fix: no reactivar mic si la sesión terminó.
+      if (sessionEndedRef.current) return;
+      startRecognition();
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
