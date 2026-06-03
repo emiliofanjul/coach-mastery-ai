@@ -32,10 +32,17 @@ interface TranscriptItem {
   phase: TurnPhase;
 }
 
+interface ObservationItem {
+  error: string;
+  mejora: string;
+  ejemplo: string;
+}
+
 interface FeedbackResult {
   score: number;
   stars: 1 | 2 | 3;
-  observations: string[];
+  observations: ObservationItem[];
+  mision: string;
 }
 
 function PracticaPage() {
@@ -570,11 +577,21 @@ function PracticaPage() {
         throw new Error("closer-voice evaluate returned invalid JSON");
       }
       console.log("[closer-voice evaluate] parsed:", evaluation);
+      const obsValid =
+        Array.isArray(evaluation?.observations) &&
+        evaluation.observations.length > 0 &&
+        evaluation.observations.every(
+          (o: any) =>
+            o && typeof o === "object" &&
+            typeof o.error === "string" &&
+            typeof o.mejora === "string" &&
+            typeof o.ejemplo === "string",
+        );
       if (
         typeof evaluation?.score !== "number" ||
         ![1, 2, 3].includes(evaluation?.stars) ||
-        !Array.isArray(evaluation?.observations) ||
-        evaluation.observations.length === 0
+        !obsValid ||
+        typeof evaluation?.mision !== "string"
       ) {
         throw new Error("closer-voice evaluate response malformed");
       }
@@ -582,6 +599,7 @@ function PracticaPage() {
         score: Number(evaluation.score),
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
         observations: evaluation.observations.slice(0, 3),
+        mision: evaluation.mision,
       });
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
