@@ -614,7 +614,6 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
-                if (phase === "i_do") return;
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking && !isProcessing) startRecognition();
               }}
