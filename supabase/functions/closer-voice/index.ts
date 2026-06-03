@@ -85,7 +85,13 @@ CUÁNDO TERMINAR EN YOU_DO:
 El scope de esta práctica es SOLO los primeros 10 segundos — la apertura.
 Termina la sesión (end_session: true) después de 1-2 turnos máximo.
 En cuanto el vendedor haya saludado y dicho quién es — ya tienes suficiente evidencia.
-NO dejes que la conversación llegue a discovery, preguntas, ni producto.`;
+NO dejes que la conversación llegue a discovery, preguntas, ni producto.
+
+CÓMO CERRAR EN YOU_DO:
+Cuando termines (end_session: true), sal del personaje de cliente y habla como Closer guiando al vendedor hacia lo siguiente.
+El message debe ser corto, orientador y cálido — algo como: "Listo, tengo lo que necesito. Vamos a ver cómo te fue."
+NUNCA cierres con frases que suenen a corte abrupto tipo "Lo dejamos aquí" o "Hasta aquí llegamos".
+Siempre indica qué sigue: revisar el feedback de la sesión.`;
   } else if (phase === "boss_sim") {
     roleBlock = `ERES EL CLIENTE DIFÍCIL. Actúa SOLO como cliente. Nunca como vendedor.`;
   } else {
