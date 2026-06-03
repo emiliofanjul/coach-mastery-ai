@@ -63,6 +63,7 @@ function PracticaPage() {
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
+  const [voiceTutorialStep, setVoiceTutorialStep] = useState<1 | 2>(1);
 
 
   // Nuevo flujo voz: TTS + STT + closer-voice
@@ -293,7 +294,7 @@ function PracticaPage() {
       if (sendTimer) clearTimeout(sendTimer);
       sendTimer = setTimeout(() => {
         try { rec.stop(); } catch {}
-      }, 1500);
+      }, 2500);
     };
     rec.onerror = (e: any) => {
       console.error("[voice] STT error:", e?.error ?? e);
@@ -512,6 +513,7 @@ function PracticaPage() {
       // El vendedor (usuario) abre. Arrancamos escuchando.
       const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
       if (!seen) {
+        setVoiceTutorialStep(1);
         setShowVoiceTutorial(true);
         return;
       }
@@ -677,6 +679,13 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
+                if (showVoiceTutorial && voiceTutorialStep === 2) {
+                  try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
+                  setShowVoiceTutorial(false);
+                  if (!isAgentSpeaking) startRecognition();
+                  return;
+                }
+                if (showVoiceTutorial) return;
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
@@ -727,12 +736,12 @@ function PracticaPage() {
                 </button>
               </div>
             )}
-            {phase === "you_do" && showVoiceTutorial && (
+            {phase === "you_do" && showVoiceTutorial && voiceTutorialStep === 1 && (
               <div
                 style={{
                   position: "fixed",
                   inset: 0,
-                  background: "rgba(0,0,0,0.78)",
+                  background: "rgba(0,0,0,0.82)",
                   zIndex: 100,
                   display: "flex",
                   flexDirection: "column",
@@ -743,10 +752,9 @@ function PracticaPage() {
                 }}
               >
                 <style>{`
-                  @keyframes closerMicPulse {
-                    0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 40px rgba(255,107,43,0.6); }
-                    70% { box-shadow: 0 0 0 28px rgba(255,107,43,0), 0 0 60px rgba(255,107,43,0.4); }
-                    100% { box-shadow: 0 0 0 0 rgba(255,107,43,0), 0 0 40px rgba(255,107,43,0.6); }
+                  @keyframes closerArrowBounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(12px); }
                   }
                 `}</style>
                 <h2
@@ -759,8 +767,19 @@ function PracticaPage() {
                     maxWidth: 360,
                   }}
                 >
-                  Toca el micrófono para hablar
+                  Toca el botón naranja para empezar a hablar
                 </h2>
+                <div
+                  style={{
+                    color: "#FF6B2B",
+                    fontSize: 64,
+                    lineHeight: 1,
+                    marginBottom: 16,
+                    animation: "closerArrowBounce 1.2s ease-in-out infinite",
+                  }}
+                >
+                  ↓
+                </div>
                 <div
                   style={{
                     width: 96,
@@ -770,8 +789,8 @@ function PracticaPage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    animation: "closerMicPulse 1.6s ease-out infinite",
-                    marginBottom: 24,
+                    marginBottom: 40,
+                    opacity: 0.6,
                   }}
                 >
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -781,23 +800,8 @@ function PracticaPage() {
                     <line x1="8" y1="23" x2="16" y2="23" />
                   </svg>
                 </div>
-                <p
-                  style={{
-                    color: "rgba(255,255,255,0.7)",
-                    fontFamily: "DM Sans, sans-serif",
-                    fontSize: 14,
-                    marginBottom: 32,
-                    maxWidth: 320,
-                  }}
-                >
-                  Closer escucha cuando el botón está rojo
-                </p>
                 <button
-                  onClick={() => {
-                    try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
-                    setShowVoiceTutorial(false);
-                    startRecognition();
-                  }}
+                  onClick={() => setVoiceTutorialStep(2)}
                   style={{
                     background: "#FF6B2B",
                     color: "#fff",
@@ -814,6 +818,57 @@ function PracticaPage() {
                 >
                   Entendido →
                 </button>
+              </div>
+            )}
+            {phase === "you_do" && showVoiceTutorial && voiceTutorialStep === 2 && (
+              <div
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  zIndex: 100,
+                  pointerEvents: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  paddingTop: "18vh",
+                  textAlign: "center",
+                }}
+              >
+                <style>{`
+                  @keyframes closerMicPulseTut {
+                    0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 40px rgba(255,107,43,0.6); }
+                    70% { box-shadow: 0 0 0 32px rgba(255,107,43,0), 0 0 60px rgba(255,107,43,0.4); }
+                    100% { box-shadow: 0 0 0 0 rgba(255,107,43,0), 0 0 40px rgba(255,107,43,0.6); }
+                  }
+                `}</style>
+                <h2
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 28,
+                    margin: 0,
+                    padding: "0 1.2rem",
+                    textShadow: "0 2px 12px rgba(0,0,0,0.8)",
+                  }}
+                >
+                  Ahora tócalo tú
+                </h2>
+                {/* Pulso animado superpuesto al botón del mic real (centro inferior) */}
+                <div
+                  style={{
+                    position: "fixed",
+                    left: "50%",
+                    bottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)",
+                    transform: "translate(-50%, 0)",
+                    width: 96,
+                    height: 96,
+                    borderRadius: "50%",
+                    animation: "closerMicPulseTut 1.4s ease-out infinite",
+                    pointerEvents: "none",
+                  }}
+                />
               </div>
             )}
           </>
@@ -1186,7 +1241,7 @@ function VoicePhase({
   const micDisabled = isAgentSpeaking;
   const micBg = isUserListening ? RED : ORANGE;
   const micLabel = isUserListening
-    ? "Toca para enviar"
+    ? "Closer está escuchando… toca de nuevo para enviar"
     : isAgentSpeaking
       ? "Closer está hablando…"
       : isProcessing
