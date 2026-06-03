@@ -56,6 +56,7 @@ function PracticaPage() {
   const nodeDataRef = useRef<any>(null);
   const [, setSessionId] = useState<string | null>(null);
   const [, setYouDoTranscript] = useState<TranscriptItem[]>([]);
+  const [youDoHistory, setYouDoHistory] = useState<{ role: string; content: string }[]>([]);
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
@@ -438,9 +439,8 @@ function PracticaPage() {
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
-      // I DO ahora es interactivo: el usuario puede reaccionar como cliente.
+      // I DO: el usuario decide cuándo hablar tocando el micrófono manualmente.
       // El botón "Listo, ahora yo →" aparece cuando Claude termina con end_session.
-      startRecognition();
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
@@ -473,6 +473,11 @@ function PracticaPage() {
     stopAudio();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
+    const youDoConv = youDo.map((m) => ({
+      role: m.role === "agent" ? "assistant" : "user",
+      content: m.text,
+    }));
+    setYouDoHistory(youDoConv);
     // 1) Show feedback (loading) screen immediately
     setPhase("feedback");
     // 2) Run evaluation in background
@@ -683,7 +688,7 @@ function PracticaPage() {
         {phase === "feedback" && (
           <FeedbackPhase
             key="feedback"
-            conversation={conversationHistoryRef.current}
+            conversation={youDoHistory}
             feedback={feedbackResult}
             onContinue={async (stars) => {
               setSaving(true);
@@ -1223,7 +1228,9 @@ function VoicePhase({
             minHeight: 18,
           }}
         >
-          {micLabel}
+          {isIDo && !isUserListening && !isAgentSpeaking
+            ? "Reacciona como cliente o toca 'Listo, ahora yo'"
+            : micLabel}
         </div>
         <button
           onClick={onReplay}
