@@ -492,6 +492,8 @@ function FlipFront({ card }: { card: NodeCard }) {
           justifyContent: "center",
           alignItems: "center",
           pointerEvents: "none",
+        }}
+      >
         <div
           style={{
             display: "inline-flex",
