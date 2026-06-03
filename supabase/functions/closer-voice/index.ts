@@ -25,10 +25,17 @@ interface CloserResponse {
   end_session: boolean;
 }
 
+interface EvaluationObservation {
+  error: string;
+  mejora: string;
+  ejemplo: string;
+}
+
 interface EvaluationResponse {
   score: number;
   stars: 1 | 2 | 3;
-  observations: string[];
+  observations: EvaluationObservation[];
+  mision: string;
   end_session: true;
 }
 
@@ -39,20 +46,33 @@ function buildEvaluateSystemPrompt(practice_script: any): string {
   const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
 
   return `Evalúa esta conversación de práctica de ventas.
-Criterios del nodo: ${successStr}
-Errores críticos: ${failureStr}
+Criterios del nodo (success_criteria): ${successStr}
+Errores críticos (failure_criteria): ${failureStr}
 
 IMPORTANTE: El vendedor es el 'user' en el historial. Closer es el 'assistant'.
 Evalúa ÚNICAMENTE el desempeño del 'user' (el vendedor).
 No evalúes ni menciones el comportamiento del 'assistant' (Closer).
 
-Evalúa ÚNICAMENTE los criterios del nodo. No menciones conceptos que el vendedor no ha aprendido.
+Evalúa ÚNICAMENTE en base a los success_criteria y failure_criteria del practice_script.
+NO uses criterios genéricos de ventas. NO menciones conceptos que el vendedor no ha aprendido.
 
-Responde JSON:
+Cada observación debe ser un objeto con 3 campos:
+- "error": frase corta describiendo qué hizo mal el vendedor (concreta, basada en lo que dijo).
+- "mejora": frase diciendo exactamente qué debe hacer diferente la próxima vez.
+- "ejemplo": cómo debería haber sonado exactamente, usando el contexto real de la empresa y el nombre del cliente que aparece en la conversación. Debe sonar natural, en primera persona del vendedor.
+
+Además incluye un campo "mision": UNA sola acción concreta y específica para practicar antes de la próxima sesión, ligada directamente a los criterios del nodo. Debe ser accionable, no genérica.
+
+Responde JSON exacto:
 {
   "score": número del 0 al 100,
   "stars": 1, 2 o 3 según score (1=<60, 2=60-84, 3=85+),
-  "observations": ["observación 1", "observación 2", "observación 3"],
+  "observations": [
+    { "error": "...", "mejora": "...", "ejemplo": "..." },
+    { "error": "...", "mejora": "...", "ejemplo": "..." },
+    { "error": "...", "mejora": "...", "ejemplo": "..." }
+  ],
+  "mision": "...",
   "end_session": true
 }
 
@@ -245,11 +265,21 @@ Deno.serve(async (req) => {
 
     if (phase === "evaluate") {
       const evaluation = parsed as EvaluationResponse;
+      const obsValid =
+        Array.isArray(evaluation.observations) &&
+        evaluation.observations.length === 3 &&
+        evaluation.observations.every(
+          (o: any) =>
+            o && typeof o === "object" &&
+            typeof o.error === "string" &&
+            typeof o.mejora === "string" &&
+            typeof o.ejemplo === "string",
+        );
       if (
         typeof evaluation.score !== "number" ||
         ![1, 2, 3].includes(evaluation.stars) ||
-        !Array.isArray(evaluation.observations) ||
-        evaluation.observations.length !== 3 ||
+        !obsValid ||
+        typeof evaluation.mision !== "string" ||
         evaluation.end_session !== true
       ) {
         return new Response(
