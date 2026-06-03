@@ -1386,9 +1386,10 @@ function FeedbackPhase({
   const [msgIdx, setMsgIdx] = useState(0);
 
   useEffect(() => {
-    const t = setTimeout(() => setStep("result"), 3000);
-    return () => clearTimeout(t);
-  }, []);
+    if (feedback !== null) {
+      setStep("result");
+    }
+  }, [feedback]);
 
   useEffect(() => {
     if (step !== "analyzing") return;
