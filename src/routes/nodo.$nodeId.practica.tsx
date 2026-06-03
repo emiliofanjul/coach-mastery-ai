@@ -410,6 +410,7 @@ function PracticaPage() {
   async function startIDoSession() {
     try {
       setConnectionError(null);
+      setIDoDemoDone(false);
       sessionEndedRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
@@ -438,7 +439,9 @@ function PracticaPage() {
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
-      startRecognition();
+      // I DO es solo una demostración: no abrimos micrófono.
+      // El usuario presiona "Listo, ahora yo →" para ir a transición.
+      setIDoDemoDone(true);
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
