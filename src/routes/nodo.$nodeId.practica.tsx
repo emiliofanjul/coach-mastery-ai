@@ -954,7 +954,6 @@ function PracticaPage() {
                     onClick={() => {
                       try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
                       setShowVoiceTutorial(false);
-                      startRecognition();
                     }}
                     style={{
                       background: "#FF6B2B",
