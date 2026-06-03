@@ -432,7 +432,10 @@ function PracticaPage() {
 
       // BUG 2 fix: no reactivar mic si la sesión terminó.
       if (sessionEndedRef.current) return;
-      startRecognition();
+      // En you_do el mic es 100% manual — el usuario toca el botón cuando quiera hablar.
+      if (claudePhaseRef.current !== "you_do") {
+        startRecognition();
+      }
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
@@ -509,14 +512,12 @@ function PracticaPage() {
       setCurrentPhase("you_do");
       currentPhaseRef.current = "you_do";
 
-      // El vendedor (usuario) abre. Arrancamos escuchando.
+      // El vendedor (usuario) abre. Mic 100% manual: el usuario toca el botón cuando quiera hablar.
       const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
       if (!seen) {
-        
         setShowVoiceTutorial(true);
         return;
       }
-      startRecognition();
     } catch (err) {
 
       console.error("[voice] startYouDoSession failed:", err);
@@ -953,7 +954,6 @@ function PracticaPage() {
                     onClick={() => {
                       try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
                       setShowVoiceTutorial(false);
-                      startRecognition();
                     }}
                     style={{
                       background: "#FF6B2B",
