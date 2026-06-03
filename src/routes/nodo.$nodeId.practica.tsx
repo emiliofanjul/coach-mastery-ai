@@ -32,10 +32,17 @@ interface TranscriptItem {
   phase: TurnPhase;
 }
 
+interface ObservationItem {
+  error: string;
+  mejora: string;
+  ejemplo: string;
+}
+
 interface FeedbackResult {
   score: number;
   stars: 1 | 2 | 3;
-  observations: string[];
+  observations: ObservationItem[];
+  mision: string;
 }
 
 function PracticaPage() {
@@ -570,11 +577,21 @@ function PracticaPage() {
         throw new Error("closer-voice evaluate returned invalid JSON");
       }
       console.log("[closer-voice evaluate] parsed:", evaluation);
+      const obsValid =
+        Array.isArray(evaluation?.observations) &&
+        evaluation.observations.length > 0 &&
+        evaluation.observations.every(
+          (o: any) =>
+            o && typeof o === "object" &&
+            typeof o.error === "string" &&
+            typeof o.mejora === "string" &&
+            typeof o.ejemplo === "string",
+        );
       if (
         typeof evaluation?.score !== "number" ||
         ![1, 2, 3].includes(evaluation?.stars) ||
-        !Array.isArray(evaluation?.observations) ||
-        evaluation.observations.length === 0
+        !obsValid ||
+        typeof evaluation?.mision !== "string"
       ) {
         throw new Error("closer-voice evaluate response malformed");
       }
@@ -582,6 +599,7 @@ function PracticaPage() {
         score: Number(evaluation.score),
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
         observations: evaluation.observations.slice(0, 3),
+        mision: evaluation.mision,
       });
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
@@ -1676,6 +1694,85 @@ const ANALYSIS_MESSAGES = [
 
 type FeedbackStep = "analyzing" | "result" | "victory";
 
+function ObservationCard({ obs }: { obs: ObservationItem }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      style={{
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.10)",
+        borderRadius: 12,
+        overflow: "hidden",
+      }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: "100%",
+          background: "transparent",
+          border: "none",
+          padding: "12px 14px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <span
+          style={{
+            flex: 1,
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 14,
+            lineHeight: 1.4,
+            color: "#fff",
+            fontWeight: 500,
+          }}
+        >
+          {obs.error}
+        </span>
+        <span
+          style={{
+            color: "rgba(255,255,255,0.6)",
+            fontSize: 14,
+            transform: open ? "rotate(90deg)" : "rotate(0deg)",
+            transition: "transform 0.2s ease",
+            display: "inline-block",
+          }}
+        >
+          ›
+        </span>
+      </button>
+      {open && (
+        <div style={{ padding: "0 14px 14px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: ORANGE,
+              fontWeight: 600,
+            }}
+          >
+            {obs.mejora}
+          </div>
+          <div
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: "rgba(255,255,255,0.6)",
+              fontStyle: "italic",
+            }}
+          >
+            "{obs.ejemplo}"
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FeedbackPhase({
   onContinue,
   conversation,
@@ -1834,23 +1931,48 @@ function FeedbackPhase({
               </div>
             ) : (
               observations.map((o, i) => (
-                <div
-                  key={i}
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: 14,
-                    lineHeight: 1.5,
-                    color: "rgba(255,255,255,0.8)",
-                    display: "flex",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ color: ORANGE }}>•</span>
-                  <span>{o}</span>
-                </div>
+                <ObservationCard key={i} obs={o} />
               ))
             )}
           </div>
+
+          {feedback?.mision && (
+            <div
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 14,
+                background: "rgba(255,107,43,0.10)",
+                border: `1px solid ${ORANGE}`,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "Syne, sans-serif",
+                  fontWeight: 800,
+                  fontSize: 14,
+                  color: ORANGE,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.8,
+                }}
+              >
+                Tu misión
+              </div>
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                  color: "#fff",
+                }}
+              >
+                {feedback.mision}
+              </div>
+            </div>
+          )}
 
           <ConversationTranscript conversation={conversation} />
 
