@@ -60,6 +60,7 @@ function PracticaPage() {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
+  const [iDoDemoDone, setIDoDemoDone] = useState(false);
 
   // Nuevo flujo voz: TTS + STT + closer-voice
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
@@ -409,6 +410,7 @@ function PracticaPage() {
   async function startIDoSession() {
     try {
       setConnectionError(null);
+      setIDoDemoDone(false);
       sessionEndedRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
@@ -437,7 +439,9 @@ function PracticaPage() {
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
-      startRecognition();
+      // I DO es solo una demostración: no abrimos micrófono.
+      // El usuario presiona "Listo, ahora yo →" para ir a transición.
+      setIDoDemoDone(true);
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
@@ -477,7 +481,9 @@ function PracticaPage() {
         practice_script: nodeDataRef.current?.practice_script ?? null,
         company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
         seller_name: sellerData?.full_name ?? "",
-        conversation_history: conversationHistoryRef.current,
+        conversation_history: transcriptFullRef.current
+          .filter((m) => m.phase === "you_do")
+          .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
@@ -599,27 +605,69 @@ function PracticaPage() {
         )}
 
         {(phase === "i_do" || phase === "you_do") && (
-          <VoicePhase
-            key={phase}
-            currentPhase={currentPhase}
-            isAgentSpeaking={isAgentSpeaking}
-            isUserListening={isUserListening}
-            isProcessing={isProcessing}
-            interimTranscript={interimTranscript}
-            connectionError={connectionError}
-            onMicClick={() => {
-              if (isUserListening) stopRecognition();
-              else if (!isAgentSpeaking && !isProcessing) startRecognition();
-            }}
-            onRetry={() => {
-              setConnectionError(null);
-              if (phase === "i_do") startIDoSession();
-              else startYouDoSession();
-            }}
-            onReplay={handleReplay}
-            onExitClick={() => setShowExitDialog(true)}
-          />
+          <>
+            <VoicePhase
+              key={phase}
+              currentPhase={currentPhase}
+              isAgentSpeaking={isAgentSpeaking}
+              isUserListening={isUserListening}
+              isProcessing={isProcessing}
+              interimTranscript={interimTranscript}
+              connectionError={connectionError}
+              onMicClick={() => {
+                if (phase === "i_do") return;
+                if (isUserListening) stopRecognition();
+                else if (!isAgentSpeaking && !isProcessing) startRecognition();
+              }}
+              onRetry={() => {
+                setConnectionError(null);
+                if (phase === "i_do") startIDoSession();
+                else startYouDoSession();
+              }}
+              onReplay={handleReplay}
+              onExitClick={() => setShowExitDialog(true)}
+            />
+            {phase === "i_do" && iDoDemoDone && (
+              <div
+                style={{
+                  position: "fixed",
+                  left: 0,
+                  right: 0,
+                  bottom: 24,
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "0 1.2rem",
+                  zIndex: 50,
+                }}
+              >
+                <button
+                  onClick={() => {
+                    stopAudio();
+                    stopRecognition();
+                    setIDoDemoDone(false);
+                    setPhase("transition");
+                  }}
+                  style={{
+                    background: "#FF6B2B",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 99,
+                    padding: "16px 28px",
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    width: "100%",
+                    maxWidth: 560,
+                  }}
+                >
+                  Listo, ahora yo →
+                </button>
+              </div>
+            )}
+          </>
         )}
+
 
         {phase === "transition" && (
           <TransitionPhase
