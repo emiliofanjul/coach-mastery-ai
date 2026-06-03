@@ -480,19 +480,29 @@ function FlipFront({ card }: { card: NodeCard }) {
         {card.body}
       </div>
       <div style={{ flex: 1 }} />
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontSize: 11,
-          color: "rgba(255,255,255,0.35)",
-          textAlign: "right",
-        }}
-      >
-        🔄 Toca para descubrir por qué
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11,
+            color: "rgba(255,255,255,0.7)",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: 99,
+            padding: "6px 14px",
+          }}
+        >
+          <span>↩</span>
+          <span>Toca para descubrir por qué</span>
+        </div>
       </div>
     </div>
   );
 }
+
 
 function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void }) {
   const styles = CARD_STYLES[card.card_type];
