@@ -1050,7 +1050,9 @@ function VoicePhase({
       ? "Closer está hablando…"
       : isProcessing
         ? "Pensando…"
-        : "Toca para hablar";
+        : isIDo
+          ? "Toca para responder como cliente"
+          : "Toca para hablar";
 
   return (
     <motion.div
