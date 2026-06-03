@@ -62,6 +62,8 @@ function PracticaPage() {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
+  const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
+
 
   // Nuevo flujo voz: TTS + STT + closer-voice
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
@@ -508,8 +510,14 @@ function PracticaPage() {
       currentPhaseRef.current = "you_do";
 
       // El vendedor (usuario) abre. Arrancamos escuchando.
+      const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
+      if (!seen) {
+        setShowVoiceTutorial(true);
+        return;
+      }
       startRecognition();
     } catch (err) {
+
       console.error("[voice] startYouDoSession failed:", err);
       setConnectionError("No se pudo iniciar la voz. Toca para reintentar.");
     }
@@ -719,11 +727,101 @@ function PracticaPage() {
                 </button>
               </div>
             )}
+            {phase === "you_do" && showVoiceTutorial && (
+              <div
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.78)",
+                  zIndex: 100,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "1.2rem",
+                  textAlign: "center",
+                }}
+              >
+                <style>{`
+                  @keyframes closerMicPulse {
+                    0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 40px rgba(255,107,43,0.6); }
+                    70% { box-shadow: 0 0 0 28px rgba(255,107,43,0), 0 0 60px rgba(255,107,43,0.4); }
+                    100% { box-shadow: 0 0 0 0 rgba(255,107,43,0), 0 0 40px rgba(255,107,43,0.6); }
+                  }
+                `}</style>
+                <h2
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 24,
+                    marginBottom: 32,
+                    maxWidth: 360,
+                  }}
+                >
+                  Toca el micrófono para hablar
+                </h2>
+                <div
+                  style={{
+                    width: 96,
+                    height: 96,
+                    borderRadius: "50%",
+                    background: "#FF6B2B",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    animation: "closerMicPulse 1.6s ease-out infinite",
+                    marginBottom: 24,
+                  }}
+                >
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                </div>
+                <p
+                  style={{
+                    color: "rgba(255,255,255,0.7)",
+                    fontFamily: "DM Sans, sans-serif",
+                    fontSize: 14,
+                    marginBottom: 32,
+                    maxWidth: 320,
+                  }}
+                >
+                  Closer escucha cuando el botón está rojo
+                </p>
+                <button
+                  onClick={() => {
+                    try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
+                    setShowVoiceTutorial(false);
+                    startRecognition();
+                  }}
+                  style={{
+                    background: "#FF6B2B",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 99,
+                    padding: "16px 28px",
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    width: "100%",
+                    maxWidth: 360,
+                  }}
+                >
+                  Entendido →
+                </button>
+              </div>
+            )}
           </>
         )}
 
 
         {phase === "transition" && (
+
           <TransitionPhase
             key="transition"
             technique={nodeData?.technique ?? null}
