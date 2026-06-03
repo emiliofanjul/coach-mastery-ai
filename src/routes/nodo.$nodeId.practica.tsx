@@ -398,8 +398,11 @@ function PracticaPage() {
         }
       }
 
-      // Siguiente turno del usuario
-      startRecognition();
+      // En YOU DO, reactivamos el micrófono automáticamente.
+      // En I DO, el usuario debe tocar manualmente para responder como cliente.
+      if (!inIDo) {
+        startRecognition();
+      }
     } catch (err) {
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
@@ -1047,7 +1050,9 @@ function VoicePhase({
       ? "Closer está hablando…"
       : isProcessing
         ? "Pensando…"
-        : "Toca para hablar";
+        : isIDo
+          ? "Toca para responder como cliente"
+          : "Toca para hablar";
 
   return (
     <motion.div
@@ -1381,9 +1386,10 @@ function FeedbackPhase({
   const [msgIdx, setMsgIdx] = useState(0);
 
   useEffect(() => {
-    const t = setTimeout(() => setStep("result"), 3000);
-    return () => clearTimeout(t);
-  }, []);
+    if (feedback !== null) {
+      setStep("result");
+    }
+  }, [feedback]);
 
   useEffect(() => {
     if (step !== "analyzing") return;
