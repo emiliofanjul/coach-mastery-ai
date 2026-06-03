@@ -664,6 +664,7 @@ function PracticaPage() {
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
+              iDoDemoDone={iDoDemoDone}
               onRetry={() => {
                 setConnectionError(null);
                 if (phase === "i_do") startIDoSession();
@@ -1054,6 +1055,7 @@ function VoicePhase({
   onRetry,
   onReplay,
   onExitClick,
+  iDoDemoDone,
 }: {
   currentPhase: TurnPhase;
   isAgentSpeaking: boolean;
@@ -1065,6 +1067,7 @@ function VoicePhase({
   onRetry: () => void;
   onReplay: () => void;
   onExitClick: () => void;
+  iDoDemoDone: boolean;
 }) {
   const isIDo = currentPhase === "i_do";
   const ringColor = isAgentSpeaking
@@ -1236,44 +1239,48 @@ function VoicePhase({
           gap: 12,
         }}
       >
-        <button
-          onClick={onMicClick}
-          disabled={micDisabled}
-          aria-label={micLabel}
-          style={{
-            width: 84,
-            height: 84,
-            borderRadius: 99,
-            border: "none",
-            background: micBg,
-            color: "#08080F",
-            fontSize: 32,
-            cursor: micDisabled ? "not-allowed" : "pointer",
-            opacity: micDisabled ? 0.4 : 1,
-            boxShadow: `0 10px 30px -8px ${micBg}55`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            animation: isUserListening
-              ? "practica-pulse 1.2s ease-in-out infinite"
-              : undefined,
-          }}
-        >
-          {isUserListening ? "■" : "🎤"}
-        </button>
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 13,
-            color: "rgba(255,255,255,0.6)",
-            textAlign: "center",
-            minHeight: 18,
-          }}
-        >
-          {isIDo && !isUserListening && !isAgentSpeaking
-            ? "Reacciona como cliente o toca 'Listo, ahora yo'"
-            : micLabel}
-        </div>
+        {!iDoDemoDone && (
+          <>
+            <button
+              onClick={onMicClick}
+              disabled={micDisabled}
+              aria-label={micLabel}
+              style={{
+                width: 84,
+                height: 84,
+                borderRadius: 99,
+                border: "none",
+                background: micBg,
+                color: "#08080F",
+                fontSize: 32,
+                cursor: micDisabled ? "not-allowed" : "pointer",
+                opacity: micDisabled ? 0.4 : 1,
+                boxShadow: `0 10px 30px -8px ${micBg}55`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                animation: isUserListening
+                  ? "practica-pulse 1.2s ease-in-out infinite"
+                  : undefined,
+              }}
+            >
+              {isUserListening ? "■" : "🎤"}
+            </button>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 13,
+                color: "rgba(255,255,255,0.6)",
+                textAlign: "center",
+                minHeight: 18,
+              }}
+            >
+              {isIDo && !isUserListening && !isAgentSpeaking
+                ? "Reacciona como cliente o toca 'Listo, ahora yo'"
+                : micLabel}
+            </div>
+          </>
+        )}
         <button
           onClick={onReplay}
           style={{
