@@ -1228,7 +1228,9 @@ function VoicePhase({
             minHeight: 18,
           }}
         >
-          {micLabel}
+          {isIDo && !isUserListening && !isAgentSpeaking
+            ? "Reacciona como cliente o toca 'Listo, ahora yo'"
+            : micLabel}
         </div>
         <button
           onClick={onReplay}
