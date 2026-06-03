@@ -474,6 +474,7 @@ function PracticaPage() {
       const iDoType: string = script?.i_do_type ?? script?.phases?.i_do?.mode ?? "roleplay";
       if (iDoType === "demo") {
         // Demo pura: mostrar botón inmediatamente sin esperar a Claude
+        stopRecognition();
         setIDoDemoDone(true);
         return;
       }
