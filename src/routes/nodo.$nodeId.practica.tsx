@@ -1055,6 +1055,7 @@ function VoicePhase({
   onRetry,
   onReplay,
   onExitClick,
+  iDoDemoDone,
 }: {
   currentPhase: TurnPhase;
   isAgentSpeaking: boolean;
@@ -1066,6 +1067,7 @@ function VoicePhase({
   onRetry: () => void;
   onReplay: () => void;
   onExitClick: () => void;
+  iDoDemoDone: boolean;
 }) {
   const isIDo = currentPhase === "i_do";
   const ringColor = isAgentSpeaking
