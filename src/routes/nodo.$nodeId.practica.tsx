@@ -62,6 +62,8 @@ function PracticaPage() {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
+  const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
+
 
   // Nuevo flujo voz: TTS + STT + closer-voice
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
