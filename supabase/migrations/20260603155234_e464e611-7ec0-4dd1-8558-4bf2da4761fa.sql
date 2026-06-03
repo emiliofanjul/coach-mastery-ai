@@ -1,0 +1,1 @@
+UPDATE public.nodes SET practice_script = jsonb_set(practice_script, '{phases,i_do,briefing}', '"Voy a saludarte como si fuera un vendedor llegando a tu negocio. Solo observa — cuando termine, puedes responder como cliente o tocar \"Listo, ahora yo\" para practicar tú."'::jsonb) WHERE id = '0.1';
