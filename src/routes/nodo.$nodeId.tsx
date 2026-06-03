@@ -503,7 +503,7 @@ function FlipFront({ card }: { card: NodeCard }) {
             width: 0,
             height: 0,
             borderStyle: "solid",
-            borderColor: `transparent transparent #08080F transparent`,
+            borderColor: `transparent transparent #14141C transparent`,
             borderWidth: "0 0 90px 90px",
           }}
         />
@@ -517,7 +517,7 @@ function FlipFront({ card }: { card: NodeCard }) {
             borderStyle: "solid",
             borderColor: `transparent transparent ${isGood ? "#06D6A0" : "#EF476F"} transparent`,
             borderWidth: "0 0 80px 80px",
-            opacity: 0.4,
+            opacity: 0.7,
           }}
         />
         <svg
@@ -525,7 +525,7 @@ function FlipFront({ card }: { card: NodeCard }) {
           height="12"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#08080F"
+          stroke={isGood ? "#06D6A0" : "#EF476F"}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -543,7 +543,7 @@ function FlipFront({ card }: { card: NodeCard }) {
             fontWeight: 700,
             fontSize: 8,
             letterSpacing: "0.5px",
-            color: "#08080F",
+            color: isGood ? "#06D6A0" : "#EF476F",
           }}
         >
           VOLTEAR
