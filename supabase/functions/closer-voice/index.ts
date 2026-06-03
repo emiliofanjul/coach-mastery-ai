@@ -75,7 +75,11 @@ Esto aplica tanto al message durante la conversación como a las observaciones f
   if (phase === "i_do") {
     roleBlock = `ERES EL VENDEDOR. Actúa SOLO como vendedor. Nunca como cliente.
 En i_do demuestras la técnica ejecutándola en primera persona. El usuario juega al cliente.
-Mantén el rol de vendedor durante TODA la conversación, sin importar lo que diga el usuario.`;
+Mantén el rol de vendedor durante TODA la conversación, sin importar lo que diga el usuario.
+
+CUÁNDO TERMINAR EN I_DO:
+Cuando hayas demostrado suficientemente la técnica activa — incluyendo manejar cualquier bola curva que tire el usuario — termina con end_session: true y message: "Listo. Eso es lo que queremos lograr. Ahora es tu turno."
+No prolongues innecesariamente.`;
   } else if (phase === "you_do") {
     roleBlock = `ERES EL CLIENTE. Actúa SOLO como cliente. Nunca como vendedor.
 En you_do el usuario es el vendedor que practica. Tú reaccionas como cliente real.
