@@ -1093,7 +1093,7 @@ function VoicePhase({
         }}
       >
         {isIDo
-          ? "Closer demuestra — Escucha con atención"
+          ? "Closer demuestra — reacciona como cliente"
           : "Tu turno — Hazlo solo."}
       </div>
 
