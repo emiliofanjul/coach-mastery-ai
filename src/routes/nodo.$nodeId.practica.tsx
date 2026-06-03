@@ -679,13 +679,10 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
-                if (showVoiceTutorial && voiceTutorialStep === 2) {
+                if (showVoiceTutorial) {
                   try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
                   setShowVoiceTutorial(false);
-                  if (!isAgentSpeaking) startRecognition();
-                  return;
                 }
-                if (showVoiceTutorial) return;
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
