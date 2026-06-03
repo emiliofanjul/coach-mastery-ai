@@ -421,6 +421,7 @@ function PracticaPage() {
       currentPhaseRef.current = "i_do";
 
       const script: any = nodeDataRef.current?.practice_script ?? null;
+      const briefing: string | undefined = script?.phases?.i_do?.briefing;
       const firstMessage: string =
         script?.phases?.i_do?.first_message
         ?? `Buenos días, ¿cómo está? Mucho gusto, soy ${sellerData?.full_name ?? "Carlos"} de ${companyData?.name ?? "la empresa"}. Qué bueno encontrarlo — justo quería platicar un momento con usted.`;
@@ -436,6 +437,10 @@ function PracticaPage() {
         { role: "assistant", content: firstMessage },
       ];
 
+      if (briefing) {
+        await playTTS(briefing);
+        if (sessionEndedRef.current) return;
+      }
       await playTTS(firstMessage);
 
       if (sessionEndedRef.current) return;
