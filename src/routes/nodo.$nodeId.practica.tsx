@@ -63,6 +63,7 @@ function PracticaPage() {
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
+  const [voiceTutorialStep, setVoiceTutorialStep] = useState<1 | 2>(1);
 
 
   // Nuevo flujo voz: TTS + STT + closer-voice
@@ -293,7 +294,7 @@ function PracticaPage() {
       if (sendTimer) clearTimeout(sendTimer);
       sendTimer = setTimeout(() => {
         try { rec.stop(); } catch {}
-      }, 1500);
+      }, 2500);
     };
     rec.onerror = (e: any) => {
       console.error("[voice] STT error:", e?.error ?? e);
@@ -1186,7 +1187,7 @@ function VoicePhase({
   const micDisabled = isAgentSpeaking;
   const micBg = isUserListening ? RED : ORANGE;
   const micLabel = isUserListening
-    ? "Toca para enviar"
+    ? "Closer está escuchando… toca de nuevo para enviar"
     : isAgentSpeaking
       ? "Closer está hablando…"
       : isProcessing
