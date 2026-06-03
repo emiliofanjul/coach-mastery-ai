@@ -688,7 +688,7 @@ function PracticaPage() {
         {phase === "feedback" && (
           <FeedbackPhase
             key="feedback"
-            conversation={conversationHistoryRef.current}
+            conversation={youDoHistory}
             feedback={feedbackResult}
             onContinue={async (stars) => {
               setSaving(true);
