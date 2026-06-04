@@ -281,6 +281,7 @@ function NodoCardsPage() {
             onSwipeRight={prev}
             canSwipeLeft={index < total - 1}
             canSwipeRight={index > 0}
+            dynamic={dynamicCache[current!.id]}
           />
         )}
 
