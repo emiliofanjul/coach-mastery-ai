@@ -422,7 +422,7 @@ function CardSwiper({
             userSelect: "none",
           }}
         >
-          <CardView card={card} flipped={flipped} setFlipped={setFlipped} />
+          <CardView card={card} flipped={flipped} setFlipped={setFlipped} dynamic={dynamic} />
         </motion.div>
       </AnimatePresence>
     </div>
