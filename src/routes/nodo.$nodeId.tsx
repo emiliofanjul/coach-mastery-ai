@@ -439,7 +439,7 @@ const CARD_STYLES: Record<CardType, { border: string; bg: string }> = {
   cta: { border: "rgba(255,107,43,0.35)", bg: "linear-gradient(180deg, rgba(255,107,43,0.10) 0%, rgba(255,107,43,0.04) 100%)" },
 };
 
-function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void }) {
+function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void; dynamic?: DynamicContent }) {
   const isFlip = card.card_type === "good_example" || card.card_type === "bad_example";
   const isCta = card.card_type === "cta";
   const [hintActive, setHintActive] = useState(false);
