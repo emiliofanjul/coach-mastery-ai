@@ -48,6 +48,7 @@ function NodoCardsPage() {
   const [flipped, setFlipped] = useState(false);
   const [companyBrain, setCompanyBrain] = useState<string>("");
   const [sellerIndustry, setSellerIndustry] = useState<string>("");
+  const [sellerLevel, setSellerLevel] = useState<string | null>(null);
   const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
 
   // Carga de nodo + tarjetas
