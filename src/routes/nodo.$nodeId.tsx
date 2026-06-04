@@ -12,6 +12,7 @@ export const Route = createFileRoute("/nodo/$nodeId")({
 });
 
 type CardType = "concept" | "why_it_works" | "good_example" | "bad_example" | "cta";
+type CardContentType = "static" | "dynamic";
 
 interface NodeCard {
   id: string;
@@ -20,6 +21,14 @@ interface NodeCard {
   title: string | null;
   body: string;
   flip_back_text: string | null;
+  card_content_type: CardContentType | null;
+}
+
+interface DynamicContent {
+  loading: boolean;
+  body?: string;
+  flip_back?: string;
+  error?: string;
 }
 
 interface NodeRow {
@@ -37,6 +46,9 @@ function NodoCardsPage() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [flipped, setFlipped] = useState(false);
+  const [companyBrain, setCompanyBrain] = useState<string>("");
+  const [sellerIndustry, setSellerIndustry] = useState<string>("");
+  const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
 
   // Carga de nodo + tarjetas
   useEffect(() => {
@@ -46,7 +58,7 @@ function NodoCardsPage() {
         supabase.from("nodes").select("id,name,node_type").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
-          .select("id,card_order,card_type,title,body,flip_back_text")
+          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type")
           .eq("node_id", nodeId)
           .order("card_order", { ascending: true }),
       ]);
@@ -59,6 +71,38 @@ function NodoCardsPage() {
     };
   }, [nodeId]);
 
+  // Carga de contexto (company brain + industria) para tarjetas dinámicas
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("company_id")
+        .eq("id", uid)
+        .maybeSingle();
+      const companyId = (profile as { company_id?: string } | null)?.company_id;
+      if (!companyId) return;
+      const { data: company } = await supabase
+        .from("companies")
+        .select("name, company_sales_brain")
+        .eq("id", companyId)
+        .maybeSingle();
+      if (!alive || !company) return;
+      const brain = (company as any).company_sales_brain;
+      const brainStr = typeof brain === "string" ? brain : brain ? JSON.stringify(brain) : "";
+      const industry =
+        (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
+      setCompanyBrain(brainStr);
+      setSellerIndustry(String(industry || ""));
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const total = cards?.length ?? 0;
   const current = cards?.[index];
 
@@ -66,6 +110,56 @@ function NodoCardsPage() {
   useEffect(() => {
     setFlipped(false);
   }, [index]);
+
+  // Generación dinámica del contenido cuando la tarjeta es dynamic + good/bad example
+  useEffect(() => {
+    const c = cards?.[index];
+    if (!c) return;
+    if (c.card_content_type !== "dynamic") return;
+    if (c.card_type !== "good_example" && c.card_type !== "bad_example") return;
+    if (dynamicCache[c.id]) return;
+    let alive = true;
+    setDynamicCache((prev) => ({ ...prev, [c.id]: { loading: true } }));
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("closer-voice", {
+          body: {
+            phase: "generate_example",
+            card_type: c.card_type,
+            node_name: node?.name ?? "",
+            company_brain: companyBrain,
+            seller_industry: sellerIndustry,
+          },
+        });
+        if (!alive) return;
+        if (error || !data || typeof (data as any).body !== "string") {
+          setDynamicCache((prev) => ({
+            ...prev,
+            [c.id]: { loading: false, error: error?.message ?? "generation_failed" },
+          }));
+          return;
+        }
+        setDynamicCache((prev) => ({
+          ...prev,
+          [c.id]: {
+            loading: false,
+            body: (data as any).body,
+            flip_back: (data as any).flip_back,
+          },
+        }));
+      } catch (e) {
+        if (!alive) return;
+        setDynamicCache((prev) => ({
+          ...prev,
+          [c.id]: { loading: false, error: e instanceof Error ? e.message : String(e) },
+        }));
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [cards, index, node?.name, companyBrain, sellerIndustry]);
+
 
   function goBack() {
     navigate({ to: "/mapa" });
@@ -187,6 +281,7 @@ function NodoCardsPage() {
             onSwipeRight={prev}
             canSwipeLeft={index < total - 1}
             canSwipeRight={index > 0}
+            dynamic={dynamicCache[current!.id]}
           />
         )}
 
@@ -262,6 +357,7 @@ function CardSwiper({
   onSwipeRight,
   canSwipeLeft,
   canSwipeRight,
+  dynamic,
 }: {
   card: NodeCard;
   direction: 1 | -1;
@@ -271,6 +367,7 @@ function CardSwiper({
   onSwipeRight: () => void;
   canSwipeLeft: boolean;
   canSwipeRight: boolean;
+  dynamic?: DynamicContent;
 }) {
   const startX = useRef<number | null>(null);
   const startY = useRef<number | null>(null);
@@ -325,7 +422,7 @@ function CardSwiper({
             userSelect: "none",
           }}
         >
-          <CardView card={card} flipped={flipped} setFlipped={setFlipped} />
+          <CardView card={card} flipped={flipped} setFlipped={setFlipped} dynamic={dynamic} />
         </motion.div>
       </AnimatePresence>
     </div>
@@ -342,7 +439,7 @@ const CARD_STYLES: Record<CardType, { border: string; bg: string }> = {
   cta: { border: "rgba(255,107,43,0.35)", bg: "linear-gradient(180deg, rgba(255,107,43,0.10) 0%, rgba(255,107,43,0.04) 100%)" },
 };
 
-function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void }) {
+function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void; dynamic?: DynamicContent }) {
   const isFlip = card.card_type === "good_example" || card.card_type === "bad_example";
   const isCta = card.card_type === "cta";
   const [hintActive, setHintActive] = useState(false);
@@ -386,7 +483,7 @@ function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: bool
         }}
       >
         <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden" }}>
-          <FlipFront card={card} />
+          <FlipFront card={card} dynamic={dynamic} />
         </div>
         <div
           style={{
@@ -396,7 +493,7 @@ function CardView({ card, flipped, setFlipped }: { card: NodeCard; flipped: bool
             transform: "rotateY(180deg)",
           }}
         >
-          <FlipBack card={card} onFlipBack={() => setFlipped(false)} />
+          <FlipBack card={card} onFlipBack={() => setFlipped(false)} dynamic={dynamic} />
         </div>
       </motion.div>
     </div>
@@ -444,9 +541,27 @@ function StaticFace({ card }: { card: NodeCard }) {
   );
 }
 
-function FlipFront({ card }: { card: NodeCard }) {
+function Skeleton({ width = "100%", height = 14 }: { width?: string | number; height?: number }) {
+  return (
+    <div
+      style={{
+        width,
+        height,
+        borderRadius: 6,
+        background: "linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 100%)",
+        backgroundSize: "200% 100%",
+        animation: "skeleton-shimmer 1.4s ease-in-out infinite",
+      }}
+    />
+  );
+}
+
+function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent }) {
   const styles = CARD_STYLES[card.card_type];
   const isGood = card.card_type === "good_example";
+  const isDynamic = card.card_content_type === "dynamic";
+  const loading = isDynamic && (!dynamic || dynamic.loading);
+  const bodyText = isDynamic ? (dynamic?.body ?? "") : card.body;
   return (
     <div
       style={{
@@ -461,24 +576,33 @@ function FlipFront({ card }: { card: NodeCard }) {
         position: "relative",
       }}
     >
+      <style>{`@keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`}</style>
       <Badge
         label={isGood ? "✓ EJEMPLO BUENO" : "✗ EJEMPLO MALO"}
         color={isGood ? "#06D6A0" : "#EF476F"}
         bg={isGood ? "rgba(6,214,160,0.10)" : "rgba(239,71,111,0.10)"}
       />
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: 15,
-          color: "rgba(255,255,255,0.85)",
-          lineHeight: 1.6,
-          fontStyle: "italic",
-          whiteSpace: "pre-line",
-        }}
-      >
-        {card.body}
-      </div>
+      {loading ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Skeleton width="92%" />
+          <Skeleton width="86%" />
+          <Skeleton width="70%" />
+        </div>
+      ) : (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: 15,
+            color: "rgba(255,255,255,0.85)",
+            lineHeight: 1.6,
+            fontStyle: "italic",
+            whiteSpace: "pre-line",
+          }}
+        >
+          {bodyText}
+        </div>
+      )}
       <div style={{ flex: 1 }} />
       <style>{`@keyframes chip-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.75; transform: scale(0.96); } }`}</style>
       <div
@@ -524,9 +648,12 @@ function FlipFront({ card }: { card: NodeCard }) {
 }
 
 
-function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void }) {
+function FlipBack({ card, onFlipBack, dynamic }: { card: NodeCard; onFlipBack: () => void; dynamic?: DynamicContent }) {
   const styles = CARD_STYLES[card.card_type];
   const isGood = card.card_type === "good_example";
+  const isDynamic = card.card_content_type === "dynamic";
+  const loading = isDynamic && (!dynamic || dynamic.loading);
+  const backText = isDynamic ? (dynamic?.flip_back ?? "") : (card.flip_back_text ?? "");
   return (
     <div
       style={{
@@ -565,18 +692,25 @@ function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void
           <RotateCw size={16} />
         </button>
       </div>
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: 15,
-          color: "rgba(255,255,255,0.85)",
-          lineHeight: 1.6,
-          whiteSpace: "pre-line",
-        }}
-      >
-        {card.flip_back_text}
-      </div>
+      {loading ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Skeleton width="90%" />
+          <Skeleton width="78%" />
+        </div>
+      ) : (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: 15,
+            color: "rgba(255,255,255,0.85)",
+            lineHeight: 1.6,
+            whiteSpace: "pre-line",
+          }}
+        >
+          {backText}
+        </div>
+      )}
     </div>
   );
 }

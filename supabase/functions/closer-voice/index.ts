@@ -7,16 +7,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate";
+type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example";
 type NextPhase = Phase | "end";
 
 interface ReqBody {
-  transcript: string;
+  transcript?: string;
   phase: Phase;
-  practice_script: any;
-  company_brain: string;
-  seller_name: string;
-  conversation_history: { role: string; content: string }[];
+  practice_script?: any;
+  company_brain?: string;
+  seller_name?: string;
+  conversation_history?: { role: string; content: string }[];
+  // generate_example fields
+  card_type?: "good_example" | "bad_example";
+  node_name?: string;
+  seller_industry?: string;
 }
 
 interface CloserResponse {
@@ -77,6 +81,43 @@ Responde JSON exacto:
 }
 
 No incluyas texto fuera del JSON.`;
+}
+
+interface GenerateExampleResponse {
+  body: string;
+  flip_back: string;
+}
+
+function buildGenerateExampleSystemPrompt(
+  cardType: "good_example" | "bad_example",
+  nodeName: string,
+  companyBrain: string,
+  sellerIndustry: string,
+): string {
+  const tipo = cardType === "good_example" ? "good_example" : "bad_example";
+  const direccion = cardType === "good_example"
+    ? "Muestra cómo se ve bien ejecutado usando el contexto real de la empresa. Concreto, natural, replicable."
+    : "Muestra el error más común que comete un vendedor en esta situación. Concreto, realista, basado en lo que de verdad pasa en campo.";
+
+  return `Genera un ejemplo corto y realista de máximo 3 frases para una tarjeta de aprendizaje de ventas.
+
+Tipo de tarjeta: ${tipo}
+Nodo / técnica: ${nodeName}
+Industria del vendedor: ${sellerIndustry || "no especificada"}
+Contexto de la empresa: ${companyBrain || "no especificado"}
+
+Instrucción:
+${direccion}
+
+Usa nombres reales (clientes, productos, situaciones) propios de la industria del vendedor.
+Suena como una persona real hablando, no como un manual.
+Máximo 3 frases en el campo body.
+En el campo flip_back, explica en 1-2 frases por qué ese ejemplo ${cardType === "good_example" ? "funciona" : "falla"}, ligado al concepto del nodo.
+
+Responde JSON exacto:
+{ "body": "...", "flip_back": "..." }
+
+No incluyas texto fuera del JSON. Sin markdown.`;
 }
 
 
@@ -199,10 +240,22 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history } = body;
+    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry } = body;
 
-    if (!phase || (phase !== "evaluate" && !transcript)) {
-      return new Response(JSON.stringify({ error: "Missing transcript or phase" }), {
+    if (!phase) {
+      return new Response(JSON.stringify({ error: "Missing phase" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (phase !== "evaluate" && phase !== "generate_example" && !transcript) {
+      return new Response(JSON.stringify({ error: "Missing transcript" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (phase === "generate_example" && (!card_type || (card_type !== "good_example" && card_type !== "bad_example"))) {
+      return new Response(JSON.stringify({ error: "Missing or invalid card_type" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -210,13 +263,17 @@ Deno.serve(async (req) => {
 
     const system = phase === "evaluate"
       ? buildEvaluateSystemPrompt(practice_script)
-      : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
+      : phase === "generate_example"
+        ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "")
+        : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
 
     const messages = phase === "evaluate" ? [
       {
         role: "user",
         content: `conversation_history:\n${JSON.stringify(Array.isArray(conversation_history) ? conversation_history : [], null, 2)}`,
       },
+    ] : phase === "generate_example" ? [
+      { role: "user", content: `Genera el ejemplo ahora.` },
     ] : [
       ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
@@ -252,9 +309,9 @@ Deno.serve(async (req) => {
     const claudeJson = await claudeRes.json();
     const text: string = claudeJson?.content?.[0]?.text ?? "";
 
-    let parsed: CloserResponse | EvaluationResponse;
+    let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
     try {
-      parsed = extractJson<CloserResponse | EvaluationResponse>(text);
+      parsed = extractJson<CloserResponse | EvaluationResponse | GenerateExampleResponse>(text);
     } catch (e) {
       console.error("[closer-voice] parse error:", e, "raw:", text);
       return new Response(
@@ -262,6 +319,21 @@ Deno.serve(async (req) => {
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
+    if (phase === "generate_example") {
+      const ex = parsed as GenerateExampleResponse;
+      if (typeof ex.body !== "string" || typeof ex.flip_back !== "string") {
+        return new Response(
+          JSON.stringify({ error: "Malformed generate_example response", parsed: ex }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify(ex), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
 
     if (phase === "evaluate") {
       const evaluation = parsed as EvaluationResponse;
