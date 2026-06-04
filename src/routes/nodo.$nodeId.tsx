@@ -154,7 +154,7 @@ function NodoCardsPage() {
 
   // Generación dinámica del contenido cuando la tarjeta es dynamic + good/bad example
   useEffect(() => {
-    const c = cards?.[index];
+    const c = visibleCards?.[index];
     if (!c) return;
     if (c.card_content_type !== "dynamic") return;
     if (c.card_type !== "good_example" && c.card_type !== "bad_example") return;
