@@ -85,6 +85,15 @@ function NodoCardsPage() {
         .eq("id", uid)
         .maybeSingle();
       const companyId = (profile as { company_id?: string } | null)?.company_id;
+      const { data: seller } = await supabase
+        .from("sellers")
+        .select("experience_level")
+        .eq("profile_id", uid)
+        .maybeSingle();
+      if (alive) {
+        const lvl = (seller as { experience_level?: string | null } | null)?.experience_level ?? null;
+        setSellerLevel(lvl);
+      }
       if (!companyId) return;
       const { data: company } = await supabase
         .from("companies")
@@ -103,6 +112,30 @@ function NodoCardsPage() {
       alive = false;
     };
   }, []);
+
+  // Filtra y transforma tarjetas dinámicas marcadas con body "experience_level:<nivel>[:n]"
+  const visibleCards = useMemo(() => {
+    if (!cards) return cards;
+    return cards
+      .filter((c) => {
+        if (c.card_content_type !== "dynamic") return true;
+        if (!c.body || !c.body.startsWith("experience_level:")) return true;
+        const parts = c.body.split(":");
+        const level = parts[1];
+        if (!sellerLevel) return false;
+        return level === sellerLevel;
+      })
+      .map((c) => {
+        if (
+          c.card_content_type === "dynamic" &&
+          c.body &&
+          c.body.startsWith("experience_level:")
+        ) {
+          return { ...c, body: c.flip_back_text ?? "", flip_back_text: null };
+        }
+        return c;
+      });
+  }, [cards, sellerLevel]);
 
   const total = cards?.length ?? 0;
   const current = cards?.[index];
