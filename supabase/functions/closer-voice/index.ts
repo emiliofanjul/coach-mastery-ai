@@ -309,9 +309,9 @@ Deno.serve(async (req) => {
     const claudeJson = await claudeRes.json();
     const text: string = claudeJson?.content?.[0]?.text ?? "";
 
-    let parsed: CloserResponse | EvaluationResponse;
+    let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
     try {
-      parsed = extractJson<CloserResponse | EvaluationResponse>(text);
+      parsed = extractJson<CloserResponse | EvaluationResponse | GenerateExampleResponse>(text);
     } catch (e) {
       console.error("[closer-voice] parse error:", e, "raw:", text);
       return new Response(
@@ -319,6 +319,21 @@ Deno.serve(async (req) => {
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
+    if (phase === "generate_example") {
+      const ex = parsed as GenerateExampleResponse;
+      if (typeof ex.body !== "string" || typeof ex.flip_back !== "string") {
+        return new Response(
+          JSON.stringify({ error: "Malformed generate_example response", parsed: ex }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify(ex), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
 
     if (phase === "evaluate") {
       const evaluation = parsed as EvaluationResponse;
