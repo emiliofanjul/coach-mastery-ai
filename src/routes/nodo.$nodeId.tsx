@@ -327,7 +327,7 @@ function NodoCardsPage() {
         )}
 
         {/* Dots */}
-        {cards && cards.length > 0 && (
+        {visibleCards && visibleCards.length > 0 && (
           <div
             style={{
               display: "flex",
@@ -337,7 +337,7 @@ function NodoCardsPage() {
               marginBottom: 8,
             }}
           >
-            {cards.map((_, i) => (
+            {visibleCards.map((_, i) => (
               <span
                 key={i}
                 style={{
