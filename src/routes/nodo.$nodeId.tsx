@@ -199,7 +199,7 @@ function NodoCardsPage() {
     return () => {
       alive = false;
     };
-  }, [cards, index, node?.name, companyBrain, sellerIndustry]);
+  }, [visibleCards, index, node?.name, companyBrain, sellerIndustry]);
 
 
   function goBack() {
