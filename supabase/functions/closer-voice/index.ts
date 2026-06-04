@@ -240,10 +240,22 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history } = body;
+    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry } = body;
 
-    if (!phase || (phase !== "evaluate" && !transcript)) {
-      return new Response(JSON.stringify({ error: "Missing transcript or phase" }), {
+    if (!phase) {
+      return new Response(JSON.stringify({ error: "Missing phase" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (phase !== "evaluate" && phase !== "generate_example" && !transcript) {
+      return new Response(JSON.stringify({ error: "Missing transcript" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (phase === "generate_example" && (!card_type || (card_type !== "good_example" && card_type !== "bad_example"))) {
+      return new Response(JSON.stringify({ error: "Missing or invalid card_type" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -251,13 +263,17 @@ Deno.serve(async (req) => {
 
     const system = phase === "evaluate"
       ? buildEvaluateSystemPrompt(practice_script)
-      : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
+      : phase === "generate_example"
+        ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "")
+        : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
 
     const messages = phase === "evaluate" ? [
       {
         role: "user",
         content: `conversation_history:\n${JSON.stringify(Array.isArray(conversation_history) ? conversation_history : [], null, 2)}`,
       },
+    ] : phase === "generate_example" ? [
+      { role: "user", content: `Genera el ejemplo ahora.` },
     ] : [
       ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
