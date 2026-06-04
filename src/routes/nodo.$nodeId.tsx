@@ -137,13 +137,20 @@ function NodoCardsPage() {
       });
   }, [cards, sellerLevel]);
 
-  const total = cards?.length ?? 0;
-  const current = cards?.[index];
+  const total = visibleCards?.length ?? 0;
+  const current = visibleCards?.[index];
 
   // Reset flip al cambiar de tarjeta
   useEffect(() => {
     setFlipped(false);
   }, [index]);
+
+  // Si el index queda fuera de rango tras filtrar, vuelve al inicio
+  useEffect(() => {
+    if (visibleCards && index >= visibleCards.length && visibleCards.length > 0) {
+      setIndex(0);
+    }
+  }, [visibleCards, index]);
 
   // Generación dinámica del contenido cuando la tarjeta es dynamic + good/bad example
   useEffect(() => {
