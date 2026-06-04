@@ -310,7 +310,7 @@ function NodoCardsPage() {
           overflow: "hidden",
         }}
       >
-        {cards === null ? null : cards.length === 0 ? (
+        {visibleCards === null || visibleCards === undefined ? null : visibleCards.length === 0 ? (
           <FallbackEmpty />
         ) : (
           <CardSwiper
