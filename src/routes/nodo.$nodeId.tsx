@@ -46,6 +46,9 @@ function NodoCardsPage() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [flipped, setFlipped] = useState(false);
+  const [companyBrain, setCompanyBrain] = useState<string>("");
+  const [sellerIndustry, setSellerIndustry] = useState<string>("");
+  const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
 
   // Carga de nodo + tarjetas
   useEffect(() => {
@@ -55,7 +58,7 @@ function NodoCardsPage() {
         supabase.from("nodes").select("id,name,node_type").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
-          .select("id,card_order,card_type,title,body,flip_back_text")
+          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type")
           .eq("node_id", nodeId)
           .order("card_order", { ascending: true }),
       ]);
@@ -68,6 +71,38 @@ function NodoCardsPage() {
     };
   }, [nodeId]);
 
+  // Carga de contexto (company brain + industria) para tarjetas dinámicas
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("company_id")
+        .eq("id", uid)
+        .maybeSingle();
+      const companyId = (profile as { company_id?: string } | null)?.company_id;
+      if (!companyId) return;
+      const { data: company } = await supabase
+        .from("companies")
+        .select("name, company_sales_brain")
+        .eq("id", companyId)
+        .maybeSingle();
+      if (!alive || !company) return;
+      const brain = (company as any).company_sales_brain;
+      const brainStr = typeof brain === "string" ? brain : brain ? JSON.stringify(brain) : "";
+      const industry =
+        (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
+      setCompanyBrain(brainStr);
+      setSellerIndustry(String(industry || ""));
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const total = cards?.length ?? 0;
   const current = cards?.[index];
 
@@ -75,6 +110,56 @@ function NodoCardsPage() {
   useEffect(() => {
     setFlipped(false);
   }, [index]);
+
+  // Generación dinámica del contenido cuando la tarjeta es dynamic + good/bad example
+  useEffect(() => {
+    const c = cards?.[index];
+    if (!c) return;
+    if (c.card_content_type !== "dynamic") return;
+    if (c.card_type !== "good_example" && c.card_type !== "bad_example") return;
+    if (dynamicCache[c.id]) return;
+    let alive = true;
+    setDynamicCache((prev) => ({ ...prev, [c.id]: { loading: true } }));
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("closer-voice", {
+          body: {
+            phase: "generate_example",
+            card_type: c.card_type,
+            node_name: node?.name ?? "",
+            company_brain: companyBrain,
+            seller_industry: sellerIndustry,
+          },
+        });
+        if (!alive) return;
+        if (error || !data || typeof (data as any).body !== "string") {
+          setDynamicCache((prev) => ({
+            ...prev,
+            [c.id]: { loading: false, error: error?.message ?? "generation_failed" },
+          }));
+          return;
+        }
+        setDynamicCache((prev) => ({
+          ...prev,
+          [c.id]: {
+            loading: false,
+            body: (data as any).body,
+            flip_back: (data as any).flip_back,
+          },
+        }));
+      } catch (e) {
+        if (!alive) return;
+        setDynamicCache((prev) => ({
+          ...prev,
+          [c.id]: { loading: false, error: e instanceof Error ? e.message : String(e) },
+        }));
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [cards, index, node?.name, companyBrain, sellerIndustry]);
+
 
   function goBack() {
     navigate({ to: "/mapa" });
