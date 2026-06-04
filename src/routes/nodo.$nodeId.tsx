@@ -357,6 +357,7 @@ function CardSwiper({
   onSwipeRight,
   canSwipeLeft,
   canSwipeRight,
+  dynamic,
 }: {
   card: NodeCard;
   direction: 1 | -1;
@@ -366,6 +367,7 @@ function CardSwiper({
   onSwipeRight: () => void;
   canSwipeLeft: boolean;
   canSwipeRight: boolean;
+  dynamic?: DynamicContent;
 }) {
   const startX = useRef<number | null>(null);
   const startY = useRef<number | null>(null);
