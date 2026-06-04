@@ -364,7 +364,7 @@ function NodoCardsPage() {
           minHeight: 84,
         }}
       >
-        {cards && cards.length > 0 && showNextButton && (
+        {visibleCards && visibleCards.length > 0 && showNextButton && (
           <BottomButton
             card={current!}
             nodeType={node?.node_type ?? "knowledge"}
