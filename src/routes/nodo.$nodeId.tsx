@@ -541,9 +541,27 @@ function StaticFace({ card }: { card: NodeCard }) {
   );
 }
 
-function FlipFront({ card }: { card: NodeCard }) {
+function Skeleton({ width = "100%", height = 14 }: { width?: string | number; height?: number }) {
+  return (
+    <div
+      style={{
+        width,
+        height,
+        borderRadius: 6,
+        background: "linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 100%)",
+        backgroundSize: "200% 100%",
+        animation: "skeleton-shimmer 1.4s ease-in-out infinite",
+      }}
+    />
+  );
+}
+
+function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent }) {
   const styles = CARD_STYLES[card.card_type];
   const isGood = card.card_type === "good_example";
+  const isDynamic = card.card_content_type === "dynamic";
+  const loading = isDynamic && (!dynamic || dynamic.loading);
+  const bodyText = isDynamic ? (dynamic?.body ?? "") : card.body;
   return (
     <div
       style={{
@@ -558,24 +576,33 @@ function FlipFront({ card }: { card: NodeCard }) {
         position: "relative",
       }}
     >
+      <style>{`@keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`}</style>
       <Badge
         label={isGood ? "✓ EJEMPLO BUENO" : "✗ EJEMPLO MALO"}
         color={isGood ? "#06D6A0" : "#EF476F"}
         bg={isGood ? "rgba(6,214,160,0.10)" : "rgba(239,71,111,0.10)"}
       />
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: 15,
-          color: "rgba(255,255,255,0.85)",
-          lineHeight: 1.6,
-          fontStyle: "italic",
-          whiteSpace: "pre-line",
-        }}
-      >
-        {card.body}
-      </div>
+      {loading ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Skeleton width="92%" />
+          <Skeleton width="86%" />
+          <Skeleton width="70%" />
+        </div>
+      ) : (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: 15,
+            color: "rgba(255,255,255,0.85)",
+            lineHeight: 1.6,
+            fontStyle: "italic",
+            whiteSpace: "pre-line",
+          }}
+        >
+          {bodyText}
+        </div>
+      )}
       <div style={{ flex: 1 }} />
       <style>{`@keyframes chip-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.75; transform: scale(0.96); } }`}</style>
       <div
