@@ -7,16 +7,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate";
+type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example";
 type NextPhase = Phase | "end";
 
 interface ReqBody {
-  transcript: string;
+  transcript?: string;
   phase: Phase;
-  practice_script: any;
-  company_brain: string;
-  seller_name: string;
-  conversation_history: { role: string; content: string }[];
+  practice_script?: any;
+  company_brain?: string;
+  seller_name?: string;
+  conversation_history?: { role: string; content: string }[];
+  // generate_example fields
+  card_type?: "good_example" | "bad_example";
+  node_name?: string;
+  seller_industry?: string;
 }
 
 interface CloserResponse {
