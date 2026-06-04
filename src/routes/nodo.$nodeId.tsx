@@ -12,6 +12,7 @@ export const Route = createFileRoute("/nodo/$nodeId")({
 });
 
 type CardType = "concept" | "why_it_works" | "good_example" | "bad_example" | "cta";
+type CardContentType = "static" | "dynamic";
 
 interface NodeCard {
   id: string;
@@ -20,6 +21,14 @@ interface NodeCard {
   title: string | null;
   body: string;
   flip_back_text: string | null;
+  card_content_type: CardContentType | null;
+}
+
+interface DynamicContent {
+  loading: boolean;
+  body?: string;
+  flip_back?: string;
+  error?: string;
 }
 
 interface NodeRow {
