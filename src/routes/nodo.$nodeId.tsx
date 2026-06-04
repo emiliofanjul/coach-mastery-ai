@@ -648,9 +648,12 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
 }
 
 
-function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void }) {
+function FlipBack({ card, onFlipBack, dynamic }: { card: NodeCard; onFlipBack: () => void; dynamic?: DynamicContent }) {
   const styles = CARD_STYLES[card.card_type];
   const isGood = card.card_type === "good_example";
+  const isDynamic = card.card_content_type === "dynamic";
+  const loading = isDynamic && (!dynamic || dynamic.loading);
+  const backText = isDynamic ? (dynamic?.flip_back ?? "") : (card.flip_back_text ?? "");
   return (
     <div
       style={{
@@ -689,18 +692,25 @@ function FlipBack({ card, onFlipBack }: { card: NodeCard; onFlipBack: () => void
           <RotateCw size={16} />
         </button>
       </div>
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: 15,
-          color: "rgba(255,255,255,0.85)",
-          lineHeight: 1.6,
-          whiteSpace: "pre-line",
-        }}
-      >
-        {card.flip_back_text}
-      </div>
+      {loading ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Skeleton width="90%" />
+          <Skeleton width="78%" />
+        </div>
+      ) : (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 400,
+            fontSize: 15,
+            color: "rgba(255,255,255,0.85)",
+            lineHeight: 1.6,
+            whiteSpace: "pre-line",
+          }}
+        >
+          {backText}
+        </div>
+      )}
     </div>
   );
 }
