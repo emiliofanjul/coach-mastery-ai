@@ -483,7 +483,7 @@ function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flip
         }}
       >
         <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden" }}>
-          <FlipFront card={card} />
+          <FlipFront card={card} dynamic={dynamic} />
         </div>
         <div
           style={{
@@ -493,7 +493,7 @@ function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flip
             transform: "rotateY(180deg)",
           }}
         >
-          <FlipBack card={card} onFlipBack={() => setFlipped(false)} />
+          <FlipBack card={card} onFlipBack={() => setFlipped(false)} dynamic={dynamic} />
         </div>
       </motion.div>
     </div>
