@@ -83,6 +83,43 @@ Responde JSON exacto:
 No incluyas texto fuera del JSON.`;
 }
 
+interface GenerateExampleResponse {
+  body: string;
+  flip_back: string;
+}
+
+function buildGenerateExampleSystemPrompt(
+  cardType: "good_example" | "bad_example",
+  nodeName: string,
+  companyBrain: string,
+  sellerIndustry: string,
+): string {
+  const tipo = cardType === "good_example" ? "good_example" : "bad_example";
+  const direccion = cardType === "good_example"
+    ? "Muestra cómo se ve bien ejecutado usando el contexto real de la empresa. Concreto, natural, replicable."
+    : "Muestra el error más común que comete un vendedor en esta situación. Concreto, realista, basado en lo que de verdad pasa en campo.";
+
+  return `Genera un ejemplo corto y realista de máximo 3 frases para una tarjeta de aprendizaje de ventas.
+
+Tipo de tarjeta: ${tipo}
+Nodo / técnica: ${nodeName}
+Industria del vendedor: ${sellerIndustry || "no especificada"}
+Contexto de la empresa: ${companyBrain || "no especificado"}
+
+Instrucción:
+${direccion}
+
+Usa nombres reales (clientes, productos, situaciones) propios de la industria del vendedor.
+Suena como una persona real hablando, no como un manual.
+Máximo 3 frases en el campo body.
+En el campo flip_back, explica en 1-2 frases por qué ese ejemplo ${cardType === "good_example" ? "funciona" : "falla"}, ligado al concepto del nodo.
+
+Responde JSON exacto:
+{ "body": "...", "flip_back": "..." }
+
+No incluyas texto fuera del JSON. Sin markdown.`;
+}
+
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
