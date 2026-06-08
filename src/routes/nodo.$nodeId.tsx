@@ -35,6 +35,7 @@ interface NodeRow {
   id: string;
   name: string;
   node_type: string | null;
+  practice_script: any | null;
 }
 
 function NodoCardsPage() {
