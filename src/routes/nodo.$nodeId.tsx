@@ -57,7 +57,7 @@ function NodoCardsPage() {
     let alive = true;
     (async () => {
       const [{ data: n }, { data: c }] = await Promise.all([
-        supabase.from("nodes").select("id,name,node_type").eq("id", nodeId).maybeSingle(),
+        supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
           .select("id,card_order,card_type,title,body,flip_back_text,card_content_type")
