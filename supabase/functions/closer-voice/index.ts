@@ -21,6 +21,7 @@ interface ReqBody {
   card_type?: "good_example" | "bad_example";
   node_name?: string;
   seller_industry?: string;
+  scope?: { skills_in_focus?: string[] | string } | null;
 }
 
 interface CloserResponse {
