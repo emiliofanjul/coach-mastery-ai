@@ -268,7 +268,7 @@ Deno.serve(async (req) => {
     const system = phase === "evaluate"
       ? buildEvaluateSystemPrompt(practice_script)
       : phase === "generate_example"
-        ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "")
+        ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [])
         : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script);
 
     const messages = phase === "evaluate" ? [
