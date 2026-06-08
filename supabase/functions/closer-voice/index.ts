@@ -244,7 +244,7 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry } = body;
+    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope } = body;
 
     if (!phase) {
       return new Response(JSON.stringify({ error: "Missing phase" }), {
