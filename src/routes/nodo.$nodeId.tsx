@@ -35,6 +35,7 @@ interface NodeRow {
   id: string;
   name: string;
   node_type: string | null;
+  practice_script: any | null;
 }
 
 function NodoCardsPage() {
@@ -56,7 +57,7 @@ function NodoCardsPage() {
     let alive = true;
     (async () => {
       const [{ data: n }, { data: c }] = await Promise.all([
-        supabase.from("nodes").select("id,name,node_type").eq("id", nodeId).maybeSingle(),
+        supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
           .select("id,card_order,card_type,title,body,flip_back_text,card_content_type")
@@ -179,11 +180,16 @@ function NodoCardsPage() {
       const results = await Promise.all(
         dynamicCards.map(async (c) => {
           try {
+            const skillsInFocus =
+              node?.practice_script?.scope?.skills_in_focus ??
+              node?.practice_script?.scope?.skillsInFocus ??
+              [];
             const { data, error } = await supabase.functions.invoke("closer-voice", {
               body: {
                 phase: "generate_example",
                 card_type: c.card_type,
                 node_name: node?.name ?? "",
+                scope: { skills_in_focus: skillsInFocus },
                 company_brain: companyBrain,
                 seller_industry: sellerIndustry,
               },
