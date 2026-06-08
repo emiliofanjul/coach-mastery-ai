@@ -180,11 +180,16 @@ function NodoCardsPage() {
       const results = await Promise.all(
         dynamicCards.map(async (c) => {
           try {
+            const skillsInFocus =
+              node?.practice_script?.scope?.skills_in_focus ??
+              node?.practice_script?.scope?.skillsInFocus ??
+              [];
             const { data, error } = await supabase.functions.invoke("closer-voice", {
               body: {
                 phase: "generate_example",
                 card_type: c.card_type,
                 node_name: node?.name ?? "",
+                scope: { skills_in_focus: skillsInFocus },
                 company_brain: companyBrain,
                 seller_industry: sellerIndustry,
               },
