@@ -152,54 +152,73 @@ function NodoCardsPage() {
     }
   }, [visibleCards, index]);
 
-  // Generación dinámica del contenido cuando la tarjeta es dynamic + good/bad example
+  // Generación dinámica en paralelo de TODAS las tarjetas dynamic good/bad_example,
+  // disparada una sola vez cuando el nodo + tarjetas + contexto están listos.
+  const generatedRef = useRef(false);
   useEffect(() => {
-    const c = visibleCards?.[index];
-    if (!c) return;
-    if (c.card_content_type !== "dynamic") return;
-    if (c.card_type !== "good_example" && c.card_type !== "bad_example") return;
-    if (dynamicCache[c.id]) return;
+    if (generatedRef.current) return;
+    if (!cards || !node) return;
+    if (!companyBrain && !sellerIndustry) return; // espera a que el contexto cargue
+    const dynamicCards = cards.filter(
+      (c) =>
+        c.card_content_type === "dynamic" &&
+        (c.card_type === "good_example" || c.card_type === "bad_example"),
+    );
+    if (dynamicCards.length === 0) {
+      generatedRef.current = true;
+      return;
+    }
+    generatedRef.current = true;
     let alive = true;
-    setDynamicCache((prev) => ({ ...prev, [c.id]: { loading: true } }));
+    setDynamicCache((prev) => {
+      const next = { ...prev };
+      for (const c of dynamicCards) next[c.id] = { loading: true };
+      return next;
+    });
     (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("closer-voice", {
-          body: {
-            phase: "generate_example",
-            card_type: c.card_type,
-            node_name: node?.name ?? "",
-            company_brain: companyBrain,
-            seller_industry: sellerIndustry,
-          },
-        });
-        if (!alive) return;
-        if (error || !data || typeof (data as any).body !== "string") {
-          setDynamicCache((prev) => ({
-            ...prev,
-            [c.id]: { loading: false, error: error?.message ?? "generation_failed" },
-          }));
-          return;
-        }
-        setDynamicCache((prev) => ({
-          ...prev,
-          [c.id]: {
-            loading: false,
-            body: (data as any).body,
-            flip_back: (data as any).flip_back,
-          },
-        }));
-      } catch (e) {
-        if (!alive) return;
-        setDynamicCache((prev) => ({
-          ...prev,
-          [c.id]: { loading: false, error: e instanceof Error ? e.message : String(e) },
-        }));
-      }
+      const results = await Promise.all(
+        dynamicCards.map(async (c) => {
+          try {
+            const { data, error } = await supabase.functions.invoke("closer-voice", {
+              body: {
+                phase: "generate_example",
+                card_type: c.card_type,
+                node_name: node?.name ?? "",
+                company_brain: companyBrain,
+                seller_industry: sellerIndustry,
+              },
+            });
+            if (error || !data || typeof (data as any).body !== "string") {
+              return [c.id, { loading: false, error: error?.message ?? "generation_failed" }] as const;
+            }
+            return [
+              c.id,
+              {
+                loading: false,
+                body: (data as any).body,
+                flip_back: (data as any).flip_back,
+              },
+            ] as const;
+          } catch (e) {
+            return [
+              c.id,
+              { loading: false, error: e instanceof Error ? e.message : String(e) },
+            ] as const;
+          }
+        }),
+      );
+      if (!alive) return;
+      setDynamicCache((prev) => {
+        const next = { ...prev };
+        for (const [id, content] of results) next[id] = content;
+        return next;
+      });
     })();
     return () => {
       alive = false;
     };
-  }, [visibleCards, index, node?.name, companyBrain, sellerIndustry]);
+  }, [cards, node, companyBrain, sellerIndustry]);
+
 
 
   function goBack() {

@@ -103,6 +103,9 @@ function buildGenerateExampleSystemPrompt(
 
 Genera un ejemplo para el nodo indicado siguiendo la filosofía de Closer. El ejemplo debe mostrar cómo se ve bien ejecutado usando contexto real de la empresa — no inventado. Un buen ejemplo suena como una conversación humana, no como un pitch. Usa el scope del nodo para saber qué demostrar. Responde JSON con body de máximo 2 frases y flip_back de máximo 2 frases explicando por qué funciona.
 
+REGLA CRÍTICA SOBRE EL COMPANY_BRAIN:
+El company_brain contiene contexto del negocio del vendedor — úsalo para dar realismo al nombre del producto y la industria ÚNICAMENTE. NO uses ese contexto para inventar historial de pedidos, relaciones previas, perfiles de compra, ni conversaciones anteriores. El ejemplo debe mostrar siempre una PRIMERA VISITA con un cliente que el vendedor nunca ha visto. Sin "justo estuve revisando tu perfil", sin "ya va siendo tiempo de reponerte", sin ningún dato que implique que ya se conocen.
+
 Tipo de tarjeta: ${tipo}
 Nodo / técnica: ${nodeName}
 Industria del vendedor: ${sellerIndustry || "no especificada"}
