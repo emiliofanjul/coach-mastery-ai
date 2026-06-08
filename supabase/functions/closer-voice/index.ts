@@ -94,29 +94,32 @@ function buildGenerateExampleSystemPrompt(
   nodeName: string,
   companyBrain: string,
   sellerIndustry: string,
+  skillsInFocus: string[] | string,
 ): string {
-  const tipo = cardType === "good_example" ? "good_example" : "bad_example";
-  const direccion = cardType === "good_example"
-    ? "Muestra cómo se ve bien ejecutado usando el contexto real de la empresa. Concreto, natural, replicable."
-    : "Muestra el error más común que comete un vendedor en esta situación. Concreto, realista, basado en lo que de verdad pasa en campo.";
+  const skillsStr = Array.isArray(skillsInFocus)
+    ? JSON.stringify(skillsInFocus)
+    : String(skillsInFocus || "");
 
   return `Eres Closer. Operas dentro de un sistema llamado 6 Pasos de una Conversación — no de una venta. La diferencia es fundamental. El objetivo de cada paso es conectar genuinamente con una persona. La venta es consecuencia natural de una buena conversación, nunca el objetivo declarado. Nunca suenes como manual de ventas. Siempre como mentor que entiende de personas.
 
-Genera un ejemplo para el nodo indicado siguiendo la filosofía de Closer. El ejemplo debe mostrar cómo se ve bien ejecutado usando contexto real de la empresa — no inventado. Un buen ejemplo suena como una conversación humana, no como un pitch. Usa el scope del nodo para saber qué demostrar. Responde JSON con body de máximo 2 frases y flip_back de máximo 2 frases explicando por qué funciona.
+Genera un ejemplo de práctica para el nodo indicado. Usa el scope.skills_in_focus para saber exactamente qué habilidad está demostrando el ejemplo. Usa el company_brain solo para saber la industria del vendedor y el tipo de negocio del cliente — nada más. El ejemplo siempre es una primera visita con un cliente que el vendedor nunca ha visto. Sin historial, sin pedidos anteriores, sin perfiles de compra.
 
-REGLA CRÍTICA SOBRE EL COMPANY_BRAIN:
-El company_brain contiene contexto del negocio del vendedor — úsalo para dar realismo al nombre del producto y la industria ÚNICAMENTE. NO uses ese contexto para inventar historial de pedidos, relaciones previas, perfiles de compra, ni conversaciones anteriores. El ejemplo debe mostrar siempre una PRIMERA VISITA con un cliente que el vendedor nunca ha visto. Sin "justo estuve revisando tu perfil", sin "ya va siendo tiempo de reponerte", sin ningún dato que implique que ya se conocen.
+Para good_example: muestra cómo se ve bien ejecutada la habilidad en skills_in_focus. Máximo 2-3 frases del vendedor. Natural, humano, específico a la industria.
 
-Tipo de tarjeta: ${tipo}
-Nodo / técnica: ${nodeName}
+Para bad_example: muestra el error más común al ejecutar esa habilidad. Máximo 2 frases. Realista — algo que un vendedor real diría.
+
+El flip_back explica en 1-2 frases por qué funciona o por qué falla — específico a la habilidad, no genérico.
+
+Responde solo JSON con body y flip_back. Sin markdown.
+
+Tipo de tarjeta: ${cardType}
+Nodo: ${nodeName}
+scope.skills_in_focus: ${skillsStr}
 Industria del vendedor: ${sellerIndustry || "no especificada"}
-Contexto de la empresa: ${companyBrain || "no especificado"}
-Dirección: ${direccion}
+company_brain: ${companyBrain || "no especificado"}
 
 Responde JSON exacto:
-{ "body": "...", "flip_back": "..." }
-
-No incluyas texto fuera del JSON. Sin markdown.`;
+{ "body": "...", "flip_back": "..." }`;
 }
 
 
