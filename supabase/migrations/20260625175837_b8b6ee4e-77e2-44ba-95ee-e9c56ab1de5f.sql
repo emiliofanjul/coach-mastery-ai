@@ -1,0 +1,1 @@
+UPDATE public.sellers SET audio_consent = true WHERE id = 'eed27d0c-e489-41d6-91ac-3fb72a6bb022';
