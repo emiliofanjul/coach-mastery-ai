@@ -745,6 +745,7 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    void stopAudioCapture();
     if (claudePhaseRef.current === "i_do") {
       await startIDoSession();
     } else {
@@ -756,8 +757,18 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    void stopAudioCapture();
     navigate({ to: "/mapa" });
   }
+
+  // Cleanup al desmontar
+  useEffect(() => {
+    return () => {
+      sessionEndedRef.current = true;
+      stopRecognition();
+      stopAudio();
+      void stopAudioCapture();
+    };
 
   // Cleanup al desmontar
   useEffect(() => {
