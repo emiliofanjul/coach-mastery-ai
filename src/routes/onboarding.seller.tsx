@@ -358,10 +358,14 @@ function ExperienceStep({
 function ChallengeStep({
   value,
   onPick,
+  audioConsent,
+  setAudioConsent,
   onNext,
 }: {
   value: Challenge | null;
   onPick: (v: Challenge) => void;
+  audioConsent: boolean;
+  setAudioConsent: (v: boolean) => void;
   onNext: () => void;
 }) {
   return (
@@ -380,6 +384,44 @@ function ChallengeStep({
           />
         ))}
       </div>
+      <label
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: "0.7rem",
+          marginTop: "1.4rem",
+          padding: "0.9rem 1rem",
+          background: "rgba(255,107,43,0.04)",
+          border: "1px solid #252535",
+          borderRadius: 14,
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={audioConsent}
+          onChange={(e) => setAudioConsent(e.target.checked)}
+          style={{
+            marginTop: 3,
+            accentColor: "#FF6B2B",
+            width: 18,
+            height: 18,
+            cursor: "pointer",
+          }}
+        />
+        <span
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.82rem",
+            color: "#C8C8D8",
+            lineHeight: 1.45,
+          }}
+        >
+          Acepto que mis prácticas de voz se graben para recibir mejor coaching
+          personalizado. Puedes cambiar esto después.
+        </span>
+      </label>
       <PrimaryButton onClick={onNext} disabled={!value} label="Ver mi plan →" />
     </>
   );
