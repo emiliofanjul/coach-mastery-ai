@@ -596,6 +596,8 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    // Detener captura de audio en paralelo (no bloquea el feedback)
+    const audioBlobPromise = stopAudioCapture();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
     const youDoConv = youDo.map((m) => ({
