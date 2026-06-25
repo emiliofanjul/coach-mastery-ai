@@ -240,6 +240,59 @@ function PracticaPage() {
     setIsAgentSpeaking(false);
   }
 
+  // ── Captura de audio (MediaRecorder) ─────────────────────────────
+  // Graba el mismo stream de micrófono en paralelo al SpeechRecognition.
+  // Solo se activa si el vendedor dio audio_consent.
+  async function startAudioCapture() {
+    if (mediaRecorderRef.current) return; // ya activo
+    if (!sellerData?.audio_consent) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      recordedChunksRef.current = [];
+      const mime = MediaRecorder.isTypeSupported?.("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : "audio/webm";
+      const rec = new MediaRecorder(stream, { mimeType: mime });
+      rec.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
+      };
+      rec.start(1000); // chunk cada 1s — robusto frente a cierres abruptos
+      mediaRecorderRef.current = rec;
+    } catch (err) {
+      console.error("[audio-capture] failed to start:", err);
+    }
+  }
+
+  function stopAudioCapture(): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      const rec = mediaRecorderRef.current;
+      const stream = mediaStreamRef.current;
+      mediaRecorderRef.current = null;
+      mediaStreamRef.current = null;
+      if (!rec) {
+        stream?.getTracks().forEach((t) => t.stop());
+        return resolve(null);
+      }
+      const finish = () => {
+        const blob = recordedChunksRef.current.length
+          ? new Blob(recordedChunksRef.current, { type: rec.mimeType || "audio/webm" })
+          : null;
+        recordedChunksRef.current = [];
+        stream?.getTracks().forEach((t) => t.stop());
+        resolve(blob);
+      };
+      try {
+        rec.onstop = finish;
+        if (rec.state !== "inactive") rec.stop();
+        else finish();
+      } catch {
+        finish();
+      }
+    });
+  }
+
+
   async function playTTS(text: string): Promise<void> {
     stopAudio();
     setIsAgentSpeaking(true);
