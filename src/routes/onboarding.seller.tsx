@@ -54,6 +54,7 @@ function SellerOnboarding() {
   const [name, setName] = useState("");
   const [experience, setExperience] = useState<Experience | null>(null);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [audioConsent, setAudioConsent] = useState(false);
 
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
