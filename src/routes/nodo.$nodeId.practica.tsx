@@ -769,14 +769,6 @@ function PracticaPage() {
       stopAudio();
       void stopAudioCapture();
     };
-
-  // Cleanup al desmontar
-  useEffect(() => {
-    return () => {
-      sessionEndedRef.current = true;
-      stopRecognition();
-      stopAudio();
-    };
   }, []);
 
 
