@@ -1,24 +1,5 @@
-## Canonicalización de skills (PASO 1–5)
-
-Una sola migración transaccional sobre `public.skills` y sus 3 FKs. Sin tocar datos de vendedores (vacíos). Sin tocar JSONB ni `code`.
-
-### Mapeo de IDs
-
-| Viejo | Nuevo | category nueva | skill_type | decay_half_life_days |
-|---|---|---|---|---|
-| framework.6_pasos | foundation.sistema_6_pasos | foundation | conceptual | 365 |
-| opening.sce_primeros_10s | opening.sce | opening | habito | 90 |
-| calibration.regla_10 | mindset.regla_10_por_ciento | mindset | conceptual | 365 |
-| mindset.gasman | mindset.gasman_theory | mindset | conceptual | 365 |
-| calibration.rrr | mindset.rrr | mindset | tecnica | 180 |
-| resistance.air_bloqueos | blocks.air | blocks | tecnica | 180 |
-
-### SQL (una migración, una transacción)
-
-```sql
 BEGIN;
 
--- PASO 1: agregar ON UPDATE CASCADE a las 3 FKs que apuntan a skills.id
 ALTER TABLE public.node_skills
   DROP CONSTRAINT node_skills_skill_id_fkey,
   ADD CONSTRAINT node_skills_skill_id_fkey
@@ -37,15 +18,12 @@ ALTER TABLE public.skill_evaluations
     FOREIGN KEY (skill_id) REFERENCES public.skills(id)
     ON UPDATE CASCADE ON DELETE CASCADE;
 
--- (Nota: skills.parent_skill_id también referencia skills.id; agregar ON UPDATE CASCADE
---  por consistencia, aunque ninguna de las 6 filas usa parent_skill_id hoy.)
 ALTER TABLE public.skills
   DROP CONSTRAINT skills_parent_skill_id_fkey,
   ADD CONSTRAINT skills_parent_skill_id_fkey
     FOREIGN KEY (parent_skill_id) REFERENCES public.skills(id)
     ON UPDATE CASCADE ON DELETE SET NULL;
 
--- PASO 2: renombrar los 6 IDs (cascade actualiza node_skills automáticamente)
 UPDATE public.skills SET id = 'foundation.sistema_6_pasos'  WHERE id = 'framework.6_pasos';
 UPDATE public.skills SET id = 'opening.sce'                 WHERE id = 'opening.sce_primeros_10s';
 UPDATE public.skills SET id = 'mindset.regla_10_por_ciento' WHERE id = 'calibration.regla_10';
@@ -53,21 +31,18 @@ UPDATE public.skills SET id = 'mindset.gasman_theory'       WHERE id = 'mindset.
 UPDATE public.skills SET id = 'mindset.rrr'                 WHERE id = 'calibration.rrr';
 UPDATE public.skills SET id = 'blocks.air'                  WHERE id = 'resistance.air_bloqueos';
 
--- PASO 3: actualizar category al nuevo esquema (JSONB y code intactos)
 UPDATE public.skills SET category = 'foundation' WHERE id = 'foundation.sistema_6_pasos';
 UPDATE public.skills SET category = 'opening'    WHERE id = 'opening.sce';
 UPDATE public.skills SET category = 'mindset'    WHERE id IN
   ('mindset.regla_10_por_ciento','mindset.gasman_theory','mindset.rrr');
 UPDATE public.skills SET category = 'blocks'     WHERE id = 'blocks.air';
 
--- PASO 4: agregar columnas nuevas
 ALTER TABLE public.skills
   ADD COLUMN skill_type text,
   ADD COLUMN decay_half_life_days int,
   ADD COLUMN requires_audio boolean NOT NULL DEFAULT false,
   ADD COLUMN status text NOT NULL DEFAULT 'active';
 
--- PASO 5: poblar skill_type y decay para las 6 filas
 UPDATE public.skills SET skill_type='conceptual', decay_half_life_days=365 WHERE id='foundation.sistema_6_pasos';
 UPDATE public.skills SET skill_type='habito',     decay_half_life_days=90  WHERE id='opening.sce';
 UPDATE public.skills SET skill_type='conceptual', decay_half_life_days=365 WHERE id='mindset.regla_10_por_ciento';
@@ -76,21 +51,3 @@ UPDATE public.skills SET skill_type='tecnica',    decay_half_life_days=180 WHERE
 UPDATE public.skills SET skill_type='tecnica',    decay_half_life_days=180 WHERE id='blocks.air';
 
 COMMIT;
-```
-
-### Verificación post-migración
-
-Tras aplicar, devolveré:
-1. Las 6 filas de `skills` (id, code, category, skill_type, decay_half_life_days, requires_audio, status) confirmando IDs canonicalizados y JSONB intactos.
-2. Conteo de `node_skills` por `skill_id` mostrando las 13 filas redirigidas a los nuevos IDs.
-3. Confirmación de que `seller_skill_state` y `skill_evaluations` siguen vacías.
-
-### Fuera de alcance de este paso
-
-- No se insertan los 25 skills nuevos (PASO 6, en mensaje siguiente tras confirmación).
-- No se toca código de la app, `src/integrations/supabase/types.ts` se regenerará solo tras la migración.
-- No se modifica ninguna otra tabla.
-
-### Riesgos
-
-- Bajísimos: las 2 tablas vacías no tienen datos que reasignar; `node_skills` se actualiza por cascade dentro de la misma transacción; rollback automático si algo falla.

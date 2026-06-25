@@ -1199,6 +1199,7 @@ export type Database = {
           category: string
           code: string
           created_at: string
+          decay_half_life_days: number | null
           default_allowed_concepts: Json
           default_forbidden_concepts: Json
           failure_signals: Json
@@ -1208,7 +1209,10 @@ export type Database = {
           name: string
           parent_skill_id: string | null
           reinforcement_threshold: number
+          requires_audio: boolean
           short_description: string | null
+          skill_type: string | null
+          status: string
           success_signals: Json
           world_id_introduced: number
         }
@@ -1216,6 +1220,7 @@ export type Database = {
           category: string
           code: string
           created_at?: string
+          decay_half_life_days?: number | null
           default_allowed_concepts?: Json
           default_forbidden_concepts?: Json
           failure_signals?: Json
@@ -1225,7 +1230,10 @@ export type Database = {
           name: string
           parent_skill_id?: string | null
           reinforcement_threshold?: number
+          requires_audio?: boolean
           short_description?: string | null
+          skill_type?: string | null
+          status?: string
           success_signals?: Json
           world_id_introduced: number
         }
@@ -1233,6 +1241,7 @@ export type Database = {
           category?: string
           code?: string
           created_at?: string
+          decay_half_life_days?: number | null
           default_allowed_concepts?: Json
           default_forbidden_concepts?: Json
           failure_signals?: Json
@@ -1242,7 +1251,10 @@ export type Database = {
           name?: string
           parent_skill_id?: string | null
           reinforcement_threshold?: number
+          requires_audio?: boolean
           short_description?: string | null
+          skill_type?: string | null
+          status?: string
           success_signals?: Json
           world_id_introduced?: number
         }
