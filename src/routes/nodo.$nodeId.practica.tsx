@@ -126,7 +126,7 @@ function PracticaPage() {
     if (!auth.user) return;
     const { data: seller } = await supabase
       .from("sellers")
-      .select("id, full_name, experience_level, company_id")
+      .select("id, full_name, experience_level, company_id, audio_consent")
       .eq("profile_id", auth.user.id)
       .maybeSingle();
     if (!seller) return;
