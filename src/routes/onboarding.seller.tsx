@@ -143,6 +143,7 @@ function SellerOnboarding() {
             full_name: name.trim(),
             experience_level: exp,
             main_challenge: ch,
+            audio_consent: audioConsent,
             onboarding_completed: true,
           })
           .eq("id", sellerId);
