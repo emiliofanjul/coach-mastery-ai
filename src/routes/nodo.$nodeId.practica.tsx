@@ -83,6 +83,11 @@ function PracticaPage() {
   const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("i_do");
   const sessionEndedRef = useRef(false);
   const iDoUserTurnsRef = useRef(0);
+  // Captura de audio paralela al STT (solo si audio_consent === true)
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const audioUploadedRef = useRef(false);
 
 
   // Pedir micrófono al montar
