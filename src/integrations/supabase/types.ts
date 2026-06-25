@@ -1109,6 +1109,7 @@ export type Database = {
       }
       sellers: {
         Row: {
+          audio_consent: boolean
           company_id: string
           created_at: string
           credits_used_this_month: number
@@ -1129,6 +1130,7 @@ export type Database = {
           xp_total: number
         }
         Insert: {
+          audio_consent?: boolean
           company_id: string
           created_at?: string
           credits_used_this_month?: number
@@ -1149,6 +1151,7 @@ export type Database = {
           xp_total?: number
         }
         Update: {
+          audio_consent?: boolean
           company_id?: string
           created_at?: string
           credits_used_this_month?: number
