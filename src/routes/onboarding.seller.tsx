@@ -226,6 +226,8 @@ function SellerOnboarding() {
           <ChallengeStep
             value={challenge}
             onPick={setChallenge}
+            audioConsent={audioConsent}
+            setAudioConsent={setAudioConsent}
             onNext={() => {
               if (experience && challenge) handleSubmitFinal(experience, challenge);
             }}
