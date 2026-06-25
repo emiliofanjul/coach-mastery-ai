@@ -932,6 +932,56 @@ export type Database = {
           },
         ]
       }
+      seller_events: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          event_type: string
+          id: string
+          model: string | null
+          node_id: string | null
+          payload: Json
+          prompt_version: string | null
+          script_version: string | null
+          seller_id: string
+          skill_ids: string[]
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          model?: string | null
+          node_id?: string | null
+          payload?: Json
+          prompt_version?: string | null
+          script_version?: string | null
+          seller_id: string
+          skill_ids?: string[]
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          model?: string | null
+          node_id?: string | null
+          payload?: Json
+          prompt_version?: string | null
+          script_version?: string | null
+          seller_id?: string
+          skill_ids?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_events_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seller_memory: {
         Row: {
           coach_notes: string | null
