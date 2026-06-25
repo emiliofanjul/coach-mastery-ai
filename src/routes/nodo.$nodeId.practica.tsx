@@ -83,6 +83,11 @@ function PracticaPage() {
   const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("i_do");
   const sessionEndedRef = useRef(false);
   const iDoUserTurnsRef = useRef(0);
+  // Captura de audio paralela al STT (solo si audio_consent === true)
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const audioUploadedRef = useRef(false);
 
 
   // Pedir micrófono al montar
@@ -126,7 +131,7 @@ function PracticaPage() {
     if (!auth.user) return;
     const { data: seller } = await supabase
       .from("sellers")
-      .select("id, full_name, experience_level, company_id")
+      .select("id, full_name, experience_level, company_id, audio_consent")
       .eq("profile_id", auth.user.id)
       .maybeSingle();
     if (!seller) return;
@@ -234,6 +239,59 @@ function PracticaPage() {
     audioRef.current = null;
     setIsAgentSpeaking(false);
   }
+
+  // ── Captura de audio (MediaRecorder) ─────────────────────────────
+  // Graba el mismo stream de micrófono en paralelo al SpeechRecognition.
+  // Solo se activa si el vendedor dio audio_consent.
+  async function startAudioCapture() {
+    if (mediaRecorderRef.current) return; // ya activo
+    if (!sellerData?.audio_consent) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      recordedChunksRef.current = [];
+      const mime = MediaRecorder.isTypeSupported?.("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : "audio/webm";
+      const rec = new MediaRecorder(stream, { mimeType: mime });
+      rec.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
+      };
+      rec.start(1000); // chunk cada 1s — robusto frente a cierres abruptos
+      mediaRecorderRef.current = rec;
+    } catch (err) {
+      console.error("[audio-capture] failed to start:", err);
+    }
+  }
+
+  function stopAudioCapture(): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      const rec = mediaRecorderRef.current;
+      const stream = mediaStreamRef.current;
+      mediaRecorderRef.current = null;
+      mediaStreamRef.current = null;
+      if (!rec) {
+        stream?.getTracks().forEach((t) => t.stop());
+        return resolve(null);
+      }
+      const finish = () => {
+        const blob = recordedChunksRef.current.length
+          ? new Blob(recordedChunksRef.current, { type: rec.mimeType || "audio/webm" })
+          : null;
+        recordedChunksRef.current = [];
+        stream?.getTracks().forEach((t) => t.stop());
+        resolve(blob);
+      };
+      try {
+        rec.onstop = finish;
+        if (rec.state !== "inactive") rec.stop();
+        else finish();
+      } catch {
+        finish();
+      }
+    });
+  }
+
 
   async function playTTS(text: string): Promise<void> {
     stopAudio();
@@ -456,6 +514,8 @@ function PracticaPage() {
       setConnectionError(null);
       setIDoDemoDone(false);
       sessionEndedRef.current = false;
+      audioUploadedRef.current = false;
+      void startAudioCapture();
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
@@ -536,6 +596,8 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    // Detener captura de audio en paralelo (no bloquea el feedback)
+    const audioBlobPromise = stopAudioCapture();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
     const youDoConv = youDo.map((m) => ({
@@ -625,6 +687,52 @@ function PracticaPage() {
         .maybeSingle();
       if (error) console.error("[practica] insert practice_sessions failed:", error);
       setSessionId(session?.id ?? null);
+
+      // Registrar seller_event + subir audio (si hay consent) vía Edge Function (service role)
+      if (!audioUploadedRef.current) {
+        audioUploadedRef.current = true;
+        try {
+          const audioBlob = await audioBlobPromise;
+          const { data: authData } = await supabase.auth.getSession();
+          const accessToken = authData.session?.access_token ?? "";
+          const form = new FormData();
+          form.append(
+            "meta",
+            JSON.stringify({
+              event_type: "practice_session",
+              node_id: nodeId,
+              skill_ids: Array.isArray(skillsContextRef.current?.skill_ids)
+                ? skillsContextRef.current.skill_ids
+                : [],
+              payload: {
+                practice_session_id: session?.id ?? null,
+                world_id: nodeData?.world_id ?? 0,
+                practice_type: practiceType,
+                is_boss_level: isBossLevel,
+                score: evaluation?.score ?? null,
+                stars: evaluation?.stars ?? null,
+                transcript: transcriptFullRef.current,
+              },
+              model: "claude",
+            }),
+          );
+          if (audioBlob && sellerData?.audio_consent) {
+            form.append("audio", audioBlob, "session.webm");
+          }
+          const evRes = await fetch(`${SUPABASE_URL}/functions/v1/save-practice-event`, {
+            method: "POST",
+            headers: {
+              apikey: SUPABASE_ANON,
+              Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+            },
+            body: form,
+          });
+          const evText = await evRes.text();
+          console.log("[save-practice-event] ←", evRes.status, evText);
+        } catch (uplErr) {
+          console.error("[save-practice-event] failed:", uplErr);
+        }
+      }
     } catch (err) {
       console.error("[practica] handleSessionEnd error:", err);
       setFeedbackResult(null);
@@ -637,6 +745,7 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    void stopAudioCapture();
     if (claudePhaseRef.current === "i_do") {
       await startIDoSession();
     } else {
@@ -648,6 +757,7 @@ function PracticaPage() {
     sessionEndedRef.current = true;
     stopRecognition();
     stopAudio();
+    void stopAudioCapture();
     navigate({ to: "/mapa" });
   }
 
@@ -657,6 +767,7 @@ function PracticaPage() {
       sessionEndedRef.current = true;
       stopRecognition();
       stopAudio();
+      void stopAudioCapture();
     };
   }, []);
 
