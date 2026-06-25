@@ -687,6 +687,52 @@ function PracticaPage() {
         .maybeSingle();
       if (error) console.error("[practica] insert practice_sessions failed:", error);
       setSessionId(session?.id ?? null);
+
+      // Registrar seller_event + subir audio (si hay consent) vía Edge Function (service role)
+      if (!audioUploadedRef.current) {
+        audioUploadedRef.current = true;
+        try {
+          const audioBlob = await audioBlobPromise;
+          const { data: authData } = await supabase.auth.getSession();
+          const accessToken = authData.session?.access_token ?? "";
+          const form = new FormData();
+          form.append(
+            "meta",
+            JSON.stringify({
+              event_type: "practice_session",
+              node_id: nodeId,
+              skill_ids: Array.isArray(skillsContextRef.current?.skill_ids)
+                ? skillsContextRef.current.skill_ids
+                : [],
+              payload: {
+                practice_session_id: session?.id ?? null,
+                world_id: nodeData?.world_id ?? 0,
+                practice_type: practiceType,
+                is_boss_level: isBossLevel,
+                score: evaluation?.score ?? null,
+                stars: evaluation?.stars ?? null,
+                transcript: transcriptFullRef.current,
+              },
+              model: "claude",
+            }),
+          );
+          if (audioBlob && sellerData?.audio_consent) {
+            form.append("audio", audioBlob, "session.webm");
+          }
+          const evRes = await fetch(`${SUPABASE_URL}/functions/v1/save-practice-event`, {
+            method: "POST",
+            headers: {
+              apikey: SUPABASE_ANON,
+              Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+            },
+            body: form,
+          });
+          const evText = await evRes.text();
+          console.log("[save-practice-event] ←", evRes.status, evText);
+        } catch (uplErr) {
+          console.error("[save-practice-event] failed:", uplErr);
+        }
+      }
     } catch (err) {
       console.error("[practica] handleSessionEnd error:", err);
       setFeedbackResult(null);
