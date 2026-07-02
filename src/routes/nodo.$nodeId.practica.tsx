@@ -434,6 +434,7 @@ function PracticaPage() {
           company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
           seller_name: sellerData?.full_name ?? "",
           conversation_history: conversationHistoryRef.current.slice(0, -1),
+          session_id: sessionCorrelationIdRef.current,
         }),
       });
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
