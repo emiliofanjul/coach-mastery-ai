@@ -431,6 +431,8 @@ function PracticaPage() {
       });
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
       const data = await res.json();
+      if (typeof data?.prompt_version === "string") promptVersionRef.current = data.prompt_version;
+      if (typeof data?.model === "string") modelRef.current = data.model;
       const message: string = data?.message ?? "";
       const nextPhase: string = data?.next_phase ?? claudePhaseRef.current;
       const endSession: boolean = !!data?.end_session;
