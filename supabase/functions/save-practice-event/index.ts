@@ -110,7 +110,23 @@ Deno.serve(async (req) => {
       }
     }
 
-    return json({ ok: true, event_id: eventId, audio_url: audioUrl });
+    // Backfill llm_calls: link every model call from this session to the event.
+    let llmCallsBackfilled = 0;
+    if (sessionId) {
+      const { data: backfilled, error: bfErr } = await admin
+        .from("llm_calls")
+        .update({ event_id: eventId })
+        .eq("session_id", sessionId)
+        .is("event_id", null)
+        .select("id");
+      if (bfErr) {
+        console.error("[save-practice-event] llm_calls backfill failed:", bfErr);
+      } else {
+        llmCallsBackfilled = Array.isArray(backfilled) ? backfilled.length : 0;
+      }
+    }
+
+    return json({ ok: true, event_id: eventId, audio_url: audioUrl, session_id: sessionId, llm_calls_backfilled: llmCallsBackfilled });
   } catch (err) {
     console.error("[save-practice-event] error:", err);
     return json({ error: "Server error", detail: String(err) }, 500);
