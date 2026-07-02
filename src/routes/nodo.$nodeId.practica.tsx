@@ -708,9 +708,11 @@ function PracticaPage() {
             JSON.stringify({
               event_type: "practice_session",
               node_id: nodeId,
-              skill_ids: Array.isArray(skillsContextRef.current?.skill_ids)
-                ? skillsContextRef.current.skill_ids
+              skill_ids: Array.isArray(skillsContextRef.current?.skillsInFocus)
+                ? skillsContextRef.current.skillsInFocus
                 : [],
+              prompt_version: promptVersionRef.current,
+              model: modelRef.current,
               payload: {
                 practice_session_id: session?.id ?? null,
                 world_id: nodeData?.world_id ?? 0,
@@ -720,7 +722,6 @@ function PracticaPage() {
                 stars: evaluation?.stars ?? null,
                 transcript: transcriptFullRef.current,
               },
-              model: "claude",
             }),
           );
           if (audioBlob && sellerData?.audio_consent) {
