@@ -406,6 +406,7 @@ export type Database = {
       }
       node_cards: {
         Row: {
+          audience: string | null
           body: string
           card_content_type: string
           card_order: number
@@ -417,6 +418,7 @@ export type Database = {
           title: string | null
         }
         Insert: {
+          audience?: string | null
           body: string
           card_content_type?: string
           card_order: number
@@ -428,6 +430,7 @@ export type Database = {
           title?: string | null
         }
         Update: {
+          audience?: string | null
           body?: string
           card_content_type?: string
           card_order?: number
@@ -1087,62 +1090,38 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string
-          current_score: number
-          evaluations_count: number
+          evidence_count: number
           id: string
-          last_evaluated_at: string | null
-          last_evidence: Json | null
-          mastered: boolean
-          mastered_at: string | null
-          recurring_errors: Json
-          reinforcement_needed: boolean
-          reinforcement_reason: string | null
+          last_practiced_at: string | null
+          mastery_score: number
+          recurring_failures: Json
           seller_id: string
           skill_id: string
-          trend: string
-          unlocked_concepts: Json
           updated_at: string
-          xp_in_skill: number
         }
         Insert: {
           company_id: string
           created_at?: string
-          current_score?: number
-          evaluations_count?: number
+          evidence_count?: number
           id?: string
-          last_evaluated_at?: string | null
-          last_evidence?: Json | null
-          mastered?: boolean
-          mastered_at?: string | null
-          recurring_errors?: Json
-          reinforcement_needed?: boolean
-          reinforcement_reason?: string | null
+          last_practiced_at?: string | null
+          mastery_score?: number
+          recurring_failures?: Json
           seller_id: string
           skill_id: string
-          trend?: string
-          unlocked_concepts?: Json
           updated_at?: string
-          xp_in_skill?: number
         }
         Update: {
           company_id?: string
           created_at?: string
-          current_score?: number
-          evaluations_count?: number
+          evidence_count?: number
           id?: string
-          last_evaluated_at?: string | null
-          last_evidence?: Json | null
-          mastered?: boolean
-          mastered_at?: string | null
-          recurring_errors?: Json
-          reinforcement_needed?: boolean
-          reinforcement_reason?: string | null
+          last_practiced_at?: string | null
+          mastery_score?: number
+          recurring_failures?: Json
           seller_id?: string
           skill_id?: string
-          trend?: string
-          unlocked_concepts?: Json
           updated_at?: string
-          xp_in_skill?: number
         }
         Relationships: [
           {
