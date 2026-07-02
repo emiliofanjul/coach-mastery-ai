@@ -644,6 +644,8 @@ function PracticaPage() {
         throw new Error("closer-voice evaluate returned invalid JSON");
       }
       console.log("[closer-voice evaluate] parsed:", evaluation);
+      if (typeof evaluation?.prompt_version === "string") promptVersionRef.current = evaluation.prompt_version;
+      if (typeof evaluation?.model === "string") modelRef.current = evaluation.model;
       const obsValid =
         Array.isArray(evaluation?.observations) &&
         evaluation.observations.length > 0 &&
