@@ -88,6 +88,9 @@ function PracticaPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const audioUploadedRef = useRef(false);
+  // Provenance from closer-voice — updated on every response.
+  const promptVersionRef = useRef<string | null>(null);
+  const modelRef = useRef<string | null>(null);
 
 
   // Pedir micrófono al montar
@@ -428,6 +431,8 @@ function PracticaPage() {
       });
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
       const data = await res.json();
+      if (typeof data?.prompt_version === "string") promptVersionRef.current = data.prompt_version;
+      if (typeof data?.model === "string") modelRef.current = data.model;
       const message: string = data?.message ?? "";
       const nextPhase: string = data?.next_phase ?? claudePhaseRef.current;
       const endSession: boolean = !!data?.end_session;
@@ -639,6 +644,8 @@ function PracticaPage() {
         throw new Error("closer-voice evaluate returned invalid JSON");
       }
       console.log("[closer-voice evaluate] parsed:", evaluation);
+      if (typeof evaluation?.prompt_version === "string") promptVersionRef.current = evaluation.prompt_version;
+      if (typeof evaluation?.model === "string") modelRef.current = evaluation.model;
       const obsValid =
         Array.isArray(evaluation?.observations) &&
         evaluation.observations.length > 0 &&
@@ -701,9 +708,11 @@ function PracticaPage() {
             JSON.stringify({
               event_type: "practice_session",
               node_id: nodeId,
-              skill_ids: Array.isArray(skillsContextRef.current?.skill_ids)
-                ? skillsContextRef.current.skill_ids
+              skill_ids: Array.isArray(skillsContextRef.current?.skillsInFocus)
+                ? skillsContextRef.current.skillsInFocus
                 : [],
+              prompt_version: promptVersionRef.current,
+              model: modelRef.current,
               payload: {
                 practice_session_id: session?.id ?? null,
                 world_id: nodeData?.world_id ?? 0,
@@ -713,7 +722,6 @@ function PracticaPage() {
                 stars: evaluation?.stars ?? null,
                 transcript: transcriptFullRef.current,
               },
-              model: "claude",
             }),
           );
           if (audioBlob && sellerData?.audio_consent) {

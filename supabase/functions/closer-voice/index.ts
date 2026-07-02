@@ -1,11 +1,57 @@
 // Closer voice brain — Edge Function
 // Receives transcript + context, calls Claude, returns structured JSON.
+//
+// PROMPT_VERSION: bump this string on ANY change to any prompt builder in
+// this file (buildSystemPrompt / buildEvaluateSystemPrompt / buildGenerateExampleSystemPrompt).
+// Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
+// Every response includes this string so downstream consumers can pin evals to
+// the exact prompt that produced them.
+const PROMPT_VERSION = "v1.0.0";
+const CLAUDE_MODEL = "claude-sonnet-4-5";
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Admin client for internal observability writes (llm_calls).
+// Lazily initialized on first use.
+let _admin: ReturnType<typeof createClient> | null = null;
+function getAdmin() {
+  if (_admin) return _admin;
+  const url = Deno.env.get("SUPABASE_URL");
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) return null;
+  _admin = createClient(url, key, { auth: { persistSession: false } });
+  return _admin;
+}
+
+async function logLlmCall(row: {
+  phase: string;
+  input_tokens: number | null;
+  output_tokens: number | null;
+  latency_ms: number;
+  event_id?: string | null;
+}) {
+  try {
+    const admin = getAdmin();
+    if (!admin) return;
+    await admin.from("llm_calls").insert({
+      phase: row.phase,
+      prompt_version: PROMPT_VERSION,
+      model: CLAUDE_MODEL,
+      input_tokens: row.input_tokens,
+      output_tokens: row.output_tokens,
+      latency_ms: row.latency_ms,
+      event_id: row.event_id ?? null,
+    });
+  } catch (e) {
+    console.error("[closer-voice] llm_calls insert failed:", e);
+  }
+}
 
 type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example";
 type NextPhase = Phase | "end";
@@ -290,6 +336,7 @@ Deno.serve(async (req) => {
       { role: "user", content: transcript },
     ];
 
+    const claudeStart = Date.now();
     const claudeRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -298,16 +345,24 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-5",
+        model: CLAUDE_MODEL,
         max_tokens: 1024,
         system,
         messages,
       }),
     });
+    const claudeLatencyMs = Date.now() - claudeStart;
 
     if (!claudeRes.ok) {
       const errText = await claudeRes.text();
       console.error("[closer-voice] Claude error:", claudeRes.status, errText);
+      // Log the failed call too (tokens unknown)
+      await logLlmCall({
+        phase,
+        input_tokens: null,
+        output_tokens: null,
+        latency_ms: claudeLatencyMs,
+      });
       return new Response(
         JSON.stringify({ error: "Claude API error", status: claudeRes.status, detail: errText }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -316,6 +371,16 @@ Deno.serve(async (req) => {
 
     const claudeJson = await claudeRes.json();
     const text: string = claudeJson?.content?.[0]?.text ?? "";
+    const inputTokens: number | null = claudeJson?.usage?.input_tokens ?? null;
+    const outputTokens: number | null = claudeJson?.usage?.output_tokens ?? null;
+
+    // Fire-and-forget observability write.
+    logLlmCall({
+      phase,
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      latency_ms: claudeLatencyMs,
+    });
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
     try {
@@ -328,6 +393,9 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Every successful response includes the prompt_version and model that produced it.
+    const meta = { prompt_version: PROMPT_VERSION, model: CLAUDE_MODEL };
+
     if (phase === "generate_example") {
       const ex = parsed as GenerateExampleResponse;
       if (typeof ex.body !== "string" || typeof ex.flip_back !== "string") {
@@ -336,7 +404,7 @@ Deno.serve(async (req) => {
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-      return new Response(JSON.stringify(ex), {
+      return new Response(JSON.stringify({ ...ex, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -368,7 +436,7 @@ Deno.serve(async (req) => {
         );
       }
 
-      return new Response(JSON.stringify(evaluation), {
+      return new Response(JSON.stringify({ ...evaluation, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -382,7 +450,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    return new Response(JSON.stringify(closerResponse), {
+    return new Response(JSON.stringify({ ...closerResponse, ...meta }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
