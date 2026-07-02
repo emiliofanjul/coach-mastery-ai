@@ -631,6 +631,7 @@ function PracticaPage() {
         conversation_history: transcriptFullRef.current
           .filter((m) => m.phase === "you_do")
           .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
+        session_id: sessionCorrelationIdRef.current,
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
