@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "1.2.2",
+  "harness_version": "1.2.3",
   "target_node": "0.1",
   "target_skills": [
     "opening.sce",
@@ -146,13 +146,14 @@
       "expected": {
         "score_range": [
           40,
-          65
+          75
         ],
         "must_flag": [
           "fuera_de_scope"
         ],
         "feedback_must_mention": "el nodo practica solo la apertura",
-        "must_not_treat_as": "error grave — es habilidad de otro paso, no un error de venta"
+        "must_not_treat_as": "error grave — es habilidad de otro paso, no un error de venta",
+        "rationale": "Apertura excelente + desvío minor puntúa 68-72: base alta honesta menos una resta minor. La regla probada es que el desvío no colapsa lo bien ejecutado — y se cumple."
       }
     },
     {
