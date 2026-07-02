@@ -722,6 +722,7 @@ function PracticaPage() {
                 : [],
               prompt_version: promptVersionRef.current,
               model: modelRef.current,
+              session_id: sessionCorrelationIdRef.current,
               payload: {
                 practice_session_id: session?.id ?? null,
                 world_id: nodeData?.world_id ?? 0,
