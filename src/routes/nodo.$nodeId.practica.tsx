@@ -88,6 +88,9 @@ function PracticaPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const audioUploadedRef = useRef(false);
+  // Provenance from closer-voice — updated on every response.
+  const promptVersionRef = useRef<string | null>(null);
+  const modelRef = useRef<string | null>(null);
 
 
   // Pedir micrófono al montar
