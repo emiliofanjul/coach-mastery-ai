@@ -149,7 +149,7 @@ PASO 2 — RESTA por flags detectados (solo si hay flags):
 - Cada flag minor resta 10-20 puntos desde la base
 - Cada flag major resta 25-40 puntos desde la base
 - Un flag critical DOMINA: score final máximo 30, sin importar la base
-- Para cada flag en flags_detected, consulta su campo `severity` en failure_criteria y aplica la resta correspondiente (minor 10-20, major 25-40, critical → score final máximo 30). El nombre del flag NO determina la severidad — el campo `severity` sí.
+- Para cada flag en flags_detected, consulta su campo "severity" en failure_criteria y aplica la resta correspondiente (minor 10-20, major 25-40, critical → score final máximo 30). El nombre del flag NO determina la severidad — el campo "severity" sí.
 
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
