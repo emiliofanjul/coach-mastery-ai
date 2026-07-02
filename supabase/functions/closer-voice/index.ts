@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v1.3.3";
+const PROMPT_VERSION = "v1.3.4";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -128,7 +128,7 @@ REGLAS DE EVALUACIÓN:
 2. Usa ÚNICAMENTE los criterios listados arriba — sin criterios genéricos de ventas, sin conceptos que el vendedor no ha aprendido.
 3. Cada observación DEBE llevar "criterio_id" tomado literal de la lista de IDs válidos. Sin criterio_id la observación es inválida.
 4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
-5. Cantidad de observations: 1-2 si score ≥ 75; EXACTAMENTE 3 si score < 75. NUNCA inventes una observación para llenar cuota — si solo hay una mejora real, reporta una. Fabricar crítica destruye la confianza del vendedor.
+5. Cantidad de observations: mínimo 1, máximo 3. Reporta tantas como problemas reales haya, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también.
 6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
 
 CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
@@ -143,6 +143,7 @@ EJEMPLOS DE CALIBRACIÓN DE BASE (úsalos como ancla numérica, no como rangos a
 - SCE completo — saludo + nombre real del cliente + observación del entorno + sin disculpa + sin pitch → base 92.
 - Saludo + nombre pero SIN observación del entorno, resto correcto → base 65.
 - Saludo genérico y cortés ('buenos días, ¿cómo está?') sin nombre del cliente ni observación del entorno, pero SIN disculpa y SIN pitch → base 45-55. Regla dura: si no hay disculpa_inicial ni pitch_prematuro, la base NUNCA es menor a 40 — un saludo digno aunque incompleto es punto de partida, no fracaso.
+- Criterios centrales bien ejecutados + un desvío minor (ej. adelantarse a preguntas de discovery) → base 60-70, resta minor 10-20 → score final 45-55. El desvío del ejercicio no borra lo bien ejecutado.
 - Sin flags detectados = NO hay resta: el score final ES la base.
 
 PASO 2 — RESTA por flags detectados (solo si hay flags):
@@ -511,7 +512,7 @@ Deno.serve(async (req) => {
       const evaluation = parsed as EvaluationResponse & { stars?: number };
       const obsCount = Array.isArray(evaluation.observations) ? evaluation.observations.length : 0;
       const scoreOk = typeof evaluation.score === "number" && evaluation.score >= 0 && evaluation.score <= 100;
-      const expectedObsOk = scoreOk && (evaluation.score! >= 75 ? (obsCount >= 1 && obsCount <= 2) : obsCount === 3);
+      const expectedObsOk = scoreOk && obsCount >= 1 && obsCount <= 3;
       const obsValid = expectedObsOk && (evaluation.observations as any[]).every(
         (o) =>
           o && typeof o === "object" &&
