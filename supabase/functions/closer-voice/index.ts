@@ -510,7 +510,7 @@ Deno.serve(async (req) => {
       const evaluation = parsed as EvaluationResponse & { stars?: number };
       const obsCount = Array.isArray(evaluation.observations) ? evaluation.observations.length : 0;
       const scoreOk = typeof evaluation.score === "number" && evaluation.score >= 0 && evaluation.score <= 100;
-      const expectedObsOk = scoreOk && (evaluation.score! >= 90 ? (obsCount >= 1 && obsCount <= 3) : obsCount === 3);
+      const expectedObsOk = scoreOk && (evaluation.score! >= 75 ? (obsCount >= 1 && obsCount <= 2) : obsCount === 3);
       const obsValid = expectedObsOk && (evaluation.observations as any[]).every(
         (o) =>
           o && typeof o === "object" &&
