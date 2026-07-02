@@ -336,6 +336,7 @@ Deno.serve(async (req) => {
       { role: "user", content: transcript },
     ];
 
+    const claudeStart = Date.now();
     const claudeRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -344,16 +345,24 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-5",
+        model: CLAUDE_MODEL,
         max_tokens: 1024,
         system,
         messages,
       }),
     });
+    const claudeLatencyMs = Date.now() - claudeStart;
 
     if (!claudeRes.ok) {
       const errText = await claudeRes.text();
       console.error("[closer-voice] Claude error:", claudeRes.status, errText);
+      // Log the failed call too (tokens unknown)
+      await logLlmCall({
+        phase,
+        input_tokens: null,
+        output_tokens: null,
+        latency_ms: claudeLatencyMs,
+      });
       return new Response(
         JSON.stringify({ error: "Claude API error", status: claudeRes.status, detail: errText }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -362,6 +371,16 @@ Deno.serve(async (req) => {
 
     const claudeJson = await claudeRes.json();
     const text: string = claudeJson?.content?.[0]?.text ?? "";
+    const inputTokens: number | null = claudeJson?.usage?.input_tokens ?? null;
+    const outputTokens: number | null = claudeJson?.usage?.output_tokens ?? null;
+
+    // Fire-and-forget observability write.
+    logLlmCall({
+      phase,
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      latency_ms: claudeLatencyMs,
+    });
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
     try {
@@ -374,6 +393,9 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Every successful response includes the prompt_version and model that produced it.
+    const meta = { prompt_version: PROMPT_VERSION, model: CLAUDE_MODEL };
+
     if (phase === "generate_example") {
       const ex = parsed as GenerateExampleResponse;
       if (typeof ex.body !== "string" || typeof ex.flip_back !== "string") {
@@ -382,7 +404,7 @@ Deno.serve(async (req) => {
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-      return new Response(JSON.stringify(ex), {
+      return new Response(JSON.stringify({ ...ex, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -414,7 +436,7 @@ Deno.serve(async (req) => {
         );
       }
 
-      return new Response(JSON.stringify(evaluation), {
+      return new Response(JSON.stringify({ ...evaluation, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -428,7 +450,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    return new Response(JSON.stringify(closerResponse), {
+    return new Response(JSON.stringify({ ...closerResponse, ...meta }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
