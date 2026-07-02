@@ -144,10 +144,17 @@ function evaluateCase(c: Case, response: any): CaseResult {
   // feedback_must_mention (substring, case-insensitive, permissive: at least one keyword)
   if (typeof exp.feedback_must_mention === "string") {
     const needle = exp.feedback_must_mention.toLowerCase();
-    // permissive: check any significant word (>=5 chars) appears
     const words = needle.split(/\s+/).filter((w) => w.length >= 5);
     const hit = words.some((w) => dump.includes(w));
     if (!hit) reasons.push(`feedback did not mention: "${exp.feedback_must_mention}"`);
+  }
+
+  // feedback_must_mention_any_of: pass if ANY listed string appears anywhere in the response
+  // (including flags_detected). Use for concepts covered by either prose or a flag ID.
+  if (Array.isArray(exp.feedback_must_mention_any_of)) {
+    const alts: string[] = exp.feedback_must_mention_any_of.map((s: any) => String(s).toLowerCase());
+    const hit = alts.some((a) => dump.includes(a));
+    if (!hit) reasons.push(`feedback did not mention any of: [${alts.join(", ")}]`);
   }
 
   return {
