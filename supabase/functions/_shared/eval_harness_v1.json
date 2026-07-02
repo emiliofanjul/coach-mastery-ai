@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "1.2.0",
+  "harness_version": "1.2.1",
   "target_node": "0.1",
   "target_skills": [
     "opening.sce",
@@ -374,7 +374,7 @@
           15,
           45
         ],
-        "feedback_must_mention": "brevedad"
+        "feedback_must_mention_any_of": ["brevedad", "breve", "más corto", "mas corto", "monologo", "monólogo"]
       }
     },
     {
