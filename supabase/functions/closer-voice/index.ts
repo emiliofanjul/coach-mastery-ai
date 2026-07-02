@@ -501,7 +501,8 @@ Deno.serve(async (req) => {
           typeof o.ejemplo === "string",
       );
       const flagsValid = Array.isArray(evaluation.flags_detected) && evaluation.flags_detected.every((f) => typeof f === "string");
-      if (!scoreOk || !obsValid || !flagsValid || typeof evaluation.mision !== "string") {
+      const cumplidosValid = Array.isArray(evaluation.criterios_cumplidos) && evaluation.criterios_cumplidos.every((c) => typeof c === "string");
+      if (!scoreOk || !obsValid || !flagsValid || !cumplidosValid || typeof evaluation.mision !== "string") {
         return new Response(
           JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
