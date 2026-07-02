@@ -295,6 +295,50 @@ export type Database = {
           },
         ]
       }
+      llm_calls: {
+        Row: {
+          created_at: string
+          event_id: string | null
+          id: string
+          input_tokens: number | null
+          latency_ms: number | null
+          model: string | null
+          output_tokens: number | null
+          phase: string
+          prompt_version: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          input_tokens?: number | null
+          latency_ms?: number | null
+          model?: string | null
+          output_tokens?: number | null
+          phase: string
+          prompt_version?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          input_tokens?: number | null
+          latency_ms?: number | null
+          model?: string | null
+          output_tokens?: number | null
+          phase?: string
+          prompt_version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "llm_calls_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "seller_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       manager_comments: {
         Row: {
           comment: string
