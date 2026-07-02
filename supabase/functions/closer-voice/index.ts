@@ -10,6 +10,7 @@ const PROMPT_VERSION = "v1.0.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
