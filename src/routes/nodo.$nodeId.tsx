@@ -22,6 +22,7 @@ interface NodeCard {
   body: string;
   flip_back_text: string | null;
   card_content_type: CardContentType | null;
+  audience: string | null;
 }
 
 interface DynamicContent {
@@ -60,7 +61,7 @@ function NodoCardsPage() {
         supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
-          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type")
+          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience")
           .eq("node_id", nodeId)
           .order("card_order", { ascending: true }),
       ]);
@@ -114,28 +115,15 @@ function NodoCardsPage() {
     };
   }, []);
 
-  // Filtra y transforma tarjetas dinámicas marcadas con body "experience_level:<nivel>[:n]"
+  // Filtrado por audience (nueva fuente única de personalización).
+  // audience IS NULL → tarjeta universal; audience = sellerLevel → tarjeta segmentada.
   const visibleCards = useMemo(() => {
     if (!cards) return cards;
-    return cards
-      .filter((c) => {
-        if (c.card_content_type !== "dynamic") return true;
-        if (!c.body || !c.body.startsWith("experience_level:")) return true;
-        const parts = c.body.split(":");
-        const level = parts[1];
-        if (!sellerLevel) return false;
-        return level === sellerLevel;
-      })
-      .map((c) => {
-        if (
-          c.card_content_type === "dynamic" &&
-          c.body &&
-          c.body.startsWith("experience_level:")
-        ) {
-          return { ...c, body: c.flip_back_text ?? "", flip_back_text: null };
-        }
-        return c;
-      });
+    return cards.filter((c) => {
+      if (!c.audience) return true;
+      if (!sellerLevel) return false;
+      return c.audience === sellerLevel;
+    });
   }, [cards, sellerLevel]);
 
   const total = visibleCards?.length ?? 0;
