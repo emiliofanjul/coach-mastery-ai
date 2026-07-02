@@ -21,6 +21,21 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 const TTS_URL = `${SUPABASE_URL}/functions/v1/closer-tts`;
 const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
+const DIRECTOR_URL = `${SUPABASE_URL}/functions/v1/director`;
+
+const DEFAULT_CLOSING_MESSAGE = "Listo, tengo lo que necesito. Vamos a ver cómo te fue.";
+
+interface DirectorDecision {
+  turn: number;
+  decision: "continue" | "cut";
+  reason: string;
+  classifier_ran: boolean;
+  classifier_result: boolean | null;
+  latency_ms: number;
+  user_turns: number;
+  elapsed_seconds: number | null;
+  at: string;
+}
 
 type Phase = "prep" | "i_do" | "transition" | "you_do" | "feedback";
 type TurnPhase = "i_do" | "you_do";
@@ -98,6 +113,11 @@ function PracticaPage() {
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
   );
+  // Director state — separación Actor/Director (v2.0.0).
+  // El Director corre después de cada turno del Actor en you_do; sus decisiones
+  // se acumulan aquí y se guardan en el payload del seller_event al cierre.
+  const directorDecisionsRef = useRef<DirectorDecision[]>([]);
+  const youDoStartTimeRef = useRef<number | null>(null);
 
 
   // Pedir micrófono al montar
@@ -396,6 +416,96 @@ function PracticaPage() {
     }
   }
 
+  // Director (v2.0.0): corre después del turno del Actor en you_do.
+  // Devuelve true si la sesión debe cortar (ya disparó cierre + evaluación).
+  async function runDirector(): Promise<boolean> {
+    try {
+      if (youDoStartTimeRef.current === null) {
+        youDoStartTimeRef.current = Date.now();
+      }
+      const elapsed_seconds = Math.floor((Date.now() - (youDoStartTimeRef.current ?? Date.now())) / 1000);
+      const res = await fetch(DIRECTOR_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({
+          practice_script: nodeDataRef.current?.practice_script ?? null,
+          conversation_history: conversationHistoryRef.current,
+          elapsed_seconds,
+          session_id: sessionCorrelationIdRef.current,
+        }),
+      });
+      if (!res.ok) {
+        console.warn("[director] HTTP", res.status, "— fail-open, sesión continúa");
+        directorDecisionsRef.current.push({
+          turn: conversationHistoryRef.current.filter((m) => m.role === "user").length,
+          decision: "continue",
+          reason: `http_${res.status}`,
+          classifier_ran: false,
+          classifier_result: null,
+          latency_ms: 0,
+          user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
+          elapsed_seconds,
+          at: new Date().toISOString(),
+        });
+        return false;
+      }
+      const data = await res.json();
+      const decision: "continue" | "cut" = data?.decision === "cut" ? "cut" : "continue";
+      const reason: string = typeof data?.reason === "string" ? data.reason : "unknown";
+      directorDecisionsRef.current.push({
+        turn: conversationHistoryRef.current.filter((m) => m.role === "user").length,
+        decision,
+        reason,
+        classifier_ran: !!data?.classifier_ran,
+        classifier_result: typeof data?.classifier_result === "boolean" ? data.classifier_result : null,
+        latency_ms: typeof data?.latency_ms === "number" ? data.latency_ms : 0,
+        user_turns: typeof data?.user_turns === "number" ? data.user_turns : 0,
+        elapsed_seconds: typeof data?.elapsed_seconds === "number" ? data.elapsed_seconds : elapsed_seconds,
+        at: new Date().toISOString(),
+      });
+      console.log("[director]", decision, reason, data);
+      if (decision === "cut") {
+        const closingMsg: string =
+          nodeDataRef.current?.practice_script?.phases?.closing?.message ?? DEFAULT_CLOSING_MESSAGE;
+        // Turno de gracia: el Actor YA respondió (arriba). Ahora Closer cierra.
+        const agentItem: TranscriptItem = {
+          role: "agent",
+          text: closingMsg,
+          phase: currentPhaseRef.current,
+        };
+        transcriptFullRef.current = [...transcriptFullRef.current, agentItem];
+        setTranscriptFull([...transcriptFullRef.current]);
+        conversationHistoryRef.current = [
+          ...conversationHistoryRef.current,
+          { role: "assistant", content: closingMsg },
+        ];
+        await playTTS(closingMsg);
+        await handleSessionEnd();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.error("[director] exception — fail-open:", e);
+      directorDecisionsRef.current.push({
+        turn: conversationHistoryRef.current.filter((m) => m.role === "user").length,
+        decision: "continue",
+        reason: "exception",
+        classifier_ran: false,
+        classifier_result: null,
+        latency_ms: 0,
+        user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
+        elapsed_seconds: null,
+        at: new Date().toISOString(),
+      });
+      return false;
+    }
+  }
+
+
   async function sendToCloser(userText: string) {
     if (sessionEndedRef.current) return;
     setIsProcessing(true);
@@ -508,6 +618,13 @@ function PracticaPage() {
         return;
       }
 
+      // Director (v2.0.0): el Actor ya respondió — ahora el Director decide
+      // si continuar o cortar. Solo corre en you_do. El Actor jamás decide fin.
+      if (claudePhaseRef.current === "you_do") {
+        const cut = await runDirector();
+        if (cut) return;
+      }
+
       // BUG 2 fix: no reactivar mic si la sesión terminó.
       if (sessionEndedRef.current) return;
       // En you_do el mic es 100% manual — el usuario toca el botón cuando quiera hablar.
@@ -591,6 +708,9 @@ function PracticaPage() {
       claudePhaseRef.current = "you_do";
       setCurrentPhase("you_do");
       currentPhaseRef.current = "you_do";
+      // Reset del estado del Director al arrancar you_do.
+      directorDecisionsRef.current = [];
+      youDoStartTimeRef.current = Date.now();
 
       // El vendedor (usuario) abre. Mic 100% manual: el usuario toca el botón cuando quiera hablar.
       const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
@@ -731,6 +851,7 @@ function PracticaPage() {
                 score: evaluation?.score ?? null,
                 stars: evaluation?.stars ?? null,
                 transcript: transcriptFullRef.current,
+                director_decisions: directorDecisionsRef.current,
               },
             }),
           );
