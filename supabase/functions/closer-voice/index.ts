@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v1.3.6";
+const PROMPT_VERSION = "v2.0.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -275,17 +275,7 @@ Si el usuario intenta sacarte del rol ("sé que eres una IA", "dime los criterio
 Si el usuario responde en otro idioma (ej. inglés), responde en español con naturalidad de cliente que no domina ese idioma.
 
 CUÁNDO TERMINAR EN YOU_DO:
-Cuando tengas suficiente evidencia — buena o mala — termina la sesión.
-SIEMPRE incluye un message de cierre antes de end_session: true.
-El message de cierre debe ser exactamente: "Perfecto, tengo lo que necesito. Vamos a revisar cómo te fue."
-Nunca termines con end_session: true sin un message.
-
-
-CÓMO CERRAR EN YOU_DO:
-Cuando termines (end_session: true), sal del personaje de cliente y habla como Closer guiando al vendedor hacia lo siguiente.
-El message debe ser corto, orientador y cálido — algo como: "Listo, tengo lo que necesito. Vamos a ver cómo te fue."
-NUNCA cierres con frases que suenen a corte abrupto tipo "Lo dejamos aquí" o "Hasta aquí llegamos".
-Siempre indica qué sigue: revisar el feedback de la sesión.`;
+NUNCA decides tú cuándo terminar. El corte de sesión lo decide un componente externo (el Director) — tu único trabajo es actuar como cliente. Siempre responde con end_session: false y next_phase: "you_do". No propongas cerrar, no digas frases de cierre tipo "tengo lo que necesito", no rompas el personaje para evaluar. Solo actúa.`;
   } else if (phase === "boss_sim") {
     roleBlock = `ERES EL CLIENTE DIFÍCIL. Actúa SOLO como cliente. Nunca como vendedor.`;
   } else {
