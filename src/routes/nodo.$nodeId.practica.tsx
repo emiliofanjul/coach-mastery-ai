@@ -91,6 +91,13 @@ function PracticaPage() {
   // Provenance from closer-voice — updated on every response.
   const promptVersionRef = useRef<string | null>(null);
   const modelRef = useRef<string | null>(null);
+  // Client-generated correlation id. Same value across every closer-voice call
+  // in this session and passed to save-practice-event for llm_calls backfill.
+  const sessionCorrelationIdRef = useRef<string>(
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
 
 
   // Pedir micrófono al montar
