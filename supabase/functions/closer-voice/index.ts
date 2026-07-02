@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v1.2.0";
+const PROMPT_VERSION = "v1.3.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -97,6 +97,7 @@ interface EvaluationResponse {
   score: number;
   observations: EvaluationObservation[];
   flags_detected: string[];
+  criterios_cumplidos: string[];
   mision: string;
 }
 
@@ -116,10 +117,10 @@ Evalúas ÚNICAMENTE el transcript de texto. Tienes PROHIBIDO afirmar cualquier 
 CRITERIOS DEL NODO:
 success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
 ${successStr}
-failure_criteria (IDs canónicos de errores):
+failure_criteria (IDs canónicos de errores, con severity):
 ${failureStr}
 
-IDs válidos para "criterio_id" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
+IDs válidos para "criterio_id" y "criterios_cumplidos" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
 IDs válidos para "flags_detected" (failure_criteria únicamente): ${JSON.stringify(failureIds)}
 
 REGLAS DE EVALUACIÓN:
@@ -128,6 +129,13 @@ REGLAS DE EVALUACIÓN:
 3. Cada observación DEBE llevar "criterio_id" tomado literal de la lista de IDs válidos. Sin criterio_id la observación es inválida.
 4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
 5. Cantidad de observations: EXACTAMENTE 3 si score < 90; 1-2 si score ≥ 90 (desempeño casi perfecto).
+6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
+
+IMPACTO DE FLAGS EN EL SCORE (regla de severidad):
+- Cada flag minor resta máximo 15-25 puntos del desempeño base. Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta — puntúa lo que SÍ ejecutó bien además del desvío.
+- Cada flag major resta 30-50 puntos.
+- Un flag critical DOMINA el score (máximo final 30).
+Nunca hundas el score por un minor solo: si el vendedor cumplió criterios centrales pero se desvió con un minor, refleja ambos.
 
 CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
 {
@@ -141,6 +149,7 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
     }
   ],
   "flags_detected": ["<solo IDs de failure_criteria detectados>"],
+  "criterios_cumplidos": ["<IDs de success_criteria que ejecutó bien>"],
   "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo"
 }`;
 }
