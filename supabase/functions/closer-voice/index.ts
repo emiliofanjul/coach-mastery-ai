@@ -479,31 +479,29 @@ Deno.serve(async (req) => {
 
 
     if (phase === "evaluate") {
-      const evaluation = parsed as EvaluationResponse;
-      const obsValid =
-        Array.isArray(evaluation.observations) &&
-        evaluation.observations.length === 3 &&
-        evaluation.observations.every(
-          (o: any) =>
-            o && typeof o === "object" &&
-            typeof o.error === "string" &&
-            typeof o.mejora === "string" &&
-            typeof o.ejemplo === "string",
-        );
-      if (
-        typeof evaluation.score !== "number" ||
-        ![1, 2, 3].includes(evaluation.stars) ||
-        !obsValid ||
-        typeof evaluation.mision !== "string" ||
-        evaluation.end_session !== true
-      ) {
+      const evaluation = parsed as EvaluationResponse & { stars?: number };
+      const obsCount = Array.isArray(evaluation.observations) ? evaluation.observations.length : 0;
+      const scoreOk = typeof evaluation.score === "number" && evaluation.score >= 0 && evaluation.score <= 100;
+      const expectedObsOk = scoreOk && (evaluation.score! >= 90 ? (obsCount >= 1 && obsCount <= 3) : obsCount === 3);
+      const obsValid = expectedObsOk && (evaluation.observations as any[]).every(
+        (o) =>
+          o && typeof o === "object" &&
+          typeof o.criterio_id === "string" && o.criterio_id.length > 0 &&
+          typeof o.error === "string" &&
+          typeof o.mejora === "string" &&
+          typeof o.ejemplo === "string",
+      );
+      const flagsValid = Array.isArray(evaluation.flags_detected) && evaluation.flags_detected.every((f) => typeof f === "string");
+      if (!scoreOk || !obsValid || !flagsValid || typeof evaluation.mision !== "string") {
         return new Response(
           JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
 
-      return new Response(JSON.stringify({ ...evaluation, ...meta }), {
+      // Derive stars for backward compatibility with existing consumers.
+      const stars = evaluation.score >= 85 ? 3 : evaluation.score >= 60 ? 2 : 1;
+      return new Response(JSON.stringify({ ...evaluation, stars, end_session: true, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
