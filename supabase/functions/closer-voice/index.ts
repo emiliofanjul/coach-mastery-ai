@@ -387,6 +387,7 @@ Deno.serve(async (req) => {
       input_tokens: inputTokens,
       output_tokens: outputTokens,
       latency_ms: claudeLatencyMs,
+      session_id: session_id ?? null,
     });
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
