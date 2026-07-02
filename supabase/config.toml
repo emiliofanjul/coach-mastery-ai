@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.save-practice-event]
 verify_jwt = false
+
+[functions.harness-runner]
+verify_jwt = false
