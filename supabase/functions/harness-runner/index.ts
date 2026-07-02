@@ -118,10 +118,16 @@ function evaluateCase(c: Case, response: any): CaseResult {
     }
   }
 
-  // must_cite_positive / must_cite_negative: skill_id text present
+  // must_cite_positive: must appear in criterios_cumplidos (positive dominion evidence)
+  const cumplidos = Array.isArray(parsed.criterios_cumplidos)
+    ? parsed.criterios_cumplidos.map((c: any) => String(c).toLowerCase())
+    : [];
   for (const s of (exp.must_cite_positive ?? [])) {
-    if (!dump.includes(String(s).toLowerCase())) reasons.push(`missing positive citation: ${s}`);
+    if (!cumplidos.includes(String(s).toLowerCase())) {
+      reasons.push(`missing positive citation in criterios_cumplidos: ${s}`);
+    }
   }
+  // must_cite_negative: skill_id text present anywhere in response
   for (const s of (exp.must_cite_negative ?? [])) {
     if (!dump.includes(String(s).toLowerCase())) reasons.push(`missing negative citation: ${s}`);
   }
