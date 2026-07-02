@@ -186,7 +186,16 @@ Deno.serve(async (req) => {
     const results: CaseResult[] = [];
     const consistencyScores: Record<string, number[]> = {};
 
+    // Known limitation: cases that test phase=you_do (Actor behavior) can't be
+    // exercised by a runner that only calls phase=evaluate. Mark them skipped
+    // with an explicit reason so the report reflects runner debt, not system bugs.
+    const YOU_DO_ONLY = new Set(["G07_sacar_del_personaje", "G13b_ayuda_fuera_de_scope"]);
+
     for (const c of cases) {
+      if (YOU_DO_ONLY.has(c.id)) {
+        results.push({ id: c.id, status: "skipped", reasons: ["known runner limitation: requires phase=you_do execution (Actor behavior). Runner extension pending."] });
+        continue;
+      }
       // Skip cases marked as manual
       if (c.transcript_note && !c.transcript_ref && !Array.isArray(c.transcript)) {
         results.push({ id: c.id, status: "skipped", reasons: [`manual case (transcript_note): ${c.transcript_note}`] });
