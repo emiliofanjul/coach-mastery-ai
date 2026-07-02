@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v1.3.5";
+const PROMPT_VERSION = "v1.3.6";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -142,7 +142,7 @@ PASO 1 — BASE por ejecución de success_criteria (empieza por lo que SÍ hizo)
 EJEMPLOS DE CALIBRACIÓN DE BASE (úsalos como ancla numérica, no como rangos abstractos):
 - SCE completo — saludo + nombre real del cliente + observación del entorno + sin disculpa + sin pitch → base 92.
 - Saludo + nombre pero SIN observación del entorno, resto correcto → base 65.
-- Saludo genérico y cortés ('buenos días, ¿cómo está?') sin nombre del cliente ni observación del entorno, pero SIN disculpa y SIN pitch → base 45-55. Regla dura: si no hay disculpa_inicial ni pitch_prematuro, la base NUNCA es menor a 45 — un saludo digno aunque incompleto es punto de partida, no fracaso.
+- Saludo genérico y cortés ('buenos días, ¿cómo está?') sin nombre del cliente ni observación del entorno, pero SIN disculpa y SIN pitch → base 45-55. Regla dura de piso: sin flags de disculpa_inicial ni pitch_prematuro, el score final nunca es menor a 25 — un intento digno aunque incompleto no puntúa como fracaso total.
 - Criterios centrales bien ejecutados + un desvío minor (ej. adelantarse a preguntas de discovery) → base 60-70, resta minor 10-20 → score final 45-55. El desvío del ejercicio no borra lo bien ejecutado.
 - Sin flags detectados = NO hay resta: el score final ES la base.
 

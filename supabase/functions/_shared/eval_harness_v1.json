@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "1.2.3",
+  "harness_version": "1.2.4",
   "target_node": "0.1",
   "target_skills": [
     "opening.sce",
@@ -95,8 +95,8 @@
       ],
       "expected": {
         "score_range": [
-          45,
-          70
+          25,
+          65
         ],
         "must_cite_negative": [
           "opening.personalizacion"
@@ -104,7 +104,8 @@
         "must_not_flag": [
           "pitch_prematuro",
           "disculpa_inicial"
-        ]
+        ],
+        "rationale": "Saludo cortés pero vacío (sin nombre, sin entorno) cumple ~1 de 3 criterios: 25-45 es lectura honesta. La regla probada es que sin disculpa_inicial ni pitch_prematuro el score no colapsa a <25 — un saludo digno aunque incompleto no es fracaso."
       }
     },
     {
