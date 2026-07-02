@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "closer://schemas/practice_script/v1",
+  "title": "Closer practice_script v1",
+  "description": "Contrato de estructura para todo practice_script de Closer. Un script que no valida contra este schema NO debe ejecutarse — error explícito, nunca fallo silencioso.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "i_do_type", "scope", "phases", "success_criteria", "failure_criteria", "limits"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Versión semántica del script (ej. 1.0.0). Cada cambio al script sube la versión. Se guarda en seller_events.script_version.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "i_do_type": {
+      "type": "string",
+      "enum": ["demo", "roleplay"],
+      "description": "demo: Closer muestra un guion fijo (sin llamada al modelo, botón Listo inmediato). roleplay: Closer actúa en vivo y decide el corte."
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skills_in_focus"],
+      "properties": {
+        "skills_in_focus": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": { "type": "string", "pattern": "^[a-z_]+\\.[a-z_0-9]+$" },
+          "description": "IDs canónicos del taxonomy (tabla skills). Define QUÉ se practica y evalúa en este nodo. Todo lo demás está fuera de scope."
+        },
+        "out_of_scope_behavior": {
+          "type": "string",
+          "enum": ["redirect", "ignore"],
+          "default": "redirect",
+          "description": "Qué hace Closer si el usuario se sale del scope: redirect = lo trae de vuelta amablemente; ignore = continúa sin corregir."
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["you_do"],
+      "properties": {
+        "i_do": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["briefing"],
+          "properties": {
+            "briefing": { "type": "string", "minLength": 10, "description": "Lo que Closer dice antes de demostrar. Se reproduce por TTS antes del first_message." },
+            "first_message": { "type": "string", "description": "Para i_do_type=demo: el guion fijo que Closer demuestra. Para roleplay: el mensaje inicial del personaje." },
+            "prompt": { "type": "string", "description": "Solo para i_do_type=roleplay: instrucciones del personaje/situación para el Actor." }
+          }
+        },
+        "you_do": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["prompt", "objective"],
+          "properties": {
+            "prompt": { "type": "string", "minLength": 10, "description": "Instrucciones del personaje para el Actor (quién es el cliente, contexto, actitud). NUNCA incluye criterios de evaluación — el Actor no conoce la rúbrica." },
+            "objective": { "type": "string", "minLength": 10, "description": "Qué debe lograr el usuario para completar la práctica. Lo usa el Director para decidir el corte." },
+            "client_archetype_difficulty": { "type": "string", "enum": ["d1", "d2", "d3", "d4", "d5"], "description": "Nivel de dificultad del arquetipo a seleccionar. Si se omite, usa la lógica de select_archetype_for_session." }
+          }
+        },
+        "closing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "message": { "type": "string", "description": "Mensaje de cierre de Closer antes de pasar a evaluación." }
+          }
+        }
+      }
+    },
+    "success_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "weight", "description"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z_]+\\.[a-z_0-9]+$", "description": "ID canónico del taxonomy. El evaluador puntúa ESTE skill y lo cita en el feedback." },
+          "weight": { "type": "number", "exclusiveMinimum": 0, "maximum": 1, "description": "Peso en el score final. La suma de todos los weights debe ser 1.0 (validación adicional en código)." },
+          "description": { "type": "string", "minLength": 10, "description": "Qué evalúa este criterio, en lenguaje evaluable por texto. PROHIBIDO: criterios prosódicos (tono, energía vocal, sonrisa) mientras no exista pipeline de audio." },
+          "requires_audio": { "type": "boolean", "default": false, "description": "true = este criterio NO se puntúa hasta tener pipeline de audio. Existe para dejarlo declarado." }
+        }
+      }
+    },
+    "failure_criteria": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "description"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z_0-9]+$", "description": "ID corto del error (ej. pitch_prematuro, disculpa_inicial). Se registra en recurring_failures del skill_state." },
+          "severity": { "type": "string", "enum": ["minor", "major", "critical"], "description": "minor: resta puntos. major: domina el feedback. critical: el Director puede cortar la sesión para corregir." },
+          "description": { "type": "string", "minLength": 10, "description": "Cómo se detecta este error en el transcript, en lenguaje evaluable por texto." }
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_turns"],
+      "properties": {
+        "max_turns": { "type": "integer", "minimum": 1, "maximum": 30, "description": "Turnos máximos del usuario en YOU DO. El Director corta al llegar aquí — regla dura, no negociable por el modelo." },
+        "max_duration_seconds": { "type": "integer", "minimum": 30, "maximum": 1800, "description": "Duración máxima de la fase YOU DO. Regla dura del Director." },
+        "min_turns_before_evaluation": { "type": "integer", "minimum": 1, "default": 1, "description": "Turnos mínimos antes de que el Director considere scope cubierto." }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notas de autoría para humanos. El runtime las ignora."
+    }
+  }
+}

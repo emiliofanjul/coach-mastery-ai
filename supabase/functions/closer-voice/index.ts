@@ -10,6 +10,7 @@ const PROMPT_VERSION = "v1.0.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -320,6 +321,35 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Practice script contract validation. A script that does not validate
+    // NEVER runs — return 422 with the exact list of errors and log the
+    // failure in llm_calls with phase='validation_error'. generate_example
+    // does not receive a practice_script.
+    if (phase !== "generate_example" && practice_script) {
+      const admin = getAdmin();
+      if (admin) {
+        const result = await validatePracticeScriptFull(practice_script, admin);
+        if (!result.valid) {
+          await logLlmCall({
+            phase: "validation_error",
+            input_tokens: null,
+            output_tokens: null,
+            latency_ms: 0,
+            session_id: session_id ?? null,
+          });
+          return new Response(
+            JSON.stringify({
+              error: "practice_script_invalid",
+              message: "Este nodo tiene un error de configuración",
+              validation_errors: result.errors,
+            }),
+            { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          );
+        }
+      }
+    }
+
 
     const system = phase === "evaluate"
       ? buildEvaluateSystemPrompt(practice_script)
