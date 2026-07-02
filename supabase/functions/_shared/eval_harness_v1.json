@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "1.2.1",
+  "harness_version": "1.2.2",
   "target_node": "0.1",
   "target_skills": [
     "opening.sce",
@@ -139,10 +139,9 @@
       "id": "G06_fuera_de_scope_discovery",
       "description": "Usuario salta a preguntas de discovery (correctas pero de un paso posterior)",
       "transcript": [
-        {
-          "role": "user",
-          "text": "Buenos días Don Ramón. Cuénteme, ¿qué productos son los que más rotación tienen en su negocio? ¿Cuáles son sus proveedores actuales?"
-        }
+        {"role": "user", "text": "¡Buenos días Don Ramón! ¿Cómo está? Qué movido se ve el taller hoy, se nota que el negocio jala bien."},
+        {"role": "assistant", "text": "Buenos días, pues sí, aquí andamos al tope. ¿Qué se le ofrece?"},
+        {"role": "user", "text": "Me da gusto verlo así. Oiga, y cuénteme, ¿qué productos son los que más rotación tienen? ¿Con qué proveedores trabaja ahorita?"}
       ],
       "expected": {
         "score_range": [
