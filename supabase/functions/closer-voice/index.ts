@@ -87,6 +87,7 @@ interface CloserResponse {
 }
 
 interface EvaluationObservation {
+  criterio_id: string;
   error: string;
   mejora: string;
   ejemplo: string;
@@ -94,50 +95,54 @@ interface EvaluationObservation {
 
 interface EvaluationResponse {
   score: number;
-  stars: 1 | 2 | 3;
   observations: EvaluationObservation[];
+  flags_detected: string[];
   mision: string;
-  end_session: true;
 }
 
 function buildEvaluateSystemPrompt(practice_script: any): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
+  const failureIds = Array.isArray(failureCriteria) ? failureCriteria.map((c: any) => c?.id).filter(Boolean) : [];
   const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
   const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
 
-  return `Evalúa esta conversación de práctica de ventas.
-Criterios del nodo (success_criteria): ${successStr}
-Errores críticos (failure_criteria): ${failureStr}
+  return `Evalúas una conversación de práctica de ventas.
 
-IMPORTANTE: El vendedor es el 'user' en el historial. Closer es el 'assistant'.
-Evalúa ÚNICAMENTE el desempeño del 'user' (el vendedor).
-No evalúes ni menciones el comportamiento del 'assistant' (Closer).
+REGLA DE INTEGRIDAD — SOLO TEXTO:
+Evalúas ÚNICAMENTE el transcript de texto. Tienes PROHIBIDO afirmar cualquier cosa sobre tono de voz, energía vocal, sonrisa, ritmo al hablar, volumen, calidez auditiva o cualquier cualidad sonora — no tienes acceso al audio. Si un criterio tiene requires_audio=true, ignóralo por completo: NO lo puntúes, NO lo menciones, NO lo cites. Evaluar prosodia sin audio destruye la confianza del vendedor en todo el feedback.
 
-Evalúa ÚNICAMENTE en base a los success_criteria y failure_criteria del practice_script.
-NO uses criterios genéricos de ventas. NO menciones conceptos que el vendedor no ha aprendido.
+CRITERIOS DEL NODO:
+success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
+${successStr}
+failure_criteria (IDs canónicos de errores):
+${failureStr}
 
-Cada observación debe ser un objeto con 3 campos:
-- "error": frase corta describiendo qué hizo mal el vendedor (concreta, basada en lo que dijo).
-- "mejora": frase diciendo exactamente qué debe hacer diferente la próxima vez.
-- "ejemplo": cómo debería haber sonado exactamente, usando el contexto real de la empresa y el nombre del cliente que aparece en la conversación. Debe sonar natural, en primera persona del vendedor.
+IDs válidos para "criterio_id" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
+IDs válidos para "flags_detected" (failure_criteria únicamente): ${JSON.stringify(failureIds)}
 
-Además incluye un campo "mision": UNA sola acción concreta y específica para practicar antes de la próxima sesión, ligada directamente a los criterios del nodo. Debe ser accionable, no genérica.
+REGLAS DE EVALUACIÓN:
+1. El vendedor es 'user' en el historial. Closer es 'assistant'. Evalúa SOLO al 'user'.
+2. Usa ÚNICAMENTE los criterios listados arriba — sin criterios genéricos de ventas, sin conceptos que el vendedor no ha aprendido.
+3. Cada observación DEBE llevar "criterio_id" tomado literal de la lista de IDs válidos. Sin criterio_id la observación es inválida.
+4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
+5. Cantidad de observations: EXACTAMENTE 3 si score < 90; 1-2 si score ≥ 90 (desempeño casi perfecto).
 
-Responde JSON exacto:
+CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
 {
-  "score": número del 0 al 100,
-  "stars": 1, 2 o 3 según score (1=<60, 2=60-84, 3=85+),
+  "score": <entero 0-100>,
   "observations": [
-    { "error": "...", "mejora": "...", "ejemplo": "..." },
-    { "error": "...", "mejora": "...", "ejemplo": "..." },
-    { "error": "...", "mejora": "...", "ejemplo": "..." }
+    {
+      "criterio_id": "<uno de: ${successIds.join(" | ")}>",
+      "error": "frase corta y concreta de qué hizo mal, basada en lo que dijo",
+      "mejora": "qué debe hacer diferente la próxima vez",
+      "ejemplo": "cómo debería haber sonado, en primera persona del vendedor, usando el nombre real del cliente y contexto del transcript"
+    }
   ],
-  "mision": "...",
-  "end_session": true
-}
-
-No incluyas texto fuera del JSON.`;
+  "flags_detected": ["<solo IDs de failure_criteria detectados>"],
+  "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo"
+}`;
 }
 
 interface GenerateExampleResponse {
