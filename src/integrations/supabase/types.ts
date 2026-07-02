@@ -306,6 +306,7 @@ export type Database = {
           output_tokens: number | null
           phase: string
           prompt_version: string | null
+          session_id: string | null
         }
         Insert: {
           created_at?: string
@@ -317,6 +318,7 @@ export type Database = {
           output_tokens?: number | null
           phase: string
           prompt_version?: string | null
+          session_id?: string | null
         }
         Update: {
           created_at?: string
@@ -328,6 +330,7 @@ export type Database = {
           output_tokens?: number | null
           phase?: string
           prompt_version?: string | null
+          session_id?: string | null
         }
         Relationships: [
           {
