@@ -368,6 +368,7 @@ Deno.serve(async (req) => {
         input_tokens: null,
         output_tokens: null,
         latency_ms: claudeLatencyMs,
+        session_id: session_id ?? null,
       });
       return new Response(
         JSON.stringify({ error: "Claude API error", status: claudeRes.status, detail: errText }),
