@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v1.3.4";
+const PROMPT_VERSION = "v1.3.5";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -142,7 +142,7 @@ PASO 1 — BASE por ejecución de success_criteria (empieza por lo que SÍ hizo)
 EJEMPLOS DE CALIBRACIÓN DE BASE (úsalos como ancla numérica, no como rangos abstractos):
 - SCE completo — saludo + nombre real del cliente + observación del entorno + sin disculpa + sin pitch → base 92.
 - Saludo + nombre pero SIN observación del entorno, resto correcto → base 65.
-- Saludo genérico y cortés ('buenos días, ¿cómo está?') sin nombre del cliente ni observación del entorno, pero SIN disculpa y SIN pitch → base 45-55. Regla dura: si no hay disculpa_inicial ni pitch_prematuro, la base NUNCA es menor a 40 — un saludo digno aunque incompleto es punto de partida, no fracaso.
+- Saludo genérico y cortés ('buenos días, ¿cómo está?') sin nombre del cliente ni observación del entorno, pero SIN disculpa y SIN pitch → base 45-55. Regla dura: si no hay disculpa_inicial ni pitch_prematuro, la base NUNCA es menor a 45 — un saludo digno aunque incompleto es punto de partida, no fracaso.
 - Criterios centrales bien ejecutados + un desvío minor (ej. adelantarse a preguntas de discovery) → base 60-70, resta minor 10-20 → score final 45-55. El desvío del ejercicio no borra lo bien ejecutado.
 - Sin flags detectados = NO hay resta: el score final ES la base.
 
@@ -151,6 +151,7 @@ PASO 2 — RESTA por flags detectados (solo si hay flags):
 - Cada flag major resta 25-40 puntos desde la base
 - Un flag critical DOMINA: score final máximo 30, sin importar la base
 - Para cada flag en flags_detected, consulta su campo "severity" en failure_criteria y aplica la resta correspondiente (minor 10-20, major 25-40, critical → score final máximo 30). El nombre del flag NO determina la severidad — el campo "severity" sí.
+- Cada flag detectado se resta UNA sola vez, sin importar cuántos turnos ocupe el desvío en el transcript. Dos o más apariciones del mismo desvío = un solo flag = una sola resta. El flag señala el concepto equivocado, no cuenta repeticiones.
 
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
