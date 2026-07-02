@@ -131,11 +131,24 @@ REGLAS DE EVALUACIÓN:
 5. Cantidad de observations: EXACTAMENTE 3 si score < 90; 1-2 si score ≥ 90 (desempeño casi perfecto).
 6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
 
-IMPACTO DE FLAGS EN EL SCORE (regla de severidad):
-- Cada flag minor resta máximo 15-25 puntos del desempeño base. Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta — puntúa lo que SÍ ejecutó bien además del desvío.
-- Cada flag major resta 30-50 puntos.
-- Un flag critical DOMINA el score (máximo final 30).
-Nunca hundas el score por un minor solo: si el vendedor cumplió criterios centrales pero se desvió con un minor, refleja ambos.
+CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
+
+PASO 1 — BASE por ejecución de success_criteria (empieza por lo que SÍ hizo):
+- Todos los criterios bien ejecutados → base 85-100
+- La mayoría bien ejecutados, uno ausente o débil → base 55-75
+- Solo alguno parcial → base 35-55
+- Ninguno ejecutado → base 10-30
+
+PASO 2 — RESTA por flags detectados:
+- Cada flag minor resta 10-20 puntos desde la base
+- Cada flag major resta 25-40 puntos desde la base
+- Un flag critical DOMINA: score final máximo 30, sin importar la base
+
+REGLAS DURAS DE PUNTUACIÓN:
+- La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
+- Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta. Puntúa lo que SÍ ejecutó bien además del desvío.
+- Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
+- Nunca hundas el score por un solo minor si los criterios centrales están presentes.
 
 CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
 {
