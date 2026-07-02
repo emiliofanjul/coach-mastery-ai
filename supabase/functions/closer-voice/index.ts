@@ -1,11 +1,57 @@
 // Closer voice brain — Edge Function
 // Receives transcript + context, calls Claude, returns structured JSON.
+//
+// PROMPT_VERSION: bump this string on ANY change to any prompt builder in
+// this file (buildSystemPrompt / buildEvaluateSystemPrompt / buildGenerateExampleSystemPrompt).
+// Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
+// Every response includes this string so downstream consumers can pin evals to
+// the exact prompt that produced them.
+const PROMPT_VERSION = "v1.0.0";
+const CLAUDE_MODEL = "claude-sonnet-4-5";
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Admin client for internal observability writes (llm_calls).
+// Lazily initialized on first use.
+let _admin: ReturnType<typeof createClient> | null = null;
+function getAdmin() {
+  if (_admin) return _admin;
+  const url = Deno.env.get("SUPABASE_URL");
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) return null;
+  _admin = createClient(url, key, { auth: { persistSession: false } });
+  return _admin;
+}
+
+async function logLlmCall(row: {
+  phase: string;
+  input_tokens: number | null;
+  output_tokens: number | null;
+  latency_ms: number;
+  event_id?: string | null;
+}) {
+  try {
+    const admin = getAdmin();
+    if (!admin) return;
+    await admin.from("llm_calls").insert({
+      phase: row.phase,
+      prompt_version: PROMPT_VERSION,
+      model: CLAUDE_MODEL,
+      input_tokens: row.input_tokens,
+      output_tokens: row.output_tokens,
+      latency_ms: row.latency_ms,
+      event_id: row.event_id ?? null,
+    });
+  } catch (e) {
+    console.error("[closer-voice] llm_calls insert failed:", e);
+  }
+}
 
 type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example";
 type NextPhase = Phase | "end";
