@@ -218,8 +218,9 @@ Deno.serve(async (req) => {
       }
 
       if (runs === 2) {
-        const s1 = runResults[0]?.parsed?.score;
-        const s2 = runResults[1]?.parsed?.score;
+        const pick = (r: any) => (typeof r?.parsed?.score === "number" ? r.parsed.score : r?.parsed?.parsed?.score);
+        const s1 = pick(runResults[0]);
+        const s2 = pick(runResults[1]);
         const reasons: string[] = [];
         if (typeof s1 !== "number" || typeof s2 !== "number") {
           reasons.push(`consistency check failed: non-numeric scores (${s1}, ${s2})`);
