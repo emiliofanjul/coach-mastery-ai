@@ -35,6 +35,7 @@ async function logLlmCall(row: {
   output_tokens: number | null;
   latency_ms: number;
   event_id?: string | null;
+  session_id?: string | null;
 }) {
   try {
     const admin = getAdmin();
@@ -47,6 +48,7 @@ async function logLlmCall(row: {
       output_tokens: row.output_tokens,
       latency_ms: row.latency_ms,
       event_id: row.event_id ?? null,
+      session_id: row.session_id ?? null,
     });
   } catch (e) {
     console.error("[closer-voice] llm_calls insert failed:", e);
@@ -68,6 +70,10 @@ interface ReqBody {
   node_name?: string;
   seller_industry?: string;
   scope?: { skills_in_focus?: string[] | string } | null;
+  // Correlation id — client-generated at session start, same value across
+  // every closer-voice call in this session and later passed to
+  // save-practice-event so llm_calls rows can be backfilled with event_id.
+  session_id?: string | null;
 }
 
 interface CloserResponse {
@@ -294,7 +300,7 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope } = body;
+    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id } = body;
 
     if (!phase) {
       return new Response(JSON.stringify({ error: "Missing phase" }), {
@@ -362,6 +368,7 @@ Deno.serve(async (req) => {
         input_tokens: null,
         output_tokens: null,
         latency_ms: claudeLatencyMs,
+        session_id: session_id ?? null,
       });
       return new Response(
         JSON.stringify({ error: "Claude API error", status: claudeRes.status, detail: errText }),
@@ -380,6 +387,7 @@ Deno.serve(async (req) => {
       input_tokens: inputTokens,
       output_tokens: outputTokens,
       latency_ms: claudeLatencyMs,
+      session_id: session_id ?? null,
     });
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;

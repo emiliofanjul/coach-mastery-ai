@@ -91,6 +91,13 @@ function PracticaPage() {
   // Provenance from closer-voice — updated on every response.
   const promptVersionRef = useRef<string | null>(null);
   const modelRef = useRef<string | null>(null);
+  // Client-generated correlation id. Same value across every closer-voice call
+  // in this session and passed to save-practice-event for llm_calls backfill.
+  const sessionCorrelationIdRef = useRef<string>(
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
 
 
   // Pedir micrófono al montar
@@ -427,6 +434,7 @@ function PracticaPage() {
           company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
           seller_name: sellerData?.full_name ?? "",
           conversation_history: conversationHistoryRef.current.slice(0, -1),
+          session_id: sessionCorrelationIdRef.current,
         }),
       });
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
@@ -623,6 +631,7 @@ function PracticaPage() {
         conversation_history: transcriptFullRef.current
           .filter((m) => m.phase === "you_do")
           .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
+        session_id: sessionCorrelationIdRef.current,
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
@@ -713,6 +722,7 @@ function PracticaPage() {
                 : [],
               prompt_version: promptVersionRef.current,
               model: modelRef.current,
+              session_id: sessionCorrelationIdRef.current,
               payload: {
                 practice_session_id: session?.id ?? null,
                 world_id: nodeData?.world_id ?? 0,

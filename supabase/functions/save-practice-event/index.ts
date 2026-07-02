@@ -65,12 +65,14 @@ Deno.serve(async (req) => {
     try { meta = JSON.parse(metaRaw); } catch { return json({ error: "Invalid meta JSON" }, 400); }
 
     const eventType: string = meta?.event_type ?? "practice_session";
+    const sessionId: string | null = typeof meta?.session_id === "string" ? meta.session_id : null;
+    const payload = { ...(meta?.payload ?? {}), session_id: sessionId };
     const insertRow = {
       seller_id: seller.id,
       event_type: eventType,
       node_id: meta?.node_id ?? null,
       skill_ids: Array.isArray(meta?.skill_ids) ? meta.skill_ids : [],
-      payload: meta?.payload ?? {},
+      payload,
       prompt_version: meta?.prompt_version ?? null,
       script_version: meta?.script_version ?? null,
       model: meta?.model ?? null,
@@ -108,7 +110,23 @@ Deno.serve(async (req) => {
       }
     }
 
-    return json({ ok: true, event_id: eventId, audio_url: audioUrl });
+    // Backfill llm_calls: link every model call from this session to the event.
+    let llmCallsBackfilled = 0;
+    if (sessionId) {
+      const { data: backfilled, error: bfErr } = await admin
+        .from("llm_calls")
+        .update({ event_id: eventId })
+        .eq("session_id", sessionId)
+        .is("event_id", null)
+        .select("id");
+      if (bfErr) {
+        console.error("[save-practice-event] llm_calls backfill failed:", bfErr);
+      } else {
+        llmCallsBackfilled = Array.isArray(backfilled) ? backfilled.length : 0;
+      }
+    }
+
+    return json({ ok: true, event_id: eventId, audio_url: audioUrl, session_id: sessionId, llm_calls_backfilled: llmCallsBackfilled });
   } catch (err) {
     console.error("[save-practice-event] error:", err);
     return json({ error: "Server error", detail: String(err) }, 500);
