@@ -852,6 +852,23 @@ function PracticaPage() {
                 stars: evaluation?.stars ?? null,
                 transcript: transcriptFullRef.current,
                 director_decisions: directorDecisionsRef.current,
+                // Full evaluator output — every field needed to rebuild skill_state
+                // lives in the event itself. Regla arquitectónica: si el evaluador
+                // lo produjo, el evento lo guarda.
+                evaluation: {
+                  score: evaluation?.score ?? null,
+                  stars: evaluation?.stars ?? null,
+                  criterios_cumplidos: Array.isArray(evaluation?.criterios_cumplidos)
+                    ? evaluation.criterios_cumplidos
+                    : [],
+                  observations: Array.isArray(evaluation?.observations)
+                    ? evaluation.observations
+                    : [],
+                  flags_detected: Array.isArray(evaluation?.flags_detected)
+                    ? evaluation.flags_detected
+                    : [],
+                  mision: typeof evaluation?.mision === "string" ? evaluation.mision : null,
+                },
               },
             }),
           );
