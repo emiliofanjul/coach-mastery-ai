@@ -65,12 +65,14 @@ Deno.serve(async (req) => {
     try { meta = JSON.parse(metaRaw); } catch { return json({ error: "Invalid meta JSON" }, 400); }
 
     const eventType: string = meta?.event_type ?? "practice_session";
+    const sessionId: string | null = typeof meta?.session_id === "string" ? meta.session_id : null;
+    const payload = { ...(meta?.payload ?? {}), session_id: sessionId };
     const insertRow = {
       seller_id: seller.id,
       event_type: eventType,
       node_id: meta?.node_id ?? null,
       skill_ids: Array.isArray(meta?.skill_ids) ? meta.skill_ids : [],
-      payload: meta?.payload ?? {},
+      payload,
       prompt_version: meta?.prompt_version ?? null,
       script_version: meta?.script_version ?? null,
       model: meta?.model ?? null,
