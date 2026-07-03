@@ -254,7 +254,7 @@ function PracticaPage() {
     setSkillsContext(ctx);
     skillsContextRef.current = ctx;
     // Boss / scripts sin phases.i_do: saltar directo al YOU DO (schema v1 lo permite).
-    const hasIDo = !!node?.practice_script?.phases?.i_do;
+    const hasIDo = !!(node?.practice_script as any)?.phases?.i_do;
     setPhase(hasIDo ? "i_do" : "you_do");
   }
 
