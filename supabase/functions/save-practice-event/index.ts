@@ -127,7 +127,29 @@ Deno.serve(async (req) => {
       }
     }
 
-    return json({ ok: true, event_id: eventId, audio_url: audioUrl, session_id: sessionId, llm_calls_backfilled: llmCallsBackfilled });
+    // Recompute seller_skill_state from all events (idempotente; fórmula v1).
+    // Solo si el evento actual trae bloque `evaluation`; los eventos viejos sin
+    // evaluation se ignoran naturalmente en el recorrido.
+    let skillStateResult: { skills_written: number; events_processed: number } | null = null;
+    let skillStateError: string | null = null;
+    if (payload?.evaluation && seller.company_id) {
+      try {
+        skillStateResult = await recomputeSellerSkillState(admin, seller.id, seller.company_id);
+      } catch (e) {
+        skillStateError = String(e);
+        console.error("[save-practice-event] skill state recompute failed:", e);
+      }
+    }
+
+    return new Response(JSON.stringify({
+      ok: true,
+      event_id: eventId,
+      audio_url: audioUrl,
+      session_id: sessionId,
+      llm_calls_backfilled: llmCallsBackfilled,
+      skill_state: skillStateResult,
+      skill_state_error: skillStateError,
+    }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     console.error("[save-practice-event] error:", err);
     return json({ error: "Server error", detail: String(err) }, 500);
