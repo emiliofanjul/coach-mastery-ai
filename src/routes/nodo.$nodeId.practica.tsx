@@ -484,6 +484,9 @@ function PracticaPage() {
   // Director (v2.0.0): corre después del turno del Actor en you_do.
   // Devuelve true si la sesión debe cortar (ya disparó cierre + evaluación).
   async function runDirector(): Promise<boolean> {
+    // Idempotencia: si otra rama ya cortó, no ejecutamos ni registramos otra
+    // decisión (evita el segundo `cut` en director_decisions).
+    if (cutRef.current || sessionEndedRef.current) return true;
     try {
       if (youDoStartTimeRef.current === null) {
         youDoStartTimeRef.current = Date.now();
