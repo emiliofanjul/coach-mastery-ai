@@ -1002,6 +1002,9 @@ function PracticaPage() {
     stopRecognition();
     stopAudio();
     void stopAudioCapture();
+    // Replay reinicia la fase actual: liberamos el guard start-once para
+    // permitir que la useEffect vuelva a arrancar la sesión.
+    sessionStartedForPhaseRef.current = null;
     if (claudePhaseRef.current === "i_do") {
       await startIDoSession();
     } else {
