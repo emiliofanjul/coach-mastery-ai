@@ -61,7 +61,7 @@ function NodoCardsPage() {
         supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
-          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience")
+          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience,skill_ids")
           .eq("node_id", nodeId)
           .order("card_order", { ascending: true }),
       ]);
