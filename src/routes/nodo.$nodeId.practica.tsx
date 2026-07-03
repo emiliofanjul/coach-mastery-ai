@@ -732,6 +732,7 @@ function PracticaPage() {
       setConnectionError(null);
       setIDoDemoDone(false);
       sessionEndedRef.current = false;
+      cutRef.current = false;
       audioUploadedRef.current = false;
       void startAudioCapture();
       conversationHistoryRef.current = [];
