@@ -449,6 +449,40 @@ function PracticaPage() {
 
     let finalText = "";
     let sendTimer: ReturnType<typeof setTimeout> | null = null;
+    // Umbral de silencio antes de cerrar el turno:
+    //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras. 2-3s
+    //    de silencio es pensamiento, no fin de turno. Interrumpirlo entrena el
+    //    hábito contrario a RRR.
+    //  - i_do / otras fases: 2500ms.
+    const baseSilenceMs = claudePhaseRef.current === "you_do" ? 3000 : 2500;
+    // Ciclo extra si la frase parece incompleta (termina en conector o sin
+    // puntuación de cierre) — cubre el caso "…encontrar—" cortado a media frase.
+    const continuationExtraMs = 1500;
+    const CONTINUATION_WORDS = new Set([
+      "y", "e", "o", "u", "ni", "pero", "mas", "sino", "aunque",
+      "que", "porque", "pues", "como", "cuando", "mientras", "si",
+      "de", "del", "a", "al", "en", "con", "por", "para", "sin",
+      "sobre", "entre", "hacia", "hasta", "desde", "según",
+      "me", "te", "se", "le", "les", "nos", "os", "lo", "la", "los", "las",
+      "mi", "tu", "su", "mis", "tus", "sus",
+      "es", "era", "fue", "ser", "estar", "está", "estoy", "soy",
+      "muy", "más", "menos", "también", "tampoco",
+      "un", "una", "unos", "unas", "el", "los",
+    ]);
+    function looksIncomplete(text: string): boolean {
+      const trimmed = text.trim();
+      if (!trimmed) return false;
+      // Puntuación de cierre natural → turno probablemente terminó.
+      if (/[.!?…]$/.test(trimmed)) return false;
+      // Guion largo / em dash / puntos suspensivos manuales → incompleto.
+      if (/[—–-]$/.test(trimmed)) return true;
+      const lastWord = trimmed
+        .toLowerCase()
+        .replace(/[.,;:!?¿¡"'()—–-]+$/g, "")
+        .split(/\s+/)
+        .pop() ?? "";
+      return CONTINUATION_WORDS.has(lastWord);
+    }
     rec.onresult = (event: any) => {
       let interim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -456,12 +490,16 @@ function PracticaPage() {
         if (r.isFinal) finalText += r[0].transcript;
         else interim += r[0].transcript;
       }
-      setInterimTranscript(finalText + interim);
+      const combined = finalText + interim;
+      setInterimTranscript(combined);
 
       if (sendTimer) clearTimeout(sendTimer);
+      const waitMs = looksIncomplete(combined)
+        ? baseSilenceMs + continuationExtraMs
+        : baseSilenceMs;
       sendTimer = setTimeout(() => {
         try { rec.stop(); } catch {}
-      }, 2500);
+      }, waitMs);
     };
     rec.onerror = (e: any) => {
       console.error("[voice] STT error:", e?.error ?? e);
