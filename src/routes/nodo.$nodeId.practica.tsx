@@ -118,6 +118,17 @@ function PracticaPage() {
   // se acumulan aquí y se guardan en el payload del seller_event al cierre.
   const directorDecisionsRef = useRef<DirectorDecision[]>([]);
   const youDoStartTimeRef = useRef<number | null>(null);
+  // Cut lock: se activa cuando el Director decide `cut`. Terminal e inmediato.
+  // Todo lo posterior (STT, mic, sendToCloser, playTTS del Actor) queda bloqueado.
+  // Solo el playTTS del closing.message se permite (se dispara ANTES de que otros
+  // caminos consulten cutRef).
+  const cutRef = useRef(false);
+  // AbortControllers para requests en vuelo — se cancelan en hardStop().
+  const actorFetchAbortRef = useRef<AbortController | null>(null);
+  const ttsFetchAbortRef = useRef<AbortController | null>(null);
+  // Resolver del await de playTTS activo. stopAudio() lo dispara para desbloquear
+  // callers que estén esperando `await playTTS(...)` cuando pausamos el audio.
+  const ttsPlayResolverRef = useRef<(() => void) | null>(null);
 
 
   // Pedir micrófono al montar
