@@ -665,7 +665,7 @@ function PracticaPage() {
         return;
       }
 
-      if (message) {
+      if (message && !cutRef.current && !sessionEndedRef.current) {
         const agentItem: TranscriptItem = {
           role: "agent",
           text: message,
@@ -679,6 +679,8 @@ function PracticaPage() {
         ];
         setIsProcessing(false);
         await playTTS(message);
+        // Un cut pudo llegar mientras el Actor hablaba (audio.pause en hardStop).
+        if (cutRef.current || sessionEndedRef.current) return;
       } else {
         setIsProcessing(false);
       }
