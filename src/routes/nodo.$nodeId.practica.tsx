@@ -364,6 +364,10 @@ function PracticaPage() {
   async function playTTS(text: string): Promise<void> {
     stopAudio();
     setIsAgentSpeaking(true);
+    // AbortController local — hardStop() dispara abort para desbloquear tanto
+    // el fetch como el await del audio.
+    const ctrl = new AbortController();
+    ttsFetchAbortRef.current = ctrl;
     try {
       const res = await fetch(TTS_URL, {
         method: "POST",
@@ -373,26 +377,47 @@ function PracticaPage() {
           Authorization: `Bearer ${SUPABASE_ANON}`,
         },
         body: JSON.stringify({ text }),
+        signal: ctrl.signal,
       });
       if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
       const blob = await res.blob();
+      if (ctrl.signal.aborted) return;
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       audioRef.current = audio;
       await new Promise<void>((resolve, reject) => {
-        audio.onended = () => {
+        // stopAudio() dispara este resolver cuando pausamos externamente,
+        // así el caller que hace `await playTTS(...)` no queda colgado.
+        ttsPlayResolverRef.current = () => {
           URL.revokeObjectURL(url);
           resolve();
         };
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          ttsPlayResolverRef.current = null;
+          resolve();
+        };
+        audio.onpause = () => {
+          // Pausa externa (stopAudio / hardStop) → resolvemos limpio.
+          if (ttsPlayResolverRef.current) {
+            const r = ttsPlayResolverRef.current;
+            ttsPlayResolverRef.current = null;
+            r();
+          }
+        };
         audio.onerror = () => {
           URL.revokeObjectURL(url);
+          ttsPlayResolverRef.current = null;
           reject(new Error("audio error"));
         };
         audio.play().catch(reject);
       });
     } catch (err) {
-      console.error("[voice] playTTS failed:", err);
+      if ((err as any)?.name !== "AbortError") {
+        console.error("[voice] playTTS failed:", err);
+      }
     } finally {
+      if (ttsFetchAbortRef.current === ctrl) ttsFetchAbortRef.current = null;
       setIsAgentSpeaking(false);
       audioRef.current = null;
     }
