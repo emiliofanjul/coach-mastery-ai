@@ -11,6 +11,7 @@
 // resolves the seller from sellers.profile_id = auth.uid().
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { recomputeSellerSkillState } from "../_shared/skill_state.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
