@@ -580,7 +580,7 @@ function PracticaPage() {
 
 
   async function sendToCloser(userText: string) {
-    if (sessionEndedRef.current) return;
+    if (sessionEndedRef.current || cutRef.current) return;
     setIsProcessing(true);
 
     const userItem: TranscriptItem = {
@@ -598,6 +598,10 @@ function PracticaPage() {
     if (claudePhaseRef.current === "i_do") {
       iDoUserTurnsRef.current += 1;
     }
+
+    // AbortController para el fetch del Actor — hardStop() lo aborta.
+    const ctrl = new AbortController();
+    actorFetchAbortRef.current = ctrl;
 
     try {
       console.log("[closer-voice] company_brain:", companyData?.company_sales_brain);
@@ -619,8 +623,11 @@ function PracticaPage() {
           conversation_history: conversationHistoryRef.current.slice(0, -1),
           session_id: sessionCorrelationIdRef.current,
         }),
+        signal: ctrl.signal,
       });
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
+      // Si mientras esperábamos la respuesta el Director cortó, descartamos.
+      if (cutRef.current || sessionEndedRef.current) return;
       const data = await res.json();
       if (typeof data?.prompt_version === "string") promptVersionRef.current = data.prompt_version;
       if (typeof data?.model === "string") modelRef.current = data.model;
