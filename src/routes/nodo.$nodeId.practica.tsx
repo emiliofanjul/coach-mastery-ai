@@ -537,9 +537,12 @@ function PracticaPage() {
       });
       console.log("[director]", decision, reason, data);
       if (decision === "cut") {
+        // Terminal e inmediato: silencia todo Actor audio en curso, aborta
+        // fetches pendientes, bloquea mic/STT. hardStop() marca cutRef ANTES
+        // de que se pueda registrar otra decisión.
+        hardStop();
         const closingMsg: string =
           nodeDataRef.current?.practice_script?.phases?.closing?.message ?? DEFAULT_CLOSING_MESSAGE;
-        // Turno de gracia: el Actor YA respondió (arriba). Ahora Closer cierra.
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
@@ -551,6 +554,8 @@ function PracticaPage() {
           ...conversationHistoryRef.current,
           { role: "assistant", content: closingMsg },
         ];
+        // playTTS del closing corre incluso con cutRef=true — el guard vive en
+        // los callers (mic, sendToCloser), no en playTTS.
         await playTTS(closingMsg);
         await handleSessionEnd();
         return true;
