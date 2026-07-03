@@ -791,6 +791,7 @@ function PracticaPage() {
       setConnectionError(null);
       setFeedbackResult(null);
       sessionEndedRef.current = false;
+      cutRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
