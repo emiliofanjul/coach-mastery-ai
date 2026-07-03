@@ -118,6 +118,17 @@ function PracticaPage() {
   // se acumulan aquí y se guardan en el payload del seller_event al cierre.
   const directorDecisionsRef = useRef<DirectorDecision[]>([]);
   const youDoStartTimeRef = useRef<number | null>(null);
+  // Cut lock: se activa cuando el Director decide `cut`. Terminal e inmediato.
+  // Todo lo posterior (STT, mic, sendToCloser, playTTS del Actor) queda bloqueado.
+  // Solo el playTTS del closing.message se permite (se dispara ANTES de que otros
+  // caminos consulten cutRef).
+  const cutRef = useRef(false);
+  // AbortControllers para requests en vuelo — se cancelan en hardStop().
+  const actorFetchAbortRef = useRef<AbortController | null>(null);
+  const ttsFetchAbortRef = useRef<AbortController | null>(null);
+  // Resolver del await de playTTS activo. stopAudio() lo dispara para desbloquear
+  // callers que estén esperando `await playTTS(...)` cuando pausamos el audio.
+  const ttsPlayResolverRef = useRef<(() => void) | null>(null);
 
 
   // Pedir micrófono al montar
@@ -268,6 +279,33 @@ function PracticaPage() {
     }
     audioRef.current = null;
     setIsAgentSpeaking(false);
+    // Desbloquea el `await playTTS(...)` que pudiera estar colgado esperando
+    // onended (pause no dispara onended). Si no hay resolver activo, no-op.
+    const r = ttsPlayResolverRef.current;
+    ttsPlayResolverRef.current = null;
+    if (r) r();
+  }
+
+  /**
+   * hardStop — apagado terminal e inmediato del pipeline de la sesión.
+   * Se llama cuando el Director decide `cut` (y en cualquier otro fin de sesión):
+   *  1) Marca cutRef → todos los guards downstream cortan.
+   *  2) Aborta fetch en vuelo del Actor (closer-voice) y del TTS.
+   *  3) Detiene audio actual y libera el resolver de playTTS pendiente.
+   *  4) Detiene STT y limpia estados de UI.
+   * NO reproduce audio nuevo — quien llama decide si después toca closing TTS.
+   */
+  function hardStop() {
+    cutRef.current = true;
+    sessionEndedRef.current = true;
+    try { actorFetchAbortRef.current?.abort(); } catch { /* noop */ }
+    try { ttsFetchAbortRef.current?.abort(); } catch { /* noop */ }
+    actorFetchAbortRef.current = null;
+    ttsFetchAbortRef.current = null;
+    stopAudio();
+    stopRecognition();
+    setIsProcessing(false);
+    setInterimTranscript("");
   }
 
   // ── Captura de audio (MediaRecorder) ─────────────────────────────
@@ -326,6 +364,10 @@ function PracticaPage() {
   async function playTTS(text: string): Promise<void> {
     stopAudio();
     setIsAgentSpeaking(true);
+    // AbortController local — hardStop() dispara abort para desbloquear tanto
+    // el fetch como el await del audio.
+    const ctrl = new AbortController();
+    ttsFetchAbortRef.current = ctrl;
     try {
       const res = await fetch(TTS_URL, {
         method: "POST",
@@ -335,33 +377,54 @@ function PracticaPage() {
           Authorization: `Bearer ${SUPABASE_ANON}`,
         },
         body: JSON.stringify({ text }),
+        signal: ctrl.signal,
       });
       if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
       const blob = await res.blob();
+      if (ctrl.signal.aborted) return;
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       audioRef.current = audio;
       await new Promise<void>((resolve, reject) => {
-        audio.onended = () => {
+        // stopAudio() dispara este resolver cuando pausamos externamente,
+        // así el caller que hace `await playTTS(...)` no queda colgado.
+        ttsPlayResolverRef.current = () => {
           URL.revokeObjectURL(url);
           resolve();
         };
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          ttsPlayResolverRef.current = null;
+          resolve();
+        };
+        audio.onpause = () => {
+          // Pausa externa (stopAudio / hardStop) → resolvemos limpio.
+          if (ttsPlayResolverRef.current) {
+            const r = ttsPlayResolverRef.current;
+            ttsPlayResolverRef.current = null;
+            r();
+          }
+        };
         audio.onerror = () => {
           URL.revokeObjectURL(url);
+          ttsPlayResolverRef.current = null;
           reject(new Error("audio error"));
         };
         audio.play().catch(reject);
       });
     } catch (err) {
-      console.error("[voice] playTTS failed:", err);
+      if ((err as any)?.name !== "AbortError") {
+        console.error("[voice] playTTS failed:", err);
+      }
     } finally {
+      if (ttsFetchAbortRef.current === ctrl) ttsFetchAbortRef.current = null;
       setIsAgentSpeaking(false);
       audioRef.current = null;
     }
   }
 
   function startRecognition() {
-    if (sessionEndedRef.current) return;
+    if (sessionEndedRef.current || cutRef.current) return;
     const SR: any =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
@@ -400,7 +463,9 @@ function PracticaPage() {
       recognitionRef.current = null;
       const text = finalText.trim();
       setInterimTranscript("");
-      if (text) {
+      // Descartar turno del usuario si el Director ya cortó (carrera: user hablando
+      // en paralelo mientras Director decidía cut).
+      if (text && !cutRef.current && !sessionEndedRef.current) {
         void sendToCloser(text);
       }
     };
@@ -419,6 +484,9 @@ function PracticaPage() {
   // Director (v2.0.0): corre después del turno del Actor en you_do.
   // Devuelve true si la sesión debe cortar (ya disparó cierre + evaluación).
   async function runDirector(): Promise<boolean> {
+    // Idempotencia: si otra rama ya cortó, no ejecutamos ni registramos otra
+    // decisión (evita el segundo `cut` en director_decisions).
+    if (cutRef.current || sessionEndedRef.current) return true;
     try {
       if (youDoStartTimeRef.current === null) {
         youDoStartTimeRef.current = Date.now();
@@ -469,9 +537,12 @@ function PracticaPage() {
       });
       console.log("[director]", decision, reason, data);
       if (decision === "cut") {
+        // Terminal e inmediato: silencia todo Actor audio en curso, aborta
+        // fetches pendientes, bloquea mic/STT. hardStop() marca cutRef ANTES
+        // de que se pueda registrar otra decisión.
+        hardStop();
         const closingMsg: string =
           nodeDataRef.current?.practice_script?.phases?.closing?.message ?? DEFAULT_CLOSING_MESSAGE;
-        // Turno de gracia: el Actor YA respondió (arriba). Ahora Closer cierra.
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
@@ -483,6 +554,8 @@ function PracticaPage() {
           ...conversationHistoryRef.current,
           { role: "assistant", content: closingMsg },
         ];
+        // playTTS del closing corre incluso con cutRef=true — el guard vive en
+        // los callers (mic, sendToCloser), no en playTTS.
         await playTTS(closingMsg);
         await handleSessionEnd();
         return true;
@@ -507,7 +580,7 @@ function PracticaPage() {
 
 
   async function sendToCloser(userText: string) {
-    if (sessionEndedRef.current) return;
+    if (sessionEndedRef.current || cutRef.current) return;
     setIsProcessing(true);
 
     const userItem: TranscriptItem = {
@@ -525,6 +598,10 @@ function PracticaPage() {
     if (claudePhaseRef.current === "i_do") {
       iDoUserTurnsRef.current += 1;
     }
+
+    // AbortController para el fetch del Actor — hardStop() lo aborta.
+    const ctrl = new AbortController();
+    actorFetchAbortRef.current = ctrl;
 
     try {
       console.log("[closer-voice] company_brain:", companyData?.company_sales_brain);
@@ -546,8 +623,11 @@ function PracticaPage() {
           conversation_history: conversationHistoryRef.current.slice(0, -1),
           session_id: sessionCorrelationIdRef.current,
         }),
+        signal: ctrl.signal,
       });
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
+      // Si mientras esperábamos la respuesta el Director cortó, descartamos.
+      if (cutRef.current || sessionEndedRef.current) return;
       const data = await res.json();
       if (typeof data?.prompt_version === "string") promptVersionRef.current = data.prompt_version;
       if (typeof data?.model === "string") modelRef.current = data.model;
@@ -585,7 +665,7 @@ function PracticaPage() {
         return;
       }
 
-      if (message) {
+      if (message && !cutRef.current && !sessionEndedRef.current) {
         const agentItem: TranscriptItem = {
           role: "agent",
           text: message,
@@ -599,6 +679,8 @@ function PracticaPage() {
         ];
         setIsProcessing(false);
         await playTTS(message);
+        // Un cut pudo llegar mientras el Actor hablaba (audio.pause en hardStop).
+        if (cutRef.current || sessionEndedRef.current) return;
       } else {
         setIsProcessing(false);
       }
@@ -632,9 +714,15 @@ function PracticaPage() {
         startRecognition();
       }
     } catch (err) {
+      if ((err as any)?.name === "AbortError") {
+        // Fetch cancelado por hardStop — silencioso, es el flujo esperado.
+        return;
+      }
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
       setConnectionError("Error al hablar con Closer. Toca para reintentar.");
+    } finally {
+      if (actorFetchAbortRef.current === ctrl) actorFetchAbortRef.current = null;
     }
   }
 
@@ -644,6 +732,7 @@ function PracticaPage() {
       setConnectionError(null);
       setIDoDemoDone(false);
       sessionEndedRef.current = false;
+      cutRef.current = false;
       audioUploadedRef.current = false;
       void startAudioCapture();
       conversationHistoryRef.current = [];
@@ -702,6 +791,7 @@ function PracticaPage() {
       setConnectionError(null);
       setFeedbackResult(null);
       sessionEndedRef.current = false;
+      cutRef.current = false;
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
@@ -964,6 +1054,9 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
+                // Bloqueado tras un cut o si la sesión terminó — el usuario no
+                // puede generar nuevos turnos mientras carga la evaluación.
+                if (cutRef.current || sessionEndedRef.current) return;
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
