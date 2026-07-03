@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
     // Resolve seller for this user
     const { data: seller, error: sellerErr } = await admin
       .from("sellers")
-      .select("id, audio_consent")
+      .select("id, audio_consent, company_id")
       .eq("profile_id", userId)
       .maybeSingle();
     if (sellerErr) return json({ error: "Seller lookup failed", detail: sellerErr.message }, 500);
