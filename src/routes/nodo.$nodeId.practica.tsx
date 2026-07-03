@@ -1052,6 +1052,9 @@ function PracticaPage() {
               interimTranscript={interimTranscript}
               connectionError={connectionError}
               onMicClick={() => {
+                // Bloqueado tras un cut o si la sesión terminó — el usuario no
+                // puede generar nuevos turnos mientras carga la evaluación.
+                if (cutRef.current || sessionEndedRef.current) return;
                 if (isUserListening) stopRecognition();
                 else if (!isAgentSpeaking) startRecognition();
               }}
