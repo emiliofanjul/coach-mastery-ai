@@ -129,6 +129,11 @@ function PracticaPage() {
   // Resolver del await de playTTS activo. stopAudio() lo dispara para desbloquear
   // callers que estén esperando `await playTTS(...)` cuando pausamos el audio.
   const ttsPlayResolverRef = useRef<(() => void) | null>(null);
+  // BUG 1 fix: guard start-once por fase. React 19 StrictMode monta effects
+  // dos veces en dev, y cualquier re-render con las mismas deps dispara la
+  // useEffect de arranque otra vez → dos startIDoSession corriendo en paralelo
+  // → dos fetches de TTS → dos <audio> reproduciendo el mismo texto encima.
+  const sessionStartedForPhaseRef = useRef<string | null>(null);
 
 
   // Pedir micrófono al montar
