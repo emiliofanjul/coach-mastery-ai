@@ -279,6 +279,33 @@ function PracticaPage() {
     }
     audioRef.current = null;
     setIsAgentSpeaking(false);
+    // Desbloquea el `await playTTS(...)` que pudiera estar colgado esperando
+    // onended (pause no dispara onended). Si no hay resolver activo, no-op.
+    const r = ttsPlayResolverRef.current;
+    ttsPlayResolverRef.current = null;
+    if (r) r();
+  }
+
+  /**
+   * hardStop — apagado terminal e inmediato del pipeline de la sesión.
+   * Se llama cuando el Director decide `cut` (y en cualquier otro fin de sesión):
+   *  1) Marca cutRef → todos los guards downstream cortan.
+   *  2) Aborta fetch en vuelo del Actor (closer-voice) y del TTS.
+   *  3) Detiene audio actual y libera el resolver de playTTS pendiente.
+   *  4) Detiene STT y limpia estados de UI.
+   * NO reproduce audio nuevo — quien llama decide si después toca closing TTS.
+   */
+  function hardStop() {
+    cutRef.current = true;
+    sessionEndedRef.current = true;
+    try { actorFetchAbortRef.current?.abort(); } catch { /* noop */ }
+    try { ttsFetchAbortRef.current?.abort(); } catch { /* noop */ }
+    actorFetchAbortRef.current = null;
+    ttsFetchAbortRef.current = null;
+    stopAudio();
+    stopRecognition();
+    setIsProcessing(false);
+    setInterimTranscript("");
   }
 
   // ── Captura de audio (MediaRecorder) ─────────────────────────────
