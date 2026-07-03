@@ -11,6 +11,7 @@
 // resolves the seller from sellers.profile_id = auth.uid().
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { recomputeSellerSkillState } from "../_shared/skill_state.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -51,7 +52,7 @@ Deno.serve(async (req) => {
     // Resolve seller for this user
     const { data: seller, error: sellerErr } = await admin
       .from("sellers")
-      .select("id, audio_consent")
+      .select("id, audio_consent, company_id")
       .eq("profile_id", userId)
       .maybeSingle();
     if (sellerErr) return json({ error: "Seller lookup failed", detail: sellerErr.message }, 500);
@@ -126,7 +127,29 @@ Deno.serve(async (req) => {
       }
     }
 
-    return json({ ok: true, event_id: eventId, audio_url: audioUrl, session_id: sessionId, llm_calls_backfilled: llmCallsBackfilled });
+    // Recompute seller_skill_state from all events (idempotente; fórmula v1).
+    // Solo si el evento actual trae bloque `evaluation`; los eventos viejos sin
+    // evaluation se ignoran naturalmente en el recorrido.
+    let skillStateResult: { skills_written: number; events_processed: number } | null = null;
+    let skillStateError: string | null = null;
+    if (payload?.evaluation && seller.company_id) {
+      try {
+        skillStateResult = await recomputeSellerSkillState(admin, seller.id, seller.company_id);
+      } catch (e) {
+        skillStateError = String(e);
+        console.error("[save-practice-event] skill state recompute failed:", e);
+      }
+    }
+
+    return new Response(JSON.stringify({
+      ok: true,
+      event_id: eventId,
+      audio_url: audioUrl,
+      session_id: sessionId,
+      llm_calls_backfilled: llmCallsBackfilled,
+      skill_state: skillStateResult,
+      skill_state_error: skillStateError,
+    }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     console.error("[save-practice-event] error:", err);
     return json({ error: "Server error", detail: String(err) }, 500);

@@ -1398,6 +1398,10 @@ export type Database = {
       current_role: { Args: never; Returns: string }
       generate_company_invite: { Args: never; Returns: Json }
       get_active_company_invite: { Args: never; Returns: Json }
+      get_current_mastery: {
+        Args: { _last_practiced_at: string; _mastery_score: number }
+        Returns: number
+      }
       is_manager: { Args: never; Returns: boolean }
       owns_seller: { Args: { _seller_id: string }; Returns: boolean }
       register_invite_failed_attempt: {
