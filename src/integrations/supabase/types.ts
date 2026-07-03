@@ -415,6 +415,7 @@ export type Database = {
           flip_back_text: string | null
           id: string
           node_id: string
+          skill_ids: string[]
           title: string | null
         }
         Insert: {
@@ -427,6 +428,7 @@ export type Database = {
           flip_back_text?: string | null
           id?: string
           node_id: string
+          skill_ids?: string[]
           title?: string | null
         }
         Update: {
@@ -439,6 +441,7 @@ export type Database = {
           flip_back_text?: string | null
           id?: string
           node_id?: string
+          skill_ids?: string[]
           title?: string | null
         }
         Relationships: [
