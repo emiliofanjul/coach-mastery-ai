@@ -23,6 +23,7 @@ interface NodeCard {
   flip_back_text: string | null;
   card_content_type: CardContentType | null;
   audience: string | null;
+  skill_ids: string[] | null;
 }
 
 interface DynamicContent {
