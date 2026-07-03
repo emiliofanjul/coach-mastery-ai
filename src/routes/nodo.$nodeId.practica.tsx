@@ -129,6 +129,11 @@ function PracticaPage() {
   // Resolver del await de playTTS activo. stopAudio() lo dispara para desbloquear
   // callers que estén esperando `await playTTS(...)` cuando pausamos el audio.
   const ttsPlayResolverRef = useRef<(() => void) | null>(null);
+  // BUG 1 fix: guard start-once por fase. React 19 StrictMode monta effects
+  // dos veces en dev, y cualquier re-render con las mismas deps dispara la
+  // useEffect de arranque otra vez → dos startIDoSession corriendo en paralelo
+  // → dos fetches de TTS → dos <audio> reproduciendo el mismo texto encima.
+  const sessionStartedForPhaseRef = useRef<string | null>(null);
 
 
   // Pedir micrófono al montar
@@ -254,8 +259,13 @@ function PracticaPage() {
   // Iniciar sesión de voz según fase
   useEffect(() => {
     if (!sellerData || !nodeData || !companyData || !skillsContext) return;
+    if (phase !== "i_do" && phase !== "you_do") return;
+    // Guard start-once por fase — evita el doble arranque de StrictMode /
+    // re-renders con las mismas deps que producía audio duplicado.
+    if (sessionStartedForPhaseRef.current === phase) return;
+    sessionStartedForPhaseRef.current = phase;
     if (phase === "i_do") startIDoSession();
-    else if (phase === "you_do") startYouDoSession();
+    else startYouDoSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
@@ -541,8 +551,16 @@ function PracticaPage() {
         // fetches pendientes, bloquea mic/STT. hardStop() marca cutRef ANTES
         // de que se pueda registrar otra decisión.
         hardStop();
+        // BUG 2 fix: el closing DEBE sonar. Usamos `||` con trim para caer al
+        // default si el script trae "" (que con `??` se colaba como string vacío
+        // → TTS silencioso → sensación de crash). Nunca dejamos que un script
+        // vacío borre la señal emocional de cierre.
+        const scriptClosing: string | undefined =
+          nodeDataRef.current?.practice_script?.phases?.closing?.message;
         const closingMsg: string =
-          nodeDataRef.current?.practice_script?.phases?.closing?.message ?? DEFAULT_CLOSING_MESSAGE;
+          (typeof scriptClosing === "string" && scriptClosing.trim())
+            ? scriptClosing
+            : DEFAULT_CLOSING_MESSAGE;
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
@@ -556,7 +574,12 @@ function PracticaPage() {
         ];
         // playTTS del closing corre incluso con cutRef=true — el guard vive en
         // los callers (mic, sendToCloser), no en playTTS.
-        await playTTS(closingMsg);
+        console.log("[director] cut → playing closing:", closingMsg);
+        try {
+          await playTTS(closingMsg);
+        } catch (e) {
+          console.error("[director] closing TTS failed:", e);
+        }
         await handleSessionEnd();
         return true;
       }
@@ -992,6 +1015,9 @@ function PracticaPage() {
     stopRecognition();
     stopAudio();
     void stopAudioCapture();
+    // Replay reinicia la fase actual: liberamos el guard start-once para
+    // permitir que la useEffect vuelva a arrancar la sesión.
+    sessionStartedForPhaseRef.current = null;
     if (claudePhaseRef.current === "i_do") {
       await startIDoSession();
     } else {
