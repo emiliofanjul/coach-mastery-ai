@@ -11,3 +11,10 @@ verify_jwt = false
 
 [functions.harness-runner]
 verify_jwt = false
+
+[functions.director]
+verify_jwt = false
+
+[functions.rebuild-skill-state]
+verify_jwt = false
+
