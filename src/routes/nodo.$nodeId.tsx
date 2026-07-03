@@ -23,6 +23,7 @@ interface NodeCard {
   flip_back_text: string | null;
   card_content_type: CardContentType | null;
   audience: string | null;
+  skill_ids: string[] | null;
 }
 
 interface DynamicContent {
@@ -61,7 +62,7 @@ function NodoCardsPage() {
         supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
-          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience")
+          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience,skill_ids")
           .eq("node_id", nodeId)
           .order("card_order", { ascending: true }),
       ]);
@@ -168,10 +169,14 @@ function NodoCardsPage() {
       const results = await Promise.all(
         dynamicCards.map(async (c) => {
           try {
-            const skillsInFocus =
+            // Scope preferido: campo estructurado skill_ids de la tarjeta.
+            // Fallback: skills_in_focus del practice_script (nodos con script).
+            const scriptSkills =
               node?.practice_script?.scope?.skills_in_focus ??
               node?.practice_script?.scope?.skillsInFocus ??
               [];
+            const skillsInFocus =
+              (c.skill_ids && c.skill_ids.length > 0) ? c.skill_ids : scriptSkills;
             const { data, error } = await supabase.functions.invoke("closer-voice", {
               body: {
                 phase: "generate_example",
