@@ -463,7 +463,9 @@ function PracticaPage() {
       recognitionRef.current = null;
       const text = finalText.trim();
       setInterimTranscript("");
-      if (text) {
+      // Descartar turno del usuario si el Director ya cortó (carrera: user hablando
+      // en paralelo mientras Director decidía cut).
+      if (text && !cutRef.current && !sessionEndedRef.current) {
         void sendToCloser(text);
       }
     };
