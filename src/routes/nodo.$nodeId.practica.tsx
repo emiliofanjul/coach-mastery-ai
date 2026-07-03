@@ -714,9 +714,15 @@ function PracticaPage() {
         startRecognition();
       }
     } catch (err) {
+      if ((err as any)?.name === "AbortError") {
+        // Fetch cancelado por hardStop — silencioso, es el flujo esperado.
+        return;
+      }
       console.error("[voice] sendToCloser failed:", err);
       setIsProcessing(false);
       setConnectionError("Error al hablar con Closer. Toca para reintentar.");
+    } finally {
+      if (actorFetchAbortRef.current === ctrl) actorFetchAbortRef.current = null;
     }
   }
 
