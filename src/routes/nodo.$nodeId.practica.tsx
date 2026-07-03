@@ -424,7 +424,7 @@ function PracticaPage() {
   }
 
   function startRecognition() {
-    if (sessionEndedRef.current) return;
+    if (sessionEndedRef.current || cutRef.current) return;
     const SR: any =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
