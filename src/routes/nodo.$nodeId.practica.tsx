@@ -551,8 +551,16 @@ function PracticaPage() {
         // fetches pendientes, bloquea mic/STT. hardStop() marca cutRef ANTES
         // de que se pueda registrar otra decisión.
         hardStop();
+        // BUG 2 fix: el closing DEBE sonar. Usamos `||` con trim para caer al
+        // default si el script trae "" (que con `??` se colaba como string vacío
+        // → TTS silencioso → sensación de crash). Nunca dejamos que un script
+        // vacío borre la señal emocional de cierre.
+        const scriptClosing: string | undefined =
+          nodeDataRef.current?.practice_script?.phases?.closing?.message;
         const closingMsg: string =
-          nodeDataRef.current?.practice_script?.phases?.closing?.message ?? DEFAULT_CLOSING_MESSAGE;
+          (typeof scriptClosing === "string" && scriptClosing.trim())
+            ? scriptClosing
+            : DEFAULT_CLOSING_MESSAGE;
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
@@ -566,7 +574,12 @@ function PracticaPage() {
         ];
         // playTTS del closing corre incluso con cutRef=true — el guard vive en
         // los callers (mic, sendToCloser), no en playTTS.
-        await playTTS(closingMsg);
+        console.log("[director] cut → playing closing:", closingMsg);
+        try {
+          await playTTS(closingMsg);
+        } catch (e) {
+          console.error("[director] closing TTS failed:", e);
+        }
         await handleSessionEnd();
         return true;
       }
