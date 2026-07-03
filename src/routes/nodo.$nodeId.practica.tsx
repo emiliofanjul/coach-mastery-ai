@@ -259,8 +259,13 @@ function PracticaPage() {
   // Iniciar sesión de voz según fase
   useEffect(() => {
     if (!sellerData || !nodeData || !companyData || !skillsContext) return;
+    if (phase !== "i_do" && phase !== "you_do") return;
+    // Guard start-once por fase — evita el doble arranque de StrictMode /
+    // re-renders con las mismas deps que producía audio duplicado.
+    if (sessionStartedForPhaseRef.current === phase) return;
+    sessionStartedForPhaseRef.current = phase;
     if (phase === "i_do") startIDoSession();
-    else if (phase === "you_do") startYouDoSession();
+    else startYouDoSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sellerData, nodeData, companyData, skillsContext]);
 
