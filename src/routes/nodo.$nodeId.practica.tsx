@@ -554,6 +554,7 @@ function PracticaPage() {
           conversation_history: conversationHistoryRef.current,
           elapsed_seconds,
           session_id: sessionCorrelationIdRef.current,
+          node_id: nodeId,
         }),
       });
       if (!res.ok) {
