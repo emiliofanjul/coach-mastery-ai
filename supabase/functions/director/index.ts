@@ -321,7 +321,6 @@ Deno.serve(async (req) => {
       decision: shouldCut ? "cut" : "continue",
       reason,
     });
-    });
   } catch (e) {
     console.error("[director] error:", e);
     return new Response(
