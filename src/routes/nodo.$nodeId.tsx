@@ -46,6 +46,7 @@ function NodoCardsPage() {
 
   const [node, setNode] = useState<NodeRow | null>(null);
   const [cards, setCards] = useState<NodeCard[] | null>(null);
+  const [quizCount, setQuizCount] = useState<number>(0);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [flipped, setFlipped] = useState(false);
@@ -54,21 +55,26 @@ function NodoCardsPage() {
   const [sellerLevel, setSellerLevel] = useState<string | null>(null);
   const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
 
-  // Carga de nodo + tarjetas
+  // Carga de nodo + tarjetas + count de quiz (para decidir destino post-tarjetas)
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [{ data: n }, { data: c }] = await Promise.all([
+      const [{ data: n }, { data: c }, { count: qc }] = await Promise.all([
         supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
         supabase
           .from("node_cards")
           .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience,skill_ids")
           .eq("node_id", nodeId)
           .order("card_order", { ascending: true }),
+        supabase
+          .from("node_quiz_questions")
+          .select("id", { count: "exact", head: true })
+          .eq("node_id", nodeId),
       ]);
       if (!alive) return;
       setNode((n as NodeRow | null) ?? null);
       setCards((c as NodeCard[] | null) ?? []);
+      setQuizCount(qc ?? 0);
     })();
     return () => {
       alive = false;
