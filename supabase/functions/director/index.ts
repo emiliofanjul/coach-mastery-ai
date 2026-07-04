@@ -22,7 +22,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
-const DIRECTOR_VERSION = "v2.0.0";
+const DIRECTOR_VERSION = "v2.1.0";
 const HAIKU_MODEL = "claude-haiku-4-5";
 
 const corsHeaders = {
