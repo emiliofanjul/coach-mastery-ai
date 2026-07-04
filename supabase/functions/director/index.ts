@@ -102,6 +102,7 @@ interface ReqBody {
   conversation_history: { role: string; content: string }[];
   elapsed_seconds?: number;
   session_id?: string | null;
+  node_id?: string | null;
 }
 
 type Decision = "continue" | "cut";
