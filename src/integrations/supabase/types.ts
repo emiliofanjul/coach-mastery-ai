@@ -295,6 +295,54 @@ export type Database = {
           },
         ]
       }
+      director_decisions: {
+        Row: {
+          classifier_ran: boolean | null
+          created_at: string
+          cut_reason: string | null
+          decision: string
+          director_version: string | null
+          elapsed_seconds: number | null
+          evidence_sufficient: boolean | null
+          id: string
+          latency_ms: number | null
+          node_id: string | null
+          scope_covered: boolean | null
+          session_id: string | null
+          user_turns: number | null
+        }
+        Insert: {
+          classifier_ran?: boolean | null
+          created_at?: string
+          cut_reason?: string | null
+          decision: string
+          director_version?: string | null
+          elapsed_seconds?: number | null
+          evidence_sufficient?: boolean | null
+          id?: string
+          latency_ms?: number | null
+          node_id?: string | null
+          scope_covered?: boolean | null
+          session_id?: string | null
+          user_turns?: number | null
+        }
+        Update: {
+          classifier_ran?: boolean | null
+          created_at?: string
+          cut_reason?: string | null
+          decision?: string
+          director_version?: string | null
+          elapsed_seconds?: number | null
+          evidence_sufficient?: boolean | null
+          id?: string
+          latency_ms?: number | null
+          node_id?: string | null
+          scope_covered?: boolean | null
+          session_id?: string | null
+          user_turns?: number | null
+        }
+        Relationships: []
+      }
       llm_calls: {
         Row: {
           created_at: string
