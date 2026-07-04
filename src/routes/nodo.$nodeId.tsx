@@ -393,13 +393,19 @@ function NodoCardsPage() {
             card={current!}
             nodeType={node?.node_type ?? "knowledge"}
             isLast={index === total - 1}
+            hasQuiz={quizCount > 0}
+            hasScript={!!node?.practice_script}
             onNext={next}
-            onCta={() => {
-              const nt = node?.node_type ?? "knowledge";
-              if (nt === "knowledge") {
+            onFinish={() => {
+              const hasQuiz = quizCount > 0;
+              const hasScript = !!node?.practice_script;
+              if (hasQuiz) {
                 navigate({ to: "/nodo/$nodeId/quiz", params: { nodeId } });
-              } else {
+              } else if (hasScript) {
                 navigate({ to: "/nodo/$nodeId/practica", params: { nodeId } });
+              } else {
+                // Nodo sin quiz ni script — cierra al mapa (caso raro/legacy)
+                navigate({ to: "/mapa" });
               }
             }}
           />
