@@ -217,7 +217,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json()) as ReqBody;
-    const { practice_script, conversation_history, elapsed_seconds, session_id } = body;
+    const { practice_script, conversation_history, elapsed_seconds, session_id, node_id } = body;
 
     if (!practice_script || !Array.isArray(conversation_history)) {
       return new Response(JSON.stringify({ error: "Missing practice_script or conversation_history" }), {
@@ -239,85 +239,88 @@ Deno.serve(async (req) => {
       elapsed_seconds: elapsed,
       classifier_ran: false,
       classifier_result: null as boolean | null,
+      scope_covered: null as boolean | null,
+      evidence_sufficient: null as boolean | null,
       latency_ms: 0,
       director_version: DIRECTOR_VERSION,
     };
 
-    // Regla dura 1: max_turns
-    if (max_turns !== null && user_turns >= max_turns) {
-      const result: DirectorResult = { ...base, decision: "cut", reason: "max_turns" };
+    const respond = (result: DirectorResult) => {
+      logDirectorDecision({
+        session_id: session_id ?? null,
+        node_id: node_id ?? null,
+        decision: result.decision,
+        cut_reason: result.decision === "cut" ? result.reason : null,
+        user_turns: result.user_turns,
+        elapsed_seconds: result.elapsed_seconds,
+        classifier_ran: result.classifier_ran,
+        scope_covered: result.scope_covered,
+        evidence_sufficient: result.evidence_sufficient,
+        latency_ms: result.latency_ms,
+      });
       return new Response(JSON.stringify(result), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    };
+
+    // Regla dura 1: max_turns
+    if (max_turns !== null && user_turns >= max_turns) {
+      return respond({ ...base, decision: "cut", reason: "max_turns" });
     }
 
     // Regla dura 2: max_duration
     if (max_duration !== null && elapsed !== null && elapsed >= max_duration) {
-      const result: DirectorResult = { ...base, decision: "cut", reason: "max_duration" };
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return respond({ ...base, decision: "cut", reason: "max_duration" });
     }
 
     // Regla dura 3: gate mínimo antes de considerar scope
     if (user_turns < min_turns_gate) {
-      const result: DirectorResult = { ...base, decision: "continue", reason: "min_turns_gate" };
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return respond({ ...base, decision: "continue", reason: "min_turns_gate" });
     }
 
     // Clasificador
     const objective: string | undefined = practice_script?.phases?.you_do?.objective;
     if (!objective || typeof objective !== "string" || objective.trim().length === 0) {
-      const result: DirectorResult = { ...base, decision: "continue", reason: "no_objective" };
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return respond({ ...base, decision: "continue", reason: "no_objective" });
     }
 
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) {
-      // Sin API key el clasificador no corre: fail-open (continuar).
-      const result: DirectorResult = { ...base, decision: "continue", reason: "classifier_error" };
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return respond({ ...base, decision: "continue", reason: "classifier_error" });
     }
 
     const cls = await runClassifier(objective, conversation_history, apiKey, session_id ?? null);
     if (cls.scope_covered === null) {
       // Fail-open: si el clasificador falla, no cortamos por scope. Las reglas
       // duras (max_turns/max_duration) siguen protegiendo el techo.
-      const result: DirectorResult = {
+      return respond({
         ...base,
         classifier_ran: true,
         latency_ms: cls.latency_ms,
         decision: "continue",
         reason: "classifier_error",
-      };
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const result: DirectorResult = {
+    // v2.1.0: corta por scope_covered O por evidence_sufficient.
+    // Evaluar QUÉ TAN BIEN lo hizo es del evaluador; el Director corta por
+    // evidencia suficiente (aunque el objetivo no se haya logrado).
+    const shouldCut = cls.scope_covered === true || cls.evidence_sufficient === true;
+    const reason: Reason = shouldCut
+      ? (cls.scope_covered ? "scope_covered" : "evidence_sufficient")
+      : "scope_not_covered";
+
+    return respond({
       ...base,
       classifier_ran: true,
       classifier_result: cls.scope_covered,
+      scope_covered: cls.scope_covered,
+      evidence_sufficient: cls.evidence_sufficient,
       latency_ms: cls.latency_ms,
-      decision: cls.scope_covered ? "cut" : "continue",
-      reason: cls.scope_covered ? "scope_covered" : "scope_not_covered",
-    };
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      decision: shouldCut ? "cut" : "continue",
+      reason,
+    });
     });
   } catch (e) {
     console.error("[director] error:", e);
