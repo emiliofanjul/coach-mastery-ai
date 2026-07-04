@@ -45,6 +45,7 @@ function NodoQuizPage() {
   const [saving, setSaving] = useState(false);
   // Si el nodo era el primero del mundo (para texto del VictoryScreen)
   const [isFirstNodeInWorld, setIsFirstNodeInWorld] = useState(false);
+  const [hasScript, setHasScript] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -57,13 +58,15 @@ function NodoQuizPage() {
           .order("question_order", { ascending: true }),
         supabase
           .from("nodes")
-          .select("order_index")
+          .select("order_index,practice_script")
           .eq("id", nodeId)
           .maybeSingle(),
       ]);
       if (!alive) return;
       setQuestions((q as QuizQuestion[] | null) ?? []);
-      setIsFirstNodeInWorld(((nodeRow as { order_index?: number } | null)?.order_index ?? -1) === 0);
+      const row = nodeRow as { order_index?: number; practice_script?: unknown } | null;
+      setIsFirstNodeInWorld((row?.order_index ?? -1) === 0);
+      setHasScript(!!row?.practice_script);
     })();
     return () => {
       alive = false;
