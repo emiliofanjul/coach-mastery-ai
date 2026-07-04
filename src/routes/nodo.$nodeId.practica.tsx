@@ -554,6 +554,7 @@ function PracticaPage() {
           conversation_history: conversationHistoryRef.current,
           elapsed_seconds,
           session_id: sessionCorrelationIdRef.current,
+          node_id: nodeId,
         }),
       });
       if (!res.ok) {
@@ -595,12 +596,18 @@ function PracticaPage() {
         // default si el script trae "" (que con `??` se colaba como string vacío
         // → TTS silencioso → sensación de crash). Nunca dejamos que un script
         // vacío borre la señal emocional de cierre.
+        // v2.1.0: cuando el Director corta por evidence_sufficient (el usuario
+        // no completó el objetivo pero ya hay material para evaluar), el closing
+        // del script sonaría a felicitación falsa — usamos un neutral genérico.
+        const NEUTRAL_CLOSING = "Bien, con esto tengo lo que necesito. Vamos a revisar cómo te fue.";
         const scriptClosing: string | undefined =
           nodeDataRef.current?.practice_script?.phases?.closing?.message;
         const closingMsg: string =
-          (typeof scriptClosing === "string" && scriptClosing.trim())
-            ? scriptClosing
-            : DEFAULT_CLOSING_MESSAGE;
+          reason === "evidence_sufficient"
+            ? NEUTRAL_CLOSING
+            : (typeof scriptClosing === "string" && scriptClosing.trim())
+              ? scriptClosing
+              : DEFAULT_CLOSING_MESSAGE;
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
