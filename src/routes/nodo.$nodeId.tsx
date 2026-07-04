@@ -845,46 +845,49 @@ function BottomButton({
   card,
   nodeType,
   isLast,
+  hasQuiz,
+  hasScript,
   onNext,
-  onCta,
+  onFinish,
 }: {
   card: NodeCard;
   nodeType: string;
   isLast: boolean;
+  hasQuiz: boolean;
+  hasScript: boolean;
   onNext: () => void;
-  onCta?: () => void;
+  onFinish: () => void;
 }) {
-  const ctaConfig = useMemo(() => {
-    if (card.card_type !== "cta") return null;
-    switch (nodeType) {
-      case "skill_drill":
-        return { label: "Practicar →", color: "#FF6B2B" };
-      case "full_sim":
-        return { label: "Ver demostración →", color: "#FF6B2B" };
-      case "boss":
-        return { label: "Entrar →", color: "#EF476F" };
-      case "knowledge":
-      default:
-        return { label: "Ponlo a prueba →", color: "#FF6B2B" };
+  const finishConfig = useMemo(() => {
+    // Prioriza destino real (quiz/practica) sobre node_type.
+    if (hasQuiz) return { label: "Ponlo a prueba →", color: "#FF6B2B" };
+    if (hasScript) {
+      if (nodeType === "boss") return { label: "Entrar →", color: "#EF476F" };
+      if (nodeType === "full_sim") return { label: "Ver demostración →", color: "#FF6B2B" };
+      return { label: "Practicar →", color: "#FF6B2B" };
     }
-  }, [card.card_type, nodeType]);
+    return { label: "Terminar →", color: "#FF6B2B" };
+  }, [nodeType, hasQuiz, hasScript]);
 
   const isCta = card.card_type === "cta";
   const isFlipBack = card.card_type === "good_example" || card.card_type === "bad_example";
+  // Regla única: el botón FINALIZA (quiz/practica/mapa) cuando es tarjeta CTA
+  // O cuando es la última tarjeta del set. Así ningún nodo queda sin salida.
+  const isFinishButton = isCta || isLast;
 
   return (
     <motion.button
-      key={`${card.id}-${isCta ? "cta" : "next"}`}
+      key={`${card.id}-${isFinishButton ? "finish" : "next"}`}
       initial={isFlipBack ? { opacity: 0 } : { opacity: 1 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      onClick={isCta ? () => onCta?.() : onNext}
+      onClick={isFinishButton ? onFinish : onNext}
       style={{
         width: "100%",
         height: 52,
         borderRadius: 99,
         border: "none",
-        background: ctaConfig?.color ?? "#FF6B2B",
+        background: isFinishButton ? finishConfig.color : "#FF6B2B",
         color: "#08080F",
         fontFamily: "Syne, sans-serif",
         fontWeight: 700,
@@ -893,7 +896,7 @@ function BottomButton({
         boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
       }}
     >
-      {isCta ? ctaConfig!.label : "Siguiente →"}
+      {isFinishButton ? finishConfig.label : "Siguiente →"}
     </motion.button>
   );
 }
