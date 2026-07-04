@@ -45,6 +45,7 @@ function NodoQuizPage() {
   const [saving, setSaving] = useState(false);
   // Si el nodo era el primero del mundo (para texto del VictoryScreen)
   const [isFirstNodeInWorld, setIsFirstNodeInWorld] = useState(false);
+  const [hasScript, setHasScript] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -57,13 +58,15 @@ function NodoQuizPage() {
           .order("question_order", { ascending: true }),
         supabase
           .from("nodes")
-          .select("order_index")
+          .select("order_index,practice_script")
           .eq("id", nodeId)
           .maybeSingle(),
       ]);
       if (!alive) return;
       setQuestions((q as QuizQuestion[] | null) ?? []);
-      setIsFirstNodeInWorld(((nodeRow as { order_index?: number } | null)?.order_index ?? -1) === 0);
+      const row = nodeRow as { order_index?: number; practice_script?: unknown } | null;
+      setIsFirstNodeInWorld((row?.order_index ?? -1) === 0);
+      setHasScript(!!row?.practice_script);
     })();
     return () => {
       alive = false;
@@ -257,6 +260,19 @@ function NodoQuizPage() {
 
   // Pantallas de cierre — usan los componentes nuevos
   if (finished && passed) {
+    // Si el nodo tiene practice_script, el quiz es sólo un checkpoint:
+    // no completamos el nodo aquí — pasamos a la práctica, que se encarga.
+    if (hasScript) {
+      return (
+        <VictoryScreen
+          stars={3}
+          title="¡Teoría dominada!"
+          subtitle="Ahora, a practicarlo."
+          buttonText="A practicar →"
+          onContinue={() => navigate({ to: "/nodo/$nodeId/practica", params: { nodeId } })}
+        />
+      );
+    }
     return (
       <VictoryScreen
         stars={3}
