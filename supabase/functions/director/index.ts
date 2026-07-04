@@ -72,7 +72,15 @@ interface ReqBody {
 }
 
 type Decision = "continue" | "cut";
-type Reason = "max_turns" | "max_duration" | "min_turns_gate" | "scope_covered" | "scope_not_covered" | "no_objective" | "classifier_error";
+type Reason =
+  | "max_turns"
+  | "max_duration"
+  | "min_turns_gate"
+  | "scope_covered"
+  | "evidence_sufficient"
+  | "scope_not_covered"
+  | "no_objective"
+  | "classifier_error";
 
 interface DirectorResult {
   decision: Decision;
@@ -81,6 +89,8 @@ interface DirectorResult {
   elapsed_seconds: number | null;
   classifier_ran: boolean;
   classifier_result: boolean | null;
+  scope_covered: boolean | null;
+  evidence_sufficient: boolean | null;
   latency_ms: number;
   director_version: string;
 }
