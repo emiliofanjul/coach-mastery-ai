@@ -143,10 +143,19 @@ async function runClassifier(
   conversation_history: { role: string; content: string }[],
   apiKey: string,
   session_id: string | null,
-): Promise<{ scope_covered: boolean | null; latency_ms: number; error?: string }> {
-  const system = `Eres un clasificador binario. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true} o {"scope_covered": false}. Sin texto fuera del JSON. Sin markdown.
+): Promise<{
+  scope_covered: boolean | null;
+  evidence_sufficient: boolean | null;
+  latency_ms: number;
+  error?: string;
+}> {
+  const system = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false}. Sin texto fuera del JSON. Sin markdown.
 
-REGLA: scope_covered es true SOLO si el vendedor (user) ya ejecutó de forma COMPLETA lo que el objetivo pide. Si va a la mitad, si le faltan elementos, o si aún no se ha visto suficiente evidencia — es false. Prefiere false ante la duda: cortar temprano es peor que dejar un turno más.
+REGLAS:
+- scope_covered = true SOLO si el vendedor (user) ya ejecutó de forma COMPLETA lo que el objetivo pide.
+- evidence_sufficient = true si el transcript ya contiene material SUFICIENTE para EVALUAR el desempeño del vendedor en ese objetivo, LO HAYA LOGRADO O NO — sus intentos, su approach y su nivel ya son visibles y más turnos no agregarían información nueva.
+- Prefiere evidence_sufficient=true cuando el vendedor ya intentó su approach 2-3 veces sin cambiar de estrategia: ya sabes cómo lo hace.
+- Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).
 
 OBJETIVO DE LA PRÁCTICA:
 ${objective}`;
@@ -167,7 +176,7 @@ Responde solo el JSON.`;
       },
       body: JSON.stringify({
         model: HAIKU_MODEL,
-        max_tokens: 32,
+        max_tokens: 64,
         system,
         messages: [{ role: "user", content: user }],
       }),
@@ -177,22 +186,23 @@ Responde solo el JSON.`;
       const errText = await res.text();
       console.error("[director] haiku error:", res.status, errText);
       logLlmCall({ input_tokens: null, output_tokens: null, latency_ms, session_id });
-      return { scope_covered: null, latency_ms, error: `haiku ${res.status}` };
+      return { scope_covered: null, evidence_sufficient: null, latency_ms, error: `haiku ${res.status}` };
     }
     const j = await res.json();
     const text: string = j?.content?.[0]?.text ?? "";
     const it = j?.usage?.input_tokens ?? null;
     const ot = j?.usage?.output_tokens ?? null;
     logLlmCall({ input_tokens: it, output_tokens: ot, latency_ms, session_id });
-    const parsed = extractJson<{ scope_covered?: unknown }>(text);
+    const parsed = extractJson<{ scope_covered?: unknown; evidence_sufficient?: unknown }>(text);
     if (!parsed || typeof parsed.scope_covered !== "boolean") {
-      return { scope_covered: null, latency_ms, error: "unparseable classifier output" };
+      return { scope_covered: null, evidence_sufficient: null, latency_ms, error: "unparseable classifier output" };
     }
-    return { scope_covered: parsed.scope_covered, latency_ms };
+    const ev = typeof parsed.evidence_sufficient === "boolean" ? parsed.evidence_sufficient : false;
+    return { scope_covered: parsed.scope_covered, evidence_sufficient: ev, latency_ms };
   } catch (e) {
     const latency_ms = Date.now() - start;
     console.error("[director] haiku exception:", e);
-    return { scope_covered: null, latency_ms, error: e instanceof Error ? e.message : String(e) };
+    return { scope_covered: null, evidence_sufficient: null, latency_ms, error: e instanceof Error ? e.message : String(e) };
   }
 }
 
