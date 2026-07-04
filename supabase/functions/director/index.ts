@@ -64,6 +64,39 @@ async function logLlmCall(row: {
   }
 }
 
+async function logDirectorDecision(row: {
+  session_id?: string | null;
+  node_id?: string | null;
+  decision: string;
+  cut_reason: string | null;
+  user_turns: number;
+  elapsed_seconds: number | null;
+  classifier_ran: boolean;
+  scope_covered: boolean | null;
+  evidence_sufficient: boolean | null;
+  latency_ms: number;
+}) {
+  try {
+    const admin = getAdmin();
+    if (!admin) return;
+    await admin.from("director_decisions").insert({
+      session_id: row.session_id ?? null,
+      node_id: row.node_id ?? null,
+      decision: row.decision,
+      cut_reason: row.cut_reason,
+      user_turns: row.user_turns,
+      elapsed_seconds: row.elapsed_seconds,
+      classifier_ran: row.classifier_ran,
+      scope_covered: row.scope_covered,
+      evidence_sufficient: row.evidence_sufficient,
+      latency_ms: row.latency_ms,
+      director_version: DIRECTOR_VERSION,
+    });
+  } catch (e) {
+    console.error("[director] director_decisions insert failed:", e);
+  }
+}
+
 interface ReqBody {
   practice_script: any;
   conversation_history: { role: string; content: string }[];
