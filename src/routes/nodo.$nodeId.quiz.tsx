@@ -260,6 +260,19 @@ function NodoQuizPage() {
 
   // Pantallas de cierre — usan los componentes nuevos
   if (finished && passed) {
+    // Si el nodo tiene practice_script, el quiz es sólo un checkpoint:
+    // no completamos el nodo aquí — pasamos a la práctica, que se encarga.
+    if (hasScript) {
+      return (
+        <VictoryScreen
+          stars={3}
+          title="¡Teoría dominada!"
+          subtitle="Ahora, a practicarlo."
+          buttonText="A practicar →"
+          onContinue={() => navigate({ to: "/nodo/$nodeId/practica", params: { nodeId } })}
+        />
+      );
+    }
     return (
       <VictoryScreen
         stars={3}
