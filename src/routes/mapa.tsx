@@ -59,7 +59,35 @@ type DisplayNode = NodeRow & {
   stars: number;
 };
 
-const UNLOCKED_WORLDS = [0];
+// Regla genérica basada en datos:
+// - Mundo 0 siempre desbloqueado.
+// - Mundo N+1 se desbloquea cuando el boss (is_boss=true) del mundo N
+//   está en node_progress con status='done'.
+// - Si un mundo no tuviera boss, se desbloquea el siguiente al completar
+//   TODOS sus nodos (fallback de robustez — no debería usarse en prod).
+function computeUnlockedWorlds(
+  worlds: World[],
+  nodes: NodeRow[],
+  progress: Record<string, ProgressRow>,
+): Set<number> {
+  const unlocked = new Set<number>();
+  const sortedWorlds = [...worlds].sort((a, b) => a.order_index - b.order_index);
+  if (sortedWorlds.length === 0) return unlocked;
+  unlocked.add(sortedWorlds[0].id);
+  for (let i = 0; i < sortedWorlds.length - 1; i++) {
+    const w = sortedWorlds[i];
+    if (!unlocked.has(w.id)) break;
+    const worldNodes = nodes.filter((n) => n.world_id === w.id);
+    if (worldNodes.length === 0) break;
+    const bosses = worldNodes.filter((n) => n.is_boss);
+    const cleared = bosses.length > 0
+      ? bosses.every((b) => progress[b.id]?.status === "done")
+      : worldNodes.every((n) => progress[n.id]?.status === "done");
+    if (cleared) unlocked.add(sortedWorlds[i + 1].id);
+    else break;
+  }
+  return unlocked;
+}
 const NODE_RADIUS = 28; // 56 px
 const BOSS_RADIUS = 36; // 72 px
 const MAP_WIDTH = 320;
