@@ -606,7 +606,7 @@ function MapaPage() {
               </div>
             </section>
           );
-        })}
+        }); })()}
       </div>
 
       <NodeSheet
