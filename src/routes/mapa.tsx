@@ -418,11 +418,11 @@ function MapaPage() {
 
       {/* Apilados de abajo hacia arriba: render reverso */}
       <div style={{ display: "flex", flexDirection: "column-reverse" }}>
-        {worlds.map((world) => {
+        {(() => { const unlockedWorlds = computeUnlockedWorlds(worlds, nodes, progress); return worlds.map((world) => {
           const worldNodes = nodes
             .filter((n) => n.world_id === world.id)
             .sort((a, b) => a.order_index - b.order_index);
-          const isUnlocked = UNLOCKED_WORLDS.includes(world.id);
+          const isUnlocked = unlockedWorlds.has(world.id);
           const isCurrent = world.id === 0; // anchor
           const sectionHeight =
             PADDING_TOP + worldNodes.length * ROW_HEIGHT + 40;
