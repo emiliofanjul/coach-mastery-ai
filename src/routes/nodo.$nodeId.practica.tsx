@@ -1471,6 +1471,16 @@ function PracticaPage() {
                 { onConflict: "seller_id,node_id" },
               );
 
+              // Certificación Closer: pasar 9.3 con score >= 85 sella la certificación.
+              // Un pase menor completa el nodo pero no certifica (se puede repetir).
+              const finalScore = feedbackResult?.score ?? 0;
+              if (nodeId === "9.3" && finalScore >= 85 && !sellerData.certified_at) {
+                await supabase
+                  .from("sellers")
+                  .update({ certified_at: new Date().toISOString() })
+                  .eq("id", sellerData.id);
+              }
+
               const { data: currentNodeRow } = await supabase
                 .from("nodes")
                 .select("world_id, order_index")
