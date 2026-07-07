@@ -213,6 +213,47 @@ function SellerDetailPage() {
     }
   }
 
+  const latestEventId = events[0]?.id ?? null;
+  const hasNewEvents = !!latestEventId && coachRec?.last_event_id !== latestEventId;
+  const canGenerate = events.length > 0;
+
+  async function regenerateCoach() {
+    setCoachLoading(true);
+    setCoachError(null);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      const resp = await fetch(
+        `https://ydkvssqmaawnbxsdfxss.supabase.co/functions/v1/coach-recommendation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ seller_id: sellerId, force: !hasNewEvents }),
+        },
+      );
+      const json = await resp.json();
+      if (!resp.ok) throw new Error(json?.message ?? json?.error ?? "Error");
+      const r = json.recommendation;
+      setCoachRec({
+        prioridad: r.prioridad,
+        plan: Array.isArray(r.plan) ? r.plan : [],
+        fortaleza: r.fortaleza,
+        last_event_id: r.last_event_id,
+        updated_at: r.updated_at,
+        events_considered: r.events_considered ?? 0,
+        notes_considered: r.notes_considered ?? 0,
+      });
+    } catch (e: any) {
+      setCoachError(String(e?.message ?? e));
+    } finally {
+      setCoachLoading(false);
+    }
+  }
+
+
 
   if (loading) {
     return <div className="min-h-screen bg-[#08080F] text-white grid place-items-center"><div className="text-white/60 font-['DM_Sans']">Cargando…</div></div>;
