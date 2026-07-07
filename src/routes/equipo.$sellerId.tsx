@@ -410,10 +410,22 @@ function EventItem({
             </div>
           )}
 
-          {transcript && (
+          {transcriptTurns.length > 0 && (
             <div>
               <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Transcript</div>
-              <pre className="whitespace-pre-wrap text-white/80 text-xs bg-black/30 rounded-[10px] p-3 max-h-64 overflow-auto">{transcript}</pre>
+              <div className="bg-black/30 rounded-[10px] p-3 max-h-64 overflow-auto flex flex-col gap-2">
+                {transcriptTurns.map((t, i) => {
+                  const isSeller = /vend|seller|closer|user|me/i.test(t.role);
+                  return (
+                    <div key={i} className="text-xs">
+                      <div className={`uppercase tracking-widest text-[10px] mb-0.5 ${isSeller ? "text-[#FF6B2B]" : "text-white/40"}`}>
+                        {t.role}
+                      </div>
+                      <div className="text-white/80 whitespace-pre-wrap">{t.text}</div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
