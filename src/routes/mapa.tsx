@@ -445,6 +445,37 @@ function MapaPage() {
           >
             ¿Cómo funciona?
           </button>
+          <button
+            onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
+              await supabase.auth.signOut();
+              if (typeof window !== "undefined") {
+                sessionStorage.removeItem("closer:selectedRole");
+                sessionStorage.removeItem("closer:pendingCompanyName");
+                sessionStorage.removeItem("closer:pendingInviteCode");
+              }
+              navigate({ to: "/login", replace: true });
+            }}
+            aria-label="Cerrar sesión"
+            style={{
+              background: "transparent",
+              border: "1px solid #252535",
+              color: "#5A5A8A",
+              fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 600,
+              fontSize: "0.7rem",
+              padding: "0.4rem 0.7rem",
+              borderRadius: 99,
+              cursor: "pointer",
+              letterSpacing: "0.03em",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            <LogOut size={14} /> Salir
+          </button>
         </div>
       </header>
 
