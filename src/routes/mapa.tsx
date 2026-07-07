@@ -112,6 +112,7 @@ function yForIndex(i: number, total: number) {
 
 function MapaPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [worlds, setWorlds] = useState<World[]>([]);
   const [nodes, setNodes] = useState<NodeRow[]>([]);
   const [progress, setProgress] = useState<Record<string, ProgressRow>>({});
