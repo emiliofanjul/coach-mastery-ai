@@ -175,6 +175,14 @@ function MapaPage() {
       setWorlds((w as World[]) ?? []);
       setNodes((n as NodeRow[]) ?? []);
 
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", auth.user.id)
+        .maybeSingle();
+      if (prof?.role === "manager") setIsManager(true);
+
+
       if (s) {
         setSeller(s as typeof seller);
         const { data: p } = await supabase
