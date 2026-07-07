@@ -44,19 +44,72 @@ function ResetPasswordScreen() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // Supabase entrega el recovery via hash (#access_token=...&type=recovery)
-    // El cliente detecta la sesión automáticamente (detectSessionInUrl).
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
-        setReady(true);
+    let cancelled = false;
+
+    const finish = (ok: boolean, msg?: string) => {
+      if (cancelled) return;
+      if (ok) setReady(true);
+      else setError(msg ?? "El enlace expiró o ya se usó. Solicita uno nuevo.");
+    };
+
+    (async () => {
+      // 1) Sesión ya activa (link procesado antes)
+      const { data: pre } = await supabase.auth.getSession();
+      if (pre.session) return finish(true);
+
+      const url = new URL(window.location.href);
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+
+      // 2) Formato nuevo: ?token_hash=...&type=recovery
+      const tokenHash = url.searchParams.get("token_hash");
+      const type = url.searchParams.get("type") ?? hash.get("type");
+      if (tokenHash) {
+        const { error: e } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: (type as "recovery") || "recovery",
+        });
+        return finish(!e, e?.message);
       }
+
+      // 3) Formato PKCE: ?code=...
+      const code = url.searchParams.get("code");
+      if (code) {
+        const { error: e } = await supabase.auth.exchangeCodeForSession(code);
+        return finish(!e, e?.message);
+      }
+
+      // 4) Formato implícito: #access_token=...&refresh_token=...
+      const accessToken = hash.get("access_token");
+      const refreshToken = hash.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { error: e } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        return finish(!e, e?.message);
+      }
+
+      // 5) Nada útil → espera al listener por si detectSessionInUrl lo procesa
+      setTimeout(async () => {
+        const { data } = await supabase.auth.getSession();
+        if (!cancelled && !data.session) {
+          finish(false, "No encontramos un enlace de recuperación válido. Solicita uno nuevo.");
+        } else if (!cancelled && data.session) {
+          finish(true);
+        }
+      }, 1500);
+    })();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") finish(true);
     });
-    // También comprueba si ya hay sesión activa (link ya procesado)
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
+
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -98,8 +151,19 @@ function ResetPasswordScreen() {
             ? "Contraseña actualizada. Te llevamos a tu mapa..."
             : ready
               ? "Elige una nueva contraseña para tu cuenta."
-              : "Validando enlace de recuperación..."}
+              : error
+                ? "No pudimos validar el enlace."
+                : "Validando enlace de recuperación..."}
         </p>
+
+        {!ready && !done && error && (
+          <p style={{ marginTop: "16px", fontSize: "0.84rem", color: "#EF476F" }}>
+            {error}{" "}
+            <Link to="/forgot-password" style={{ color: "#FF6B2B", textDecoration: "none" }}>
+              Solicitar otro
+            </Link>
+          </p>
+        )}
 
         {ready && !done && (
           <form
