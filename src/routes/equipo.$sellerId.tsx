@@ -147,6 +147,18 @@ function SellerDetailPage() {
         setWorlds(wMap);
         setTotalNodes(Math.max(1, (allNodes.data ?? []).length));
         setDoneCount((progRes.data ?? []).length);
+        if (recRes.data) {
+          const r: any = recRes.data;
+          setCoachRec({
+            prioridad: r.prioridad,
+            plan: Array.isArray(r.plan) ? r.plan : [],
+            fortaleza: r.fortaleza,
+            last_event_id: r.last_event_id,
+            updated_at: r.updated_at,
+            events_considered: r.events_considered ?? 0,
+            notes_considered: r.notes_considered ?? 0,
+          });
+        }
         setLoading(false);
       }
     })();
