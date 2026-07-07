@@ -310,11 +310,71 @@ function SellerDetailPage() {
           </div>
         </section>
 
-        {/* Coaching AI placeholder */}
-        <section className="rounded-[14px] border border-dashed border-white/15 bg-white/[0.02] p-5 mb-6">
-          <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-1">Recomendación de coaching</div>
-          <div className="font-['DM_Sans'] text-white/70">Se genera con las próximas prácticas.</div>
+        {/* Coaching AI */}
+        <section className="rounded-[14px] border border-[#FF6B2B]/30 bg-gradient-to-br from-[#FF6B2B]/10 to-white/[0.02] p-5 mb-6">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#FF6B2B]" />
+              <div className="text-xs uppercase tracking-widest text-[#FF6B2B] font-['DM_Sans'] font-bold">Recomendación de coaching</div>
+            </div>
+            {coachRec ? (
+              <button
+                onClick={regenerateCoach}
+                disabled={coachLoading || !hasNewEvents}
+                title={!hasNewEvents ? "Sin prácticas nuevas" : "Regenerar con las prácticas nuevas"}
+                className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-['DM_Sans'] text-white/80 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <RefreshCw className={`h-3 w-3 ${coachLoading ? "animate-spin" : ""}`} />
+                Actualizar análisis
+              </button>
+            ) : canGenerate ? (
+              <button
+                onClick={regenerateCoach}
+                disabled={coachLoading}
+                className="inline-flex items-center gap-1 rounded-full bg-[#FF6B2B] hover:bg-[#ff7a42] px-3 py-1 text-xs font-['DM_Sans'] font-bold text-white disabled:opacity-60"
+              >
+                <Sparkles className="h-3 w-3" />
+                {coachLoading ? "Generando…" : "Generar"}
+              </button>
+            ) : null}
+          </div>
+
+          {coachError && (
+            <div className="text-red-300 text-xs font-['DM_Sans'] mb-2">{coachError}</div>
+          )}
+
+          {coachRec ? (
+            <div className="flex flex-col gap-3">
+              <div className="font-['Syne'] font-bold text-lg leading-snug">{coachRec.prioridad}</div>
+              {coachRec.plan.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-1.5">Plan de campo</div>
+                  <ol className="flex flex-col gap-1.5 list-decimal list-inside marker:text-[#FF6B2B]">
+                    {coachRec.plan.map((step, i) => (
+                      <li key={i} className="text-sm font-['DM_Sans'] text-white/85">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {coachRec.fortaleza && (
+                <div className="rounded-[10px] border border-green-500/20 bg-green-500/5 p-3">
+                  <div className="text-[10px] uppercase tracking-widest text-green-300/80 font-['DM_Sans'] mb-0.5">Conserva</div>
+                  <div className="text-sm font-['DM_Sans'] text-white/85">{coachRec.fortaleza}</div>
+                </div>
+              )}
+              <div className="text-[10px] text-white/40 font-['DM_Sans']">
+                {new Date(coachRec.updated_at).toLocaleDateString("es-MX", { day: "2-digit", month: "short" })} · {coachRec.events_considered} prácticas · {coachRec.notes_considered} notas
+              </div>
+            </div>
+          ) : (
+            <div className="font-['DM_Sans'] text-white/70 text-sm">
+              {canGenerate
+                ? "Genera un análisis con las prácticas registradas."
+                : "Se genera con las próximas prácticas."}
+            </div>
+          )}
         </section>
+
 
         {/* Historial */}
         <section className="mb-6">
