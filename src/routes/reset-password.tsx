@@ -151,8 +151,19 @@ function ResetPasswordScreen() {
             ? "Contraseña actualizada. Te llevamos a tu mapa..."
             : ready
               ? "Elige una nueva contraseña para tu cuenta."
-              : "Validando enlace de recuperación..."}
+              : error
+                ? "No pudimos validar el enlace."
+                : "Validando enlace de recuperación..."}
         </p>
+
+        {!ready && !done && error && (
+          <p style={{ marginTop: "16px", fontSize: "0.84rem", color: "#EF476F" }}>
+            {error}{" "}
+            <Link to="/forgot-password" style={{ color: "#FF6B2B", textDecoration: "none" }}>
+              Solicitar otro
+            </Link>
+          </p>
+        )}
 
         {ready && !done && (
           <form
