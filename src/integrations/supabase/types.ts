@@ -125,6 +125,72 @@ export type Database = {
         }
         Relationships: []
       }
+      coach_recommendations: {
+        Row: {
+          company_id: string
+          created_at: string
+          events_considered: number
+          fortaleza: string | null
+          id: string
+          input_summary: Json | null
+          last_event_id: string | null
+          model: string
+          notes_considered: number
+          plan: Json
+          prioridad: string
+          prompt_version: string
+          seller_id: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          events_considered?: number
+          fortaleza?: string | null
+          id?: string
+          input_summary?: Json | null
+          last_event_id?: string | null
+          model: string
+          notes_considered?: number
+          plan?: Json
+          prioridad: string
+          prompt_version?: string
+          seller_id: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          events_considered?: number
+          fortaleza?: string | null
+          id?: string
+          input_summary?: Json | null
+          last_event_id?: string | null
+          model?: string
+          notes_considered?: number
+          plan?: Json
+          prioridad?: string
+          prompt_version?: string
+          seller_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_recommendations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_recommendations_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: true
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           company_sales_brain: Json | null

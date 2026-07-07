@@ -1,8 +1,18 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+type CoachRec = {
+  prioridad: string;
+  plan: string[];
+  fortaleza: string | null;
+  last_event_id: string | null;
+  updated_at: string;
+  events_considered: number;
+  notes_considered: number;
+};
 
 export const Route = createFileRoute("/equipo/$sellerId")({
   head: () => ({ meta: [{ title: "Vendedor — Closer" }] }),
@@ -66,6 +76,9 @@ function SellerDetailPage() {
   const [totalNodes, setTotalNodes] = useState(1);
   const [doneCount, setDoneCount] = useState(0);
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
+  const [coachRec, setCoachRec] = useState<CoachRec | null>(null);
+  const [coachLoading, setCoachLoading] = useState(false);
+  const [coachError, setCoachError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,7 +109,7 @@ function SellerDetailPage() {
         return;
       }
 
-      const [evRes, skRes, allSkills, allNodes, allWorlds, progRes] = await Promise.all([
+      const [evRes, skRes, allSkills, allNodes, allWorlds, progRes, recRes] = await Promise.all([
         supabase
           .from("seller_events")
           .select("id, created_at, node_id, audio_url, payload")
@@ -112,6 +125,10 @@ function SellerDetailPage() {
         supabase.from("nodes").select("id, name, world_id"),
         supabase.from("worlds").select("id, name"),
         supabase.from("node_progress").select("status").eq("seller_id", sellerId).eq("status", "done"),
+        supabase
+          .from("coach_recommendations")
+          .select("prioridad, plan, fortaleza, last_event_id, updated_at, events_considered, notes_considered")
+          .eq("seller_id", sellerId).maybeSingle(),
       ]);
 
       const skMap: Record<string, Skill> = {};
@@ -130,6 +147,18 @@ function SellerDetailPage() {
         setWorlds(wMap);
         setTotalNodes(Math.max(1, (allNodes.data ?? []).length));
         setDoneCount((progRes.data ?? []).length);
+        if (recRes.data) {
+          const r: any = recRes.data;
+          setCoachRec({
+            prioridad: r.prioridad,
+            plan: Array.isArray(r.plan) ? r.plan : [],
+            fortaleza: r.fortaleza,
+            last_event_id: r.last_event_id,
+            updated_at: r.updated_at,
+            events_considered: r.events_considered ?? 0,
+            notes_considered: r.notes_considered ?? 0,
+          });
+        }
         setLoading(false);
       }
     })();
@@ -183,6 +212,47 @@ function SellerDetailPage() {
       setAudioUrls((prev) => ({ ...prev, [evId]: "__error__" }));
     }
   }
+
+  const latestEventId = events[0]?.id ?? null;
+  const hasNewEvents = !!latestEventId && coachRec?.last_event_id !== latestEventId;
+  const canGenerate = events.length > 0;
+
+  async function regenerateCoach() {
+    setCoachLoading(true);
+    setCoachError(null);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      const resp = await fetch(
+        `https://ydkvssqmaawnbxsdfxss.supabase.co/functions/v1/coach-recommendation`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ seller_id: sellerId, force: !hasNewEvents }),
+        },
+      );
+      const json = await resp.json();
+      if (!resp.ok) throw new Error(json?.message ?? json?.error ?? "Error");
+      const r = json.recommendation;
+      setCoachRec({
+        prioridad: r.prioridad,
+        plan: Array.isArray(r.plan) ? r.plan : [],
+        fortaleza: r.fortaleza,
+        last_event_id: r.last_event_id,
+        updated_at: r.updated_at,
+        events_considered: r.events_considered ?? 0,
+        notes_considered: r.notes_considered ?? 0,
+      });
+    } catch (e: any) {
+      setCoachError(String(e?.message ?? e));
+    } finally {
+      setCoachLoading(false);
+    }
+  }
+
 
 
   if (loading) {
@@ -240,11 +310,71 @@ function SellerDetailPage() {
           </div>
         </section>
 
-        {/* Coaching AI placeholder */}
-        <section className="rounded-[14px] border border-dashed border-white/15 bg-white/[0.02] p-5 mb-6">
-          <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-1">Recomendación de coaching</div>
-          <div className="font-['DM_Sans'] text-white/70">Se genera con las próximas prácticas.</div>
+        {/* Coaching AI */}
+        <section className="rounded-[14px] border border-[#FF6B2B]/30 bg-gradient-to-br from-[#FF6B2B]/10 to-white/[0.02] p-5 mb-6">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#FF6B2B]" />
+              <div className="text-xs uppercase tracking-widest text-[#FF6B2B] font-['DM_Sans'] font-bold">Recomendación de coaching</div>
+            </div>
+            {coachRec ? (
+              <button
+                onClick={regenerateCoach}
+                disabled={coachLoading || !hasNewEvents}
+                title={!hasNewEvents ? "Sin prácticas nuevas" : "Regenerar con las prácticas nuevas"}
+                className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-['DM_Sans'] text-white/80 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <RefreshCw className={`h-3 w-3 ${coachLoading ? "animate-spin" : ""}`} />
+                Actualizar análisis
+              </button>
+            ) : canGenerate ? (
+              <button
+                onClick={regenerateCoach}
+                disabled={coachLoading}
+                className="inline-flex items-center gap-1 rounded-full bg-[#FF6B2B] hover:bg-[#ff7a42] px-3 py-1 text-xs font-['DM_Sans'] font-bold text-white disabled:opacity-60"
+              >
+                <Sparkles className="h-3 w-3" />
+                {coachLoading ? "Generando…" : "Generar"}
+              </button>
+            ) : null}
+          </div>
+
+          {coachError && (
+            <div className="text-red-300 text-xs font-['DM_Sans'] mb-2">{coachError}</div>
+          )}
+
+          {coachRec ? (
+            <div className="flex flex-col gap-3">
+              <div className="font-['Syne'] font-bold text-lg leading-snug">{coachRec.prioridad}</div>
+              {coachRec.plan.length > 0 && (
+                <div>
+                  <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-1.5">Plan de campo</div>
+                  <ol className="flex flex-col gap-1.5 list-decimal list-inside marker:text-[#FF6B2B]">
+                    {coachRec.plan.map((step, i) => (
+                      <li key={i} className="text-sm font-['DM_Sans'] text-white/85">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {coachRec.fortaleza && (
+                <div className="rounded-[10px] border border-green-500/20 bg-green-500/5 p-3">
+                  <div className="text-[10px] uppercase tracking-widest text-green-300/80 font-['DM_Sans'] mb-0.5">Conserva</div>
+                  <div className="text-sm font-['DM_Sans'] text-white/85">{coachRec.fortaleza}</div>
+                </div>
+              )}
+              <div className="text-[10px] text-white/40 font-['DM_Sans']">
+                {new Date(coachRec.updated_at).toLocaleDateString("es-MX", { day: "2-digit", month: "short" })} · {coachRec.events_considered} prácticas · {coachRec.notes_considered} notas
+              </div>
+            </div>
+          ) : (
+            <div className="font-['DM_Sans'] text-white/70 text-sm">
+              {canGenerate
+                ? "Genera un análisis con las prácticas registradas."
+                : "Se genera con las próximas prácticas."}
+            </div>
+          )}
         </section>
+
 
         {/* Historial */}
         <section className="mb-6">
