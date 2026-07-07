@@ -356,11 +356,20 @@ function EventItem({
   const score = typeof ev.payload?.score === "number" ? ev.payload.score : null;
   const stars = typeof ev.payload?.stars === "number" ? ev.payload.stars : 0;
   const evalBlock = ev.payload?.evaluation ?? {};
-  const transcript: string = ev.payload?.transcript ?? "";
+  const rawTranscript = ev.payload?.transcript;
+  const transcriptTurns: Array<{ role: string; text: string }> = Array.isArray(rawTranscript)
+    ? rawTranscript.map((t: any) => ({
+        role: String(t?.role ?? t?.speaker ?? "—"),
+        text: String(t?.text ?? t?.content ?? t?.message ?? ""),
+      })).filter((t) => t.text.length > 0)
+    : typeof rawTranscript === "string" && rawTranscript.trim().length > 0
+      ? [{ role: "transcript", text: rawTranscript }]
+      : [];
   const criteriosCumplidos: string[] = Array.isArray(evalBlock.criterios_cumplidos) ? evalBlock.criterios_cumplidos : [];
   const observations: any[] = Array.isArray(evalBlock.observations) ? evalBlock.observations : [];
   const flags: string[] = Array.isArray(evalBlock.flags_detected) ? evalBlock.flags_detected : [];
   const mision: string | null = typeof evalBlock.mision === "string" ? evalBlock.mision : null;
+
 
   return (
     <div className="rounded-[14px] border border-white/10 bg-white/[0.03] overflow-hidden">
@@ -401,10 +410,22 @@ function EventItem({
             </div>
           )}
 
-          {transcript && (
+          {transcriptTurns.length > 0 && (
             <div>
               <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Transcript</div>
-              <pre className="whitespace-pre-wrap text-white/80 text-xs bg-black/30 rounded-[10px] p-3 max-h-64 overflow-auto">{transcript}</pre>
+              <div className="bg-black/30 rounded-[10px] p-3 max-h-64 overflow-auto flex flex-col gap-2">
+                {transcriptTurns.map((t, i) => {
+                  const isSeller = /vend|seller|closer|user|me/i.test(t.role);
+                  return (
+                    <div key={i} className="text-xs">
+                      <div className={`uppercase tracking-widest text-[10px] mb-0.5 ${isSeller ? "text-[#FF6B2B]" : "text-white/40"}`}>
+                        {t.role}
+                      </div>
+                      <div className="text-white/80 whitespace-pre-wrap">{t.text}</div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
