@@ -76,6 +76,9 @@ function SellerDetailPage() {
   const [totalNodes, setTotalNodes] = useState(1);
   const [doneCount, setDoneCount] = useState(0);
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
+  const [coachRec, setCoachRec] = useState<CoachRec | null>(null);
+  const [coachLoading, setCoachLoading] = useState(false);
+  const [coachError, setCoachError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
