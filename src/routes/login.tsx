@@ -113,13 +113,12 @@ function LoginScreen() {
             <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>
           )}
 
-          <a
-            href="#"
-            onClick={(e) => e.preventDefault()}
+          <Link
+            to="/forgot-password"
             style={{ alignSelf: "flex-end", fontSize: "0.76rem", color: "#FF6B2B", textDecoration: "none" }}
           >
             ¿Olvidaste tu contraseña?
-          </a>
+          </Link>
 
           <button type="submit" disabled={loading} style={primaryBtn(loading)}>
             {loading ? "Iniciando sesión..." : "Iniciar sesión"}

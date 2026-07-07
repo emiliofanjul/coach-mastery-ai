@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoleRouteImport } from './routes/role'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -32,6 +33,11 @@ const SignupRoute = SignupRouteImport.update({
 const RoleRoute = RoleRouteImport.update({
   id: '/role',
   path: '/role',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MapaRoute = MapaRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/mapa'
+    | '/reset-password'
     | '/role'
     | '/signup'
     | '/equipo/$sellerId'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/mapa'
+    | '/reset-password'
     | '/role'
     | '/signup'
     | '/equipo/$sellerId'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/mapa'
+    | '/reset-password'
     | '/role'
     | '/signup'
     | '/equipo/$sellerId'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   MapaRoute: typeof MapaRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
   EquipoSellerIdRoute: typeof EquipoSellerIdRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       path: '/role'
       fullPath: '/role'
       preLoaderRoute: typeof RoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mapa': {
@@ -332,6 +352,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   MapaRoute: MapaRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
   EquipoSellerIdRoute: EquipoSellerIdRoute,
