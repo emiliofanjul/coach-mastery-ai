@@ -19,6 +19,7 @@ import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller
 import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
 import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
+import { Route as EquipoSellerIdRouteImport } from './routes/equipo.$sellerId'
 import { Route as NodoNodeIdQuizRouteImport } from './routes/nodo.$nodeId.quiz'
 import { Route as NodoNodeIdPracticaRouteImport } from './routes/nodo.$nodeId.practica'
 
@@ -72,6 +73,11 @@ const NodoNodeIdRoute = NodoNodeIdRouteImport.update({
   path: '/nodo/$nodeId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EquipoSellerIdRoute = EquipoSellerIdRouteImport.update({
+  id: '/$sellerId',
+  path: '/$sellerId',
+  getParentRoute: () => EquipoRoute,
+} as any)
 const NodoNodeIdQuizRoute = NodoNodeIdQuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
@@ -85,11 +91,12 @@ const NodoNodeIdPracticaRoute = NodoNodeIdPracticaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/equipo': typeof EquipoRoute
+  '/equipo': typeof EquipoRouteWithChildren
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/equipo/$sellerId': typeof EquipoSellerIdRoute
   '/nodo/$nodeId': typeof NodoNodeIdRouteWithChildren
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
@@ -99,11 +106,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/equipo': typeof EquipoRoute
+  '/equipo': typeof EquipoRouteWithChildren
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/equipo/$sellerId': typeof EquipoSellerIdRoute
   '/nodo/$nodeId': typeof NodoNodeIdRouteWithChildren
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
@@ -114,11 +122,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/equipo': typeof EquipoRoute
+  '/equipo': typeof EquipoRouteWithChildren
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/equipo/$sellerId': typeof EquipoSellerIdRoute
   '/nodo/$nodeId': typeof NodoNodeIdRouteWithChildren
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/role'
     | '/signup'
+    | '/equipo/$sellerId'
     | '/nodo/$nodeId'
     | '/onboarding/manager'
     | '/onboarding/map-intro'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/role'
     | '/signup'
+    | '/equipo/$sellerId'
     | '/nodo/$nodeId'
     | '/onboarding/manager'
     | '/onboarding/map-intro'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/role'
     | '/signup'
+    | '/equipo/$sellerId'
     | '/nodo/$nodeId'
     | '/onboarding/manager'
     | '/onboarding/map-intro'
@@ -173,7 +185,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  EquipoRoute: typeof EquipoRoute
+  EquipoRoute: typeof EquipoRouteWithChildren
   LoginRoute: typeof LoginRoute
   MapaRoute: typeof MapaRoute
   RoleRoute: typeof RoleRoute
@@ -256,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NodoNodeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipo/$sellerId': {
+      id: '/equipo/$sellerId'
+      path: '/$sellerId'
+      fullPath: '/equipo/$sellerId'
+      preLoaderRoute: typeof EquipoSellerIdRouteImport
+      parentRoute: typeof EquipoRoute
+    }
     '/nodo/$nodeId/quiz': {
       id: '/nodo/$nodeId/quiz'
       path: '/quiz'
@@ -273,6 +292,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface EquipoRouteChildren {
+  EquipoSellerIdRoute: typeof EquipoSellerIdRoute
+}
+
+const EquipoRouteChildren: EquipoRouteChildren = {
+  EquipoSellerIdRoute: EquipoSellerIdRoute,
+}
+
+const EquipoRouteWithChildren =
+  EquipoRoute._addFileChildren(EquipoRouteChildren)
+
 interface NodoNodeIdRouteChildren {
   NodoNodeIdPracticaRoute: typeof NodoNodeIdPracticaRoute
   NodoNodeIdQuizRoute: typeof NodoNodeIdQuizRoute
@@ -289,7 +319,7 @@ const NodoNodeIdRouteWithChildren = NodoNodeIdRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  EquipoRoute: EquipoRoute,
+  EquipoRoute: EquipoRouteWithChildren,
   LoginRoute: LoginRoute,
   MapaRoute: MapaRoute,
   RoleRoute: RoleRoute,
