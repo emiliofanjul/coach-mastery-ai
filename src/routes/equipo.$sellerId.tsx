@@ -409,7 +409,9 @@ function EventItem({
           {audioConsent && ev.audio_url && (
             <div>
               <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Audio</div>
-              {audioUrl ? (
+              {audioUrl === "__error__" ? (
+                <div className="text-red-300 text-xs">No se pudo cargar el audio.</div>
+              ) : audioUrl ? (
                 <audio controls src={audioUrl} className="w-full" />
               ) : (
                 <div className="text-white/50 text-xs">Cargando audio…</div>
