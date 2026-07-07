@@ -169,14 +169,21 @@ function SellerDetailPage() {
 
   async function loadAudio(evId: string, url: string) {
     if (audioUrls[evId]) return;
-    // audio_url may be a full URL already or a storage path
     if (url.startsWith("http")) {
       setAudioUrls((prev) => ({ ...prev, [evId]: url }));
       return;
     }
-    const { data } = await supabase.storage.from("practice-audio").createSignedUrl(url, 3600);
-    if (data?.signedUrl) setAudioUrls((prev) => ({ ...prev, [evId]: data.signedUrl }));
+    const { data, error } = await supabase.storage
+      .from("practice-audio")
+      .createSignedUrl(url, 3600);
+    if (data?.signedUrl) {
+      setAudioUrls((prev) => ({ ...prev, [evId]: data.signedUrl }));
+    } else {
+      console.warn("[practice-audio] signed url error", error);
+      setAudioUrls((prev) => ({ ...prev, [evId]: "__error__" }));
+    }
   }
+
 
   if (loading) {
     return <div className="min-h-screen bg-[#08080F] text-white grid place-items-center"><div className="text-white/60 font-['DM_Sans']">Cargando…</div></div>;
@@ -402,7 +409,9 @@ function EventItem({
           {audioConsent && ev.audio_url && (
             <div>
               <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Audio</div>
-              {audioUrl ? (
+              {audioUrl === "__error__" ? (
+                <div className="text-red-300 text-xs">No se pudo cargar el audio.</div>
+              ) : audioUrl ? (
                 <audio controls src={audioUrl} className="w-full" />
               ) : (
                 <div className="text-white/50 text-xs">Cargando audio…</div>
