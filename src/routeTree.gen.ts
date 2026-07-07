@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoleRouteImport } from './routes/role'
 import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as EquipoRouteImport } from './routes/equipo'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
 import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
@@ -39,6 +40,11 @@ const MapaRoute = MapaRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipoRoute = EquipoRouteImport.update({
+  id: '/equipo',
+  path: '/equipo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -79,6 +85,7 @@ const NodoNodeIdPracticaRoute = NodoNodeIdPracticaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/equipo': typeof EquipoRoute
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/equipo': typeof EquipoRoute
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
@@ -106,6 +114,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/equipo': typeof EquipoRoute
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/role': typeof RoleRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/equipo'
     | '/login'
     | '/mapa'
     | '/role'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/equipo'
     | '/login'
     | '/mapa'
     | '/role'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/equipo'
     | '/login'
     | '/mapa'
     | '/role'
@@ -161,6 +173,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EquipoRoute: typeof EquipoRoute
   LoginRoute: typeof LoginRoute
   MapaRoute: typeof MapaRoute
   RoleRoute: typeof RoleRoute
@@ -199,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipo': {
+      id: '/equipo'
+      path: '/equipo'
+      fullPath: '/equipo'
+      preLoaderRoute: typeof EquipoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -269,6 +289,7 @@ const NodoNodeIdRouteWithChildren = NodoNodeIdRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EquipoRoute: EquipoRoute,
   LoginRoute: LoginRoute,
   MapaRoute: MapaRoute,
   RoleRoute: RoleRoute,
