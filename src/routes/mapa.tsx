@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Sheet,
@@ -9,7 +10,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Lock, Check, Star, Trophy, Play } from "lucide-react";
+import { Lock, Check, Star, Trophy, Play, LogOut } from "lucide-react";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
@@ -111,6 +112,7 @@ function yForIndex(i: number, total: number) {
 
 function MapaPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [worlds, setWorlds] = useState<World[]>([]);
   const [nodes, setNodes] = useState<NodeRow[]>([]);
   const [progress, setProgress] = useState<Record<string, ProgressRow>>({});
@@ -442,6 +444,37 @@ function MapaPage() {
             }}
           >
             ¿Cómo funciona?
+          </button>
+          <button
+            onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
+              await supabase.auth.signOut();
+              if (typeof window !== "undefined") {
+                sessionStorage.removeItem("closer:selectedRole");
+                sessionStorage.removeItem("closer:pendingCompanyName");
+                sessionStorage.removeItem("closer:pendingInviteCode");
+              }
+              navigate({ to: "/login", replace: true });
+            }}
+            aria-label="Cerrar sesión"
+            style={{
+              background: "transparent",
+              border: "1px solid #252535",
+              color: "#5A5A8A",
+              fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 600,
+              fontSize: "0.7rem",
+              padding: "0.4rem 0.7rem",
+              borderRadius: 99,
+              cursor: "pointer",
+              letterSpacing: "0.03em",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            <LogOut size={14} /> Salir
           </button>
         </div>
       </header>
