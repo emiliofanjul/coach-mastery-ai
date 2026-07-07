@@ -526,6 +526,8 @@ function PracticaPage() {
       if (sendTimer) clearTimeout(sendTimer);
       setIsUserListening(false);
       recognitionRef.current = null;
+      // Pausar la grabación entre turnos: solo capturamos cuando el vendedor habla.
+      pauseAudioCapture();
       const text = finalText.trim();
       setInterimTranscript("");
       // Descartar turno del usuario si el Director ya cortó (carrera: user hablando
@@ -538,11 +540,15 @@ function PracticaPage() {
     recognitionRef.current = rec;
     setInterimTranscript("");
     setIsUserListening(true);
+    // Arrancar/reanudar la captura de audio: el mic ya está activo para STT,
+    // aprovechamos el mismo momento para grabar solo el turno del vendedor.
+    void startAudioCapture();
     try {
       rec.start();
     } catch (err) {
       console.error("[voice] rec.start failed:", err);
       setIsUserListening(false);
+      pauseAudioCapture();
     }
   }
 
