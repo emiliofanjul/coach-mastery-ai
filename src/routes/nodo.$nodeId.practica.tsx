@@ -321,11 +321,18 @@ function PracticaPage() {
   }
 
   // ── Captura de audio (MediaRecorder) ─────────────────────────────
-  // Graba el mismo stream de micrófono en paralelo al SpeechRecognition.
-  // Solo se activa si el vendedor dio audio_consent.
+  // Solo graba mientras el vendedor está hablando (mic activo). Entre turnos
+  // se pausa para no acumular silencio ni voz del agente TTS. El blob final
+  // concatena únicamente los tramos hablados del vendedor.
   async function startAudioCapture() {
-    if (mediaRecorderRef.current) return; // ya activo
     if (!sellerData?.audio_consent) return;
+    const existing = mediaRecorderRef.current;
+    if (existing) {
+      if (existing.state === "paused") {
+        try { existing.resume(); } catch {}
+      }
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaStreamRef.current = stream;
@@ -343,6 +350,14 @@ function PracticaPage() {
       console.error("[audio-capture] failed to start:", err);
     }
   }
+
+  function pauseAudioCapture() {
+    const rec = mediaRecorderRef.current;
+    if (rec && rec.state === "recording") {
+      try { rec.pause(); } catch {}
+    }
+  }
+
 
   function stopAudioCapture(): Promise<Blob | null> {
     return new Promise((resolve) => {
