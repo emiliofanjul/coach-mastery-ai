@@ -1,8 +1,18 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+type CoachRec = {
+  prioridad: string;
+  plan: string[];
+  fortaleza: string | null;
+  last_event_id: string | null;
+  updated_at: string;
+  events_considered: number;
+  notes_considered: number;
+};
 
 export const Route = createFileRoute("/equipo/$sellerId")({
   head: () => ({ meta: [{ title: "Vendedor — Closer" }] }),
