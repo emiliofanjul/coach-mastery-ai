@@ -819,7 +819,9 @@ function PracticaPage() {
       sessionEndedRef.current = false;
       cutRef.current = false;
       audioUploadedRef.current = false;
-      void startAudioCapture();
+      // Nota: la captura de audio arranca cuando el vendedor toma el mic
+      // (dentro de startRecognition), no aquí — así no grabamos el TTS del
+      // agente ni el silencio inicial.
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
