@@ -1,0 +1,468 @@
+import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export const Route = createFileRoute("/equipo/$sellerId")({
+  head: () => ({ meta: [{ title: "Vendedor — Closer" }] }),
+  component: SellerDetailPage,
+});
+
+type Seller = {
+  id: string;
+  full_name: string | null;
+  current_world: number;
+  current_node: string;
+  streak_days: number;
+  audio_consent: boolean;
+  certified_at: string | null;
+  company_id: string;
+};
+
+type EventRow = {
+  id: string;
+  created_at: string;
+  node_id: string | null;
+  audio_url: string | null;
+  payload: any;
+};
+
+type SkillState = {
+  skill_id: string;
+  mastery_score: number;
+  last_practiced_at: string | null;
+  evidence_count: number;
+  recurring_failures: Record<string, number>;
+};
+
+type Skill = { id: string; name: string; category: string; code: string };
+
+type NodeInfo = { id: string; name: string; world_id: number };
+
+function fmtDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+function decay(mastery: number, lastAt: string | null): number {
+  if (mastery == null) return 0;
+  if (!lastAt) return mastery;
+  const days = Math.max(0, Math.floor((Date.now() - new Date(lastAt).getTime()) / 86_400_000));
+  const extra = Math.max(0, days - 7);
+  return Math.max(0, +(mastery - 0.5 * extra).toFixed(2));
+}
+
+function SellerDetailPage() {
+  const { sellerId } = useParams({ from: "/equipo/$sellerId" });
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [denied, setDenied] = useState(false);
+  const [seller, setSeller] = useState<Seller | null>(null);
+  const [events, setEvents] = useState<EventRow[]>([]);
+  const [skillStates, setSkillStates] = useState<SkillState[]>([]);
+  const [skills, setSkills] = useState<Record<string, Skill>>({});
+  const [nodes, setNodes] = useState<Record<string, NodeInfo>>({});
+  const [worlds, setWorlds] = useState<Record<number, string>>({});
+  const [totalNodes, setTotalNodes] = useState(1);
+  const [doneCount, setDoneCount] = useState(0);
+  const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate({ to: "/login" });
+        return;
+      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, company_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!profile || profile.role !== "manager" || !profile.company_id) {
+        if (!cancelled) { setDenied(true); setLoading(false); }
+        return;
+      }
+
+      const { data: s } = await supabase
+        .from("sellers")
+        .select("id, full_name, current_world, current_node, streak_days, audio_consent, certified_at, company_id")
+        .eq("id", sellerId)
+        .maybeSingle();
+
+      if (!s || s.company_id !== profile.company_id) {
+        if (!cancelled) { setDenied(true); setLoading(false); }
+        return;
+      }
+
+      const [evRes, skRes, allSkills, allNodes, allWorlds, progRes] = await Promise.all([
+        supabase
+          .from("seller_events")
+          .select("id, created_at, node_id, audio_url, payload")
+          .eq("seller_id", sellerId)
+          .eq("event_type", "practice_session")
+          .order("created_at", { ascending: false })
+          .limit(100),
+        supabase
+          .from("seller_skill_state")
+          .select("skill_id, mastery_score, last_practiced_at, evidence_count, recurring_failures")
+          .eq("seller_id", sellerId),
+        supabase.from("skills").select("id, name, category, code"),
+        supabase.from("nodes").select("id, name, world_id"),
+        supabase.from("worlds").select("id, name"),
+        supabase.from("node_progress").select("status").eq("seller_id", sellerId).eq("status", "done"),
+      ]);
+
+      const skMap: Record<string, Skill> = {};
+      for (const sk of (allSkills.data ?? []) as Skill[]) skMap[sk.id] = sk;
+      const nMap: Record<string, NodeInfo> = {};
+      for (const n of (allNodes.data ?? []) as NodeInfo[]) nMap[n.id] = n;
+      const wMap: Record<number, string> = {};
+      for (const w of (allWorlds.data ?? []) as { id: number; name: string }[]) wMap[w.id] = w.name;
+
+      if (!cancelled) {
+        setSeller(s as Seller);
+        setEvents((evRes.data ?? []) as EventRow[]);
+        setSkillStates((skRes.data ?? []) as SkillState[]);
+        setSkills(skMap);
+        setNodes(nMap);
+        setWorlds(wMap);
+        setTotalNodes(Math.max(1, (allNodes.data ?? []).length));
+        setDoneCount((progRes.data ?? []).length);
+        setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [sellerId, navigate]);
+
+  const skillsByCategory = useMemo(() => {
+    const grouped: Record<string, Array<{ id: string; name: string; current: number; failures: Record<string, number> }>> = {};
+    for (const st of skillStates) {
+      const sk = skills[st.skill_id];
+      if (!sk) continue;
+      const current = decay(Number(st.mastery_score), st.last_practiced_at);
+      (grouped[sk.category] ??= []).push({ id: st.skill_id, name: sk.name, current, failures: st.recurring_failures ?? {} });
+    }
+    for (const c of Object.keys(grouped)) grouped[c].sort((a, b) => b.current - a.current);
+    return grouped;
+  }, [skillStates, skills]);
+
+  const topStrong = useMemo(() => {
+    const all = Object.values(skillsByCategory).flat();
+    return [...all].sort((a, b) => b.current - a.current).slice(0, 3);
+  }, [skillsByCategory]);
+  const topWeak = useMemo(() => {
+    const all = Object.values(skillsByCategory).flat();
+    return [...all].sort((a, b) => a.current - b.current).slice(0, 3);
+  }, [skillsByCategory]);
+
+  const failureCounts = useMemo(() => {
+    const totals: Record<string, number> = {};
+    for (const st of skillStates) {
+      for (const [flag, n] of Object.entries(st.recurring_failures ?? {})) {
+        totals[flag] = (totals[flag] ?? 0) + (n as number);
+      }
+    }
+    return Object.entries(totals).sort((a, b) => b[1] - a[1]);
+  }, [skillStates]);
+
+  async function loadAudio(evId: string, url: string) {
+    if (audioUrls[evId]) return;
+    // audio_url may be a full URL already or a storage path
+    if (url.startsWith("http")) {
+      setAudioUrls((prev) => ({ ...prev, [evId]: url }));
+      return;
+    }
+    const { data } = await supabase.storage.from("practice-audio").createSignedUrl(url, 3600);
+    if (data?.signedUrl) setAudioUrls((prev) => ({ ...prev, [evId]: data.signedUrl }));
+  }
+
+  if (loading) {
+    return <div className="min-h-screen bg-[#08080F] text-white grid place-items-center"><div className="text-white/60 font-['DM_Sans']">Cargando…</div></div>;
+  }
+  if (denied || !seller) {
+    return (
+      <div className="min-h-screen bg-[#08080F] text-white grid place-items-center px-6 text-center">
+        <div>
+          <div className="font-['Syne'] text-2xl font-bold mb-2">Sin acceso</div>
+          <div className="text-white/60 font-['DM_Sans'] mb-4">Este vendedor no pertenece a tu empresa o no tienes rol de manager.</div>
+          <Button onClick={() => navigate({ to: "/equipo" })} className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px]">
+            Volver al equipo
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentNodeInfo = nodes[seller.current_node];
+  const pctMap = Math.round((doneCount / totalNodes) * 100);
+
+  return (
+    <div className="min-h-screen bg-[#08080F] text-white">
+      <div className="mx-auto w-full max-w-[720px] px-5 pt-6 pb-24">
+        <Link to="/equipo" className="text-white/60 hover:text-white flex items-center gap-2 text-sm font-['DM_Sans'] mb-6">
+          <ArrowLeft className="h-4 w-4" /> Equipo
+        </Link>
+
+        {/* Header */}
+        <section className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 mb-6">
+          <div className="flex items-start gap-4">
+            <div className="grid h-14 w-14 place-items-center rounded-full bg-white/10 font-['Syne'] font-black text-xl shrink-0">
+              {(seller.full_name ?? "?").trim().charAt(0).toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-['Syne'] text-2xl font-black truncate">{seller.full_name ?? "Sin nombre"}</h1>
+                {seller.certified_at && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#FF6B2B]/20 text-[#FF6B2B] text-xs px-2 py-0.5 font-['DM_Sans']">
+                    <Trophy className="h-3 w-3" /> Certificado Closer
+                  </span>
+                )}
+              </div>
+              <div className="text-white/60 text-sm font-['DM_Sans'] mt-1">
+                M{seller.current_world} · {worlds[seller.current_world] ?? "—"} · {seller.current_node} {currentNodeInfo ? `— ${currentNodeInfo.name}` : ""}
+              </div>
+              <div className="mt-3 flex items-center gap-4 text-sm font-['DM_Sans']">
+                <span className="text-white/70">{pctMap}% del mapa</span>
+                <span className="inline-flex items-center gap-1 text-white/70">
+                  <Flame className="h-4 w-4 text-[#FF6B2B]" /> {seller.streak_days} d
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Coaching AI placeholder */}
+        <section className="rounded-[14px] border border-dashed border-white/15 bg-white/[0.02] p-5 mb-6">
+          <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-1">Recomendación de coaching</div>
+          <div className="font-['DM_Sans'] text-white/70">Se genera con las próximas prácticas.</div>
+        </section>
+
+        {/* Historial */}
+        <section className="mb-6">
+          <h2 className="font-['Syne'] text-xl font-bold mb-3">Historial de prácticas</h2>
+          {events.length === 0 ? (
+            <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-6 text-white/60 font-['DM_Sans'] text-center">
+              Sin prácticas registradas todavía.
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {events.map((ev) => (
+                <EventItem
+                  key={ev.id}
+                  ev={ev}
+                  nodeName={ev.node_id ? nodes[ev.node_id]?.name ?? null : null}
+                  audioConsent={seller.audio_consent}
+                  audioUrl={audioUrls[ev.id] ?? null}
+                  onNeedAudio={loadAudio}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Skills */}
+        <section className="mb-6">
+          <h2 className="font-['Syne'] text-xl font-bold mb-3">Estado de skills</h2>
+          {skillStates.length === 0 ? (
+            <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-6 text-white/60 font-['DM_Sans'] text-center">
+              Aún no hay evidencia de skills.
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <SkillList title="Top fuertes" items={topStrong} tone="strong" />
+                <SkillList title="Top débiles" items={topWeak} tone="weak" />
+              </div>
+
+              {failureCounts.length > 0 && (
+                <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-4 mb-4">
+                  <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-2 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Fallas recurrentes
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {failureCounts.map(([flag, n]) => (
+                      <span key={flag} className="rounded-full bg-red-500/10 text-red-300 border border-red-500/20 text-xs px-2 py-1 font-['DM_Sans']">
+                        {flag} <span className="text-red-400/80">×{n}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col gap-3">
+                {Object.entries(skillsByCategory).sort(([a],[b]) => a.localeCompare(b)).map(([cat, items]) => (
+                  <div key={cat} className="rounded-[14px] border border-white/10 bg-white/[0.03] p-4">
+                    <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-2">{cat}</div>
+                    <div className="flex flex-col gap-1.5">
+                      {items.map((s) => <SkillBar key={s.id} name={s.name} value={s.current} />)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function SkillList({ title, items, tone }: { title: string; items: Array<{ id: string; name: string; current: number }>; tone: "strong" | "weak" }) {
+  const color = tone === "strong" ? "text-green-300" : "text-orange-300";
+  return (
+    <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-4">
+      <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-2">{title}</div>
+      <div className="flex flex-col gap-1">
+        {items.map((s) => (
+          <div key={s.id} className="flex items-center justify-between text-sm font-['DM_Sans']">
+            <span className="truncate mr-2">{s.name}</span>
+            <span className={`font-['Syne'] font-bold ${color}`}>{Math.round(s.current)}</span>
+          </div>
+        ))}
+        {items.length === 0 && <div className="text-white/40 text-sm">—</div>}
+      </div>
+    </div>
+  );
+}
+
+function SkillBar({ name, value }: { name: string; value: number }) {
+  const pct = Math.max(0, Math.min(100, value));
+  const color = pct >= 80 ? "bg-green-500" : pct >= 50 ? "bg-[#FF6B2B]" : "bg-red-500";
+  return (
+    <div>
+      <div className="flex items-center justify-between text-xs font-['DM_Sans'] text-white/70 mb-1">
+        <span className="truncate mr-2">{name}</span>
+        <span>{Math.round(value)}</span>
+      </div>
+      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div className={`h-full ${color}`} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function EventItem({
+  ev, nodeName, audioConsent, audioUrl, onNeedAudio,
+}: {
+  ev: EventRow;
+  nodeName: string | null;
+  audioConsent: boolean;
+  audioUrl: string | null;
+  onNeedAudio: (id: string, url: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const score = typeof ev.payload?.score === "number" ? ev.payload.score : null;
+  const stars = typeof ev.payload?.stars === "number" ? ev.payload.stars : 0;
+  const evalBlock = ev.payload?.evaluation ?? {};
+  const transcript: string = ev.payload?.transcript ?? "";
+  const criteriosCumplidos: string[] = Array.isArray(evalBlock.criterios_cumplidos) ? evalBlock.criterios_cumplidos : [];
+  const observations: any[] = Array.isArray(evalBlock.observations) ? evalBlock.observations : [];
+  const flags: string[] = Array.isArray(evalBlock.flags_detected) ? evalBlock.flags_detected : [];
+  const mision: string | null = typeof evalBlock.mision === "string" ? evalBlock.mision : null;
+
+  return (
+    <div className="rounded-[14px] border border-white/10 bg-white/[0.03] overflow-hidden">
+      <button
+        onClick={() => {
+          setOpen((v) => !v);
+          if (!open && audioConsent && ev.audio_url) onNeedAudio(ev.id, ev.audio_url);
+        }}
+        className="w-full text-left p-4 flex items-center gap-3 hover:bg-white/[0.02]"
+      >
+        <div className="min-w-0 flex-1">
+          <div className="font-['DM_Sans'] font-medium truncate">
+            {ev.node_id ?? "—"} {nodeName ? `· ${nodeName}` : ""}
+          </div>
+          <div className="text-xs text-white/50 font-['DM_Sans']">{fmtDate(ev.created_at)}</div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="font-['Syne'] font-bold text-lg">{score ?? "—"}</div>
+          <div className="flex">
+            {[1, 2, 3].map((i) => (
+              <Star key={i} className={`h-3.5 w-3.5 ${i <= stars ? "text-[#FF6B2B] fill-[#FF6B2B]" : "text-white/20"}`} />
+            ))}
+          </div>
+          {open ? <ChevronDown className="h-4 w-4 text-white/40" /> : <ChevronRight className="h-4 w-4 text-white/40" />}
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-white/10 p-4 flex flex-col gap-4 text-sm font-['DM_Sans']">
+          {audioConsent && ev.audio_url && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Audio</div>
+              {audioUrl ? (
+                <audio controls src={audioUrl} className="w-full" />
+              ) : (
+                <div className="text-white/50 text-xs">Cargando audio…</div>
+              )}
+            </div>
+          )}
+
+          {transcript && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Transcript</div>
+              <pre className="whitespace-pre-wrap text-white/80 text-xs bg-black/30 rounded-[10px] p-3 max-h-64 overflow-auto">{transcript}</pre>
+            </div>
+          )}
+
+          {criteriosCumplidos.length > 0 && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Criterios cumplidos</div>
+              <div className="flex flex-wrap gap-1.5">
+                {criteriosCumplidos.map((c) => (
+                  <span key={c} className="rounded-full bg-green-500/10 text-green-300 border border-green-500/20 text-xs px-2 py-0.5">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {observations.length > 0 && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-2">Observaciones</div>
+              <div className="flex flex-col gap-2">
+                {observations.map((o, i) => (
+                  <div key={i} className="rounded-[10px] border border-white/10 p-3 bg-black/20">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold text-white/70">{o.criterio_id ?? "—"}</span>
+                      {o.severity && (
+                        <span className="text-[10px] uppercase tracking-widest text-white/40">{o.severity}</span>
+                      )}
+                    </div>
+                    {o.error && <div className="text-white/80 text-xs mb-1"><b className="text-red-300">Qué pasó:</b> {o.error}</div>}
+                    {o.mejora && <div className="text-white/80 text-xs mb-1"><b className="text-[#FF6B2B]">Mejora:</b> {o.mejora}</div>}
+                    {o.ejemplo && <div className="text-white/70 text-xs italic">Ejemplo: {o.ejemplo}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {flags.length > 0 && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Flags</div>
+              <div className="flex flex-wrap gap-1.5">
+                {flags.map((f) => (
+                  <span key={f} className="rounded-full bg-red-500/10 text-red-300 border border-red-500/20 text-xs px-2 py-0.5">
+                    {f}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {mision && (
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Misión</div>
+              <div className="text-white/80 text-xs bg-[#FF6B2B]/10 border border-[#FF6B2B]/20 rounded-[10px] p-3">{mision}</div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
