@@ -404,25 +404,48 @@ function MapaPage() {
             Camino al Vendedor Elite
           </p>
         </div>
-        <button
-          onClick={() => setShowTutorial(true)}
-          style={{
-            background: "rgba(255,107,43,0.1)",
-            border: "1px solid rgba(255,107,43,0.4)",
-            color: "#FF6B2B",
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 600,
-            fontSize: "0.7rem",
-            padding: "0.4rem 0.7rem",
-            borderRadius: 99,
-            cursor: "pointer",
-            letterSpacing: "0.03em",
-            whiteSpace: "nowrap",
-          }}
-        >
-          ¿Cómo funciona?
-        </button>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {isManager && (
+            <button
+              onClick={() => navigate({ to: "/equipo" })}
+              style={{
+                background: "#FF6B2B",
+                border: "1px solid #FF6B2B",
+                color: "#08080F",
+                fontFamily: "'DM Sans', sans-serif",
+                fontWeight: 700,
+                fontSize: "0.7rem",
+                padding: "0.4rem 0.8rem",
+                borderRadius: 99,
+                cursor: "pointer",
+                letterSpacing: "0.03em",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Equipo
+            </button>
+          )}
+          <button
+            onClick={() => setShowTutorial(true)}
+            style={{
+              background: "rgba(255,107,43,0.1)",
+              border: "1px solid rgba(255,107,43,0.4)",
+              color: "#FF6B2B",
+              fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 600,
+              fontSize: "0.7rem",
+              padding: "0.4rem 0.7rem",
+              borderRadius: 99,
+              cursor: "pointer",
+              letterSpacing: "0.03em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            ¿Cómo funciona?
+          </button>
+        </div>
       </header>
+
 
 
       {/* Apilados de abajo hacia arriba: render reverso */}
