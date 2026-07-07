@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Users, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/equipo")({
+export const Route = createFileRoute("/equipo/")({
   head: () => ({ meta: [{ title: "Equipo — Closer" }] }),
   component: EquipoPage,
 });
