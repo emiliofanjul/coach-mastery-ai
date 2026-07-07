@@ -109,7 +109,7 @@ function SellerDetailPage() {
         return;
       }
 
-      const [evRes, skRes, allSkills, allNodes, allWorlds, progRes] = await Promise.all([
+      const [evRes, skRes, allSkills, allNodes, allWorlds, progRes, recRes] = await Promise.all([
         supabase
           .from("seller_events")
           .select("id, created_at, node_id, audio_url, payload")
@@ -125,6 +125,10 @@ function SellerDetailPage() {
         supabase.from("nodes").select("id, name, world_id"),
         supabase.from("worlds").select("id, name"),
         supabase.from("node_progress").select("status").eq("seller_id", sellerId).eq("status", "done"),
+        supabase
+          .from("coach_recommendations")
+          .select("prioridad, plan, fortaleza, last_event_id, updated_at, events_considered, notes_considered")
+          .eq("seller_id", sellerId).maybeSingle(),
       ]);
 
       const skMap: Record<string, Skill> = {};
