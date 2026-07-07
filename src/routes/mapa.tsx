@@ -127,6 +127,7 @@ function MapaPage() {
   const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
   const [glowActive, setGlowActive] = useState(false);
+  const [isManager, setIsManager] = useState(false);
 
   // ─── Animación al regresar del quiz ───
   // phase 0: nada todavía. 1: 1ª estrella. 2: 2ª. 3: 3ª. 4: candado fuera. 5: nuevo nodo activo visible.
