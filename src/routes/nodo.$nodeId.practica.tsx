@@ -321,11 +321,18 @@ function PracticaPage() {
   }
 
   // ── Captura de audio (MediaRecorder) ─────────────────────────────
-  // Graba el mismo stream de micrófono en paralelo al SpeechRecognition.
-  // Solo se activa si el vendedor dio audio_consent.
+  // Solo graba mientras el vendedor está hablando (mic activo). Entre turnos
+  // se pausa para no acumular silencio ni voz del agente TTS. El blob final
+  // concatena únicamente los tramos hablados del vendedor.
   async function startAudioCapture() {
-    if (mediaRecorderRef.current) return; // ya activo
     if (!sellerData?.audio_consent) return;
+    const existing = mediaRecorderRef.current;
+    if (existing) {
+      if (existing.state === "paused") {
+        try { existing.resume(); } catch {}
+      }
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaStreamRef.current = stream;
@@ -343,6 +350,14 @@ function PracticaPage() {
       console.error("[audio-capture] failed to start:", err);
     }
   }
+
+  function pauseAudioCapture() {
+    const rec = mediaRecorderRef.current;
+    if (rec && rec.state === "recording") {
+      try { rec.pause(); } catch {}
+    }
+  }
+
 
   function stopAudioCapture(): Promise<Blob | null> {
     return new Promise((resolve) => {
@@ -511,6 +526,8 @@ function PracticaPage() {
       if (sendTimer) clearTimeout(sendTimer);
       setIsUserListening(false);
       recognitionRef.current = null;
+      // Pausar la grabación entre turnos: solo capturamos cuando el vendedor habla.
+      pauseAudioCapture();
       const text = finalText.trim();
       setInterimTranscript("");
       // Descartar turno del usuario si el Director ya cortó (carrera: user hablando
@@ -523,11 +540,15 @@ function PracticaPage() {
     recognitionRef.current = rec;
     setInterimTranscript("");
     setIsUserListening(true);
+    // Arrancar/reanudar la captura de audio: el mic ya está activo para STT,
+    // aprovechamos el mismo momento para grabar solo el turno del vendedor.
+    void startAudioCapture();
     try {
       rec.start();
     } catch (err) {
       console.error("[voice] rec.start failed:", err);
       setIsUserListening(false);
+      pauseAudioCapture();
     }
   }
 
@@ -804,7 +825,9 @@ function PracticaPage() {
       sessionEndedRef.current = false;
       cutRef.current = false;
       audioUploadedRef.current = false;
-      void startAudioCapture();
+      // Nota: la captura de audio arranca cuando el vendedor toma el mic
+      // (dentro de startRecognition), no aquí — así no grabamos el TTS del
+      // agente ni el silencio inicial.
       conversationHistoryRef.current = [];
       transcriptFullRef.current = [];
       setTranscriptFull([]);
