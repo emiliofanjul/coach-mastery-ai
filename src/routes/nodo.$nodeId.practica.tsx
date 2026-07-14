@@ -1630,23 +1630,17 @@ function PrepPhase({
         padding: "1.2rem",
       }}
     >
-      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <button
           onClick={onExit}
           aria-label="Salir"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#fff",
-            fontSize: 22,
-            cursor: "pointer",
-            padding: 8,
-            margin: -8,
-          }}
+          style={{ background: "transparent", border: "none", color: "#fff", fontSize: 22, cursor: "pointer", padding: 8, margin: -8 }}
         >
           ✕
         </button>
+        <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />
       </div>
+
       <div
         style={{
           flex: 1,
