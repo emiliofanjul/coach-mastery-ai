@@ -1797,6 +1797,27 @@ function PrepPhase({
 
 // ───────────────────────── VOICE ─────────────────────────
 
+function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onToggle: () => void }) {
+  const isText = inputMode === "text";
+  return (
+    <button
+      onClick={onToggle}
+      aria-label={isText ? "Cambiar a modo voz" : "Cambiar a modo texto"}
+      title={isText ? "Modo texto activo — cambiar a voz" : "Modo voz activo — cambiar a texto"}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 6,
+        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
+        color: "#fff", padding: "6px 12px", borderRadius: 99,
+        fontFamily: "'DM Sans', sans-serif", fontSize: 12, cursor: "pointer",
+      }}
+    >
+      <span style={{ opacity: isText ? 0.35 : 1 }}>🎤</span>
+      <span style={{ fontSize: 11, opacity: 0.6 }}>↔</span>
+      <span style={{ opacity: isText ? 1 : 0.35 }}>⌨️</span>
+    </button>
+  );
+}
+
 function VoicePhase({
   currentPhase,
   isAgentSpeaking,
@@ -1809,6 +1830,11 @@ function VoicePhase({
   onReplay,
   onExitClick,
   iDoDemoDone,
+  inputMode,
+  onToggleMode,
+  transcript,
+  onTextSubmit,
+  onPlayAgentAudio,
 }: {
   currentPhase: TurnPhase;
   isAgentSpeaking: boolean;
@@ -1821,8 +1847,14 @@ function VoicePhase({
   onReplay: () => void;
   onExitClick: () => void;
   iDoDemoDone: boolean;
+  inputMode: "voice" | "text";
+  onToggleMode: () => void;
+  transcript: { role: string; content: string }[];
+  onTextSubmit: (txt: string) => void;
+  onPlayAgentAudio: (txt: string) => void;
 }) {
   const isIDo = currentPhase === "i_do";
+  const isText = inputMode === "text";
   const ringColor = isAgentSpeaking
     ? BLUE
     : isUserListening
@@ -1842,17 +1874,26 @@ function VoicePhase({
           ? "Toca para responder como cliente"
           : "Toca para hablar";
 
+  const [textDraft, setTextDraft] = useState("");
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (isText) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [transcript.length, isText, isProcessing]);
+
+  const textDisabled = isProcessing || isAgentSpeaking;
+  const submitText = () => {
+    const t = textDraft.trim();
+    if (!t || textDisabled) return;
+    onTextSubmit(t);
+    setTextDraft("");
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        padding: "1.2rem",
-      }}
+      style={{ flex: 1, display: "flex", flexDirection: "column", padding: "1.2rem" }}
     >
       <style>{`
         @keyframes practica-pulse {
@@ -1861,197 +1902,193 @@ function VoicePhase({
         }
       `}</style>
 
-      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <button
           onClick={onExitClick}
           aria-label="Salir"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#fff",
-            fontSize: 22,
-            cursor: "pointer",
-            padding: 8,
-            margin: -8,
-          }}
+          style={{ background: "transparent", border: "none", color: "#fff", fontSize: 22, cursor: "pointer", padding: 8, margin: -8 }}
         >
           ✕
         </button>
+        <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />
       </div>
 
       <div
         style={{
-          maxWidth: 560,
-          width: "100%",
-          margin: "16px auto 0",
-          padding: "12px 16px",
-          borderRadius: 14,
-          background: isIDo
-            ? "rgba(77,171,247,0.15)"
-            : "rgba(255,107,43,0.15)",
+          maxWidth: 560, width: "100%", margin: "16px auto 0",
+          padding: "12px 16px", borderRadius: 14,
+          background: isIDo ? "rgba(77,171,247,0.15)" : "rgba(255,107,43,0.15)",
           border: `1px solid ${isIDo ? BLUE : ORANGE}`,
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 500,
-          fontSize: 14,
-          textAlign: "center",
-          color: "#fff",
+          fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 14,
+          textAlign: "center", color: "#fff",
         }}
       >
-        {isIDo
-          ? "Closer demuestra — reacciona como cliente"
-          : "Tu turno — Hazlo solo."}
+        {isIDo ? "Closer demuestra — reacciona como cliente" : "Tu turno — Hazlo solo."}
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          maxWidth: 560,
-          width: "100%",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 16,
-        }}
-      >
-        <div
-          style={{
-            position: "relative",
-            width: 180,
-            height: 180,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      {isText ? (
+        // ───────── Modo TEXTO: chat + composer ─────────
+        <>
           <div
             style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "50%",
-              border: `2px solid ${ringColor}`,
-              animation: animatePulse
-                ? "practica-pulse 1.2s ease-in-out infinite"
-                : undefined,
-            }}
-          />
-          <CloserCharacter size={120} state="normal" />
-        </div>
-
-        {interimTranscript && (
-          <div
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              color: "rgba(255,255,255,0.75)",
-              textAlign: "center",
-              maxWidth: 480,
-              minHeight: 20,
+              flex: 1, maxWidth: 560, width: "100%", margin: "16px auto 0",
+              display: "flex", flexDirection: "column", gap: 10,
+              padding: 14, borderRadius: 14,
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              overflowY: "auto", minHeight: 200,
             }}
           >
-            "{interimTranscript}"
+            {transcript.filter((m) => (m.role === "user" || m.role === "assistant") && m.content?.trim()).map((m, i) => {
+              const isAgent = m.role === "assistant";
+              return (
+                <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isAgent ? "flex-start" : "flex-end" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: isAgent ? ORANGE : "rgba(255,255,255,0.5)" }}>
+                      {isAgent ? "Cliente" : "Tú"}
+                    </div>
+                    {isAgent && (
+                      <button
+                        onClick={() => onPlayAgentAudio(m.content)}
+                        aria-label="Escuchar"
+                        title="Escuchar"
+                        style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 12, padding: 0 }}
+                      >🔊</button>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      maxWidth: "85%", padding: "10px 14px", borderRadius: 14,
+                      background: isAgent ? "rgba(255,107,43,0.12)" : "rgba(255,255,255,0.08)",
+                      color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5,
+                      whiteSpace: "pre-wrap", wordBreak: "break-word", textAlign: "left",
+                    }}
+                  >
+                    {m.content}
+                  </div>
+                </div>
+              );
+            })}
+            {isProcessing && (
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.5)", fontStyle: "italic" }}>
+                Pensando…
+              </div>
+            )}
+            {connectionError && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, marginTop: 8 }}>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>{connectionError}</p>
+                <button
+                  onClick={onRetry}
+                  style={{ background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "8px 20px", cursor: "pointer" }}
+                >Reintentar</button>
+              </div>
+            )}
+            <div ref={chatEndRef} />
           </div>
-        )}
 
-        {connectionError && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 8 }}>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>
-              {connectionError}
-            </p>
-            <button
-              onClick={onRetry}
-              style={{
-                background: ORANGE,
-                color: "#08080F",
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: 14,
-                border: "none",
-                borderRadius: 99,
-                padding: "10px 24px",
-                cursor: "pointer",
-                boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
-              }}
-            >
-              Reintentar
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div
-        style={{
-          maxWidth: 560,
-          width: "100%",
-          margin: "0 auto",
-          paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        {!iDoDemoDone && (
-          <>
-            <button
-              onClick={onMicClick}
-              disabled={micDisabled}
-              aria-label={micLabel}
-              style={{
-                width: 84,
-                height: 84,
-                borderRadius: 99,
-                border: "none",
-                background: micBg,
-                color: "#08080F",
-                fontSize: 32,
-                cursor: micDisabled ? "not-allowed" : "pointer",
-                opacity: micDisabled ? 0.4 : 1,
-                boxShadow: `0 10px 30px -8px ${micBg}55`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                animation: isUserListening
-                  ? "practica-pulse 1.2s ease-in-out infinite"
-                  : undefined,
-              }}
-            >
-              {isUserListening ? "■" : "🎤"}
-            </button>
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 13,
-                color: "rgba(255,255,255,0.6)",
-                textAlign: "center",
-                minHeight: 18,
-              }}
-            >
-              {isIDo && !isUserListening && !isAgentSpeaking
-                ? "Reacciona como cliente o toca 'Listo, ahora yo'"
-                : micLabel}
+          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: 12, paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
+            <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+              <textarea
+                value={textDraft}
+                onChange={(e) => setTextDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    submitText();
+                  }
+                }}
+                placeholder={isIDo ? "Reacciona como cliente…" : "Escribe tu turno…"}
+                rows={2}
+                style={{
+                  flex: 1, resize: "none", padding: "10px 14px", borderRadius: 14,
+                  background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.4,
+                  outline: "none",
+                }}
+              />
+              <button
+                onClick={submitText}
+                disabled={textDisabled || !textDraft.trim()}
+                aria-label="Enviar"
+                style={{
+                  width: 48, height: 48, borderRadius: 99, border: "none",
+                  background: ORANGE, color: "#08080F", fontSize: 20,
+                  cursor: textDisabled || !textDraft.trim() ? "not-allowed" : "pointer",
+                  opacity: textDisabled || !textDraft.trim() ? 0.4 : 1,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+                }}
+              >➤</button>
             </div>
-          </>
-        )}
-        <button
-          onClick={onReplay}
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "rgba(255,255,255,0.4)",
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 13,
-            cursor: "pointer",
-            padding: 4,
-          }}
-        >
-          Reiniciar práctica
-        </button>
-      </div>
+            <button
+              onClick={onReplay}
+              style={{ marginTop: 10, background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: "pointer", padding: 4 }}
+            >Reiniciar práctica</button>
+          </div>
+        </>
+      ) : (
+        // ───────── Modo VOZ (original) ─────────
+        <>
+          <div style={{ flex: 1, maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+            <div style={{ position: "relative", width: 180, height: 180, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${ringColor}`, animation: animatePulse ? "practica-pulse 1.2s ease-in-out infinite" : undefined }} />
+              <CloserCharacter size={120} state="normal" />
+            </div>
+
+            {interimTranscript && (
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", textAlign: "center", maxWidth: 480, minHeight: 20 }}>
+                "{interimTranscript}"
+              </div>
+            )}
+
+            {connectionError && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 8 }}>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>{connectionError}</p>
+                <button
+                  onClick={onRetry}
+                  style={{ background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "10px 24px", cursor: "pointer", boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)" }}
+                >Reintentar</button>
+              </div>
+            )}
+          </div>
+
+          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            {!iDoDemoDone && (
+              <>
+                <button
+                  onClick={onMicClick}
+                  disabled={micDisabled}
+                  aria-label={micLabel}
+                  style={{
+                    width: 84, height: 84, borderRadius: 99, border: "none",
+                    background: micBg, color: "#08080F", fontSize: 32,
+                    cursor: micDisabled ? "not-allowed" : "pointer",
+                    opacity: micDisabled ? 0.4 : 1,
+                    boxShadow: `0 10px 30px -8px ${micBg}55`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    animation: isUserListening ? "practica-pulse 1.2s ease-in-out infinite" : undefined,
+                  }}
+                >
+                  {isUserListening ? "■" : "🎤"}
+                </button>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.6)", textAlign: "center", minHeight: 18 }}>
+                  {isIDo && !isUserListening && !isAgentSpeaking
+                    ? "Reacciona como cliente o toca 'Listo, ahora yo'"
+                    : micLabel}
+                </div>
+              </>
+            )}
+            <button
+              onClick={onReplay}
+              style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: "pointer", padding: 4 }}
+            >Reiniciar práctica</button>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 }
+
 
 // ───────────────────────── TRANSITION ─────────────────────────
 
