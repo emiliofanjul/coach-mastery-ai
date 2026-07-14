@@ -1179,15 +1179,16 @@ function PracticaPage() {
               onExitClick={() => setShowExitDialog(true)}
               inputMode={inputMode}
               onToggleMode={() => setInputMode((m) => (m === "voice" ? "text" : "voice"))}
-              transcript={transcriptFull}
-              onTextSubmit={(txt) => {
+              transcript={transcriptFull.map((t) => ({ role: t.role === "agent" ? "assistant" : "user", content: t.text }))}
+              onTextSubmit={(txt: string) => {
                 if (cutRef.current || sessionEndedRef.current) return;
                 if (isProcessing || isAgentSpeaking) return;
                 const t = txt.trim();
                 if (!t) return;
                 void sendToCloser(t);
               }}
-              onPlayAgentAudio={(txt) => { void playTTS(txt, { force: true }); }}
+              onPlayAgentAudio={(txt: string) => { void playTTS(txt, { force: true }); }}
+
             />
 
             {phase === "i_do" && iDoDemoDone && (
