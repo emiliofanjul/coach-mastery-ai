@@ -392,8 +392,13 @@ function PracticaPage() {
   }
 
 
-  async function playTTS(text: string): Promise<void> {
+  async function playTTS(text: string, opts?: { force?: boolean }): Promise<void> {
+    // Modo texto: la voz del Actor NO se sintetiza (ahorro directo). El mensaje
+    // ya está en transcriptFull y se renderiza como chat. Solo el botón
+    // opcional "escuchar" invoca con { force: true }.
+    if (!opts?.force && inputModeRef.current === "text") return;
     stopAudio();
+
     setIsAgentSpeaking(true);
     // AbortController local — hardStop() dispara abort para desbloquear tanto
     // el fetch como el await del audio.
