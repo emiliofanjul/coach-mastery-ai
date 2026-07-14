@@ -1592,22 +1592,32 @@ function PrepPhase({
   onRetry,
   onListo,
   onExit,
+  inputMode,
+  onToggleMode,
 }: {
   micGranted: boolean;
   nodeData: any;
   onRetry: () => void;
   onListo: () => void;
   onExit: () => void;
+  inputMode: "voice" | "text";
+  onToggleMode: () => void;
 }) {
 
-  const checks = [
-    {
-      ok: micGranted,
-      label: micGranted ? "Micrófono listo" : "Permite el micrófono",
-    },
-    { ok: true, label: "Sube el volumen al máximo 🔊" },
-    { ok: true, label: "Busca un lugar sin ruido" },
-  ];
+  const isText = inputMode === "text";
+  const checks = isText
+    ? [
+        { ok: true, label: "Modo texto — no necesitas micrófono" },
+        { ok: true, label: "Escribe tus turnos con calma" },
+        { ok: true, label: "Presiona Enter para enviar" },
+      ]
+    : [
+        { ok: micGranted, label: micGranted ? "Micrófono listo" : "Permite el micrófono" },
+        { ok: true, label: "Sube el volumen al máximo 🔊" },
+        { ok: true, label: "Busca un lugar sin ruido" },
+      ];
+  const canStart = isText || micGranted;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
