@@ -460,7 +460,9 @@ function PracticaPage() {
   }
 
   function startRecognition() {
+    if (inputModeRef.current === "text") return; // modo texto: sin STT
     if (sessionEndedRef.current || cutRef.current) return;
+
     const SR: any =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
