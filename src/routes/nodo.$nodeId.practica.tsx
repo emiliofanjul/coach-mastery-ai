@@ -1042,6 +1042,8 @@ function PracticaPage() {
                 world_id: nodeData?.world_id ?? 0,
                 practice_type: practiceType,
                 is_boss_level: isBossLevel,
+                input_mode: inputModeRef.current,
+
                 score: evaluation?.score ?? null,
                 stars: evaluation?.stars ?? null,
                 transcript: transcriptFullRef.current,
