@@ -1766,55 +1766,31 @@ function PrepPhase({
         )}
 
 
-        {!micGranted && (
+        {!micGranted && !isText && (
           <button
             onClick={onRetry}
-            style={{
-              alignSelf: "center",
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.3)",
-              color: "#fff",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              padding: "10px 18px",
-              borderRadius: 99,
-              cursor: "pointer",
-            }}
+            style={{ alignSelf: "center", background: "transparent", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 14, padding: "10px 18px", borderRadius: 99, cursor: "pointer" }}
           >
             Reintentar permiso
           </button>
         )}
       </div>
 
-      <div
-        style={{
-          maxWidth: 560,
-          width: "100%",
-          margin: "0 auto",
-          paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
-        }}
-      >
+      <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
         <button
           onClick={onListo}
-          disabled={!micGranted}
+          disabled={!canStart}
           style={{
-            width: "100%",
-            height: 52,
-            borderRadius: 99,
-            border: "none",
-            background: ORANGE,
-            color: "#08080F",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: 16,
-            cursor: micGranted ? "pointer" : "not-allowed",
-            opacity: micGranted ? 1 : 0.5,
+            width: "100%", height: 52, borderRadius: 99, border: "none", background: ORANGE, color: "#08080F",
+            fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16,
+            cursor: canStart ? "pointer" : "not-allowed", opacity: canStart ? 1 : 0.5,
             boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
           }}
         >
           Ver demostración →
         </button>
       </div>
+
     </motion.div>
   );
 }
