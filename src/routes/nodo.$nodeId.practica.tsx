@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
+import RetryScreen from "@/components/RetryScreen";
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
   component: PracticaPage,
