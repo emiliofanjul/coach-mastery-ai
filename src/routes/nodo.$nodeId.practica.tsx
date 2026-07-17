@@ -86,6 +86,7 @@ function PracticaPage() {
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
+  const [prepError, setPrepError] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "text">("voice");
   const inputModeRef = useRef<"voice" | "text">("voice");
   useEffect(() => { inputModeRef.current = inputMode; }, [inputMode]);
