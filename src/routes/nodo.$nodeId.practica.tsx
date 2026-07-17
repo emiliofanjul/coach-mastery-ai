@@ -1182,6 +1182,16 @@ function PracticaPage() {
       }}
     >
       <AnimatePresence mode="wait">
+        {phase === "prep" && prepError && (
+          <RetryScreen
+            key="prep-error"
+            title="No pudimos cargar la práctica"
+            subtitle={prepError}
+            primaryButtonText="Reintentar"
+            onPrimaryAction={() => { setPrepError(null); void handleListo(); }}
+          />
+        )}
+
         {phase === "prep" && (
           <PrepPhase
             key="prep"
