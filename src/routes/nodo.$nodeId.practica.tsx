@@ -179,89 +179,128 @@ function PracticaPage() {
 
 
   async function handleListo() {
-    const { data: auth } = await supabase.auth.getUser();
-    if (!auth.user) return;
-    const { data: seller } = await supabase
-      .from("sellers")
-      .select("id, full_name, experience_level, company_id, audio_consent")
-      .eq("profile_id", auth.user.id)
-      .maybeSingle();
-    if (!seller) return;
-    const [{ data: node }, { data: company }, { data: nodeSkillsRows }] = await Promise.all([
-      supabase
-        .from("nodes")
-        .select("id, name, description, conversation_scope, node_type, technique, boss_goal, field_mission, world_id, difficulty_level, is_boss, practice_script")
-        .eq("id", nodeId)
-        .maybeSingle(),
-      supabase
-        .from("companies")
-        .select("name, company_sales_brain")
-        .eq("id", seller.company_id)
-        .maybeSingle(),
-      supabase
-        .from("node_skills")
-        .select("relation, is_primary, weight, skill:skills(id, code, name, category, default_allowed_concepts, default_forbidden_concepts)")
-        .eq("node_id", nodeId),
-    ]);
+    setPrepError(null);
+    try {
+      const { data: auth, error: authErr } = await supabase.auth.getUser();
+      if (authErr || !auth?.user) {
+        console.error("[practica] auth.getUser failed:", authErr);
+        setPrepError("Tu sesión expiró. Inicia sesión de nuevo para practicar.");
+        return;
+      }
+      const { data: seller, error: sellerErr } = await supabase
+        .from("sellers")
+        .select("id, full_name, experience_level, company_id, audio_consent")
+        .eq("profile_id", auth.user.id)
+        .maybeSingle();
+      if (sellerErr) {
+        console.error("[practica] sellers query failed:", sellerErr);
+        setPrepError(
+          `No pudimos cargar tu perfil (${sellerErr.code ?? "err"}: ${sellerErr.message}). Revisa tu conexión e intenta de nuevo.`,
+        );
+        return;
+      }
+      if (!seller) {
+        setPrepError("No encontramos tu perfil de vendedor. Contacta a tu manager.");
+        return;
+      }
+      const [nodeRes, companyRes, nodeSkillsRes] = await Promise.all([
+        supabase
+          .from("nodes")
+          .select("id, name, description, conversation_scope, node_type, technique, boss_goal, field_mission, world_id, difficulty_level, is_boss, practice_script")
+          .eq("id", nodeId)
+          .maybeSingle(),
+        supabase
+          .from("companies")
+          .select("name, company_sales_brain")
+          .eq("id", seller.company_id)
+          .maybeSingle(),
+        supabase
+          .from("node_skills")
+          .select("relation, is_primary, weight, skill:skills(id, code, name, category, default_allowed_concepts, default_forbidden_concepts)")
+          .eq("node_id", nodeId),
+      ]);
+      const firstErr = nodeRes.error ?? companyRes.error ?? nodeSkillsRes.error;
+      if (firstErr) {
+        console.error("[practica] node/company/skills query failed:", {
+          node: nodeRes.error, company: companyRes.error, node_skills: nodeSkillsRes.error,
+        });
+        setPrepError(
+          `No pudimos cargar los datos del nodo (${firstErr.code ?? "err"}: ${firstErr.message}). Intenta de nuevo.`,
+        );
+        return;
+      }
+      const node = nodeRes.data;
+      const company = companyRes.data;
+      const nodeSkillsRows = nodeSkillsRes.data;
+      if (!node) {
+        setPrepError("Este nodo no existe o no está disponible.");
+        return;
+      }
 
-    // Build skillsContext
-    const script: any = (node as any)?.practice_script ?? null;
-    const rows: any[] = (nodeSkillsRows as any[]) ?? [];
-    const practiceOrAssess = rows.filter(
-      (r) => r.relation === "practices" || r.relation === "assesses",
-    );
-    const skillsForFallback = practiceOrAssess.length > 0 ? practiceOrAssess : rows;
-    const inFocusFromScript: string[] | null = Array.isArray(script?.scope?.skills_in_focus)
-      ? script.scope.skills_in_focus
-      : null;
-    const skillsInFocus: string[] =
-      inFocusFromScript ?? skillsForFallback.map((r) => r.skill?.id).filter(Boolean);
-    const skillCodes: string[] = skillsForFallback.map((r) => r.skill?.code).filter(Boolean);
-    const primarySkillId: string | null =
-      rows.find((r) => r.is_primary)?.skill?.id ?? skillsInFocus[0] ?? null;
-    const focusSkillsForDefaults = skillsForFallback.filter((r) =>
-      skillsInFocus.includes(r.skill?.id),
-    );
-    const unionDefaults = (key: "default_allowed_concepts" | "default_forbidden_concepts") => {
-      const set = new Set<string>();
-      focusSkillsForDefaults.forEach((r) => {
-        const arr = r.skill?.[key];
-        if (Array.isArray(arr)) arr.forEach((v: string) => set.add(v));
-      });
-      return Array.from(set);
-    };
-    const allowedConcepts: string[] = Array.isArray(script?.scope?.allowed_concepts)
-      ? script.scope.allowed_concepts
-      : unionDefaults("default_allowed_concepts");
-    const forbiddenConcepts: string[] = Array.isArray(script?.scope?.forbidden_concepts)
-      ? script.scope.forbidden_concepts
-      : unionDefaults("default_forbidden_concepts");
-    const successCriteria = Array.isArray(script?.success_criteria)
-      ? script.success_criteria
-      : [];
-    const failureCriteria = Array.isArray(script?.failure_criteria)
-      ? script.failure_criteria
-      : [];
+      // Build skillsContext
+      const script: any = (node as any)?.practice_script ?? null;
+      const rows: any[] = (nodeSkillsRows as any[]) ?? [];
+      const practiceOrAssess = rows.filter(
+        (r) => r.relation === "practices" || r.relation === "assesses",
+      );
+      const skillsForFallback = practiceOrAssess.length > 0 ? practiceOrAssess : rows;
+      const inFocusFromScript: string[] | null = Array.isArray(script?.scope?.skills_in_focus)
+        ? script.scope.skills_in_focus
+        : null;
+      const skillsInFocus: string[] =
+        inFocusFromScript ?? skillsForFallback.map((r) => r.skill?.id).filter(Boolean);
+      const skillCodes: string[] = skillsForFallback.map((r) => r.skill?.code).filter(Boolean);
+      const primarySkillId: string | null =
+        rows.find((r) => r.is_primary)?.skill?.id ?? skillsInFocus[0] ?? null;
+      const focusSkillsForDefaults = skillsForFallback.filter((r) =>
+        skillsInFocus.includes(r.skill?.id),
+      );
+      const unionDefaults = (key: "default_allowed_concepts" | "default_forbidden_concepts") => {
+        const set = new Set<string>();
+        focusSkillsForDefaults.forEach((r) => {
+          const arr = r.skill?.[key];
+          if (Array.isArray(arr)) arr.forEach((v: string) => set.add(v));
+        });
+        return Array.from(set);
+      };
+      const allowedConcepts: string[] = Array.isArray(script?.scope?.allowed_concepts)
+        ? script.scope.allowed_concepts
+        : unionDefaults("default_allowed_concepts");
+      const forbiddenConcepts: string[] = Array.isArray(script?.scope?.forbidden_concepts)
+        ? script.scope.forbidden_concepts
+        : unionDefaults("default_forbidden_concepts");
+      const successCriteria = Array.isArray(script?.success_criteria)
+        ? script.success_criteria
+        : [];
+      const failureCriteria = Array.isArray(script?.failure_criteria)
+        ? script.failure_criteria
+        : [];
 
-    const ctx = {
-      primarySkillId,
-      skillsInFocus,
-      skillCodes,
-      allowedConcepts,
-      forbiddenConcepts,
-      successCriteria,
-      failureCriteria,
-    };
+      const ctx = {
+        primarySkillId,
+        skillsInFocus,
+        skillCodes,
+        allowedConcepts,
+        forbiddenConcepts,
+        successCriteria,
+        failureCriteria,
+      };
 
-    setSellerData(seller);
-    setNodeData(node);
-    nodeDataRef.current = node;
-    setCompanyData(company);
-    setSkillsContext(ctx);
-    skillsContextRef.current = ctx;
-    // Boss / scripts sin phases.i_do: saltar directo al YOU DO (schema v1 lo permite).
-    const hasIDo = !!(node?.practice_script as any)?.phases?.i_do;
-    setPhase(hasIDo ? "i_do" : "you_do");
+      setSellerData(seller);
+      setNodeData(node);
+      nodeDataRef.current = node;
+      setCompanyData(company);
+      setSkillsContext(ctx);
+      skillsContextRef.current = ctx;
+      // Boss / scripts sin phases.i_do: saltar directo al YOU DO (schema v1 lo permite).
+      const hasIDo = !!(node?.practice_script as any)?.phases?.i_do;
+      setPhase(hasIDo ? "i_do" : "you_do");
+    } catch (e: any) {
+      console.error("[practica] handleListo unexpected error:", e);
+      setPrepError(
+        `No pudimos cargar tu sesión (${e?.message ?? "error de red"}). Revisa tu conexión e intenta de nuevo.`,
+      );
+    }
   }
 
   // Iniciar sesión de voz según fase
