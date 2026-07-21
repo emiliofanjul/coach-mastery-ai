@@ -12,6 +12,7 @@ import { ConversationProvider } from "@elevenlabs/react";
 
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -122,6 +123,7 @@ function RootComponent() {
       <ConversationProvider>
         <DevMenu />
         <Outlet />
+        <Toaster position="top-center" theme="dark" richColors closeButton />
       </ConversationProvider>
     </QueryClientProvider>
   );
