@@ -12,6 +12,7 @@ import { ConversationProvider } from "@elevenlabs/react";
 
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
