@@ -123,6 +123,7 @@ function RootComponent() {
       <ConversationProvider>
         <DevMenu />
         <Outlet />
+        <Toaster position="top-center" theme="dark" richColors closeButton />
       </ConversationProvider>
     </QueryClientProvider>
   );
