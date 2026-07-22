@@ -207,6 +207,7 @@ function MiEmpresaPage() {
       for (const { key, value } of draft.extras) {
         const k = key.trim();
         if (!k) continue;
+        if (HIDDEN_KEYS.has(k)) continue; // no reintroducir llaves legacy/efímeras
         // intenta preservar JSON si aplica
         let parsed: unknown = value;
         const t = value.trim();
