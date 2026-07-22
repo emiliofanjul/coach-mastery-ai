@@ -46,6 +46,20 @@ const EMPTY: Answers = {
 
 type Brain = Record<string, string>;
 
+// Llaves que jamás deben persistirse en companies.company_sales_brain.
+// `__preview_response` es la respuesta efímera del cliente para el preview del
+// onboarding. `DON_RAMON_RESPUESTA` es una llave legacy que se solía persistir
+// por error — se limpia defensivamente aquí también.
+const EPHEMERAL_KEYS = new Set(["__preview_response", "DON_RAMON_RESPUESTA"]);
+function stripEphemeral(b: Brain): Brain {
+  const out: Brain = {};
+  for (const [k, v] of Object.entries(b)) {
+    if (EPHEMERAL_KEYS.has(k)) continue;
+    out[k] = v;
+  }
+  return out;
+}
+
 function ManagerOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // 0 = welcome
@@ -131,7 +145,7 @@ function ManagerOnboarding() {
           });
         });
         await Promise.all(saves);
-        await supabase.rpc("update_company_brain", { _brain: result });
+        await supabase.rpc("update_company_brain", { _brain: stripEphemeral(result) });
       })
       .catch((err) => {
         console.error(err);
@@ -488,7 +502,7 @@ function CalibrationStep({ brain, loading, error, onBack, onNext, onRetry }: { b
         {brain && !loading && !error && (
           <>
             <Bubble side="right">Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?</Bubble>
-            <Bubble side="left">{brain.DON_RAMON_RESPUESTA || "Pues a ver, cuénteme rápido."}</Bubble>
+            <Bubble side="left">{brain.__preview_response || brain.DON_RAMON_RESPUESTA || "Pues a ver, cuénteme rápido."}</Bubble>
             <Bubble side="right">Le traigo algo que les puede ayudar con eso. ¿Tiene 3 minutos?</Bubble>
             <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>
               Tu cliente IA responde según el perfil de tu cliente típico
@@ -567,7 +581,7 @@ function BrainStep({ companyName, brain, onBack, onNext }: { companyName: string
           <BrainCard key={c.key} label={c.label} value={brain?.[c.key] ?? ""} onSave={async (newVal) => {
             if (!brain) return;
             const updated = { ...brain, [c.key]: newVal };
-            await supabase.rpc("update_company_brain", { _brain: updated });
+            await supabase.rpc("update_company_brain", { _brain: stripEphemeral(updated) });
           }} />
         ))}
       </div>

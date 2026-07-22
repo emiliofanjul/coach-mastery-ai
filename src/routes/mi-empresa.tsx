@@ -80,6 +80,10 @@ const KNOWN_FIELDS: Array<{
 
 const KNOWN_KEYS = new Set(KNOWN_FIELDS.map((f) => f.key));
 
+// Llaves legacy o efímeras que nunca deben aparecer en la UI ni persistirse.
+// DON_RAMON_RESPUESTA se persistía por error desde el onboarding viejo.
+const HIDDEN_KEYS = new Set(["DON_RAMON_RESPUESTA", "__preview_response"]);
+
 function splitList(v: unknown): string[] {
   if (Array.isArray(v)) return v.map((x) => String(x).trim()).filter(Boolean);
   if (typeof v !== "string") return [];
@@ -149,6 +153,7 @@ function MiEmpresaPage() {
       const extras: Array<{ key: string; value: string }> = [];
       for (const [k, v] of Object.entries(brain)) {
         if (KNOWN_KEYS.has(k)) continue;
+        if (HIDDEN_KEYS.has(k)) continue;
         extras.push({
           key: k,
           value: typeof v === "string" ? v : JSON.stringify(v, null, 2),
@@ -202,6 +207,7 @@ function MiEmpresaPage() {
       for (const { key, value } of draft.extras) {
         const k = key.trim();
         if (!k) continue;
+        if (HIDDEN_KEYS.has(k)) continue; // no reintroducir llaves legacy/efímeras
         // intenta preservar JSON si aplica
         let parsed: unknown = value;
         const t = value.trim();
