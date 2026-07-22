@@ -13,7 +13,7 @@ import { ConversationProvider } from "@elevenlabs/react";
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
 import { Toaster } from "sonner";
-import { ManagerShellProvider } from "@/components/manager/ManagerShell";
+import { AppShellProvider } from "@/components/app/AppShell";
 
 function NotFoundComponent() {
   return (
