@@ -1483,7 +1483,7 @@ function PracticaPage() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Cuando termines, haz una pausa de 2 segundos. Closer detecta el silencio y responde automáticamente.
+                      Cuando termines, haz una pausa de 3 segundos. Closer detecta el silencio y responde automáticamente.
                     </div>
                     <div
                       style={{
