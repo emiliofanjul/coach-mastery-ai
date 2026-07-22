@@ -408,24 +408,44 @@ function MapaPage() {
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
           {isManager && (
-            <button
-              onClick={() => navigate({ to: "/equipo" })}
-              style={{
-                background: "#FF6B2B",
-                border: "1px solid #FF6B2B",
-                color: "#08080F",
-                fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 700,
-                fontSize: "0.7rem",
-                padding: "0.4rem 0.8rem",
-                borderRadius: 99,
-                cursor: "pointer",
-                letterSpacing: "0.03em",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Equipo
-            </button>
+            <>
+              <button
+                onClick={() => navigate({ to: "/equipo" })}
+                style={{
+                  background: "#FF6B2B",
+                  border: "1px solid #FF6B2B",
+                  color: "#08080F",
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.7rem",
+                  padding: "0.4rem 0.8rem",
+                  borderRadius: 99,
+                  cursor: "pointer",
+                  letterSpacing: "0.03em",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Equipo
+              </button>
+              <button
+                onClick={() => navigate({ to: "/mi-empresa" })}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #FF6B2B",
+                  color: "#FF6B2B",
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.7rem",
+                  padding: "0.4rem 0.8rem",
+                  borderRadius: 99,
+                  cursor: "pointer",
+                  letterSpacing: "0.03em",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Mi Empresa
+              </button>
+            </>
           )}
           <button
             onClick={() => setShowTutorial(true)}
