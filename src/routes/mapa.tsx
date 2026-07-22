@@ -16,6 +16,7 @@ import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { consumeNodeCompletionSignal, type NodeCompletionSignal } from "@/lib/node-completion";
+import { getStoredSupabaseUserId } from "@/lib/browser-auth-session";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -161,8 +162,7 @@ function MapaPage() {
     let alive = true;
     (async () => {
       try {
-      const { data: auth } = await supabase.auth.getSession();
-      const userId = auth.session?.user?.id;
+      const userId = getStoredSupabaseUserId();
       if (!userId) {
         navigate({ to: "/login", replace: true });
         if (alive) setLoading(false);
