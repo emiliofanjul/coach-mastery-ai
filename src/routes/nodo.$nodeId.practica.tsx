@@ -700,6 +700,13 @@ function PracticaPage() {
         } catch (e) {
           console.error("[director] closing TTS failed:", e);
         }
+        // En modo texto: no hay TTS que dé tiempo natural para leer el último
+        // intercambio + el closing. Damos ~4s (o el usuario puede navegar
+        // manualmente si activamos un botón en un futuro) antes de transicionar
+        // a "Analizando". En voz este delay ya lo cubre la duración del TTS.
+        if (inputModeRef.current === "text") {
+          await new Promise((r) => setTimeout(r, 4000));
+        }
         await handleSessionEnd();
         return true;
       }
