@@ -502,7 +502,7 @@ function CalibrationStep({ brain, loading, error, onBack, onNext, onRetry }: { b
         {brain && !loading && !error && (
           <>
             <Bubble side="right">Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?</Bubble>
-            <Bubble side="left">{brain.DON_RAMON_RESPUESTA || "Pues a ver, cuénteme rápido."}</Bubble>
+            <Bubble side="left">{brain.__preview_response || brain.DON_RAMON_RESPUESTA || "Pues a ver, cuénteme rápido."}</Bubble>
             <Bubble side="right">Le traigo algo que les puede ayudar con eso. ¿Tiene 3 minutos?</Bubble>
             <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>
               Tu cliente IA responde según el perfil de tu cliente típico
