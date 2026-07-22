@@ -46,6 +46,20 @@ const EMPTY: Answers = {
 
 type Brain = Record<string, string>;
 
+// Llaves que jamás deben persistirse en companies.company_sales_brain.
+// `__preview_response` es la respuesta efímera del cliente para el preview del
+// onboarding. `DON_RAMON_RESPUESTA` es una llave legacy que se solía persistir
+// por error — se limpia defensivamente aquí también.
+const EPHEMERAL_KEYS = new Set(["__preview_response", "DON_RAMON_RESPUESTA"]);
+function stripEphemeral(b: Brain): Brain {
+  const out: Brain = {};
+  for (const [k, v] of Object.entries(b)) {
+    if (EPHEMERAL_KEYS.has(k)) continue;
+    out[k] = v;
+  }
+  return out;
+}
+
 function ManagerOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // 0 = welcome
