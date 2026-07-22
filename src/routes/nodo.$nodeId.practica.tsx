@@ -1997,7 +1997,7 @@ function VoicePhase({
                 <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isAgent ? "flex-start" : "flex-end" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: isAgent ? ORANGE : "rgba(255,255,255,0.5)" }}>
-                      {isAgent ? "Cliente" : "Tú"}
+                      {isIDo ? (isAgent ? "Closer (demo)" : "Tú (cliente)") : (isAgent ? "Cliente" : "Tú")}
                     </div>
                     {isAgent && (
                       <button
