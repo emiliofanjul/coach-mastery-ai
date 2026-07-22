@@ -233,12 +233,14 @@ function NodoCardsPage() {
   function next() {
     if (index < total - 1) {
       setDirection(1);
+      setFlipped(false); // resetea inmediato para evitar mostrar el reverso en el primer frame
       setIndex(index + 1);
     }
   }
   function prev() {
     if (index > 0) {
       setDirection(-1);
+      setFlipped(false);
       setIndex(index - 1);
     }
   }
