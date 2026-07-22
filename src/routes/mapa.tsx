@@ -10,7 +10,8 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Lock, Check, Star, Trophy, Play, LogOut } from "lucide-react";
+import { Lock, Check, Star, Trophy, Play } from "lucide-react";
+import { ManagerHeader } from "@/components/manager/ManagerShell";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
@@ -366,138 +367,18 @@ function MapaPage() {
   return (
     <main style={shellStyle}>
       {/* Header fijo */}
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
-          background:
-            "linear-gradient(180deg, #08080F 0%, #08080F 70%, transparent 100%)",
-          padding: "1rem 1.2rem 1.2rem",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 12,
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 800,
-              fontSize: "1.4rem",
-              color: "#FF6B2B",
-              letterSpacing: "-0.02em",
-              margin: 0,
-            }}
-          >
-            MAPA
-          </h1>
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.7rem",
-              color: "#5A5A8A",
-              margin: "2px 0 0",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-            }}
-          >
-            Camino al Vendedor Elite
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          {isManager && (
-            <>
-              <button
-                onClick={() => navigate({ to: "/equipo" })}
-                style={{
-                  background: "#FF6B2B",
-                  border: "1px solid #FF6B2B",
-                  color: "#08080F",
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "0.7rem",
-                  padding: "0.4rem 0.8rem",
-                  borderRadius: 99,
-                  cursor: "pointer",
-                  letterSpacing: "0.03em",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Equipo
-              </button>
-              <button
-                onClick={() => navigate({ to: "/mi-empresa" })}
-                style={{
-                  background: "transparent",
-                  border: "1px solid #FF6B2B",
-                  color: "#FF6B2B",
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "0.7rem",
-                  padding: "0.4rem 0.8rem",
-                  borderRadius: 99,
-                  cursor: "pointer",
-                  letterSpacing: "0.03em",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Mi Empresa
-              </button>
-            </>
-          )}
+      <ManagerHeader
+        title="MAPA"
+        subtitle="Camino al Vendedor Elite"
+        rightExtras={
           <button
             onClick={() => setShowTutorial(true)}
-            style={{
-              background: "rgba(255,107,43,0.1)",
-              border: "1px solid rgba(255,107,43,0.4)",
-              color: "#FF6B2B",
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 600,
-              fontSize: "0.7rem",
-              padding: "0.4rem 0.7rem",
-              borderRadius: 99,
-              cursor: "pointer",
-              letterSpacing: "0.03em",
-              whiteSpace: "nowrap",
-            }}
+            className="rounded-full border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 px-3 py-1.5 text-[0.7rem] font-['DM_Sans'] font-semibold text-[#FF6B2B] hover:bg-[#FF6B2B]/20 transition-colors whitespace-nowrap"
           >
             ¿Cómo funciona?
           </button>
-          <button
-            onClick={async () => {
-              await queryClient.cancelQueries();
-              queryClient.clear();
-              await supabase.auth.signOut();
-              if (typeof window !== "undefined") {
-                sessionStorage.removeItem("closer:selectedRole");
-                sessionStorage.removeItem("closer:pendingCompanyName");
-                sessionStorage.removeItem("closer:pendingInviteCode");
-              }
-              navigate({ to: "/login", replace: true });
-            }}
-            aria-label="Cerrar sesión"
-            style={{
-              background: "transparent",
-              border: "1px solid #252535",
-              color: "#5A5A8A",
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 600,
-              fontSize: "0.7rem",
-              padding: "0.4rem 0.7rem",
-              borderRadius: 99,
-              cursor: "pointer",
-              letterSpacing: "0.03em",
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
-            <LogOut size={14} /> Salir
-          </button>
-        </div>
-      </header>
+        }
+      />
 
 
 

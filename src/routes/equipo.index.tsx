@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronRight, Users, ArrowLeft } from "lucide-react";
+import { ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ManagerHeader } from "@/components/manager/ManagerShell";
 
 export const Route = createFileRoute("/equipo/")({
   head: () => ({ meta: [{ title: "Equipo — Closer" }] }),
@@ -197,16 +198,16 @@ function EquipoPage() {
 
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
-      <div className="mx-auto w-full max-w-[960px] px-5 pt-6 pb-24">
-        <header className="mb-6 flex items-center justify-between gap-4">
-          <Link to="/mapa" className="text-white/60 hover:text-white flex items-center gap-2 text-sm font-['DM_Sans']">
-            <ArrowLeft className="h-4 w-4" /> Mapa
-          </Link>
-          <div className="flex items-center gap-2 text-white/70 text-sm font-['DM_Sans']">
-            <Users className="h-4 w-4" /> {cards.length} vendedor{cards.length === 1 ? "" : "es"}
-          </div>
-        </header>
-
+      <ManagerHeader
+        title="Mi Equipo"
+        subtitle={`${cards.length} vendedor${cards.length === 1 ? "" : "es"}`}
+        rightExtras={
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-white/60 text-xs font-['DM_Sans']">
+            <Users className="h-3.5 w-3.5" /> {cards.length}
+          </span>
+        }
+      />
+      <div className="mx-auto w-full max-w-[960px] px-5 pt-2 pb-24">
         <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-1">Tu equipo</h1>
         <p className="text-white/60 font-['DM_Sans'] mb-6">
           Ordenado por atención requerida y última práctica.
