@@ -2789,7 +2789,7 @@ function ConversationTranscript({
                     color: isAgent ? ORANGE : "rgba(255,255,255,0.5)",
                   }}
                 >
-                  {isAgent ? "Closer" : "Tú"}
+                  {isAgent ? "Cliente" : "Tú"}
                 </div>
                 <div
                   style={{
