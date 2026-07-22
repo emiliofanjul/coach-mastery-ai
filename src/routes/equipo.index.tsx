@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ManagerHeader } from "@/components/manager/ManagerShell";
+import { AppHeader } from "@/components/app/AppShell";
 
 export const Route = createFileRoute("/equipo/")({
   head: () => ({ meta: [{ title: "Equipo — Closer" }] }),
@@ -198,7 +198,7 @@ function EquipoPage() {
 
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
-      <ManagerHeader
+      <AppHeader
         title="Mi Equipo"
         subtitle={`${cards.length} vendedor${cards.length === 1 ? "" : "es"}`}
         rightExtras={

@@ -10,40 +10,49 @@ import {
 } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
-import { Menu, X, Store, Users, LogOut, ArrowLeft } from "lucide-react";
+import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
 // ─────────────────────────── Context ───────────────────────────
 
-type ManagerShellCtx = {
-  isManager: boolean;
+type Role = "manager" | "vendedor" | null;
+
+type AppShellCtx = {
+  role: Role;
+  isAuthed: boolean;
   isReady: boolean;
   open: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
+  registerHeader: () => () => void;
+  hasHeader: boolean;
 };
 
-const Ctx = createContext<ManagerShellCtx>({
-  isManager: false,
+const Ctx = createContext<AppShellCtx>({
+  role: null,
+  isAuthed: false,
   isReady: false,
   open: false,
   openDrawer: () => {},
   closeDrawer: () => {},
+  registerHeader: () => () => {},
+  hasHeader: false,
 });
 
-export function useManagerShell() {
+export function useAppShell() {
   return useContext(Ctx);
 }
 
 // ─────────────────────────── Provider ───────────────────────────
 
-export function ManagerShellProvider({ children }: { children: ReactNode }) {
-  const [isManager, setIsManager] = useState(false);
+export function AppShellProvider({ children }: { children: ReactNode }) {
+  const [role, setRole] = useState<Role>(null);
+  const [isAuthed, setIsAuthed] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [open, setOpen] = useState(false);
+  const [headerCount, setHeaderCount] = useState(0);
 
-  // Detect manager role once auth is available; re-check on auth changes.
   useEffect(() => {
     let cancelled = false;
 
@@ -51,7 +60,8 @@ export function ManagerShellProvider({ children }: { children: ReactNode }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         if (!cancelled) {
-          setIsManager(false);
+          setIsAuthed(false);
+          setRole(null);
           setIsReady(true);
         }
         return;
@@ -62,14 +72,13 @@ export function ManagerShellProvider({ children }: { children: ReactNode }) {
         .eq("id", user.id)
         .maybeSingle();
       if (cancelled) return;
-      setIsManager(prof?.role === "manager");
+      setIsAuthed(true);
+      setRole(prof?.role === "manager" ? "manager" : "vendedor");
       setIsReady(true);
     };
 
     refresh();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      refresh();
-    });
+    const { data: sub } = supabase.auth.onAuthStateChange(() => refresh());
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
@@ -79,16 +88,46 @@ export function ManagerShellProvider({ children }: { children: ReactNode }) {
   const openDrawer = useCallback(() => setOpen(true), []);
   const closeDrawer = useCallback(() => setOpen(false), []);
 
-  const value = useMemo(
-    () => ({ isManager, isReady, open, openDrawer, closeDrawer }),
-    [isManager, isReady, open, openDrawer, closeDrawer],
+  const registerHeader = useCallback(() => {
+    setHeaderCount((c) => c + 1);
+    return () => setHeaderCount((c) => Math.max(0, c - 1));
+  }, []);
+
+  const value = useMemo<AppShellCtx>(
+    () => ({
+      role,
+      isAuthed,
+      isReady,
+      open,
+      openDrawer,
+      closeDrawer,
+      registerHeader,
+      hasHeader: headerCount > 0,
+    }),
+    [role, isAuthed, isReady, open, openDrawer, closeDrawer, registerHeader, headerCount],
   );
 
   return (
     <Ctx.Provider value={value}>
       {children}
-      {isManager && <ManagerDrawer open={open} onClose={closeDrawer} />}
+      {isAuthed && <AppDrawer open={open} onClose={closeDrawer} role={role} />}
+      {isAuthed && headerCount === 0 && <FloatingMenuButton onOpen={openDrawer} />}
     </Ctx.Provider>
+  );
+}
+
+// ─────────────────────────── Floating ☰ (routes without AppHeader) ───────────────────────────
+
+function FloatingMenuButton({ onOpen }: { onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      aria-label="Abrir menú"
+      aria-haspopup="dialog"
+      className="fixed top-3 right-3 z-40 h-10 w-10 grid place-items-center rounded-full bg-black/50 backdrop-blur text-white/90 hover:text-white hover:bg-black/70 border border-white/10 transition-colors"
+    >
+      <Menu size={20} />
+    </button>
   );
 }
 
@@ -96,46 +135,53 @@ export function ManagerShellProvider({ children }: { children: ReactNode }) {
 
 type NavItem = { to: string; label: string; icon: typeof Store };
 
-const NAV_ITEMS: NavItem[] = [
+const COMMON_ITEMS: NavItem[] = [
+  { to: "/mapa", label: "Mapa", icon: MapIcon },
+];
+
+const MANAGER_ITEMS: NavItem[] = [
   { to: "/mi-empresa", label: "Mi Empresa", icon: Store },
   { to: "/equipo", label: "Mi Equipo", icon: Users },
 ];
 
-function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+function AppDrawer({
+  open,
+  onClose,
+  role,
+}: {
+  open: boolean;
+  onClose: () => void;
+  role: Role;
+}) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const panelRef = useRef<HTMLDivElement | null>(null);
   const openerRef = useRef<Element | null>(null);
   const x = useMotionValue(0);
   const scrimOpacity = useTransform(x, [-320, 0], [0, 1]);
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
 
-  // Remember the trigger to restore focus.
   useEffect(() => {
-    if (open) {
-      openerRef.current = document.activeElement;
-    } else if (openerRef.current instanceof HTMLElement) {
-      openerRef.current.focus();
-    }
+    if (open) openerRef.current = document.activeElement;
+    else if (openerRef.current instanceof HTMLElement) openerRef.current.focus();
   }, [open]);
 
-  // Body scroll lock while open.
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
+    return () => { document.body.style.overflow = prev; };
   }, [open]);
 
-  // Escape to close + focus trap.
+  useEffect(() => {
+    if (!open) setConfirmingLogout(false);
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-        return;
-      }
+      if (e.key === "Escape") { e.preventDefault(); onClose(); return; }
       if (e.key === "Tab" && panelRef.current) {
         const focusables = panelRef.current.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
@@ -143,31 +189,39 @@ function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }
         if (focusables.length === 0) return;
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     };
     document.addEventListener("keydown", handler);
-    // Autofocus the close button.
     const t = window.setTimeout(() => {
       panelRef.current?.querySelector<HTMLElement>("[data-drawer-close]")?.focus();
     }, 60);
-    return () => {
-      document.removeEventListener("keydown", handler);
-      window.clearTimeout(t);
-    };
+    return () => { document.removeEventListener("keydown", handler); window.clearTimeout(t); };
   }, [open, onClose]);
+
+  const handleLogout = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("closer:selectedRole");
+      sessionStorage.removeItem("closer:pendingCompanyName");
+      sessionStorage.removeItem("closer:pendingInviteCode");
+    }
+    onClose();
+    navigate({ to: "/login", replace: true });
+  };
+
+  const items: NavItem[] = [
+    ...COMMON_ITEMS,
+    ...(role === "manager" ? MANAGER_ITEMS : []),
+  ];
 
   return (
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[100]">
-          {/* Scrim */}
           <motion.button
             aria-label="Cerrar menú"
             onClick={onClose}
@@ -178,12 +232,11 @@ function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }
             className="absolute inset-0 bg-black/60"
             style={{ opacity: scrimOpacity as unknown as number }}
           />
-          {/* Panel */}
           <motion.aside
             ref={panelRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Navegación del manager"
+            aria-label="Menú de la app"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
@@ -197,7 +250,6 @@ function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }
             style={{ x }}
             className="absolute inset-y-0 left-0 w-[85%] max-w-[340px] bg-[#0D0D18] border-r border-white/10 shadow-2xl flex flex-col"
           >
-            {/* Close (top-left, matches ☰ position) */}
             <div className="flex items-center gap-3 px-4 pt-4 pb-2">
               <button
                 data-drawer-close
@@ -212,15 +264,10 @@ function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }
               </div>
             </div>
 
-            <div className="px-3 mt-2 text-[0.65rem] uppercase tracking-[0.14em] text-white/40 font-['DM_Sans'] font-bold pl-4">
-              Panel del manager
-            </div>
-
-            <nav className="mt-3 flex-1 overflow-y-auto px-2 pb-6">
+            <nav className="mt-3 flex-1 overflow-y-auto px-2 pb-4">
               <ul className="flex flex-col gap-1">
-                {NAV_ITEMS.map((item) => {
-                  const active =
-                    pathname === item.to || pathname.startsWith(item.to + "/");
+                {items.map((item) => {
+                  const active = pathname === item.to || pathname.startsWith(item.to + "/");
                   const Icon = item.icon;
                   return (
                     <li key={item.to}>
@@ -242,6 +289,38 @@ function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }
                 })}
               </ul>
             </nav>
+
+            <div className="border-t border-white/10 px-3 py-3">
+              {!confirmingLogout ? (
+                <button
+                  onClick={() => setConfirmingLogout(true)}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-[14px] font-['DM_Sans'] font-medium text-[0.95rem] text-white/85 hover:bg-white/5 border border-transparent transition-colors"
+                >
+                  <LogOut size={18} className="shrink-0" />
+                  <span>Cerrar sesión</span>
+                </button>
+              ) : (
+                <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-3">
+                  <div className="font-['DM_Sans'] text-[0.85rem] text-white/85 mb-3">
+                    ¿Seguro que quieres cerrar sesión?
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setConfirmingLogout(false)}
+                      className="flex-1 px-3 py-2 rounded-full border border-white/15 text-white/80 hover:text-white hover:border-white/30 font-['DM_Sans'] text-[0.85rem] font-semibold transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="flex-1 px-3 py-2 rounded-full bg-[#FF6B2B] text-white hover:bg-[#ff7d47] font-['DM_Sans'] text-[0.85rem] font-semibold transition-colors"
+                    >
+                      Sí, salir
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.aside>
         </div>
       )}
@@ -251,36 +330,20 @@ function ManagerDrawer({ open, onClose }: { open: boolean; onClose: () => void }
 
 // ─────────────────────────── Header ───────────────────────────
 
-type ManagerHeaderProps = {
+type AppHeaderProps = {
   title: ReactNode;
   subtitle?: ReactNode;
   back?: { to: string; label?: string };
   rightExtras?: ReactNode;
-  showLogout?: boolean;
 };
 
-export function ManagerHeader({
-  title,
-  subtitle,
-  back,
-  rightExtras,
-  showLogout = true,
-}: ManagerHeaderProps) {
-  const { isManager, openDrawer } = useManagerShell();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+export function AppHeader({ title, subtitle, back, rightExtras }: AppHeaderProps) {
+  const { isAuthed, openDrawer, registerHeader } = useAppShell();
 
-  const handleLogout = async () => {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem("closer:selectedRole");
-      sessionStorage.removeItem("closer:pendingCompanyName");
-      sessionStorage.removeItem("closer:pendingInviteCode");
-    }
-    navigate({ to: "/login", replace: true });
-  };
+  useEffect(() => {
+    const unregister = registerHeader();
+    return unregister;
+  }, [registerHeader]);
 
   return (
     <header
@@ -290,9 +353,8 @@ export function ManagerHeader({
           "linear-gradient(180deg, #08080F 0%, #08080F 72%, transparent 100%)",
       }}
     >
-      {/* Left: ☰ (fixed) + optional Back */}
       <div className="flex items-center gap-1 min-w-0">
-        {isManager ? (
+        {isAuthed ? (
           <button
             onClick={openDrawer}
             aria-label="Abrir menú"
@@ -323,20 +385,11 @@ export function ManagerHeader({
         </div>
       </div>
 
-      {/* Right: page extras + logout */}
-      <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
-        {rightExtras}
-        {showLogout && (
-          <button
-            onClick={handleLogout}
-            aria-label="Cerrar sesión"
-            className="inline-flex items-center gap-1 rounded-full border border-[#252535] px-3 py-1.5 text-[0.7rem] font-['DM_Sans'] font-semibold text-[#5A5A8A] hover:text-white hover:border-white/30 transition-colors"
-          >
-            <LogOut size={13} />
-            <span className="hidden sm:inline">Salir</span>
-          </button>
-        )}
-      </div>
+      {rightExtras && (
+        <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+          {rightExtras}
+        </div>
+      )}
     </header>
   );
 }

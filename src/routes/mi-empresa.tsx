@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Plus, Trash2, Save, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ManagerHeader } from "@/components/manager/ManagerShell";
+import { AppHeader } from "@/components/app/AppShell";
 
 export const Route = createFileRoute("/mi-empresa")({
   head: () => ({
@@ -259,7 +259,7 @@ function MiEmpresaPage() {
 
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
-      <ManagerHeader title="Mi Empresa" subtitle={companyName || undefined} />
+      <AppHeader title="Mi Empresa" subtitle={companyName || undefined} />
       <div className="mx-auto w-full max-w-[720px] px-5 pt-2 pb-32">
         <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-1">Mi Empresa</h1>
         <p className="text-white/60 font-['DM_Sans'] mb-4">

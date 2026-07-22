@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Lock, Check, Star, Trophy, Play } from "lucide-react";
-import { ManagerHeader } from "@/components/manager/ManagerShell";
+import { AppHeader } from "@/components/app/AppShell";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
@@ -367,7 +367,7 @@ function MapaPage() {
   return (
     <main style={shellStyle}>
       {/* Header fijo */}
-      <ManagerHeader
+      <AppHeader
         title="MAPA"
         subtitle="Camino al Vendedor Elite"
         rightExtras={
