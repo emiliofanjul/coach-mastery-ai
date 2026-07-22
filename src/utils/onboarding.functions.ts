@@ -1,8 +1,11 @@
 /**
- * Server function: genera el Company Sales Brain + un turno de Don Ramón
+ * Server function: genera el Company Sales Brain + una respuesta de preview
  * usando Lovable AI Gateway (modelo Gemini 2.5 Pro).
  *
- * No requiere API key adicional — LOVABLE_API_KEY ya está en el sandbox.
+ * IMPORTANTE: el brain persistible SOLO contiene las llaves canónicas
+ * (BRAIN_KEYS). La respuesta de preview del cliente típico se devuelve como
+ * `__preview_response` y NUNCA debe escribirse dentro de
+ * companies.company_sales_brain.
  */
 import { createServerFn } from "@tanstack/react-start";
 
@@ -11,8 +14,18 @@ type AnswerInput = { question: string; answer: string };
 interface BrainPayload {
   answers: AnswerInput[];
   companyName: string;
-  openerLine: string; // primera frase del vendedor para generar respuesta de Don Ramón
+  openerLine: string;
 }
+
+const BRAIN_KEYS = [
+  "PRODUCTOS_ACTIVOS",
+  "CLIENTE_TIPICO",
+  "ARGUMENTOS_DE_VALOR",
+  "OBJECIONES_REALES",
+  "CONTEXTO_DE_VENTA",
+  "RESTRICCIONES",
+  "TONO_DETECTADO",
+] as const;
 
 export const generateCompanyBrain = createServerFn({ method: "POST" })
   .inputValidator((data: BrainPayload) => {
@@ -42,7 +55,7 @@ Con base en las respuestas del onboarding del manager, devuelves un objeto JSON 
   "CONTEXTO_DE_VENTA": "string, escenario típico (tipo de interacción, duración, ambiente)",
   "RESTRICCIONES": "string, lo que nunca debe decir/hacer el equipo",
   "TONO_DETECTADO": "string corto (Ej: 'Informal — trato de confianza')",
-  "DON_RAMON_RESPUESTA": "string de 1 a 2 líneas. Una respuesta REALISTA del cliente típico al saludo del vendedor. Como hablaría un dueño de negocio mexicano real."
+  "PREVIEW_RESPUESTA_CLIENTE": "string de 1 a 2 líneas. Una respuesta REALISTA del cliente típico a la frase del vendedor del preview. Como hablaría un dueño de negocio mexicano real. Sirve SOLO para mostrar el preview en el onboarding — no forma parte del brain persistente."
 }
 
 Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
@@ -73,21 +86,28 @@ Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
 
     const json = await res.json();
     const content: string = json.choices?.[0]?.message?.content ?? "{}";
-    let brain: Record<string, string>;
+    let raw: Record<string, unknown>;
     try {
-      brain = JSON.parse(content);
+      raw = JSON.parse(content);
     } catch {
-      // fallback minimo
-      brain = {
-        PRODUCTOS_ACTIVOS: "",
-        CLIENTE_TIPICO: "",
-        ARGUMENTOS_DE_VALOR: "",
-        OBJECIONES_REALES: "",
-        CONTEXTO_DE_VENTA: "",
-        RESTRICCIONES: "",
-        TONO_DETECTADO: "Profesional",
-        DON_RAMON_RESPUESTA: "Pues a ver, cuénteme qué trae.",
-      };
+      raw = {};
     }
-    return brain;
+
+    // Brain persistible: solo llaves canónicas, valores string.
+    const brain: Record<string, string> = {};
+    for (const k of BRAIN_KEYS) {
+      brain[k] = typeof raw[k] === "string" ? (raw[k] as string) : "";
+    }
+    if (!brain.TONO_DETECTADO) brain.TONO_DETECTADO = "Profesional";
+
+    // Respuesta de preview: efímera, se devuelve aparte con prefijo `__`
+    // para que sea imposible confundirla con una llave real del brain.
+    const previewResponse =
+      typeof raw.PREVIEW_RESPUESTA_CLIENTE === "string"
+        ? (raw.PREVIEW_RESPUESTA_CLIENTE as string)
+        : typeof raw.DON_RAMON_RESPUESTA === "string"
+          ? (raw.DON_RAMON_RESPUESTA as string)
+          : "Pues a ver, cuénteme qué trae.";
+
+    return { ...brain, __preview_response: previewResponse };
   });
