@@ -122,11 +122,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ConversationProvider>
-        <ManagerShellProvider>
+        <AppShellProvider>
           <DevMenu />
           <Outlet />
           <Toaster position="top-center" theme="dark" richColors closeButton />
-        </ManagerShellProvider>
+        </AppShellProvider>
       </ConversationProvider>
     </QueryClientProvider>
   );
