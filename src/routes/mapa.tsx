@@ -16,7 +16,7 @@ import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { consumeNodeCompletionSignal, type NodeCompletionSignal } from "@/lib/node-completion";
-import { getStoredSupabaseUserId } from "@/lib/browser-auth-session";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -96,6 +96,8 @@ const BOSS_RADIUS = 36; // 72 px
 const MAP_WIDTH = 320;
 const ROW_HEIGHT = 110;
 const PADDING_TOP = 32;
+const SUPABASE_REST_URL = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 // zigzag horizontal positions: izq, centro, der, centro, izq, centro, der...
 const X_PATTERN = [0.18, 0.5, 0.82, 0.5];
@@ -108,6 +110,17 @@ function xForIndex(i: number) {
 // total = número de nodos del mundo, i = índice (0 = primero).
 function yForIndex(i: number, total: number) {
   return PADDING_TOP + (total - 1 - i) * ROW_HEIGHT;
+}
+
+async function restSelect<T>(path: string, accessToken: string): Promise<T> {
+  const res = await fetch(`${SUPABASE_REST_URL}/${path}`, {
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (!res.ok) throw new Error(`mapa_fetch_${res.status}`);
+  return (await res.json()) as T;
 }
 
 // ───────────────────────── Page ─────────────────────────
@@ -162,49 +175,49 @@ function MapaPage() {
     let alive = true;
     (async () => {
       try {
-      const userId = getStoredSupabaseUserId();
-      if (!userId) {
+      const storedSession = getStoredSupabaseSession();
+      if (!storedSession) {
         navigate({ to: "/login", replace: true });
         if (alive) setLoading(false);
         return;
       }
+      const { userId, accessToken } = storedSession;
 
-      const [{ data: w }, { data: n }, { data: s }] = await Promise.all([
-        supabase.from("worlds").select("*").order("order_index"),
-        supabase.from("nodes").select("*").order("order_index"),
-        supabase
-          .from("sellers")
-          .select("id, current_world, current_node, map_tutorial_completed")
-          .eq("profile_id", userId)
-          .maybeSingle(),
+      const [w, n, sellerRows] = await Promise.all([
+        restSelect<World[]>("worlds?select=*&order=order_index.asc", accessToken),
+        restSelect<NodeRow[]>("nodes?select=id,world_id,name,technique,order_index,is_boss,difficulty_level&order=order_index.asc", accessToken),
+        restSelect<Array<NonNullable<typeof seller>>>(
+          `sellers?select=id,current_world,current_node,map_tutorial_completed&profile_id=eq.${encodeURIComponent(userId)}&limit=1`,
+          accessToken,
+        ),
       ]);
+      const s = sellerRows[0] ?? null;
 
       if (!alive) return;
 
-      setWorlds((w as World[]) ?? []);
-      setNodes((n as NodeRow[]) ?? []);
+      setWorlds(w ?? []);
+      setNodes(n ?? []);
 
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", userId)
-        .maybeSingle();
+      const [prof] = await restSelect<Array<{ role: string | null }>>(
+        `profiles?select=role&id=eq.${encodeURIComponent(userId)}&limit=1`,
+        accessToken,
+      );
       if (!alive) return;
       if (prof?.role === "manager") setIsManager(true);
 
 
       if (s) {
         if (!alive) return;
-        setSeller(s as typeof seller);
-        const { data: p } = await supabase
-          .from("node_progress")
-          .select("node_id, status, consistency_score, stars")
-          .eq("seller_id", (s as { id: string }).id);
+        setSeller(s);
+        const p = await restSelect<ProgressRow[]>(
+          `node_progress?select=node_id,status,consistency_score,stars&seller_id=eq.${encodeURIComponent(s.id)}`,
+          accessToken,
+        );
         if (!alive) return;
         const map: Record<string, ProgressRow> = {};
-        (p as ProgressRow[] | null)?.forEach((r) => (map[r.node_id] = r));
+        p.forEach((r) => (map[r.node_id] = r));
         setProgress(map);
-        if (!(s as { map_tutorial_completed?: boolean }).map_tutorial_completed) {
+        if (!s.map_tutorial_completed) {
           // pequeño delay para que el mapa se renderice antes
           setTimeout(() => setShowTutorial(true), 600);
         }

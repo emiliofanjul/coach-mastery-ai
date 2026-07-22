@@ -28,7 +28,7 @@ function extractSession(value: unknown): StoredSession | null {
   return null;
 }
 
-export function getStoredSupabaseUserId(): string | null {
+export function getStoredSupabaseSession(): { userId: string; accessToken: string } | null {
   if (typeof window === "undefined") return null;
   try {
     const nowSeconds = Math.floor(Date.now() / 1000);
@@ -42,7 +42,7 @@ export function getStoredSupabaseUserId(): string | null {
       const userId = session?.user?.id;
       if (!session?.access_token || !userId) continue;
       if (session.expires_at && session.expires_at <= nowSeconds) continue;
-      return userId;
+      return { userId, accessToken: session.access_token };
     }
   } catch {
     return null;
@@ -50,6 +50,10 @@ export function getStoredSupabaseUserId(): string | null {
   return null;
 }
 
+export function getStoredSupabaseUserId(): string | null {
+  return getStoredSupabaseSession()?.userId ?? null;
+}
+
 export function hasStoredSupabaseSession(): boolean {
-  return getStoredSupabaseUserId() !== null;
+  return getStoredSupabaseSession() !== null;
 }
