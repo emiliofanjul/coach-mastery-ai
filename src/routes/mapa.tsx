@@ -158,10 +158,14 @@ function MapaPage() {
   };
 
   useEffect(() => {
+    let alive = true;
     (async () => {
-      const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) {
-        navigate({ to: "/login" });
+      try {
+      const { data: auth } = await supabase.auth.getSession();
+      const userId = auth.session?.user?.id;
+      if (!userId) {
+        navigate({ to: "/login", replace: true });
+        if (alive) setLoading(false);
         return;
       }
 
@@ -171,9 +175,11 @@ function MapaPage() {
         supabase
           .from("sellers")
           .select("id, current_world, current_node, map_tutorial_completed")
-          .eq("profile_id", auth.user.id)
+          .eq("profile_id", userId)
           .maybeSingle(),
       ]);
+
+      if (!alive) return;
 
       setWorlds((w as World[]) ?? []);
       setNodes((n as NodeRow[]) ?? []);
@@ -181,17 +187,20 @@ function MapaPage() {
       const { data: prof } = await supabase
         .from("profiles")
         .select("role")
-        .eq("id", auth.user.id)
+        .eq("id", userId)
         .maybeSingle();
+      if (!alive) return;
       if (prof?.role === "manager") setIsManager(true);
 
 
       if (s) {
+        if (!alive) return;
         setSeller(s as typeof seller);
         const { data: p } = await supabase
           .from("node_progress")
           .select("node_id, status, consistency_score, stars")
           .eq("seller_id", (s as { id: string }).id);
+        if (!alive) return;
         const map: Record<string, ProgressRow> = {};
         (p as ProgressRow[] | null)?.forEach((r) => (map[r.node_id] = r));
         setProgress(map);
@@ -200,8 +209,13 @@ function MapaPage() {
           setTimeout(() => setShowTutorial(true), 600);
         }
       }
-      setLoading(false);
+      } finally {
+        if (alive) setLoading(false);
+      }
     })();
+    return () => {
+      alive = false;
+    };
   }, [navigate]);
 
   // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).

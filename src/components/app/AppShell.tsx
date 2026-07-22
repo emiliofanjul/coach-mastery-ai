@@ -32,7 +32,7 @@ type AppShellCtx = {
 const Ctx = createContext<AppShellCtx>({
   role: null,
   isAuthed: false,
-  isReady: false,
+  isReady: true,
   open: false,
   openDrawer: () => {},
   closeDrawer: () => {},
@@ -44,51 +44,69 @@ export function useAppShell() {
   return useContext(Ctx);
 }
 
+function hasStoredAuthSession() {
+  if (typeof window === "undefined") return false;
+  try {
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const key = window.localStorage.key(i);
+      if (!key || !key.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
+      const value = window.localStorage.getItem(key);
+      if (value && value.includes("access_token") && value.includes("user")) return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}
+
 // ─────────────────────────── Provider ───────────────────────────
 
 export function AppShellProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<Role>(null);
   const [isAuthed, setIsAuthed] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  const [isReady] = useState(true);
   const [open, setOpen] = useState(false);
   const [headerCount, setHeaderCount] = useState(0);
+  const resolvingRoleRef = useRef(false);
 
   useEffect(() => {
-    let cancelled = false;
-
-    const refresh = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        if (!cancelled) {
-          setIsAuthed(false);
-          setRole(null);
-          setIsReady(true);
-        }
-        return;
-      }
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle();
-      if (cancelled) return;
-      setIsAuthed(true);
-      setRole(prof?.role === "manager" ? "manager" : "vendedor");
-      setIsReady(true);
-    };
-
-    refresh();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      // Defer: calling supabase.auth.getUser() synchronously inside this
-      // callback deadlocks the internal auth lock and makes signInWithPassword
-      // hang on the client even after the server issued the token.
-      setTimeout(() => { refresh(); }, 0);
+    setIsAuthed(hasStoredAuthSession());
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthed(!!session?.user);
+      if (!session?.user) setRole(null);
     });
     return () => {
-      cancelled = true;
       sub.subscription.unsubscribe();
     };
   }, []);
+
+  const resolveRoleForMenu = useCallback(async () => {
+    if (resolvingRoleRef.current || role) return;
+    resolvingRoleRef.current = true;
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData.session?.user?.id;
+      if (!userId) {
+        setIsAuthed(false);
+        setRole(null);
+        return;
+      }
+      setIsAuthed(true);
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .maybeSingle();
+      setRole(prof?.role === "manager" ? "manager" : "vendedor");
+    } finally {
+      resolvingRoleRef.current = false;
+    }
+  }, [role]);
+
+  useEffect(() => {
+    if (!open || !isAuthed || role) return;
+    void resolveRoleForMenu();
+  }, [open, isAuthed, role, resolveRoleForMenu]);
 
   const openDrawer = useCallback(() => setOpen(true), []);
   const closeDrawer = useCallback(() => setOpen(false), []);
