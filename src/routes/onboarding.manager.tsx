@@ -131,7 +131,7 @@ function ManagerOnboarding() {
           });
         });
         await Promise.all(saves);
-        await supabase.rpc("update_company_brain", { _brain: result });
+        await supabase.rpc("update_company_brain", { _brain: stripEphemeral(result) });
       })
       .catch((err) => {
         console.error(err);
