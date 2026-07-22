@@ -78,7 +78,12 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
     };
 
     refresh();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => refresh());
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      // Defer: calling supabase.auth.getUser() synchronously inside this
+      // callback deadlocks the internal auth lock and makes signInWithPassword
+      // hang on the client even after the server issued the token.
+      setTimeout(() => { refresh(); }, 0);
+    });
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
