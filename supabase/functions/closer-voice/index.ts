@@ -190,6 +190,8 @@ function buildGenerateExampleSystemPrompt(
   companyBrain: string,
   sellerIndustry: string,
   skillsInFocus: string[] | string,
+  cardTitle: string,
+  cardBodyBrief: string,
 ): string {
   const skillsStr = Array.isArray(skillsInFocus)
     ? JSON.stringify(skillsInFocus)
@@ -199,13 +201,19 @@ function buildGenerateExampleSystemPrompt(
 
 REGLA DE EJEMPLOS: Cada ejemplo demuestra ÚNICAMENTE la habilidad listada en scope.skills_in_focus. No anticipes ni incluyas habilidades de pasos posteriores. Si el nodo enseña el saludo inicial, el ejemplo termina en el saludo inicial — no incluye presentación, ni discovery, ni motivo de visita. Si el nodo enseña la historia breve, el ejemplo termina en la historia breve — no incluye preguntas de discovery. Cada habilidad se demuestra en aislamiento, exactamente como se practicaría en el YOU DO de ese nodo.
 
-Genera un ejemplo de práctica para el nodo indicado. Usa el scope.skills_in_focus para saber exactamente qué habilidad está demostrando el ejemplo. Usa el company_brain solo para saber la industria del vendedor y el tipo de negocio del cliente — nada más. El ejemplo siempre es una primera visita con un cliente que el vendedor nunca ha visto. Sin historial, sin pedidos anteriores, sin perfiles de compra.
+CHECKLIST OBLIGATORIO — LA TARJETA MANDA:
+La tarjeta de concepto de este nodo enseña una doctrina específica. Tu ejemplo DEBE reflejar TODAS las piezas que la tarjeta enseñó — no omitas ninguna. Antes de responder, extrae del "card_body_brief" cada elemento accionable (cada verbo, cada componente, cada acrónimo desglosado, cada instrucción concreta) y confirma que cada uno se manifiesta en el ejemplo (verbal o descriptivamente en acotaciones entre paréntesis cuando sea físico/no verbal).
+- Para good_example: el ejemplo debe demostrar TODAS las piezas del brief bien ejecutadas. Si el brief menciona 3 componentes (ej. Sonrisa, Contacto visual, Entusiasmo) los 3 aparecen — verbales entre comillas o físicos entre paréntesis "(sonríe, contacto visual)".
+- Para bad_example: el error debe caer sobre UNA de las piezas del brief — no un error genérico ajeno al brief.
+Si alguna pieza del brief queda fuera, tu respuesta es incorrecta.
 
-Para good_example: muestra cómo se ve bien ejecutada la habilidad en skills_in_focus. Máximo 2-3 frases del vendedor. Natural, humano, específico a la industria.
+Usa el scope.skills_in_focus para saber exactamente qué habilidad está demostrando el ejemplo. Usa el company_brain solo para saber la industria del vendedor y el tipo de negocio del cliente — nada más. El ejemplo siempre es una primera visita con un cliente que el vendedor nunca ha visto. Sin historial, sin pedidos anteriores, sin perfiles de compra.
 
-Para bad_example: muestra el error más común al ejecutar esa habilidad. Máximo 2 frases. Realista — algo que un vendedor real diría.
+Para good_example: muestra cómo se ve bien ejecutada la habilidad en skills_in_focus, cubriendo TODAS las piezas del brief. Máximo 3-4 frases del vendedor. Natural, humano, específico a la industria.
 
-El flip_back explica en 1-2 frases por qué funciona o por qué falla — específico a la habilidad, no genérico.
+Para bad_example: muestra el error más común al ejecutar esa habilidad, incumpliendo una pieza concreta del brief. Máximo 2 frases. Realista — algo que un vendedor real diría.
+
+El flip_back explica en 1-2 frases por qué funciona o por qué falla — nombrando la(s) pieza(s) del brief involucrada(s).
 
 Responde solo JSON con body y flip_back. Sin markdown.
 
@@ -214,6 +222,11 @@ Nodo: ${nodeName}
 scope.skills_in_focus: ${skillsStr}
 Industria del vendedor: ${sellerIndustry || "no especificada"}
 company_brain: ${companyBrain || "no especificado"}
+
+TARJETA DE CONCEPTO (el brief que este ejemplo debe reflejar):
+Título: ${cardTitle || "(sin título)"}
+Cuerpo:
+${cardBodyBrief || "(sin cuerpo)"}
 
 Responde JSON exacto:
 { "body": "...", "flip_back": "..." }`;
