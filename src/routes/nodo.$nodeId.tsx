@@ -555,6 +555,8 @@ function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flip
   return (
     <div style={{ perspective: 1200, width: "100%" }}>
       <motion.div
+        key={card.id}
+        initial={{ rotateY: 0 }}
         animate={{ rotateY: animateRotate }}
         transition={transition}
         style={{
