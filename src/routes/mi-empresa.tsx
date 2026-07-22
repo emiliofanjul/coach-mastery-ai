@@ -214,7 +214,7 @@ function MiEmpresaPage() {
         }
         brain[k] = parsed;
       }
-      const { error } = await supabase.rpc("update_company_brain", { _brain: brain });
+      const { error } = await supabase.rpc("update_company_brain", { _brain: brain as any });
       if (error) throw error;
       toast.success("Guardado. Tu Closer ya usa estos cambios.");
     } catch (e: any) {
