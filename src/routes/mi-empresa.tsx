@@ -80,6 +80,10 @@ const KNOWN_FIELDS: Array<{
 
 const KNOWN_KEYS = new Set(KNOWN_FIELDS.map((f) => f.key));
 
+// Llaves legacy o efímeras que nunca deben aparecer en la UI ni persistirse.
+// DON_RAMON_RESPUESTA se persistía por error desde el onboarding viejo.
+const HIDDEN_KEYS = new Set(["DON_RAMON_RESPUESTA", "__preview_response"]);
+
 function splitList(v: unknown): string[] {
   if (Array.isArray(v)) return v.map((x) => String(x).trim()).filter(Boolean);
   if (typeof v !== "string") return [];
