@@ -74,6 +74,8 @@ interface ReqBody {
   node_name?: string;
   seller_industry?: string;
   scope?: { skills_in_focus?: string[] | string } | null;
+  card_title?: string;
+  card_body_brief?: string;
   // Correlation id — client-generated at session start, same value across
   // every closer-voice call in this session and later passed to
   // save-practice-event so llm_calls rows can be backfilled with event_id.
