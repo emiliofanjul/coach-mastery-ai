@@ -427,30 +427,24 @@ function MapaPage() {
               >
                 Equipo
               </button>
-              {/* Gate temporal: "Mi Empresa" oculta hasta resolver la consolidación
-                  de las companies DALFAN duplicadas — así el manager no edita el
-                  brain equivocado. La ruta /mi-empresa sigue accesible por URL
-                  directa para pruebas. */}
-              {false && (
-                <button
-                  onClick={() => navigate({ to: "/mi-empresa" })}
-                  style={{
-                    background: "transparent",
-                    border: "1px solid #FF6B2B",
-                    color: "#FF6B2B",
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "0.7rem",
-                    padding: "0.4rem 0.8rem",
-                    borderRadius: 99,
-                    cursor: "pointer",
-                    letterSpacing: "0.03em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Mi Empresa
-                </button>
-              )}
+              <button
+                onClick={() => navigate({ to: "/mi-empresa" })}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #FF6B2B",
+                  color: "#FF6B2B",
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.7rem",
+                  padding: "0.4rem 0.8rem",
+                  borderRadius: 99,
+                  cursor: "pointer",
+                  letterSpacing: "0.03em",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Mi Empresa
+              </button>
             </>
           )}
           <button
