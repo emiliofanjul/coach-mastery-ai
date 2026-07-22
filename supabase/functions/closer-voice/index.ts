@@ -130,6 +130,7 @@ REGLAS DE EVALUACIÓN:
 4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
 5. Cantidad de observations: mínimo 1, máximo 3. Reporta tantas como problemas reales haya, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también.
 6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
+7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
 
 CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
 

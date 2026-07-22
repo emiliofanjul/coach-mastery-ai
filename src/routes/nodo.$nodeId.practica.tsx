@@ -700,6 +700,13 @@ function PracticaPage() {
         } catch (e) {
           console.error("[director] closing TTS failed:", e);
         }
+        // En modo texto: no hay TTS que dé tiempo natural para leer el último
+        // intercambio + el closing. Damos ~4s (o el usuario puede navegar
+        // manualmente si activamos un botón en un futuro) antes de transicionar
+        // a "Analizando". En voz este delay ya lo cubre la duración del TTS.
+        if (inputModeRef.current === "text") {
+          await new Promise((r) => setTimeout(r, 4000));
+        }
         await handleSessionEnd();
         return true;
       }
@@ -1280,7 +1287,7 @@ function PracticaPage() {
                 </button>
               </div>
             )}
-            {phase === "you_do" && showVoiceTutorial && (
+            {phase === "you_do" && showVoiceTutorial && inputMode === "voice" && (
               <div
                 style={{
                   position: "fixed",
@@ -1483,7 +1490,7 @@ function PracticaPage() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Cuando termines, haz una pausa de 2 segundos. Closer detecta el silencio y responde automáticamente.
+                      Cuando termines, haz una pausa de 3 segundos. Closer detecta el silencio y responde automáticamente.
                     </div>
                     <div
                       style={{
@@ -1997,7 +2004,7 @@ function VoicePhase({
                 <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isAgent ? "flex-start" : "flex-end" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: isAgent ? ORANGE : "rgba(255,255,255,0.5)" }}>
-                      {isAgent ? "Cliente" : "Tú"}
+                      {isIDo ? (isAgent ? "Closer (demo)" : "Tú (cliente)") : (isAgent ? "Cliente" : "Tú")}
                     </div>
                     {isAgent && (
                       <button
@@ -2789,7 +2796,7 @@ function ConversationTranscript({
                     color: isAgent ? ORANGE : "rgba(255,255,255,0.5)",
                   }}
                 >
-                  {isAgent ? "Closer" : "Tú"}
+                  {isAgent ? "Cliente" : "Tú"}
                 </div>
                 <div
                   style={{
