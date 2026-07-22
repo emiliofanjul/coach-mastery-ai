@@ -200,6 +200,8 @@ function NodoCardsPage() {
                 scope: { skills_in_focus: skillsInFocus },
                 company_brain: companyBrain,
                 seller_industry: sellerIndustry,
+                card_title: c.title ?? "",
+                card_body_brief: c.body ?? "",
               },
             });
             if (error || !data || typeof (data as any).body !== "string") {
