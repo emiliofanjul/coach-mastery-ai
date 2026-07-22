@@ -1280,7 +1280,7 @@ function PracticaPage() {
                 </button>
               </div>
             )}
-            {phase === "you_do" && showVoiceTutorial && (
+            {phase === "you_do" && showVoiceTutorial && inputMode === "voice" && (
               <div
                 style={{
                   position: "fixed",
