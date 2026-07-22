@@ -111,7 +111,16 @@ function NodoCardsPage() {
         .maybeSingle();
       if (!alive || !company) return;
       const brain = (company as any).company_sales_brain;
-      const brainStr = typeof brain === "string" ? brain : brain ? JSON.stringify(brain) : "";
+      const companyName = (company as any).name ?? "";
+      // Incluimos el nombre real de la empresa dentro del payload del brain.
+      // Antes solo mandábamos company_sales_brain (que no siempre trae `name`),
+      // así que el generador de ejemplos inventaba empresas ("Productos Industriales del Norte").
+      // Ahora el I DO y las tarjetas dynamic comparten el mismo contexto: nombre + brain.
+      const brainObj =
+        brain && typeof brain === "object"
+          ? { company_name: companyName, ...brain }
+          : { company_name: companyName, notes: typeof brain === "string" ? brain : "" };
+      const brainStr = JSON.stringify(brainObj);
       const industry =
         (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
       setCompanyBrain(brainStr);
