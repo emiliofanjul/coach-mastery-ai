@@ -10,7 +10,8 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Lock, Check, Star, Trophy, Play, LogOut } from "lucide-react";
+import { Lock, Check, Star, Trophy, Play } from "lucide-react";
+import { ManagerHeader } from "@/components/manager/ManagerShell";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";

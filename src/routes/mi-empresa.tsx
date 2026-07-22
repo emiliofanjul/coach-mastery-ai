@@ -1,9 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Plus, Trash2, Save, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, Save, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ManagerHeader } from "@/components/manager/ManagerShell";
 
 export const Route = createFileRoute("/mi-empresa")({
   head: () => ({
@@ -258,19 +259,8 @@ function MiEmpresaPage() {
 
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
-      <div className="mx-auto w-full max-w-[720px] px-5 pt-6 pb-32">
-        <header className="mb-6 flex items-center justify-between gap-4">
-          <Link
-            to="/mapa"
-            className="text-white/60 hover:text-white flex items-center gap-2 text-sm font-['DM_Sans']"
-          >
-            <ArrowLeft className="h-4 w-4" /> Mapa
-          </Link>
-          <div className="text-white/50 text-xs font-['DM_Sans'] truncate">
-            {companyName}
-          </div>
-        </header>
-
+      <ManagerHeader title="Mi Empresa" subtitle={companyName || undefined} />
+      <div className="mx-auto w-full max-w-[720px] px-5 pt-2 pb-32">
         <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-1">Mi Empresa</h1>
         <p className="text-white/60 font-['DM_Sans'] mb-4">
           Este es el conocimiento con el que tu Closer entrena a tu equipo. Edítalo cuando cambie tu realidad

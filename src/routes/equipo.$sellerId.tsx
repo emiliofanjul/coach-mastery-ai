@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ManagerHeader } from "@/components/manager/ManagerShell";
 
 type CoachRec = {
   prioridad: string;
@@ -277,8 +278,9 @@ function SellerDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
-      <div className="mx-auto w-full max-w-[720px] px-5 pt-6 pb-24">
-        <Link to="/equipo" className="text-white/60 hover:text-white flex items-center gap-2 text-sm font-['DM_Sans'] mb-6">
+      <ManagerHeader title="Vendedor" back={{ to: "/equipo", label: "Volver a equipo" }} />
+      <div className="mx-auto w-full max-w-[720px] px-5 pt-2 pb-24">
+        <Link to="/equipo" className="text-white/60 hover:text-white sm:hidden flex items-center gap-2 text-sm font-['DM_Sans'] mb-4">
           <ArrowLeft className="h-4 w-4" /> Equipo
         </Link>
 
