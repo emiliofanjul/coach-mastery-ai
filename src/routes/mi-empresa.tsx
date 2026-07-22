@@ -153,6 +153,7 @@ function MiEmpresaPage() {
       const extras: Array<{ key: string; value: string }> = [];
       for (const [k, v] of Object.entries(brain)) {
         if (KNOWN_KEYS.has(k)) continue;
+        if (HIDDEN_KEYS.has(k)) continue;
         extras.push({
           key: k,
           value: typeof v === "string" ? v : JSON.stringify(v, null, 2),
