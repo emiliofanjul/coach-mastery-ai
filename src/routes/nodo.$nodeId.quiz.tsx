@@ -419,12 +419,14 @@ function QuestionView({
   onNext: () => void;
   isLast: boolean;
 }) {
-  const opts: { letter: Letter; text: string }[] = [
-    { letter: "A", text: question.option_a },
-    { letter: "B", text: question.option_b },
-    { letter: "C", text: question.option_c },
-    { letter: "D", text: question.option_d },
-  ];
+  const opts: { letter: Letter; text: string }[] = (
+    [
+      { letter: "A" as Letter, text: question.option_a },
+      { letter: "B" as Letter, text: question.option_b },
+      { letter: "C" as Letter, text: question.option_c },
+      { letter: "D" as Letter, text: question.option_d },
+    ]
+  ).filter((o) => typeof o.text === "string" && o.text.trim().length > 0);
   const answered = selected !== null;
   const isCorrect = selected === question.correct_option;
 
