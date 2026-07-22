@@ -581,7 +581,7 @@ function BrainStep({ companyName, brain, onBack, onNext }: { companyName: string
           <BrainCard key={c.key} label={c.label} value={brain?.[c.key] ?? ""} onSave={async (newVal) => {
             if (!brain) return;
             const updated = { ...brain, [c.key]: newVal };
-            await supabase.rpc("update_company_brain", { _brain: updated });
+            await supabase.rpc("update_company_brain", { _brain: stripEphemeral(updated) });
           }} />
         ))}
       </div>
