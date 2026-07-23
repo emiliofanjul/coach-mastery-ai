@@ -67,11 +67,9 @@ function EquipoPage() {
         navigate({ to: "/login" });
         return;
       }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, company_id")
-        .eq("id", session.userId)
-        .maybeSingle();
+      const profile = await restGetMaybeSingle<{ role: string; company_id: string | null }>(
+        `profiles?select=role,company_id&id=eq.${session.userId}&limit=1`,
+      );
 
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) {
@@ -81,19 +79,14 @@ function EquipoPage() {
         return;
       }
 
-      const [sellersRes, nodesRes, worldsRes] = await Promise.all([
-        supabase
-          .from("sellers")
-          .select("id, full_name, current_world, current_node, streak_days, last_practice_date, certified_at")
-          .eq("company_id", profile.company_id)
-          .eq("is_active", true),
-        supabase.from("nodes").select("id, name, world_id"),
-        supabase.from("worlds").select("id, name"),
+      const [sellers, nodes, worlds] = await Promise.all([
+        restGet<SellerRow>(
+          `sellers?select=id,full_name,current_world,current_node,streak_days,last_practice_date,certified_at&company_id=eq.${profile.company_id}&is_active=eq.true`,
+        ),
+        restGet<NodeInfo>(`nodes?select=id,name,world_id`),
+        restGet<{ id: number; name: string }>(`worlds?select=id,name`),
       ]);
 
-      const sellers = (sellersRes.data ?? []) as SellerRow[];
-      const nodes = (nodesRes.data ?? []) as NodeInfo[];
-      const worlds = (worldsRes.data ?? []) as { id: number; name: string }[];
       const nodeById = new Map(nodes.map((n) => [n.id, n]));
       const worldById = new Map(worlds.map((w) => [w.id, w.name]));
       const totalNodes = nodes.length || 1;
@@ -103,29 +96,23 @@ function EquipoPage() {
       let progressAgg: ProgressAgg[] = [];
       let recentEvents: { seller_id: string; created_at: string; payload: any }[] = [];
       if (sellerIds.length > 0) {
-        const [progRes, evRes] = await Promise.all([
-          supabase
-            .from("node_progress")
-            .select("seller_id, status")
-            .in("seller_id", sellerIds)
-            .eq("status", "done"),
-          supabase
-            .from("seller_events")
-            .select("seller_id, created_at, payload")
-            .in("seller_id", sellerIds)
-            .eq("event_type", "practice_session")
-            .order("created_at", { ascending: false })
-            .limit(500),
+        const inList = `(${sellerIds.map((id) => `"${id}"`).join(",")})`;
+        const [progRows, evRows] = await Promise.all([
+          restGet<{ seller_id: string; status: string }>(
+            `node_progress?select=seller_id,status&seller_id=in.${inList}&status=eq.done`,
+          ),
+          restGet<{ seller_id: string; created_at: string; payload: any }>(
+            `seller_events?select=seller_id,created_at,payload&seller_id=in.${inList}&event_type=eq.practice_session&order=created_at.desc&limit=500`,
+          ),
         ]);
         const grouped = new Map<string, number>();
-        for (const r of progRes.data ?? []) grouped.set(r.seller_id, (grouped.get(r.seller_id) ?? 0) + 1);
+        for (const r of progRows) grouped.set(r.seller_id, (grouped.get(r.seller_id) ?? 0) + 1);
         progressAgg = [...grouped.entries()].map(([seller_id, done]) => ({ seller_id, done }));
-        recentEvents = (evRes.data ?? []) as any[];
+        recentEvents = evRows;
       }
 
       const doneBySeller = new Map(progressAgg.map((p) => [p.seller_id, p.done]));
 
-      // avg score & last practice from events
       const evBySeller = new Map<string, { score: number | null; created_at: string }[]>();
       for (const e of recentEvents) {
         const arr = evBySeller.get(e.seller_id) ?? [];
@@ -155,7 +142,6 @@ function EquipoPage() {
         };
       });
 
-      // Sort: attention first (red > orange > null), then last practice desc
       built.sort((a, b) => {
         const rank = (c: Card) => (c.attention === "red" ? 0 : c.attention === "orange" ? 1 : 2);
         const r = rank(a) - rank(b);
@@ -169,7 +155,10 @@ function EquipoPage() {
         setCards(built);
         setLoading(false);
       }
-    })();
+    })().catch((e) => {
+      console.error("[equipo] load failed", e);
+      if (!cancelled) setLoading(false);
+    });
     return () => {
       cancelled = true;
     };
