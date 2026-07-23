@@ -91,80 +91,74 @@ function SellerDetailPage() {
         navigate({ to: "/login" });
         return;
       }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, company_id")
-        .eq("id", session.userId)
-        .maybeSingle();
+      const profile = await restGetMaybeSingle<{ role: string; company_id: string | null }>(
+        `profiles?select=role,company_id&id=eq.${session.userId}&limit=1`,
+      );
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) { setDenied(true); setLoading(false); }
         return;
       }
 
-      const { data: s } = await supabase
-        .from("sellers")
-        .select("id, full_name, current_world, current_node, streak_days, audio_consent, certified_at, company_id")
-        .eq("id", sellerId)
-        .maybeSingle();
+      const s = await restGetMaybeSingle<Seller>(
+        `sellers?select=id,full_name,current_world,current_node,streak_days,audio_consent,certified_at,company_id&id=eq.${sellerId}&limit=1`,
+      );
 
       if (!s || s.company_id !== profile.company_id) {
         if (!cancelled) { setDenied(true); setLoading(false); }
         return;
       }
 
-      const [evRes, skRes, allSkills, allNodes, allWorlds, progRes, recRes] = await Promise.all([
-        supabase
-          .from("seller_events")
-          .select("id, created_at, node_id, audio_url, payload")
-          .eq("seller_id", sellerId)
-          .eq("event_type", "practice_session")
-          .order("created_at", { ascending: false })
-          .limit(100),
-        supabase
-          .from("seller_skill_state")
-          .select("skill_id, mastery_score, last_practiced_at, evidence_count, recurring_failures")
-          .eq("seller_id", sellerId),
-        supabase.from("skills").select("id, name, category, code"),
-        supabase.from("nodes").select("id, name, world_id"),
-        supabase.from("worlds").select("id, name"),
-        supabase.from("node_progress").select("status").eq("seller_id", sellerId).eq("status", "done"),
-        supabase
-          .from("coach_recommendations")
-          .select("prioridad, plan, fortaleza, last_event_id, updated_at, events_considered, notes_considered")
-          .eq("seller_id", sellerId).maybeSingle(),
+      const [evData, skData, allSkills, allNodes, allWorlds, progData, recData] = await Promise.all([
+        restGet<EventRow>(
+          `seller_events?select=id,created_at,node_id,audio_url,payload&seller_id=eq.${sellerId}&event_type=eq.practice_session&order=created_at.desc&limit=100`,
+        ),
+        restGet<SkillState>(
+          `seller_skill_state?select=skill_id,mastery_score,last_practiced_at,evidence_count,recurring_failures&seller_id=eq.${sellerId}`,
+        ),
+        restGet<Skill>(`skills?select=id,name,category,code`),
+        restGet<NodeInfo>(`nodes?select=id,name,world_id`),
+        restGet<{ id: number; name: string }>(`worlds?select=id,name`),
+        restGet<{ status: string }>(
+          `node_progress?select=status&seller_id=eq.${sellerId}&status=eq.done`,
+        ),
+        restGetMaybeSingle<any>(
+          `coach_recommendations?select=prioridad,plan,fortaleza,last_event_id,updated_at,events_considered,notes_considered&seller_id=eq.${sellerId}&limit=1`,
+        ),
       ]);
 
       const skMap: Record<string, Skill> = {};
-      for (const sk of (allSkills.data ?? []) as Skill[]) skMap[sk.id] = sk;
+      for (const sk of allSkills) skMap[sk.id] = sk;
       const nMap: Record<string, NodeInfo> = {};
-      for (const n of (allNodes.data ?? []) as NodeInfo[]) nMap[n.id] = n;
+      for (const n of allNodes) nMap[n.id] = n;
       const wMap: Record<number, string> = {};
-      for (const w of (allWorlds.data ?? []) as { id: number; name: string }[]) wMap[w.id] = w.name;
+      for (const w of allWorlds) wMap[w.id] = w.name;
 
       if (!cancelled) {
-        setSeller(s as Seller);
-        setEvents((evRes.data ?? []) as EventRow[]);
-        setSkillStates((skRes.data ?? []) as SkillState[]);
+        setSeller(s);
+        setEvents(evData);
+        setSkillStates(skData);
         setSkills(skMap);
         setNodes(nMap);
         setWorlds(wMap);
-        setTotalNodes(Math.max(1, (allNodes.data ?? []).length));
-        setDoneCount((progRes.data ?? []).length);
-        if (recRes.data) {
-          const r: any = recRes.data;
+        setTotalNodes(Math.max(1, allNodes.length));
+        setDoneCount(progData.length);
+        if (recData) {
           setCoachRec({
-            prioridad: r.prioridad,
-            plan: Array.isArray(r.plan) ? r.plan : [],
-            fortaleza: r.fortaleza,
-            last_event_id: r.last_event_id,
-            updated_at: r.updated_at,
-            events_considered: r.events_considered ?? 0,
-            notes_considered: r.notes_considered ?? 0,
+            prioridad: recData.prioridad,
+            plan: Array.isArray(recData.plan) ? recData.plan : [],
+            fortaleza: recData.fortaleza,
+            last_event_id: recData.last_event_id,
+            updated_at: recData.updated_at,
+            events_considered: recData.events_considered ?? 0,
+            notes_considered: recData.notes_considered ?? 0,
           });
         }
         setLoading(false);
       }
-    })();
+    })().catch((e) => {
+      console.error("[equipo/:sellerId] load failed", e);
+      if (!cancelled) { setDenied(true); setLoading(false); }
+    });
     return () => { cancelled = true; };
   }, [sellerId, navigate]);
 
