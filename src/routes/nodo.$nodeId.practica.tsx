@@ -1220,6 +1220,10 @@ function PracticaPage() {
             <VoicePhase
               key={phase}
               currentPhase={currentPhase}
+              iDoPassive={
+                phase === "i_do" &&
+                ((nodeData?.practice_script as any)?.i_do_type ?? "demo") === "demo"
+              }
               isAgentSpeaking={isAgentSpeaking}
               isUserListening={isUserListening}
               isProcessing={isProcessing}
@@ -1251,6 +1255,7 @@ function PracticaPage() {
               onPlayAgentAudio={(txt: string) => { void playTTS(txt, { force: true }); }}
 
             />
+
 
             {phase === "i_do" && iDoDemoDone && (
               <div
