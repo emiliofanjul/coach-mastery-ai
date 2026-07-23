@@ -287,13 +287,25 @@ function AppDrawer({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "tween", duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={{ left: 0.6, right: 0 }}
-            onDragEnd={(_, info) => {
-              if (info.offset.x < -60 || info.velocity.x < -300) onClose();
-            }}
             className="absolute inset-y-0 left-0 w-[85%] max-w-[340px] bg-[#0D0D18] border-r border-white/10 shadow-2xl flex flex-col"
+            onPointerDown={(e) => {
+              const startX = e.clientX;
+              const el = panelRef.current;
+              if (!el) return;
+              let dx = 0;
+              const move = (ev: PointerEvent) => {
+                dx = Math.min(0, ev.clientX - startX);
+                el.style.transform = `translateX(${dx}px)`;
+              };
+              const up = (ev: PointerEvent) => {
+                window.removeEventListener("pointermove", move);
+                window.removeEventListener("pointerup", up);
+                el.style.transform = "";
+                if (dx < -60 || (ev.clientX - startX) < -60) onClose();
+              };
+              window.addEventListener("pointermove", move);
+              window.addEventListener("pointerup", up);
+            }}
           >
             <div className="flex items-center gap-3 px-4 pt-4 pb-2">
               <button
