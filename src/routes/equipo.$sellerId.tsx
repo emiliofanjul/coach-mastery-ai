@@ -1,11 +1,10 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
-import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { createSignedStorageUrl, functionAuthHeaders, functionUrl, restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
 
 type CoachRec = {
   prioridad: string;
@@ -199,12 +198,13 @@ function SellerDetailPage() {
       setAudioUrls((prev) => ({ ...prev, [evId]: url }));
       return;
     }
-    const { data, error } = await supabase.storage
-      .from("practice-audio")
-      .createSignedUrl(url, 3600);
-    if (data?.signedUrl) {
-      setAudioUrls((prev) => ({ ...prev, [evId]: data.signedUrl }));
-    } else {
+    try {
+      const signedUrl = await createSignedStorageUrl("practice-audio", url, {
+        accessToken: getStoredSupabaseSession()?.accessToken,
+        expiresIn: 3600,
+      });
+      setAudioUrls((prev) => ({ ...prev, [evId]: signedUrl }));
+    } catch (error) {
       console.warn("[practice-audio] signed url error", error);
       setAudioUrls((prev) => ({ ...prev, [evId]: "__error__" }));
     }
@@ -219,17 +219,11 @@ function SellerDetailPage() {
     setCoachError(null);
     try {
       const token = getStoredSupabaseSession()?.accessToken;
-      const resp = await fetch(
-        `https://ydkvssqmaawnbxsdfxss.supabase.co/functions/v1/coach-recommendation`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ seller_id: sellerId, force: !hasNewEvents }),
-        },
-      );
+      const resp = await fetch(functionUrl("coach-recommendation"), {
+        method: "POST",
+        headers: functionAuthHeaders(token, { "Content-Type": "application/json" }),
+        body: JSON.stringify({ seller_id: sellerId, force: !hasNewEvents }),
+      });
       const json = await resp.json();
       if (!resp.ok) throw new Error(json?.message ?? json?.error ?? "Error");
       const r = json.recommendation;

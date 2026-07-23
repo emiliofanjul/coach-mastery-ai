@@ -1,12 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Plus, Trash2, Save, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
-import { restGetMaybeSingle } from "@/lib/supabase-rest";
+import { restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/mi-empresa")({
   head: () => ({
@@ -229,8 +228,10 @@ function MiEmpresaPage() {
         }
         brain[k] = parsed;
       }
-      const { error } = await supabase.rpc("update_company_brain", { _brain: brain as any });
-      if (error) throw error;
+      await restMutate("rpc/update_company_brain", {
+        method: "POST",
+        body: { _brain: brain },
+      });
       toast.success("Guardado. Tu Closer ya usa estos cambios.");
     } catch (e: any) {
       console.error("save brain error", e);

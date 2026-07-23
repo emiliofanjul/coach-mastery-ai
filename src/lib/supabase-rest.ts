@@ -12,8 +12,8 @@
 // helper: a thin `fetch` wrapper that hits PostgREST directly with the
 // stored access token. No lock, no SDK, no deadlock.
 //
-// Writes/RPC that need JWT context (e.g. `supabase.rpc(...)`) still go
-// through the SDK — those are one-at-a-time and don't trigger the race.
+// Writes/RPC/function calls that participate in critical flows also use this
+// helper so they don't touch the SDK auth lock at all.
 
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
@@ -22,6 +22,7 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env
   .VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
 const REST_URL = `${SUPABASE_URL}/rest/v1`;
+const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 const DEFAULT_TIMEOUT_MS = 10_000;
 
 export class RestError extends Error {
@@ -42,6 +43,73 @@ function authHeaders(accessToken?: string): Record<string, string> {
   };
   if (token) h.Authorization = `Bearer ${token}`;
   return h;
+}
+
+export function functionUrl(name: string): string {
+  return `${FUNCTIONS_URL}/${name}`;
+}
+
+export function functionAuthHeaders(
+  accessToken?: string,
+  extra: Record<string, string> = {},
+): Record<string, string> {
+  const token = accessToken ?? getStoredSupabaseSession()?.accessToken ?? undefined;
+  return {
+    apikey: SUPABASE_PUBLISHABLE_KEY,
+    Authorization: `Bearer ${token ?? SUPABASE_PUBLISHABLE_KEY}`,
+    ...extra,
+  };
+}
+
+export async function createSignedStorageUrl(
+  bucket: string,
+  path: string,
+  opts: { accessToken?: string; expiresIn?: number; timeoutMs?: number } = {},
+): Promise<string> {
+  const controller = new AbortController();
+  const t = window.setTimeout(() => controller.abort(), opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  try {
+    const cleanPath = path.replace(/^\/+/, "");
+    const res = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/sign/${encodeURIComponent(bucket)}/${cleanPath}`,
+      {
+        method: "POST",
+        headers: functionAuthHeaders(opts.accessToken, { "Content-Type": "application/json" }),
+        body: JSON.stringify({ expiresIn: opts.expiresIn ?? 3600 }),
+        signal: controller.signal,
+      },
+    );
+    const text = await res.text();
+    if (!res.ok) throw new RestError(`STORAGE SIGN ${bucket}/${path} → ${res.status}`, res.status, text);
+    const json = text ? JSON.parse(text) : {};
+    const signed = json?.signedURL ?? json?.signedUrl;
+    if (typeof signed !== "string" || !signed) throw new Error("No signed URL returned");
+    return signed.startsWith("http") ? signed : `${SUPABASE_URL}/storage/v1${signed}`;
+  } finally {
+    window.clearTimeout(t);
+  }
+}
+
+export async function invokeFunctionJson<T = unknown>(
+  name: string,
+  body: unknown,
+  opts: { accessToken?: string; timeoutMs?: number } = {},
+): Promise<T> {
+  const controller = new AbortController();
+  const t = window.setTimeout(() => controller.abort(), opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  try {
+    const res = await fetch(functionUrl(name), {
+      method: "POST",
+      headers: functionAuthHeaders(opts.accessToken, { "Content-Type": "application/json" }),
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const text = await res.text();
+    if (!res.ok) throw new RestError(`FUNCTION ${name} → ${res.status}`, res.status, text);
+    return text ? (JSON.parse(text) as T) : (null as T);
+  } finally {
+    window.clearTimeout(t);
+  }
 }
 
 async function doFetch(
@@ -121,3 +189,4 @@ export async function restMutate<T = unknown>(
 }
 
 export const SUPABASE_REST = { url: REST_URL, apikey: SUPABASE_PUBLISHABLE_KEY };
+export const SUPABASE_FUNCTIONS = { url: FUNCTIONS_URL, apikey: SUPABASE_PUBLISHABLE_KEY };

@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import VictoryScreen from "@/components/VictoryScreen";
 import RetryScreen from "@/components/RetryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -51,24 +51,23 @@ function NodoQuizPage() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [{ data: q }, { data: nodeRow }] = await Promise.all([
-        supabase
-          .from("node_quiz_questions")
-          .select("*")
-          .eq("node_id", nodeId)
-          .order("question_order", { ascending: true }),
-        supabase
-          .from("nodes")
-          .select("order_index,practice_script")
-          .eq("id", nodeId)
-          .maybeSingle(),
+      const [q, nodeRow] = await Promise.all([
+        restGet<QuizQuestion>(
+          `node_quiz_questions?select=*&node_id=eq.${encodeURIComponent(nodeId)}&order=question_order.asc`,
+        ),
+        restGetMaybeSingle<{ order_index?: number; practice_script?: unknown }>(
+          `nodes?select=order_index,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+        ),
       ]);
       if (!alive) return;
-      setQuestions((q as QuizQuestion[] | null) ?? []);
-      const row = nodeRow as { order_index?: number; practice_script?: unknown } | null;
+      setQuestions(q ?? []);
+      const row = nodeRow ?? null;
       setIsFirstNodeInWorld((row?.order_index ?? -1) === 0);
       setHasScript(!!row?.practice_script);
-    })();
+    })().catch((err) => {
+      console.error("[quiz] load failed", err);
+      if (alive) setQuestions([]);
+    });
     return () => {
       alive = false;
     };
@@ -124,22 +123,15 @@ function NodoQuizPage() {
 
       console.log("[quiz→mapa] userId:", userId);
 
-      const { data: seller, error: sellerErr } = await supabase
-        .from("sellers")
-        .select("id, company_id")
-        .eq("profile_id", userId)
-        .maybeSingle();
-      if (sellerErr) return fail("select sellers", sellerErr);
+      const seller = await restGetMaybeSingle<{ id: string; company_id: string }>(
+        `sellers?select=id,company_id&profile_id=eq.${userId}&limit=1`,
+      );
       if (!seller) return fail("seller no encontrado", { userId });
       console.log("[quiz→mapa] seller:", seller);
 
-      const { data: existing, error: existingErr } = await supabase
-        .from("node_progress")
-        .select("id, status, stars")
-        .eq("seller_id", seller.id)
-        .eq("node_id", nodeId)
-        .maybeSingle();
-      if (existingErr) return fail("select node_progress actual", existingErr);
+      const existing = await restGetMaybeSingle<{ id: string; status: string; stars: number | null }>(
+        `node_progress?select=id,status,stars&seller_id=eq.${seller.id}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+      );
       console.log("[quiz→mapa] node_progress existing:", existing);
 
       const wasCompleted = existing?.status === "done";
@@ -148,94 +140,70 @@ function NodoQuizPage() {
       const newStars = Math.max(stars, previousStars);
 
       if (existing) {
-        const { error } = await supabase
-          .from("node_progress")
-          .update({
+        await restMutate(`node_progress?id=eq.${existing.id}`, {
+          method: "PATCH",
+          body: {
             status: "done",
             stars: newStars,
             last_practiced_at: new Date().toISOString(),
-          })
-          .eq("id", existing.id);
-        if (error) return fail("update node_progress", error);
+          },
+        });
       } else {
-        const { error } = await supabase.from("node_progress").insert({
+        await restMutate("node_progress", { method: "POST", body: {
           seller_id: seller.id,
           company_id: seller.company_id,
           node_id: nodeId,
           status: "done",
           stars: newStars,
           last_practiced_at: new Date().toISOString(),
-        });
-        if (error) return fail("insert node_progress", error);
+        }});
       }
 
       if (!wasCompleted) {
-        const { data: currentNode, error: cnErr } = await supabase
-          .from("nodes")
-          .select("world_id, order_index")
-          .eq("id", nodeId)
-          .maybeSingle();
-        if (cnErr) return fail("select nodes (actual)", cnErr);
+        const currentNode = await restGetMaybeSingle<{ world_id: number; order_index: number }>(
+          `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+        );
 
         let nextNodeId: string | null = null;
         if (currentNode) {
-          const { data: nextSame, error: nsErr } = await supabase
-            .from("nodes")
-            .select("id")
-            .eq("world_id", currentNode.world_id)
-            .gt("order_index", currentNode.order_index)
-            .order("order_index", { ascending: true })
-            .limit(1)
-            .maybeSingle();
-          if (nsErr) return fail("select siguiente nodo (mismo mundo)", nsErr);
+          const nextSame = await restGetMaybeSingle<{ id: string }>(
+            `nodes?select=id&world_id=eq.${currentNode.world_id}&order_index=gt.${currentNode.order_index}&order=order_index.asc&limit=1`,
+          );
           if (nextSame) {
             nextNodeId = nextSame.id;
           } else {
-            const { data: nextWorld, error: nwErr } = await supabase
-              .from("nodes")
-              .select("id")
-              .gt("world_id", currentNode.world_id)
-              .order("world_id", { ascending: true })
-              .order("order_index", { ascending: true })
-              .limit(1)
-              .maybeSingle();
-            if (nwErr) return fail("select siguiente nodo (siguiente mundo)", nwErr);
+            const nextWorld = await restGetMaybeSingle<{ id: string }>(
+              `nodes?select=id&world_id=gt.${currentNode.world_id}&order=world_id.asc,order_index.asc&limit=1`,
+            );
             if (nextWorld) nextNodeId = nextWorld.id;
           }
         }
 
         if (nextNodeId) {
-          const { data: nextProg, error: npErr } = await supabase
-            .from("node_progress")
-            .select("id, status")
-            .eq("seller_id", seller.id)
-            .eq("node_id", nextNodeId)
-            .maybeSingle();
-          if (npErr) return fail("select node_progress siguiente", npErr);
+          const nextProg = await restGetMaybeSingle<{ id: string; status: string }>(
+            `node_progress?select=id,status&seller_id=eq.${seller.id}&node_id=eq.${encodeURIComponent(nextNodeId)}&limit=1`,
+          );
 
           if (nextProg) {
             if (nextProg.status === "locked") {
-              const { error } = await supabase
-                .from("node_progress")
-                .update({ status: "current" })
-                .eq("id", nextProg.id);
-              if (error) return fail("update siguiente node_progress a active", error);
+              await restMutate(`node_progress?id=eq.${nextProg.id}`, {
+                method: "PATCH",
+                body: { status: "current" },
+              });
             }
           } else {
-            const { error } = await supabase.from("node_progress").insert({
+            await restMutate("node_progress", { method: "POST", body: {
               seller_id: seller.id,
               company_id: seller.company_id,
               node_id: nextNodeId,
               status: "current",
-            });
-            if (error) return fail("insert siguiente node_progress", error);
+            }});
           }
 
-          const { error: updSellerErr } = await supabase
-            .from("sellers")
-            .update({ current_node: nextNodeId })
-            .eq("id", seller.id);
-          if (updSellerErr) return fail("update sellers.current_node", updSellerErr);
+          await restMutate(`sellers?id=eq.${seller.id}`, {
+            method: "PATCH",
+            body: { current_node: nextNodeId },
+          });
         }
       }
 

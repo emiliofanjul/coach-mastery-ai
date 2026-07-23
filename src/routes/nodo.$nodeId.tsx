@@ -2,8 +2,7 @@ import { createFileRoute, Outlet, useNavigate, useParams } from "@tanstack/react
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { invokeFunctionJson, restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 
@@ -57,6 +56,7 @@ function NodoCardsPage() {
   const [sellerIndustry, setSellerIndustry] = useState<string>("");
   const [sellerLevel, setSellerLevel] = useState<string | null>(null);
   const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
+  const [dynamicContextReady, setDynamicContextReady] = useState(false);
 
   // Carga de nodo + tarjetas + count de quiz (para decidir destino post-tarjetas)
   // Todas las lecturas van por PostgREST directo (restGet) para evitar el
@@ -95,7 +95,10 @@ function NodoCardsPage() {
     let alive = true;
     (async () => {
       const session = getStoredSupabaseSession();
-      if (!session) return;
+      if (!session) {
+        setDynamicContextReady(true);
+        return;
+      }
       const uid = session.userId;
       try {
         const [profile, seller] = await Promise.all([
@@ -108,11 +111,18 @@ function NodoCardsPage() {
         ]);
         if (alive) setSellerLevel(seller?.experience_level ?? null);
         const companyId = profile?.company_id;
-        if (!companyId) return;
+        if (!companyId) {
+          if (alive) setDynamicContextReady(true);
+          return;
+        }
         const company = await restGetMaybeSingle<{ name?: string; company_sales_brain?: any }>(
           `companies?select=name,company_sales_brain&id=eq.${companyId}&limit=1`,
         );
-        if (!alive || !company) return;
+        if (!alive) return;
+        if (!company) {
+          setDynamicContextReady(true);
+          return;
+        }
         const brain = company.company_sales_brain;
         const companyName = company.name ?? "";
         const brainObj =
@@ -124,8 +134,10 @@ function NodoCardsPage() {
           (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
         setCompanyBrain(brainStr);
         setSellerIndustry(String(industry || ""));
+        setDynamicContextReady(true);
       } catch (err) {
         console.error("[nodo] context load failed", err);
+        if (alive) setDynamicContextReady(true);
       }
     })();
     return () => {
@@ -166,7 +178,7 @@ function NodoCardsPage() {
   useEffect(() => {
     if (generatedRef.current) return;
     if (!cards || !node) return;
-    if (!companyBrain && !sellerIndustry) return; // espera a que el contexto cargue
+    if (!dynamicContextReady) return;
     const dynamicCards = cards.filter(
       (c) =>
         c.card_content_type === "dynamic" &&
@@ -195,8 +207,9 @@ function NodoCardsPage() {
               [];
             const skillsInFocus =
               (c.skill_ids && c.skill_ids.length > 0) ? c.skill_ids : scriptSkills;
-            const { data, error } = await supabase.functions.invoke("closer-voice", {
-              body: {
+            const data = await invokeFunctionJson<any>(
+              "closer-voice",
+              {
                 phase: "generate_example",
                 card_type: c.card_type,
                 node_name: node?.name ?? "",
@@ -206,22 +219,28 @@ function NodoCardsPage() {
                 card_title: c.title ?? "",
                 card_body_brief: c.body ?? "",
               },
-            });
-            if (error || !data || typeof (data as any).body !== "string") {
-              return [c.id, { loading: false, error: error?.message ?? "generation_failed" }] as const;
+              { accessToken: getStoredSupabaseSession()?.accessToken, timeoutMs: 20_000 },
+            );
+            if (!data || typeof data.body !== "string") {
+              return [c.id, { loading: false, body: c.body, flip_back: c.flip_back_text ?? "", error: "generation_failed" }] as const;
             }
             return [
               c.id,
               {
                 loading: false,
-                body: (data as any).body,
-                flip_back: (data as any).flip_back,
+                body: data.body,
+                flip_back: data.flip_back,
               },
             ] as const;
           } catch (e) {
             return [
               c.id,
-              { loading: false, error: e instanceof Error ? e.message : String(e) },
+              {
+                loading: false,
+                body: c.body,
+                flip_back: c.flip_back_text ?? "No se pudo generar el análisis dinámico. Puedes avanzar sin perder progreso.",
+                error: e instanceof Error ? e.message : String(e),
+              },
             ] as const;
           }
         }),
@@ -236,7 +255,7 @@ function NodoCardsPage() {
     return () => {
       alive = false;
     };
-  }, [cards, node, companyBrain, sellerIndustry]);
+  }, [cards, node, companyBrain, sellerIndustry, dynamicContextReady]);
 
 
 
@@ -261,7 +280,9 @@ function NodoCardsPage() {
 
   const isFlipCard = current?.card_type === "good_example" || current?.card_type === "bad_example";
   const isCta = current?.card_type === "cta";
-  const showNextButton = !isFlipCard || flipped;
+  const dynamicForCurrent = current ? dynamicCache[current.id] : undefined;
+  const dynamicFailed = !!dynamicForCurrent?.error;
+  const showNextButton = !isFlipCard || flipped || dynamicFailed;
 
   // ───── Render ─────
   return (

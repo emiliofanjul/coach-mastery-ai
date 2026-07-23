@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import {
   Sheet,
   SheetContent,
@@ -16,6 +15,7 @@ import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { consumeNodeCompletionSignal, type NodeCompletionSignal } from "@/lib/node-completion";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { restMutate } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
@@ -335,10 +335,10 @@ function MapaPage() {
   const handleTutorialClose = async () => {
     setShowTutorial(false);
     if (seller) {
-      await supabase
-        .from("sellers")
-        .update({ map_tutorial_completed: true })
-        .eq("id", seller.id);
+      await restMutate(`sellers?id=eq.${seller.id}`, {
+        method: "PATCH",
+        body: { map_tutorial_completed: true },
+      });
     }
     // Scroll suave al nodo activo + glow pulse
     setTimeout(() => {
