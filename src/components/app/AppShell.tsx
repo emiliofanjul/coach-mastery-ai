@@ -12,17 +12,22 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  getStoredSupabaseSession,
-  hasStoredSupabaseSession,
-} from "@/lib/browser-auth-session";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { useRouterState } from "@tanstack/react-router";
 
 // ─────────────────────────── Context ───────────────────────────
 
 type Role = "manager" | "vendedor" | null;
 
+type Profile = {
+  userId: string;
+  role: Role;
+  companyId: string | null;
+} | null;
+
 type AppShellCtx = {
   role: Role;
+  profile: Profile;
   isAuthed: boolean;
   isReady: boolean;
   open: boolean;
@@ -34,6 +39,7 @@ type AppShellCtx = {
 
 const Ctx = createContext<AppShellCtx>({
   role: null,
+  profile: null,
   isAuthed: false,
   isReady: true,
   open: false,
@@ -47,22 +53,25 @@ export function useAppShell() {
   return useContext(Ctx);
 }
 
-// ─────────────────────────── REST role resolver ───────────────────────────
-// Uses a direct fetch (bypasses supabase-js) with a hard timeout so the
-// role always resolves — even if the SDK is deadlocked or the request hangs.
+// ─────────────────────────── REST profile resolver ───────────────────────────
+// Direct fetch (bypasses supabase-js) with a hard timeout — the role always
+// resolves even if the SDK is deadlocked. Single call per session; the result
+// is cached in AppShellProvider and consumed via useAppShell().
 
 const SUPABASE_REST_URL = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-async function fetchProfileRole(
+type ProfileRow = { role?: string | null; company_id?: string | null };
+
+async function fetchProfile(
   userId: string,
   accessToken: string,
-): Promise<Role> {
+): Promise<{ role: Role; companyId: string | null }> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 5000);
   try {
     const res = await fetch(
-      `${SUPABASE_REST_URL}/profiles?select=role&id=eq.${encodeURIComponent(userId)}&limit=1`,
+      `${SUPABASE_REST_URL}/profiles?select=role,company_id&id=eq.${encodeURIComponent(userId)}&limit=1`,
       {
         signal: controller.signal,
         headers: {
@@ -71,13 +80,15 @@ async function fetchProfileRole(
         },
       },
     );
-    if (!res.ok) return "vendedor";
-    const rows = (await res.json()) as Array<{ role?: string | null }>;
+    if (!res.ok) return { role: "vendedor", companyId: null };
+    const rows = (await res.json()) as ProfileRow[];
     const r = rows[0]?.role;
-    return r === "manager" ? "manager" : "vendedor";
+    return {
+      role: r === "manager" ? "manager" : "vendedor",
+      companyId: rows[0]?.company_id ?? null,
+    };
   } catch {
-    // Explicit fallback — never leave role unresolved
-    return "vendedor";
+    return { role: "vendedor", companyId: null };
   } finally {
     window.clearTimeout(timeout);
   }
@@ -86,29 +97,42 @@ async function fetchProfileRole(
 // ─────────────────────────── Provider ───────────────────────────
 
 export function AppShellProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role>(null);
+  const [profile, setProfile] = useState<Profile>(null);
   const [isAuthed, setIsAuthed] = useState(false);
   const [isReady] = useState(true);
   const [open, setOpen] = useState(false);
   const [headerCount, setHeaderCount] = useState(0);
+  // React to route changes — this catches sign-in / sign-out transitions
+  // (login navigates to /mapa, logout navigates to /login) so we refresh
+  // the cached profile without re-mounting the provider.
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const currentUserIdRef = useRef<string | null>(null);
 
-  // Resolve auth + role once on mount, without blocking render.
   useEffect(() => {
     const session = getStoredSupabaseSession();
     if (!session) {
+      currentUserIdRef.current = null;
       setIsAuthed(false);
-      setRole(null);
+      setProfile(null);
       return;
     }
     setIsAuthed(true);
+    // Same user as last time → keep cached role, no re-fetch.
+    if (currentUserIdRef.current === session.userId && profile) return;
+    currentUserIdRef.current = session.userId;
+    // Clear stale profile so no drawer item leaks across accounts while the
+    // new fetch is in flight.
+    setProfile((p) => (p && p.userId === session.userId ? p : null));
     let alive = true;
-    void fetchProfileRole(session.userId, session.accessToken).then((r) => {
-      if (alive) setRole(r);
+    void fetchProfile(session.userId, session.accessToken).then((res) => {
+      if (!alive) return;
+      setProfile({ userId: session.userId, role: res.role, companyId: res.companyId });
     });
     return () => {
       alive = false;
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const openDrawer = useCallback(() => setOpen(true), []);
   const closeDrawer = useCallback(() => setOpen(false), []);
@@ -118,9 +142,12 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
     return () => setHeaderCount((c) => Math.max(0, c - 1));
   }, []);
 
+  const role = profile?.role ?? null;
+
   const value = useMemo<AppShellCtx>(
     () => ({
       role,
+      profile,
       isAuthed,
       isReady,
       open,
@@ -129,7 +156,7 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
       registerHeader,
       hasHeader: headerCount > 0,
     }),
-    [role, isAuthed, isReady, open, openDrawer, closeDrawer, registerHeader, headerCount],
+    [role, profile, isAuthed, isReady, open, openDrawer, closeDrawer, registerHeader, headerCount],
   );
 
   return (
