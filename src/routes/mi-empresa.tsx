@@ -5,6 +5,7 @@ import { Plus, Trash2, Save, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 export const Route = createFileRoute("/mi-empresa")({
   head: () => ({
@@ -115,15 +116,15 @@ function MiEmpresaPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const session = getStoredSupabaseSession();
+      if (!session) {
         navigate({ to: "/login" });
         return;
       }
       const { data: profile } = await supabase
         .from("profiles")
         .select("role, company_id")
-        .eq("id", user.id)
+        .eq("id", session.userId)
         .maybeSingle();
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) {
