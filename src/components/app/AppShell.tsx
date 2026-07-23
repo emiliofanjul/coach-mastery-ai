@@ -13,6 +13,7 @@ import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-mo
 import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { getStoredSupabaseUserId, hasStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 // ─────────────────────────── Context ───────────────────────────
 
@@ -44,21 +45,6 @@ export function useAppShell() {
   return useContext(Ctx);
 }
 
-function hasStoredAuthSession() {
-  if (typeof window === "undefined") return false;
-  try {
-    for (let i = 0; i < window.localStorage.length; i += 1) {
-      const key = window.localStorage.key(i);
-      if (!key || !key.startsWith("sb-") || !key.endsWith("-auth-token")) continue;
-      const value = window.localStorage.getItem(key);
-      if (value && value.includes("access_token") && value.includes("user")) return true;
-    }
-  } catch {
-    return false;
-  }
-  return false;
-}
-
 // ─────────────────────────── Provider ───────────────────────────
 
 export function AppShellProvider({ children }: { children: ReactNode }) {
@@ -70,22 +56,14 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
   const resolvingRoleRef = useRef(false);
 
   useEffect(() => {
-    setIsAuthed(hasStoredAuthSession());
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthed(!!session?.user);
-      if (!session?.user) setRole(null);
-    });
-    return () => {
-      sub.subscription.unsubscribe();
-    };
+    setIsAuthed(hasStoredSupabaseSession());
   }, []);
 
   const resolveRoleForMenu = useCallback(async () => {
     if (resolvingRoleRef.current || role) return;
     resolvingRoleRef.current = true;
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const userId = sessionData.session?.user?.id;
+      const userId = getStoredSupabaseUserId();
       if (!userId) {
         setIsAuthed(false);
         setRole(null);
