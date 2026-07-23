@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle, Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app/AppShell";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 type CoachRec = {
   prioridad: string;
@@ -84,15 +85,15 @@ function SellerDetailPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const session = getStoredSupabaseSession();
+      if (!session) {
         navigate({ to: "/login" });
         return;
       }
       const { data: profile } = await supabase
         .from("profiles")
         .select("role, company_id")
-        .eq("id", user.id)
+        .eq("id", session.userId)
         .maybeSingle();
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) { setDenied(true); setLoading(false); }
