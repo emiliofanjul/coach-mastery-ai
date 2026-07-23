@@ -2241,7 +2241,7 @@ function TransitionPhase({
             color: "#fff",
           }}
         >
-          Eso fue Closer demostrando {nodeData?.name ?? "la técnica"}. Ahora es tu turno.
+          Eso fue Closer demostrando {nodeName || "la técnica"}. Ahora es tu turno.
         </div>
       </div>
 
