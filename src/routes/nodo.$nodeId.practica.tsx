@@ -1548,6 +1548,7 @@ function PracticaPage() {
 
           <TransitionPhase
             key="transition"
+            nodeName={nodeData?.name ?? ""}
             onContinue={() => {
               sessionEndedRef.current = false;
               setPhase("you_do");
@@ -2181,9 +2182,11 @@ function VoicePhase({
 function TransitionPhase({
   onContinue,
   onExitClick,
+  nodeName,
 }: {
   onContinue: () => void;
   onExitClick: () => void;
+  nodeName: string;
 }) {
   return (
     <motion.div
@@ -2239,7 +2242,7 @@ function TransitionPhase({
             color: "#fff",
           }}
         >
-          Eso fue Closer demostrando. Ahora es tu turno.
+          Eso fue Closer demostrando {nodeName || "la técnica"}. Ahora es tu turno.
         </div>
       </div>
 
