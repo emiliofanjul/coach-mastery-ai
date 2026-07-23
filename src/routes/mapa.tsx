@@ -40,7 +40,7 @@ type NodeRow = {
   id: string;
   world_id: number;
   name: string;
-  technique: string | null;
+  description: string | null;
   order_index: number;
   is_boss: boolean;
   difficulty_level: number;
@@ -185,7 +185,7 @@ function MapaPage() {
 
       const [w, n, sellerRows] = await Promise.all([
         restSelect<World[]>("worlds?select=*&order=order_index.asc", accessToken),
-        restSelect<NodeRow[]>("nodes?select=id,world_id,name,technique,order_index,is_boss,difficulty_level&order=order_index.asc", accessToken),
+        restSelect<NodeRow[]>("nodes?select=id,world_id,name,description,order_index,is_boss,difficulty_level&order=order_index.asc", accessToken),
         restSelect<Array<NonNullable<typeof seller>>>(
           `sellers?select=id,current_world,current_node,map_tutorial_completed&profile_id=eq.${encodeURIComponent(userId)}&limit=1`,
           accessToken,
@@ -1198,7 +1198,7 @@ function NodeSheetBody({
             marginTop: 4,
           }}
         >
-          {node.technique ?? ""}
+          {node.description ?? ""}
         </SheetDescription>
       </SheetHeader>
 
