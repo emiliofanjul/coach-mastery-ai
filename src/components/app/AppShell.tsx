@@ -9,11 +9,13 @@ import {
   type ReactNode,
 } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { getStoredSupabaseUserId, hasStoredSupabaseSession } from "@/lib/browser-auth-session";
+import {
+  getStoredSupabaseSession,
+  hasStoredSupabaseSession,
+} from "@/lib/browser-auth-session";
 
 // ─────────────────────────── Context ───────────────────────────
 
@@ -45,6 +47,42 @@ export function useAppShell() {
   return useContext(Ctx);
 }
 
+// ─────────────────────────── REST role resolver ───────────────────────────
+// Uses a direct fetch (bypasses supabase-js) with a hard timeout so the
+// role always resolves — even if the SDK is deadlocked or the request hangs.
+
+const SUPABASE_REST_URL = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+async function fetchProfileRole(
+  userId: string,
+  accessToken: string,
+): Promise<Role> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 5000);
+  try {
+    const res = await fetch(
+      `${SUPABASE_REST_URL}/profiles?select=role&id=eq.${encodeURIComponent(userId)}&limit=1`,
+      {
+        signal: controller.signal,
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    if (!res.ok) return "vendedor";
+    const rows = (await res.json()) as Array<{ role?: string | null }>;
+    const r = rows[0]?.role;
+    return r === "manager" ? "manager" : "vendedor";
+  } catch {
+    // Explicit fallback — never leave role unresolved
+    return "vendedor";
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
 // ─────────────────────────── Provider ───────────────────────────
 
 export function AppShellProvider({ children }: { children: ReactNode }) {
@@ -53,38 +91,24 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
   const [isReady] = useState(true);
   const [open, setOpen] = useState(false);
   const [headerCount, setHeaderCount] = useState(0);
-  const resolvingRoleRef = useRef(false);
 
+  // Resolve auth + role once on mount, without blocking render.
   useEffect(() => {
-    setIsAuthed(hasStoredSupabaseSession());
-  }, []);
-
-  const resolveRoleForMenu = useCallback(async () => {
-    if (resolvingRoleRef.current || role) return;
-    resolvingRoleRef.current = true;
-    try {
-      const userId = getStoredSupabaseUserId();
-      if (!userId) {
-        setIsAuthed(false);
-        setRole(null);
-        return;
-      }
-      setIsAuthed(true);
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", userId)
-        .maybeSingle();
-      setRole(prof?.role === "manager" ? "manager" : "vendedor");
-    } finally {
-      resolvingRoleRef.current = false;
+    const session = getStoredSupabaseSession();
+    if (!session) {
+      setIsAuthed(false);
+      setRole(null);
+      return;
     }
-  }, [role]);
-
-  useEffect(() => {
-    if (!open || !isAuthed || role) return;
-    void resolveRoleForMenu();
-  }, [open, isAuthed, role, resolveRoleForMenu]);
+    setIsAuthed(true);
+    let alive = true;
+    void fetchProfileRole(session.userId, session.accessToken).then((r) => {
+      if (alive) setRole(r);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const openDrawer = useCallback(() => setOpen(true), []);
   const closeDrawer = useCallback(() => setOpen(false), []);
@@ -145,6 +169,25 @@ const MANAGER_ITEMS: NavItem[] = [
   { to: "/equipo", label: "Mi Equipo", icon: Users },
 ];
 
+// Robust logout: purge local session synchronously, then navigate.
+// Any hang in supabase.auth.signOut() cannot block the user.
+function purgeLocalSession() {
+  if (typeof window === "undefined") return;
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith("sb-") && k.endsWith("-auth-token")) keys.push(k);
+    }
+    keys.forEach((k) => window.localStorage.removeItem(k));
+    sessionStorage.removeItem("closer:selectedRole");
+    sessionStorage.removeItem("closer:pendingCompanyName");
+    sessionStorage.removeItem("closer:pendingInviteCode");
+  } catch {
+    /* ignore */
+  }
+}
+
 function AppDrawer({
   open,
   onClose,
@@ -159,8 +202,6 @@ function AppDrawer({
   const queryClient = useQueryClient();
   const panelRef = useRef<HTMLDivElement | null>(null);
   const openerRef = useRef<Element | null>(null);
-  const x = useMotionValue(0);
-  const scrimOpacity = useTransform(x, [-320, 0], [0, 1]);
   const [confirmingLogout, setConfirmingLogout] = useState(false);
 
   useEffect(() => {
@@ -201,15 +242,20 @@ function AppDrawer({
     return () => { document.removeEventListener("keydown", handler); window.clearTimeout(t); };
   }, [open, onClose]);
 
-  const handleLogout = async () => {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await supabase.auth.signOut();
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem("closer:selectedRole");
-      sessionStorage.removeItem("closer:pendingCompanyName");
-      sessionStorage.removeItem("closer:pendingInviteCode");
-    }
+  const handleLogout = () => {
+    // 1) Clear caches + local session synchronously (never awaits network).
+    try { queryClient.clear(); } catch { /* ignore */ }
+    purgeLocalSession();
+    // 2) Fire-and-forget SDK signOut so the server-side session is also revoked.
+    void (async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        await supabase.auth.signOut();
+      } catch {
+        /* ignore — local state is already cleared */
+      }
+    })();
+    // 3) Navigate immediately.
     onClose();
     navigate({ to: "/login", replace: true });
   };
@@ -231,7 +277,6 @@ function AppDrawer({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="absolute inset-0 bg-black/60"
-            style={{ opacity: scrimOpacity as unknown as number }}
           />
           <motion.aside
             ref={panelRef}
@@ -248,7 +293,6 @@ function AppDrawer({
             onDragEnd={(_, info) => {
               if (info.offset.x < -60 || info.velocity.x < -300) onClose();
             }}
-            style={{ x }}
             className="absolute inset-y-0 left-0 w-[85%] max-w-[340px] bg-[#0D0D18] border-r border-white/10 shadow-2xl flex flex-col"
           >
             <div className="flex items-center gap-3 px-4 pt-4 pb-2">
