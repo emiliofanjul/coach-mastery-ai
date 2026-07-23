@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { hasStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,9 +31,8 @@ function SplashScreen() {
     const t1 = setTimeout(() => setLogoIn(true), 30);
     const t2 = setTimeout(() => setTaglineIn(true), 230);
     const t3 = setTimeout(() => setFadeOut(true), 2100);
-    const t4 = setTimeout(async () => {
-      const { data } = await supabase.auth.getSession();
-      const dest = data.session ? "/mapa" : "/role";
+    const t4 = setTimeout(() => {
+      const dest = hasStoredSupabaseSession() ? "/mapa" : "/role";
       navigate({ to: dest }).catch(() => {});
     }, 2500);
     return () => {
