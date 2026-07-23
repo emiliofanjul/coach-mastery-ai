@@ -114,13 +114,13 @@ function NodoQuizPage() {
     };
     try {
       const stars: 1 | 2 | 3 = 3;
-      console.log("[quiz→mapa] llamando supabase.auth.getUser()");
-
-      const { data: auth, error: authErr } = await supabase.auth.getUser();
-      if (authErr || !auth?.user?.id) {
-        return fail("auth.getUser", authErr ?? "no user");
+      // Auth: leemos del localStorage — el SDK deadlockea en navigator.locks
+      // (auth.getUser + lecturas en el mismo tick se quedan colgados).
+      const session = getStoredSupabaseSession();
+      if (!session) {
+        return fail("session", "no stored session");
       }
-      const userId = auth.user.id;
+      const userId = session.userId;
 
       console.log("[quiz→mapa] userId:", userId);
 
