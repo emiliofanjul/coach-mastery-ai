@@ -2070,6 +2070,7 @@ function VoicePhase({
             <div ref={chatEndRef} />
           </div>
 
+          {!iDoPassive && (
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: 12, paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
             <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
               <textarea
@@ -2109,6 +2110,8 @@ function VoicePhase({
               style={{ marginTop: 10, background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: "pointer", padding: 4 }}
             >Reiniciar práctica</button>
           </div>
+          )}
+
         </>
       ) : (
         // ───────── Modo VOZ (original) ─────────
