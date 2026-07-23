@@ -1863,7 +1863,7 @@ function PrepPhase({
             boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
           }}
         >
-          Ver demostración →
+          {hasIDo ? "Ver demostración →" : "Estoy listo →"}
         </button>
       </div>
 
