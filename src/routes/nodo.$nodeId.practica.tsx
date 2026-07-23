@@ -1220,6 +1220,10 @@ function PracticaPage() {
             <VoicePhase
               key={phase}
               currentPhase={currentPhase}
+              iDoPassive={
+                phase === "i_do" &&
+                ((nodeData?.practice_script as any)?.i_do_type ?? "demo") === "demo"
+              }
               isAgentSpeaking={isAgentSpeaking}
               isUserListening={isUserListening}
               isProcessing={isProcessing}
@@ -1251,6 +1255,7 @@ function PracticaPage() {
               onPlayAgentAudio={(txt: string) => { void playTTS(txt, { force: true }); }}
 
             />
+
 
             {phase === "i_do" && iDoDemoDone && (
               <div
@@ -1896,6 +1901,7 @@ function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onTo
 
 function VoicePhase({
   currentPhase,
+  iDoPassive,
   isAgentSpeaking,
   isUserListening,
   isProcessing,
@@ -1913,6 +1919,7 @@ function VoicePhase({
   onPlayAgentAudio,
 }: {
   currentPhase: TurnPhase;
+  iDoPassive: boolean;
   isAgentSpeaking: boolean;
   isUserListening: boolean;
   isProcessing: boolean;
@@ -1930,6 +1937,7 @@ function VoicePhase({
   onPlayAgentAudio: (txt: string) => void;
 }) {
   const isIDo = currentPhase === "i_do";
+
   const isText = inputMode === "text";
   const ringColor = isAgentSpeaking
     ? BLUE
@@ -1999,7 +2007,7 @@ function VoicePhase({
           textAlign: "center", color: "#fff",
         }}
       >
-        {isIDo ? "Closer demuestra — reacciona como cliente" : "Tu turno — Hazlo solo."}
+        {isIDo ? (iDoPassive ? "Closer demuestra — obsérvalo" : "Closer demuestra — reacciona como cliente") : "Tu turno — Hazlo solo."}
       </div>
 
       {isText ? (
@@ -2062,6 +2070,7 @@ function VoicePhase({
             <div ref={chatEndRef} />
           </div>
 
+          {!iDoPassive && (
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: 12, paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
             <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
               <textarea
@@ -2101,6 +2110,8 @@ function VoicePhase({
               style={{ marginTop: 10, background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: "pointer", padding: 4 }}
             >Reiniciar práctica</button>
           </div>
+          )}
+
         </>
       ) : (
         // ───────── Modo VOZ (original) ─────────
@@ -2129,7 +2140,7 @@ function VoicePhase({
           </div>
 
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-            {!iDoDemoDone && (
+            {!iDoDemoDone && !iDoPassive && (
               <>
                 <button
                   onClick={onMicClick}
