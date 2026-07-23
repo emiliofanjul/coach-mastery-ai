@@ -112,12 +112,15 @@ function yForIndex(i: number, total: number) {
 }
 
 async function restSelect<T>(path: string, accessToken: string): Promise<T> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 8000);
   const res = await fetch(`${SUPABASE_REST_URL}/${path}`, {
+    signal: controller.signal,
     headers: {
       apikey: SUPABASE_PUBLISHABLE_KEY,
       Authorization: `Bearer ${accessToken}`,
     },
-  });
+  }).finally(() => window.clearTimeout(timeout));
   if (!res.ok) throw new Error(`mapa_fetch_${res.status}`);
   return (await res.json()) as T;
 }
@@ -211,6 +214,8 @@ function MapaPage() {
           setTimeout(() => setShowTutorial(true), 600);
         }
       }
+      } catch (error) {
+        console.error("[mapa] load failed", error);
       } finally {
         if (alive) setLoading(false);
       }
