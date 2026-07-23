@@ -122,11 +122,9 @@ function MiEmpresaPage() {
         navigate({ to: "/login" });
         return;
       }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role, company_id")
-        .eq("id", session.userId)
-        .maybeSingle();
+      const profile = await restGetMaybeSingle<{ role: string; company_id: string | null }>(
+        `profiles?select=role,company_id&id=eq.${session.userId}&limit=1`,
+      );
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) {
           setDenied(true);
@@ -134,12 +132,14 @@ function MiEmpresaPage() {
         }
         return;
       }
-      const { data: company, error } = await supabase
-        .from("companies")
-        .select("id, name, company_sales_brain")
-        .eq("id", profile.company_id)
-        .maybeSingle();
-      if (error || !company) {
+      const company = await restGetMaybeSingle<{
+        id: string;
+        name: string | null;
+        company_sales_brain: Record<string, unknown> | null;
+      }>(
+        `companies?select=id,name,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
+      );
+      if (!company) {
         if (!cancelled) {
           setDenied(true);
           setLoading(false);
@@ -168,7 +168,13 @@ function MiEmpresaPage() {
         setDraft({ known, extras });
         setLoading(false);
       }
-    })();
+    })().catch((e) => {
+      console.error("[mi-empresa] load failed", e);
+      if (!cancelled) {
+        setDenied(true);
+        setLoading(false);
+      }
+    });
     return () => {
       cancelled = true;
     };
