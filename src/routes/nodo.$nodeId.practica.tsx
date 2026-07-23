@@ -1048,21 +1048,26 @@ function PracticaPage() {
             ? "full_sim"
             : "skill_drill";
       const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
-      const sessionRows = await restMutate<any>("practice_sessions", {
-        method: "POST",
-        prefer: "return=representation",
-        body: {
-          seller_id: sellerData.id,
-          company_id: sellerData.company_id,
-          node_id: nodeId,
-          world_id: nodeData?.world_id ?? 0,
-          practice_type: practiceType,
-          is_boss_level: isBossLevel,
-          transcript: JSON.stringify(transcriptFullRef.current),
-          conversation_history: conversationHistoryRef.current as any,
-        },
-      });
-      const session = sessionRows[0] ?? null;
+      let session: any = null;
+      try {
+        const sessionRows = await restMutate<any>("practice_sessions", {
+          method: "POST",
+          prefer: "return=representation",
+          body: {
+            seller_id: sellerData.id,
+            company_id: sellerData.company_id,
+            node_id: nodeId,
+            world_id: nodeData?.world_id ?? 0,
+            practice_type: practiceType,
+            is_boss_level: isBossLevel,
+            transcript: JSON.stringify(transcriptFullRef.current),
+            conversation_history: conversationHistoryRef.current as any,
+          },
+        });
+        session = sessionRows[0] ?? null;
+      } catch (sessionErr) {
+        console.error("[practica] insert practice_sessions failed:", sessionErr);
+      }
       setSessionId(session?.id ?? null);
 
       // Registrar seller_event + subir audio (si hay consent) vía Edge Function (service role)
