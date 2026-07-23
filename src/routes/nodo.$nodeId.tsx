@@ -3,6 +3,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+
 
 export const Route = createFileRoute("/nodo/$nodeId")({
   component: NodoCardsPage,
@@ -56,25 +59,31 @@ function NodoCardsPage() {
   const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
 
   // Carga de nodo + tarjetas + count de quiz (para decidir destino post-tarjetas)
+  // Todas las lecturas van por PostgREST directo (restGet) para evitar el
+  // navigator.locks del SDK de supabase-js que deadlockea con Promise.all.
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [{ data: n }, { data: c }, { count: qc }] = await Promise.all([
-        supabase.from("nodes").select("id,name,node_type,practice_script").eq("id", nodeId).maybeSingle(),
-        supabase
-          .from("node_cards")
-          .select("id,card_order,card_type,title,body,flip_back_text,card_content_type,audience,skill_ids")
-          .eq("node_id", nodeId)
-          .order("card_order", { ascending: true }),
-        supabase
-          .from("node_quiz_questions")
-          .select("id", { count: "exact", head: true })
-          .eq("node_id", nodeId),
-      ]);
-      if (!alive) return;
-      setNode((n as NodeRow | null) ?? null);
-      setCards((c as NodeCard[] | null) ?? []);
-      setQuizCount(qc ?? 0);
+      try {
+        const [n, c, quizRows] = await Promise.all([
+          restGetMaybeSingle<NodeRow>(
+            `nodes?select=id,name,node_type,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+          ),
+          restGet<NodeCard>(
+            `node_cards?select=id,card_order,card_type,title,body,flip_back_text,card_content_type,audience,skill_ids&node_id=eq.${encodeURIComponent(nodeId)}&order=card_order.asc`,
+          ),
+          restGet<{ id: string }>(
+            `node_quiz_questions?select=id&node_id=eq.${encodeURIComponent(nodeId)}`,
+          ),
+        ]);
+        if (!alive) return;
+        setNode(n ?? null);
+        setCards(c ?? []);
+        setQuizCount(quizRows.length);
+      } catch (err) {
+        console.error("[nodo] initial load failed", err);
+        if (alive) setCards([]);
+      }
     })();
     return () => {
       alive = false;
@@ -85,51 +94,45 @@ function NodoCardsPage() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const { data: auth } = await supabase.auth.getUser();
-      const uid = auth.user?.id;
-      if (!uid) return;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", uid)
-        .maybeSingle();
-      const companyId = (profile as { company_id?: string } | null)?.company_id;
-      const { data: seller } = await supabase
-        .from("sellers")
-        .select("experience_level")
-        .eq("profile_id", uid)
-        .maybeSingle();
-      if (alive) {
-        const lvl = (seller as { experience_level?: string | null } | null)?.experience_level ?? null;
-        setSellerLevel(lvl);
+      const session = getStoredSupabaseSession();
+      if (!session) return;
+      const uid = session.userId;
+      try {
+        const [profile, seller] = await Promise.all([
+          restGetMaybeSingle<{ company_id?: string | null }>(
+            `profiles?select=company_id&id=eq.${uid}&limit=1`,
+          ),
+          restGetMaybeSingle<{ experience_level?: string | null }>(
+            `sellers?select=experience_level&profile_id=eq.${uid}&limit=1`,
+          ),
+        ]);
+        if (alive) setSellerLevel(seller?.experience_level ?? null);
+        const companyId = profile?.company_id;
+        if (!companyId) return;
+        const company = await restGetMaybeSingle<{ name?: string; company_sales_brain?: any }>(
+          `companies?select=name,company_sales_brain&id=eq.${companyId}&limit=1`,
+        );
+        if (!alive || !company) return;
+        const brain = company.company_sales_brain;
+        const companyName = company.name ?? "";
+        const brainObj =
+          brain && typeof brain === "object"
+            ? { company_name: companyName, ...brain }
+            : { company_name: companyName, notes: typeof brain === "string" ? brain : "" };
+        const brainStr = JSON.stringify(brainObj);
+        const industry =
+          (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
+        setCompanyBrain(brainStr);
+        setSellerIndustry(String(industry || ""));
+      } catch (err) {
+        console.error("[nodo] context load failed", err);
       }
-      if (!companyId) return;
-      const { data: company } = await supabase
-        .from("companies")
-        .select("name, company_sales_brain")
-        .eq("id", companyId)
-        .maybeSingle();
-      if (!alive || !company) return;
-      const brain = (company as any).company_sales_brain;
-      const companyName = (company as any).name ?? "";
-      // Incluimos el nombre real de la empresa dentro del payload del brain.
-      // Antes solo mandábamos company_sales_brain (que no siempre trae `name`),
-      // así que el generador de ejemplos inventaba empresas ("Productos Industriales del Norte").
-      // Ahora el I DO y las tarjetas dynamic comparten el mismo contexto: nombre + brain.
-      const brainObj =
-        brain && typeof brain === "object"
-          ? { company_name: companyName, ...brain }
-          : { company_name: companyName, notes: typeof brain === "string" ? brain : "" };
-      const brainStr = JSON.stringify(brainObj);
-      const industry =
-        (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
-      setCompanyBrain(brainStr);
-      setSellerIndustry(String(industry || ""));
     })();
     return () => {
       alive = false;
     };
   }, []);
+
 
   // Filtrado por audience (nueva fuente única de personalización).
   // audience IS NULL → tarjeta universal; audience = sellerLevel → tarjeta segmentada.

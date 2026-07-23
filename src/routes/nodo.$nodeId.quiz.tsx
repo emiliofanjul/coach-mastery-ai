@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import VictoryScreen from "@/components/VictoryScreen";
 import RetryScreen from "@/components/RetryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -113,13 +114,13 @@ function NodoQuizPage() {
     };
     try {
       const stars: 1 | 2 | 3 = 3;
-      console.log("[quiz→mapa] llamando supabase.auth.getUser()");
-
-      const { data: auth, error: authErr } = await supabase.auth.getUser();
-      if (authErr || !auth?.user?.id) {
-        return fail("auth.getUser", authErr ?? "no user");
+      // Auth: leemos del localStorage — el SDK deadlockea en navigator.locks
+      // (auth.getUser + lecturas en el mismo tick se quedan colgados).
+      const session = getStoredSupabaseSession();
+      if (!session) {
+        return fail("session", "no stored session");
       }
-      const userId = auth.user.id;
+      const userId = session.userId;
 
       console.log("[quiz→mapa] userId:", userId);
 
