@@ -22,6 +22,7 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env
   .VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
 const REST_URL = `${SUPABASE_URL}/rest/v1`;
+const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 const DEFAULT_TIMEOUT_MS = 10_000;
 
 export class RestError extends Error {
@@ -42,6 +43,44 @@ function authHeaders(accessToken?: string): Record<string, string> {
   };
   if (token) h.Authorization = `Bearer ${token}`;
   return h;
+}
+
+export function functionUrl(name: string): string {
+  return `${FUNCTIONS_URL}/${name}`;
+}
+
+export function functionAuthHeaders(
+  accessToken?: string,
+  extra: Record<string, string> = {},
+): Record<string, string> {
+  const token = accessToken ?? getStoredSupabaseSession()?.accessToken ?? undefined;
+  return {
+    apikey: SUPABASE_PUBLISHABLE_KEY,
+    Authorization: `Bearer ${token ?? SUPABASE_PUBLISHABLE_KEY}`,
+    ...extra,
+  };
+}
+
+export async function invokeFunctionJson<T = unknown>(
+  name: string,
+  body: unknown,
+  opts: { accessToken?: string; timeoutMs?: number } = {},
+): Promise<T> {
+  const controller = new AbortController();
+  const t = window.setTimeout(() => controller.abort(), opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  try {
+    const res = await fetch(functionUrl(name), {
+      method: "POST",
+      headers: functionAuthHeaders(opts.accessToken, { "Content-Type": "application/json" }),
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const text = await res.text();
+    if (!res.ok) throw new RestError(`FUNCTION ${name} → ${res.status}`, res.status, text);
+    return text ? (JSON.parse(text) as T) : (null as T);
+  } finally {
+    window.clearTimeout(t);
+  }
 }
 
 async function doFetch(
@@ -121,3 +160,4 @@ export async function restMutate<T = unknown>(
 }
 
 export const SUPABASE_REST = { url: REST_URL, apikey: SUPABASE_PUBLISHABLE_KEY };
+export const SUPABASE_FUNCTIONS = { url: FUNCTIONS_URL, apikey: SUPABASE_PUBLISHABLE_KEY };
