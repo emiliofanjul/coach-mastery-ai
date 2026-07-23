@@ -1071,8 +1071,7 @@ function PracticaPage() {
         audioUploadedRef.current = true;
         try {
           const audioBlob = await audioBlobPromise;
-          const { data: authData } = await supabase.auth.getSession();
-          const accessToken = authData.session?.access_token ?? "";
+          const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
           const form = new FormData();
           form.append(
             "meta",
