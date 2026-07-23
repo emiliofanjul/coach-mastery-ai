@@ -12,8 +12,8 @@
 // helper: a thin `fetch` wrapper that hits PostgREST directly with the
 // stored access token. No lock, no SDK, no deadlock.
 //
-// Writes/RPC that need JWT context (e.g. `supabase.rpc(...)`) still go
-// through the SDK — those are one-at-a-time and don't trigger the race.
+// Writes/RPC/function calls that participate in critical flows also use this
+// helper so they don't touch the SDK auth lock at all.
 
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 

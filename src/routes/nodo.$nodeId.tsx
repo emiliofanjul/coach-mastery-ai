@@ -118,7 +118,11 @@ function NodoCardsPage() {
         const company = await restGetMaybeSingle<{ name?: string; company_sales_brain?: any }>(
           `companies?select=name,company_sales_brain&id=eq.${companyId}&limit=1`,
         );
-        if (!alive || !company) return;
+        if (!alive) return;
+        if (!company) {
+          setDynamicContextReady(true);
+          return;
+        }
         const brain = company.company_sales_brain;
         const companyName = company.name ?? "";
         const brainObj =
