@@ -1901,6 +1901,7 @@ function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onTo
 
 function VoicePhase({
   currentPhase,
+  iDoPassive,
   isAgentSpeaking,
   isUserListening,
   isProcessing,
@@ -1918,6 +1919,7 @@ function VoicePhase({
   onPlayAgentAudio,
 }: {
   currentPhase: TurnPhase;
+  iDoPassive: boolean;
   isAgentSpeaking: boolean;
   isUserListening: boolean;
   isProcessing: boolean;
@@ -1935,6 +1937,7 @@ function VoicePhase({
   onPlayAgentAudio: (txt: string) => void;
 }) {
   const isIDo = currentPhase === "i_do";
+
   const isText = inputMode === "text";
   const ringColor = isAgentSpeaking
     ? BLUE
