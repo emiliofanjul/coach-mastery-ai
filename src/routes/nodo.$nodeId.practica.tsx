@@ -1836,7 +1836,7 @@ function PrepPhase({
               }}
             >
               <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Formato: </span>
-              Closer demuestra primero y luego tú practicas.
+              {hasIDo ? "Closer demuestra primero y luego tú practicas." : "Sin demostración. Sin pistas. Tú y el cliente."}
             </div>
           </motion.div>
         )}
