@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Sheet,
@@ -127,7 +126,6 @@ async function restSelect<T>(path: string, accessToken: string): Promise<T> {
 
 function MapaPage() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [worlds, setWorlds] = useState<World[]>([]);
   const [nodes, setNodes] = useState<NodeRow[]>([]);
   const [progress, setProgress] = useState<Record<string, ProgressRow>>({});
@@ -144,7 +142,6 @@ function MapaPage() {
   const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
   const [glowActive, setGlowActive] = useState(false);
-  const [isManager, setIsManager] = useState(false);
 
   // ─── Animación al regresar del quiz ───
   // phase 0: nada todavía. 1: 1ª estrella. 2: 2ª. 3: 3ª. 4: candado fuera. 5: nuevo nodo activo visible.
@@ -197,14 +194,6 @@ function MapaPage() {
 
       setWorlds(w ?? []);
       setNodes(n ?? []);
-
-      const [prof] = await restSelect<Array<{ role: string | null }>>(
-        `profiles?select=role&id=eq.${encodeURIComponent(userId)}&limit=1`,
-        accessToken,
-      );
-      if (!alive) return;
-      if (prof?.role === "manager") setIsManager(true);
-
 
       if (s) {
         if (!alive) return;
