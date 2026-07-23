@@ -1692,6 +1692,7 @@ function PrepPhase({
         { ok: true, label: "Busca un lugar sin ruido" },
       ];
   const canStart = isText || micGranted;
+  const hasIDo = !!nodeData?.practice_script?.phases?.i_do;
 
   return (
     <motion.div
