@@ -1548,6 +1548,7 @@ function PracticaPage() {
 
           <TransitionPhase
             key="transition"
+            nodeName={nodeData?.name ?? ""}
             onContinue={() => {
               sessionEndedRef.current = false;
               setPhase("you_do");
