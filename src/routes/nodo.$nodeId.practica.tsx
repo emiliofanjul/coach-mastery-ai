@@ -2007,7 +2007,7 @@ function VoicePhase({
           textAlign: "center", color: "#fff",
         }}
       >
-        {isIDo ? "Closer demuestra — reacciona como cliente" : "Tu turno — Hazlo solo."}
+        {isIDo ? (iDoPassive ? "Closer demuestra — obsérvalo" : "Closer demuestra — reacciona como cliente") : "Tu turno — Hazlo solo."}
       </div>
 
       {isText ? (
