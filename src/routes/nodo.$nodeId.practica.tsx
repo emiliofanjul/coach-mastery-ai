@@ -2239,9 +2239,7 @@ function TransitionPhase({
             color: "#fff",
           }}
         >
-          {technique
-            ? `Eso fue Closer demostrando ${technique}. Ahora es tu turno.`
-            : "Eso fue Closer demostrando. Ahora es tu turno."}
+          Eso fue Closer demostrando. Ahora es tu turno.
         </div>
       </div>
 
