@@ -2,8 +2,7 @@ import { createFileRoute, Outlet, useNavigate, useParams } from "@tanstack/react
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { invokeFunctionJson, restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 
@@ -166,7 +165,6 @@ function NodoCardsPage() {
   useEffect(() => {
     if (generatedRef.current) return;
     if (!cards || !node) return;
-    if (!companyBrain && !sellerIndustry) return; // espera a que el contexto cargue
     const dynamicCards = cards.filter(
       (c) =>
         c.card_content_type === "dynamic" &&
@@ -195,8 +193,9 @@ function NodoCardsPage() {
               [];
             const skillsInFocus =
               (c.skill_ids && c.skill_ids.length > 0) ? c.skill_ids : scriptSkills;
-            const { data, error } = await supabase.functions.invoke("closer-voice", {
-              body: {
+            const data = await invokeFunctionJson<any>(
+              "closer-voice",
+              {
                 phase: "generate_example",
                 card_type: c.card_type,
                 node_name: node?.name ?? "",
@@ -206,22 +205,28 @@ function NodoCardsPage() {
                 card_title: c.title ?? "",
                 card_body_brief: c.body ?? "",
               },
-            });
-            if (error || !data || typeof (data as any).body !== "string") {
-              return [c.id, { loading: false, error: error?.message ?? "generation_failed" }] as const;
+              { accessToken: getStoredSupabaseSession()?.accessToken, timeoutMs: 20_000 },
+            );
+            if (!data || typeof data.body !== "string") {
+              return [c.id, { loading: false, body: c.body, flip_back: c.flip_back_text ?? "", error: "generation_failed" }] as const;
             }
             return [
               c.id,
               {
                 loading: false,
-                body: (data as any).body,
-                flip_back: (data as any).flip_back,
+                body: data.body,
+                flip_back: data.flip_back,
               },
             ] as const;
           } catch (e) {
             return [
               c.id,
-              { loading: false, error: e instanceof Error ? e.message : String(e) },
+              {
+                loading: false,
+                body: c.body,
+                flip_back: c.flip_back_text ?? "No se pudo generar el análisis dinámico. Puedes avanzar sin perder progreso.",
+                error: e instanceof Error ? e.message : String(e),
+              },
             ] as const;
           }
         }),
@@ -261,7 +266,9 @@ function NodoCardsPage() {
 
   const isFlipCard = current?.card_type === "good_example" || current?.card_type === "bad_example";
   const isCta = current?.card_type === "cta";
-  const showNextButton = !isFlipCard || flipped;
+  const dynamicForCurrent = current ? dynamicCache[current.id] : undefined;
+  const dynamicFailed = !!dynamicForCurrent?.error;
+  const showNextButton = !isFlipCard || flipped || dynamicFailed;
 
   // ───── Render ─────
   return (

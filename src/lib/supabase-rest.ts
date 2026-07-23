@@ -61,6 +61,35 @@ export function functionAuthHeaders(
   };
 }
 
+export async function createSignedStorageUrl(
+  bucket: string,
+  path: string,
+  opts: { accessToken?: string; expiresIn?: number; timeoutMs?: number } = {},
+): Promise<string> {
+  const controller = new AbortController();
+  const t = window.setTimeout(() => controller.abort(), opts.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  try {
+    const cleanPath = path.replace(/^\/+/, "");
+    const res = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/sign/${encodeURIComponent(bucket)}/${cleanPath}`,
+      {
+        method: "POST",
+        headers: functionAuthHeaders(opts.accessToken, { "Content-Type": "application/json" }),
+        body: JSON.stringify({ expiresIn: opts.expiresIn ?? 3600 }),
+        signal: controller.signal,
+      },
+    );
+    const text = await res.text();
+    if (!res.ok) throw new RestError(`STORAGE SIGN ${bucket}/${path} → ${res.status}`, res.status, text);
+    const json = text ? JSON.parse(text) : {};
+    const signed = json?.signedURL ?? json?.signedUrl;
+    if (typeof signed !== "string" || !signed) throw new Error("No signed URL returned");
+    return signed.startsWith("http") ? signed : `${SUPABASE_URL}${signed}`;
+  } finally {
+    window.clearTimeout(t);
+  }
+}
+
 export async function invokeFunctionJson<T = unknown>(
   name: string,
   body: unknown,
