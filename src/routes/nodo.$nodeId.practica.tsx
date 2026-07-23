@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
@@ -1049,9 +1049,10 @@ function PracticaPage() {
             ? "full_sim"
             : "skill_drill";
       const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
-      const { data: session, error } = await supabase
-        .from("practice_sessions")
-        .insert({
+      const sessionRows = await restMutate<any>("practice_sessions", {
+        method: "POST",
+        prefer: "return=representation",
+        body: {
           seller_id: sellerData.id,
           company_id: sellerData.company_id,
           node_id: nodeId,
@@ -1060,10 +1061,9 @@ function PracticaPage() {
           is_boss_level: isBossLevel,
           transcript: JSON.stringify(transcriptFullRef.current),
           conversation_history: conversationHistoryRef.current as any,
-        })
-        .select()
-        .maybeSingle();
-      if (error) console.error("[practica] insert practice_sessions failed:", error);
+        },
+      });
+      const session = sessionRows[0] ?? null;
       setSessionId(session?.id ?? null);
 
       // Registrar seller_event + subir audio (si hay consent) vía Edge Function (service role)
@@ -1555,68 +1555,81 @@ function PracticaPage() {
             onContinue={async (stars) => {
               setSaving(true);
 
-              const { data: existingProgress } = await supabase
-                .from("node_progress")
-                .select("stars")
-                .eq("seller_id", sellerData.id)
-                .eq("node_id", nodeId)
-                .maybeSingle();
+              const existingProgress = await restGetMaybeSingle<{ id: string; stars: number | null }>(
+                `node_progress?select=id,stars&seller_id=eq.${sellerData.id}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+              );
 
               const previousStars = (existingProgress?.stars as number | null) ?? 0;
               const bestStars = Math.max(previousStars, stars);
 
-              await supabase.from("node_progress").upsert(
-                {
+              if (existingProgress?.id) {
+                await restMutate(`node_progress?id=eq.${existingProgress.id}`, {
+                  method: "PATCH",
+                  body: {
+                    status: "done",
+                    stars: bestStars,
+                    last_practiced_at: new Date().toISOString(),
+                  },
+                });
+              } else {
+                await restMutate("node_progress", {
+                  method: "POST",
+                  body: {
                   seller_id: sellerData.id,
                   company_id: sellerData.company_id,
                   node_id: nodeId,
                   status: "done",
                   stars: bestStars,
                   last_practiced_at: new Date().toISOString(),
-                },
-                { onConflict: "seller_id,node_id" },
-              );
+                  },
+                });
+              }
 
               // Certificación Closer: pasar 9.3 con score >= 85 sella la certificación.
               // Un pase menor completa el nodo pero no certifica (se puede repetir).
               const finalScore = feedbackResult?.score ?? 0;
               if (nodeId === "9.3" && finalScore >= 85 && !sellerData.certified_at) {
-                await supabase
-                  .from("sellers")
-                  .update({ certified_at: new Date().toISOString() })
-                  .eq("id", sellerData.id);
+                await restMutate(`sellers?id=eq.${sellerData.id}`, {
+                  method: "PATCH",
+                  body: { certified_at: new Date().toISOString() },
+                });
               }
 
-              const { data: currentNodeRow } = await supabase
-                .from("nodes")
-                .select("world_id, order_index")
-                .eq("id", nodeId)
-                .maybeSingle();
+              const currentNodeRow = await restGetMaybeSingle<{ world_id: number; order_index: number }>(
+                `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+              );
 
               if (currentNodeRow) {
-                const { data: nextNode } = await supabase
-                  .from("nodes")
-                  .select("id")
-                  .eq("world_id", currentNodeRow.world_id)
-                  .gt("order_index", currentNodeRow.order_index)
-                  .order("order_index", { ascending: true })
-                  .limit(1)
-                  .maybeSingle();
+                const nextNode = await restGetMaybeSingle<{ id: string }>(
+                  `nodes?select=id&world_id=eq.${currentNodeRow.world_id}&order_index=gt.${currentNodeRow.order_index}&order=order_index.asc&limit=1`,
+                );
 
                 if (nextNode) {
-                  await supabase.from("node_progress").upsert(
-                    {
+                  const nextProgress = await restGetMaybeSingle<{ id: string; status: string }>(
+                    `node_progress?select=id,status&seller_id=eq.${sellerData.id}&node_id=eq.${encodeURIComponent(nextNode.id)}&limit=1`,
+                  );
+                  if (nextProgress?.id) {
+                    if (nextProgress.status === "locked") {
+                      await restMutate(`node_progress?id=eq.${nextProgress.id}`, {
+                        method: "PATCH",
+                        body: { status: "current" },
+                      });
+                    }
+                  } else {
+                    await restMutate("node_progress", {
+                      method: "POST",
+                      body: {
                       seller_id: sellerData.id,
                       company_id: sellerData.company_id,
                       node_id: nextNode.id,
                       status: "current",
-                    },
-                    { onConflict: "seller_id,node_id" },
-                  );
-                  await supabase
-                    .from("sellers")
-                    .update({ current_node: nextNode.id })
-                    .eq("id", sellerData.id);
+                      },
+                    });
+                  }
+                  await restMutate(`sellers?id=eq.${sellerData.id}`, {
+                    method: "PATCH",
+                    body: { current_node: nextNode.id },
+                  });
                 }
               }
 

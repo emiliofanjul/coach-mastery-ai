@@ -56,6 +56,7 @@ function NodoCardsPage() {
   const [sellerIndustry, setSellerIndustry] = useState<string>("");
   const [sellerLevel, setSellerLevel] = useState<string | null>(null);
   const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
+  const [dynamicContextReady, setDynamicContextReady] = useState(false);
 
   // Carga de nodo + tarjetas + count de quiz (para decidir destino post-tarjetas)
   // Todas las lecturas van por PostgREST directo (restGet) para evitar el
@@ -94,7 +95,10 @@ function NodoCardsPage() {
     let alive = true;
     (async () => {
       const session = getStoredSupabaseSession();
-      if (!session) return;
+      if (!session) {
+        setDynamicContextReady(true);
+        return;
+      }
       const uid = session.userId;
       try {
         const [profile, seller] = await Promise.all([
@@ -107,7 +111,10 @@ function NodoCardsPage() {
         ]);
         if (alive) setSellerLevel(seller?.experience_level ?? null);
         const companyId = profile?.company_id;
-        if (!companyId) return;
+        if (!companyId) {
+          if (alive) setDynamicContextReady(true);
+          return;
+        }
         const company = await restGetMaybeSingle<{ name?: string; company_sales_brain?: any }>(
           `companies?select=name,company_sales_brain&id=eq.${companyId}&limit=1`,
         );
@@ -123,8 +130,10 @@ function NodoCardsPage() {
           (brain && typeof brain === "object" && (brain.industry || brain.sector || brain.industria)) || "";
         setCompanyBrain(brainStr);
         setSellerIndustry(String(industry || ""));
+        setDynamicContextReady(true);
       } catch (err) {
         console.error("[nodo] context load failed", err);
+        if (alive) setDynamicContextReady(true);
       }
     })();
     return () => {
@@ -165,6 +174,7 @@ function NodoCardsPage() {
   useEffect(() => {
     if (generatedRef.current) return;
     if (!cards || !node) return;
+    if (!dynamicContextReady) return;
     const dynamicCards = cards.filter(
       (c) =>
         c.card_content_type === "dynamic" &&
@@ -241,7 +251,7 @@ function NodoCardsPage() {
     return () => {
       alive = false;
     };
-  }, [cards, node, companyBrain, sellerIndustry]);
+  }, [cards, node, companyBrain, sellerIndustry, dynamicContextReady]);
 
 
 
