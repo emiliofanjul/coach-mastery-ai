@@ -57,13 +57,6 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setIsAuthed(hasStoredSupabaseSession());
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthed(!!session?.user);
-      if (!session?.user) setRole(null);
-    });
-    return () => {
-      sub.subscription.unsubscribe();
-    };
   }, []);
 
   const resolveRoleForMenu = useCallback(async () => {
