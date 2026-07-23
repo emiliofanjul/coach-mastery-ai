@@ -13,7 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
-import { useRouterState } from "@tanstack/react-router";
+
 
 // ─────────────────────────── Context ───────────────────────────
 
