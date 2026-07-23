@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/equipo/")({
   head: () => ({ meta: [{ title: "Equipo — Closer" }] }),
