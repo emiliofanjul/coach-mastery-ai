@@ -218,8 +218,7 @@ function SellerDetailPage() {
     setCoachLoading(true);
     setCoachError(null);
     try {
-      const { data: sess } = await supabase.auth.getSession();
-      const token = sess.session?.access_token;
+      const token = getStoredSupabaseSession()?.accessToken;
       const resp = await fetch(
         `https://ydkvssqmaawnbxsdfxss.supabase.co/functions/v1/coach-recommendation`,
         {
