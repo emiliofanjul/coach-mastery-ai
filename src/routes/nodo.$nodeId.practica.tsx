@@ -2,10 +2,13 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
 import RetryScreen from "@/components/RetryScreen";
+
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
   component: PracticaPage,
