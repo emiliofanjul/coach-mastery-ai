@@ -84,7 +84,7 @@ export async function createSignedStorageUrl(
     const json = text ? JSON.parse(text) : {};
     const signed = json?.signedURL ?? json?.signedUrl;
     if (typeof signed !== "string" || !signed) throw new Error("No signed URL returned");
-    return signed.startsWith("http") ? signed : `${SUPABASE_URL}${signed}`;
+    return signed.startsWith("http") ? signed : `${SUPABASE_URL}/storage/v1${signed}`;
   } finally {
     window.clearTimeout(t);
   }
