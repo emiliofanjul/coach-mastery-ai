@@ -2181,9 +2181,11 @@ function VoicePhase({
 function TransitionPhase({
   onContinue,
   onExitClick,
+  nodeName,
 }: {
   onContinue: () => void;
   onExitClick: () => void;
+  nodeName: string;
 }) {
   return (
     <motion.div
