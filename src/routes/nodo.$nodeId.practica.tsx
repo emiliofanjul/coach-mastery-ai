@@ -152,18 +152,19 @@ function PracticaPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Cargar info básica del nodo para mostrar en prep
+  // Cargar info básica del nodo para mostrar en prep — vía PostgREST directo
+  // (bypass del SDK que deadlockea en navigator.locks con lecturas concurrentes).
   useEffect(() => {
     let alive = true;
     (async () => {
-      const { data: node } = await supabase
-        .from("nodes")
-        .select("id, name, description")
-        .eq("id", nodeId)
-        .maybeSingle();
-      if (!alive) return;
-      if (node) {
-        setNodeData((prev: any) => prev ?? node);
+      try {
+        const node = await restGetMaybeSingle<{ id: string; name: string; description: string | null }>(
+          `nodes?select=id,name,description&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+        );
+        if (!alive) return;
+        if (node) setNodeData((prev: any) => prev ?? node);
+      } catch (err) {
+        console.error("[practica] prep node load failed", err);
       }
     })();
     return () => {
@@ -184,21 +185,23 @@ function PracticaPage() {
   async function handleListo() {
     setPrepError(null);
     try {
-      const { data: auth, error: authErr } = await supabase.auth.getUser();
-      if (authErr || !auth?.user) {
-        console.error("[practica] auth.getUser failed:", authErr);
+      // Auth: leemos la sesión del localStorage — el SDK deadlockea aquí
+      // (auth.getUser también toma el navigator.lock).
+      const session = getStoredSupabaseSession();
+      if (!session) {
         setPrepError("Tu sesión expiró. Inicia sesión de nuevo para practicar.");
         return;
       }
-      const { data: seller, error: sellerErr } = await supabase
-        .from("sellers")
-        .select("id, full_name, experience_level, company_id, audio_consent")
-        .eq("profile_id", auth.user.id)
-        .maybeSingle();
-      if (sellerErr) {
-        console.error("[practica] sellers query failed:", sellerErr);
+      const uid = session.userId;
+      let seller: any = null;
+      try {
+        seller = await restGetMaybeSingle<any>(
+          `sellers?select=id,full_name,experience_level,company_id,audio_consent&profile_id=eq.${uid}&limit=1`,
+        );
+      } catch (e: any) {
+        console.error("[practica] sellers query failed:", e);
         setPrepError(
-          `No pudimos cargar tu perfil (${sellerErr.code ?? "err"}: ${sellerErr.message}). Revisa tu conexión e intenta de nuevo.`,
+          `No pudimos cargar tu perfil (${e?.status ?? "err"}: ${e?.message ?? "network"}). Revisa tu conexión e intenta de nuevo.`,
         );
         return;
       }
@@ -206,38 +209,32 @@ function PracticaPage() {
         setPrepError("No encontramos tu perfil de vendedor. Contacta a tu manager.");
         return;
       }
-      const [nodeRes, companyRes, nodeSkillsRes] = await Promise.all([
-        supabase
-          .from("nodes")
-          .select("id, name, description, conversation_scope, node_type, technique, boss_goal, field_mission, world_id, difficulty_level, is_boss, practice_script")
-          .eq("id", nodeId)
-          .maybeSingle(),
-        supabase
-          .from("companies")
-          .select("name, company_sales_brain")
-          .eq("id", seller.company_id)
-          .maybeSingle(),
-        supabase
-          .from("node_skills")
-          .select("relation, is_primary, weight, skill:skills(id, code, name, category, default_allowed_concepts, default_forbidden_concepts)")
-          .eq("node_id", nodeId),
-      ]);
-      const firstErr = nodeRes.error ?? companyRes.error ?? nodeSkillsRes.error;
-      if (firstErr) {
-        console.error("[practica] node/company/skills query failed:", {
-          node: nodeRes.error, company: companyRes.error, node_skills: nodeSkillsRes.error,
-        });
+      let node: any = null;
+      let company: any = null;
+      let nodeSkillsRows: any[] = [];
+      try {
+        [node, company, nodeSkillsRows] = await Promise.all([
+          restGetMaybeSingle<any>(
+            `nodes?select=id,name,description,conversation_scope,node_type,technique,boss_goal,field_mission,world_id,difficulty_level,is_boss,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+          ),
+          restGetMaybeSingle<any>(
+            `companies?select=name,company_sales_brain&id=eq.${seller.company_id}&limit=1`,
+          ),
+          restGet<any>(
+            `node_skills?select=relation,is_primary,weight,skill:skills(id,code,name,category,default_allowed_concepts,default_forbidden_concepts)&node_id=eq.${encodeURIComponent(nodeId)}`,
+          ),
+        ]);
+      } catch (e: any) {
+        console.error("[practica] node/company/skills query failed:", e);
         setPrepError(
-          `No pudimos cargar los datos del nodo (${firstErr.code ?? "err"}: ${firstErr.message}). Intenta de nuevo.`,
+          `No pudimos cargar los datos del nodo (${e?.status ?? "err"}: ${e?.message ?? "network"}). Intenta de nuevo.`,
         );
         return;
       }
-      const node = nodeRes.data;
-      const company = companyRes.data;
-      const nodeSkillsRows = nodeSkillsRes.data;
       if (!node) {
         setPrepError("Este nodo no existe o no está disponible.");
         return;
+
       }
 
       // Build skillsContext
