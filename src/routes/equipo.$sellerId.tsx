@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronDown, ChevronRight, Star, Trophy, Flame, AlertCircle,
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
 
 type CoachRec = {
   prioridad: string;
