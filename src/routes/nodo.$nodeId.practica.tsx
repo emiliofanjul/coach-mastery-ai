@@ -1692,6 +1692,7 @@ function PrepPhase({
         { ok: true, label: "Busca un lugar sin ruido" },
       ];
   const canStart = isText || micGranted;
+  const hasIDo = !!nodeData?.practice_script?.phases?.i_do;
 
   return (
     <motion.div
@@ -1835,7 +1836,7 @@ function PrepPhase({
               }}
             >
               <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Formato: </span>
-              Closer demuestra primero y luego tú practicas.
+              {hasIDo ? "Closer demuestra primero y luego tú practicas." : "Sin demostración. Sin pistas. Tú y el cliente."}
             </div>
           </motion.div>
         )}
@@ -1862,7 +1863,7 @@ function PrepPhase({
             boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
           }}
         >
-          Ver demostración →
+          {hasIDo ? "Ver demostración →" : "Estoy listo →"}
         </button>
       </div>
 
