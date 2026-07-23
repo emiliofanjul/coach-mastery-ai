@@ -3,6 +3,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+
 
 export const Route = createFileRoute("/nodo/$nodeId")({
   component: NodoCardsPage,
