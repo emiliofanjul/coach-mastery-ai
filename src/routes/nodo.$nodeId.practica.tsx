@@ -214,7 +214,7 @@ function PracticaPage() {
       try {
         [node, company, nodeSkillsRows] = await Promise.all([
           restGetMaybeSingle<any>(
-            `nodes?select=id,name,description,conversation_scope,node_type,technique,boss_goal,field_mission,world_id,difficulty_level,is_boss,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+            `nodes?select=id,name,description,conversation_scope,node_type,boss_goal,field_mission,world_id,difficulty_level,is_boss,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
           ),
           restGetMaybeSingle<any>(
             `companies?select=name,company_sales_brain&id=eq.${seller.company_id}&limit=1`,
@@ -1548,7 +1548,6 @@ function PracticaPage() {
 
           <TransitionPhase
             key="transition"
-            technique={nodeData?.technique ?? null}
             onContinue={() => {
               sessionEndedRef.current = false;
               setPhase("you_do");
@@ -2182,11 +2181,9 @@ function VoicePhase({
 function TransitionPhase({
   onContinue,
   onExitClick,
-  technique,
 }: {
   onContinue: () => void;
   onExitClick: () => void;
-  technique: string | null;
 }) {
   return (
     <motion.div
@@ -2242,9 +2239,7 @@ function TransitionPhase({
             color: "#fff",
           }}
         >
-          {technique
-            ? `Eso fue Closer demostrando ${technique}. Ahora es tu turno.`
-            : "Eso fue Closer demostrando. Ahora es tu turno."}
+          Eso fue Closer demostrando. Ahora es tu turno.
         </div>
       </div>
 
