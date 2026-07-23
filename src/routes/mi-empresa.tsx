@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { restGetMaybeSingle } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/mi-empresa")({
   head: () => ({
