@@ -1548,7 +1548,6 @@ function PracticaPage() {
 
           <TransitionPhase
             key="transition"
-            }
             onContinue={() => {
               sessionEndedRef.current = false;
               setPhase("you_do");
