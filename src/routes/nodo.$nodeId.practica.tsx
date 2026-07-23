@@ -2140,7 +2140,7 @@ function VoicePhase({
           </div>
 
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-            {!iDoDemoDone && (
+            {!iDoDemoDone && !iDoPassive && (
               <>
                 <button
                   onClick={onMicClick}
