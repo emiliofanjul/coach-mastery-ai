@@ -106,7 +106,7 @@ interface EvaluationResponse {
   mision: string;
 }
 
-function buildEvaluateSystemPrompt(practice_script: any): string {
+function buildEvaluateSystemPrompt(practice_script: any, cut_reason?: string | null): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
   const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
