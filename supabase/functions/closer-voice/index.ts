@@ -392,7 +392,10 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief } = body;
+    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief, cut_reason, director_user_turns } = body;
+    if (phase === "evaluate") {
+      console.log("[closer-voice evaluate body]", { session_id, cut_reason, director_user_turns, taught_skills });
+    }
 
     if (!phase) {
       return new Response(JSON.stringify({ error: "Missing phase" }), {
