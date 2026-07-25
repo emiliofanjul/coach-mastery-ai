@@ -80,6 +80,9 @@ interface ReqBody {
   // every closer-voice call in this session and later passed to
   // save-practice-event so llm_calls rows can be backfilled with event_id.
   session_id?: string | null;
+  // Coherencia corte→evaluación: por qué terminó la sesión (director reason)
+  cut_reason?: string | null;
+  director_user_turns?: number | null;
 }
 
 interface CloserResponse {
