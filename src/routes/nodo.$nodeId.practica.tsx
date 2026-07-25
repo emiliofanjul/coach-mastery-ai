@@ -275,6 +275,33 @@ function PracticaPage() {
         ? script.failure_criteria
         : [];
 
+      // taughtSkills: unión de skills_in_focus de nodos ya completados por este vendedor
+      // ∪ skills_in_focus del nodo actual. Alimenta SOLO el prompt del Actor (dificultad
+      // acumulada). NO reemplaza skillsInFocus (que sigue alimentando seller_skill_state).
+      // Fallback: si falla la consulta, taughtSkills = skillsInFocus del nodo actual.
+      let taughtSkills: string[] = [...skillsInFocus];
+      try {
+        const doneRows = await restGet<{ node_id: string }>(
+          `node_progress?select=node_id&seller_id=eq.${seller.id}&status=eq.done`,
+        );
+        const doneIds = (doneRows ?? []).map((r) => r.node_id).filter((id) => id && id !== nodeId);
+        if (doneIds.length > 0) {
+          const inList = doneIds.map((id) => encodeURIComponent(id)).join(",");
+          const doneNodes = await restGet<{ id: string; practice_script: any }>(
+            `nodes?select=id,practice_script&id=in.(${inList})`,
+          );
+          const set = new Set<string>(skillsInFocus);
+          for (const n of doneNodes ?? []) {
+            const arr = (n as any)?.practice_script?.scope?.skills_in_focus;
+            if (Array.isArray(arr)) arr.forEach((s) => typeof s === "string" && s && set.add(s));
+          }
+          taughtSkills = Array.from(set);
+        }
+      } catch (e) {
+        console.error("[practica] taughtSkills fetch failed — fallback to current node:", e);
+        taughtSkills = [...skillsInFocus];
+      }
+
       const ctx = {
         primarySkillId,
         skillsInFocus,
@@ -283,6 +310,7 @@ function PracticaPage() {
         forbiddenConcepts,
         successCriteria,
         failureCriteria,
+        taughtSkills,
       };
 
       setSellerData(seller);
@@ -771,6 +799,7 @@ function PracticaPage() {
           seller_name: sellerData?.full_name ?? "",
           conversation_history: conversationHistoryRef.current.slice(0, -1),
           session_id: sessionCorrelationIdRef.current,
+          taught_skills: skillsContextRef.current?.taughtSkills ?? [],
         }),
         signal: ctrl.signal,
       });
@@ -993,6 +1022,7 @@ function PracticaPage() {
           .filter((m) => m.phase === "you_do")
           .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
         session_id: sessionCorrelationIdRef.current,
+        taught_skills: skillsContextRef.current?.taughtSkills ?? [],
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
@@ -1960,8 +1990,12 @@ function VoicePhase({
 
   const [textDraft, setTextDraft] = useState("");
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const chatScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (isText) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!isText) return;
+    // Scroll SOLO el contenedor del transcript, no la página entera.
+    const el = chatScrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [transcript.length, isText, isProcessing]);
 
   const textDisabled = isProcessing || isAgentSpeaking;
@@ -2014,13 +2048,14 @@ function VoicePhase({
         // ───────── Modo TEXTO: chat + composer ─────────
         <>
           <div
+            ref={chatScrollRef}
             style={{
               flex: 1, maxWidth: 560, width: "100%", margin: "16px auto 0",
               display: "flex", flexDirection: "column", gap: 10,
               padding: 14, borderRadius: 14,
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
-              overflowY: "auto", minHeight: 200,
+              overflowY: "auto", minHeight: 0, maxHeight: "60vh",
             }}
           >
             {transcript.filter((m) => (m.role === "user" || m.role === "assistant") && m.content?.trim()).map((m, i) => {
