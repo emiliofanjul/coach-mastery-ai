@@ -1952,6 +1952,48 @@ function PrepPhase({
           </motion.div>
         )}
 
+        {nodeData?.field_mission && typeof nodeData.field_mission === "string" && nodeData.field_mission.trim() && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
+            style={{
+              background: "rgba(255,107,43,0.06)",
+              border: "1px solid #FF6B2B",
+              borderRadius: 14,
+              padding: "18px 18px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: "0.14em",
+                color: "#FF6B2B",
+                textTransform: "uppercase",
+              }}
+            >
+              Tu misión
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 14,
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.9)",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {nodeData.field_mission}
+            </div>
+          </motion.div>
+        )}
+
+
 
         {!micGranted && !isText && (
           <button
