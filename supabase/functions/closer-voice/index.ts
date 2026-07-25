@@ -472,11 +472,40 @@ Deno.serve(async (req) => {
     }
 
 
+
+    // RADAR DE FUNDAMENTOS: fetch skills the seller ya domina (taught_skills)
+    // MINUS los que este nodo está entrenando. Fail-open: si algo truena,
+    // radarSkills = [] y el evaluador simplemente devuelve regresiones vacías.
+    let radarSkills: RadarSkill[] = [];
+    if (phase === "evaluate" && Array.isArray(taught_skills) && taught_skills.length > 0) {
+      try {
+        const inFocus: string[] = Array.isArray(practice_script?.scope?.skills_in_focus)
+          ? practice_script.scope.skills_in_focus
+          : [];
+        const inFocusSet = new Set(inFocus);
+        const radarIds = taught_skills.filter((s) => typeof s === "string" && s.length > 0 && !inFocusSet.has(s));
+        if (radarIds.length > 0) {
+          const admin = getAdmin();
+          if (admin) {
+            const { data, error } = await admin
+              .from("skills")
+              .select("id, name, failure_signals")
+              .in("id", radarIds);
+            if (!error && Array.isArray(data)) radarSkills = data as RadarSkill[];
+          }
+        }
+      } catch (e) {
+        console.error("[closer-voice] radar skills fetch failed (fail-open):", e);
+        radarSkills = [];
+      }
+    }
+
     const system = phase === "evaluate"
-      ? buildEvaluateSystemPrompt(practice_script, cut_reason)
+      ? buildEvaluateSystemPrompt(practice_script, cut_reason, radarSkills)
       : phase === "generate_example"
         ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? "")
         : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
+
 
     const messages = phase === "evaluate" ? [
       {
