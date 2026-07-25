@@ -211,7 +211,8 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
   ],
   "flags_detected": ["<solo IDs de failure_criteria detectados>"],
   "criterios_cumplidos": ["<IDs de success_criteria que ejecutó bien>"],
-  "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo"
+  "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo",
+  "regresiones_detectadas": [{"skill_id": "<id de la lista del radar>", "evidencia": "cita corta del transcript"}]
 }`;
 }
 
