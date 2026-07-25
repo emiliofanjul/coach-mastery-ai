@@ -56,7 +56,7 @@ async function logLlmCall(row: {
   }
 }
 
-type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example";
+type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example" | "replica";
 type NextPhase = Phase | "end";
 
 interface ReqBody {
