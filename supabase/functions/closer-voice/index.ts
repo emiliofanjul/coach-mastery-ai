@@ -98,21 +98,46 @@ interface EvaluationObservation {
   ejemplo: string;
 }
 
+interface RegresionDetectada {
+  skill_id: string;
+  evidencia: string;
+}
+
 interface EvaluationResponse {
   score: number;
   observations: EvaluationObservation[];
   flags_detected: string[];
   criterios_cumplidos: string[];
   mision: string;
+  regresiones_detectadas: RegresionDetectada[];
 }
 
-function buildEvaluateSystemPrompt(practice_script: any, cut_reason?: string | null): string {
+interface RadarSkill {
+  id: string;
+  name: string;
+  failure_signals: unknown;
+}
+
+function buildEvaluateSystemPrompt(
+  practice_script: any,
+  cut_reason?: string | null,
+  radarSkills: RadarSkill[] = [],
+): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
   const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
   const failureIds = Array.isArray(failureCriteria) ? failureCriteria.map((c: any) => c?.id).filter(Boolean) : [];
   const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
   const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
+
+  const radarBlock = radarSkills.length > 0
+    ? `\nRADAR DE FUNDAMENTOS (tarea secundaria, separada del score):
+Estos skills el vendedor YA los domina de nodos anteriores:
+${radarSkills.map((s) => `- ${s.id} — ${s.name} — señales de fallo: ${JSON.stringify(s.failure_signals ?? [])}`).join("\n")}
+
+Revisa el transcript por violaciones FLAGRANTES de estos fundamentos (del calibre de: abrir con disculpa, pitch prematuro, saltarse la identificación). NO señales detalles de estilo ni ejecuciones mejorables — solo violaciones claras que coincidan con las señales de fallo listadas. Repórtalas ÚNICAMENTE en el campo "regresiones_detectadas" — JAMÁS en observations, JAMÁS en el score, JAMÁS en la mision. Si no hay ninguna, array vacío.\n`
+    : `\nRADAR DE FUNDAMENTOS: sin skills previos que vigilar en esta sesión. Devuelve "regresiones_detectadas": [].\n`;
+
 
   return `Evalúas una conversación de práctica de ventas.
 
