@@ -799,6 +799,7 @@ function PracticaPage() {
           seller_name: sellerData?.full_name ?? "",
           conversation_history: conversationHistoryRef.current.slice(0, -1),
           session_id: sessionCorrelationIdRef.current,
+          taught_skills: skillsContextRef.current?.taughtSkills ?? [],
         }),
         signal: ctrl.signal,
       });
