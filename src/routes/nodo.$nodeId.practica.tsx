@@ -1195,7 +1195,8 @@ function PracticaPage() {
         .slice(0, 2)
         .map((r) => {
           const nombre = nameMap[r.skill_id] || r.skill_id;
-          return `Radar de fundamentos: segunda sesión seguida con ${nombre} fallando. Eso ya lo dominas — no lo dejes caer.`;
+          const sesion = r.streak >= 3 ? "tercera sesión seguida" : "segunda sesión seguida";
+          return `Radar de fundamentos: ${sesion} con ${nombre} fallando. Eso ya lo dominas — no lo dejes caer.`;
         });
 
       setFeedbackResult({
