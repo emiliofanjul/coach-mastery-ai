@@ -159,8 +159,8 @@ function PracticaPage() {
     let alive = true;
     (async () => {
       try {
-        const node = await restGetMaybeSingle<{ id: string; name: string; description: string | null; practice_script: any }>(
-          `nodes?select=id,name,description,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+        const node = await restGetMaybeSingle<{ id: string; name: string; description: string | null; field_mission: string | null; practice_script: any }>(
+          `nodes?select=id,name,description,field_mission,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
         );
         if (!alive) return;
         if (node) setNodeData((prev: any) => prev ?? node);
