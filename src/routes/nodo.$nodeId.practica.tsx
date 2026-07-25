@@ -131,6 +131,8 @@ function PracticaPage() {
   // Solo el playTTS del closing.message se permite (se dispara ANTES de que otros
   // caminos consulten cutRef).
   const cutRef = useRef(false);
+  // Razón del corte del Director — se pasa al evaluador y define el closing.
+  const cutReasonRef = useRef<string | null>(null);
   // AbortControllers para requests en vuelo — se cancelan en hardStop().
   const actorFetchAbortRef = useRef<AbortController | null>(null);
   const ttsFetchAbortRef = useRef<AbortController | null>(null);
