@@ -274,6 +274,40 @@ Responde JSON exacto:
 }
 
 
+function buildReplicaSystemPrompt(
+  practice_script: any,
+  original_evaluation: any,
+  conversation_history: { role: string; content: string }[],
+): string {
+  const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
+  const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  return `Eres Closer explicando una evaluación a un vendedor que no está de acuerdo.
+
+REGLAS ABSOLUTAS:
+- El score NO se puede cambiar, y JAMÁS prometes que cambiará ni insinúas que podría estar mal calculado.
+- Explica el PORQUÉ de la calificación citando: (a) los criterios del nodo por su id, (b) momentos literales del transcript.
+- Si el vendedor expone una estrategia legítima distinta, reconócela con respeto y explica la diferencia entre su estrategia y la MECÁNICA específica que este nodo mide. Cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
+- Mantén lenguaje de aprendizaje siempre (sin regañar, sin condescender, sin capitular).
+- Prohibido evaluar prosodia o audio. Prohibido inventar criterios que no estén en el practice_script.
+- Máximo 5 frases por respuesta.
+
+CRITERIOS DEL NODO (success):
+${JSON.stringify(successCriteria, null, 2)}
+
+CRITERIOS DE FALLO:
+${JSON.stringify(failureCriteria, null, 2)}
+
+EVALUACIÓN ORIGINAL (inmutable):
+${JSON.stringify(original_evaluation, null, 2)}
+
+TRANSCRIPT DE LA SESIÓN:
+${JSON.stringify(conversation_history ?? [], null, 2)}
+
+Responde JSON exacto: { "message": "..." }`;
+}
+
+
+
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = []): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
