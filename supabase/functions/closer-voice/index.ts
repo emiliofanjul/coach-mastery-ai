@@ -685,20 +685,22 @@ Deno.serve(async (req) => {
         );
       }
 
-      // Radar: normalización laxa. Cualquier cosa mal formada → [].
+      // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
       const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
       const rawRegresiones = (evaluation as any).regresiones_detectadas;
-      const regresiones: RegresionDetectada[] = Array.isArray(rawRegresiones)
-        ? rawRegresiones
-            .filter(
-              (r: any) =>
-                r && typeof r === "object" &&
-                typeof r.skill_id === "string" && r.skill_id.length > 0 &&
-                typeof r.evidencia === "string" &&
-                (radarAllowedIds.size === 0 || radarAllowedIds.has(r.skill_id)),
-            )
-            .map((r: any) => ({ skill_id: r.skill_id, evidencia: r.evidencia }))
-        : [];
+      const regresiones: RegresionDetectada[] = radarAllowedIds.size === 0
+        ? []
+        : Array.isArray(rawRegresiones)
+          ? rawRegresiones
+              .filter(
+                (r: any) =>
+                  r && typeof r === "object" &&
+                  typeof r.skill_id === "string" && r.skill_id.length > 0 &&
+                  typeof r.evidencia === "string" &&
+                  radarAllowedIds.has(r.skill_id),
+              )
+              .map((r: any) => ({ skill_id: r.skill_id, evidencia: r.evidencia }))
+          : [];
       evaluation.regresiones_detectadas = regresiones;
 
       // Derive stars for backward compatibility with existing consumers.
