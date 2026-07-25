@@ -119,6 +119,12 @@ function buildEvaluateSystemPrompt(practice_script: any, cut_reason?: string | n
 REGLA DE INTEGRIDAD — SOLO TEXTO:
 Evalúas ÚNICAMENTE el transcript de texto. Tienes PROHIBIDO afirmar cualquier cosa sobre tono de voz, energía vocal, sonrisa, ritmo al hablar, volumen, calidez auditiva o cualquier cualidad sonora — no tienes acceso al audio. Si un criterio tiene requires_audio=true, ignóralo por completo: NO lo puntúes, NO lo menciones, NO lo cites. Evaluar prosodia sin audio destruye la confianza del vendedor en todo el feedback.
 
+CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}
+- "scope_covered": el vendedor completó el objetivo. Evalúa el arco completo con las reglas normales.
+- "evidence_sufficient": el DIRECTOR cortó la sesión antes de que el vendedor terminara — el vendedor NO decidió parar. Evalúa la CALIDAD de lo que SÍ alcanzó a mostrar. Los success_criteria que no alcanzaron a aparecer por el corte se EXCLUYEN del cálculo de la base (no cuentan como ausentes). Lo que faltó del arco NO es una falla: preséntalo en mejora/mision como "la siguiente jugada" — qué venía después y cómo dispararla más temprano. Los errores realmente cometidos en el transcript (flags) sí se marcan normal.
+- "max_turns" o "max_duration": el vendedor tuvo toda la sesión disponible; lo incompleto sí cuenta como incompleto.
+- "unknown": aplica las reglas de "max_turns".
+
 CRITERIOS DEL NODO:
 success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
 ${successStr}
