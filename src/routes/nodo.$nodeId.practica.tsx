@@ -61,6 +61,7 @@ interface FeedbackResult {
   stars: 1 | 2 | 3;
   observations: ObservationItem[];
   mision: string;
+  radarLines: string[];
 }
 
 function PracticaPage() {
