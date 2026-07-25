@@ -2842,6 +2842,19 @@ function FeedbackPhase({
 
           <ConversationTranscript conversation={conversation} />
 
+          {worldId !== 9 && evaluation && (
+            <ReplicaChat
+              worldId={worldId}
+              nodeId={nodeId}
+              sessionId={sessionId}
+              practiceScript={practiceScript}
+              evaluation={evaluation}
+              conversation={conversation}
+            />
+          )}
+
+
+
 
           <button
             onClick={() => setStep("victory")}
