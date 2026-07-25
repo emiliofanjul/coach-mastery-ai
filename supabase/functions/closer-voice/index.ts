@@ -542,7 +542,9 @@ Deno.serve(async (req) => {
       ? buildEvaluateSystemPrompt(practice_script, cut_reason, radarSkills)
       : phase === "generate_example"
         ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? "")
-        : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
+        : phase === "replica"
+          ? buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : [])
+          : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
 
 
     const messages = phase === "evaluate" ? [
@@ -552,6 +554,12 @@ Deno.serve(async (req) => {
       },
     ] : phase === "generate_example" ? [
       { role: "user", content: `Genera el ejemplo ahora.` },
+    ] : phase === "replica" ? [
+      ...((body.replica_thread ?? []).map((m) => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.content,
+      }))),
+      { role: "user", content: body.user_message ?? "" },
     ] : [
       ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
