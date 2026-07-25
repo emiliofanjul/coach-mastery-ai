@@ -305,6 +305,38 @@ function PracticaPage() {
         taughtSkills = [...skillsInFocus];
       }
 
+
+      // Radar de Fundamentos: nombres legibles de skills + regresiones previas
+      // (últimos 2 practice_session events). Fail-open — el radar es opcional.
+      let taughtSkillNames: Record<string, string> = {};
+      let prevRegresiones: string[][] = []; // [prev1_ids, prev2_ids], prev1 = más reciente
+      try {
+        if (taughtSkills.length > 0) {
+          const inList = taughtSkills.map((id) => encodeURIComponent(id)).join(",");
+          const skillRows = await restGet<{ id: string; name: string }>(
+            `skills?select=id,name&id=in.(${inList})`,
+          );
+          for (const s of skillRows ?? []) taughtSkillNames[s.id] = s.name;
+        }
+      } catch (e) {
+        console.error("[practica] radar skill names fetch failed:", e);
+      }
+      try {
+        const rows = await restGet<{ payload: any }>(
+          `seller_events?select=payload&seller_id=eq.${seller.id}&event_type=eq.practice_session&order=created_at.desc&limit=2`,
+        );
+        prevRegresiones = (rows ?? []).map((r) => {
+          const arr = r?.payload?.evaluation?.regresiones_detectadas;
+          if (!Array.isArray(arr)) return [];
+          return arr
+            .map((x: any) => (x && typeof x?.skill_id === "string" ? x.skill_id : null))
+            .filter((x): x is string => !!x);
+        });
+      } catch (e) {
+        console.error("[practica] prev regresiones fetch failed (fail-open):", e);
+        prevRegresiones = [];
+      }
+
       const ctx = {
         primarySkillId,
         skillsInFocus,
@@ -314,7 +346,10 @@ function PracticaPage() {
         successCriteria,
         failureCriteria,
         taughtSkills,
+        taughtSkillNames,
+        prevRegresiones,
       };
+
 
       setSellerData(seller);
       setNodeData(node);
