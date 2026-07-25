@@ -1325,10 +1325,12 @@ function PracticaPage() {
               }}
               iDoDemoDone={iDoDemoDone}
               onRetry={() => {
+                // Reintento reanuda: no resetea la sesión, solo reenvía el
+                // último turno del user que ya vive en conversationHistoryRef.
                 setConnectionError(null);
-                if (phase === "i_do") startIDoSession();
-                else startYouDoSession();
+                void callActor();
               }}
+
               onReplay={handleReplay}
               onExitClick={() => setShowExitDialog(true)}
               inputMode={inputMode}
