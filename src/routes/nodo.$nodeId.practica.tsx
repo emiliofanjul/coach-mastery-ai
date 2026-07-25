@@ -2602,6 +2602,271 @@ function ObservationCard({ obs }: { obs: ObservationItem }) {
   );
 }
 
+function ReplicaChat({
+  worldId,
+  nodeId,
+  sessionId,
+  practiceScript,
+  evaluation,
+  conversation,
+}: {
+  worldId: number;
+  nodeId: string;
+  sessionId: string;
+  practiceScript: any;
+  evaluation: any;
+  conversation: { role: string; content: string }[];
+}) {
+  const [open, setOpen] = useState(false);
+  const [thread, setThread] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [draft, setDraft] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const userTurns = thread.filter((m) => m.role === "user").length;
+  const limitReached = userTurns >= 3;
+
+  if (worldId === 9) return null;
+
+  async function send() {
+    const msg = draft.trim();
+    if (!msg || sending || limitReached) return;
+    setSending(true);
+    setError(null);
+    const priorThread = thread;
+    const nextThreadOptimistic = [...priorThread, { role: "user" as const, content: msg }];
+    setThread(nextThreadOptimistic);
+    setDraft("");
+    try {
+      const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON,
+          Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({
+          phase: "replica",
+          practice_script: practiceScript,
+          original_evaluation: evaluation,
+          conversation_history: conversation,
+          replica_thread: priorThread,
+          user_message: msg,
+          session_id: sessionId,
+        }),
+      });
+      const raw = await res.text();
+      if (!res.ok) throw new Error(`replica HTTP ${res.status}: ${raw.slice(0, 200)}`);
+      const parsed = JSON.parse(raw) as { message?: string };
+      const reply = typeof parsed.message === "string" ? parsed.message : "";
+      if (!reply) throw new Error("respuesta vacía");
+      setThread([...nextThreadOptimistic, { role: "assistant", content: reply }]);
+
+      // Persist exchange as seller_event
+      try {
+        const form = new FormData();
+        form.append(
+          "meta",
+          JSON.stringify({
+            event_type: "evaluation_replica",
+            node_id: nodeId,
+            session_id: sessionId,
+            payload: {
+              session_id: sessionId,
+              node_id: nodeId,
+              turn_number: userTurns + 1,
+              user_message: msg,
+              closer_response: reply,
+              original_score: evaluation?.score ?? null,
+            },
+          }),
+        );
+        await fetch(`${SUPABASE_URL}/functions/v1/save-practice-event`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON,
+            Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+          },
+          body: form,
+        });
+      } catch (e) {
+        console.error("[replica] save-practice-event failed:", e);
+      }
+    } catch (e: any) {
+      console.error("[replica] failed:", e);
+      setThread(priorThread);
+      setDraft(msg);
+      setError("No pude responder ahora. Intenta de nuevo.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        style={{
+          width: "100%",
+          padding: "10px 14px",
+          marginTop: 4,
+          borderRadius: 99,
+          border: "1px solid rgba(255,255,255,0.15)",
+          background: "transparent",
+          color: "rgba(255,255,255,0.7)",
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 13,
+          cursor: "pointer",
+        }}
+      >
+        No estoy de acuerdo con mi evaluación
+      </button>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        marginTop: 4,
+        padding: 14,
+        borderRadius: 14,
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.10)",
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "Syne, sans-serif",
+          fontWeight: 700,
+          fontSize: 13,
+          color: "#fff",
+          textTransform: "uppercase",
+          letterSpacing: 0.6,
+        }}
+      >
+        Tu réplica
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {thread.map((m, i) => (
+          <div
+            key={i}
+            style={{
+              alignSelf: m.role === "user" ? "flex-end" : "flex-start",
+              maxWidth: "88%",
+              padding: "10px 12px",
+              borderRadius: 12,
+              background:
+                m.role === "user" ? "rgba(255,107,43,0.18)" : "rgba(255,255,255,0.06)",
+              color: "#fff",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              lineHeight: 1.45,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {m.content}
+          </div>
+        ))}
+        {sending && (
+          <div
+            style={{
+              alignSelf: "flex-start",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.5)",
+              fontStyle: "italic",
+            }}
+          >
+            Closer está respondiendo…
+          </div>
+        )}
+      </div>
+
+      {error && (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 12,
+            color: "rgba(255,180,180,0.9)",
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      {limitReached ? (
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 13,
+            lineHeight: 1.5,
+            color: "rgba(255,255,255,0.65)",
+            fontStyle: "italic",
+          }}
+        >
+          Tu comentario quedó registrado — el equipo revisa estos casos para mejorar el entrenamiento.
+        </div>
+      ) : (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            send();
+          }}
+          style={{ display: "flex", gap: 8 }}
+        >
+          <input
+            type="text"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder={
+              userTurns === 0
+                ? "Explica por qué no estás de acuerdo…"
+                : `Mensaje ${userTurns + 1} de 3`
+            }
+            disabled={sending}
+            style={{
+              flex: 1,
+              height: 40,
+              borderRadius: 99,
+              border: "1px solid rgba(255,255,255,0.15)",
+              background: "rgba(0,0,0,0.3)",
+              padding: "0 14px",
+              color: "#fff",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14,
+              outline: "none",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={!draft.trim() || sending}
+            style={{
+              height: 40,
+              padding: "0 16px",
+              borderRadius: 99,
+              border: "none",
+              background: ORANGE,
+              color: "#08080F",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: draft.trim() && !sending ? "pointer" : "not-allowed",
+              opacity: draft.trim() && !sending ? 1 : 0.5,
+            }}
+          >
+            Enviar
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 function FeedbackPhase({
   onContinue,
   conversation,
