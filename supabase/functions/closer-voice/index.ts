@@ -468,7 +468,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    if (phase !== "evaluate" && phase !== "generate_example" && !transcript) {
+    if (phase !== "evaluate" && phase !== "generate_example" && phase !== "replica" && !transcript) {
       return new Response(JSON.stringify({ error: "Missing transcript" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
