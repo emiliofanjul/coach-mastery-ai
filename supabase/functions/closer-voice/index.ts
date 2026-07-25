@@ -348,10 +348,24 @@ function extractJson<T>(text: string): T {
     return JSON.parse(trimmed);
   } catch {
     const m = trimmed.match(/\{[\s\S]*\}/);
-    if (m) return JSON.parse(m[0]);
+    if (m) {
+      try {
+        return JSON.parse(m[0]);
+      } catch {
+        // Intento de rescate barato: JSON truncado con coma final o comilla sin cerrar.
+        // Extraer el valor de "message" si es posible.
+        const msgMatch = m[0].match(/"message"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+        if (msgMatch) {
+          return { message: JSON.parse(`"${msgMatch[1]}"`) } as unknown as T;
+        }
+      }
+    }
     throw new Error("Claude did not return parseable JSON: " + text.slice(0, 200));
   }
 }
+
+const CONVERSATION_PHASES = new Set<Phase>(["i_do", "you_do", "boss_sim", "closing"]);
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
