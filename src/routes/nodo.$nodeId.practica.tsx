@@ -87,6 +87,7 @@ function PracticaPage() {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
+  const rawEvaluationRef = useRef<any>(null);
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
   const [prepError, setPrepError] = useState<string | null>(null);
