@@ -1281,7 +1281,10 @@ function PracticaPage() {
                     ? evaluation.flags_detected
                     : [],
                   mision: typeof evaluation?.mision === "string" ? evaluation.mision : null,
+                  regresiones_detectadas: currentRegresiones,
                 },
+                rachas,
+
               },
             }),
           );
