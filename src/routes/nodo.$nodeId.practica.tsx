@@ -275,6 +275,33 @@ function PracticaPage() {
         ? script.failure_criteria
         : [];
 
+      // taughtSkills: unión de skills_in_focus de nodos ya completados por este vendedor
+      // ∪ skills_in_focus del nodo actual. Alimenta SOLO el prompt del Actor (dificultad
+      // acumulada). NO reemplaza skillsInFocus (que sigue alimentando seller_skill_state).
+      // Fallback: si falla la consulta, taughtSkills = skillsInFocus del nodo actual.
+      let taughtSkills: string[] = [...skillsInFocus];
+      try {
+        const doneRows = await restGet<{ node_id: string }>(
+          `node_progress?select=node_id&seller_id=eq.${seller.id}&status=eq.done`,
+        );
+        const doneIds = (doneRows ?? []).map((r) => r.node_id).filter((id) => id && id !== nodeId);
+        if (doneIds.length > 0) {
+          const inList = doneIds.map((id) => encodeURIComponent(id)).join(",");
+          const doneNodes = await restGet<{ id: string; practice_script: any }>(
+            `nodes?select=id,practice_script&id=in.(${inList})`,
+          );
+          const set = new Set<string>(skillsInFocus);
+          for (const n of doneNodes ?? []) {
+            const arr = (n as any)?.practice_script?.scope?.skills_in_focus;
+            if (Array.isArray(arr)) arr.forEach((s) => typeof s === "string" && s && set.add(s));
+          }
+          taughtSkills = Array.from(set);
+        }
+      } catch (e) {
+        console.error("[practica] taughtSkills fetch failed — fallback to current node:", e);
+        taughtSkills = [...skillsInFocus];
+      }
+
       const ctx = {
         primarySkillId,
         skillsInFocus,
@@ -283,6 +310,7 @@ function PracticaPage() {
         forbiddenConcepts,
         successCriteria,
         failureCriteria,
+        taughtSkills,
       };
 
       setSellerData(seller);
