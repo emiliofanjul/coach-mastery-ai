@@ -127,6 +127,38 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Radar de Fundamentos — alerta al manager cuando una regresión llega a la 3ª
+    // sesión consecutiva. Se registra como seller_event separado para que el panel
+    // del manager pueda leerlo sin tener que escanear cada practice_session.
+    const rachas = Array.isArray((meta as any)?.rachas) ? (meta as any).rachas : [];
+    const alerts = rachas.filter(
+      (r: any) => r && typeof r?.skill_id === "string" && typeof r?.streak === "number" && r.streak >= 3,
+    );
+    if (alerts.length > 0) {
+      try {
+        const alertRows = alerts.map((r: any) => ({
+          seller_id: seller.id,
+          event_type: "regression_alert",
+          node_id: meta?.node_id ?? null,
+          skill_ids: [r.skill_id],
+          payload: {
+            skill_id: r.skill_id,
+            streak: r.streak,
+            node_id: meta?.node_id ?? null,
+            session_id: sessionId,
+            evidencia: typeof r.evidencia === "string" ? r.evidencia : null,
+          },
+          prompt_version: meta?.prompt_version ?? null,
+          model: meta?.model ?? null,
+        }));
+        const { error: alertErr } = await admin.from("seller_events").insert(alertRows);
+        if (alertErr) console.error("[save-practice-event] regression_alert insert failed:", alertErr);
+      } catch (e) {
+        console.error("[save-practice-event] regression_alert threw:", e);
+      }
+    }
+
+
     // Recompute seller_skill_state from all events (idempotente; fórmula v1).
     // Solo si el evento actual trae bloque `evaluation`; los eventos viejos sin
     // evaluation se ignoran naturalmente en el recorrido.
