@@ -502,18 +502,36 @@ Deno.serve(async (req) => {
     });
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
+    let degraded = false;
     try {
       parsed = extractJson<CloserResponse | EvaluationResponse | GenerateExampleResponse>(text);
     } catch (e) {
-      console.error("[closer-voice] parse error:", e, "raw:", text);
-      return new Response(
-        JSON.stringify({ error: "Invalid JSON from Claude", raw: text }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      // Fallback SOLO en fases de conversación. En evaluate/generate_example, un texto
+      // plano NO es resultado válido → mantener el 502 de siempre.
+      if (CONVERSATION_PHASES.has(phase)) {
+        console.warn("[closer-voice] JSON fallback activado", {
+          phase,
+          session_id: session_id ?? null,
+          raw: text.slice(0, 120),
+        });
+        degraded = true;
+        parsed = {
+          message: text.trim(),
+          next_phase: phase,
+          end_session: false,
+        } as CloserResponse;
+      } else {
+        console.error("[closer-voice] parse error:", e, "raw:", text);
+        return new Response(
+          JSON.stringify({ error: "Invalid JSON from Claude", raw: text }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
     }
 
     // Every successful response includes the prompt_version and model that produced it.
-    const meta = { prompt_version: PROMPT_VERSION, model: CLAUDE_MODEL };
+    const meta = { prompt_version: PROMPT_VERSION, model: CLAUDE_MODEL, degraded };
+
 
     if (phase === "generate_example") {
       const ex = parsed as GenerateExampleResponse;
