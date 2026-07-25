@@ -2795,7 +2795,35 @@ function FeedbackPhase({
             </div>
           )}
 
+          {feedback?.radarLines && feedback.radarLines.length > 0 && (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+                padding: "10px 4px 0 4px",
+              }}
+            >
+              {feedback.radarLines.map((line, i) => (
+                <div
+                  key={i}
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 12,
+                    lineHeight: 1.5,
+                    color: "rgba(255,255,255,0.55)",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {line}
+                </div>
+              ))}
+            </div>
+          )}
+
           <ConversationTranscript conversation={conversation} />
+
 
           <button
             onClick={() => setStep("victory")}
