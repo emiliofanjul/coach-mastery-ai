@@ -83,6 +83,10 @@ interface ReqBody {
   // Coherencia corte→evaluación: por qué terminó la sesión (director reason)
   cut_reason?: string | null;
   director_user_turns?: number | null;
+  // Replica phase fields — vendedor pide explicación de su evaluación.
+  original_evaluation?: any;
+  replica_thread?: { role: "user" | "assistant"; content: string }[];
+  user_message?: string;
 }
 
 interface CloserResponse {
