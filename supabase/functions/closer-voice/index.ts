@@ -348,10 +348,24 @@ function extractJson<T>(text: string): T {
     return JSON.parse(trimmed);
   } catch {
     const m = trimmed.match(/\{[\s\S]*\}/);
-    if (m) return JSON.parse(m[0]);
+    if (m) {
+      try {
+        return JSON.parse(m[0]);
+      } catch {
+        // Intento de rescate barato: JSON truncado con coma final o comilla sin cerrar.
+        // Extraer el valor de "message" si es posible.
+        const msgMatch = m[0].match(/"message"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+        if (msgMatch) {
+          return { message: JSON.parse(`"${msgMatch[1]}"`) } as unknown as T;
+        }
+      }
+    }
     throw new Error("Claude did not return parseable JSON: " + text.slice(0, 200));
   }
 }
+
+const CONVERSATION_PHASES = new Set<Phase>(["i_do", "you_do", "boss_sim", "closing"]);
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -488,18 +502,36 @@ Deno.serve(async (req) => {
     });
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
+    let degraded = false;
     try {
       parsed = extractJson<CloserResponse | EvaluationResponse | GenerateExampleResponse>(text);
     } catch (e) {
-      console.error("[closer-voice] parse error:", e, "raw:", text);
-      return new Response(
-        JSON.stringify({ error: "Invalid JSON from Claude", raw: text }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      // Fallback SOLO en fases de conversación. En evaluate/generate_example, un texto
+      // plano NO es resultado válido → mantener el 502 de siempre.
+      if (CONVERSATION_PHASES.has(phase)) {
+        console.warn("[closer-voice] JSON fallback activado", {
+          phase,
+          session_id: session_id ?? null,
+          raw: text.slice(0, 120),
+        });
+        degraded = true;
+        parsed = {
+          message: text.trim(),
+          next_phase: phase,
+          end_session: false,
+        } as CloserResponse;
+      } else {
+        console.error("[closer-voice] parse error:", e, "raw:", text);
+        return new Response(
+          JSON.stringify({ error: "Invalid JSON from Claude", raw: text }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
     }
 
     // Every successful response includes the prompt_version and model that produced it.
-    const meta = { prompt_version: PROMPT_VERSION, model: CLAUDE_MODEL };
+    const meta = { prompt_version: PROMPT_VERSION, model: CLAUDE_MODEL, degraded };
+
 
     if (phase === "generate_example") {
       const ex = parsed as GenerateExampleResponse;
