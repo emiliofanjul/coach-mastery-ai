@@ -1164,12 +1164,48 @@ function PracticaPage() {
       ) {
         throw new Error("closer-voice evaluate response malformed");
       }
+      // Radar de Fundamentos — cálculo de rachas y líneas visibles.
+      // Regla: 1ª ocurrencia = silencio; 2ª consecutiva = 1 línea; 3ª+ = línea + alerta manager.
+      const currentRegresiones: { skill_id: string; evidencia: string }[] = Array.isArray(
+        evaluation?.regresiones_detectadas,
+      )
+        ? evaluation.regresiones_detectadas.filter(
+            (r: any) => r && typeof r?.skill_id === "string" && typeof r?.evidencia === "string",
+          )
+        : [];
+      const prevReg: string[][] = Array.isArray(skillsContextRef.current?.prevRegresiones)
+        ? skillsContextRef.current.prevRegresiones
+        : [];
+      const nameMap: Record<string, string> = skillsContextRef.current?.taughtSkillNames ?? {};
+      const seen = new Set<string>();
+      const rachas: { skill_id: string; streak: number; evidencia: string }[] = [];
+      for (const r of currentRegresiones) {
+        if (seen.has(r.skill_id)) continue;
+        seen.add(r.skill_id);
+        let streak = 1;
+        if (prevReg[0]?.includes(r.skill_id)) {
+          streak = 2;
+          if (prevReg[1]?.includes(r.skill_id)) streak = 3;
+        }
+        rachas.push({ skill_id: r.skill_id, streak, evidencia: r.evidencia });
+      }
+      const radarLines: string[] = rachas
+        .filter((r) => r.streak >= 2)
+        .sort((a, b) => b.streak - a.streak)
+        .slice(0, 2)
+        .map((r) => {
+          const nombre = nameMap[r.skill_id] || r.skill_id;
+          return `Radar de fundamentos: segunda sesión seguida con ${nombre} fallando. Eso ya lo dominas — no lo dejes caer.`;
+        });
+
       setFeedbackResult({
         score: Number(evaluation.score),
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
         observations: evaluation.observations.slice(0, 3),
         mision: evaluation.mision,
+        radarLines,
       });
+
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
         nodeType === "boss"
