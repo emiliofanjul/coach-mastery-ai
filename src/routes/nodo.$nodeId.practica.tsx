@@ -690,26 +690,27 @@ function PracticaPage() {
       });
       console.log("[director]", decision, reason, data);
       if (decision === "cut") {
+        cutReasonRef.current = reason;
         // Terminal e inmediato: silencia todo Actor audio en curso, aborta
         // fetches pendientes, bloquea mic/STT. hardStop() marca cutRef ANTES
         // de que se pueda registrar otra decisión.
         hardStop();
-        // BUG 2 fix: el closing DEBE sonar. Usamos `||` con trim para caer al
-        // default si el script trae "" (que con `??` se colaba como string vacío
-        // → TTS silencioso → sensación de crash). Nunca dejamos que un script
-        // vacío borre la señal emocional de cierre.
-        // v2.1.0: cuando el Director corta por evidence_sufficient (el usuario
-        // no completó el objetivo pero ya hay material para evaluar), el closing
-        // del script sonaría a felicitación falsa — usamos un neutral genérico.
-        const NEUTRAL_CLOSING = "Bien, con esto tengo lo que necesito. Vamos a revisar cómo te fue.";
-        const scriptClosing: string | undefined =
-          nodeDataRef.current?.practice_script?.phases?.closing?.message;
+        // Coherencia corte→closing: el closing celebratorio del guion solo
+        // suena cuando el vendedor COMPLETÓ el objetivo (scope_covered).
+        // Cuando el Director corta antes (evidence_sufficient, max_turns,
+        // max_duration), usamos message_incomplete si el script lo define, o
+        // un neutral genérico. Nunca celebramos algo que no pasó.
+        const GENERIC_NEUTRAL =
+          "Ahí lo dejamos — ya tengo lo que necesito para tu análisis. Vamos al desglose.";
+        const isComplete = reason === "scope_covered";
+        const closingNode = nodeDataRef.current?.practice_script?.phases?.closing;
+        const scriptClosing: string | undefined = isComplete
+          ? closingNode?.message
+          : closingNode?.message_incomplete;
         const closingMsg: string =
-          reason === "evidence_sufficient"
-            ? NEUTRAL_CLOSING
-            : (typeof scriptClosing === "string" && scriptClosing.trim())
-              ? scriptClosing
-              : DEFAULT_CLOSING_MESSAGE;
+          typeof scriptClosing === "string" && scriptClosing.trim()
+            ? scriptClosing
+            : GENERIC_NEUTRAL;
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
