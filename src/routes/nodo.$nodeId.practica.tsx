@@ -1325,11 +1325,21 @@ function PracticaPage() {
               }}
               iDoDemoDone={iDoDemoDone}
               onRetry={() => {
-                // Reintento reanuda: no resetea la sesión, solo reenvía el
-                // último turno del user que ya vive en conversationHistoryRef.
+                // Reintento: si ya hay al menos un turno del user, reanuda
+                // reenviando el último (conversationHistoryRef preservado).
+                // Si no hay ninguno, es un error de arranque → re-arrancar
+                // la fase actual desde cero (no hay estado que preservar).
                 setConnectionError(null);
-                void callActor();
+                const hasUserTurn = conversationHistoryRef.current.some((m) => m.role === "user");
+                if (hasUserTurn) {
+                  void callActor();
+                } else {
+                  sessionStartedForPhaseRef.current = null;
+                  if (claudePhaseRef.current === "i_do") void startIDoSession();
+                  else void startYouDoSession();
+                }
               }}
+
 
               onReplay={handleReplay}
               onExitClick={() => setShowExitDialog(true)}
