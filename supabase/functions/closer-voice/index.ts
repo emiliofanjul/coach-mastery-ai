@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.1.0";
+const PROMPT_VERSION = "v2.2.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -98,21 +98,46 @@ interface EvaluationObservation {
   ejemplo: string;
 }
 
+interface RegresionDetectada {
+  skill_id: string;
+  evidencia: string;
+}
+
 interface EvaluationResponse {
   score: number;
   observations: EvaluationObservation[];
   flags_detected: string[];
   criterios_cumplidos: string[];
   mision: string;
+  regresiones_detectadas: RegresionDetectada[];
 }
 
-function buildEvaluateSystemPrompt(practice_script: any, cut_reason?: string | null): string {
+interface RadarSkill {
+  id: string;
+  name: string;
+  failure_signals: unknown;
+}
+
+function buildEvaluateSystemPrompt(
+  practice_script: any,
+  cut_reason?: string | null,
+  radarSkills: RadarSkill[] = [],
+): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
   const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
   const failureIds = Array.isArray(failureCriteria) ? failureCriteria.map((c: any) => c?.id).filter(Boolean) : [];
   const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
   const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
+
+  const radarBlock = radarSkills.length > 0
+    ? `\nRADAR DE FUNDAMENTOS (tarea secundaria, separada del score):
+Estos skills el vendedor YA los domina de nodos anteriores:
+${radarSkills.map((s) => `- ${s.id} — ${s.name} — señales de fallo: ${JSON.stringify(s.failure_signals ?? [])}`).join("\n")}
+
+Revisa el transcript por violaciones FLAGRANTES de estos fundamentos (del calibre de: abrir con disculpa, pitch prematuro, saltarse la identificación). NO señales detalles de estilo ni ejecuciones mejorables — solo violaciones claras que coincidan con las señales de fallo listadas. Repórtalas ÚNICAMENTE en el campo "regresiones_detectadas" — JAMÁS en observations, JAMÁS en el score, JAMÁS en la mision. Si no hay ninguna, array vacío.\n`
+    : `\nRADAR DE FUNDAMENTOS: sin skills previos que vigilar en esta sesión. Devuelve "regresiones_detectadas": [].\n`;
+
 
   return `Evalúas una conversación de práctica de ventas.
 
@@ -133,6 +158,7 @@ ${failureStr}
 
 IDs válidos para "criterio_id" y "criterios_cumplidos" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
 IDs válidos para "flags_detected" (failure_criteria únicamente): ${JSON.stringify(failureIds)}
+${radarBlock}
 
 REGLAS DE EVALUACIÓN:
 1. El vendedor es 'user' en el historial. Closer es 'assistant'. Evalúa SOLO al 'user'.
@@ -185,7 +211,8 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
   ],
   "flags_detected": ["<solo IDs de failure_criteria detectados>"],
   "criterios_cumplidos": ["<IDs de success_criteria que ejecutó bien>"],
-  "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo"
+  "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo",
+  "regresiones_detectadas": [{"skill_id": "<id de la lista del radar>", "evidencia": "cita corta del transcript"}]
 }`;
 }
 
@@ -445,11 +472,40 @@ Deno.serve(async (req) => {
     }
 
 
+
+    // RADAR DE FUNDAMENTOS: fetch skills the seller ya domina (taught_skills)
+    // MINUS los que este nodo está entrenando. Fail-open: si algo truena,
+    // radarSkills = [] y el evaluador simplemente devuelve regresiones vacías.
+    let radarSkills: RadarSkill[] = [];
+    if (phase === "evaluate" && Array.isArray(taught_skills) && taught_skills.length > 0) {
+      try {
+        const inFocus: string[] = Array.isArray(practice_script?.scope?.skills_in_focus)
+          ? practice_script.scope.skills_in_focus
+          : [];
+        const inFocusSet = new Set(inFocus);
+        const radarIds = taught_skills.filter((s) => typeof s === "string" && s.length > 0 && !inFocusSet.has(s));
+        if (radarIds.length > 0) {
+          const admin = getAdmin();
+          if (admin) {
+            const { data, error } = await admin
+              .from("skills")
+              .select("id, name, failure_signals")
+              .in("id", radarIds);
+            if (!error && Array.isArray(data)) radarSkills = data as RadarSkill[];
+          }
+        }
+      } catch (e) {
+        console.error("[closer-voice] radar skills fetch failed (fail-open):", e);
+        radarSkills = [];
+      }
+    }
+
     const system = phase === "evaluate"
-      ? buildEvaluateSystemPrompt(practice_script, cut_reason)
+      ? buildEvaluateSystemPrompt(practice_script, cut_reason, radarSkills)
       : phase === "generate_example"
         ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? "")
         : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
+
 
     const messages = phase === "evaluate" ? [
       {
@@ -582,6 +638,22 @@ Deno.serve(async (req) => {
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
+
+      // Radar: normalización laxa. Cualquier cosa mal formada → [].
+      const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
+      const rawRegresiones = (evaluation as any).regresiones_detectadas;
+      const regresiones: RegresionDetectada[] = Array.isArray(rawRegresiones)
+        ? rawRegresiones
+            .filter(
+              (r: any) =>
+                r && typeof r === "object" &&
+                typeof r.skill_id === "string" && r.skill_id.length > 0 &&
+                typeof r.evidencia === "string" &&
+                (radarAllowedIds.size === 0 || radarAllowedIds.has(r.skill_id)),
+            )
+            .map((r: any) => ({ skill_id: r.skill_id, evidencia: r.evidencia }))
+        : [];
+      evaluation.regresiones_detectadas = regresiones;
 
       // Derive stars for backward compatibility with existing consumers.
       const stars = evaluation.score >= 85 ? 3 : evaluation.score >= 60 ? 2 : 1;

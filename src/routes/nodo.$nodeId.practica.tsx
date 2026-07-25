@@ -61,6 +61,7 @@ interface FeedbackResult {
   stars: 1 | 2 | 3;
   observations: ObservationItem[];
   mision: string;
+  radarLines: string[];
 }
 
 function PracticaPage() {
@@ -304,6 +305,38 @@ function PracticaPage() {
         taughtSkills = [...skillsInFocus];
       }
 
+
+      // Radar de Fundamentos: nombres legibles de skills + regresiones previas
+      // (últimos 2 practice_session events). Fail-open — el radar es opcional.
+      let taughtSkillNames: Record<string, string> = {};
+      let prevRegresiones: string[][] = []; // [prev1_ids, prev2_ids], prev1 = más reciente
+      try {
+        if (taughtSkills.length > 0) {
+          const inList = taughtSkills.map((id) => encodeURIComponent(id)).join(",");
+          const skillRows = await restGet<{ id: string; name: string }>(
+            `skills?select=id,name&id=in.(${inList})`,
+          );
+          for (const s of skillRows ?? []) taughtSkillNames[s.id] = s.name;
+        }
+      } catch (e) {
+        console.error("[practica] radar skill names fetch failed:", e);
+      }
+      try {
+        const rows = await restGet<{ payload: any }>(
+          `seller_events?select=payload&seller_id=eq.${seller.id}&event_type=eq.practice_session&order=created_at.desc&limit=2`,
+        );
+        prevRegresiones = (rows ?? []).map((r) => {
+          const arr = r?.payload?.evaluation?.regresiones_detectadas;
+          if (!Array.isArray(arr)) return [];
+          return arr
+            .map((x: any) => (x && typeof x?.skill_id === "string" ? x.skill_id : null))
+            .filter((x): x is string => !!x);
+        });
+      } catch (e) {
+        console.error("[practica] prev regresiones fetch failed (fail-open):", e);
+        prevRegresiones = [];
+      }
+
       const ctx = {
         primarySkillId,
         skillsInFocus,
@@ -313,7 +346,10 @@ function PracticaPage() {
         successCriteria,
         failureCriteria,
         taughtSkills,
+        taughtSkillNames,
+        prevRegresiones,
       };
+
 
       setSellerData(seller);
       setNodeData(node);
@@ -1128,12 +1164,48 @@ function PracticaPage() {
       ) {
         throw new Error("closer-voice evaluate response malformed");
       }
+      // Radar de Fundamentos — cálculo de rachas y líneas visibles.
+      // Regla: 1ª ocurrencia = silencio; 2ª consecutiva = 1 línea; 3ª+ = línea + alerta manager.
+      const currentRegresiones: { skill_id: string; evidencia: string }[] = Array.isArray(
+        evaluation?.regresiones_detectadas,
+      )
+        ? evaluation.regresiones_detectadas.filter(
+            (r: any) => r && typeof r?.skill_id === "string" && typeof r?.evidencia === "string",
+          )
+        : [];
+      const prevReg: string[][] = Array.isArray(skillsContextRef.current?.prevRegresiones)
+        ? skillsContextRef.current.prevRegresiones
+        : [];
+      const nameMap: Record<string, string> = skillsContextRef.current?.taughtSkillNames ?? {};
+      const seen = new Set<string>();
+      const rachas: { skill_id: string; streak: number; evidencia: string }[] = [];
+      for (const r of currentRegresiones) {
+        if (seen.has(r.skill_id)) continue;
+        seen.add(r.skill_id);
+        let streak = 1;
+        if (prevReg[0]?.includes(r.skill_id)) {
+          streak = 2;
+          if (prevReg[1]?.includes(r.skill_id)) streak = 3;
+        }
+        rachas.push({ skill_id: r.skill_id, streak, evidencia: r.evidencia });
+      }
+      const radarLines: string[] = rachas
+        .filter((r) => r.streak >= 2)
+        .sort((a, b) => b.streak - a.streak)
+        .slice(0, 2)
+        .map((r) => {
+          const nombre = nameMap[r.skill_id] || r.skill_id;
+          return `Radar de fundamentos: segunda sesión seguida con ${nombre} fallando. Eso ya lo dominas — no lo dejes caer.`;
+        });
+
       setFeedbackResult({
         score: Number(evaluation.score),
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
         observations: evaluation.observations.slice(0, 3),
         mision: evaluation.mision,
+        radarLines,
       });
+
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
       const practiceType =
         nodeType === "boss"
@@ -1209,7 +1281,10 @@ function PracticaPage() {
                     ? evaluation.flags_detected
                     : [],
                   mision: typeof evaluation?.mision === "string" ? evaluation.mision : null,
+                  regresiones_detectadas: currentRegresiones,
                 },
+                rachas,
+
               },
             }),
           );
@@ -2720,7 +2795,35 @@ function FeedbackPhase({
             </div>
           )}
 
+          {feedback?.radarLines && feedback.radarLines.length > 0 && (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+                padding: "10px 4px 0 4px",
+              }}
+            >
+              {feedback.radarLines.map((line, i) => (
+                <div
+                  key={i}
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 12,
+                    lineHeight: 1.5,
+                    color: "rgba(255,255,255,0.55)",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {line}
+                </div>
+              ))}
+            </div>
+          )}
+
           <ConversationTranscript conversation={conversation} />
+
 
           <button
             onClick={() => setStep("victory")}
