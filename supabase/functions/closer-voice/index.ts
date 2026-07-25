@@ -56,7 +56,7 @@ async function logLlmCall(row: {
   }
 }
 
-type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example";
+type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example" | "replica";
 type NextPhase = Phase | "end";
 
 interface ReqBody {
@@ -83,6 +83,10 @@ interface ReqBody {
   // Coherencia corte→evaluación: por qué terminó la sesión (director reason)
   cut_reason?: string | null;
   director_user_turns?: number | null;
+  // Replica phase fields — vendedor pide explicación de su evaluación.
+  original_evaluation?: any;
+  replica_thread?: { role: "user" | "assistant"; content: string }[];
+  user_message?: string;
 }
 
 interface CloserResponse {
@@ -270,6 +274,40 @@ Responde JSON exacto:
 }
 
 
+function buildReplicaSystemPrompt(
+  practice_script: any,
+  original_evaluation: any,
+  conversation_history: { role: string; content: string }[],
+): string {
+  const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
+  const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  return `Eres Closer explicando una evaluación a un vendedor que no está de acuerdo.
+
+REGLAS ABSOLUTAS:
+- El score NO se puede cambiar, y JAMÁS prometes que cambiará ni insinúas que podría estar mal calculado.
+- Explica el PORQUÉ de la calificación citando: (a) los criterios del nodo por su id, (b) momentos literales del transcript.
+- Si el vendedor expone una estrategia legítima distinta, reconócela con respeto y explica la diferencia entre su estrategia y la MECÁNICA específica que este nodo mide. Cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
+- Mantén lenguaje de aprendizaje siempre (sin regañar, sin condescender, sin capitular).
+- Prohibido evaluar prosodia o audio. Prohibido inventar criterios que no estén en el practice_script.
+- Máximo 5 frases por respuesta.
+
+CRITERIOS DEL NODO (success):
+${JSON.stringify(successCriteria, null, 2)}
+
+CRITERIOS DE FALLO:
+${JSON.stringify(failureCriteria, null, 2)}
+
+EVALUACIÓN ORIGINAL (inmutable):
+${JSON.stringify(original_evaluation, null, 2)}
+
+TRANSCRIPT DE LA SESIÓN:
+${JSON.stringify(conversation_history ?? [], null, 2)}
+
+Responde JSON exacto: { "message": "..." }`;
+}
+
+
+
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = []): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
@@ -430,7 +468,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    if (phase !== "evaluate" && phase !== "generate_example" && !transcript) {
+    if (phase !== "evaluate" && phase !== "generate_example" && phase !== "replica" && !transcript) {
       return new Response(JSON.stringify({ error: "Missing transcript" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -504,7 +542,9 @@ Deno.serve(async (req) => {
       ? buildEvaluateSystemPrompt(practice_script, cut_reason, radarSkills)
       : phase === "generate_example"
         ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? "")
-        : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
+        : phase === "replica"
+          ? buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : [])
+          : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
 
 
     const messages = phase === "evaluate" ? [
@@ -514,6 +554,12 @@ Deno.serve(async (req) => {
       },
     ] : phase === "generate_example" ? [
       { role: "user", content: `Genera el ejemplo ahora.` },
+    ] : phase === "replica" ? [
+      ...((body.replica_thread ?? []).map((m) => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.content,
+      }))),
+      { role: "user", content: body.user_message ?? "" },
     ] : [
       ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
@@ -639,25 +685,41 @@ Deno.serve(async (req) => {
         );
       }
 
-      // Radar: normalización laxa. Cualquier cosa mal formada → [].
+      // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
       const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
       const rawRegresiones = (evaluation as any).regresiones_detectadas;
-      const regresiones: RegresionDetectada[] = Array.isArray(rawRegresiones)
-        ? rawRegresiones
-            .filter(
-              (r: any) =>
-                r && typeof r === "object" &&
-                typeof r.skill_id === "string" && r.skill_id.length > 0 &&
-                typeof r.evidencia === "string" &&
-                (radarAllowedIds.size === 0 || radarAllowedIds.has(r.skill_id)),
-            )
-            .map((r: any) => ({ skill_id: r.skill_id, evidencia: r.evidencia }))
-        : [];
+      const regresiones: RegresionDetectada[] = radarAllowedIds.size === 0
+        ? []
+        : Array.isArray(rawRegresiones)
+          ? rawRegresiones
+              .filter(
+                (r: any) =>
+                  r && typeof r === "object" &&
+                  typeof r.skill_id === "string" && r.skill_id.length > 0 &&
+                  typeof r.evidencia === "string" &&
+                  radarAllowedIds.has(r.skill_id),
+              )
+              .map((r: any) => ({ skill_id: r.skill_id, evidencia: r.evidencia }))
+          : [];
       evaluation.regresiones_detectadas = regresiones;
 
       // Derive stars for backward compatibility with existing consumers.
       const stars = evaluation.score >= 85 ? 3 : evaluation.score >= 60 ? 2 : 1;
       return new Response(JSON.stringify({ ...evaluation, stars, end_session: true, ...meta }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (phase === "replica") {
+      const rep = parsed as { message?: unknown };
+      if (typeof rep.message !== "string" || rep.message.length === 0) {
+        return new Response(
+          JSON.stringify({ error: "Malformed replica response", parsed }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ message: rep.message, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
