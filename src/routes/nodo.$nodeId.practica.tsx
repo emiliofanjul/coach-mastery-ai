@@ -931,13 +931,21 @@ function PracticaPage() {
         script?.phases?.i_do?.first_message
         ?? `Buenos días, ¿cómo está? Mucho gusto, soy ${sellerData?.full_name ?? "Carlos"} de ${companyData?.name ?? "la empresa"}. Qué bueno encontrarlo — justo quería platicar un momento con usted.`;
 
+      const initialItems: TranscriptItem[] = [];
+      if (briefing) {
+        initialItems.push({ role: "agent", text: briefing, phase: "i_do" });
+      }
       const agentItem: TranscriptItem = {
         role: "agent",
         text: firstMessage,
         phase: "i_do",
       };
-      transcriptFullRef.current = [agentItem];
-      setTranscriptFull([agentItem]);
+      initialItems.push(agentItem);
+      transcriptFullRef.current = initialItems;
+      setTranscriptFull(initialItems);
+      // NOTA: el briefing es explicación de Closer (mentor), no un turno del roleplay.
+      // No se agrega a conversationHistoryRef para no contaminar el contexto del Actor
+      // ni la evaluación.
       conversationHistoryRef.current = [
         { role: "assistant", content: firstMessage },
       ];
