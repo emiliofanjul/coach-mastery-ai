@@ -1745,6 +1745,11 @@ function PracticaPage() {
             key="feedback"
             conversation={youDoHistory}
             feedback={feedbackResult}
+            worldId={nodeData?.world_id ?? 0}
+            nodeId={nodeId}
+            sessionId={sessionCorrelationIdRef.current}
+            practiceScript={nodeData?.practice_script ?? null}
+            evaluation={rawEvaluationRef.current}
             onContinue={async (stars) => {
               setSaving(true);
 
