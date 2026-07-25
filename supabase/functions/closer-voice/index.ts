@@ -158,6 +158,7 @@ ${failureStr}
 
 IDs válidos para "criterio_id" y "criterios_cumplidos" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
 IDs válidos para "flags_detected" (failure_criteria únicamente): ${JSON.stringify(failureIds)}
+${radarBlock}
 
 REGLAS DE EVALUACIÓN:
 1. El vendedor es 'user' en el historial. Closer es 'assistant'. Evalúa SOLO al 'user'.
