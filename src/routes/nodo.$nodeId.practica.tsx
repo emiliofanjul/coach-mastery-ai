@@ -1200,6 +1200,7 @@ function PracticaPage() {
           return `Radar de fundamentos: ${sesion} con ${nombre} fallando. Eso ya lo dominas — no lo dejes caer.`;
         });
 
+      rawEvaluationRef.current = evaluation;
       setFeedbackResult({
         score: Number(evaluation.score),
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
