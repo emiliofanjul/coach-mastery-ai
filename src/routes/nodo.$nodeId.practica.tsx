@@ -776,33 +776,82 @@ function PracticaPage() {
       iDoUserTurnsRef.current += 1;
     }
 
+    await callActor();
+  }
+
+  // callActor: envía el estado actual (refs) al Actor. El último turno del user
+  // YA está en conversationHistoryRef. Se usa para envíos nuevos (desde
+  // sendToCloser) y para reintentos manuales tras un error de red — el retry NO
+  // duplica el turno porque lee el historial existente.
+  async function callActor() {
+    if (sessionEndedRef.current || cutRef.current) return;
+
+    const history = conversationHistoryRef.current;
+    const lastUser = [...history].reverse().find((m) => m.role === "user");
+    if (!lastUser) {
+      setIsProcessing(false);
+      return;
+    }
+    const userText = lastUser.content;
+
+    setConnectionError(null);
+    setIsProcessing(true);
+
     // AbortController para el fetch del Actor — hardStop() lo aborta.
     const ctrl = new AbortController();
     actorFetchAbortRef.current = ctrl;
+
+    // Resiliencia: 1 reintento silencioso ante fallo de red o HTTP >= 500.
+    async function attemptFetch(): Promise<Response> {
+      const started = performance.now();
+      try {
+        const res = await fetch(VOICE_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON,
+            Authorization: `Bearer ${SUPABASE_ANON}`,
+          },
+          body: JSON.stringify({
+            transcript: userText,
+            phase: claudePhaseRef.current,
+            practice_script: nodeDataRef.current?.practice_script ?? null,
+            company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
+            seller_name: sellerData?.full_name ?? "",
+            conversation_history: history.slice(0, -1),
+            session_id: sessionCorrelationIdRef.current,
+            taught_skills: skillsContextRef.current?.taughtSkills ?? [],
+          }),
+          signal: ctrl.signal,
+        });
+        const latency = Math.round(performance.now() - started);
+        if (!res.ok) {
+          console.error(`[voice] closer-voice HTTP ${res.status} in ${latency}ms`);
+        }
+        return res;
+      } catch (e) {
+        const latency = Math.round(performance.now() - started);
+        console.error(`[voice] closer-voice network fail in ${latency}ms:`, e);
+        throw e;
+      }
+    }
 
     try {
       console.log("[closer-voice] company_brain:", companyData?.company_sales_brain);
       console.log("[closer-voice] practice_script:", nodeDataRef.current?.practice_script);
       console.log("[closer-voice] phase:", claudePhaseRef.current);
-      const res = await fetch(VOICE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${SUPABASE_ANON}`,
-        },
-        body: JSON.stringify({
-          transcript: userText,
-          phase: claudePhaseRef.current,
-          practice_script: nodeDataRef.current?.practice_script ?? null,
-          company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
-          seller_name: sellerData?.full_name ?? "",
-          conversation_history: conversationHistoryRef.current.slice(0, -1),
-          session_id: sessionCorrelationIdRef.current,
-          taught_skills: skillsContextRef.current?.taughtSkills ?? [],
-        }),
-        signal: ctrl.signal,
-      });
+
+      let res: Response;
+      try {
+        res = await attemptFetch();
+        if (!res.ok && res.status >= 500) throw new Error(`HTTP ${res.status}`);
+      } catch (firstErr) {
+        if ((firstErr as any)?.name === "AbortError") throw firstErr;
+        if (ctrl.signal.aborted) throw firstErr;
+        await new Promise((r) => setTimeout(r, 1500));
+        if (ctrl.signal.aborted || sessionEndedRef.current || cutRef.current) return;
+        res = await attemptFetch();
+      }
       if (!res.ok) throw new Error(`closer-voice HTTP ${res.status}`);
       // Si mientras esperábamos la respuesta el Director cortó, descartamos.
       if (cutRef.current || sessionEndedRef.current) return;
@@ -896,13 +945,15 @@ function PracticaPage() {
         // Fetch cancelado por hardStop — silencioso, es el flujo esperado.
         return;
       }
-      console.error("[voice] sendToCloser failed:", err);
+      console.error("[voice] callActor failed:", err);
       setIsProcessing(false);
       setConnectionError("Error al hablar con Closer. Toca para reintentar.");
     } finally {
       if (actorFetchAbortRef.current === ctrl) actorFetchAbortRef.current = null;
     }
   }
+
+
 
   async function startIDoSession() {
     console.log('[i_do] practice_script:', JSON.stringify(nodeDataRef.current?.practice_script));
