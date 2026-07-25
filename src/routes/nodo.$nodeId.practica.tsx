@@ -2606,10 +2606,20 @@ function FeedbackPhase({
   onContinue,
   conversation,
   feedback,
+  worldId,
+  nodeId,
+  sessionId,
+  practiceScript,
+  evaluation,
 }: {
   onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
   feedback: FeedbackResult | null;
+  worldId: number;
+  nodeId: string;
+  sessionId: string;
+  practiceScript: any;
+  evaluation: any;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
