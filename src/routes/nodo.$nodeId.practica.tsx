@@ -1022,6 +1022,7 @@ function PracticaPage() {
           .filter((m) => m.phase === "you_do")
           .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
         session_id: sessionCorrelationIdRef.current,
+        taught_skills: skillsContextRef.current?.taughtSkills ?? [],
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
