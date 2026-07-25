@@ -80,6 +80,9 @@ interface ReqBody {
   // every closer-voice call in this session and later passed to
   // save-practice-event so llm_calls rows can be backfilled with event_id.
   session_id?: string | null;
+  // Coherencia corte→evaluación: por qué terminó la sesión (director reason)
+  cut_reason?: string | null;
+  director_user_turns?: number | null;
 }
 
 interface CloserResponse {
@@ -103,7 +106,7 @@ interface EvaluationResponse {
   mision: string;
 }
 
-function buildEvaluateSystemPrompt(practice_script: any): string {
+function buildEvaluateSystemPrompt(practice_script: any, cut_reason?: string | null): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
   const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
@@ -115,6 +118,12 @@ function buildEvaluateSystemPrompt(practice_script: any): string {
 
 REGLA DE INTEGRIDAD — SOLO TEXTO:
 Evalúas ÚNICAMENTE el transcript de texto. Tienes PROHIBIDO afirmar cualquier cosa sobre tono de voz, energía vocal, sonrisa, ritmo al hablar, volumen, calidez auditiva o cualquier cualidad sonora — no tienes acceso al audio. Si un criterio tiene requires_audio=true, ignóralo por completo: NO lo puntúes, NO lo menciones, NO lo cites. Evaluar prosodia sin audio destruye la confianza del vendedor en todo el feedback.
+
+CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}
+- "scope_covered": el vendedor completó el objetivo. Evalúa el arco completo con las reglas normales.
+- "evidence_sufficient": el DIRECTOR cortó la sesión antes de que el vendedor terminara — el vendedor NO decidió parar. Evalúa la CALIDAD de lo que SÍ alcanzó a mostrar. Los success_criteria que no alcanzaron a aparecer por el corte se EXCLUYEN del cálculo de la base (no cuentan como ausentes). Lo que faltó del arco NO es una falla: preséntalo en mejora/mision como "la siguiente jugada" — qué venía después y cómo dispararla más temprano. Los errores realmente cometidos en el transcript (flags) sí se marcan normal.
+- "max_turns" o "max_duration": el vendedor tuvo toda la sesión disponible; lo incompleto sí cuenta como incompleto.
+- "unknown": aplica las reglas de "max_turns".
 
 CRITERIOS DEL NODO:
 success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
@@ -133,6 +142,7 @@ REGLAS DE EVALUACIÓN:
 5. Cantidad de observations: mínimo 1, máximo 3. Reporta tantas como problemas reales haya, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también.
 6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
 7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
+8. MECÁNICA, NO DIRECCIÓN: evalúas la ejecución de la MECÁNICA que el nodo entrena. Cuando existen múltiples vías comerciales legítimas (por ejemplo, en descubrimiento el dolor puede vivir en el producto que SÍ vende, en el que no vende, o en el que no tiene), NUNCA presentes una dirección específica como LA correcta ni castigues la elección de vía del vendedor. Evalúa cómo ejecutó la mecánica en LA VÍA QUE ÉL ELIGIÓ, y construye los ejemplos de mejora sobre esa misma vía.
 
 CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
 
@@ -382,7 +392,10 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief } = body;
+    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief, cut_reason, director_user_turns } = body;
+    if (phase === "evaluate") {
+      console.log("[closer-voice evaluate body]", { session_id, cut_reason, director_user_turns, taught_skills });
+    }
 
     if (!phase) {
       return new Response(JSON.stringify({ error: "Missing phase" }), {
@@ -433,7 +446,7 @@ Deno.serve(async (req) => {
 
 
     const system = phase === "evaluate"
-      ? buildEvaluateSystemPrompt(practice_script)
+      ? buildEvaluateSystemPrompt(practice_script, cut_reason)
       : phase === "generate_example"
         ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? "")
         : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);

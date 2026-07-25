@@ -131,6 +131,8 @@ function PracticaPage() {
   // Solo el playTTS del closing.message se permite (se dispara ANTES de que otros
   // caminos consulten cutRef).
   const cutRef = useRef(false);
+  // Razón del corte del Director — se pasa al evaluador y define el closing.
+  const cutReasonRef = useRef<string | null>(null);
   // AbortControllers para requests en vuelo — se cancelan en hardStop().
   const actorFetchAbortRef = useRef<AbortController | null>(null);
   const ttsFetchAbortRef = useRef<AbortController | null>(null);
@@ -157,8 +159,8 @@ function PracticaPage() {
     let alive = true;
     (async () => {
       try {
-        const node = await restGetMaybeSingle<{ id: string; name: string; description: string | null; practice_script: any }>(
-          `nodes?select=id,name,description,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+        const node = await restGetMaybeSingle<{ id: string; name: string; description: string | null; field_mission: string | null; practice_script: any }>(
+          `nodes?select=id,name,description,field_mission,practice_script&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
         );
         if (!alive) return;
         if (node) setNodeData((prev: any) => prev ?? node);
@@ -688,26 +690,27 @@ function PracticaPage() {
       });
       console.log("[director]", decision, reason, data);
       if (decision === "cut") {
+        cutReasonRef.current = reason;
         // Terminal e inmediato: silencia todo Actor audio en curso, aborta
         // fetches pendientes, bloquea mic/STT. hardStop() marca cutRef ANTES
         // de que se pueda registrar otra decisión.
         hardStop();
-        // BUG 2 fix: el closing DEBE sonar. Usamos `||` con trim para caer al
-        // default si el script trae "" (que con `??` se colaba como string vacío
-        // → TTS silencioso → sensación de crash). Nunca dejamos que un script
-        // vacío borre la señal emocional de cierre.
-        // v2.1.0: cuando el Director corta por evidence_sufficient (el usuario
-        // no completó el objetivo pero ya hay material para evaluar), el closing
-        // del script sonaría a felicitación falsa — usamos un neutral genérico.
-        const NEUTRAL_CLOSING = "Bien, con esto tengo lo que necesito. Vamos a revisar cómo te fue.";
-        const scriptClosing: string | undefined =
-          nodeDataRef.current?.practice_script?.phases?.closing?.message;
+        // Coherencia corte→closing: el closing celebratorio del guion solo
+        // suena cuando el vendedor COMPLETÓ el objetivo (scope_covered).
+        // Cuando el Director corta antes (evidence_sufficient, max_turns,
+        // max_duration), usamos message_incomplete si el script lo define, o
+        // un neutral genérico. Nunca celebramos algo que no pasó.
+        const GENERIC_NEUTRAL =
+          "Ahí lo dejamos — ya tengo lo que necesito para tu análisis. Vamos al desglose.";
+        const isComplete = reason === "scope_covered";
+        const closingNode = nodeDataRef.current?.practice_script?.phases?.closing;
+        const scriptClosing: string | undefined = isComplete
+          ? closingNode?.message
+          : closingNode?.message_incomplete;
         const closingMsg: string =
-          reason === "evidence_sufficient"
-            ? NEUTRAL_CLOSING
-            : (typeof scriptClosing === "string" && scriptClosing.trim())
-              ? scriptClosing
-              : DEFAULT_CLOSING_MESSAGE;
+          typeof scriptClosing === "string" && scriptClosing.trim()
+            ? scriptClosing
+            : GENERIC_NEUTRAL;
         const agentItem: TranscriptItem = {
           role: "agent",
           text: closingMsg,
@@ -1082,6 +1085,8 @@ function PracticaPage() {
           .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
         session_id: sessionCorrelationIdRef.current,
         taught_skills: skillsContextRef.current?.taughtSkills ?? [],
+        cut_reason: cutReasonRef.current ?? "unknown",
+        director_user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const evaluateRes = await fetch(VOICE_URL, {
@@ -1946,6 +1951,48 @@ function PrepPhase({
             </div>
           </motion.div>
         )}
+
+        {nodeData?.field_mission && typeof nodeData.field_mission === "string" && nodeData.field_mission.trim() && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
+            style={{
+              background: "rgba(255,107,43,0.06)",
+              border: "1px solid #FF6B2B",
+              borderRadius: 14,
+              padding: "18px 18px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: "0.14em",
+                color: "#FF6B2B",
+                textTransform: "uppercase",
+              }}
+            >
+              Tu misión
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 14,
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.9)",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {nodeData.field_mission}
+            </div>
+          </motion.div>
+        )}
+
 
 
         {!micGranted && !isText && (
