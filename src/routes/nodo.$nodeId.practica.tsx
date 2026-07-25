@@ -1960,8 +1960,12 @@ function VoicePhase({
 
   const [textDraft, setTextDraft] = useState("");
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const chatScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (isText) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!isText) return;
+    // Scroll SOLO el contenedor del transcript, no la página entera.
+    const el = chatScrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [transcript.length, isText, isProcessing]);
 
   const textDisabled = isProcessing || isAgentSpeaking;
