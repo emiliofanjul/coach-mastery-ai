@@ -2018,13 +2018,14 @@ function VoicePhase({
         // ───────── Modo TEXTO: chat + composer ─────────
         <>
           <div
+            ref={chatScrollRef}
             style={{
               flex: 1, maxWidth: 560, width: "100%", margin: "16px auto 0",
               display: "flex", flexDirection: "column", gap: 10,
               padding: 14, borderRadius: 14,
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
-              overflowY: "auto", minHeight: 200,
+              overflowY: "auto", minHeight: 0, maxHeight: "60vh",
             }}
           >
             {transcript.filter((m) => (m.role === "user" || m.role === "assistant") && m.content?.trim()).map((m, i) => {
