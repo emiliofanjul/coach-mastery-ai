@@ -711,6 +711,20 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (phase === "replica") {
+      const rep = parsed as { message?: unknown };
+      if (typeof rep.message !== "string" || rep.message.length === 0) {
+        return new Response(
+          JSON.stringify({ error: "Malformed replica response", parsed }),
+          { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ message: rep.message, ...meta }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const closerResponse = parsed as CloserResponse;
     if (typeof closerResponse.message !== "string" || typeof closerResponse.next_phase !== "string" || typeof closerResponse.end_session !== "boolean") {
       return new Response(
