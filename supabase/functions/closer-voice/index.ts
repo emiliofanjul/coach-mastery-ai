@@ -416,7 +416,9 @@ No prolongues innecesariamente.
 
 RESPONDE SIEMPRE JSON VÁLIDO:
 {"message": "texto corto natural", "next_phase": "you_do|closing|end", "end_session": false}
-Sin texto fuera del JSON. Sin markdown. Solo JSON.`;
+Sin texto fuera del JSON. Sin markdown. Solo JSON.
+
+RECUERDA: tu respuesta es ÚNICAMENTE el objeto JSON — sin texto antes ni después.`;
 }
 
 function extractJson<T>(text: string): T {
