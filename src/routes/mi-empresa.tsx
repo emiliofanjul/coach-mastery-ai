@@ -493,7 +493,7 @@ function InviteCard({ companyId: _companyId }: { companyId: string }) {
     try {
       const rows = await restMutate<ActiveInvite>("rpc/generate_company_invite", {
         method: "POST",
-        body: { _duration_hours: duration },
+        body: { _hours: duration },
       });
       const d: any = Array.isArray(rows) ? rows[0] : rows;
       setActive(d);
