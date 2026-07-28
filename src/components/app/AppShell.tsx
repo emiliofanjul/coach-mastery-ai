@@ -168,7 +168,7 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={value}>
       {children}
-      {isAuthed && <AppDrawer open={open} onClose={closeDrawer} role={role} />}
+      {isAuthed && <AppDrawer open={open} onClose={closeDrawer} role={role} isPersonal={profile?.isPersonal === true} />}
       {isAuthed && headerCount === 0 && <FloatingMenuButton onOpen={openDrawer} />}
     </Ctx.Provider>
   );
@@ -227,10 +227,12 @@ function AppDrawer({
   open,
   onClose,
   role,
+  isPersonal,
 }: {
   open: boolean;
   onClose: () => void;
   role: Role;
+  isPersonal: boolean;
 }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const navigate = useNavigate();
@@ -297,7 +299,8 @@ function AppDrawer({
 
   const items: NavItem[] = [
     ...COMMON_ITEMS,
-    ...(role === "manager" ? MANAGER_ITEMS : []),
+    ...(role === "manager" && !isPersonal ? MANAGER_ITEMS : []),
+    PROFILE_ITEM,
   ];
 
   return (
