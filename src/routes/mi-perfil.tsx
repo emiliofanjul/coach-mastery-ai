@@ -246,6 +246,74 @@ function MiPerfilPage() {
             )}
           </div>
         )}
+
+        {isPersonal && (
+          <div className="mt-4 rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="font-['Syne'] font-bold text-white text-lg">Crear equipo</div>
+            <p className="mt-1 text-sm text-white/60 font-['DM_Sans']">
+              Convierte tu cuenta individual en un equipo. Vas a poder invitar vendedores y administrar su entrenamiento. Tu progreso y datos se conservan.
+            </p>
+
+            {!showCreateTeam ? (
+              <Button
+                onClick={() => setShowCreateTeam(true)}
+                className="mt-4 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+              >
+                Crear equipo
+              </Button>
+            ) : !confirmCreateTeam ? (
+              <div className="mt-4 space-y-3">
+                <input
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                  placeholder="Nombre del equipo o empresa"
+                  className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      setShowCreateTeam(false);
+                      setTeamName("");
+                    }}
+                    variant="outline"
+                    className="flex-1 border-white/20 rounded-[99px]"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={() => setConfirmCreateTeam(true)}
+                    disabled={teamName.trim().length < 2}
+                    className="flex-1 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                  >
+                    Continuar
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-[10px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 p-3">
+                <div className="text-sm text-white font-['DM_Sans']">
+                  Vas a convertir tu cuenta en un equipo llamado <b>{teamName.trim()}</b>. Vas a poder invitar vendedores y administrar su entrenamiento. ¿Continuar?
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    onClick={() => setConfirmCreateTeam(false)}
+                    variant="outline"
+                    className="flex-1 border-white/20 rounded-[99px]"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={handleCreateTeam}
+                    disabled={creatingTeam}
+                    className="flex-1 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                  >
+                    {creatingTeam ? "Creando…" : "Sí, crear equipo"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
