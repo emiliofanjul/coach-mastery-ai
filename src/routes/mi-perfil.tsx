@@ -112,6 +112,32 @@ function MiPerfilPage() {
     }
   }
 
+  async function handleCreateTeam() {
+    const name = teamName.trim();
+    if (name.length < 2) {
+      toast.error("Escribe un nombre para tu equipo.");
+      return;
+    }
+    setCreatingTeam(true);
+    try {
+      const rows = await restMutate<{ ok: boolean }>(
+        "rpc/convert_personal_to_company",
+        { method: "POST", body: { _name: name } },
+      );
+      const d: any = Array.isArray(rows) ? rows[0] : rows;
+      if (d?.ok) {
+        toast.success("Equipo creado. Cargando tu panel…");
+        window.setTimeout(() => window.location.assign("/mi-empresa"), 700);
+      } else {
+        toast.error("No pudimos crear tu equipo. Intenta de nuevo.");
+        setCreatingTeam(false);
+      }
+    } catch (e: any) {
+      toast.error(e?.message ?? "No pudimos crear tu equipo.");
+      setCreatingTeam(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#08080F] text-white flex items-center justify-center">
