@@ -262,11 +262,14 @@ function MiEmpresaPage() {
         }
         brain[k] = parsed;
       }
-      await restMutate("rpc/update_company_brain", {
+      const res: any = await restMutate("rpc/update_company_brain", {
         method: "POST",
         body: { _brain: brain },
       });
-      toast.success("Guardado. Tu Closer ya usa estos cambios.");
+      const updated = Array.isArray(res) ? res[0] : res;
+      if (updated?.updated_at) setBrainUpdatedAt(updated.updated_at);
+      else setBrainUpdatedAt(new Date().toISOString());
+      toast.success("Guardado. Estos cambios afectan las prácticas de todo tu equipo a partir de ahora.");
     } catch (e: any) {
       console.error("save brain error", e);
       toast.error(e?.message ?? "No se pudo guardar. Intenta de nuevo.");
@@ -300,101 +303,183 @@ function MiEmpresaPage() {
     );
   }
 
+  const brainUpdatedLabel = brainUpdatedAt
+    ? new Date(brainUpdatedAt).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })
+    : "nunca";
+
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
       <AppHeader title="Mi Empresa" subtitle={companyName || undefined} />
       <div className="mx-auto w-full max-w-[720px] px-5 pt-2 pb-32">
-        <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-1">Mi Empresa</h1>
-        <p className="text-white/60 font-['DM_Sans'] mb-4">
-          Este es el conocimiento con el que tu Closer entrena a tu equipo. Edítalo cuando cambie tu realidad
-          comercial.
-        </p>
-        <div className="mb-6 flex items-start gap-2 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 p-3 text-[#FF6B2B]">
-          <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-          <div className="text-xs font-['DM_Sans'] leading-relaxed">
-            Esto cambia lo que tu Closer usa para entrenar a tu equipo. El siguiente ejemplo o práctica que se
-            genere usará estos datos.
-          </div>
-        </div>
+        <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-6">Mi Empresa</h1>
 
+        {/* 1. IDENTIDAD */}
+        <section className="mb-6 rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Building2 className="h-4 w-4 text-[#FF6B2B]" />
+            <h2 className="font-['Syne'] font-bold text-white text-lg">Identidad</h2>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-white/50 font-['DM_Sans'] mb-1">
+                Nombre de la empresa
+              </label>
+              <input
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-white/50 font-['DM_Sans'] mb-1">
+                Giro
+              </label>
+              <input
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                placeholder="Ej. Refacciones automotrices"
+                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-white/50 font-['DM_Sans'] mb-1">
+                Logo (URL)
+              </label>
+              <input
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+                placeholder="https://…"
+                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+              />
+            </div>
+            <div className="flex justify-end">
+              <Button
+                onClick={handleSaveIdentity}
+                disabled={savingIdentity}
+                className="bg-white/10 hover:bg-white/20 rounded-[99px] text-white"
+              >
+                {savingIdentity ? "Guardando…" : "Guardar identidad"}
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* 2. EQUIPO */}
         {!isPersonal && companyId && (
-          <div className="mb-6">
+          <section className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Users className="h-4 w-4 text-[#FF6B2B]" />
+              <h2 className="font-['Syne'] font-bold text-white text-lg">Equipo</h2>
+            </div>
             <InviteCard companyId={companyId} />
             <MembersList companyId={companyId} />
-          </div>
+          </section>
         )}
 
-
-        <div className="space-y-5">
-          {KNOWN_FIELDS.map((f) => (
-            <FieldBlock
-              key={f.key}
-              field={f}
-              value={draft.known[f.key]}
-              onChange={(v) => updateKnown(f.key, v)}
-            />
-          ))}
-
-          {(draft.extras.length > 0 || true) && (
-            <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
-              <div className="mb-1 font-['Syne'] font-bold">Otros campos</div>
-              <div className="mb-4 text-xs text-white/50 font-['DM_Sans']">
-                Cualquier otro dato que alimenta a tu Closer. Puedes editarlo o eliminarlo.
+        {/* 3. CEREBRO DE VENTAS (accordion) */}
+        <section className="mb-6 rounded-[14px] border border-white/10 bg-white/[0.03]">
+          <button
+            onClick={() => setBrainOpen((v) => !v)}
+            className="w-full flex items-center gap-3 p-5 text-left"
+          >
+            <Brain className="h-4 w-4 text-[#FF6B2B] shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="font-['Syne'] font-bold text-white text-lg">Cerebro de ventas</div>
+              <div className="text-xs text-white/50 font-['DM_Sans'] mt-0.5">
+                La información que Closer usa para entrenar a tu equipo. Última actualización: {brainUpdatedLabel}
               </div>
-              <div className="space-y-3">
-                {draft.extras.map((e, i) => (
-                  <div key={i} className="rounded-[10px] border border-white/10 bg-white/[0.02] p-3">
-                    <div className="mb-2 flex items-center gap-2">
-                      <input
-                        value={e.key}
-                        onChange={(ev) => updateExtra(i, { key: ev.target.value })}
-                        placeholder="LLAVE"
-                        className="flex-1 bg-black/40 border border-white/10 rounded-[8px] px-3 py-1.5 text-xs font-mono text-white outline-none focus:border-[#FF6B2B]"
-                      />
-                      <button
-                        onClick={() => removeExtra(i)}
-                        className="text-white/40 hover:text-red-400 p-1"
-                        aria-label="Eliminar"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <textarea
-                      value={e.value}
-                      onChange={(ev) => updateExtra(i, { value: ev.target.value })}
-                      rows={3}
-                      className="w-full bg-black/40 border border-white/10 rounded-[8px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
-                    />
-                  </div>
+            </div>
+            {brainOpen ? <ChevronUp className="h-4 w-4 text-white/60" /> : <ChevronDown className="h-4 w-4 text-white/60" />}
+          </button>
+
+          {brainOpen && (
+            <div className="border-t border-white/10 p-5">
+              <div className="mb-4 flex items-start gap-2 rounded-[10px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 p-3 text-[#FF6B2B]">
+                <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+                <div className="text-xs font-['DM_Sans'] leading-relaxed">
+                  Estos cambios afectan las prácticas de todo tu equipo a partir de ahora.
+                </div>
+              </div>
+
+              <div className="space-y-5">
+                {KNOWN_FIELDS.map((f) => (
+                  <FieldBlock
+                    key={f.key}
+                    field={f}
+                    value={draft.known[f.key]}
+                    onChange={(v) => updateKnown(f.key, v)}
+                  />
                 ))}
-                <button
-                  onClick={() =>
-                    setDraft((d) => ({ ...d, extras: [...d.extras, { key: "", value: "" }] }))
-                  }
-                  className="inline-flex items-center gap-2 text-xs text-white/60 hover:text-white font-['DM_Sans']"
-                >
-                  <Plus className="h-3.5 w-3.5" /> Agregar campo
-                </button>
+
+                <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
+                  <div className="mb-1 font-['Syne'] font-bold">Otros campos</div>
+                  <div className="mb-4 text-xs text-white/50 font-['DM_Sans']">
+                    Cualquier otro dato que alimenta a tu Closer. Puedes editarlo o eliminarlo.
+                  </div>
+                  <div className="space-y-3">
+                    {draft.extras.map((e, i) => (
+                      <div key={i} className="rounded-[10px] border border-white/10 bg-white/[0.02] p-3">
+                        <div className="mb-2 flex items-center gap-2">
+                          <input
+                            value={e.key}
+                            onChange={(ev) => updateExtra(i, { key: ev.target.value })}
+                            placeholder="LLAVE"
+                            className="flex-1 bg-black/40 border border-white/10 rounded-[8px] px-3 py-1.5 text-xs font-mono text-white outline-none focus:border-[#FF6B2B]"
+                          />
+                          <button
+                            onClick={() => removeExtra(i)}
+                            className="text-white/40 hover:text-red-400 p-1"
+                            aria-label="Eliminar"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <textarea
+                          value={e.value}
+                          onChange={(ev) => updateExtra(i, { value: ev.target.value })}
+                          rows={3}
+                          className="w-full bg-black/40 border border-white/10 rounded-[8px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+                        />
+                      </div>
+                    ))}
+                    <button
+                      onClick={() =>
+                        setDraft((d) => ({ ...d, extras: [...d.extras, { key: "", value: "" }] }))
+                      }
+                      className="inline-flex items-center gap-2 text-xs text-white/60 hover:text-white font-['DM_Sans']"
+                    >
+                      <Plus className="h-3.5 w-3.5" /> Agregar campo
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
-        </div>
+        </section>
 
-        <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-[#08080F]/95 backdrop-blur px-5 py-3">
-          <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-3">
-            <div className="text-[11px] text-white/50 font-['DM_Sans']">
-              Cambios activos en la próxima práctica.
+        {/* 4. Futuras secciones */}
+        <section className="mb-6 rounded-[14px] border border-dashed border-white/10 bg-white/[0.02] p-5 text-center">
+          <div className="text-xs uppercase tracking-wide text-white/40 font-['DM_Sans']">Próximamente</div>
+          <div className="mt-1 text-sm text-white/60 font-['DM_Sans']">Pitches · Consumo y plan</div>
+        </section>
+
+        {brainOpen && (
+          <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-[#08080F]/95 backdrop-blur px-5 py-3">
+            <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-3">
+              <div className="text-[11px] text-white/50 font-['DM_Sans']">
+                Estos cambios afectan las prácticas de todo tu equipo.
+              </div>
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {saving ? "Guardando…" : "Guardar cerebro"}
+              </Button>
             </div>
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {saving ? "Guardando…" : "Guardar cambios"}
-            </Button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
