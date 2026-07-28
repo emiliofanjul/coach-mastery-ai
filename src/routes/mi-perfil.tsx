@@ -30,6 +30,10 @@ function MiPerfilPage() {
   const [preview, setPreview] = useState<{ ok: boolean; companyName?: string; message?: string } | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [joining, setJoining] = useState(false);
+  const [showCreateTeam, setShowCreateTeam] = useState(false);
+  const [teamName, setTeamName] = useState("");
+  const [creatingTeam, setCreatingTeam] = useState(false);
+  const [confirmCreateTeam, setConfirmCreateTeam] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
