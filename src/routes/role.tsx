@@ -7,7 +7,7 @@ export const Route = createFileRoute("/role")({
   head: () => ({
     meta: [
       { title: "¿Cómo quieres entrar? — Closer" },
-      { name: "description", content: "Elige tu rol para empezar a usar Closer." },
+      { name: "description", content: "Elige cómo entrar a Closer: individual, manager o vendedor invitado." },
     ],
   }),
   component: RoleScreen,
@@ -37,7 +37,6 @@ function RoleScreen() {
         flexDirection: "column",
       }}
     >
-      {/* Topbar */}
       <header style={{ padding: "1.2rem 1.2rem 0", textAlign: "center" }}>
         <h1
           style={{
@@ -53,7 +52,6 @@ function RoleScreen() {
         </h1>
       </header>
 
-      {/* Contenido centrado */}
       <section
         style={{
           flex: 1,
@@ -79,21 +77,28 @@ function RoleScreen() {
           ¿Cómo quieres entrar?
         </h2>
         <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: "16px", marginBottom: 0 }}>
-          Elige tu rol para continuar
+          Puedes cambiar de modo después.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginTop: "32px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "28px" }}>
+          <RoleCard
+            icon="🚀"
+            title="Entrenar yo solo"
+            description="Sin equipo. Empiezo a practicar ya mismo."
+            selected={role === "individual"}
+            onClick={() => setRole("individual")}
+          />
           <RoleCard
             icon="💼"
-            title="Soy Manager"
-            description="Administro un equipo de vendedores"
+            title="Tengo un equipo"
+            description="Voy a invitar vendedores a mi empresa."
             selected={role === "manager"}
             onClick={() => setRole("manager")}
           />
           <RoleCard
             icon="🎯"
-            title="Soy Vendedor"
-            description="Quiero entrenar y cerrar más ventas"
+            title="Me invitaron con un código"
+            description="Mi manager me compartió un código."
             selected={role === "vendedor"}
             onClick={() => setRole("vendedor")}
           />
@@ -104,7 +109,7 @@ function RoleScreen() {
           onClick={handleContinue}
           disabled={!role}
           style={{
-            marginTop: "32px",
+            marginTop: "28px",
             width: "100%",
             height: "52px",
             borderRadius: "99px",
@@ -167,7 +172,7 @@ function RoleCard({
         background: selected ? "rgba(255,107,43,0.06)" : "#111118",
         border: selected ? "2px solid #FF6B2B" : "1px solid #252535",
         borderRadius: "14px",
-        padding: selected ? "calc(1.25rem - 1px)" : "1.25rem",
+        padding: selected ? "calc(1.1rem - 1px)" : "1.1rem",
         display: "flex",
         alignItems: "center",
         gap: "1rem",
@@ -178,7 +183,7 @@ function RoleCard({
         transition: "background 180ms ease, border-color 180ms ease",
       }}
     >
-      <span style={{ fontSize: "2rem", lineHeight: 1, flexShrink: 0 }}>{icon}</span>
+      <span style={{ fontSize: "1.8rem", lineHeight: 1, flexShrink: 0 }}>{icon}</span>
       <span style={{ flex: 1 }}>
         <span
           style={{
@@ -194,7 +199,7 @@ function RoleCard({
         <span
           style={{
             display: "block",
-            fontSize: "0.8rem",
+            fontSize: "0.78rem",
             color: "#5A5A8A",
             marginTop: "4px",
           }}
