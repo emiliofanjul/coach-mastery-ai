@@ -199,7 +199,7 @@ function PracticaPage() {
       let seller: any = null;
       try {
         seller = await restGetMaybeSingle<any>(
-          `sellers?select=id,full_name,experience_level,company_id,audio_consent&profile_id=eq.${uid}&limit=1`,
+          `sellers?select=id,full_name,experience_level,company_id,audio_consent,is_active&profile_id=eq.${uid}&limit=1`,
         );
       } catch (e: any) {
         console.error("[practica] sellers query failed:", e);
@@ -210,6 +210,10 @@ function PracticaPage() {
       }
       if (!seller) {
         setPrepError("No encontramos tu perfil de vendedor. Contacta a tu manager.");
+        return;
+      }
+      if (seller.is_active === false) {
+        setPrepError("Tu cuenta está pausada por tu líder de equipo.");
         return;
       }
       let node: any = null;
