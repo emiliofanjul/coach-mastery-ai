@@ -193,39 +193,80 @@ export type Database = {
       }
       companies: {
         Row: {
+          brain_updated_at: string | null
           company_sales_brain: Json | null
           created_at: string
           credits_per_month: number
           id: string
+          industry: string | null
           is_personal: boolean
+          logo_url: string | null
           name: string
           onboarding_completed: boolean
           plan: string
           slug: string | null
         }
         Insert: {
+          brain_updated_at?: string | null
           company_sales_brain?: Json | null
           created_at?: string
           credits_per_month?: number
           id?: string
+          industry?: string | null
           is_personal?: boolean
+          logo_url?: string | null
           name: string
           onboarding_completed?: boolean
           plan?: string
           slug?: string | null
         }
         Update: {
+          brain_updated_at?: string | null
           company_sales_brain?: Json | null
           created_at?: string
           credits_per_month?: number
           id?: string
+          industry?: string | null
           is_personal?: boolean
+          logo_url?: string | null
           name?: string
           onboarding_completed?: boolean
           plan?: string
           slug?: string | null
         }
         Relationships: []
+      }
+      company_brain_versions: {
+        Row: {
+          brain: Json
+          company_id: string
+          created_at: string
+          edited_by: string | null
+          id: string
+        }
+        Insert: {
+          brain: Json
+          company_id: string
+          created_at?: string
+          edited_by?: string | null
+          id?: string
+        }
+        Update: {
+          brain?: Json
+          company_id?: string
+          created_at?: string
+          edited_by?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_brain_versions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       company_invites: {
         Row: {
@@ -1611,6 +1652,10 @@ export type Database = {
         Returns: Json
       }
       update_company_brain: { Args: { _brain: Json }; Returns: Json }
+      update_company_identity: {
+        Args: { _industry: string; _logo_url: string; _name: string }
+        Returns: Json
+      }
       validate_invite_code: { Args: { _code: string }; Returns: Json }
     }
     Enums: {
