@@ -2,7 +2,7 @@
  * Almacenamiento ligero del rol seleccionado entre Pantalla 2 → 3/4.
  * Usamos sessionStorage para que persista a través de OAuth redirect.
  */
-export type CloserRole = "manager" | "vendedor";
+export type CloserRole = "individual" | "manager" | "vendedor";
 
 const ROLE_KEY = "closer:selectedRole";
 const COMPANY_NAME_KEY = "closer:pendingCompanyName";
@@ -14,7 +14,7 @@ export function setSelectedRole(role: CloserRole) {
 export function getSelectedRole(): CloserRole | null {
   if (typeof window === "undefined") return null;
   const v = sessionStorage.getItem(ROLE_KEY);
-  return v === "manager" || v === "vendedor" ? v : null;
+  return v === "manager" || v === "vendedor" || v === "individual" ? v : null;
 }
 export function clearSelectedRole() {
   if (typeof window !== "undefined") sessionStorage.removeItem(ROLE_KEY);

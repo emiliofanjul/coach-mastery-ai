@@ -197,6 +197,7 @@ export type Database = {
           created_at: string
           credits_per_month: number
           id: string
+          is_personal: boolean
           name: string
           onboarding_completed: boolean
           plan: string
@@ -207,6 +208,7 @@ export type Database = {
           created_at?: string
           credits_per_month?: number
           id?: string
+          is_personal?: boolean
           name: string
           onboarding_completed?: boolean
           plan?: string
@@ -217,6 +219,7 @@ export type Database = {
           created_at?: string
           credits_per_month?: number
           id?: string
+          is_personal?: boolean
           name?: string
           onboarding_completed?: boolean
           plan?: string
@@ -229,11 +232,14 @@ export type Database = {
           code: string
           company_id: string
           created_at: string
+          created_by: string | null
+          duration_hours: number | null
           email: string | null
           expires_at: string
           failed_attempts: number
           id: string
           locked_until: string | null
+          revoked_at: string | null
           used: boolean
           used_by: string | null
         }
@@ -241,11 +247,14 @@ export type Database = {
           code: string
           company_id: string
           created_at?: string
+          created_by?: string | null
+          duration_hours?: number | null
           email?: string | null
           expires_at?: string
           failed_attempts?: number
           id?: string
           locked_until?: string | null
+          revoked_at?: string | null
           used?: boolean
           used_by?: string | null
         }
@@ -253,11 +262,14 @@ export type Database = {
           code?: string
           company_id?: string
           created_at?: string
+          created_by?: string | null
+          duration_hours?: number | null
           email?: string | null
           expires_at?: string
           failed_attempts?: number
           id?: string
           locked_until?: string | null
+          revoked_at?: string | null
           used?: boolean
           used_by?: string | null
         }
@@ -267,6 +279,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_invites_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -406,6 +425,30 @@ export type Database = {
           scope_covered?: boolean | null
           session_id?: string | null
           user_turns?: number | null
+        }
+        Relationships: []
+      }
+      invite_attempts: {
+        Row: {
+          actor_id: string | null
+          code: string
+          created_at: string
+          id: string
+          outcome: string
+        }
+        Insert: {
+          actor_id?: string | null
+          code: string
+          created_at?: string
+          id?: string
+          outcome: string
+        }
+        Update: {
+          actor_id?: string | null
+          code?: string
+          created_at?: string
+          id?: string
+          outcome?: string
         }
         Relationships: []
       }
@@ -1265,6 +1308,8 @@ export type Database = {
           full_name: string | null
           id: string
           is_active: boolean
+          joined_at: string | null
+          joined_via_invite_id: string | null
           last_practice_date: string | null
           main_challenge: string | null
           map_tutorial_completed: boolean
@@ -1287,6 +1332,8 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_active?: boolean
+          joined_at?: string | null
+          joined_via_invite_id?: string | null
           last_practice_date?: string | null
           main_challenge?: string | null
           map_tutorial_completed?: boolean
@@ -1309,6 +1356,8 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_active?: boolean
+          joined_at?: string | null
+          joined_via_invite_id?: string | null
           last_practice_date?: string | null
           main_challenge?: string | null
           map_tutorial_completed?: boolean
@@ -1323,6 +1372,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sellers_joined_via_invite_id_fkey"
+            columns: ["joined_via_invite_id"]
+            isOneToOne: false
+            referencedRelation: "company_invites"
             referencedColumns: ["id"]
           },
           {
@@ -1508,26 +1564,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _company_prefix: { Args: { _name: string }; Returns: string }
+      _gen_invite_suffix: { Args: never; Returns: string }
       apply_invite_code: { Args: { _code: string }; Returns: Json }
       consume_credits: {
         Args: { _seller_id: string; _session_type: string }
         Returns: Json
       }
+      convert_personal_to_company: { Args: { _name: string }; Returns: Json }
       create_company_for_manager: { Args: { _name: string }; Returns: Json }
+      create_personal_company: { Args: never; Returns: Json }
+      create_team_company: { Args: { _name: string }; Returns: Json }
       current_company_id: { Args: never; Returns: string }
       current_role: { Args: never; Returns: string }
-      generate_company_invite: { Args: never; Returns: Json }
+      generate_company_invite:
+        | { Args: never; Returns: Json }
+        | { Args: { _hours?: number }; Returns: Json }
       get_active_company_invite: { Args: never; Returns: Json }
       get_current_mastery: {
         Args: { _last_practiced_at: string; _mastery_score: number }
         Returns: number
       }
       is_manager: { Args: never; Returns: boolean }
+      join_company_with_code: { Args: { _code: string }; Returns: Json }
       owns_seller: { Args: { _seller_id: string }; Returns: boolean }
       register_invite_failed_attempt: {
         Args: { _code: string }
         Returns: undefined
       }
+      revoke_company_invite: { Args: never; Returns: Json }
       save_onboarding_answer: {
         Args: {
           _answer: string
@@ -1540,6 +1605,10 @@ export type Database = {
       select_archetype_for_session: {
         Args: { _node_id: string; _seller_id: string; _world_id: number }
         Returns: string
+      }
+      set_seller_active: {
+        Args: { _active: boolean; _seller_id: string }
+        Returns: Json
       }
       update_company_brain: { Args: { _brain: Json }; Returns: Json }
       validate_invite_code: { Args: { _code: string }; Returns: Json }

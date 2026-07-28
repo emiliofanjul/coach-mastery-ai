@@ -10,7 +10,7 @@ import {
 } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft } from "lucide-react";
+import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
@@ -23,6 +23,7 @@ type Profile = {
   userId: string;
   role: Role;
   companyId: string | null;
+  isPersonal: boolean;
 } | null;
 
 type AppShellCtx = {
@@ -61,17 +62,21 @@ export function useAppShell() {
 const SUPABASE_REST_URL = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-type ProfileRow = { role?: string | null; company_id?: string | null };
+type ProfileRow = {
+  role?: string | null;
+  company_id?: string | null;
+  companies?: { is_personal?: boolean | null } | null;
+};
 
 async function fetchProfile(
   userId: string,
   accessToken: string,
-): Promise<{ role: Role; companyId: string | null }> {
+): Promise<{ role: Role; companyId: string | null; isPersonal: boolean }> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 5000);
   try {
     const res = await fetch(
-      `${SUPABASE_REST_URL}/profiles?select=role,company_id&id=eq.${encodeURIComponent(userId)}&limit=1`,
+      `${SUPABASE_REST_URL}/profiles?select=role,company_id,companies(is_personal)&id=eq.${encodeURIComponent(userId)}&limit=1`,
       {
         signal: controller.signal,
         headers: {
@@ -80,15 +85,16 @@ async function fetchProfile(
         },
       },
     );
-    if (!res.ok) return { role: "vendedor", companyId: null };
+    if (!res.ok) return { role: "vendedor", companyId: null, isPersonal: false };
     const rows = (await res.json()) as ProfileRow[];
     const r = rows[0]?.role;
     return {
       role: r === "manager" ? "manager" : "vendedor",
       companyId: rows[0]?.company_id ?? null,
+      isPersonal: rows[0]?.companies?.is_personal === true,
     };
   } catch {
-    return { role: "vendedor", companyId: null };
+    return { role: "vendedor", companyId: null, isPersonal: false };
   } finally {
     window.clearTimeout(timeout);
   }
@@ -126,7 +132,7 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
     let alive = true;
     void fetchProfile(session.userId, session.accessToken).then((res) => {
       if (!alive) return;
-      setProfile({ userId: session.userId, role: res.role, companyId: res.companyId });
+      setProfile({ userId: session.userId, role: res.role, companyId: res.companyId, isPersonal: res.isPersonal });
     });
     return () => {
       alive = false;
@@ -162,7 +168,7 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={value}>
       {children}
-      {isAuthed && <AppDrawer open={open} onClose={closeDrawer} role={role} />}
+      {isAuthed && <AppDrawer open={open} onClose={closeDrawer} role={role} isPersonal={profile?.isPersonal === true} />}
       {isAuthed && headerCount === 0 && <FloatingMenuButton onOpen={openDrawer} />}
     </Ctx.Provider>
   );
@@ -196,6 +202,8 @@ const MANAGER_ITEMS: NavItem[] = [
   { to: "/equipo", label: "Mi Equipo", icon: Users },
 ];
 
+const PROFILE_ITEM: NavItem = { to: "/mi-perfil", label: "Mi Perfil", icon: UserIcon };
+
 // Robust logout: purge local session synchronously, then navigate.
 // Any hang in supabase.auth.signOut() cannot block the user.
 function purgeLocalSession() {
@@ -219,10 +227,12 @@ function AppDrawer({
   open,
   onClose,
   role,
+  isPersonal,
 }: {
   open: boolean;
   onClose: () => void;
   role: Role;
+  isPersonal: boolean;
 }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const navigate = useNavigate();
@@ -289,7 +299,8 @@ function AppDrawer({
 
   const items: NavItem[] = [
     ...COMMON_ITEMS,
-    ...(role === "manager" ? MANAGER_ITEMS : []),
+    ...(role === "manager" && !isPersonal ? MANAGER_ITEMS : []),
+    PROFILE_ITEM,
   ];
 
   return (

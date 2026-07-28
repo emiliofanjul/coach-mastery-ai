@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2, Save, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, Save, AlertTriangle, Copy, RefreshCw, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
@@ -110,6 +110,7 @@ function MiEmpresaPage() {
   const [denied, setDenied] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState<string>("");
+  const [isPersonal, setIsPersonal] = useState<boolean>(false);
   const [draft, setDraft] = useState<BrainDraft>({ known: {}, extras: [] });
   const [saving, setSaving] = useState(false);
 
@@ -134,9 +135,10 @@ function MiEmpresaPage() {
       const company = await restGetMaybeSingle<{
         id: string;
         name: string | null;
+        is_personal: boolean | null;
         company_sales_brain: Record<string, unknown> | null;
       }>(
-        `companies?select=id,name,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
+        `companies?select=id,name,is_personal,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
       );
       if (!company) {
         if (!cancelled) {
@@ -164,6 +166,7 @@ function MiEmpresaPage() {
       if (!cancelled) {
         setCompanyId(company.id);
         setCompanyName(company.name ?? "");
+        setIsPersonal(company.is_personal === true);
         setDraft({ known, extras });
         setLoading(false);
       }
@@ -282,6 +285,14 @@ function MiEmpresaPage() {
             genere usará estos datos.
           </div>
         </div>
+
+        {!isPersonal && companyId && (
+          <div className="mb-6">
+            <InviteCard companyId={companyId} />
+            <MembersList companyId={companyId} />
+          </div>
+        )}
+
 
         <div className="space-y-5">
           {KNOWN_FIELDS.map((f) => (
@@ -444,3 +455,264 @@ function ListEditor({
     </div>
   );
 }
+
+// ─────────────────────────── Invite management ───────────────────────────
+
+type ActiveInvite = { code: string; expires_at: string; duration_hours: number };
+
+function InviteCard({ companyId: _companyId }: { companyId: string }) {
+  const [active, setActive] = useState<ActiveInvite | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [revoking, setRevoking] = useState(false);
+  const [duration, setDuration] = useState<24 | 168 | 720>(168);
+  const [copied, setCopied] = useState(false);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const rows = await restMutate<ActiveInvite | null>("rpc/get_active_company_invite", {
+        method: "POST",
+        body: {},
+      });
+      const d: any = Array.isArray(rows) ? rows[0] : rows;
+      setActive(d ?? null);
+    } catch {
+      setActive(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void load();
+  }, []);
+
+  const generate = async () => {
+    setGenerating(true);
+    try {
+      const rows = await restMutate<ActiveInvite>("rpc/generate_company_invite", {
+        method: "POST",
+        body: { _duration_hours: duration },
+      });
+      const d: any = Array.isArray(rows) ? rows[0] : rows;
+      setActive(d);
+      toast.success("Código generado");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No pudimos generar el código.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const revoke = async () => {
+    if (!confirm("¿Revocar el código activo? Nadie más podrá usarlo.")) return;
+    setRevoking(true);
+    try {
+      await restMutate("rpc/revoke_company_invite", { method: "POST", body: {} });
+      setActive(null);
+      toast.success("Código revocado");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No pudimos revocar el código.");
+    } finally {
+      setRevoking(false);
+    }
+  };
+
+  const copy = async () => {
+    if (!active) return;
+    try {
+      await navigator.clipboard.writeText(active.code);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1400);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const expiresLabel = active
+    ? `expira ${new Date(active.expires_at).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })}`
+    : "";
+
+  return (
+    <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 mb-4">
+      <div className="font-['Syne'] font-bold text-white text-lg">Invitar vendedores</div>
+      <p className="mt-1 text-sm text-white/60 font-['DM_Sans']">
+        Genera un código temporal y compártelo con tu equipo. Solo puede haber uno activo a la vez.
+      </p>
+
+      {loading ? (
+        <div className="mt-4 text-sm text-white/50 font-['DM_Sans']">Cargando…</div>
+      ) : active ? (
+        <div className="mt-4">
+          <div className="rounded-[10px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 p-3 flex items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="font-mono text-lg tracking-wider text-[#FF6B2B] truncate">{active.code}</div>
+              <div className="mt-0.5 text-[11px] text-white/60 font-['DM_Sans']">{expiresLabel}</div>
+            </div>
+            <button
+              onClick={copy}
+              className="h-9 px-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-['DM_Sans'] font-semibold inline-flex items-center gap-1.5"
+            >
+              <Copy className="h-3.5 w-3.5" />
+              {copied ? "Copiado" : "Copiar"}
+            </button>
+          </div>
+          <div className="mt-3 flex gap-2">
+            <Button
+              onClick={revoke}
+              disabled={revoking}
+              variant="outline"
+              className="border-white/20 rounded-[99px] text-white/80 hover:text-white"
+            >
+              <XCircle className="h-4 w-4 mr-1.5" /> Revocar
+            </Button>
+            <Button
+              onClick={generate}
+              disabled={generating}
+              className="bg-white/10 hover:bg-white/20 text-white rounded-[99px]"
+            >
+              <RefreshCw className="h-4 w-4 mr-1.5" /> Nuevo
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-4 space-y-3">
+          <div className="flex gap-2">
+            {[
+              { v: 24 as const, label: "24 h" },
+              { v: 168 as const, label: "7 días" },
+              { v: 720 as const, label: "30 días" },
+            ].map((opt) => (
+              <button
+                key={opt.v}
+                onClick={() => setDuration(opt.v)}
+                className={[
+                  "flex-1 h-10 rounded-[99px] text-xs font-['DM_Sans'] font-semibold border transition-colors",
+                  duration === opt.v
+                    ? "bg-[#FF6B2B]/15 border-[#FF6B2B]/50 text-[#FF6B2B]"
+                    : "bg-white/[0.02] border-white/10 text-white/70 hover:text-white",
+                ].join(" ")}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <Button
+            onClick={generate}
+            disabled={generating}
+            className="w-full bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+          >
+            {generating ? "Generando…" : "Generar código"}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+type MemberRow = {
+  id: string;
+  full_name: string | null;
+  is_active: boolean;
+  profile_id: string;
+};
+
+function MembersList({ companyId }: { companyId: string }) {
+  const [members, setMembers] = useState<MemberRow[] | null>(null);
+  const [emails, setEmails] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const rows = await restGetMaybeSingle<MemberRow[]>(
+          `sellers?select=id,full_name,is_active,profile_id&company_id=eq.${companyId}&order=full_name.asc`,
+        );
+        // restGetMaybeSingle returns first row; use restGet for arrays
+      } catch {
+        /* ignore */
+      }
+      try {
+        const { restGet } = await import("@/lib/supabase-rest");
+        const rows = await restGet<MemberRow>(
+          `sellers?select=id,full_name,is_active,profile_id&company_id=eq.${companyId}&order=full_name.asc`,
+        );
+        if (!cancelled) setMembers(rows);
+        const ids = rows.map((r) => r.profile_id).filter(Boolean);
+        if (ids.length > 0) {
+          const emailRows = await restGet<{ id: string; email: string | null }>(
+            `profiles?select=id,email&id=in.(${ids.join(",")})`,
+          );
+          if (!cancelled) {
+            const map: Record<string, string> = {};
+            for (const e of emailRows) if (e.email) map[e.id] = e.email;
+            setEmails(map);
+          }
+        }
+      } catch (e) {
+        console.error("[mi-empresa] members", e);
+        if (!cancelled) setMembers([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId]);
+
+  const toggle = async (m: MemberRow) => {
+    const next = !m.is_active;
+    setMembers((prev) => prev?.map((x) => (x.id === m.id ? { ...x, is_active: next } : x)) ?? null);
+    try {
+      await restMutate("rpc/set_seller_active", {
+        method: "POST",
+        body: { _seller_id: m.id, _active: next },
+      });
+    } catch (e: any) {
+      toast.error("No pudimos actualizar. Revierte y reintenta.");
+      setMembers((prev) => prev?.map((x) => (x.id === m.id ? { ...x, is_active: m.is_active } : x)) ?? null);
+    }
+  };
+
+  if (!members) {
+    return (
+      <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 text-sm text-white/50 font-['DM_Sans']">
+        Cargando equipo…
+      </div>
+    );
+  }
+
+  if (members.length === 0) {
+    return (
+      <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 text-sm text-white/60 font-['DM_Sans']">
+        Nadie se ha unido todavía. Comparte tu código y aparecerán aquí.
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
+      <div className="font-['Syne'] font-bold text-white text-lg mb-3">Se unieron con este código</div>
+      <ul className="divide-y divide-white/5">
+        {members.map((m) => (
+          <li key={m.id} className="py-3 flex items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="font-['DM_Sans'] text-white truncate">{m.full_name ?? "Sin nombre"}</div>
+              <div className="text-[11px] text-white/50 truncate">{emails[m.profile_id] ?? ""}</div>
+            </div>
+            <label className="inline-flex items-center gap-2 text-xs text-white/70 font-['DM_Sans'] cursor-pointer">
+              <input
+                type="checkbox"
+                checked={m.is_active}
+                onChange={() => toggle(m)}
+                style={{ accentColor: "#FF6B2B" }}
+              />
+              {m.is_active ? "Activo" : "Inactivo"}
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
