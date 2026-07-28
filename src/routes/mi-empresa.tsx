@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Trash2, Save, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, Save, AlertTriangle, Copy, RefreshCw, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
@@ -110,6 +110,7 @@ function MiEmpresaPage() {
   const [denied, setDenied] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState<string>("");
+  const [isPersonal, setIsPersonal] = useState<boolean>(false);
   const [draft, setDraft] = useState<BrainDraft>({ known: {}, extras: [] });
   const [saving, setSaving] = useState(false);
 
@@ -134,9 +135,10 @@ function MiEmpresaPage() {
       const company = await restGetMaybeSingle<{
         id: string;
         name: string | null;
+        is_personal: boolean | null;
         company_sales_brain: Record<string, unknown> | null;
       }>(
-        `companies?select=id,name,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
+        `companies?select=id,name,is_personal,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
       );
       if (!company) {
         if (!cancelled) {
@@ -164,6 +166,7 @@ function MiEmpresaPage() {
       if (!cancelled) {
         setCompanyId(company.id);
         setCompanyName(company.name ?? "");
+        setIsPersonal(company.is_personal === true);
         setDraft({ known, extras });
         setLoading(false);
       }
