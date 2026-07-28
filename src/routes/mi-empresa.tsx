@@ -110,9 +110,14 @@ function MiEmpresaPage() {
   const [denied, setDenied] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState<string>("");
+  const [industry, setIndustry] = useState<string>("");
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [brainUpdatedAt, setBrainUpdatedAt] = useState<string | null>(null);
   const [isPersonal, setIsPersonal] = useState<boolean>(false);
   const [draft, setDraft] = useState<BrainDraft>({ known: {}, extras: [] });
   const [saving, setSaving] = useState(false);
+  const [savingIdentity, setSavingIdentity] = useState(false);
+  const [brainOpen, setBrainOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,9 +141,12 @@ function MiEmpresaPage() {
         id: string;
         name: string | null;
         is_personal: boolean | null;
+        industry: string | null;
+        logo_url: string | null;
+        brain_updated_at: string | null;
         company_sales_brain: Record<string, unknown> | null;
       }>(
-        `companies?select=id,name,is_personal,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
+        `companies?select=id,name,is_personal,industry,logo_url,brain_updated_at,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
       );
       if (!company) {
         if (!cancelled) {
@@ -166,6 +174,9 @@ function MiEmpresaPage() {
       if (!cancelled) {
         setCompanyId(company.id);
         setCompanyName(company.name ?? "");
+        setIndustry(company.industry ?? "");
+        setLogoUrl(company.logo_url ?? "");
+        setBrainUpdatedAt(company.brain_updated_at ?? null);
         setIsPersonal(company.is_personal === true);
         setDraft({ known, extras });
         setLoading(false);
@@ -181,6 +192,26 @@ function MiEmpresaPage() {
       cancelled = true;
     };
   }, [navigate]);
+
+  async function handleSaveIdentity() {
+    if (!companyId) return;
+    setSavingIdentity(true);
+    try {
+      await restMutate("rpc/update_company_identity", {
+        method: "POST",
+        body: {
+          _name: companyName.trim(),
+          _industry: industry.trim(),
+          _logo_url: logoUrl.trim(),
+        },
+      });
+      toast.success("Identidad actualizada.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo guardar la identidad.");
+    } finally {
+      setSavingIdentity(false);
+    }
+  }
 
   function updateKnown(key: string, value: string | string[]) {
     setDraft((d) => ({ ...d, known: { ...d.known, [key]: value } }));
