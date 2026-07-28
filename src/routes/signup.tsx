@@ -52,8 +52,8 @@ function SignupScreen() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [companyName, setCompanyName] = useState(""); // solo manager
-  const [inviteCode, setInviteCode] = useState(""); // solo vendedor
+  const [companyName, setCompanyName] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [inviteState, setInviteState] = useState<{
     status: "idle" | "checking" | "valid" | "invalid" | "locked";
     companyName?: string;
@@ -64,9 +64,10 @@ function SignupScreen() {
   const [loading, setLoading] = useState(false);
 
   const isVendedor = role === "vendedor";
+  const isManager = role === "manager";
+  const isIndividual = role === "individual";
   const strength = passwordStrength(password);
 
-  // Validación del código contra la BD (debounce simple)
   useEffect(() => {
     if (!isVendedor) return;
     const code = inviteCode.trim();
@@ -85,10 +86,7 @@ function SignupScreen() {
       if (d.valid) {
         setInviteState({ status: "valid", companyName: d.company_name });
       } else if (d.reason === "locked") {
-        setInviteState({
-          status: "locked",
-          message: "Este código está bloqueado temporalmente. Pídele a tu manager uno nuevo.",
-        });
+        setInviteState({ status: "locked", message: "Este código está bloqueado temporalmente. Pídele a tu manager uno nuevo." });
       } else if (d.reason === "expired") {
         setInviteState({ status: "invalid", message: "Este código expiró." });
       } else if (d.reason === "used") {
@@ -103,7 +101,7 @@ function SignupScreen() {
   const formValid = (() => {
     const base = baseSchema.safeParse({ fullName, email, password });
     if (!base.success || !accepted) return false;
-    if (role === "manager" && companyName.trim().length < 2) return false;
+    if (isManager && companyName.trim().length < 2) return false;
     if (isVendedor && inviteState.status !== "valid") return false;
     return true;
   })();
@@ -114,42 +112,43 @@ function SignupScreen() {
     if (!formValid || !role) return;
     setLoading(true);
 
-    // Guardar contexto para post-signup (en caso de OAuth o session estado)
-    if (role === "manager") setPendingCompanyName(companyName.trim());
+    if (isManager) setPendingCompanyName(companyName.trim());
     if (isVendedor) setPendingInviteCode(inviteCode.trim());
+
+    const profileRole = isVendedor ? "vendedor" : "manager";
 
     const { data, error: authError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
-        data: { full_name: fullName.trim(), role },
+        data: { full_name: fullName.trim(), role: profileRole },
         emailRedirectTo: window.location.origin,
       },
     });
 
     if (authError || !data.user) {
       setLoading(false);
-      // Si el código se intentó usar pero falla auth no incrementamos
       setError(authError?.message ?? "No pudimos crear tu cuenta.");
       return;
     }
 
-    // Vincular empresa según rol
-    if (role === "manager") {
-      const { error: rpcErr } = await supabase.rpc("create_company_for_manager", {
-        _name: companyName.trim(),
-      });
+    if (isIndividual) {
+      const { error: rpcErr } = await supabase.rpc("create_personal_company");
+      if (rpcErr) {
+        setLoading(false);
+        setError("Cuenta creada pero no pudimos preparar tu espacio. Intenta iniciar sesión.");
+        return;
+      }
+    } else if (isManager) {
+      const { error: rpcErr } = await supabase.rpc("create_team_company", { _name: companyName.trim() });
       if (rpcErr) {
         setLoading(false);
         setError("Cuenta creada pero no pudimos crear tu empresa. Intenta iniciar sesión.");
         return;
       }
     } else if (isVendedor) {
-      const { data: applyData, error: applyErr } = await supabase.rpc("apply_invite_code", {
-        _code: inviteCode.trim(),
-      });
+      const { data: applyData, error: applyErr } = await supabase.rpc("apply_invite_code", { _code: inviteCode.trim() });
       if (applyErr || !(applyData as { ok: boolean })?.ok) {
-        // Registrar intento fallido (anti-bruteforce)
         await supabase.rpc("register_invite_failed_attempt", { _code: inviteCode.trim() });
         setLoading(false);
         setError("No pudimos vincular tu código. Inténtalo de nuevo.");
@@ -158,22 +157,20 @@ function SignupScreen() {
     }
 
     setLoading(false);
-    if (role === "manager") {
-      navigate({ to: "/onboarding/manager" });
-    } else {
-      navigate({ to: "/onboarding/seller" });
-    }
+    if (isManager) navigate({ to: "/onboarding/manager" });
+    else navigate({ to: "/onboarding/seller" });
   };
 
   const handleGoogle = async () => {
     setError(null);
-    if (role === "manager") setPendingCompanyName(companyName.trim());
+    if (isManager) setPendingCompanyName(companyName.trim());
     if (isVendedor && inviteState.status === "valid") setPendingInviteCode(inviteCode.trim());
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) setError("No pudimos continuar con Google.");
   };
+
+  const roleLabel = isIndividual ? "🚀 Individual" : isManager ? "💼 Manager" : "🎯 Vendedor";
+  const titleText = isIndividual ? "Empieza a entrenar" : isManager ? "Crea tu cuenta" : "Únete a tu equipo";
 
   return (
     <main style={{ minHeight: "100dvh", background: BG, color: "#F0F0F5", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
