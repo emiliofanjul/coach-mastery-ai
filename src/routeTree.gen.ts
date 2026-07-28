@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoleRouteImport } from './routes/role'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as MiEmpresaRouteImport } from './routes/mi-empresa'
 import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as LoginRouteImport } from './routes/login'
@@ -39,6 +40,11 @@ const RoleRoute = RoleRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MiPerfilRoute = MiPerfilRouteImport.update({
+  id: '/mi-perfil',
+  path: '/mi-perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MiEmpresaRoute = MiEmpresaRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/mi-empresa': typeof MiEmpresaRoute
+  '/mi-perfil': typeof MiPerfilRoute
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/mi-empresa': typeof MiEmpresaRoute
+  '/mi-perfil': typeof MiPerfilRoute
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/mapa': typeof MapaRoute
   '/mi-empresa': typeof MiEmpresaRoute
+  '/mi-perfil': typeof MiPerfilRoute
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mapa'
     | '/mi-empresa'
+    | '/mi-perfil'
     | '/reset-password'
     | '/role'
     | '/signup'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mapa'
     | '/mi-empresa'
+    | '/mi-perfil'
     | '/reset-password'
     | '/role'
     | '/signup'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mapa'
     | '/mi-empresa'
+    | '/mi-perfil'
     | '/reset-password'
     | '/role'
     | '/signup'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MapaRoute: typeof MapaRoute
   MiEmpresaRoute: typeof MiEmpresaRoute
+  MiPerfilRoute: typeof MiPerfilRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mi-perfil': {
+      id: '/mi-perfil'
+      path: '/mi-perfil'
+      fullPath: '/mi-perfil'
+      preLoaderRoute: typeof MiPerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mi-empresa': {
@@ -373,6 +393,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MapaRoute: MapaRoute,
   MiEmpresaRoute: MiEmpresaRoute,
+  MiPerfilRoute: MiPerfilRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
