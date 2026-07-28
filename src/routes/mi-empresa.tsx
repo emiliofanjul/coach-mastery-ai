@@ -286,6 +286,14 @@ function MiEmpresaPage() {
           </div>
         </div>
 
+        {!isPersonal && companyId && (
+          <div className="mb-6">
+            <InviteCard companyId={companyId} />
+            <MembersList companyId={companyId} />
+          </div>
+        )}
+
+
         <div className="space-y-5">
           {KNOWN_FIELDS.map((f) => (
             <FieldBlock
