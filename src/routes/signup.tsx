@@ -177,7 +177,7 @@ function SignupScreen() {
       <Topbar />
 
       <section style={containerStyle}>
-        <h2 style={titleStyle}>{role === "manager" ? "Crea tu cuenta" : "Empieza a entrenar"}</h2>
+        <h2 style={titleStyle}>{titleText}</h2>
 
         {/* Pill rol */}
         <div style={{ marginTop: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
@@ -195,7 +195,7 @@ function SignupScreen() {
               color: "#FF6B2B",
             }}
           >
-            {role === "manager" ? "💼 Manager" : "🎯 Vendedor"}
+            {roleLabel}
           </span>
           <Link to="/role" style={{ fontSize: "0.72rem", color: "#5A5A8A", textDecoration: "underline" }}>
             cambiar
@@ -218,7 +218,7 @@ function SignupScreen() {
             <StrengthBar level={strength} />
           </div>
 
-          {role === "manager" && (
+          {isManager && (
             <Field label="Nombre de tu empresa" value={companyName} onChange={setCompanyName} placeholder="Ej: Dalfan" maxLength={120} />
           )}
 
