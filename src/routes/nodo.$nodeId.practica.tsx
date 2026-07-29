@@ -1918,13 +1918,16 @@ function PrepPhase({
       <div
         style={{
           flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
           maxWidth: 560,
           width: "100%",
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           gap: 24,
+          paddingBlock: 16,
         }}
       >
         <div
