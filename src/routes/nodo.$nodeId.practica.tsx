@@ -1367,6 +1367,7 @@ function PracticaPage() {
         flexDirection: "column",
       }}
     >
+      <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
       <AnimatePresence mode="wait">
         {phase === "prep" && prepError && (
           <RetryScreen
@@ -1846,6 +1847,7 @@ function PracticaPage() {
           />
         )}
       </AnimatePresence>
+      </div>
 
       {showExitDialog && (
         <ExitDialog
