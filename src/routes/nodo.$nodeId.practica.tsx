@@ -1847,6 +1847,7 @@ function PracticaPage() {
           />
         )}
       </AnimatePresence>
+      </div>
 
       {showExitDialog && (
         <ExitDialog
