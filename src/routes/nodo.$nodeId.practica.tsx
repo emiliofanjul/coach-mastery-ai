@@ -2095,7 +2095,7 @@ function PrepPhase({
         )}
       </div>
 
-      <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
+      <div style={{ flexShrink: 0, maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
         <button
           onClick={onListo}
           disabled={!canStart}
