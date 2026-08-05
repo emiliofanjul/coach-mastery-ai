@@ -14,6 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
+      archivo_mentalidad_cards: {
+        Row: {
+          audience: string | null
+          body: string | null
+          card_content_type: string | null
+          card_order: number | null
+          card_type: string | null
+          created_at: string | null
+          flip_back_text: string | null
+          id: string | null
+          node_id: string | null
+          skill_ids: string[] | null
+          title: string | null
+        }
+        Insert: {
+          audience?: string | null
+          body?: string | null
+          card_content_type?: string | null
+          card_order?: number | null
+          card_type?: string | null
+          created_at?: string | null
+          flip_back_text?: string | null
+          id?: string | null
+          node_id?: string | null
+          skill_ids?: string[] | null
+          title?: string | null
+        }
+        Update: {
+          audience?: string | null
+          body?: string | null
+          card_content_type?: string | null
+          card_order?: number | null
+          card_type?: string | null
+          created_at?: string | null
+          flip_back_text?: string | null
+          id?: string | null
+          node_id?: string | null
+          skill_ids?: string[] | null
+          title?: string | null
+        }
+        Relationships: []
+      }
+      archivo_mentalidad_nodes: {
+        Row: {
+          boss_goal: string | null
+          checkpoints: Json | null
+          conversation_scope: string | null
+          description: string | null
+          difficulty_level: number | null
+          engine_type: string | null
+          field_mission: string | null
+          id: string | null
+          is_boss: boolean | null
+          name: string | null
+          node_type: string | null
+          order_index: number | null
+          practice_script: Json | null
+          reps_required: number | null
+          technique: string | null
+          world_id: number | null
+        }
+        Insert: {
+          boss_goal?: string | null
+          checkpoints?: Json | null
+          conversation_scope?: string | null
+          description?: string | null
+          difficulty_level?: number | null
+          engine_type?: string | null
+          field_mission?: string | null
+          id?: string | null
+          is_boss?: boolean | null
+          name?: string | null
+          node_type?: string | null
+          order_index?: number | null
+          practice_script?: Json | null
+          reps_required?: number | null
+          technique?: string | null
+          world_id?: number | null
+        }
+        Update: {
+          boss_goal?: string | null
+          checkpoints?: Json | null
+          conversation_scope?: string | null
+          description?: string | null
+          difficulty_level?: number | null
+          engine_type?: string | null
+          field_mission?: string | null
+          id?: string | null
+          is_boss?: boolean | null
+          name?: string | null
+          node_type?: string | null
+          order_index?: number | null
+          practice_script?: Json | null
+          reps_required?: number | null
+          technique?: string | null
+          world_id?: number | null
+        }
+        Relationships: []
+      }
+      archivo_mentalidad_quiz: {
+        Row: {
+          correct_option: string | null
+          created_at: string | null
+          explanation_correct: string | null
+          explanation_wrong: string | null
+          id: string | null
+          node_id: string | null
+          option_a: string | null
+          option_b: string | null
+          option_c: string | null
+          option_d: string | null
+          question_order: number | null
+          question_text: string | null
+        }
+        Insert: {
+          correct_option?: string | null
+          created_at?: string | null
+          explanation_correct?: string | null
+          explanation_wrong?: string | null
+          id?: string | null
+          node_id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          question_order?: number | null
+          question_text?: string | null
+        }
+        Update: {
+          correct_option?: string | null
+          created_at?: string | null
+          explanation_correct?: string | null
+          explanation_wrong?: string | null
+          id?: string | null
+          node_id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          question_order?: number | null
+          question_text?: string | null
+        }
+        Relationships: []
+      }
       certificates: {
         Row: {
           company_id: string
