@@ -1901,6 +1901,7 @@ function PrepPhase({
       exit={{ opacity: 0 }}
       style={{
         flex: 1,
+        minHeight: 0,
         display: "flex",
         flexDirection: "column",
         padding: "1.2rem",
@@ -2221,7 +2222,7 @@ function VoicePhase({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      style={{ flex: 1, display: "flex", flexDirection: "column", padding: "1.2rem" }}
+      style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", padding: "1.2rem" }}
     >
       <style>{`
         @keyframes practica-pulse {
@@ -2440,6 +2441,7 @@ function TransitionPhase({
       exit={{ opacity: 0 }}
       style={{
         flex: 1,
+        minHeight: 0,
         display: "flex",
         flexDirection: "column",
         padding: "1.2rem",
@@ -2918,7 +2920,7 @@ function FeedbackPhase({
 
   if (step === "victory") {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1 }}>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minHeight: 0 }}>
         <VictoryScreen
           stars={stars}
           title="¡Práctica completada!"
@@ -2938,6 +2940,7 @@ function FeedbackPhase({
         exit={{ opacity: 0 }}
         style={{
           flex: 1,
+          minHeight: 0,
           display: "flex",
           flexDirection: "column",
           padding: "1.2rem",
@@ -3162,6 +3165,7 @@ function FeedbackPhase({
       exit={{ opacity: 0 }}
       style={{
         flex: 1,
+        minHeight: 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
