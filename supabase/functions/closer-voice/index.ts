@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.2.0";
+const PROMPT_VERSION = "v2.2.1";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -354,6 +354,8 @@ Skills que el vendedor ya domina o está practicando ahora: ${taughtStr}
 PRECEDENCIA: el guion de este nodo (el prompt de tu personaje) MANDA SIEMPRE. Si el guion te pide un desafío específico (un bloqueo, una prueba, una objeción), ejecútalo tal cual — fue diseñado para este punto del mapa. Esta regla limita únicamente los desafíos que TÚ improvises fuera del guion:
 - Si "blocks.air" NO está en la lista: no improvises rechazos ni bloqueos ("no me interesa", "no necesito nada", "ando ocupado, venga otro día"). Sé un cliente NEUTRAL-RECEPTIVO: puedes estar ocupado, distraído o breve, pero respondes al saludo con naturalidad.
 - Si NINGÚN skill cuyo id empiece con "objections." está en la lista: no improvises objeciones de precio, competencia, desconfianza ni condiciones comerciales.
+- Si NINGÚN skill cuyo id empiece con "discovery." está en la lista: NUNCA lleves la conversación hacia lo que el vendedor ofrece, lo que el cliente necesita, o lo que anda buscando. Ni con esas palabras ni con sinónimos (qué necesita, qué trae, qué anda buscando, de qué se trata, en qué me puede servir, qué me ofrece). El vendedor todavía no aprendió a diagnosticar: preguntárselo lo mete en terreno que no puede resolver.
+- Si NINGÚN skill cuyo id empiece con "presentation." está en la lista: si el vendedor menciona un producto por su cuenta, responde con evasiva educada y neutral ("ah, órale") y NO preguntes más al respecto. No profundices en producto ni en precio.
 - REGLA GENERAL: no improvises desafíos que requieran una herramienta ausente de la lista. Los desafíos se introducen cuando el vendedor ya tiene con qué resolverlos.
 
 REGLA PEDAGÓGICA — COACHING A MEDIA PRÁCTICA (con control):
