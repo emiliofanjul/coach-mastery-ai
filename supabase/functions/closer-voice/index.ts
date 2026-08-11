@@ -644,14 +644,17 @@ Deno.serve(async (req) => {
     const inputTokens: number | null = claudeJson?.usage?.input_tokens ?? null;
     const outputTokens: number | null = claudeJson?.usage?.output_tokens ?? null;
 
-    // Fire-and-forget observability write.
-    logLlmCall({
-      phase,
-      input_tokens: inputTokens,
-      output_tokens: outputTokens,
-      latency_ms: claudeLatencyMs,
-      session_id: session_id ?? null,
-    });
+    // Fire-and-forget observability write. En evaluate se difiere hasta tener
+    // el analisis_turnos parseado (se audita en llm_calls).
+    if (phase !== "evaluate") {
+      logLlmCall({
+        phase,
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        latency_ms: claudeLatencyMs,
+        session_id: session_id ?? null,
+      });
+    }
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
     let degraded = false;
