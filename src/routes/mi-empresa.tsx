@@ -111,6 +111,8 @@ function MiEmpresaPage() {
   const [loading, setLoading] = useState(true);
   const [denied, setDenied] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
   const [companyName, setCompanyName] = useState<string>("");
   const [industry, setIndustry] = useState<string>("");
   const [logoUrl, setLogoUrl] = useState<string>("");
