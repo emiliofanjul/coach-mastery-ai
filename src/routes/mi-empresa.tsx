@@ -457,11 +457,17 @@ function MiEmpresaPage() {
           )}
         </section>
 
-        {/* 4. Futuras secciones */}
+        {/* 4. PITCHES (no aplica a empresas personales) */}
+        {!isPersonal && companyId && userId && (
+          <PitchesSection companyId={companyId} userId={userId} />
+        )}
+
+        {/* 5. Futuras secciones */}
         <section className="mb-6 rounded-[14px] border border-dashed border-white/10 bg-white/[0.02] p-5 text-center">
           <div className="text-xs uppercase tracking-wide text-white/40 font-['DM_Sans']">Próximamente</div>
-          <div className="mt-1 text-sm text-white/60 font-['DM_Sans']">Pitches · Consumo y plan</div>
+          <div className="mt-1 text-sm text-white/60 font-['DM_Sans']">Consumo y plan</div>
         </section>
+
 
         {brainOpen && (
           <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-[#08080F]/95 backdrop-blur px-5 py-3">
