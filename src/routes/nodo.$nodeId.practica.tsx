@@ -775,13 +775,22 @@ function PracticaPage() {
         } catch (e) {
           console.error("[director] closing TTS failed:", e);
         }
-        // En modo texto: no hay TTS que dé tiempo natural para leer el último
-        // intercambio + el closing. Damos ~4s (o el usuario puede navegar
-        // manualmente si activamos un botón en un futuro) antes de transicionar
-        // a "Analizando". En voz este delay ya lo cubre la duración del TTS.
-        if (inputModeRef.current === "text") {
-          await new Promise((r) => setTimeout(r, 4000));
-        }
+        // El cierre no puede pasar de largo: se queda en pantalla hasta que el
+        // vendedor lo acepta (o 20s como red de seguridad), en voz y en texto.
+        setClosingGate(closingMsg);
+        await new Promise<void>((resolve) => {
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            closingGateResolveRef.current = null;
+            resolve();
+          };
+          const timer = setTimeout(finish, 20000);
+          closingGateResolveRef.current = finish;
+        });
+        setClosingGate(null);
         await handleSessionEnd();
         return true;
       }
