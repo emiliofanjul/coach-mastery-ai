@@ -107,7 +107,16 @@ interface RegresionDetectada {
   evidencia: string;
 }
 
+interface TurnAnalysis {
+  turno: number;
+  texto_literal: string;
+  ultima_frase: string;
+  veredicto: string;
+  por_que: string;
+}
+
 interface EvaluationResponse {
+  analisis_turnos: TurnAnalysis[];
   score: number;
   observations: EvaluationObservation[];
   flags_detected: string[];
