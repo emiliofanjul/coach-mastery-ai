@@ -37,6 +37,7 @@ async function logLlmCall(row: {
   latency_ms: number;
   event_id?: string | null;
   session_id?: string | null;
+  analisis_turnos?: unknown;
 }) {
   try {
     const admin = getAdmin();
@@ -50,6 +51,7 @@ async function logLlmCall(row: {
       latency_ms: row.latency_ms,
       event_id: row.event_id ?? null,
       session_id: row.session_id ?? null,
+      analisis_turnos: row.analisis_turnos ?? null,
     });
   } catch (e) {
     console.error("[closer-voice] llm_calls insert failed:", e);
