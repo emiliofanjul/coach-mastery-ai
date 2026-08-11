@@ -743,12 +743,8 @@ Deno.serve(async (req) => {
         analisis_turnos: evaluation.analisis_turnos,
       });
 
-      // Guardarraíl anti-fabricación: una observación sobre un turno con
-      // veredicto "cumple" no puede existir. Si TODOS los turnos cumplen,
-      // se descartan los flags sin cita literal en analisis_turnos.
-      const turnosTexto = (evaluation.analisis_turnos as TurnAnalysis[])
-        .map((t) => (t.texto_literal ?? "").toLowerCase())
-        .join(" \n ");
+      // Guardarraíl anti-fabricación: si TODOS los turnos cumplen el criterio
+      // principal, no puede haber flags.
       const todosCumplen =
         (evaluation.analisis_turnos as TurnAnalysis[]).length > 0 &&
         (evaluation.analisis_turnos as TurnAnalysis[]).every((t) => /cumple/i.test(t.veredicto) && !/no\s+cumple/i.test(t.veredicto));
@@ -759,7 +755,6 @@ Deno.serve(async (req) => {
         });
         evaluation.flags_detected = [];
       }
-      void turnosTexto;
 
       // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
       const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
