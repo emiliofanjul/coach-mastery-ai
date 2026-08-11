@@ -10,7 +10,7 @@ import {
 } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon } from "lucide-react";
+import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon, FileText } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
