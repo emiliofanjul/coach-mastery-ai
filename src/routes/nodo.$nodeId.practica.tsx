@@ -135,6 +135,10 @@ function PracticaPage() {
   const cutRef = useRef(false);
   // Razón del corte del Director — se pasa al evaluador y define el closing.
   const cutReasonRef = useRef<string | null>(null);
+  // Puerta del cierre: el mensaje final del Director se queda en pantalla hasta
+  // que el vendedor toca "Ver mi análisis →" (o pasan 20s como red de seguridad).
+  const [closingGate, setClosingGate] = useState<string | null>(null);
+  const closingGateResolveRef = useRef<(() => void) | null>(null);
   // AbortControllers para requests en vuelo — se cancelan en hardStop().
   const actorFetchAbortRef = useRef<AbortController | null>(null);
   const ttsFetchAbortRef = useRef<AbortController | null>(null);
@@ -771,13 +775,22 @@ function PracticaPage() {
         } catch (e) {
           console.error("[director] closing TTS failed:", e);
         }
-        // En modo texto: no hay TTS que dé tiempo natural para leer el último
-        // intercambio + el closing. Damos ~4s (o el usuario puede navegar
-        // manualmente si activamos un botón en un futuro) antes de transicionar
-        // a "Analizando". En voz este delay ya lo cubre la duración del TTS.
-        if (inputModeRef.current === "text") {
-          await new Promise((r) => setTimeout(r, 4000));
-        }
+        // El cierre no puede pasar de largo: se queda en pantalla hasta que el
+        // vendedor lo acepta (o 20s como red de seguridad), en voz y en texto.
+        setClosingGate(closingMsg);
+        await new Promise<void>((resolve) => {
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            closingGateResolveRef.current = null;
+            resolve();
+          };
+          const timer = setTimeout(finish, 20000);
+          closingGateResolveRef.current = finish;
+        });
+        setClosingGate(null);
         await handleSessionEnd();
         return true;
       }
@@ -1764,12 +1777,17 @@ function PracticaPage() {
 
               const previousStars = (existingProgress?.stars as number | null) ?? 0;
               const bestStars = Math.max(previousStars, stars);
+              // Umbral de progresión: se necesitan 2 estrellas (score ≥ 70)
+              // para dar el nodo por dominado y abrir el siguiente. Con 1
+              // estrella el nodo queda en curso y se puede repetir.
+              const unlocks = bestStars >= 2;
+              const progressStatus = unlocks ? "done" : "current";
 
               if (existingProgress?.id) {
                 await restMutate(`node_progress?id=eq.${existingProgress.id}`, {
                   method: "PATCH",
                   body: {
-                    status: "done",
+                    status: progressStatus,
                     stars: bestStars,
                     last_practiced_at: new Date().toISOString(),
                   },
@@ -1781,7 +1799,7 @@ function PracticaPage() {
                   seller_id: sellerData.id,
                   company_id: sellerData.company_id,
                   node_id: nodeId,
-                  status: "done",
+                  status: progressStatus,
                   stars: bestStars,
                   last_practiced_at: new Date().toISOString(),
                   },
@@ -1798,9 +1816,11 @@ function PracticaPage() {
                 });
               }
 
-              const currentNodeRow = await restGetMaybeSingle<{ world_id: number; order_index: number }>(
-                `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-              );
+              const currentNodeRow = unlocks
+                ? await restGetMaybeSingle<{ world_id: number; order_index: number }>(
+                    `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+                  )
+                : null;
 
               if (currentNodeRow) {
                 const nextNode = await restGetMaybeSingle<{ id: string }>(
@@ -1848,6 +1868,57 @@ function PracticaPage() {
         )}
       </AnimatePresence>
       </div>
+
+      {closingGate && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 900,
+            background: "rgba(8,8,15,0.94)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1.5rem",
+            gap: 24,
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 560,
+              background: "#12121C",
+              border: "1px solid rgba(255,107,43,0.35)",
+              borderRadius: 14,
+              padding: "1.5rem",
+              fontFamily: "'DM Sans', sans-serif",
+              color: "#F0F0F5",
+              fontSize: "1rem",
+              lineHeight: 1.6,
+            }}
+          >
+            {closingGate}
+          </div>
+          <button
+            type="button"
+            onClick={() => closingGateResolveRef.current?.()}
+            style={{
+              background: "#FF6B2B",
+              border: "none",
+              color: "#FFFFFF",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: "0.95rem",
+              padding: "14px 26px",
+              borderRadius: 99,
+              cursor: "pointer",
+            }}
+          >
+            Ver mi análisis →
+          </button>
+        </div>
+      )}
 
       {showExitDialog && (
         <ExitDialog
@@ -2923,8 +2994,12 @@ function FeedbackPhase({
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minHeight: 0 }}>
         <VictoryScreen
           stars={stars}
-          title="¡Práctica completada!"
-          subtitle="Sigue avanzando."
+          title={stars >= 2 ? "¡Práctica completada!" : "Práctica registrada."}
+          subtitle={
+            stars >= 2
+              ? "Sigue avanzando."
+              : "Con 2 estrellas se abre el siguiente nodo. Repite este cuando quieras."
+          }
           buttonText="Volver al mapa →"
           onContinue={() => onContinue(stars)}
         />

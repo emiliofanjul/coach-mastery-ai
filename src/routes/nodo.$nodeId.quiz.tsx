@@ -246,7 +246,11 @@ function NodoQuizPage() {
       <VictoryScreen
         stars={3}
         title={isFirstNodeInWorld ? "¡Primer nodo desbloqueado!" : "¡Nodo completado!"}
-        subtitle="El primer paso empieza ahora."
+        subtitle={
+          isFirstNodeInWorld
+            ? "El primer paso empieza ahora."
+            : "Quedó registrado. Sigue con el siguiente nodo."
+        }
         buttonText={saving ? "Guardando..." : "Siguiente →"}
         onContinue={() => {
           if (!saving) handleContinueToMap();
