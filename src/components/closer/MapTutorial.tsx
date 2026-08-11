@@ -29,8 +29,10 @@ export function MapTutorial({ open, onClose }: Props) {
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [showFinal, setShowFinal] = useState(false);
+  const [visibleSteps, setVisibleSteps] = useState<Step[] | null>(null);
 
-  const steps: Step[] = [
+  const allSteps: Step[] = [
+
     {
       target: { selector: "[data-tour='active-node']" },
       text:
