@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.2.1";
+const PROMPT_VERSION = "v2.3.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -37,6 +37,7 @@ async function logLlmCall(row: {
   latency_ms: number;
   event_id?: string | null;
   session_id?: string | null;
+  analisis_turnos?: unknown;
 }) {
   try {
     const admin = getAdmin();
@@ -50,6 +51,7 @@ async function logLlmCall(row: {
       latency_ms: row.latency_ms,
       event_id: row.event_id ?? null,
       session_id: row.session_id ?? null,
+      analisis_turnos: row.analisis_turnos ?? null,
     });
   } catch (e) {
     console.error("[closer-voice] llm_calls insert failed:", e);
@@ -107,7 +109,16 @@ interface RegresionDetectada {
   evidencia: string;
 }
 
+interface TurnAnalysis {
+  turno: number;
+  texto_literal: string;
+  ultima_frase: string;
+  veredicto: string;
+  por_que: string;
+}
+
 interface EvaluationResponse {
+  analisis_turnos: TurnAnalysis[];
   score: number;
   observations: EvaluationObservation[];
   flags_detected: string[];
@@ -176,8 +187,17 @@ REGLAS DE EVALUACIÓN:
 9. EVIDENCIA COMPLETA PARA FLAGS: un failure_criteria solo se marca si su patrón COMPLETO aparece literal en el transcript. Si la sesión fue cortada antes de que el patrón pudiera completarse, NO se marca.
 10. TERMINOLOGÍA DEL GUION: en observations y mision usa exactamente los nombres y términos que aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra.
 11. VERIFICACIÓN LITERAL: antes de afirmar que el vendedor hizo o no hizo algo, localiza la evidencia textual exacta en el transcript. Si no puedes citar la frase concreta, NO hagas la afirmación. Prohibido describir lo que el vendedor "no hizo" sin haber revisado su turno completo palabra por palabra.
+12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar "pitch_prematuro" cuando en ningún turno del vendedor aparece un producto, marca o motivo de venta.
 
-CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
+PASO 0 — EXTRACCIÓN ANTES DE JUICIO (obligatorio, va PRIMERO en el JSON):
+PRIMERO llena "analisis_turnos" copiando LITERALMENTE cada turno del vendedor. Solo turnos con role "user" — los turnos del cliente (role "assistant") NUNCA se evalúan ni se atribuyen al vendedor. Para cada turno anota su última frase literal y si CUMPLE o NO CUMPLE el criterio principal del nodo, con una línea de por qué.
+DESPUÉS de tener ese análisis completo, y SOLO basándote en él, calcula el score y escribe las observations.
+- Toda observación debe corresponder a un turno que aparezca en analisis_turnos con veredicto "no cumple".
+- Si un turno quedó como "cumple", está PROHIBIDO escribir una observación negativa sobre él.
+- Está PROHIBIDO contradecirte dentro de una misma observación (p. ej. afirmar que un turno no termina en pregunta y en la misma frase citar que sí cierra con interrogación). Si la evidencia dice que cumple, el veredicto es "cumple".
+- Si TODOS los turnos cumplen el criterio principal, el score NO puede ser bajo: la base corresponde a criterios ejecutados.
+
+CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto, después del PASO 0):
 
 PASO 1 — BASE por ejecución de success_criteria (empieza por lo que SÍ hizo):
 - Todos los criterios bien ejecutados → base 85-100
@@ -205,8 +225,17 @@ REGLAS DURAS DE PUNTUACIÓN:
 - Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
 - Nunca hundas el score por un solo minor si los criterios centrales están presentes.
 
-CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
+CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_turnos" es OBLIGATORIO y va PRIMERO:
 {
+  "analisis_turnos": [
+    {
+      "turno": <entero, 1 = primer turno del vendedor>,
+      "texto_literal": "<el turno del VENDEDOR (role user), copiado tal cual, sin resumir>",
+      "ultima_frase": "<la última frase de ese turno, literal>",
+      "veredicto": "<cumple | no cumple>",
+      "por_que": "<una línea>"
+    }
+  ],
   "score": <entero 0-100>,
   "observations": [
     {
@@ -615,14 +644,17 @@ Deno.serve(async (req) => {
     const inputTokens: number | null = claudeJson?.usage?.input_tokens ?? null;
     const outputTokens: number | null = claudeJson?.usage?.output_tokens ?? null;
 
-    // Fire-and-forget observability write.
-    logLlmCall({
-      phase,
-      input_tokens: inputTokens,
-      output_tokens: outputTokens,
-      latency_ms: claudeLatencyMs,
-      session_id: session_id ?? null,
-    });
+    // Fire-and-forget observability write. En evaluate se difiere hasta tener
+    // el analisis_turnos parseado (se audita en llm_calls).
+    if (phase !== "evaluate") {
+      logLlmCall({
+        phase,
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        latency_ms: claudeLatencyMs,
+        session_id: session_id ?? null,
+      });
+    }
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
     let degraded = false;
@@ -686,11 +718,42 @@ Deno.serve(async (req) => {
       );
       const flagsValid = Array.isArray(evaluation.flags_detected) && evaluation.flags_detected.every((f) => typeof f === "string");
       const cumplidosValid = Array.isArray(evaluation.criterios_cumplidos) && evaluation.criterios_cumplidos.every((c) => typeof c === "string");
-      if (!scoreOk || !obsValid || !flagsValid || !cumplidosValid || typeof evaluation.mision !== "string") {
+      const turnosValid = Array.isArray(evaluation.analisis_turnos) && (evaluation.analisis_turnos as any[]).every(
+        (t) =>
+          t && typeof t === "object" &&
+          typeof t.texto_literal === "string" &&
+          typeof t.ultima_frase === "string" &&
+          typeof t.veredicto === "string" &&
+          typeof t.por_que === "string",
+      );
+      if (!scoreOk || !obsValid || !flagsValid || !cumplidosValid || !turnosValid || typeof evaluation.mision !== "string") {
         return new Response(
           JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
+      }
+
+      // Auditoría: el análisis turno por turno se guarda en llm_calls.
+      logLlmCall({
+        phase,
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        latency_ms: claudeLatencyMs,
+        session_id: session_id ?? null,
+        analisis_turnos: evaluation.analisis_turnos,
+      });
+
+      // Guardarraíl anti-fabricación: si TODOS los turnos cumplen el criterio
+      // principal, no puede haber flags.
+      const todosCumplen =
+        (evaluation.analisis_turnos as TurnAnalysis[]).length > 0 &&
+        (evaluation.analisis_turnos as TurnAnalysis[]).every((t) => /cumple/i.test(t.veredicto) && !/no\s+cumple/i.test(t.veredicto));
+      if (todosCumplen && evaluation.flags_detected.length > 0) {
+        console.warn("[closer-voice] flags descartados: todos los turnos cumplen", {
+          session_id: session_id ?? null,
+          flags: evaluation.flags_detected,
+        });
+        evaluation.flags_detected = [];
       }
 
       // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
