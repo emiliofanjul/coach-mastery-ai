@@ -175,6 +175,7 @@ REGLAS DE EVALUACIÓN:
 8. MECÁNICA, NO DIRECCIÓN: evalúas la ejecución de la MECÁNICA que el nodo entrena. Cuando existen múltiples vías comerciales legítimas (por ejemplo, en descubrimiento el dolor puede vivir en el producto que SÍ vende, en el que no vende, o en el que no tiene), NUNCA presentes una dirección específica como LA correcta ni castigues la elección de vía del vendedor. Evalúa cómo ejecutó la mecánica en LA VÍA QUE ÉL ELIGIÓ, y construye los ejemplos de mejora sobre esa misma vía.
 9. EVIDENCIA COMPLETA PARA FLAGS: un failure_criteria solo se marca si su patrón COMPLETO aparece literal en el transcript. Si la sesión fue cortada antes de que el patrón pudiera completarse, NO se marca.
 10. TERMINOLOGÍA DEL GUION: en observations y mision usa exactamente los nombres y términos que aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra.
+11. VERIFICACIÓN LITERAL: antes de afirmar que el vendedor hizo o no hizo algo, localiza la evidencia textual exacta en el transcript. Si no puedes citar la frase concreta, NO hagas la afirmación. Prohibido describir lo que el vendedor "no hizo" sin haber revisado su turno completo palabra por palabra.
 
 CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
 
