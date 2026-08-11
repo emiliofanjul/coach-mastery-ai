@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
 import { ImageUploader } from "@/components/app/ImageUploader";
+import { PitchesSection } from "@/components/app/PitchesSection";
+
 
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
