@@ -724,6 +724,7 @@ function PracticaPage() {
 
     setInterimTranscript("");
     setIsUserListening(true);
+    finishVoiceTurnRef.current = finishTurn;
     // Arrancar/reanudar la captura de audio: el mic ya está activo para STT,
     // aprovechamos el mismo momento para grabar solo el turno del vendedor.
     void startAudioCapture();
@@ -732,10 +733,12 @@ function PracticaPage() {
     } catch (err) {
       console.error("[voice] rec.start failed:", err);
       stopped = true;
+      finishVoiceTurnRef.current = null;
       setIsUserListening(false);
       pauseAudioCapture();
     }
   }
+
 
 
   // Director (v2.0.0): corre después del turno del Actor en you_do.
