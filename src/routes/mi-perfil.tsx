@@ -45,8 +45,9 @@ function MiPerfilPage() {
       }
       try {
         const p = await restGetMaybeSingle<ProfileRow>(
-          `profiles?select=role,company_id,full_name,email&id=eq.${session.userId}&limit=1`,
+          `profiles?select=role,company_id,full_name,email,avatar_url&id=eq.${session.userId}&limit=1`,
         );
+
         let c: CompanyRow | null = null;
         if (p?.company_id) {
           c = await restGetMaybeSingle<CompanyRow>(
