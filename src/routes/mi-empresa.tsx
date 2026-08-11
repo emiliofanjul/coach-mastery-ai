@@ -341,17 +341,15 @@ function MiEmpresaPage() {
                 className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
               />
             </div>
-            <div>
-              <label className="block text-xs uppercase tracking-wide text-white/50 font-['DM_Sans'] mb-1">
-                Logo (URL)
-              </label>
-              <input
-                value={logoUrl}
-                onChange={(e) => setLogoUrl(e.target.value)}
-                placeholder="https://…"
-                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
-              />
-            </div>
+            <ImageUploader
+              value={logoUrl}
+              kind="logo"
+              label="Logo de la empresa"
+              shape="square"
+              hint="Se redimensiona a 512 px. Guarda la identidad para aplicar el cambio."
+              onChange={(path) => setLogoUrl(path)}
+            />
+
             <div className="flex justify-end">
               <Button
                 onClick={handleSaveIdentity}
