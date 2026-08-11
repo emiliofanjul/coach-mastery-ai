@@ -4,6 +4,8 @@ import { Plus, Trash2, Save, AlertTriangle, Copy, RefreshCw, XCircle, ChevronDow
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
+import { ImageUploader } from "@/components/app/ImageUploader";
+
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 
