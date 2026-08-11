@@ -133,6 +133,8 @@ function MiEmpresaPage() {
         navigate({ to: "/login" });
         return;
       }
+      if (!cancelled) setUserId(session.userId);
+
       const profile = await restGetMaybeSingle<{ role: string; company_id: string | null }>(
         `profiles?select=role,company_id&id=eq.${session.userId}&limit=1`,
       );
