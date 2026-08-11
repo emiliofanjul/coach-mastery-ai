@@ -641,12 +641,15 @@ function PracticaPage() {
     function finishTurn() {
       if (turnClosed) return;
       turnClosed = true;
+      stopped = true;
+      if (finishVoiceTurnRef.current === finishTurn) finishVoiceTurnRef.current = null;
       if (sendTimer) clearTimeout(sendTimer);
       sendTimer = null;
       const current = recognitionRef.current;
       recognitionRef.current = null;
       try { current?.stop(); } catch {}
       setIsUserListening(false);
+
       setInterimTranscript("");
       // Pausar la grabación entre turnos: solo capturamos cuando el vendedor habla.
       pauseAudioCapture();
