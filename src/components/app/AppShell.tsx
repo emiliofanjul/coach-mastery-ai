@@ -195,7 +195,9 @@ type NavItem = { to: string; label: string; icon: typeof Store };
 
 const COMMON_ITEMS: NavItem[] = [
   { to: "/mapa", label: "Mapa", icon: MapIcon },
+  { to: "/pitches", label: "Mis Pitches", icon: FileText },
 ];
+
 
 const MANAGER_ITEMS: NavItem[] = [
   { to: "/mi-empresa", label: "Mi Empresa", icon: Store },

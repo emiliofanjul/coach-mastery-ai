@@ -20,6 +20,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PitchesIndexRouteImport } from './routes/pitches.index'
 import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
+import { Route as PitchesPitchIdRouteImport } from './routes/pitches.$pitchId'
 import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
 import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
@@ -83,6 +84,11 @@ const EquipoIndexRoute = EquipoIndexRouteImport.update({
   path: '/equipo/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PitchesPitchIdRoute = PitchesPitchIdRouteImport.update({
+  id: '/pitches/$pitchId',
+  path: '/pitches/$pitchId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingSellerRoute = OnboardingSellerRouteImport.update({
   id: '/onboarding/seller',
   path: '/onboarding/seller',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo/': typeof EquipoIndexRoute
   '/pitches/': typeof PitchesIndexRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo': typeof EquipoIndexRoute
   '/pitches': typeof PitchesIndexRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo/': typeof EquipoIndexRoute
   '/pitches/': typeof PitchesIndexRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/pitches/$pitchId'
     | '/equipo/'
     | '/pitches/'
     | '/nodo/$nodeId/practica'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/pitches/$pitchId'
     | '/equipo'
     | '/pitches'
     | '/nodo/$nodeId/practica'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/pitches/$pitchId'
     | '/equipo/'
     | '/pitches/'
     | '/nodo/$nodeId/practica'
@@ -258,6 +270,7 @@ export interface RootRouteChildren {
   OnboardingManagerRoute: typeof OnboardingManagerRoute
   OnboardingMapIntroRoute: typeof OnboardingMapIntroRoute
   OnboardingSellerRoute: typeof OnboardingSellerRoute
+  PitchesPitchIdRoute: typeof PitchesPitchIdRoute
   EquipoIndexRoute: typeof EquipoIndexRoute
   PitchesIndexRoute: typeof PitchesIndexRoute
 }
@@ -341,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipoIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pitches/$pitchId': {
+      id: '/pitches/$pitchId'
+      path: '/pitches/$pitchId'
+      fullPath: '/pitches/$pitchId'
+      preLoaderRoute: typeof PitchesPitchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/seller': {
       id: '/onboarding/seller'
       path: '/onboarding/seller'
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingManagerRoute: OnboardingManagerRoute,
   OnboardingMapIntroRoute: OnboardingMapIntroRoute,
   OnboardingSellerRoute: OnboardingSellerRoute,
+  PitchesPitchIdRoute: PitchesPitchIdRoute,
   EquipoIndexRoute: EquipoIndexRoute,
   PitchesIndexRoute: PitchesIndexRoute,
 }
