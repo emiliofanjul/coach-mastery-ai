@@ -1803,9 +1803,11 @@ function PracticaPage() {
                 });
               }
 
-              const currentNodeRow = await restGetMaybeSingle<{ world_id: number; order_index: number }>(
-                `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-              );
+              const currentNodeRow = unlocks
+                ? await restGetMaybeSingle<{ world_id: number; order_index: number }>(
+                    `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+                  )
+                : null;
 
               if (currentNodeRow) {
                 const nextNode = await restGetMaybeSingle<{ id: string }>(
