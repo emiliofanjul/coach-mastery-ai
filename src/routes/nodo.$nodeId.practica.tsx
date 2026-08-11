@@ -1869,6 +1869,57 @@ function PracticaPage() {
       </AnimatePresence>
       </div>
 
+      {closingGate && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 900,
+            background: "rgba(8,8,15,0.94)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1.5rem",
+            gap: 24,
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 560,
+              background: "#12121C",
+              border: "1px solid rgba(255,107,43,0.35)",
+              borderRadius: 14,
+              padding: "1.5rem",
+              fontFamily: "'DM Sans', sans-serif",
+              color: "#F0F0F5",
+              fontSize: "1rem",
+              lineHeight: 1.6,
+            }}
+          >
+            {closingGate}
+          </div>
+          <button
+            type="button"
+            onClick={() => closingGateResolveRef.current?.()}
+            style={{
+              background: "#FF6B2B",
+              border: "none",
+              color: "#FFFFFF",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: "0.95rem",
+              padding: "14px 26px",
+              borderRadius: 99,
+              cursor: "pointer",
+            }}
+          >
+            Ver mi análisis →
+          </button>
+        </div>
+      )}
+
       {showExitDialog && (
         <ExitDialog
           onCancel={() => setShowExitDialog(false)}
