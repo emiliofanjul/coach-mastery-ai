@@ -584,18 +584,18 @@ function PracticaPage() {
       setConnectionError("Tu navegador no soporta reconocimiento de voz.");
       return;
     }
-    const rec = new SR();
-    rec.lang = "es-ES";
-    rec.interimResults = true;
-    rec.continuous = false;
-    rec.maxAlternatives = 1;
 
+    // Estado del TURNO (no de la instancia de reconocimiento). El navegador
+    // cierra su propio reconocimiento tras ~1s de silencio; nosotros lo
+    // relanzamos y solo damos el turno por terminado cuando NUESTRO umbral
+    // de silencio se cumple. Así el vendedor puede pensar a media frase sin
+    // que la app le corte.
     let finalText = "";
     let sendTimer: ReturnType<typeof setTimeout> | null = null;
-    // Umbral de silencio antes de cerrar el turno:
-    //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras. 2-3s
-    //    de silencio es pensamiento, no fin de turno. Interrumpirlo entrena el
-    //    hábito contrario a RRR.
+    let turnClosed = false;
+    let stopped = false; // el usuario tocó el botón o se cortó la sesión
+
+    //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras.
     //  - i_do / otras fases: 2500ms.
     const baseSilenceMs = claudePhaseRef.current === "you_do" ? 3000 : 2500;
     // Ciclo extra si la frase parece incompleta (termina en conector o sin
@@ -626,57 +626,103 @@ function PracticaPage() {
         .pop() ?? "";
       return CONTINUATION_WORDS.has(lastWord);
     }
-    rec.onresult = (event: any) => {
-      let interim = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const r = event.results[i];
-        if (r.isFinal) finalText += r[0].transcript;
-        else interim += r[0].transcript;
-      }
-      const combined = finalText + interim;
-      setInterimTranscript(combined);
 
+    function finishTurn() {
+      if (turnClosed) return;
+      turnClosed = true;
       if (sendTimer) clearTimeout(sendTimer);
-      const waitMs = looksIncomplete(combined)
-        ? baseSilenceMs + continuationExtraMs
-        : baseSilenceMs;
-      sendTimer = setTimeout(() => {
-        try { rec.stop(); } catch {}
-      }, waitMs);
-    };
-    rec.onerror = (e: any) => {
-      console.error("[voice] STT error:", e?.error ?? e);
-      setIsUserListening(false);
-    };
-    rec.onend = () => {
-      if (sendTimer) clearTimeout(sendTimer);
-      setIsUserListening(false);
+      sendTimer = null;
+      const current = recognitionRef.current;
       recognitionRef.current = null;
+      try { current?.stop(); } catch {}
+      setIsUserListening(false);
+      setInterimTranscript("");
       // Pausar la grabación entre turnos: solo capturamos cuando el vendedor habla.
       pauseAudioCapture();
       const text = finalText.trim();
-      setInterimTranscript("");
       // Descartar turno del usuario si el Director ya cortó (carrera: user hablando
       // en paralelo mientras Director decidía cut).
       if (text && !cutRef.current && !sessionEndedRef.current) {
         void sendToCloser(text);
       }
-    };
+    }
 
-    recognitionRef.current = rec;
+    function scheduleFinish(combined: string) {
+      if (sendTimer) clearTimeout(sendTimer);
+      const waitMs = looksIncomplete(combined)
+        ? baseSilenceMs + continuationExtraMs
+        : baseSilenceMs;
+      sendTimer = setTimeout(finishTurn, waitMs);
+    }
+
+    function spawn() {
+      const rec = new SR();
+      rec.lang = "es-ES";
+      rec.interimResults = true;
+      // continuous: el navegador no cierra el turno por su cuenta al primer
+      // silencio corto. El corte lo decide NUESTRO temporizador.
+      rec.continuous = true;
+      rec.maxAlternatives = 1;
+
+      rec.onresult = (event: any) => {
+        let interim = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const r = event.results[i];
+          if (r.isFinal) finalText += r[0].transcript;
+          else interim += r[0].transcript;
+        }
+        const combined = finalText + interim;
+        setInterimTranscript(combined);
+        scheduleFinish(combined);
+      };
+
+      rec.onerror = (e: any) => {
+        const code = e?.error ?? e;
+        console.error("[voice] STT error:", code);
+        // "no-speech" / "aborted" son transitorios: el relanzado de onend
+        // mantiene el micrófono vivo hasta que se cumpla el umbral real.
+        if (code !== "no-speech" && code !== "aborted") {
+          stopped = true;
+          setIsUserListening(false);
+        }
+      };
+
+      rec.onend = () => {
+        if (turnClosed || stopped) return;
+        if (sessionEndedRef.current || cutRef.current) {
+          finishTurn();
+          return;
+        }
+        // El navegador cerró solo: relanzamos y seguimos escuchando.
+        try {
+          spawn();
+        } catch (err) {
+          console.error("[voice] STT respawn failed:", err);
+          finishTurn();
+        }
+      };
+
+      recognitionRef.current = rec;
+      rec.start();
+      // Si el turno lleva silencio absoluto desde el arranque, igual cerramos.
+      scheduleFinish(finalText);
+    }
+
     setInterimTranscript("");
     setIsUserListening(true);
     // Arrancar/reanudar la captura de audio: el mic ya está activo para STT,
     // aprovechamos el mismo momento para grabar solo el turno del vendedor.
     void startAudioCapture();
     try {
-      rec.start();
+      spawn();
     } catch (err) {
       console.error("[voice] rec.start failed:", err);
+      stopped = true;
       setIsUserListening(false);
       pauseAudioCapture();
     }
   }
+
 
   // Director (v2.0.0): corre después del turno del Actor en you_do.
   // Devuelve true si la sesión debe cortar (ya disparó cierre + evaluación).
