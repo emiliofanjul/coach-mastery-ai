@@ -104,6 +104,9 @@ function PracticaPage() {
   const [interimTranscript, setInterimTranscript] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<any>(null);
+  // Cierra el turno de voz en curso (envía lo transcrito y evita relanzar STT).
+  const finishVoiceTurnRef = useRef<null | (() => void)>(null);
+
   const conversationHistoryRef = useRef<{ role: string; content: string }[]>([]);
   const claudePhaseRef = useRef<"i_do" | "you_do" | "boss_sim" | "closing">("i_do");
   const sessionEndedRef = useRef(false);
