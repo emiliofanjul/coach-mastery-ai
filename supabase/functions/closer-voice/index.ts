@@ -185,8 +185,17 @@ REGLAS DE EVALUACIÓN:
 9. EVIDENCIA COMPLETA PARA FLAGS: un failure_criteria solo se marca si su patrón COMPLETO aparece literal en el transcript. Si la sesión fue cortada antes de que el patrón pudiera completarse, NO se marca.
 10. TERMINOLOGÍA DEL GUION: en observations y mision usa exactamente los nombres y términos que aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra.
 11. VERIFICACIÓN LITERAL: antes de afirmar que el vendedor hizo o no hizo algo, localiza la evidencia textual exacta en el transcript. Si no puedes citar la frase concreta, NO hagas la afirmación. Prohibido describir lo que el vendedor "no hizo" sin haber revisado su turno completo palabra por palabra.
+12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar "pitch_prematuro" cuando en ningún turno del vendedor aparece un producto, marca o motivo de venta.
 
-CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto):
+PASO 0 — EXTRACCIÓN ANTES DE JUICIO (obligatorio, va PRIMERO en el JSON):
+PRIMERO llena "analisis_turnos" copiando LITERALMENTE cada turno del vendedor. Solo turnos con role "user" — los turnos del cliente (role "assistant") NUNCA se evalúan ni se atribuyen al vendedor. Para cada turno anota su última frase literal y si CUMPLE o NO CUMPLE el criterio principal del nodo, con una línea de por qué.
+DESPUÉS de tener ese análisis completo, y SOLO basándote en él, calcula el score y escribe las observations.
+- Toda observación debe corresponder a un turno que aparezca en analisis_turnos con veredicto "no cumple".
+- Si un turno quedó como "cumple", está PROHIBIDO escribir una observación negativa sobre él.
+- Está PROHIBIDO contradecirte dentro de una misma observación (p. ej. afirmar que un turno no termina en pregunta y en la misma frase citar que sí cierra con interrogación). Si la evidencia dice que cumple, el veredicto es "cumple".
+- Si TODOS los turnos cumplen el criterio principal, el score NO puede ser bajo: la base corresponde a criterios ejecutados.
+
+CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto, después del PASO 0):
 
 PASO 1 — BASE por ejecución de success_criteria (empieza por lo que SÍ hizo):
 - Todos los criterios bien ejecutados → base 85-100
