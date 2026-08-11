@@ -2324,7 +2324,7 @@ function VoicePhase({
   const micDisabled = isAgentSpeaking;
   const micBg = isUserListening ? RED : ORANGE;
   const micLabel = isUserListening
-    ? "Closer está escuchando… toca de nuevo para enviar"
+    ? "Te escucho. Puedes pausar y seguir — toca para enviar ya."
     : isAgentSpeaking
       ? "Closer está hablando…"
       : isProcessing
@@ -2332,6 +2332,7 @@ function VoicePhase({
         : isIDo
           ? "Toca para responder como cliente"
           : "Toca para hablar";
+
 
   const [textDraft, setTextDraft] = useState("");
   const chatEndRef = useRef<HTMLDivElement | null>(null);
