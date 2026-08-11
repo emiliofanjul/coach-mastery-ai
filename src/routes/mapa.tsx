@@ -554,12 +554,18 @@ function MapaPage() {
                   const y = yForIndex(i, worldNodes.length);
                   const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
                   let tour: string | undefined;
-                  if (world.id === 0) {
-                    if (node.is_boss) tour = "boss-node";
-                    else if (status === "active") tour = "active-node";
-                    else if (status === "locked" || status === "available")
-                      tour = tour ?? "locked-node";
+                  if (world.id === firstWorldId) {
+                    if (node.is_boss && !tourTaken.has("boss-node")) tour = "boss-node";
+                    else if (status === "active" && !tourTaken.has("active-node"))
+                      tour = "active-node";
+                    else if (
+                      (status === "locked" || status === "available") &&
+                      !tourTaken.has("locked-node")
+                    )
+                      tour = "locked-node";
+                    if (tour) tourTaken.add(tour);
                   }
+
                   return (
                     <div
                       key={node.id}
