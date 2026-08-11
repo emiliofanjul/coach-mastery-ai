@@ -718,12 +718,48 @@ Deno.serve(async (req) => {
       );
       const flagsValid = Array.isArray(evaluation.flags_detected) && evaluation.flags_detected.every((f) => typeof f === "string");
       const cumplidosValid = Array.isArray(evaluation.criterios_cumplidos) && evaluation.criterios_cumplidos.every((c) => typeof c === "string");
-      if (!scoreOk || !obsValid || !flagsValid || !cumplidosValid || typeof evaluation.mision !== "string") {
+      const turnosValid = Array.isArray(evaluation.analisis_turnos) && (evaluation.analisis_turnos as any[]).every(
+        (t) =>
+          t && typeof t === "object" &&
+          typeof t.texto_literal === "string" &&
+          typeof t.ultima_frase === "string" &&
+          typeof t.veredicto === "string" &&
+          typeof t.por_que === "string",
+      );
+      if (!scoreOk || !obsValid || !flagsValid || !cumplidosValid || !turnosValid || typeof evaluation.mision !== "string") {
         return new Response(
           JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
+
+      // Auditoría: el análisis turno por turno se guarda en llm_calls.
+      logLlmCall({
+        phase,
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        latency_ms: claudeLatencyMs,
+        session_id: session_id ?? null,
+        analisis_turnos: evaluation.analisis_turnos,
+      });
+
+      // Guardarraíl anti-fabricación: una observación sobre un turno con
+      // veredicto "cumple" no puede existir. Si TODOS los turnos cumplen,
+      // se descartan los flags sin cita literal en analisis_turnos.
+      const turnosTexto = (evaluation.analisis_turnos as TurnAnalysis[])
+        .map((t) => (t.texto_literal ?? "").toLowerCase())
+        .join(" \n ");
+      const todosCumplen =
+        (evaluation.analisis_turnos as TurnAnalysis[]).length > 0 &&
+        (evaluation.analisis_turnos as TurnAnalysis[]).every((t) => /cumple/i.test(t.veredicto) && !/no\s+cumple/i.test(t.veredicto));
+      if (todosCumplen && evaluation.flags_detected.length > 0) {
+        console.warn("[closer-voice] flags descartados: todos los turnos cumplen", {
+          session_id: session_id ?? null,
+          flags: evaluation.flags_detected,
+        });
+        evaluation.flags_detected = [];
+      }
+      void turnosTexto;
 
       // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
       const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
