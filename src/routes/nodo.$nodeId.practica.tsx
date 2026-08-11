@@ -396,6 +396,13 @@ function PracticaPage() {
   // Helpers para el nuevo flujo de voz ───────────────────────
 
   function stopRecognition() {
+    const finish = finishVoiceTurnRef.current;
+    if (finish) {
+      // Cierra el turno de forma controlada: detiene el reconocimiento,
+      // evita el relanzado automático y envía lo dicho hasta ahora.
+      finish();
+      return;
+    }
     try {
       recognitionRef.current?.stop?.();
     } catch {
@@ -404,6 +411,7 @@ function PracticaPage() {
     recognitionRef.current = null;
     setIsUserListening(false);
   }
+
 
   function stopAudio() {
     try {
