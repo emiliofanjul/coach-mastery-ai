@@ -2930,8 +2930,12 @@ function FeedbackPhase({
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minHeight: 0 }}>
         <VictoryScreen
           stars={stars}
-          title="¡Práctica completada!"
-          subtitle="Sigue avanzando."
+          title={stars >= 2 ? "¡Práctica completada!" : "Práctica registrada."}
+          subtitle={
+            stars >= 2
+              ? "Sigue avanzando."
+              : "Con 2 estrellas se abre el siguiente nodo. Repite este cuando quieras."
+          }
           buttonText="Volver al mapa →"
           onContinue={() => onContinue(stars)}
         />
