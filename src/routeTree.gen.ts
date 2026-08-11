@@ -18,7 +18,9 @@ import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PitchesIndexRouteImport } from './routes/pitches.index'
 import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
+import { Route as PitchesPitchIdRouteImport } from './routes/pitches.$pitchId'
 import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
 import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
@@ -72,9 +74,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PitchesIndexRoute = PitchesIndexRouteImport.update({
+  id: '/pitches/',
+  path: '/pitches/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EquipoIndexRoute = EquipoIndexRouteImport.update({
   id: '/equipo/',
   path: '/equipo/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PitchesPitchIdRoute = PitchesPitchIdRouteImport.update({
+  id: '/pitches/$pitchId',
+  path: '/pitches/$pitchId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingSellerRoute = OnboardingSellerRouteImport.update({
@@ -128,7 +140,9 @@ export interface FileRoutesByFullPath {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo/': typeof EquipoIndexRoute
+  '/pitches/': typeof PitchesIndexRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
@@ -147,7 +161,9 @@ export interface FileRoutesByTo {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo': typeof EquipoIndexRoute
+  '/pitches': typeof PitchesIndexRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
@@ -167,7 +183,9 @@ export interface FileRoutesById {
   '/onboarding/manager': typeof OnboardingManagerRoute
   '/onboarding/map-intro': typeof OnboardingMapIntroRoute
   '/onboarding/seller': typeof OnboardingSellerRoute
+  '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo/': typeof EquipoIndexRoute
+  '/pitches/': typeof PitchesIndexRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
@@ -188,7 +206,9 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/pitches/$pitchId'
     | '/equipo/'
+    | '/pitches/'
     | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   fileRoutesByTo: FileRoutesByTo
@@ -207,7 +227,9 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/pitches/$pitchId'
     | '/equipo'
+    | '/pitches'
     | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   id:
@@ -226,7 +248,9 @@ export interface FileRouteTypes {
     | '/onboarding/manager'
     | '/onboarding/map-intro'
     | '/onboarding/seller'
+    | '/pitches/$pitchId'
     | '/equipo/'
+    | '/pitches/'
     | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   fileRoutesById: FileRoutesById
@@ -246,7 +270,9 @@ export interface RootRouteChildren {
   OnboardingManagerRoute: typeof OnboardingManagerRoute
   OnboardingMapIntroRoute: typeof OnboardingMapIntroRoute
   OnboardingSellerRoute: typeof OnboardingSellerRoute
+  PitchesPitchIdRoute: typeof PitchesPitchIdRoute
   EquipoIndexRoute: typeof EquipoIndexRoute
+  PitchesIndexRoute: typeof PitchesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -314,11 +340,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pitches/': {
+      id: '/pitches/'
+      path: '/pitches'
+      fullPath: '/pitches/'
+      preLoaderRoute: typeof PitchesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/equipo/': {
       id: '/equipo/'
       path: '/equipo'
       fullPath: '/equipo/'
       preLoaderRoute: typeof EquipoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pitches/$pitchId': {
+      id: '/pitches/$pitchId'
+      path: '/pitches/$pitchId'
+      fullPath: '/pitches/$pitchId'
+      preLoaderRoute: typeof PitchesPitchIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding/seller': {
@@ -402,7 +442,9 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingManagerRoute: OnboardingManagerRoute,
   OnboardingMapIntroRoute: OnboardingMapIntroRoute,
   OnboardingSellerRoute: OnboardingSellerRoute,
+  PitchesPitchIdRoute: PitchesPitchIdRoute,
   EquipoIndexRoute: EquipoIndexRoute,
+  PitchesIndexRoute: PitchesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

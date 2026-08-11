@@ -10,7 +10,7 @@ import {
 } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon } from "lucide-react";
+import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon, FileText } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
@@ -195,7 +195,9 @@ type NavItem = { to: string; label: string; icon: typeof Store };
 
 const COMMON_ITEMS: NavItem[] = [
   { to: "/mapa", label: "Mapa", icon: MapIcon },
+  { to: "/pitches", label: "Mis Pitches", icon: FileText },
 ];
+
 
 const MANAGER_ITEMS: NavItem[] = [
   { to: "/mi-empresa", label: "Mi Empresa", icon: Store },

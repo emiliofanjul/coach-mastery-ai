@@ -520,6 +520,60 @@ export type Database = {
           },
         ]
       }
+      company_pitches: {
+        Row: {
+          channel: string
+          client_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          published_at: string | null
+          status: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          channel?: string
+          client_type: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          channel?: string
+          client_type?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_pitches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_pitches_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_usage: {
         Row: {
           company_id: string
@@ -1063,6 +1117,149 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "practice_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pitch_feedback: {
+        Row: {
+          classification: string | null
+          closer_response: string | null
+          created_at: string
+          id: string
+          manager_message: string | null
+          outcome: string | null
+          pitch_id: string
+          section_id: string | null
+        }
+        Insert: {
+          classification?: string | null
+          closer_response?: string | null
+          created_at?: string
+          id?: string
+          manager_message?: string | null
+          outcome?: string | null
+          pitch_id: string
+          section_id?: string | null
+        }
+        Update: {
+          classification?: string | null
+          closer_response?: string | null
+          created_at?: string
+          id?: string
+          manager_message?: string | null
+          outcome?: string | null
+          pitch_id?: string
+          section_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pitch_feedback_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "company_pitches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pitch_feedback_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "pitch_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pitch_sections: {
+        Row: {
+          alternatives: Json
+          content: string | null
+          created_at: string
+          edited_by_manager: boolean
+          id: string
+          order_index: number
+          pitch_id: string
+          rationale: string | null
+          section_key: string
+          section_kind: string
+          skill_ids: string[]
+          step: number
+        }
+        Insert: {
+          alternatives?: Json
+          content?: string | null
+          created_at?: string
+          edited_by_manager?: boolean
+          id?: string
+          order_index: number
+          pitch_id: string
+          rationale?: string | null
+          section_key: string
+          section_kind?: string
+          skill_ids?: string[]
+          step: number
+        }
+        Update: {
+          alternatives?: Json
+          content?: string | null
+          created_at?: string
+          edited_by_manager?: boolean
+          id?: string
+          order_index?: number
+          pitch_id?: string
+          rationale?: string | null
+          section_key?: string
+          section_kind?: string
+          skill_ids?: string[]
+          step?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pitch_sections_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "company_pitches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pitch_versions: {
+        Row: {
+          id: string
+          pitch_id: string
+          published_at: string
+          published_by: string | null
+          snapshot: Json
+          version: number
+        }
+        Insert: {
+          id?: string
+          pitch_id: string
+          published_at?: string
+          published_by?: string | null
+          snapshot?: Json
+          version: number
+        }
+        Update: {
+          id?: string
+          pitch_id?: string
+          published_at?: string
+          published_by?: string | null
+          snapshot?: Json
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pitch_versions_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "company_pitches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pitch_versions_published_by_fkey"
+            columns: ["published_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
