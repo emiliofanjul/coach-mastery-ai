@@ -135,6 +135,10 @@ function PracticaPage() {
   const cutRef = useRef(false);
   // Razón del corte del Director — se pasa al evaluador y define el closing.
   const cutReasonRef = useRef<string | null>(null);
+  // Puerta del cierre: el mensaje final del Director se queda en pantalla hasta
+  // que el vendedor toca "Ver mi análisis →" (o pasan 20s como red de seguridad).
+  const [closingGate, setClosingGate] = useState<string | null>(null);
+  const closingGateResolveRef = useRef<(() => void) | null>(null);
   // AbortControllers para requests en vuelo — se cancelan en hardStop().
   const actorFetchAbortRef = useRef<AbortController | null>(null);
   const ttsFetchAbortRef = useRef<AbortController | null>(null);
