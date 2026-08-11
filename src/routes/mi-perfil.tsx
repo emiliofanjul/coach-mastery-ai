@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app/AppShell";
+import { ImageUploader } from "@/components/app/ImageUploader";
+
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
