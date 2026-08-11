@@ -2503,11 +2503,19 @@ function VoicePhase({
               <CloserCharacter size={120} state="normal" />
             </div>
 
+            {isUserListening && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: RED }}>
+                <span style={{ width: 8, height: 8, borderRadius: 99, background: RED, animation: "practica-pulse 1.2s ease-in-out infinite" }} />
+                Grabando… toma tu tiempo
+              </div>
+            )}
+
             {interimTranscript && (
               <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", textAlign: "center", maxWidth: 480, minHeight: 20 }}>
                 "{interimTranscript}"
               </div>
             )}
+
 
             {connectionError && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 8 }}>
