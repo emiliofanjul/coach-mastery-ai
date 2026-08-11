@@ -429,7 +429,7 @@ function MapaPage() {
               <section
                 key={world.id}
                 ref={world.id === 1 ? mundo0Ref : undefined}
-                data-tour={world.id === 1 ? "world-next" : undefined}
+                data-tour={world.id === nextWorldId ? "world-next" : undefined}
                 style={{
                   position: "relative",
                   background: world.color ? `${world.color}14` : "transparent",
