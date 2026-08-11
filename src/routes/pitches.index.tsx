@@ -6,7 +6,7 @@ import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGetMaybeSingle } from "@/lib/supabase-rest";
 import { CLIENT_TYPES, CHANNELS, fetchPublishedPitches, type CompanyPitch } from "@/lib/pitches";
 
-export const Route = createFileRoute("/pitches")({
+export const Route = createFileRoute("/pitches/")({
   head: () => ({
     meta: [
       { title: "Mis Pitches — Closer" },
