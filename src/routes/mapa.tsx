@@ -405,7 +405,16 @@ function MapaPage() {
 
       {/* Apilados de abajo hacia arriba: render reverso */}
       <div style={{ display: "flex", flexDirection: "column-reverse" }}>
-        {(() => { const unlockedWorlds = computeUnlockedWorlds(worlds, nodes, progress); return worlds.map((world) => {
+        {(() => {
+          const unlockedWorlds = computeUnlockedWorlds(worlds, nodes, progress);
+          // El tutorial resalta elementos reales del mapa. Los mundos cambian
+          // (ya no existe el "Mundo 0"), así que resolvemos los targets por
+          // posición y estado, nunca por un id fijo.
+          const sortedWorlds = [...worlds].sort((a, b) => a.order_index - b.order_index);
+          const firstWorldId = sortedWorlds[0]?.id;
+          const nextWorldId = sortedWorlds[1]?.id;
+          const tourTaken = new Set<string>();
+          return worlds.map((world) => {
           const worldNodes = nodes
             .filter((n) => n.world_id === world.id)
             .sort((a, b) => a.order_index - b.order_index);
@@ -420,7 +429,7 @@ function MapaPage() {
               <section
                 key={world.id}
                 ref={world.id === 1 ? mundo0Ref : undefined}
-                data-tour={world.id === 1 ? "world-next" : undefined}
+                data-tour={world.id === nextWorldId ? "world-next" : undefined}
                 style={{
                   position: "relative",
                   background: world.color ? `${world.color}14` : "transparent",
@@ -457,7 +466,8 @@ function MapaPage() {
             <section
               key={world.id}
               ref={isCurrent ? mundo0Ref : undefined}
-              data-tour={world.id === 1 ? "world-next" : undefined}
+              data-tour={world.id === nextWorldId ? "world-next" : undefined}
+
               style={{
                 position: "relative",
                 background: world.color
@@ -545,12 +555,18 @@ function MapaPage() {
                   const y = yForIndex(i, worldNodes.length);
                   const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
                   let tour: string | undefined;
-                  if (world.id === 0) {
-                    if (node.is_boss) tour = "boss-node";
-                    else if (status === "active") tour = "active-node";
-                    else if (status === "locked" || status === "available")
-                      tour = tour ?? "locked-node";
+                  if (world.id === firstWorldId) {
+                    if (node.is_boss && !tourTaken.has("boss-node")) tour = "boss-node";
+                    else if (status === "active" && !tourTaken.has("active-node"))
+                      tour = "active-node";
+                    else if (
+                      (status === "locked" || status === "available") &&
+                      !tourTaken.has("locked-node")
+                    )
+                      tour = "locked-node";
+                    if (tour) tourTaken.add(tour);
                   }
+
                   return (
                     <div
                       key={node.id}
@@ -593,7 +609,9 @@ function MapaPage() {
               </div>
             </section>
           );
-        }); })()}
+          });
+        })()}
+
       </div>
 
       <NodeSheet

@@ -29,8 +29,10 @@ export function MapTutorial({ open, onClose }: Props) {
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [showFinal, setShowFinal] = useState(false);
+  const [visibleSteps, setVisibleSteps] = useState<Step[] | null>(null);
 
-  const steps: Step[] = [
+  const allSteps: Step[] = [
+
     {
       target: { selector: "[data-tour='active-node']" },
       text:
@@ -63,6 +65,28 @@ export function MapTutorial({ open, onClose }: Props) {
       state: "support",
     },
   ];
+
+  // Al abrir, nos quedamos solo con los pasos cuyo elemento existe realmente
+  // en el mapa. Si un target no está montado, ese paso se salta en vez de
+  // mostrar una pantalla negra sin nada resaltado.
+  useEffect(() => {
+    if (!open) {
+      setStep(0);
+      setShowFinal(false);
+      setVisibleSteps(null);
+      return;
+    }
+    const filtered = allSteps.filter((s) => {
+      if (!("selector" in s.target)) return true;
+      return !!document.querySelector(s.target.selector);
+    });
+    setStep(0);
+    setShowFinal(false);
+    setVisibleSteps(filtered.length > 0 ? filtered : allSteps);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const steps = visibleSteps ?? allSteps;
 
   // Calcular bounding box del target del paso actual
   useLayoutEffect(() => {
@@ -102,16 +126,10 @@ export function MapTutorial({ open, onClose }: Props) {
       window.removeEventListener("resize", compute);
       window.removeEventListener("scroll", compute, true);
     };
-  }, [step, open]);
+  }, [step, open, steps]);
 
-  useEffect(() => {
-    if (!open) {
-      setStep(0);
-      setShowFinal(false);
-    }
-  }, [open]);
+  if (!open || !steps[step]) return null;
 
-  if (!open) return null;
 
   const handleNext = () => {
     if (step < steps.length - 1) {

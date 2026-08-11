@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app/AppShell";
+import { ImageUploader } from "@/components/app/ImageUploader";
+
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
@@ -16,7 +18,7 @@ export const Route = createFileRoute("/mi-perfil")({
   component: MiPerfilPage,
 });
 
-type ProfileRow = { role: string; company_id: string | null; full_name: string | null; email: string | null };
+type ProfileRow = { role: string; company_id: string | null; full_name: string | null; email: string | null; avatar_url: string | null };
 type CompanyRow = { id: string; name: string | null; is_personal: boolean | null };
 
 function MiPerfilPage() {
@@ -45,8 +47,9 @@ function MiPerfilPage() {
       }
       try {
         const p = await restGetMaybeSingle<ProfileRow>(
-          `profiles?select=role,company_id,full_name,email&id=eq.${session.userId}&limit=1`,
+          `profiles?select=role,company_id,full_name,email,avatar_url&id=eq.${session.userId}&limit=1`,
         );
+
         let c: CompanyRow | null = null;
         if (p?.company_id) {
           c = await restGetMaybeSingle<CompanyRow>(
@@ -71,7 +74,23 @@ function MiPerfilPage() {
   const isPersonal = company?.is_personal === true;
   const canJoin = isPersonal || (profile?.role !== "manager" && !profile?.company_id);
 
+  async function handleAvatarChange(path: string) {
+    const session = getStoredSupabaseSession();
+    if (!session) return;
+    try {
+      await restMutate(`profiles?id=eq.${session.userId}`, {
+        method: "PATCH",
+        body: { avatar_url: path },
+      });
+      setProfile((p) => (p ? { ...p, avatar_url: path } : p));
+      toast.success("Foto de perfil actualizada.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo guardar la foto.");
+    }
+  }
+
   async function handleCheck() {
+
     const c = code.trim().toUpperCase();
     if (c.length < 4) return;
     setChecking(true);
@@ -151,7 +170,18 @@ function MiPerfilPage() {
       <AppHeader title="Mi Perfil" subtitle={profile?.email ?? undefined} />
       <div className="mx-auto w-full max-w-[560px] px-5 pt-2 pb-16">
         <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 mb-4">
+          <ImageUploader
+            value={profile?.avatar_url ?? null}
+            kind="avatar"
+            label="Foto de perfil"
+            hint="Se redimensiona a 384 px y se guarda al subirla."
+            onChange={handleAvatarChange}
+          />
+        </div>
+
+        <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 mb-4">
           <div className="text-xs uppercase tracking-[0.06em] text-white/40 font-['DM_Sans']">Nombre</div>
+
           <div className="mt-1 font-['DM_Sans'] text-white">{profile?.full_name ?? "—"}</div>
           <div className="mt-3 text-xs uppercase tracking-[0.06em] text-white/40 font-['DM_Sans']">Correo</div>
           <div className="mt-1 font-['DM_Sans'] text-white">{profile?.email ?? "—"}</div>
