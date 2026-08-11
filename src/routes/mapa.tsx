@@ -405,7 +405,16 @@ function MapaPage() {
 
       {/* Apilados de abajo hacia arriba: render reverso */}
       <div style={{ display: "flex", flexDirection: "column-reverse" }}>
-        {(() => { const unlockedWorlds = computeUnlockedWorlds(worlds, nodes, progress); return worlds.map((world) => {
+        {(() => {
+          const unlockedWorlds = computeUnlockedWorlds(worlds, nodes, progress);
+          // El tutorial resalta elementos reales del mapa. Los mundos cambian
+          // (ya no existe el "Mundo 0"), así que resolvemos los targets por
+          // posición y estado, nunca por un id fijo.
+          const sortedWorlds = [...worlds].sort((a, b) => a.order_index - b.order_index);
+          const firstWorldId = sortedWorlds[0]?.id;
+          const nextWorldId = sortedWorlds[1]?.id;
+          const tourTaken = new Set<string>();
+          return worlds.map((world) => {
           const worldNodes = nodes
             .filter((n) => n.world_id === world.id)
             .sort((a, b) => a.order_index - b.order_index);
