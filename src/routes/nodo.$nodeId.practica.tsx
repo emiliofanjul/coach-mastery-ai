@@ -1764,12 +1764,17 @@ function PracticaPage() {
 
               const previousStars = (existingProgress?.stars as number | null) ?? 0;
               const bestStars = Math.max(previousStars, stars);
+              // Umbral de progresión: se necesitan 2 estrellas (score ≥ 70)
+              // para dar el nodo por dominado y abrir el siguiente. Con 1
+              // estrella el nodo queda en curso y se puede repetir.
+              const unlocks = bestStars >= 2;
+              const progressStatus = unlocks ? "done" : "current";
 
               if (existingProgress?.id) {
                 await restMutate(`node_progress?id=eq.${existingProgress.id}`, {
                   method: "PATCH",
                   body: {
-                    status: "done",
+                    status: progressStatus,
                     stars: bestStars,
                     last_practiced_at: new Date().toISOString(),
                   },
@@ -1781,7 +1786,7 @@ function PracticaPage() {
                   seller_id: sellerData.id,
                   company_id: sellerData.company_id,
                   node_id: nodeId,
-                  status: "done",
+                  status: progressStatus,
                   stars: bestStars,
                   last_practiced_at: new Date().toISOString(),
                   },
