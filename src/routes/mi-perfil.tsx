@@ -16,7 +16,7 @@ export const Route = createFileRoute("/mi-perfil")({
   component: MiPerfilPage,
 });
 
-type ProfileRow = { role: string; company_id: string | null; full_name: string | null; email: string | null };
+type ProfileRow = { role: string; company_id: string | null; full_name: string | null; email: string | null; avatar_url: string | null };
 type CompanyRow = { id: string; name: string | null; is_personal: boolean | null };
 
 function MiPerfilPage() {
