@@ -1,0 +1,1 @@
+ALTER TABLE public.llm_calls ADD COLUMN IF NOT EXISTS analisis_turnos jsonb;

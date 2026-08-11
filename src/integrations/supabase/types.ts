@@ -639,6 +639,7 @@ export type Database = {
       }
       llm_calls: {
         Row: {
+          analisis_turnos: Json | null
           created_at: string
           event_id: string | null
           id: string
@@ -651,6 +652,7 @@ export type Database = {
           session_id: string | null
         }
         Insert: {
+          analisis_turnos?: Json | null
           created_at?: string
           event_id?: string | null
           id?: string
@@ -663,6 +665,7 @@ export type Database = {
           session_id?: string | null
         }
         Update: {
+          analisis_turnos?: Json | null
           created_at?: string
           event_id?: string | null
           id?: string
