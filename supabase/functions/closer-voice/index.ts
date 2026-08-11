@@ -223,8 +223,17 @@ REGLAS DURAS DE PUNTUACIÓN:
 - Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
 - Nunca hundas el score por un solo minor si los criterios centrales están presentes.
 
-CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera:
+CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_turnos" es OBLIGATORIO y va PRIMERO:
 {
+  "analisis_turnos": [
+    {
+      "turno": <entero, 1 = primer turno del vendedor>,
+      "texto_literal": "<el turno del VENDEDOR (role user), copiado tal cual, sin resumir>",
+      "ultima_frase": "<la última frase de ese turno, literal>",
+      "veredicto": "<cumple | no cumple>",
+      "por_que": "<una línea>"
+    }
+  ],
   "score": <entero 0-100>,
   "observations": [
     {
