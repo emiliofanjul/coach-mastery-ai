@@ -74,7 +74,23 @@ function MiPerfilPage() {
   const isPersonal = company?.is_personal === true;
   const canJoin = isPersonal || (profile?.role !== "manager" && !profile?.company_id);
 
+  async function handleAvatarChange(path: string) {
+    const session = getStoredSupabaseSession();
+    if (!session) return;
+    try {
+      await restMutate(`profiles?id=eq.${session.userId}`, {
+        method: "PATCH",
+        body: { avatar_url: path },
+      });
+      setProfile((p) => (p ? { ...p, avatar_url: path } : p));
+      toast.success("Foto de perfil actualizada.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo guardar la foto.");
+    }
+  }
+
   async function handleCheck() {
+
     const c = code.trim().toUpperCase();
     if (c.length < 4) return;
     setChecking(true);
