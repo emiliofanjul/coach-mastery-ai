@@ -410,7 +410,7 @@ async function callClaude(admin: any, system: string, apiKey: string): Promise<s
       },
       body: JSON.stringify({
         model: PITCH_MODEL,
-        max_tokens: 8000,
+        max_tokens: 16000,
         stream: true,
         system,
         messages: [{ role: "user", content: "Genera el pitch ahora. Solo el objeto JSON." }],
