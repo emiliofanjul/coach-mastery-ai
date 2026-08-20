@@ -7,13 +7,18 @@ export const PITCH_PROMPT_VERSION = "pitch-v1.0.0";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
 
-export const PITCH_STEPS_SPEC: Array<{ step: number; key: string; kind: "guion" | "municion" }> = [
-  { step: 1, key: "introduccion", kind: "guion" },
-  { step: 2, key: "historia_breve", kind: "guion" },
-  { step: 3, key: "descubrimiento", kind: "municion" },
-  { step: 4, key: "presentacion", kind: "guion" },
-  { step: 5, key: "cierre", kind: "guion" },
-  { step: 6, key: "consolidacion", kind: "guion" },
+export const PITCH_STEPS_SPEC: Array<{
+  step: number;
+  key: string;
+  kind: "guion" | "municion";
+  world: number;
+}> = [
+  { step: 1, key: "introduccion", kind: "guion", world: 1 },
+  { step: 2, key: "historia_breve", kind: "guion", world: 2 },
+  { step: 3, key: "descubrimiento", kind: "municion", world: 3 },
+  { step: 4, key: "presentacion", kind: "guion", world: 4 },
+  { step: 5, key: "cierre", kind: "guion", world: 5 },
+  { step: 6, key: "consolidacion", kind: "guion", world: 6 },
 ];
 
 export function buildPitchPrompt(args: {
@@ -225,13 +230,14 @@ function words(s: string): number {
 /** PASO 3 — las 12 validaciones. Devuelve la lista de fallos (vacía = pasa). */
 export function validatePitch(
   parsed: any,
-  ctx: { validSkillIds: Set<string>; brain: string; clientType: string },
+  ctx: { validSkillIds: Set<string>; brain: string; clientType: string; only?: string },
 ): string[] {
   const fails: string[] = [];
   const sections: any[] = Array.isArray(parsed?.sections) ? parsed.sections : [];
 
-  // 1. Falta algún paso de los 6
+  // 1. Falta algún paso de los 6 (o el único esperado, en modo sección)
   for (const s of PITCH_STEPS_SPEC) {
+    if (ctx.only && s.key !== ctx.only) continue;
     if (!sections.some((x) => x?.section_key === s.key)) {
       fails.push(`V1: falta el paso ${s.step} (${s.key})`);
     }
@@ -357,7 +363,7 @@ export function validatePitch(
     const cText = String(cierre.content ?? "");
     const tieneResumen =
       UNITS.test(cText) ||
-      /(entonces (lleva|le mando|serían|van)|le resumo|quedamos con|lo que lleva|en lugar de las de siempre)/i.test(
+      /(entonces (lleva|le mando|serían|van)|le resumo|resumen del pedido|no se me vaya a olvidar|le agrego|\[?\s*(enumera|cantidad)[^\]]*\]|quedamos con|lo que lleva|en lugar de las de siempre)/i.test(
         cText,
       );
     if (!tieneResumen) fails.push("V10: el cierre no trae resumen del pedido");
@@ -475,37 +481,53 @@ export type GeneratePitchResult =
   | { ok: true; generated: any; prompt_version: string; dry_run?: boolean }
   | { ok: false; error: string; failed_validations?: string[]; detail?: string };
 
-/** PASO A→D completo. `dryRun` devuelve el JSON sin persistir. */
-export async function runPitchGeneration(args: {
-  pitchId: string;
-  companyId?: string | null;
-  dryRun?: boolean;
-}): Promise<GeneratePitchResult> {
-  const apiKey = process.env['ANTHROPIC_API_KEY'];
-  if (!apiKey) return { ok: false, error: "missing_api_key" };
+export type GenerateSectionResult =
+  | {
+      ok: true;
+      step: number;
+      section_key: string;
+      section: any;
+      missing_data: string[];
+      prompt_version: string;
+      dry_run?: boolean;
+    }
+  | {
+      ok: false;
+      step: number;
+      section_key?: string;
+      error: string;
+      failed_validations?: string[];
+      detail?: string;
+    };
 
-  const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
-
-  const { data: pitch } = await admin
-    .from("company_pitches")
-    .select("id, company_id, client_type, channel")
-    .eq("id", args.pitchId)
-    .maybeSingle();
-  if (!pitch) return { ok: false, error: "pitch_not_found" };
-  if (args.companyId && pitch.company_id !== args.companyId) {
-    return { ok: false, error: "forbidden" };
-  }
-
-  // PASO A — doctrina VIVA
-  const [skillsRes, cardsRes, companyRes] = await Promise.all([
+/** Doctrina VIVA acotada: skills completas + tarjetas SOLO del mundo del paso. */
+async function loadContext(admin: any, pitch: any, world: number) {
+  const [skillsRes, nodesRes, companyRes] = await Promise.all([
     admin
       .from("skills")
       .select("id, code, name, short_description, category, world_id_introduced")
       .eq("status", "active")
       .order("world_id_introduced", { ascending: true }),
-    admin.from("node_cards").select("node_id, title, body, card_type").in("card_type", ["concept", "why_it_works"]),
-    admin.from("companies").select("name, company_sales_brain").eq("id", pitch.company_id).maybeSingle(),
+    admin.from("nodes").select("id").eq("world_id", world).eq("node_type", "knowledge"),
+    admin
+      .from("companies")
+      .select("name, company_sales_brain")
+      .eq("id", pitch.company_id)
+      .maybeSingle(),
   ]);
+
+  const nodeIds = ((nodesRes.data ?? []) as any[]).map((n) => String(n.id));
+  let cards: any[] = [];
+  if (nodeIds.length > 0) {
+    const cardsRes = await admin
+      .from("node_cards")
+      .select("node_id, title, body, card_type, card_order")
+      .in("node_id", nodeIds)
+      .in("card_type", ["concept", "why_it_works"])
+      .order("node_id", { ascending: true })
+      .order("card_order", { ascending: true });
+    cards = (cardsRes.data ?? []) as any[];
+  }
 
   const skillList = (skillsRes.data ?? []) as any[];
   const validSkillIds = new Set(skillList.map((s) => String(s.id)));
@@ -517,16 +539,68 @@ export async function runPitchGeneration(args: {
         }`,
     )
     .join("\n");
-  const cardsBlock = ((cardsRes.data ?? []) as any[])
+  const cardsBlock = cards
     .map((c) => `[${c.node_id} · ${c.card_type}] ${c.title ?? ""}\n${c.body ?? ""}`)
     .join("\n\n");
   const brain = JSON.stringify(
-    { empresa: (companyRes.data as any)?.name, brain: (companyRes.data as any)?.company_sales_brain },
+    {
+      empresa: (companyRes.data as any)?.name,
+      brain: (companyRes.data as any)?.company_sales_brain,
+    },
     null,
     2,
   );
 
-  const system = buildPitchPrompt({
+  return { validSkillIds, skillsBlock, cardsBlock, brain };
+}
+
+/** Genera UNA sección. Prompt acotado al mundo del paso + secciones previas. */
+export async function runPitchSection(args: {
+  pitchId: string;
+  step: number;
+  companyId?: string | null;
+  dryRun?: boolean;
+}): Promise<GenerateSectionResult> {
+  const spec = PITCH_STEPS_SPEC.find((s) => s.step === args.step);
+  if (!spec) return { ok: false, step: args.step, error: "bad_step" };
+
+  const apiKey = process.env['ANTHROPIC_API_KEY'];
+  if (!apiKey) return { ok: false, step: args.step, error: "missing_api_key" };
+
+  const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
+
+  const { data: pitch } = await admin
+    .from("company_pitches")
+    .select("id, company_id, client_type, channel")
+    .eq("id", args.pitchId)
+    .maybeSingle();
+  if (!pitch) return { ok: false, step: args.step, error: "pitch_not_found" };
+  if (args.companyId && pitch.company_id !== args.companyId) {
+    return { ok: false, step: args.step, error: "forbidden" };
+  }
+
+  const { validSkillIds, skillsBlock, cardsBlock, brain } = await loadContext(
+    admin,
+    pitch,
+    spec.world,
+  );
+
+  // Contexto de coherencia: solo el content de las secciones ya escritas.
+  const { data: prevRows } = await admin
+    .from("pitch_sections")
+    .select("step, section_key, content")
+    .eq("pitch_id", args.pitchId)
+    .lt("step", spec.step)
+    .order("step", { ascending: true });
+  const prev = ((prevRows ?? []) as any[]).filter((r) => r.content);
+  const prevBlock =
+    prev.length > 0
+      ? `═══ SECCIONES YA ESCRITAS DE ESTE MISMO PITCH ═══\nÚsalas para mantener la coherencia: lo que escribas ahora tiene que conectar con esto. No las repitas ni las reescribas.\n\n${prev
+          .map((r) => `── ${r.step}. ${r.section_key} ──\n${r.content}`)
+          .join("\n\n")}`
+      : "";
+
+  const base = buildPitchPrompt({
     skillsBlock,
     cardsBlock,
     brain,
@@ -534,8 +608,28 @@ export async function runPitchGeneration(args: {
     channel: String(pitch.channel),
   });
 
-  // PASO B/C — generar + validar, con un reintento
-  let parsed: any = null;
+  const scope = `═══ ALCANCE DE ESTA LLAMADA ═══
+
+El pitch se escribe por partes. En esta llamada escribes ÚNICAMENTE el
+paso ${spec.step}: ${spec.key} (section_kind "${spec.kind}"). No escribas
+los otros pasos.
+
+${prevBlock}
+
+FORMATO DE SALIDA (sustituye al anterior): responde ÚNICAMENTE con este
+objeto JSON, sin texto alrededor y sin markdown:
+
+{
+  "section": { ...el objeto de sección con la misma forma descrita arriba,
+                con "step": ${spec.step}, "section_key": "${spec.key}",
+                "section_kind": "${spec.kind}" },
+  "missing_data": ["lo que te falta saber para afinar ESTA sección"]
+}`;
+
+  const system = `${base}\n\n${scope}`;
+
+  let section: any = null;
+  let missing: string[] = [];
   let fails: string[] = [];
   for (let attempt = 1; attempt <= 2; attempt++) {
     const prompt =
@@ -548,57 +642,144 @@ export async function runPitchGeneration(args: {
     try {
       raw = await callClaude(admin, prompt, apiKey);
     } catch (e) {
-      return { ok: false, error: "model_error", detail: String((e as Error)?.message ?? e) };
+      return {
+        ok: false,
+        step: spec.step,
+        section_key: spec.key,
+        error: "model_error",
+        detail: String((e as Error)?.message ?? e),
+      };
     }
+    let parsed: any = null;
     try {
       parsed = JSON.parse(stripFence(raw));
     } catch {
-      parsed = null;
       fails = ["V0: la respuesta no es JSON válido"];
       continue;
     }
-    fails = validatePitch(parsed, { validSkillIds, brain, clientType: String(pitch.client_type) });
+    section = parsed?.section ?? (Array.isArray(parsed?.sections) ? parsed.sections[0] : null);
+    missing = Array.isArray(parsed?.missing_data) ? parsed.missing_data : [];
+    if (!section) {
+      fails = ["V0: la respuesta no trae la sección"];
+      continue;
+    }
+    section.step = spec.step;
+    section.section_key = spec.key;
+    fails = validatePitch(
+      { sections: [section] },
+      { validSkillIds, brain, clientType: String(pitch.client_type), only: spec.key },
+    );
     if (fails.length === 0) break;
   }
 
-  if (!parsed || fails.length > 0) {
-    return { ok: false, error: "validation_failed", failed_validations: fails };
+  if (!section || fails.length > 0) {
+    return {
+      ok: false,
+      step: spec.step,
+      section_key: spec.key,
+      error: "validation_failed",
+      failed_validations: fails,
+      ...(section ? { detail: String(section.content ?? "").slice(0, 1200) } : {}),
+    };
   }
+
 
   if (args.dryRun) {
-    return { ok: true, dry_run: true, generated: parsed, prompt_version: PITCH_PROMPT_VERSION };
+    return {
+      ok: true,
+      step: spec.step,
+      section_key: spec.key,
+      section,
+      missing_data: missing,
+      prompt_version: PITCH_PROMPT_VERSION,
+      dry_run: true,
+    };
   }
 
-  // PASO D — persistir
-  await admin.from("pitch_sections").delete().eq("pitch_id", args.pitchId);
-  const rows = PITCH_STEPS_SPEC.map((spec) => {
-    const s = parsed.sections.find((x: any) => x.section_key === spec.key);
-    return {
+  // Persistir solo esta sección
+  await admin.from("pitch_sections").delete().eq("pitch_id", args.pitchId).eq("step", spec.step);
+  const { error: insErr } = await admin.from("pitch_sections").insert([
+    {
       pitch_id: args.pitchId,
       step: spec.step,
       section_key: spec.key,
       order_index: spec.step,
       section_kind: spec.kind,
-      content: s?.content ?? null,
-      rationale_short: s?.rationale_short ?? null,
-      rationale_long: s?.rationale_long ?? null,
-      warning: s?.warning ?? null,
-      skill_ids: Array.isArray(s?.skill_ids) ? s.skill_ids : [],
-      alternatives: Array.isArray(s?.alternatives) ? s.alternatives : [],
+      content: section?.content ?? null,
+      rationale_short: section?.rationale_short ?? null,
+      rationale_long: section?.rationale_long ?? null,
+      warning: section?.warning ?? null,
+      skill_ids: Array.isArray(section?.skill_ids) ? section.skill_ids : [],
+      alternatives: Array.isArray(section?.alternatives) ? section.alternatives : [],
       edited_by_manager: false,
+    },
+  ] as any);
+  if (insErr) {
+    return {
+      ok: false,
+      step: spec.step,
+      section_key: spec.key,
+      error: "persist_failed",
+      detail: insErr.message,
     };
-  });
-  const { error: insErr } = await admin.from("pitch_sections").insert(rows as any);
-  if (insErr) return { ok: false, error: "persist_failed", detail: insErr.message };
+  }
 
-  const { error: upErr } = await admin
+  // missing_data acumulado (paso 1 reinicia)
+  const { data: cur } = await admin
     .from("company_pitches")
-    .update({
-      missing_data: Array.isArray(parsed.missing_data) ? parsed.missing_data : [],
-      status: "draft",
-    } as any)
+    .select("missing_data")
+    .eq("id", args.pitchId)
+    .maybeSingle();
+  const prevMissing =
+    spec.step === 1 ? [] : Array.isArray((cur as any)?.missing_data) ? (cur as any).missing_data : [];
+  const merged = Array.from(new Set([...prevMissing, ...missing])).slice(0, 24);
+  await admin
+    .from("company_pitches")
+    .update({ missing_data: merged, status: "draft" } as any)
     .eq("id", args.pitchId);
-  if (upErr) return { ok: false, error: "persist_failed", detail: upErr.message };
 
-  return { ok: true, generated: parsed, prompt_version: PITCH_PROMPT_VERSION };
+  return {
+    ok: true,
+    step: spec.step,
+    section_key: spec.key,
+    section,
+    missing_data: merged,
+    prompt_version: PITCH_PROMPT_VERSION,
+  };
+}
+
+/** Las 6 secciones en orden (una llamada por sección). */
+export async function runPitchGeneration(args: {
+  pitchId: string;
+  companyId?: string | null;
+  dryRun?: boolean;
+}): Promise<GeneratePitchResult> {
+  const sections: any[] = [];
+  let missing: string[] = [];
+  for (const spec of PITCH_STEPS_SPEC) {
+    const res = await runPitchSection({
+      pitchId: args.pitchId,
+      step: spec.step,
+      ...(args.companyId !== undefined ? { companyId: args.companyId } : {}),
+      ...(args.dryRun !== undefined ? { dryRun: args.dryRun } : {}),
+    });
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: res.error,
+        ...(res.failed_validations
+          ? { failed_validations: res.failed_validations.map((f) => `[${spec.key}] ${f}`) }
+          : {}),
+        ...(res.detail ? { detail: `[${spec.key}] ${res.detail}` } : {}),
+      };
+    }
+    sections.push(res.section);
+    missing = res.missing_data;
+  }
+  return {
+    ok: true,
+    generated: { sections, missing_data: missing },
+    prompt_version: PITCH_PROMPT_VERSION,
+    ...(args.dryRun ? { dry_run: true } : {}),
+  };
 }
