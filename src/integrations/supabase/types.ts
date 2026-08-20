@@ -528,6 +528,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          missing_data: Json
           published_at: string | null
           status: string
           updated_at: string
@@ -540,6 +541,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          missing_data?: Json
           published_at?: string | null
           status?: string
           updated_at?: string
@@ -552,6 +554,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          missing_data?: Json
           published_at?: string | null
           status?: string
           updated_at?: string
@@ -1178,11 +1181,13 @@ export type Database = {
           id: string
           order_index: number
           pitch_id: string
-          rationale: string | null
+          rationale_long: string | null
+          rationale_short: string | null
           section_key: string
           section_kind: string
           skill_ids: string[]
           step: number
+          warning: string | null
         }
         Insert: {
           alternatives?: Json
@@ -1192,11 +1197,13 @@ export type Database = {
           id?: string
           order_index: number
           pitch_id: string
-          rationale?: string | null
+          rationale_long?: string | null
+          rationale_short?: string | null
           section_key: string
           section_kind?: string
           skill_ids?: string[]
           step: number
+          warning?: string | null
         }
         Update: {
           alternatives?: Json
@@ -1206,11 +1213,13 @@ export type Database = {
           id?: string
           order_index?: number
           pitch_id?: string
-          rationale?: string | null
+          rationale_long?: string | null
+          rationale_short?: string | null
           section_key?: string
           section_kind?: string
           skill_ids?: string[]
           step?: number
+          warning?: string | null
         }
         Relationships: [
           {

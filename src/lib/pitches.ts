@@ -16,7 +16,37 @@ export type CompanyPitch = {
   version: number;
   published_at: string | null;
   updated_at: string | null;
+  missing_data?: string[] | null;
 };
+
+export type PitchAlternative = {
+  rank: number;
+  label: string;
+  content: string;
+  why_ranked?: string;
+  skill_ids?: string[];
+};
+
+export type PitchSection = {
+  id: string;
+  pitch_id: string;
+  step: number;
+  section_key: string;
+  section_kind: "guion" | "municion";
+  content: string | null;
+  rationale_short: string | null;
+  rationale_long: string | null;
+  warning: string | null;
+  skill_ids: string[] | null;
+  alternatives: PitchAlternative[] | null;
+};
+
+export async function fetchPitchSections(pitchId: string): Promise<PitchSection[]> {
+  return restGet<PitchSection>(
+    `pitch_sections?select=id,pitch_id,step,section_key,section_kind,content,rationale_short,rationale_long,warning,skill_ids,alternatives&pitch_id=eq.${pitchId}&order=step.asc`,
+  );
+}
+
 
 export const CLIENT_TYPES: Array<{ key: ClientType; label: string; blurb: string }> = [
   {
@@ -69,7 +99,7 @@ export function statusLabel(status?: PitchStatus | null): string {
 
 export async function fetchCompanyPitches(companyId: string): Promise<CompanyPitch[]> {
   return restGet<CompanyPitch>(
-    `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at&company_id=eq.${companyId}&status=neq.archived&order=created_at.asc`,
+    `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at,missing_data&company_id=eq.${companyId}&status=neq.archived&order=created_at.asc`,
   );
 }
 
