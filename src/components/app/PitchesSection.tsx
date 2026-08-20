@@ -3,7 +3,7 @@ import { FileText, Sparkles, Loader2, AlertTriangle, ChevronDown } from "lucide-
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
-import { generatePitch } from "@/lib/pitch-generator.functions";
+import { generatePitchSection } from "@/lib/pitch-generator.functions";
 import {
   CHANNELS,
   CLIENT_TYPES,
@@ -25,7 +25,7 @@ export function PitchesSection({
   companyId: string;
   userId: string;
 }) {
-  const runGenerate = useServerFn(generatePitch);
+  const runGenerateSection = useServerFn(generatePitchSection);
   const [pitches, setPitches] = useState<CompanyPitch[]>([]);
   const [loading, setLoading] = useState(true);
   const [channel, setChannel] = useState<Record<ClientType, Channel>>({
@@ -38,6 +38,7 @@ export function PitchesSection({
   const [generating, setGenerating] = useState<string | null>(null);
   const [sections, setSections] = useState<Record<string, PitchSection[]>>({});
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [progress, setProgress] = useState<{ done: number; label: string } | null>(null);
 
 
   useEffect(() => {
@@ -87,25 +88,29 @@ export function PitchesSection({
 
   async function handleGenerate(pitchId: string) {
     setGenerating(pitchId);
+    setProgress({ done: 0, label: PITCH_STEPS[0]?.label ?? "" });
     try {
-      const res: any = await runGenerate({ data: { pitchId } });
-      if (!res?.ok) {
-        const detail =
-          res?.failed_validations?.join(" · ") ?? res?.detail ?? res?.error ?? "Error desconocido";
-        toast.error(`Closer no pudo cerrar el pitch: ${detail}`);
-        return;
+      for (let i = 0; i < PITCH_STEPS.length; i++) {
+        const stepSpec = PITCH_STEPS[i]!;
+        setProgress({ done: i, label: stepSpec.label });
+        const res: any = await runGenerateSection({ data: { pitchId, step: i + 1 } });
+        if (!res?.ok) {
+          const detail =
+            res?.failed_validations?.join(" · ") ?? res?.detail ?? res?.error ?? "Error desconocido";
+          toast.error(`Closer se atoró en "${stepSpec.label}": ${detail}`);
+          break;
+        }
+        const rows = await fetchPitchSections(pitchId);
+        setSections((prev) => ({ ...prev, [pitchId]: rows.filter((x) => x.content) }));
+        setProgress({ done: i + 1, label: stepSpec.label });
       }
-      const [rows, fresh] = await Promise.all([
-        fetchPitchSections(pitchId),
-        fetchCompanyPitches(companyId),
-      ]);
-      setSections((prev) => ({ ...prev, [pitchId]: rows }));
+      const fresh = await fetchCompanyPitches(companyId);
       setPitches(fresh);
-      toast.success("Pitch generado. Revísalo abajo.");
     } catch (e: any) {
       toast.error(e?.message ?? "No se pudo generar el pitch.");
     } finally {
       setGenerating(null);
+      setProgress(null);
     }
   }
 
@@ -188,7 +193,7 @@ export function PitchesSection({
                           <Sparkles className="h-4 w-4 mr-2" />
                         )}
                         {generating === pitch.id
-                          ? "Closer está escribiendo tu pitch…"
+                          ? `Escribiendo… (${Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de ${PITCH_STEPS.length})`
                           : (sections[pitch.id]?.length ?? 0) > 0
                             ? "Regenerar con Closer"
                             : "Generar con Closer"}
@@ -210,8 +215,16 @@ export function PitchesSection({
 
                 {pitch && generating === pitch.id && (
                   <div className="mt-3 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3 text-xs text-white/70 font-['DM_Sans']">
-                    Closer está leyendo la doctrina y el cerebro de tu empresa. Esto tarda un
-                    par de minutos.
+                    Escribiendo la sección «{progress?.label ?? PITCH_STEPS[0]?.label}»…{" "}
+                    ({Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de {PITCH_STEPS.length})
+                    <div className="mt-2 h-1 w-full overflow-hidden rounded-[99px] bg-white/10">
+                      <div
+                        className="h-full bg-[#FF6B2B] transition-all"
+                        style={{
+                          width: `${((progress?.done ?? 0) / PITCH_STEPS.length) * 100}%`,
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
 
