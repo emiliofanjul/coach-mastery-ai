@@ -100,6 +100,16 @@ Canal: ${args.channel}
    · Con cliente RECURRENTE, el resumen menciona el pedido base solo como
      referencia ("en lugar de las de siempre") para que se note el
      incremento. No lo reabre: lo que se cierra es lo que se agrega.
+   · PROHIBIDO EL MARCADOR VACÍO. Nunca escribas "[enumera los productos]",
+     "[cantidad]" ni ningún corchete de relleno: el vendedor lee esto en la
+     calle y un hueco no se puede decir en voz alta.
+   · SI EL BRAIN NO TRAE los productos con sus presentaciones y las
+     cantidades típicas, no los inventes: escribe el cierre sin enumerar
+     (que fluya como texto decible) y agrega a missing_data exactamente esta
+     petición: "¿Cuáles son tus productos con sus presentaciones, y qué
+     cantidades típicas maneja un cliente ${args.clientType}? Con eso el
+     cierre puede enumerar el pedido en lugar de dejarlo en genérico."
+
 
 ═══ REGLAS POR TIPO DE CLIENTE ═══
 
@@ -227,11 +237,80 @@ function words(s: string): number {
   return s.trim().split(/\s+/).filter(Boolean).length;
 }
 
+/** Parsea la respuesta por bloques delimitados (el texto largo va fuera del JSON). */
+export function parseDelimited(
+  raw: string,
+  spec: { step: number; key: string; kind: "guion" | "municion" },
+): { section: any; missing_data: string[] } | null {
+  const text = raw.replace(/```[a-z]*\n?/gi, "");
+  const grab = (tag: string) => {
+    const m = text.match(new RegExp(`---${tag}---\\s*([\\s\\S]*?)\\s*---END-${tag}---`));
+    return m ? m[1]! : null;
+  };
+
+  const content = grab("CONTENT");
+  const metaRaw = grab("META");
+  if (!content || !metaRaw) return null;
+
+  let meta: any = {};
+  try {
+    meta = JSON.parse(metaRaw.trim().replace(/^[^{]*/, "").replace(/[^}]*$/, ""));
+  } catch {
+    return null;
+  }
+
+  const alternatives: any[] = [];
+  for (let i = 1; i <= 6; i++) {
+    const block = grab(`ALT-${i}`);
+    if (!block) break;
+    const lines = block.split("\n");
+    let label = "";
+    let why = "";
+    const body: string[] = [];
+    for (const line of lines) {
+      const l = line.trim();
+      if (!label && /^LABEL\s*:/i.test(l)) label = l.replace(/^LABEL\s*:/i, "").trim();
+      else if (!why && /^WHY\s*:/i.test(l)) why = l.replace(/^WHY\s*:/i, "").trim();
+      else body.push(line);
+    }
+    alternatives.push({
+      rank: i,
+      label: label || `Opción ${i}`,
+      content: body.join("\n").trim(),
+      why_ranked: why,
+    });
+  }
+
+  return {
+    section: {
+      step: spec.step,
+      section_key: spec.key,
+      section_kind: spec.kind,
+      content: content.trim(),
+      rationale_short: meta.rationale_short ?? null,
+      rationale_long: meta.rationale_long ?? null,
+      skill_ids: Array.isArray(meta.skill_ids) ? meta.skill_ids : [],
+      warning: meta.warning ?? null,
+      alternatives,
+    },
+    missing_data: Array.isArray(meta.missing_data) ? meta.missing_data.map(String) : [],
+  };
+}
+
+
+
 /** PASO 3 — las 12 validaciones. Devuelve la lista de fallos (vacía = pasa). */
 export function validatePitch(
   parsed: any,
-  ctx: { validSkillIds: Set<string>; brain: string; clientType: string; only?: string },
+  ctx: {
+    validSkillIds: Set<string>;
+    brain: string;
+    clientType: string;
+    only?: string;
+    missingData?: string[];
+  },
 ): string[] {
+
   const fails: string[] = [];
   const sections: any[] = Array.isArray(parsed?.sections) ? parsed.sections : [];
 
@@ -357,17 +436,26 @@ export function validatePitch(
     fails.push("V9: la presentación enumera cantidades del pedido");
   }
 
-  // 10. El cierre no trae resumen del pedido
+  // 10. El cierre no trae resumen del pedido (qué y cuánto, concreto).
+  //     Si el brain no tiene productos/presentaciones/cantidades, el generador
+  //     debe escribirlo genérico Y declararlo en missing_data. Nunca marcadores.
   const cierre = byKey("cierre");
   if (cierre) {
     const cText = String(cierre.content ?? "");
-    const tieneResumen =
-      UNITS.test(cText) ||
-      /(entonces (lleva|le mando|serían|van)|le resumo|resumen del pedido|no se me vaya a olvidar|le agrego|\[?\s*(enumera|cantidad)[^\]]*\]|quedamos con|lo que lleva|en lugar de las de siempre)/i.test(
-        cText,
+    if (/\[[^\]\n]{0,120}\]/.test(cText)) {
+      fails.push("V10: el cierre usa un marcador vacío en lugar de enumerar el pedido");
+    } else if (!UNITS.test(cText)) {
+      const declarado = (ctx.missingData ?? []).some((m) =>
+        /(producto|presentaci|cantidad)/i.test(String(m)),
       );
-    if (!tieneResumen) fails.push("V10: el cierre no trae resumen del pedido");
+      if (!declarado) {
+        fails.push(
+          "V10: el cierre no enumera el pedido (qué y cuánto) y tampoco declara en missing_data que faltan los productos, presentaciones y cantidades típicas",
+        );
+      }
+    }
   }
+
 
   // 11 y 12. rationale_short / rationale_long
   for (const s of sections) {
@@ -616,15 +704,60 @@ los otros pasos.
 
 ${prevBlock}
 
-FORMATO DE SALIDA (sustituye al anterior): responde ÚNICAMENTE con este
-objeto JSON, sin texto alrededor y sin markdown:
+${
+  spec.key === "cierre"
+    ? `═══ EL RESUMEN DEL PEDIDO EN ESTE CIERRE ═══
 
-{
-  "section": { ...el objeto de sección con la misma forma descrita arriba,
-                con "step": ${spec.step}, "section_key": "${spec.key}",
-                "section_kind": "${spec.kind}" },
-  "missing_data": ["lo que te falta saber para afinar ESTA sección"]
-}`;
+Está TERMINANTEMENTE PROHIBIDO cualquier corchete de relleno: nada de
+"[cantidad]", "[producto]", "[presentación]", "[enumera ...]". El vendedor
+lee esto en voz alta frente al cliente; un hueco no se puede decir.
+
+Tienes dos caminos, y solo dos:
+
+A) Si LA EMPRESA (arriba) trae productos concretos con presentaciones y
+   cantidades típicas: enumera de verdad, con números y unidades reales
+   ("tres cubetas de 19 litros del 25W-50 y dos cajas de 24 del 20W-50").
+
+B) Si NO los trae: escribe el resumen en genérico pero DECIBLE, sin
+   corchetes y sin inventar productos. Por ejemplo:
+   "Entonces le confirmo: lo de siempre igual, más lo que acabamos de ver
+   que le hace falta. Se lo mando junto en la misma entrega."
+   Y en missing_data incluye EXACTAMENTE esta petición:
+   "¿Cuáles son tus productos con sus presentaciones, y qué cantidades
+   típicas maneja un cliente ${String(pitch.client_type)}? Con eso el cierre
+   puede enumerar el pedido en lugar de dejarlo en genérico."
+`
+    : ""
+}
+
+
+FORMATO DE SALIDA (sustituye por completo al anterior): responde con
+bloques delimitados, NO con un solo JSON. El texto largo va FUERA del JSON.
+
+---CONTENT---
+el texto de la sección, en texto plano, con saltos de línea normales,
+comillas normales, sin escapes y sin markdown
+---END-CONTENT---
+---ALT-1---
+LABEL: nombre contextual de la alternativa (cuándo conviene)
+WHY: por qué va en esta posición
+el texto de la alternativa, en texto plano
+---END-ALT-1---
+---META---
+{ "rationale_short": "UNA frase de 25 palabras o menos — cuéntalas antes de escribirla",
+  "rationale_long": "el desarrollo completo",
+  "skill_ids": ["..."],
+  "warning": null,
+  "missing_data": ["lo que te falta saber para afinar ESTA sección"] }
+---END-META---
+
+Reglas del formato:
+· El JSON de META es corto: nunca metas ahí el texto del pitch.
+· Las alternativas van en bloques ---ALT-n---, numerados desde 1 y
+  consecutivos. Genera alternativas solo en introducción, historia breve y
+  cierre; en las demás secciones omite los bloques ALT.
+· Nada de texto fuera de los bloques.`;
+
 
   const system = `${base}\n\n${scope}`;
 
@@ -650,27 +783,26 @@ objeto JSON, sin texto alrededor y sin markdown:
         detail: String((e as Error)?.message ?? e),
       };
     }
-    let parsed: any = null;
-    try {
-      parsed = JSON.parse(stripFence(raw));
-    } catch {
-      fails = ["V0: la respuesta no es JSON válido"];
+    const parsed = parseDelimited(raw, spec);
+    if (!parsed) {
+      fails = ["V0: la respuesta no trae los bloques ---CONTENT--- / ---META---"];
       continue;
     }
-    section = parsed?.section ?? (Array.isArray(parsed?.sections) ? parsed.sections[0] : null);
-    missing = Array.isArray(parsed?.missing_data) ? parsed.missing_data : [];
-    if (!section) {
-      fails = ["V0: la respuesta no trae la sección"];
-      continue;
-    }
-    section.step = spec.step;
-    section.section_key = spec.key;
+    section = parsed.section;
+    missing = parsed.missing_data;
     fails = validatePitch(
       { sections: [section] },
-      { validSkillIds, brain, clientType: String(pitch.client_type), only: spec.key },
+      {
+        validSkillIds,
+        brain,
+        clientType: String(pitch.client_type),
+        only: spec.key,
+        missingData: missing,
+      },
     );
     if (fails.length === 0) break;
   }
+
 
   if (!section || fails.length > 0) {
     return {
