@@ -744,7 +744,7 @@ WHY: por qué va en esta posición
 el texto de la alternativa, en texto plano
 ---END-ALT-1---
 ---META---
-{ "rationale_short": "una frase, máximo 25 palabras",
+{ "rationale_short": "UNA frase de 25 palabras o menos — cuéntalas antes de escribirla",
   "rationale_long": "el desarrollo completo",
   "skill_ids": ["..."],
   "warning": null,
