@@ -614,6 +614,8 @@ export type GeneratePitchResult =
   | { ok: true; generated: any; prompt_version: string; dry_run?: boolean }
   | { ok: false; error: string; failed_validations?: string[]; detail?: string };
 
+export type PitchAttemptLog = { attempt: number; ms: number; fails: string[] };
+
 export type GenerateSectionResult =
   | {
       ok: true;
@@ -623,6 +625,7 @@ export type GenerateSectionResult =
       missing_data: string[];
       prompt_version: string;
       dry_run?: boolean;
+      attempts?: PitchAttemptLog[];
     }
   | {
       ok: false;
@@ -631,7 +634,9 @@ export type GenerateSectionResult =
       error: string;
       failed_validations?: string[];
       detail?: string;
+      attempts?: PitchAttemptLog[];
     };
+
 
 /** Formatea los criterios de ejecución tal como los ve el modelo. */
 export function buildCriteriosBlock(criterios: Criterio[]): string {
@@ -859,14 +864,16 @@ Reglas del formato:
   let section: any = null;
   let missing: string[] = [];
   let fails: string[] = [];
-  for (let attempt = 1; attempt <= 2; attempt++) {
+  const attemptLog: Array<{ attempt: number; ms: number; fails: string[] }> = [];
+  for (let attempt = 1; attempt <= 3; attempt++) {
     const prompt =
       attempt === 1
         ? system
-        : `${system}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas:\n${fails
+        : `${system}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas SIN romper ninguna otra regla:\n${fails
             .map((f) => `- ${f}`)
-            .join("\n")}`;
+            .join("\n")}\n\nRECORDATORIO INVIOLABLE al corregir: CERO corchetes de relleno en el contenido y en las alternativas ("[producto]", "[marca]", "[otra marca]", "[otro proveedor]", "[número]", "[precio]", "[X]"...). Si no tienes el dato, escribe la frase de forma genérica pero decible y declara el faltante en missing_data. Y rationale_short: 25 palabras o menos, cuéntalas.`;
     let raw = "";
+    const t0 = Date.now();
     try {
       raw = await callClaude(admin, prompt, apiKey);
     } catch (e) {
@@ -876,11 +883,13 @@ Reglas del formato:
         section_key: spec.key,
         error: "model_error",
         detail: String((e as Error)?.message ?? e),
-      };
+        ...(attemptLog.length ? { attempts: attemptLog } : {}),
+      } as any;
     }
     const parsed = parseDelimited(raw, spec);
     if (!parsed) {
       fails = ["V0: la respuesta no trae los bloques ---CONTENT--- / ---META---"];
+      attemptLog.push({ attempt, ms: Date.now() - t0, fails });
       continue;
     }
     section = parsed.section;
@@ -895,8 +904,10 @@ Reglas del formato:
         missingData: missing,
       },
     );
+    attemptLog.push({ attempt, ms: Date.now() - t0, fails });
     if (fails.length === 0) break;
   }
+
 
 
   if (!section || fails.length > 0) {
@@ -906,6 +917,7 @@ Reglas del formato:
       section_key: spec.key,
       error: "validation_failed",
       failed_validations: fails,
+      attempts: attemptLog,
       ...(section ? { detail: String(section.content ?? "").slice(0, 1200) } : {}),
     };
   }
@@ -920,6 +932,7 @@ Reglas del formato:
       missing_data: missing,
       prompt_version: PITCH_PROMPT_VERSION,
       dry_run: true,
+      attempts: attemptLog,
     };
   }
 
@@ -972,6 +985,7 @@ Reglas del formato:
     section,
     missing_data: merged,
     prompt_version: PITCH_PROMPT_VERSION,
+    attempts: attemptLog,
   };
 }
 
