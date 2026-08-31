@@ -477,6 +477,31 @@ export function validatePitch(
   }
 
 
+  // 17. Ningún corchete de relleno en NINGUNA sección (content ni alternatives).
+  //     Escape igual que V10: sin el marcador + declararlo en missing_data.
+  const BRACKET = /\[[^\]\n]{0,120}\]/;
+  for (const s of sections) {
+    const key = String(s?.section_key ?? "");
+    const cText = String(s?.content ?? "");
+    if (BRACKET.test(cText)) {
+      const m = cText.match(BRACKET)?.[0] ?? "";
+      fails.push(
+        `V17: corchete de relleno en el contenido de ${key} ("${m}"); escríbelo sin el marcador y declara el dato faltante en missing_data`,
+      );
+    }
+    const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
+    for (const a of alts) {
+      const aText = String(a?.content ?? "");
+      if (BRACKET.test(aText)) {
+        const m = aText.match(BRACKET)?.[0] ?? "";
+        fails.push(
+          `V17: corchete de relleno en la alternativa #${a?.rank} de ${key} ("${m}"); escríbela sin el marcador y declara el dato faltante en missing_data`,
+        );
+      }
+    }
+  }
+
+
   // 11 y 12. rationale_short / rationale_long
   for (const s of sections) {
     const short = String(s?.rationale_short ?? "").trim();
