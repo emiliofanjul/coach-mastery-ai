@@ -399,7 +399,7 @@ export function validatePitch(
     }
   }
 
-  // 5. "para que lo pruebe" o equivalente
+  // 5. "para que lo pruebe" o cualquier variante de pedirle al cliente que pruebe
   const PROBAR = [
     "para que lo pruebe",
     "para que la pruebe",
@@ -415,6 +415,73 @@ export function validatePitch(
   for (const p of PROBAR) {
     if (contentLower.includes(p)) fails.push(`V5: pide que pruebe ("${p}")`);
   }
+  // 5b. Variantes conjugadas: "pruebas cómo responde", "para probar con esa",
+  //     "ya tienes para probar". El cliente no prueba: compra lo que le falta.
+  const PROBAR_RX =
+    /\b(prueb(?:a|as|e|es|en|o)|pru[eé]b\w*|probar(?:lo|la|los|las)?)\b/gi;
+  const probMatches = Array.from(new Set((contentText.match(PROBAR_RX) ?? []).map((m) => m.toLowerCase())));
+  for (const m of probMatches) {
+    if (PROBAR.some((p) => contentLower.includes(p))) break;
+    fails.push(
+      `V5b: le pide al cliente que pruebe ("${m}"); el pedido se cierra sobre lo que le falta, no sobre una prueba`,
+    );
+  }
+
+  // 5c. Pregunta de aprobación o alternativa que permite posponer (solo guion).
+  const APROBACION = [
+    "cómo lo ves",
+    "como lo ves",
+    "cómo ves si",
+    "como ves si",
+    "le parece",
+    "te parece",
+    "le entramos",
+    "le late",
+    "le gustaría",
+    "qué opina",
+    "que opina",
+    "está de acuerdo",
+    "le interesa",
+    "qué dice",
+    "que dice",
+  ];
+  const POSPONER = [
+    "para la próxima",
+    "para la proxima",
+    "prefiere esperar",
+    "prefieres esperar",
+    "lo dejamos para",
+    "dejarlo para",
+    "la siguiente quincena",
+    "la próxima quincena",
+    "la proxima quincena",
+    "más adelante",
+    "mas adelante",
+    "lo vemos después",
+    "lo vemos despues",
+    "con más calma",
+    "con mas calma",
+  ];
+  for (const s of sections) {
+    if (s?.section_kind === "municion") continue;
+    const t = [String(s?.content ?? "")]
+      .concat((s?.alternatives ?? []).map((a: any) => String(a?.content ?? "")))
+      .join("\n")
+      .toLowerCase();
+    for (const p of APROBACION) {
+      if (t.includes(p))
+        fails.push(
+          `V19: pregunta de aprobación en ${s?.section_key} ("${p}"); el cierre asume y dirige, no pide permiso`,
+        );
+    }
+    for (const p of POSPONER) {
+      if (t.includes(p))
+        fails.push(
+          `V18: ofrece posponer en ${s?.section_key} ("${p}"); nunca le des al cliente la opción de dejarlo para después`,
+        );
+    }
+  }
+
 
   // 6. Garantiza que un producto se venderá, si el brain lo prohíbe
   const brainProhibeGarantia = /garant/i.test(ctx.brain) && /(no|prohib|nunca)/i.test(ctx.brain);
