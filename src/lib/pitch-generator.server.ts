@@ -399,7 +399,7 @@ export function validatePitch(
     }
   }
 
-  // 5. "para que lo pruebe" o equivalente
+  // 5. "para que lo pruebe" o cualquier variante de pedirle al cliente que pruebe
   const PROBAR = [
     "para que lo pruebe",
     "para que la pruebe",
@@ -415,6 +415,73 @@ export function validatePitch(
   for (const p of PROBAR) {
     if (contentLower.includes(p)) fails.push(`V5: pide que pruebe ("${p}")`);
   }
+  // 5b. Variantes conjugadas: "pruebas cómo responde", "para probar con esa",
+  //     "ya tienes para probar". El cliente no prueba: compra lo que le falta.
+  const PROBAR_RX =
+    /\b(prueb(?:a|as|e|es|en|o)|pru[eé]b\w*|probar(?:lo|la|los|las)?)\b/gi;
+  const probMatches = Array.from(new Set((contentText.match(PROBAR_RX) ?? []).map((m) => m.toLowerCase())));
+  for (const m of probMatches) {
+    if (PROBAR.some((p) => contentLower.includes(p))) break;
+    fails.push(
+      `V5b: le pide al cliente que pruebe ("${m}"); el pedido se cierra sobre lo que le falta, no sobre una prueba`,
+    );
+  }
+
+  // 5c. Pregunta de aprobación o alternativa que permite posponer (solo guion).
+  const APROBACION = [
+    "cómo lo ves",
+    "como lo ves",
+    "cómo ves si",
+    "como ves si",
+    "le parece",
+    "te parece",
+    "le entramos",
+    "le late",
+    "le gustaría",
+    "qué opina",
+    "que opina",
+    "está de acuerdo",
+    "le interesa",
+    "qué dice",
+    "que dice",
+  ];
+  const POSPONER = [
+    "o mejor lo dejamos",
+    "prefiere esperar",
+    "prefieres esperar",
+    "lo dejamos para",
+    "dejarlo para",
+    "prefiere que lo metamos en la siguiente",
+    "prefieres que lo metamos en la siguiente",
+    "prefiere que lo metamos en la próxima",
+    "prefieres que lo metamos en la próxima",
+    "o lo vemos después",
+    "o lo vemos despues",
+    "con más calma",
+    "con mas calma",
+    "lo piensa",
+    "lo piensas",
+  ];
+  for (const s of sections) {
+    if (s?.section_kind === "municion") continue;
+    const t = [String(s?.content ?? "")]
+      .concat((s?.alternatives ?? []).map((a: any) => String(a?.content ?? "")))
+      .join("\n")
+      .toLowerCase();
+    for (const p of APROBACION) {
+      if (t.includes(p))
+        fails.push(
+          `V19: pregunta de aprobación en ${s?.section_key} ("${p}"); el cierre asume y dirige, no pide permiso`,
+        );
+    }
+    for (const p of POSPONER) {
+      if (t.includes(p))
+        fails.push(
+          `V18: ofrece posponer en ${s?.section_key} ("${p}"); nunca le des al cliente la opción de dejarlo para después`,
+        );
+    }
+  }
+
 
   // 6. Garantiza que un producto se venderá, si el brain lo prohíbe
   const brainProhibeGarantia = /garant/i.test(ctx.brain) && /(no|prohib|nunca)/i.test(ctx.brain);
@@ -614,6 +681,8 @@ export type GeneratePitchResult =
   | { ok: true; generated: any; prompt_version: string; dry_run?: boolean }
   | { ok: false; error: string; failed_validations?: string[]; detail?: string };
 
+export type PitchAttemptLog = { attempt: number; ms: number; fails: string[] };
+
 export type GenerateSectionResult =
   | {
       ok: true;
@@ -623,6 +692,7 @@ export type GenerateSectionResult =
       missing_data: string[];
       prompt_version: string;
       dry_run?: boolean;
+      attempts?: PitchAttemptLog[];
     }
   | {
       ok: false;
@@ -631,7 +701,9 @@ export type GenerateSectionResult =
       error: string;
       failed_validations?: string[];
       detail?: string;
+      attempts?: PitchAttemptLog[];
     };
+
 
 /** Formatea los criterios de ejecución tal como los ve el modelo. */
 export function buildCriteriosBlock(criterios: Criterio[]): string {
@@ -778,6 +850,24 @@ los otros pasos.
 
 ${prevBlock}
 
+═══ REGLA ABSOLUTA: NI APROBACIÓN NI PRUEBA NI POSPONER ═══
+
+En las secciones de guion (introducción, historia, presentación, cierre y
+consolidación):
+
+· PROHIBIDO pedir aprobación: "¿cómo lo ves?", "¿le parece?", "¿le
+  entramos?", "¿le late?", "¿qué opina?", "¿le gustaría?", "¿le interesa?"
+  y cualquier variante que permita al cliente aprobar o rechazar. Se asume
+  y se dirige: "Se lo mando junto en la entrega del jueves."
+· PROHIBIDO ofrecer posponer, aunque sea como segunda opción de una
+  alternativa: "o mejor lo dejamos para la próxima", "prefieres esperar",
+  "lo piensas con calma". Si hay dos opciones, las dos avanzan (jueves o
+  viernes; con o sin la línea nueva) — nunca una que sea no comprar.
+· PROHIBIDO pedirle al cliente que pruebe: "para que lo pruebe", "pruebas
+  cómo responde", "ya tienes para probar". Nada de "probar", "prueba" ni
+  sus conjugaciones. El pedido se cierra sobre lo que le falta y se vende,
+  no sobre un experimento.
+
 ═══ REGLA ABSOLUTA: CERO CORCHETES DE RELLENO ═══
 
 En el contenido y en TODAS las alternativas está TERMINANTEMENTE PROHIBIDO
@@ -859,14 +949,16 @@ Reglas del formato:
   let section: any = null;
   let missing: string[] = [];
   let fails: string[] = [];
-  for (let attempt = 1; attempt <= 2; attempt++) {
+  const attemptLog: Array<{ attempt: number; ms: number; fails: string[] }> = [];
+  for (let attempt = 1; attempt <= 3; attempt++) {
     const prompt =
       attempt === 1
         ? system
-        : `${system}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas:\n${fails
+        : `${system}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas SIN romper ninguna otra regla:\n${fails
             .map((f) => `- ${f}`)
-            .join("\n")}`;
+            .join("\n")}\n\nRECORDATORIO INVIOLABLE al corregir: CERO corchetes de relleno en el contenido y en las alternativas ("[producto]", "[marca]", "[otra marca]", "[otro proveedor]", "[número]", "[precio]", "[X]"...). Si no tienes el dato, escribe la frase de forma genérica pero decible y declara el faltante en missing_data. Y rationale_short: 25 palabras o menos, cuéntalas.`;
     let raw = "";
+    const t0 = Date.now();
     try {
       raw = await callClaude(admin, prompt, apiKey);
     } catch (e) {
@@ -876,11 +968,13 @@ Reglas del formato:
         section_key: spec.key,
         error: "model_error",
         detail: String((e as Error)?.message ?? e),
-      };
+        ...(attemptLog.length ? { attempts: attemptLog } : {}),
+      } as any;
     }
     const parsed = parseDelimited(raw, spec);
     if (!parsed) {
       fails = ["V0: la respuesta no trae los bloques ---CONTENT--- / ---META---"];
+      attemptLog.push({ attempt, ms: Date.now() - t0, fails });
       continue;
     }
     section = parsed.section;
@@ -895,8 +989,10 @@ Reglas del formato:
         missingData: missing,
       },
     );
+    attemptLog.push({ attempt, ms: Date.now() - t0, fails });
     if (fails.length === 0) break;
   }
+
 
 
   if (!section || fails.length > 0) {
@@ -906,6 +1002,7 @@ Reglas del formato:
       section_key: spec.key,
       error: "validation_failed",
       failed_validations: fails,
+      attempts: attemptLog,
       ...(section ? { detail: String(section.content ?? "").slice(0, 1200) } : {}),
     };
   }
@@ -920,6 +1017,7 @@ Reglas del formato:
       missing_data: missing,
       prompt_version: PITCH_PROMPT_VERSION,
       dry_run: true,
+      attempts: attemptLog,
     };
   }
 
@@ -972,6 +1070,7 @@ Reglas del formato:
     section,
     missing_data: merged,
     prompt_version: PITCH_PROMPT_VERSION,
+    attempts: attemptLog,
   };
 }
 
