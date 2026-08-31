@@ -446,21 +446,21 @@ export function validatePitch(
     "que dice",
   ];
   const POSPONER = [
-    "para la próxima",
-    "para la proxima",
+    "o mejor lo dejamos",
     "prefiere esperar",
     "prefieres esperar",
     "lo dejamos para",
     "dejarlo para",
-    "la siguiente quincena",
-    "la próxima quincena",
-    "la proxima quincena",
-    "más adelante",
-    "mas adelante",
-    "lo vemos después",
-    "lo vemos despues",
+    "prefiere que lo metamos en la siguiente",
+    "prefieres que lo metamos en la siguiente",
+    "prefiere que lo metamos en la próxima",
+    "prefieres que lo metamos en la próxima",
+    "o lo vemos después",
+    "o lo vemos despues",
     "con más calma",
     "con mas calma",
+    "lo piensa",
+    "lo piensas",
   ];
   for (const s of sections) {
     if (s?.section_kind === "municion") continue;
