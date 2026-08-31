@@ -10,7 +10,7 @@ import {
 
 
 
-export const PITCH_PROMPT_VERSION = "pitch-v2.0.0-cerebro";
+export const PITCH_PROMPT_VERSION = "pitch-v2.1.0-cerebro-v17";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
 
@@ -477,6 +477,31 @@ export function validatePitch(
   }
 
 
+  // 17. Ningún corchete de relleno en NINGUNA sección (content ni alternatives).
+  //     Escape igual que V10: sin el marcador + declararlo en missing_data.
+  const BRACKET = /\[[^\]\n]{0,120}\]/;
+  for (const s of sections) {
+    const key = String(s?.section_key ?? "");
+    const cText = String(s?.content ?? "");
+    if (BRACKET.test(cText)) {
+      const m = cText.match(BRACKET)?.[0] ?? "";
+      fails.push(
+        `V17: corchete de relleno en el contenido de ${key} ("${m}"); escríbelo sin el marcador y declara el dato faltante en missing_data`,
+      );
+    }
+    const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
+    for (const a of alts) {
+      const aText = String(a?.content ?? "");
+      if (BRACKET.test(aText)) {
+        const m = aText.match(BRACKET)?.[0] ?? "";
+        fails.push(
+          `V17: corchete de relleno en la alternativa #${a?.rank} de ${key} ("${m}"); escríbela sin el marcador y declara el dato faltante en missing_data`,
+        );
+      }
+    }
+  }
+
+
   // 11 y 12. rationale_short / rationale_long
   for (const s of sections) {
     const short = String(s?.rationale_short ?? "").trim();
@@ -752,6 +777,27 @@ paso ${spec.step}: ${spec.key} (section_kind "${spec.kind}"). No escribas
 los otros pasos.
 
 ${prevBlock}
+
+═══ REGLA ABSOLUTA: CERO CORCHETES DE RELLENO ═══
+
+En el contenido y en TODAS las alternativas está TERMINANTEMENTE PROHIBIDO
+cualquier corchete de relleno donde debería ir un dato concreto de la
+empresa: "[producto]", "[cantidad]", "[marca]", "[nombre]", "[línea]",
+"[X]", "[Y]", "[Z]" y similares. El vendedor lee el pitch en voz alta tal
+como está escrito; un hueco no se puede decir.
+
+Solo hay dos caminos:
+A) Si LA EMPRESA (arriba) trae el dato: escríbelo real y concreto.
+B) Si NO lo trae: escribe la frase SIN el marcador, de forma que funcione
+   en genérico y sea decible, y declara el dato faltante en missing_data.
+
+   ✗ "Vi que trae [producto/exhibidor/línea nueva] nuevo"
+   ✓ "Vi que tiene cosas nuevas por acá"
+     + missing_data: "¿Qué productos o exhibidores suelen tener los
+       clientes de este tipo? Con eso la observación de apertura puede ser
+       específica en lugar de genérica."
+
+Nunca un corchete vacío: o el dato real, o una frase que funcione sin él.
 
 ${
   spec.key === "cierre"
