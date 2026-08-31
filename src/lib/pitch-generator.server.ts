@@ -778,6 +778,27 @@ los otros pasos.
 
 ${prevBlock}
 
+═══ REGLA ABSOLUTA: CERO CORCHETES DE RELLENO ═══
+
+En el contenido y en TODAS las alternativas está TERMINANTEMENTE PROHIBIDO
+cualquier corchete de relleno donde debería ir un dato concreto de la
+empresa: "[producto]", "[cantidad]", "[marca]", "[nombre]", "[línea]",
+"[X]", "[Y]", "[Z]" y similares. El vendedor lee el pitch en voz alta tal
+como está escrito; un hueco no se puede decir.
+
+Solo hay dos caminos:
+A) Si LA EMPRESA (arriba) trae el dato: escríbelo real y concreto.
+B) Si NO lo trae: escribe la frase SIN el marcador, de forma que funcione
+   en genérico y sea decible, y declara el dato faltante en missing_data.
+
+   ✗ "Vi que trae [producto/exhibidor/línea nueva] nuevo"
+   ✓ "Vi que tiene cosas nuevas por acá"
+     + missing_data: "¿Qué productos o exhibidores suelen tener los
+       clientes de este tipo? Con eso la observación de apertura puede ser
+       específica en lugar de genérica."
+
+Nunca un corchete vacío: o el dato real, o una frase que funcione sin él.
+
 ${
   spec.key === "cierre"
     ? `═══ EL RESUMEN DEL PEDIDO EN ESTE CIERRE ═══
