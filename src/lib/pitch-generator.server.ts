@@ -1,29 +1,40 @@
-// Closer — Generador de Pitch (Fase 2). Lógica server-only.
-// Lee la doctrina VIVA de la base, llama a Claude con el prompt de la
-// especificación (VERBATIM), valida con las 12 validaciones de código, y
-// persiste las 6 secciones + missing_data.
+// Closer — Generador de Pitch. Lógica server-only.
+// Bebe del Cerebro (doctrina.server.ts): documento completo + criterios de
+// ejecución de los practice_script. Ya NO inyecta tarjetas sueltas por mundo.
 
-export const PITCH_PROMPT_VERSION = "pitch-v1.0.0";
+import {
+  getCerebro,
+  getCriteriosEjecucion,
+  type Criterio,
+} from "@/lib/doctrina.server";
+
+
+
+export const PITCH_PROMPT_VERSION = "pitch-v2.0.0-cerebro";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
+
+/** Nodos de desarrollo de cuenta: doctrina repartida que ningún mapeo por paso cubre. */
+export const RECURRENTE_NODE_IDS = ["3.7", "3.8", "3.9", "4.15", "5.14", "7.3"];
 
 export const PITCH_STEPS_SPEC: Array<{
   step: number;
   key: string;
   kind: "guion" | "municion";
-  world: number;
+  worlds: number[];
 }> = [
-  { step: 1, key: "introduccion", kind: "guion", world: 1 },
-  { step: 2, key: "historia_breve", kind: "guion", world: 2 },
-  { step: 3, key: "descubrimiento", kind: "municion", world: 3 },
-  { step: 4, key: "presentacion", kind: "guion", world: 4 },
-  { step: 5, key: "cierre", kind: "guion", world: 5 },
-  { step: 6, key: "consolidacion", kind: "guion", world: 6 },
+  { step: 1, key: "introduccion", kind: "guion", worlds: [1] },
+  { step: 2, key: "historia_breve", kind: "guion", worlds: [1, 2] },
+  { step: 3, key: "descubrimiento", kind: "municion", worlds: [2, 3] },
+  { step: 4, key: "presentacion", kind: "guion", worlds: [3, 4] },
+  { step: 5, key: "cierre", kind: "guion", worlds: [4, 5] },
+  { step: 6, key: "consolidacion", kind: "guion", worlds: [5, 6] },
 ];
 
 export function buildPitchPrompt(args: {
   skillsBlock: string;
-  cardsBlock: string;
+  cerebroBlock: string;
+  criteriosBlock: string;
   brain: string;
   clientType: string;
   channel: string;
@@ -36,13 +47,22 @@ en la calle. Si contradice algo de lo que Closer enseña, el usuario pierde
 la confianza en todo el sistema. La coherencia con la doctrina no es un
 detalle de calidad: es la condición de que esto sirva.
 
-═══ DOCTRINA DISPONIBLE ═══
+No memorices frases prohibidas: razona con los principios del Cerebro. Si
+un principio dice que toda pregunta que permita aprobar o posponer entrega
+el control, entonces "¿cómo lo ves?", "¿le parece?" y "¿le late?" están
+todas mal aunque ninguna aparezca escrita abajo.
+
+═══ EL CEREBRO DE CLOSER (doctrina completa) ═══
+${args.cerebroBlock}
+
+═══ SKILLS ACTIVAS (los únicos skill_ids válidos) ═══
 ${args.skillsBlock}
 
-${args.cardsBlock}
+${args.criteriosBlock}
 
 ═══ LA EMPRESA ═══
 ${args.brain}
+
 
 ═══ EL ENCARGO ═══
 Tipo de cliente: ${args.clientType}
@@ -588,34 +608,58 @@ export type GenerateSectionResult =
       detail?: string;
     };
 
-/** Doctrina VIVA acotada: skills completas + tarjetas SOLO del mundo del paso. */
-async function loadContext(admin: any, pitch: any, world: number) {
-  const [skillsRes, nodesRes, companyRes] = await Promise.all([
-    admin
-      .from("skills")
-      .select("id, code, name, short_description, category, world_id_introduced")
-      .eq("status", "active")
-      .order("world_id_introduced", { ascending: true }),
-    admin.from("nodes").select("id").eq("world_id", world).eq("node_type", "knowledge"),
-    admin
-      .from("companies")
-      .select("name, company_sales_brain")
-      .eq("id", pitch.company_id)
-      .maybeSingle(),
-  ]);
-
-  const nodeIds = ((nodesRes.data ?? []) as any[]).map((n) => String(n.id));
-  let cards: any[] = [];
-  if (nodeIds.length > 0) {
-    const cardsRes = await admin
-      .from("node_cards")
-      .select("node_id, title, body, card_type, card_order")
-      .in("node_id", nodeIds)
-      .in("card_type", ["concept", "why_it_works"])
-      .order("node_id", { ascending: true })
-      .order("card_order", { ascending: true });
-    cards = (cardsRes.data ?? []) as any[];
+/** Formatea los criterios de ejecución tal como los ve el modelo. */
+export function buildCriteriosBlock(criterios: Criterio[]): string {
+  const seen = new Set<string>();
+  const esperados: string[] = [];
+  const fallas: string[] = [];
+  for (const c of criterios) {
+    const k = `${c.tipo}|${c.skill_id}|${c.description}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    if (c.tipo === "success") esperados.push(`- ${c.skill_id}: ${c.description}`);
+    else fallas.push(`- [${(c.severity ?? "normal").toUpperCase()}] ${c.skill_id}: ${c.description}`);
   }
+  return `═══ CRITERIOS DE EJECUCIÓN ═══
+Así evalúa Closer a un vendedor en este paso. El pitch que escribas
+tiene que poder pasar esta misma evaluación.
+
+SE ESPERA:
+${esperados.join("\n") || "- (sin criterios de éxito registrados para este alcance)"}
+
+SE MARCA COMO FALLA:
+${fallas.join("\n") || "- (sin criterios de falla registrados para este alcance)"}
+
+Los CRITICAL son inviolables.`;
+}
+
+/** Doctrina VIVA: Cerebro completo + criterios de ejecución del alcance de la sección. */
+async function loadContext(
+  admin: any,
+  pitch: any,
+  spec: { key: string; worlds: number[] },
+) {
+  const extraNodes =
+    String(pitch.client_type) === "recurrente" ? RECURRENTE_NODE_IDS : [];
+
+  const [skillsRes, companyRes, cerebroBlock, criteriosWorlds, criteriosNodes] =
+    await Promise.all([
+      admin
+        .from("skills")
+        .select("id, code, name, short_description, category, world_id_introduced")
+        .eq("status", "active")
+        .order("world_id_introduced", { ascending: true }),
+      admin
+        .from("companies")
+        .select("name, company_sales_brain")
+        .eq("id", pitch.company_id)
+        .maybeSingle(),
+      getCerebro(),
+      getCriteriosEjecucion({ worlds: spec.worlds }),
+      extraNodes.length ? getCriteriosEjecucion({ nodeIds: extraNodes }) : Promise.resolve([]),
+    ]);
+
+  const criterios = [...criteriosWorlds, ...criteriosNodes];
 
   const skillList = (skillsRes.data ?? []) as any[];
   const validSkillIds = new Set(skillList.map((s) => String(s.id)));
@@ -627,9 +671,6 @@ async function loadContext(admin: any, pitch: any, world: number) {
         }`,
     )
     .join("\n");
-  const cardsBlock = cards
-    .map((c) => `[${c.node_id} · ${c.card_type}] ${c.title ?? ""}\n${c.body ?? ""}`)
-    .join("\n\n");
   const brain = JSON.stringify(
     {
       empresa: (companyRes.data as any)?.name,
@@ -639,8 +680,16 @@ async function loadContext(admin: any, pitch: any, world: number) {
     2,
   );
 
-  return { validSkillIds, skillsBlock, cardsBlock, brain };
+  return {
+    validSkillIds,
+    skillsBlock,
+    cerebroBlock,
+    criterios,
+    criteriosBlock: buildCriteriosBlock(criterios),
+    brain,
+  };
 }
+
 
 /** Genera UNA sección. Prompt acotado al mundo del paso + secciones previas. */
 export async function runPitchSection(args: {
@@ -667,11 +716,9 @@ export async function runPitchSection(args: {
     return { ok: false, step: args.step, error: "forbidden" };
   }
 
-  const { validSkillIds, skillsBlock, cardsBlock, brain } = await loadContext(
-    admin,
-    pitch,
-    spec.world,
-  );
+  const { validSkillIds, skillsBlock, cerebroBlock, criteriosBlock, brain } =
+    await loadContext(admin, pitch, spec);
+
 
   // Contexto de coherencia: solo el content de las secciones ya escritas.
   const { data: prevRows } = await admin
@@ -690,11 +737,13 @@ export async function runPitchSection(args: {
 
   const base = buildPitchPrompt({
     skillsBlock,
-    cardsBlock,
+    cerebroBlock,
+    criteriosBlock,
     brain,
     clientType: String(pitch.client_type),
     channel: String(pitch.channel),
   });
+
 
   const scope = `═══ ALCANCE DE ESTA LLAMADA ═══
 
