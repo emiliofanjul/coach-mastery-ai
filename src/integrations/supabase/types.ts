@@ -670,6 +670,42 @@ export type Database = {
         }
         Relationships: []
       }
+      doctrina: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          order_index: number
+          section_key: string
+          title: string
+          version: number
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          order_index: number
+          section_key: string
+          title: string
+          version: number
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          order_index?: number
+          section_key?: string
+          title?: string
+          version?: number
+        }
+        Relationships: []
+      }
       invite_attempts: {
         Row: {
           actor_id: string | null
