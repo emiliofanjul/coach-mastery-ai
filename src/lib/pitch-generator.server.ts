@@ -10,7 +10,7 @@ import {
 
 
 
-export const PITCH_PROMPT_VERSION = "pitch-v2.0.0-cerebro";
+export const PITCH_PROMPT_VERSION = "pitch-v2.1.0-cerebro-v17";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
 
