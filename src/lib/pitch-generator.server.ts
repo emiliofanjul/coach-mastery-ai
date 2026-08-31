@@ -850,6 +850,24 @@ los otros pasos.
 
 ${prevBlock}
 
+═══ REGLA ABSOLUTA: NI APROBACIÓN NI PRUEBA NI POSPONER ═══
+
+En las secciones de guion (introducción, historia, presentación, cierre y
+consolidación):
+
+· PROHIBIDO pedir aprobación: "¿cómo lo ves?", "¿le parece?", "¿le
+  entramos?", "¿le late?", "¿qué opina?", "¿le gustaría?", "¿le interesa?"
+  y cualquier variante que permita al cliente aprobar o rechazar. Se asume
+  y se dirige: "Se lo mando junto en la entrega del jueves."
+· PROHIBIDO ofrecer posponer, aunque sea como segunda opción de una
+  alternativa: "o mejor lo dejamos para la próxima", "prefieres esperar",
+  "lo piensas con calma". Si hay dos opciones, las dos avanzan (jueves o
+  viernes; con o sin la línea nueva) — nunca una que sea no comprar.
+· PROHIBIDO pedirle al cliente que pruebe: "para que lo pruebe", "pruebas
+  cómo responde", "ya tienes para probar". Nada de "probar", "prueba" ni
+  sus conjugaciones. El pedido se cierra sobre lo que le falta y se vende,
+  no sobre un experimento.
+
 ═══ REGLA ABSOLUTA: CERO CORCHETES DE RELLENO ═══
 
 En el contenido y en TODAS las alternativas está TERMINANTEMENTE PROHIBIDO
