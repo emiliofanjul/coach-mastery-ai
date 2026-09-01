@@ -310,7 +310,7 @@ function ManagerOnboarding() {
         {step === BRAIN_STEP && (
           <BrainStep companyName={companyName} brain={brain} onBack={goBack} onNext={goNext} />
         )}
-        {step === 9 && (
+        {step === TEAM_STEP && (
           <TeamStep onFinish={() => navigate({ to: "/" })} />
         )}
       </div>
