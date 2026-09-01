@@ -545,7 +545,7 @@ function PracticaPage() {
           seller_id: sellerData?.id ?? null,
           session_id: sessionCorrelationIdRef.current,
           node_id: nodeId,
-          phase: phaseRef.current ?? null,
+          phase,
         }),
         signal: ctrl.signal,
       });
