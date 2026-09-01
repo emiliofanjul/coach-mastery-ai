@@ -653,6 +653,39 @@ export function validatePitch(
     }
   }
 
+  // 20. Largo del content por sección. Un pitch que no se puede aprender no sirve.
+  //     Aplica a TODAS las secciones (munición incluida).
+  for (const s of sections) {
+    const key = String(s?.section_key ?? "");
+    const max = MAX_CONTENT_CHARS[key];
+    if (!max) continue;
+    const len = String(s?.content ?? "").trim().length;
+    if (len > max) {
+      fails.push(
+        `V20: ${key} tiene ${len} caracteres y el máximo es ${max}; escribe el esqueleto (frases clave y pasos), no el desarrollo — el vendedor lo repasa en la camioneta`,
+      );
+    }
+  }
+
+  // 21. Alternativas: máximo 3 por sección y 200 caracteres cada una.
+  for (const s of sections) {
+    const key = String(s?.section_key ?? "");
+    const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
+    if (alts.length > MAX_ALTS) {
+      fails.push(
+        `V21: ${key} trae ${alts.length} alternativas y el máximo es ${MAX_ALTS}; deja las mejores ${MAX_ALTS}`,
+      );
+    }
+    for (const a of alts) {
+      const len = String(a?.content ?? "").trim().length;
+      if (len > MAX_ALT_CHARS) {
+        fails.push(
+          `V21: la alternativa #${a?.rank} de ${key} tiene ${len} caracteres y el máximo es ${MAX_ALT_CHARS}; una alternativa es una variante de la misma frase, no otro pitch`,
+        );
+      }
+    }
+  }
+
 
   // 11 y 12. rationale_short / rationale_long
   for (const s of sections) {
