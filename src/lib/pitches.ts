@@ -73,7 +73,7 @@ export async function fetchSkillRefs(skillIds: string[]): Promise<Record<string,
 
   // Fallback por mundo: primer nodo de cada mundo involucrado.
   const worlds = Array.from(new Set(skills.map((s) => s.world_id_introduced).filter((w) => w != null)));
-  let firstNodeByWorld: Record<number, string> = {};
+  const firstNodeByWorld: Record<number, string> = {};
   if (worlds.length > 0) {
     const nodes = await restGet<{ id: string; world_id: number; order_index: number }>(
       `nodes?select=id,world_id,order_index&world_id=in.(${worlds.join(",")})&order=world_id.asc,order_index.asc`,

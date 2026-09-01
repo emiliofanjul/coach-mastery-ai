@@ -234,28 +234,28 @@ function ManagerOnboarding() {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", maxWidth: 560, width: "100%", margin: "0 auto", padding: "1.5rem 1.2rem 2rem" }}>
         {step === 0 && <Welcome name={name} onNext={goNext} />}
         {step === 1 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 1 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 1 de 20">
             <Question text={QUESTIONS.q1_que_vendes.text} subtext={QUESTIONS.q1_que_vendes.subtext} />
             <TextArea value={a.q1} onChange={(v) => setA({ ...a, q1: v })} placeholder="Ej: Lubricantes y aceites de motor Bardahl y Repsol para refaccionarias y talleres mecánicos" min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q1.trim().length < 20} />
           </Block>
         )}
         {step === 2 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 2 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 2 de 20">
             <Question text={QUESTIONS.q2_a_quien.text} subtext={QUESTIONS.q2_a_quien.subtext} />
             <TextArea value={a.q2} onChange={(v) => setA({ ...a, q2: v })} placeholder="Ej: Dueños de refaccionarias y talleres mecánicos independientes. El dueño generalmente decide." min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q2.trim().length < 20} />
           </Block>
         )}
         {step === 3 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 3 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 3 de 20">
             <Question text={QUESTIONS.q3_como_gana.text} subtext={QUESTIONS.q3_como_gana.subtext} />
             <TextArea value={a.q3} onChange={(v) => setA({ ...a, q3: v })} placeholder="Ej: Mejor margen de ganancia en cada cambio de aceite y clientes que regresan por la calidad." min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q3.trim().length < 20} />
           </Block>
         )}
         {step === 4 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 4 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 4 de 20">
             <Question text="¿Cuál es el ticket promedio y con qué frecuencia compra?" subtext="Aproximado está bien." />
             <FieldLabel>Ticket promedio por visita</FieldLabel>
             <TextInput value={a.ticket} onChange={(v) => setA({ ...a, ticket: v })} placeholder="Ej: $1,500 pesos" />
@@ -265,7 +265,7 @@ function ManagerOnboarding() {
           </Block>
         )}
         {step === 5 && (
-          <Block label="Bloque 2 de 6 — Tu proceso" qNumber="Preguntas 5–7 de 9">
+          <Block label="Bloque 2 de 6 — Tu proceso" qNumber="Preguntas 5–7 de 20">
             <Question text={QUESTIONS.q5_interaccion.text} subtext={QUESTIONS.q5_interaccion.subtext} />
             <CheckCardList
               options={INTERACCION_OPTIONS}
@@ -280,7 +280,7 @@ function ManagerOnboarding() {
           </Block>
         )}
         {step === 6 && (
-          <Block label="Bloque 3 de 6 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 9">
+          <Block label="Bloque 3 de 6 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 20">
             <ImportantNote>
               Estas dos preguntas son las más importantes. Lo que escribas aquí es lo que hace que el entrenamiento sea específico para tu empresa y no genérico.
             </ImportantNote>
