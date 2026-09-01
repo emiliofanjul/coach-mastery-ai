@@ -1004,7 +1004,22 @@ El pitch se escribe por partes. En esta llamada escribes ÚNICAMENTE el
 paso ${spec.step}: ${spec.key} (section_kind "${spec.kind}"). No escribas
 los otros pasos.
 
+═══ PRESUPUESTO DE ESTA SECCIÓN (límite duro) ═══
+
+El \`content\` de ${spec.key} debe tener MÁXIMO ${MAX_CONTENT_CHARS[spec.key] ?? 700}
+caracteres. Cuéntalos antes de responder. Si te pasas, la sección se rechaza.
+${
+  spec.key === "descubrimiento"
+    ? "Los 3 territorios con 2 o 3 preguntas cada uno. No un catálogo: un banco de 25 preguntas no se usa, se abandona."
+    : spec.key === "presentacion"
+      ? "La estructura de la propuesta, no el guion palabra por palabra de cada producto."
+      : "2 o 3 frases. Nada más."
+}
+Alternativas: máximo ${MAX_ALTS}, cada una de máximo ${MAX_ALT_CHARS} caracteres.
+Los rationale NO cuentan para este límite: ahí sí desarrolla.
+
 ${prevBlock}
+
 
 ═══ REGLA ABSOLUTA: NI APROBACIÓN NI PRUEBA NI POSPONER ═══
 
