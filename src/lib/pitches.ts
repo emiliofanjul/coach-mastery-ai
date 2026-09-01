@@ -70,9 +70,8 @@ export async function fetchSkillRefs(skillIds: string[]): Promise<Record<string,
 
 /** El manager elige una alternativa: reemplaza el content y marca edición. */
 export async function applyAlternative(sectionId: string, content: string): Promise<void> {
-  await restMutate("pitch_sections", {
+  await restMutate(`pitch_sections?id=eq.${sectionId}`, {
     method: "PATCH",
-    path: `pitch_sections?id=eq.${sectionId}`,
     body: { content, edited_by_manager: true },
   });
 }
