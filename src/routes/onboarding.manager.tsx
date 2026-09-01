@@ -5,11 +5,13 @@ import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { generateCompanyBrain } from "@/utils/onboarding.functions";
 import {
   QUESTIONS,
-  TOTAL_STEPS,
   FRECUENCIA_OPTIONS,
   INTERACCION_OPTIONS,
   DURACION_OPTIONS,
   RELACION_OPTIONS,
+  EXT_SECTIONS,
+  type ExtSection,
+  type ExtQuestion,
 } from "@/lib/onboarding-questions";
 
 export const Route = createFileRoute("/onboarding/manager")({
