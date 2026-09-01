@@ -169,21 +169,32 @@ function ManagerOnboarding() {
     if (step !== CALIB_STEP || brain || generating) return;
     setGenerating(true);
     setGenError(null);
-    const answers = [
-      { question: QUESTIONS.q1_que_vendes.text, answer: a.q1 },
-      { question: QUESTIONS.q2_a_quien.text, answer: a.q2 },
-      { question: QUESTIONS.q3_como_gana.text, answer: a.q3 },
-      { question: "Ticket promedio", answer: a.ticket },
-      { question: "Frecuencia de compra", answer: a.frecuencia },
-      { question: QUESTIONS.q5_interaccion.text, answer: a.interaccion.join(", ") },
-      { question: QUESTIONS.q6_duracion.text, answer: a.duracion },
-      { question: QUESTIONS.q7_relacion.text, answer: a.relacion },
-      { question: QUESTIONS.q8_diferenciador.text, answer: a.q8 },
-      { question: QUESTIONS.q9_restricciones.text, answer: a.q9 },
+    const baseAnswers = [
+      { id: "q1_que_vendes", block: 1, question: QUESTIONS.q1_que_vendes.text, answer: a.q1 },
+      { id: "q2_a_quien", block: 1, question: QUESTIONS.q2_a_quien.text, answer: a.q2 },
+      { id: "q3_como_gana", block: 1, question: QUESTIONS.q3_como_gana.text, answer: a.q3 },
+      { id: "q4_ticket", block: 1, question: "Ticket promedio", answer: a.ticket },
+      { id: "q4_frecuencia", block: 1, question: "Frecuencia de compra", answer: a.frecuencia },
+      { id: "q5_interaccion", block: 2, question: QUESTIONS.q5_interaccion.text, answer: a.interaccion.join(", ") },
+      { id: "q6_duracion", block: 2, question: QUESTIONS.q6_duracion.text, answer: a.duracion },
+      { id: "q7_relacion", block: 2, question: QUESTIONS.q7_relacion.text, answer: a.relacion },
+      { id: "q8_diferenciador", block: 3, question: QUESTIONS.q8_diferenciador.text, answer: a.q8 },
+      { id: "q9_restricciones", block: 3, question: QUESTIONS.q9_restricciones.text, answer: a.q9 },
     ];
+    const extAnswers = EXT_SECTIONS.flatMap((s) =>
+      s.questions.map((q) => ({
+        id: q.id,
+        block: s.block,
+        // La llave del brain viaja con la pregunta para que el modelo no
+        // tenga que adivinar dónde va cada respuesta.
+        question: `[${q.brainKey}] ${q.text}${q.usageNote ? ` — ${q.usageNote}` : ""}`,
+        answer: extAnswerText(ext[q.id]),
+      })),
+    );
+    const answers = [...baseAnswers, ...extAnswers];
     generateCompanyBrain({
       data: {
-        answers,
+        answers: answers.map(({ question, answer }) => ({ question, answer })),
         companyName: companyName || "tu empresa",
         companyId,
         openerLine: "Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?",
@@ -192,25 +203,25 @@ function ManagerOnboarding() {
       .then(async (result) => {
         setBrain(result);
         // Guardar respuestas + brain en BD
-        const saves = answers.map((ans, i) => {
-          const ids = ["q1_que_vendes","q2_a_quien","q3_como_gana","q4_ticket","q4_frecuencia","q5_interaccion","q6_duracion","q7_relacion","q8_diferenciador","q9_restricciones"];
-          const blocks = [1,1,1,1,1,2,2,2,3,3];
-          return supabase.rpc("save_onboarding_answer", {
-            _block_number: blocks[i],
-            _question_id: ids[i],
-            _question_text: ans.question,
-            _answer: ans.answer,
-          });
-        });
-        await Promise.all(saves);
+        await Promise.all(
+          answers.map((ans) =>
+            supabase.rpc("save_onboarding_answer", {
+              _block_number: ans.block,
+              _question_id: ans.id,
+              _question_text: ans.question,
+              _answer: ans.answer,
+            }),
+          ),
+        );
         await supabase.rpc("update_company_brain", { _brain: stripEphemeral(result) });
+        try { localStorage.removeItem(draftKey(companyId)); } catch { /* noop */ }
       })
       .catch((err) => {
         console.error(err);
         setGenError(err.message === "rate_limit" ? "Closer está saturado, intenta en un momento." : err.message === "payment_required" ? "Se acabaron los créditos de IA. Avisa al admin." : "No pudimos generar el cerebro. Intenta de nuevo.");
       })
       .finally(() => setGenerating(false));
-  }, [step, brain, generating, a, companyName]);
+  }, [step, brain, generating, a, ext, companyName, companyId]);
 
   if (!authReady) {
     return <main style={{ minHeight: "100dvh", background: BG }} />;
