@@ -330,7 +330,12 @@ export function parseDelimited(
     return null;
   }
 
+  // Las alternativas solo aplican en introducción, historia breve y cierre.
+  // Si el modelo las manda en otra sección, se descartan aquí (no se reintenta
+  // una generación entera por ruido de formato).
+  const ALT_SECTIONS = new Set(["introduccion", "historia_breve", "cierre"]);
   const alternatives: any[] = [];
+
   for (let i = 1; i <= 6; i++) {
     const block = grab(`ALT-${i}`);
     if (!block) break;
