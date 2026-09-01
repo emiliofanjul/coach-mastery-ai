@@ -22,8 +22,8 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
-const DIRECTOR_VERSION = "v2.1.0";
-const HAIKU_MODEL = "claude-haiku-4-5";
+const DIRECTOR_VERSION = "v2.2.0-sonnet";
+const DIRECTOR_MODEL = "claude-sonnet-4-5";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -57,7 +57,7 @@ async function logLlmCall(row: {
     await admin.from("llm_calls").insert({
       phase: "director",
       prompt_version: DIRECTOR_VERSION,
-      model: HAIKU_MODEL,
+      model: DIRECTOR_MODEL,
       input_tokens: row.input_tokens,
       output_tokens: row.output_tokens,
       cached_tokens: row.cached_tokens ?? null,
@@ -190,7 +190,7 @@ Responde solo el JSON.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: HAIKU_MODEL,
+        model: DIRECTOR_MODEL,
         max_tokens: 64,
         system,
         messages: [{ role: "user", content: user }],

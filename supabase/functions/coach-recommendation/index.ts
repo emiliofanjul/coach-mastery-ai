@@ -230,9 +230,14 @@ Deno.serve(async (req) => {
       model: MODEL,
       input_tokens: inputTokens,
       output_tokens: outputTokens,
+      cached_tokens: anthJson?.usage?.cache_read_input_tokens ?? null,
+      cache_creation_tokens: anthJson?.usage?.cache_creation_input_tokens ?? null,
       latency_ms: latency,
       event_id: latestEventId,
+      company_id: seller.company_id,
+      seller_id: seller.id,
     });
+
 
     // Upsert recommendation
     const { data: saved, error: saveErr } = await admin
