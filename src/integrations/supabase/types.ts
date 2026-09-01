@@ -733,6 +733,9 @@ export type Database = {
       llm_calls: {
         Row: {
           analisis_turnos: Json | null
+          cache_creation_tokens: number | null
+          cached_tokens: number | null
+          company_id: string | null
           created_at: string
           event_id: string | null
           id: string
@@ -742,10 +745,14 @@ export type Database = {
           output_tokens: number | null
           phase: string
           prompt_version: string | null
+          seller_id: string | null
           session_id: string | null
         }
         Insert: {
           analisis_turnos?: Json | null
+          cache_creation_tokens?: number | null
+          cached_tokens?: number | null
+          company_id?: string | null
           created_at?: string
           event_id?: string | null
           id?: string
@@ -755,10 +762,14 @@ export type Database = {
           output_tokens?: number | null
           phase: string
           prompt_version?: string | null
+          seller_id?: string | null
           session_id?: string | null
         }
         Update: {
           analisis_turnos?: Json | null
+          cache_creation_tokens?: number | null
+          cached_tokens?: number | null
+          company_id?: string | null
           created_at?: string
           event_id?: string | null
           id?: string
@@ -768,14 +779,29 @@ export type Database = {
           output_tokens?: number | null
           phase?: string
           prompt_version?: string | null
+          seller_id?: string | null
           session_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "llm_calls_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "llm_calls_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "seller_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "llm_calls_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
             referencedColumns: ["id"]
           },
         ]
@@ -2017,6 +2043,21 @@ export type Database = {
       }
       is_manager: { Args: never; Returns: boolean }
       join_company_with_code: { Args: { _code: string }; Returns: Json }
+      llm_usage_report: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          avg_latency_ms: number
+          cache_creation_tokens: number
+          cached_tokens: number
+          calls: number
+          company_id: string
+          company_name: string
+          input_tokens: number
+          model: string
+          output_tokens: number
+          phase: string
+        }[]
+      }
       owns_seller: { Args: { _seller_id: string }; Returns: boolean }
       register_invite_failed_attempt: {
         Args: { _code: string }

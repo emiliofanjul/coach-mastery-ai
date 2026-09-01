@@ -584,7 +584,14 @@ export function validatePitch(
 
 async function logLlmCall(
   admin: any,
-  row: { input_tokens: number | null; output_tokens: number | null; latency_ms: number },
+  row: {
+    input_tokens: number | null;
+    output_tokens: number | null;
+    cached_tokens?: number | null;
+    cache_creation_tokens?: number | null;
+    latency_ms: number;
+    company_id?: string | null;
+  },
 ) {
   try {
     await admin.from("llm_calls").insert({
@@ -593,14 +600,30 @@ async function logLlmCall(
       model: PITCH_MODEL,
       input_tokens: row.input_tokens,
       output_tokens: row.output_tokens,
+      cached_tokens: row.cached_tokens ?? null,
+      cache_creation_tokens: row.cache_creation_tokens ?? null,
       latency_ms: row.latency_ms,
+      company_id: row.company_id ?? null,
     });
   } catch (e) {
     console.error("[generate-pitch] llm_calls insert failed", e);
   }
 }
 
-async function callClaude(admin: any, system: string, apiKey: string): Promise<string> {
+// Bloque de prompt. Lo FIJO entre las secciones de un mismo pitch (Cerebro,
+// company_brain, skills) va primero y con cache_control; lo variable después.
+export type PitchPromptBlock = {
+  type: "text";
+  text: string;
+  cache_control?: { type: "ephemeral"; ttl?: string };
+};
+
+async function callClaude(
+  admin: any,
+  system: string | PitchPromptBlock[],
+  apiKey: string,
+  companyId?: string | null,
+): Promise<string> {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), TIMEOUT_MS);
   const start = Date.now();
@@ -613,6 +636,9 @@ async function callClaude(admin: any, system: string, apiKey: string): Promise<s
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
         "Content-Type": "application/json",
+        // TTL extendido: una sección tarda 2-3 min, más que los 5 min por
+        // defecto entre la 1ª y la 6ª sección del mismo pitch.
+        "anthropic-beta": "extended-cache-ttl-2025-04-11",
       },
       body: JSON.stringify({
         model: PITCH_MODEL,
@@ -629,6 +655,7 @@ async function callClaude(admin: any, system: string, apiKey: string): Promise<s
         input_tokens: null,
         output_tokens: null,
         latency_ms: Date.now() - start,
+        company_id: companyId ?? null,
       });
       throw new Error(`Claude ${res.status}: ${detail.slice(0, 400)}`);
     }
@@ -639,6 +666,8 @@ async function callClaude(admin: any, system: string, apiKey: string): Promise<s
     let text = "";
     let inputTokens: number | null = null;
     let outputTokens: number | null = null;
+    let cachedTokens: number | null = null;
+    let cacheCreationTokens: number | null = null;
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
@@ -659,16 +688,22 @@ async function callClaude(admin: any, system: string, apiKey: string): Promise<s
           text += evt.delta.text ?? "";
         } else if (evt.type === "message_start") {
           inputTokens = evt.message?.usage?.input_tokens ?? null;
+          cachedTokens = evt.message?.usage?.cache_read_input_tokens ?? null;
+          cacheCreationTokens = evt.message?.usage?.cache_creation_input_tokens ?? null;
         } else if (evt.type === "message_delta") {
           outputTokens = evt.usage?.output_tokens ?? outputTokens;
         }
       }
     }
 
+    console.log("[generate-pitch] usage", { inputTokens, cachedTokens, cacheCreationTokens, outputTokens });
     await logLlmCall(admin, {
       input_tokens: inputTokens,
       output_tokens: outputTokens,
+      cached_tokens: cachedTokens,
+      cache_creation_tokens: cacheCreationTokens,
       latency_ms: Date.now() - start,
+      company_id: companyId ?? null,
     });
     return text;
   } finally {
@@ -832,10 +867,13 @@ export async function runPitchSection(args: {
           .join("\n\n")}`
       : "";
 
+  // El bloque base (Cerebro + skills + empresa + reglas duras) es IDÉNTICO en
+  // las 6 secciones del mismo pitch → se cachea. Los criterios de ejecución
+  // cambian por sección, así que salen del base y viajan en el bloque variable.
   const base = buildPitchPrompt({
     skillsBlock,
     cerebroBlock,
-    criteriosBlock,
+    criteriosBlock: "",
     brain,
     clientType: String(pitch.client_type),
     channel: String(pitch.channel),
@@ -944,23 +982,30 @@ Reglas del formato:
 · Nada de texto fuera de los bloques.`;
 
 
-  const system = `${base}\n\n${scope}`;
+  // Bloque fijo (cacheado, TTL 1h) primero; variable después.
+  const cachedBase: PitchPromptBlock = {
+    type: "text",
+    text: base,
+    cache_control: { type: "ephemeral", ttl: "1h" },
+  };
+  const variable = `${criteriosBlock}\n\n${scope}`;
 
   let section: any = null;
   let missing: string[] = [];
   let fails: string[] = [];
   const attemptLog: Array<{ attempt: number; ms: number; fails: string[] }> = [];
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const prompt =
+    const tail =
       attempt === 1
-        ? system
-        : `${system}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas SIN romper ninguna otra regla:\n${fails
+        ? variable
+        : `${variable}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas SIN romper ninguna otra regla:\n${fails
             .map((f) => `- ${f}`)
             .join("\n")}\n\nRECORDATORIO INVIOLABLE al corregir: CERO corchetes de relleno en el contenido y en las alternativas ("[producto]", "[marca]", "[otra marca]", "[otro proveedor]", "[número]", "[precio]", "[X]"...). Si no tienes el dato, escribe la frase de forma genérica pero decible y declara el faltante en missing_data. Y rationale_short: 25 palabras o menos, cuéntalas.`;
+    const prompt: PitchPromptBlock[] = [cachedBase, { type: "text", text: tail }];
     let raw = "";
     const t0 = Date.now();
     try {
-      raw = await callClaude(admin, prompt, apiKey);
+      raw = await callClaude(admin, prompt, apiKey, pitch.company_id ?? null);
     } catch (e) {
       return {
         ok: false,

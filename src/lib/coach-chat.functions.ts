@@ -29,6 +29,7 @@ Reglas:
 - Si te preguntan algo fuera de ventas, responde breve y reconduces al entrenamiento.
 - Nunca digas que eres una IA ni menciones modelos.${data.context ? `\n\nContexto actual del vendedor: ${data.context}` : ""}`;
 
+    const started = Date.now();
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -51,5 +52,22 @@ Reglas:
 
     const json = await res.json();
     const reply: string = json?.choices?.[0]?.message?.content ?? "";
+
+    // Observabilidad de consumo: el coach también escribe en llm_calls.
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin.from("llm_calls").insert({
+        phase: "coach_chat",
+        prompt_version: "coach-v1",
+        model: "google/gemini-2.5-flash",
+        input_tokens: json?.usage?.prompt_tokens ?? null,
+        output_tokens: json?.usage?.completion_tokens ?? null,
+        cached_tokens: json?.usage?.prompt_tokens_details?.cached_tokens ?? null,
+        latency_ms: Date.now() - started,
+      });
+    } catch (e) {
+      console.error("[coach-chat] llm_calls insert failed", e);
+    }
+
     return { reply };
   });
