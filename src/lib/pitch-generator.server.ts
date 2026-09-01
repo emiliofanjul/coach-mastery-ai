@@ -367,17 +367,26 @@ export function validatePitch(
     }
   }
 
-  const contentText = sections
-    .map((s) =>
-      [String(s?.content ?? "")]
-        .concat((s?.alternatives ?? []).map((a: any) => String(a?.content ?? "")))
-        .join("\n"),
-    )
-    .join("\n");
+  const isMunicion = (s: any) =>
+    String(s?.section_kind ?? "") === "municion" ||
+    PITCH_STEPS_SPEC.find((x) => x.key === s?.section_key)?.kind === "municion";
+
+  const textOf = (s: any) =>
+    [String(s?.content ?? "")]
+      .concat((s?.alternatives ?? []).map((a: any) => String(a?.content ?? "")))
+      .join("\n");
+
+  const contentText = sections.map(textOf).join("\n");
   const contentLower = contentText.toLowerCase();
+  // V4/V5/V5b/V17 están escritas para GUION literal. En un banco de preguntas
+  // diagnósticas ('municion') verbos como "probar" y las plantillas con
+  // corchetes son legítimos, así que esas secciones quedan exceptuadas.
+  const guionSections = sections.filter((s) => !isMunicion(s));
+  const guionText = guionSections.map(textOf).join("\n");
+  const guionLower = guionText.toLowerCase();
   const brainLower = ctx.brain.toLowerCase();
 
-  // 4. Términos de industria ajena a la empresa
+  // 4. Términos de industria ajena a la empresa (solo guion)
   const FOREIGN = [
     "seguro de vida",
     "póliza",
@@ -389,17 +398,17 @@ export function validatePitch(
     "menú del restaurante",
   ];
   for (const term of FOREIGN) {
-    if (contentLower.includes(term) && !brainLower.includes(term)) {
+    if (guionLower.includes(term) && !brainLower.includes(term)) {
       fails.push(`V4: término de industria ajena "${term}"`);
     }
   }
   if (ctx.clientType === "autoconsumo") {
-    if (/(qué|que)\s+(vende|se le mueve|le compran|revende)/i.test(contentText)) {
+    if (/(qué|que)\s+(vende|se le mueve|le compran|revende)/i.test(guionText)) {
       fails.push("V4: en autoconsumo se pregunta qué vende");
     }
   }
 
-  // 5. "para que lo pruebe" o cualquier variante de pedirle al cliente que pruebe
+  // 5. "para que lo pruebe" o cualquier variante de pedirle al cliente que pruebe (solo guion)
   const PROBAR = [
     "para que lo pruebe",
     "para que la pruebe",
@@ -413,19 +422,42 @@ export function validatePitch(
     "haga la prueba",
   ];
   for (const p of PROBAR) {
-    if (contentLower.includes(p)) fails.push(`V5: pide que pruebe ("${p}")`);
+    if (guionLower.includes(p)) fails.push(`V5: pide que pruebe ("${p}")`);
   }
   // 5b. Variantes conjugadas: "pruebas cómo responde", "para probar con esa",
   //     "ya tienes para probar". El cliente no prueba: compra lo que le falta.
   const PROBAR_RX =
     /\b(prueb(?:a|as|e|es|en|o)|pru[eé]b\w*|probar(?:lo|la|los|las)?)\b/gi;
-  const probMatches = Array.from(new Set((contentText.match(PROBAR_RX) ?? []).map((m) => m.toLowerCase())));
+  const probMatches = Array.from(new Set((guionText.match(PROBAR_RX) ?? []).map((m) => m.toLowerCase())));
   for (const m of probMatches) {
-    if (PROBAR.some((p) => contentLower.includes(p))) break;
+    if (PROBAR.some((p) => guionLower.includes(p))) break;
     fails.push(
       `V5b: le pide al cliente que pruebe ("${m}"); el pedido se cierra sobre lo que le falta, no sobre una prueba`,
     );
   }
+
+  // 14. Territorio PRECIO (Nivel 2, regla 14) — aplica a TODAS las secciones,
+  //     munición incluida: nunca se le pide opinión al cliente sobre el precio.
+  const PRECIO_OPINION = [
+    /(c[óo]mo|qu[ée])\s+(ve|ves|le parece|te parece|opina|opinas)[^.?!]{0,40}\bprecio/i,
+    /\bprecio[^.?!]{0,40}(c[óo]mo lo ve|qu[ée] opina|le parece|te parece)/i,
+    /(muy|est[áa])\s+(caro|arriba)\b/i,
+    /(algo|qu[ée])[^.?!]{0,30}(sient(?:a|as|e|es))[^.?!]{0,30}(caro|arriba|precio)/i,
+    /(c[óo]mo|qu[ée])\s+(ve|ves|le parece|te parece|opina|opinas)[^.?!]{0,40}\b(los precios|el costo)/i,
+  ];
+  for (const s of sections) {
+    const t = textOf(s);
+    for (const rx of PRECIO_OPINION) {
+      const m = t.match(rx);
+      if (m) {
+        fails.push(
+          `V14: pide opinión sobre el precio en ${s?.section_key} ("${m[0]}"); el precio se afirma con hechos, nunca se somete a opinión del cliente`,
+        );
+        break;
+      }
+    }
+  }
+
 
   // 5c. Pregunta de aprobación o alternativa que permite posponer (solo guion).
   const APROBACION = [
@@ -462,18 +494,17 @@ export function validatePitch(
     "lo piensa",
     "lo piensas",
   ];
+  // V19 aplica a TODAS las secciones (munición incluida: un banco de preguntas
+  // nunca pide aprobación ni opinión). V18 (posponer) es de guion literal.
   for (const s of sections) {
-    if (s?.section_kind === "municion") continue;
-    const t = [String(s?.content ?? "")]
-      .concat((s?.alternatives ?? []).map((a: any) => String(a?.content ?? "")))
-      .join("\n")
-      .toLowerCase();
+    const t = textOf(s).toLowerCase();
     for (const p of APROBACION) {
       if (t.includes(p))
         fails.push(
           `V19: pregunta de aprobación en ${s?.section_key} ("${p}"); el cierre asume y dirige, no pide permiso`,
         );
     }
+    if (isMunicion(s)) continue;
     for (const p of POSPONER) {
       if (t.includes(p))
         fails.push(
@@ -481,6 +512,7 @@ export function validatePitch(
         );
     }
   }
+
 
 
   // 6. Garantiza que un producto se venderá, si el brain lo prohíbe
@@ -544,11 +576,13 @@ export function validatePitch(
   }
 
 
-  // 17. Ningún corchete de relleno en NINGUNA sección (content ni alternatives).
-  //     Escape igual que V10: sin el marcador + declararlo en missing_data.
+  // 17. Ningún corchete de relleno en las secciones de GUION (content ni alternatives).
+  //     Las secciones 'municion' quedan exceptuadas: un banco de preguntas puede
+  //     usar plantillas. Escape igual que V10: sin el marcador + missing_data.
   const BRACKET = /\[[^\]\n]{0,120}\]/;
-  for (const s of sections) {
+  for (const s of guionSections) {
     const key = String(s?.section_key ?? "");
+
     const cText = String(s?.content ?? "");
     if (BRACKET.test(cText)) {
       const m = cText.match(BRACKET)?.[0] ?? "";

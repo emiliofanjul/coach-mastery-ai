@@ -58,7 +58,14 @@ function NodoCardsPage() {
   const [dynamicCache, setDynamicCache] = useState<Record<string, DynamicContent>>({});
   const [dynamicContextReady, setDynamicContextReady] = useState(false);
 
+  // Atribución de consumo (llm_calls): empresa y vendedor de quien genera.
+  const attributionRef = useRef<{ seller_id: string | null; company_id: string | null }>({
+    seller_id: null,
+    company_id: null,
+  });
+
   // Carga de nodo + tarjetas + count de quiz (para decidir destino post-tarjetas)
+
   // Todas las lecturas van por PostgREST directo (restGet) para evitar el
   // navigator.locks del SDK de supabase-js que deadlockea con Promise.all.
   useEffect(() => {
@@ -105,11 +112,17 @@ function NodoCardsPage() {
           restGetMaybeSingle<{ company_id?: string | null }>(
             `profiles?select=company_id&id=eq.${uid}&limit=1`,
           ),
-          restGetMaybeSingle<{ experience_level?: string | null }>(
-            `sellers?select=experience_level&profile_id=eq.${uid}&limit=1`,
+          restGetMaybeSingle<{ id?: string; experience_level?: string | null; company_id?: string | null }>(
+            `sellers?select=id,experience_level,company_id&profile_id=eq.${uid}&limit=1`,
           ),
         ]);
-        if (alive) setSellerLevel(seller?.experience_level ?? null);
+        if (alive) {
+          setSellerLevel(seller?.experience_level ?? null);
+          attributionRef.current = {
+            seller_id: seller?.id ?? null,
+            company_id: seller?.company_id ?? profile?.company_id ?? null,
+          };
+        }
         const companyId = profile?.company_id;
         if (!companyId) {
           if (alive) setDynamicContextReady(true);
@@ -218,6 +231,8 @@ function NodoCardsPage() {
                 seller_industry: sellerIndustry,
                 card_title: c.title ?? "",
                 card_body_brief: c.body ?? "",
+                company_id: attributionRef.current.company_id,
+                seller_id: attributionRef.current.seller_id,
               },
               { accessToken: getStoredSupabaseSession()?.accessToken, timeoutMs: 20_000 },
             );

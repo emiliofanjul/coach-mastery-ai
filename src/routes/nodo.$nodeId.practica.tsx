@@ -1839,6 +1839,8 @@ function PracticaPage() {
             sessionId={sessionCorrelationIdRef.current}
             practiceScript={nodeData?.practice_script ?? null}
             evaluation={rawEvaluationRef.current}
+            companyId={sellerData?.company_id ?? null}
+            sellerId={sellerData?.id ?? null}
             onContinue={async (stars) => {
               setSaving(true);
 
@@ -2771,6 +2773,8 @@ function ReplicaChat({
   practiceScript,
   evaluation,
   conversation,
+  companyId,
+  sellerId,
 }: {
   worldId: number;
   nodeId: string;
@@ -2778,6 +2782,8 @@ function ReplicaChat({
   practiceScript: any;
   evaluation: any;
   conversation: { role: string; content: string }[];
+  companyId?: string | null;
+  sellerId?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const [thread, setThread] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
@@ -2816,6 +2822,8 @@ function ReplicaChat({
           replica_thread: priorThread,
           user_message: msg,
           session_id: sessionId,
+          company_id: companyId ?? null,
+          seller_id: sellerId ?? null,
         }),
       });
       const raw = await res.text();
@@ -3038,6 +3046,8 @@ function FeedbackPhase({
   sessionId,
   practiceScript,
   evaluation,
+  companyId,
+  sellerId,
 }: {
   onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
@@ -3047,6 +3057,8 @@ function FeedbackPhase({
   sessionId: string;
   practiceScript: any;
   evaluation: any;
+  companyId?: string | null;
+  sellerId?: string | null;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
@@ -3282,6 +3294,8 @@ function FeedbackPhase({
               practiceScript={practiceScript}
               evaluation={evaluation}
               conversation={conversation}
+              companyId={companyId}
+              sellerId={sellerId}
             />
           )}
 
