@@ -39,11 +39,47 @@ export type PitchSection = {
   warning: string | null;
   skill_ids: string[] | null;
   alternatives: PitchAlternative[] | null;
+  edited_by_manager?: boolean | null;
 };
+
+export type SkillRef = {
+  id: string;
+  code: string;
+  name: string;
+  world_id_introduced: number;
+  node_id?: string | null;
+};
+
+/** Catálogo de skills (nombre, código, mundo) + nodo primario donde se enseña. */
+export async function fetchSkillRefs(skillIds: string[]): Promise<Record<string, SkillRef>> {
+  const ids = Array.from(new Set(skillIds.filter(Boolean)));
+  if (ids.length === 0) return {};
+  const list = ids.map((i) => `"${i}"`).join(",");
+  const [skills, links] = await Promise.all([
+    restGet<SkillRef>(`skills?select=id,code,name,world_id_introduced&id=in.(${list})`),
+    restGet<{ skill_id: string; node_id: string; is_primary: boolean }>(
+      `node_skills?select=skill_id,node_id,is_primary&skill_id=in.(${list})&order=is_primary.desc`,
+    ),
+  ]);
+  const out: Record<string, SkillRef> = {};
+  for (const s of skills) {
+    out[s.id] = { ...s, node_id: links.find((l) => l.skill_id === s.id)?.node_id ?? null };
+  }
+  return out;
+}
+
+/** El manager elige una alternativa: reemplaza el content y marca edición. */
+export async function applyAlternative(sectionId: string, content: string): Promise<void> {
+  await restMutate("pitch_sections", {
+    method: "PATCH",
+    path: `pitch_sections?id=eq.${sectionId}`,
+    body: { content, edited_by_manager: true },
+  });
+}
 
 export async function fetchPitchSections(pitchId: string): Promise<PitchSection[]> {
   return restGet<PitchSection>(
-    `pitch_sections?select=id,pitch_id,step,section_key,section_kind,content,rationale_short,rationale_long,warning,skill_ids,alternatives&pitch_id=eq.${pitchId}&order=step.asc`,
+    `pitch_sections?select=id,pitch_id,step,section_key,section_kind,edited_by_manager,content,rationale_short,rationale_long,warning,skill_ids,alternatives&pitch_id=eq.${pitchId}&order=step.asc`,
   );
 }
 
