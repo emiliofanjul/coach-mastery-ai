@@ -538,7 +538,15 @@ function PracticaPage() {
           apikey: SUPABASE_ANON,
           Authorization: `Bearer ${SUPABASE_ANON}`,
         },
-        body: JSON.stringify({ text }),
+        // Atribución de costo de voz (tts_calls) + caché de audio por hash.
+        body: JSON.stringify({
+          text,
+          company_id: sellerData?.company_id ?? null,
+          seller_id: sellerData?.id ?? null,
+          session_id: sessionCorrelationIdRef.current,
+          node_id: nodeId,
+          phase,
+        }),
         signal: ctrl.signal,
       });
       if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);

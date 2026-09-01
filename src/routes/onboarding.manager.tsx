@@ -5,11 +5,13 @@ import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { generateCompanyBrain } from "@/utils/onboarding.functions";
 import {
   QUESTIONS,
-  TOTAL_STEPS,
   FRECUENCIA_OPTIONS,
   INTERACCION_OPTIONS,
   DURACION_OPTIONS,
   RELACION_OPTIONS,
+  EXT_SECTIONS,
+  type ExtSection,
+  type ExtQuestion,
 } from "@/lib/onboarding-questions";
 
 export const Route = createFileRoute("/onboarding/manager")({
@@ -46,6 +48,34 @@ const EMPTY: Answers = {
 
 type Brain = Record<string, string>;
 
+/** Respuestas de los bloques 4-6 (catálogo, cartera, campo). */
+type ExtAnswers = Record<string, string | string[]>;
+
+// Mapa de pasos. Los bloques 1-3 ocupan 1..6; los bloques 4-6 (una pantalla
+// por sección) arrancan en 7; después van calibración, cerebro y equipo.
+const EXT_START = 7;
+const CALIB_STEP = EXT_START + EXT_SECTIONS.length;
+const BRAIN_STEP = CALIB_STEP + 1;
+const TEAM_STEP = CALIB_STEP + 2;
+const PROGRESS_TOTAL = TEAM_STEP;
+
+const draftKey = (companyId: string | null) => `closer_onboarding_draft_${companyId ?? "anon"}`;
+
+function extAnswerText(v: string | string[] | undefined): string {
+  if (Array.isArray(v)) return v.join(", ");
+  return (v ?? "").trim();
+}
+
+/** Una sección está completa cuando toda pregunta no opcional tiene respuesta suficiente. */
+function sectionComplete(section: ExtSection, ext: ExtAnswers): boolean {
+  return section.questions.every((q) => {
+    if (q.optional) return true;
+    const txt = extAnswerText(ext[q.id]);
+    if (!txt) return false;
+    return txt.length >= (q.min ?? 1);
+  });
+}
+
 // Llaves que jamás deben persistirse en companies.company_sales_brain.
 // `__preview_response` es la respuesta efímera del cliente para el preview del
 // onboarding. `DON_RAMON_RESPUESTA` es una llave legacy que se solía persistir
@@ -64,6 +94,7 @@ function ManagerOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // 0 = welcome
   const [a, setA] = useState<Answers>(EMPTY);
+  const [ext, setExt] = useState<ExtAnswers>({});
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -71,6 +102,7 @@ function ManagerOnboarding() {
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
 
   // Cargar perfil del manager
   useEffect(() => {
@@ -106,29 +138,63 @@ function ManagerOnboarding() {
     return () => { active = false; };
   }, [navigate]);
 
+  // Borrador local: el cuestionario es largo a propósito, así que el manager
+  // puede salir y volver sin perder nada.
+  useEffect(() => {
+    if (!authReady || draftLoaded) return;
+    try {
+      const raw = localStorage.getItem(draftKey(companyId));
+      if (raw) {
+        const d = JSON.parse(raw) as { step?: number; a?: Answers; ext?: ExtAnswers };
+        if (d.a) setA({ ...EMPTY, ...d.a });
+        if (d.ext) setExt(d.ext);
+        if (typeof d.step === "number" && d.step > 0 && d.step < CALIB_STEP) setStep(d.step);
+      }
+    } catch { /* borrador corrupto: se ignora */ }
+    setDraftLoaded(true);
+  }, [authReady, draftLoaded, companyId]);
+
+  useEffect(() => {
+    if (!draftLoaded) return;
+    try {
+      localStorage.setItem(draftKey(companyId), JSON.stringify({ step, a, ext }));
+    } catch { /* sin espacio: no bloquea */ }
+  }, [draftLoaded, step, a, ext, companyId]);
+
   const goNext = () => setStep((s) => s + 1);
   const goBack = () => setStep((s) => Math.max(0, s - 1));
 
-  // Generar Brain al entrar al step 7
+  // Generar Brain al entrar al paso de calibración
   useEffect(() => {
-    if (step !== 7 || brain || generating) return;
+    if (step !== CALIB_STEP || brain || generating) return;
     setGenerating(true);
     setGenError(null);
-    const answers = [
-      { question: QUESTIONS.q1_que_vendes.text, answer: a.q1 },
-      { question: QUESTIONS.q2_a_quien.text, answer: a.q2 },
-      { question: QUESTIONS.q3_como_gana.text, answer: a.q3 },
-      { question: "Ticket promedio", answer: a.ticket },
-      { question: "Frecuencia de compra", answer: a.frecuencia },
-      { question: QUESTIONS.q5_interaccion.text, answer: a.interaccion.join(", ") },
-      { question: QUESTIONS.q6_duracion.text, answer: a.duracion },
-      { question: QUESTIONS.q7_relacion.text, answer: a.relacion },
-      { question: QUESTIONS.q8_diferenciador.text, answer: a.q8 },
-      { question: QUESTIONS.q9_restricciones.text, answer: a.q9 },
+    const baseAnswers = [
+      { id: "q1_que_vendes", block: 1, question: QUESTIONS.q1_que_vendes.text, answer: a.q1 },
+      { id: "q2_a_quien", block: 1, question: QUESTIONS.q2_a_quien.text, answer: a.q2 },
+      { id: "q3_como_gana", block: 1, question: QUESTIONS.q3_como_gana.text, answer: a.q3 },
+      { id: "q4_ticket", block: 1, question: "Ticket promedio", answer: a.ticket },
+      { id: "q4_frecuencia", block: 1, question: "Frecuencia de compra", answer: a.frecuencia },
+      { id: "q5_interaccion", block: 2, question: QUESTIONS.q5_interaccion.text, answer: a.interaccion.join(", ") },
+      { id: "q6_duracion", block: 2, question: QUESTIONS.q6_duracion.text, answer: a.duracion },
+      { id: "q7_relacion", block: 2, question: QUESTIONS.q7_relacion.text, answer: a.relacion },
+      { id: "q8_diferenciador", block: 3, question: QUESTIONS.q8_diferenciador.text, answer: a.q8 },
+      { id: "q9_restricciones", block: 3, question: QUESTIONS.q9_restricciones.text, answer: a.q9 },
     ];
+    const extAnswers = EXT_SECTIONS.flatMap((s) =>
+      s.questions.map((q) => ({
+        id: q.id,
+        block: s.block,
+        // La llave del brain viaja con la pregunta para que el modelo no
+        // tenga que adivinar dónde va cada respuesta.
+        question: `[${q.brainKey}] ${q.text}${q.usageNote ? ` — ${q.usageNote}` : ""}`,
+        answer: extAnswerText(ext[q.id]),
+      })),
+    );
+    const answers = [...baseAnswers, ...extAnswers];
     generateCompanyBrain({
       data: {
-        answers,
+        answers: answers.map(({ question, answer }) => ({ question, answer })),
         companyName: companyName || "tu empresa",
         companyId,
         openerLine: "Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?",
@@ -137,25 +203,25 @@ function ManagerOnboarding() {
       .then(async (result) => {
         setBrain(result);
         // Guardar respuestas + brain en BD
-        const saves = answers.map((ans, i) => {
-          const ids = ["q1_que_vendes","q2_a_quien","q3_como_gana","q4_ticket","q4_frecuencia","q5_interaccion","q6_duracion","q7_relacion","q8_diferenciador","q9_restricciones"];
-          const blocks = [1,1,1,1,1,2,2,2,3,3];
-          return supabase.rpc("save_onboarding_answer", {
-            _block_number: blocks[i],
-            _question_id: ids[i],
-            _question_text: ans.question,
-            _answer: ans.answer,
-          });
-        });
-        await Promise.all(saves);
+        await Promise.all(
+          answers.map((ans) =>
+            supabase.rpc("save_onboarding_answer", {
+              _block_number: ans.block,
+              _question_id: ans.id,
+              _question_text: ans.question,
+              _answer: ans.answer,
+            }),
+          ),
+        );
         await supabase.rpc("update_company_brain", { _brain: stripEphemeral(result) });
+        try { localStorage.removeItem(draftKey(companyId)); } catch { /* noop */ }
       })
       .catch((err) => {
         console.error(err);
         setGenError(err.message === "rate_limit" ? "Closer está saturado, intenta en un momento." : err.message === "payment_required" ? "Se acabaron los créditos de IA. Avisa al admin." : "No pudimos generar el cerebro. Intenta de nuevo.");
       })
       .finally(() => setGenerating(false));
-  }, [step, brain, generating, a, companyName]);
+  }, [step, brain, generating, a, ext, companyName, companyId]);
 
   if (!authReady) {
     return <main style={{ minHeight: "100dvh", background: BG }} />;
@@ -164,32 +230,32 @@ function ManagerOnboarding() {
   // === RENDER POR STEP ===
   return (
     <main style={{ minHeight: "100dvh", background: BG, color: "#F0F0F5", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
-      {step > 0 && step <= TOTAL_STEPS && <ProgressBar step={step} total={TOTAL_STEPS} />}
+      {step > 0 && step <= PROGRESS_TOTAL && <ProgressBar step={step} total={PROGRESS_TOTAL} />}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", maxWidth: 560, width: "100%", margin: "0 auto", padding: "1.5rem 1.2rem 2rem" }}>
         {step === 0 && <Welcome name={name} onNext={goNext} />}
         {step === 1 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 1 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 1 de 20">
             <Question text={QUESTIONS.q1_que_vendes.text} subtext={QUESTIONS.q1_que_vendes.subtext} />
             <TextArea value={a.q1} onChange={(v) => setA({ ...a, q1: v })} placeholder="Ej: Lubricantes y aceites de motor Bardahl y Repsol para refaccionarias y talleres mecánicos" min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q1.trim().length < 20} />
           </Block>
         )}
         {step === 2 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 2 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 2 de 20">
             <Question text={QUESTIONS.q2_a_quien.text} subtext={QUESTIONS.q2_a_quien.subtext} />
             <TextArea value={a.q2} onChange={(v) => setA({ ...a, q2: v })} placeholder="Ej: Dueños de refaccionarias y talleres mecánicos independientes. El dueño generalmente decide." min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q2.trim().length < 20} />
           </Block>
         )}
         {step === 3 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 3 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 3 de 20">
             <Question text={QUESTIONS.q3_como_gana.text} subtext={QUESTIONS.q3_como_gana.subtext} />
             <TextArea value={a.q3} onChange={(v) => setA({ ...a, q3: v })} placeholder="Ej: Mejor margen de ganancia en cada cambio de aceite y clientes que regresan por la calidad." min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q3.trim().length < 20} />
           </Block>
         )}
         {step === 4 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 4 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 4 de 20">
             <Question text="¿Cuál es el ticket promedio y con qué frecuencia compra?" subtext="Aproximado está bien." />
             <FieldLabel>Ticket promedio por visita</FieldLabel>
             <TextInput value={a.ticket} onChange={(v) => setA({ ...a, ticket: v })} placeholder="Ej: $1,500 pesos" />
@@ -199,7 +265,7 @@ function ManagerOnboarding() {
           </Block>
         )}
         {step === 5 && (
-          <Block label="Bloque 2 de 3 — Tu proceso" qNumber="Preguntas 5–7 de 9">
+          <Block label="Bloque 2 de 6 — Tu proceso" qNumber="Preguntas 5–7 de 20">
             <Question text={QUESTIONS.q5_interaccion.text} subtext={QUESTIONS.q5_interaccion.subtext} />
             <CheckCardList
               options={INTERACCION_OPTIONS}
@@ -214,7 +280,7 @@ function ManagerOnboarding() {
           </Block>
         )}
         {step === 6 && (
-          <Block label="Bloque 3 de 3 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 9">
+          <Block label="Bloque 3 de 6 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 20">
             <ImportantNote>
               Estas dos preguntas son las más importantes. Lo que escribas aquí es lo que hace que el entrenamiento sea específico para tu empresa y no genérico.
             </ImportantNote>
@@ -225,17 +291,102 @@ function ManagerOnboarding() {
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q8.trim().length < 30 || a.q9.trim().length < 20} />
           </Block>
         )}
-        {step === 7 && (
+        {step >= EXT_START && step < CALIB_STEP && (() => {
+          const section = EXT_SECTIONS[step - EXT_START]!;
+          return (
+            <ExtSectionStep
+              section={section}
+              ext={ext}
+              setExt={setExt}
+              onBack={goBack}
+              onNext={goNext}
+              onSaveExit={() => navigate({ to: "/" })}
+            />
+          );
+        })()}
+        {step === CALIB_STEP && (
           <CalibrationStep brain={brain} loading={generating} error={genError} onBack={goBack} onNext={goNext} onRetry={() => { setBrain(null); setGenError(null); }} />
         )}
-        {step === 8 && (
+        {step === BRAIN_STEP && (
           <BrainStep companyName={companyName} brain={brain} onBack={goBack} onNext={goNext} />
         )}
-        {step === 9 && (
+        {step === TEAM_STEP && (
           <TeamStep onFinish={() => navigate({ to: "/" })} />
         )}
       </div>
     </main>
+  );
+}
+
+/* ── BLOQUES 4-6: secciones declarativas ── */
+function ExtSectionStep({
+  section, ext, setExt, onBack, onNext, onSaveExit,
+}: {
+  section: ExtSection;
+  ext: ExtAnswers;
+  setExt: React.Dispatch<React.SetStateAction<ExtAnswers>>;
+  onBack: () => void;
+  onNext: () => void;
+  onSaveExit: () => void;
+}) {
+  const set = (id: string, v: string | string[]) => setExt((prev) => ({ ...prev, [id]: v }));
+  const complete = sectionComplete(section, ext);
+  return (
+    <Block label={section.label} qNumber={`${section.questions.length} preguntas`}>
+      {section.intro && <ImportantNote>{section.intro}</ImportantNote>}
+      {section.questions.map((q: ExtQuestion, i: number) => {
+        const val = ext[q.id];
+        return (
+          <div key={q.id} style={{ marginTop: i === 0 && !section.intro ? 0 : 26 }}>
+            <Question text={q.text} subtext={q.subtext} />
+            {q.kind === "textarea" && (
+              <TextArea
+                value={typeof val === "string" ? val : ""}
+                onChange={(v) => set(q.id, v)}
+                placeholder={q.placeholder ?? ""}
+                min={q.min ?? 0}
+                max={q.max ?? 2000}
+              />
+            )}
+            {q.kind === "text" && (
+              <TextInput
+                value={typeof val === "string" ? val : ""}
+                onChange={(v) => set(q.id, v)}
+                placeholder={q.placeholder ?? ""}
+              />
+            )}
+            {q.kind === "pills" && (
+              <Pills
+                options={q.options ?? []}
+                value={typeof val === "string" ? val : ""}
+                onChange={(v) => set(q.id, v)}
+              />
+            )}
+            {q.kind === "checks" && (
+              <CheckCardList
+                options={(q.options ?? []).map((o) => ({ id: o, label: o, icon: "•" }))}
+                values={Array.isArray(val) ? val : []}
+                onToggle={(id) => {
+                  const cur = Array.isArray(val) ? val : [];
+                  set(q.id, cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]);
+                }}
+              />
+            )}
+          </div>
+        );
+      })}
+      <NavButtons onBack={onBack} onNext={onNext} disabled={!complete} />
+      <button
+        type="button"
+        onClick={onSaveExit}
+        style={{
+          width: "100%", marginTop: 10, background: "transparent", border: "none",
+          color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.78rem", cursor: "pointer",
+        }}
+      >
+        Guardar y continuar después
+      </button>
+    </Block>
   );
 }
 
