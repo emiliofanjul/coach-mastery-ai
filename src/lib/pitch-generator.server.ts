@@ -336,7 +336,7 @@ export function parseDelimited(
   const ALT_SECTIONS = new Set(["introduccion", "historia_breve", "cierre"]);
   const alternatives: any[] = [];
 
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; ALT_SECTIONS.has(spec.key) && i <= 6; i++) {
     const block = grab(`ALT-${i}`);
     if (!block) break;
     const lines = block.split("\n");
