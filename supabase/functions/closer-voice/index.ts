@@ -6,8 +6,18 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.3.0";
+const PROMPT_VERSION = "v2.4.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
+
+// Bloque de prompt con caché de Anthropic. Todo lo FIJO va primero y marcado;
+// lo variable va después. Si se intercalan, el prefijo cacheado se rompe.
+type PromptBlock = { type: "text"; text: string; cache_control?: { type: "ephemeral" } };
+const cached = (text: string): PromptBlock => ({
+  type: "text",
+  text,
+  cache_control: { type: "ephemeral" },
+});
+const plain = (text: string): PromptBlock => ({ type: "text", text });
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
@@ -34,9 +44,13 @@ async function logLlmCall(row: {
   phase: string;
   input_tokens: number | null;
   output_tokens: number | null;
+  cached_tokens?: number | null;
+  cache_creation_tokens?: number | null;
   latency_ms: number;
   event_id?: string | null;
   session_id?: string | null;
+  company_id?: string | null;
+  seller_id?: string | null;
   analisis_turnos?: unknown;
 }) {
   try {
@@ -48,9 +62,13 @@ async function logLlmCall(row: {
       model: CLAUDE_MODEL,
       input_tokens: row.input_tokens,
       output_tokens: row.output_tokens,
+      cached_tokens: row.cached_tokens ?? null,
+      cache_creation_tokens: row.cache_creation_tokens ?? null,
       latency_ms: row.latency_ms,
       event_id: row.event_id ?? null,
       session_id: row.session_id ?? null,
+      company_id: row.company_id ?? null,
+      seller_id: row.seller_id ?? null,
       analisis_turnos: row.analisis_turnos ?? null,
     });
   } catch (e) {
@@ -82,6 +100,9 @@ interface ReqBody {
   // every closer-voice call in this session and later passed to
   // save-practice-event so llm_calls rows can be backfilled with event_id.
   session_id?: string | null;
+  // Atribución de consumo por empresa / vendedor (llm_calls).
+  company_id?: string | null;
+  seller_id?: string | null;
   // Coherencia corte→evaluación: por qué terminó la sesión (director reason)
   cut_reason?: string | null;
   director_user_turns?: number | null;
@@ -133,51 +154,22 @@ interface RadarSkill {
   failure_signals: unknown;
 }
 
-function buildEvaluateSystemPrompt(
-  practice_script: any,
-  cut_reason?: string | null,
-  radarSkills: RadarSkill[] = [],
-): string {
-  const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
-  const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
-  const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
-  const failureIds = Array.isArray(failureCriteria) ? failureCriteria.map((c: any) => c?.id).filter(Boolean) : [];
-  const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
-  const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
-
-  const radarBlock = radarSkills.length > 0
-    ? `\nRADAR DE FUNDAMENTOS (tarea secundaria, separada del score):
-Estos skills el vendedor YA los domina de nodos anteriores:
-${radarSkills.map((s) => `- ${s.id} — ${s.name} — señales de fallo: ${JSON.stringify(s.failure_signals ?? [])}`).join("\n")}
-
-Revisa el transcript por violaciones FLAGRANTES de estos fundamentos (del calibre de: abrir con disculpa, pitch prematuro, saltarse la identificación). NO señales detalles de estilo ni ejecuciones mejorables — solo violaciones claras que coincidan con las señales de fallo listadas. Repórtalas ÚNICAMENTE en el campo "regresiones_detectadas" — JAMÁS en observations, JAMÁS en el score, JAMÁS en la mision. Si no hay ninguna, array vacío.\n`
-    : `\nRADAR DE FUNDAMENTOS: sin skills previos que vigilar en esta sesión. Devuelve "regresiones_detectadas": [].\n`;
-
-
-  return `Evalúas una conversación de práctica de ventas.
+// Bloque FIJO del evaluador: idéntico byte por byte entre prácticas
+// (reglas 1-12, PASO 0 y modelo de score). Es lo que se cachea.
+const EVALUATE_STATIC_PROMPT = `Evalúas una conversación de práctica de ventas.
 
 REGLA DE INTEGRIDAD — SOLO TEXTO:
 Evalúas ÚNICAMENTE el transcript de texto. Tienes PROHIBIDO afirmar cualquier cosa sobre tono de voz, energía vocal, sonrisa, ritmo al hablar, volumen, calidez auditiva o cualquier cualidad sonora — no tienes acceso al audio. Si un criterio tiene requires_audio=true, ignóralo por completo: NO lo puntúes, NO lo menciones, NO lo cites. Evaluar prosodia sin audio destruye la confianza del vendedor en todo el feedback.
 
-CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}
+CÓMO LEER EL CONTEXTO DE CIERRE (el valor concreto viene más abajo):
 - "scope_covered": el vendedor completó el objetivo. Evalúa el arco completo con las reglas normales.
 - "evidence_sufficient": el DIRECTOR cortó la sesión antes de que el vendedor terminara — el vendedor NO decidió parar. Evalúa la CALIDAD de lo que SÍ alcanzó a mostrar. Los success_criteria que no alcanzaron a aparecer por el corte se EXCLUYEN del cálculo de la base (no cuentan como ausentes). Lo que faltó del arco NO es una falla: preséntalo en mejora/mision como "la siguiente jugada" — qué venía después y cómo dispararla más temprano. Los errores realmente cometidos en el transcript (flags) sí se marcan normal.
 - "max_turns" o "max_duration": el vendedor tuvo toda la sesión disponible; lo incompleto sí cuenta como incompleto.
 - "unknown": aplica las reglas de "max_turns".
 
-CRITERIOS DEL NODO:
-success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
-${successStr}
-failure_criteria (IDs canónicos de errores, con severity):
-${failureStr}
-
-IDs válidos para "criterio_id" y "criterios_cumplidos" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
-IDs válidos para "flags_detected" (failure_criteria únicamente): ${JSON.stringify(failureIds)}
-${radarBlock}
-
 REGLAS DE EVALUACIÓN:
 1. El vendedor es 'user' en el historial. Closer es 'assistant'. Evalúa SOLO al 'user'.
-2. Usa ÚNICAMENTE los criterios listados arriba — sin criterios genéricos de ventas, sin conceptos que el vendedor no ha aprendido.
+2. Usa ÚNICAMENTE los criterios del nodo listados en el bloque CRITERIOS DEL NODO — sin criterios genéricos de ventas, sin conceptos que el vendedor no ha aprendido.
 3. Cada observación DEBE llevar "criterio_id" tomado literal de la lista de IDs válidos. Sin criterio_id la observación es inválida.
 4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
 5. Cantidad de observations: mínimo 1, máximo 3. Reporta tantas como problemas reales haya, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también.
@@ -223,7 +215,41 @@ REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
 - Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta. Puntúa lo que SÍ ejecutó bien además del desvío.
 - Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
-- Nunca hundas el score por un solo minor si los criterios centrales están presentes.
+- Nunca hundas el score por un solo minor si los criterios centrales están presentes.`;
+
+// Bloques del evaluador: [fijo cacheado] + [variable: criterios del nodo,
+// radar, contexto de corte y contrato de salida].
+function buildEvaluateBlocks(
+  practice_script: any,
+  cut_reason?: string | null,
+  radarSkills: RadarSkill[] = [],
+): PromptBlock[] {
+  const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
+  const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  const successIds = Array.isArray(successCriteria) ? successCriteria.map((c: any) => c?.id).filter(Boolean) : [];
+  const failureIds = Array.isArray(failureCriteria) ? failureCriteria.map((c: any) => c?.id).filter(Boolean) : [];
+  const successStr = Array.isArray(successCriteria) ? JSON.stringify(successCriteria, null, 2) : String(successCriteria);
+  const failureStr = Array.isArray(failureCriteria) ? JSON.stringify(failureCriteria, null, 2) : String(failureCriteria);
+
+  const radarBlock = radarSkills.length > 0
+    ? `\nRADAR DE FUNDAMENTOS (tarea secundaria, separada del score):
+Estos skills el vendedor YA los domina de nodos anteriores:
+${radarSkills.map((s) => `- ${s.id} — ${s.name} — señales de fallo: ${JSON.stringify(s.failure_signals ?? [])}`).join("\n")}
+
+Revisa el transcript por violaciones FLAGRANTES de estos fundamentos (del calibre de: abrir con disculpa, pitch prematuro, saltarse la identificación). NO señales detalles de estilo ni ejecuciones mejorables — solo violaciones claras que coincidan con las señales de fallo listadas. Repórtalas ÚNICAMENTE en el campo "regresiones_detectadas" — JAMÁS en observations, JAMÁS en el score, JAMÁS en la mision. Si no hay ninguna, array vacío.\n`
+    : `\nRADAR DE FUNDAMENTOS: sin skills previos que vigilar en esta sesión. Devuelve "regresiones_detectadas": [].\n`;
+
+  const variable = `CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}
+
+CRITERIOS DEL NODO:
+success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
+${successStr}
+failure_criteria (IDs canónicos de errores, con severity):
+${failureStr}
+
+IDs válidos para "criterio_id" y "criterios_cumplidos" (success_criteria SIN requires_audio=true): ${JSON.stringify(successIds)}
+IDs válidos para "flags_detected" (failure_criteria únicamente): ${JSON.stringify(failureIds)}
+${radarBlock}
 
 CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_turnos" es OBLIGATORIO y va PRIMERO:
 {
@@ -250,6 +276,8 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
   "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo",
   "regresiones_detectadas": [{"skill_id": "<id de la lista del radar>", "evidencia": "cita corta del transcript"}]
 }`;
+
+  return [cached(EVALUATE_STATIC_PROMPT), plain(variable)];
 }
 
 interface GenerateExampleResponse {
@@ -575,19 +603,37 @@ Deno.serve(async (req) => {
       }
     }
 
-    const system = phase === "evaluate"
-      ? buildEvaluateSystemPrompt(practice_script, cut_reason, radarSkills)
+    // El sistema se manda como bloques: lo FIJO primero (cacheado con
+    // cache_control), lo variable después.
+    const system: PromptBlock[] = phase === "evaluate"
+      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills)
       : phase === "generate_example"
-        ? buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? "")
+        ? [plain(buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? ""))]
         : phase === "replica"
-          ? buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : [])
-          : buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []);
+          ? [plain(buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : []))]
+          : [cached(buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []))];
+
+    // Historial acotado SOLO para el Actor: últimos 6 turnos completos + una
+    // línea de resumen de lo anterior. El evaluador recibe el transcript entero.
+    const fullHistory = Array.isArray(conversation_history) ? conversation_history : [];
+    const ACTOR_WINDOW = 6;
+    const actorHistory = (() => {
+      if (fullHistory.length <= ACTOR_WINDOW) return fullHistory;
+      const window = fullHistory.slice(-ACTOR_WINDOW);
+      const summary = `[resumen: ${fullHistory.length - ACTOR_WINDOW} turnos previos de esta misma conversación; último punto tocado antes de esto: "${(fullHistory[fullHistory.length - ACTOR_WINDOW - 1]?.content ?? "").slice(0, 200)}"]`;
+      // Sin romper la alternancia de roles: si el primero de la ventana ya es
+      // 'user', el resumen se antepone a su contenido.
+      if (window[0]?.role === "user") {
+        return [{ role: "user", content: `${summary}\n\n${window[0].content}` }, ...window.slice(1)];
+      }
+      return [{ role: "user", content: summary }, ...window];
+    })();
 
 
     const messages = phase === "evaluate" ? [
       {
         role: "user",
-        content: `conversation_history:\n${JSON.stringify(Array.isArray(conversation_history) ? conversation_history : [], null, 2)}`,
+        content: `conversation_history:\n${JSON.stringify(fullHistory, null, 2)}`,
       },
     ] : phase === "generate_example" ? [
       { role: "user", content: `Genera el ejemplo ahora.` },
@@ -598,7 +644,7 @@ Deno.serve(async (req) => {
       }))),
       { role: "user", content: body.user_message ?? "" },
     ] : [
-      ...(Array.isArray(conversation_history) ? conversation_history : []).map((m) => ({
+      ...actorHistory.map((m) => ({
         role: m.role === "assistant" ? "assistant" : "user",
         content: m.content,
       })),
@@ -615,7 +661,9 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         model: CLAUDE_MODEL,
-        max_tokens: 1024,
+        // evaluate devuelve analisis_turnos (un bloque por turno): con 1024
+        // se truncaba el JSON en prácticas largas.
+        max_tokens: phase === "evaluate" ? 4096 : 1024,
         system,
         messages,
       }),
@@ -632,6 +680,8 @@ Deno.serve(async (req) => {
         output_tokens: null,
         latency_ms: claudeLatencyMs,
         session_id: session_id ?? null,
+        company_id: body.company_id ?? null,
+        seller_id: body.seller_id ?? null,
       });
       return new Response(
         JSON.stringify({ error: "Claude API error", status: claudeRes.status, detail: errText }),
@@ -643,6 +693,9 @@ Deno.serve(async (req) => {
     const text: string = claudeJson?.content?.[0]?.text ?? "";
     const inputTokens: number | null = claudeJson?.usage?.input_tokens ?? null;
     const outputTokens: number | null = claudeJson?.usage?.output_tokens ?? null;
+    const cachedTokens: number | null = claudeJson?.usage?.cache_read_input_tokens ?? null;
+    const cacheCreationTokens: number | null = claudeJson?.usage?.cache_creation_input_tokens ?? null;
+    console.log("[closer-voice] usage", { phase, inputTokens, cachedTokens, cacheCreationTokens, outputTokens });
 
     // Fire-and-forget observability write. En evaluate se difiere hasta tener
     // el analisis_turnos parseado (se audita en llm_calls).
@@ -651,8 +704,12 @@ Deno.serve(async (req) => {
         phase,
         input_tokens: inputTokens,
         output_tokens: outputTokens,
+        cached_tokens: cachedTokens,
+        cache_creation_tokens: cacheCreationTokens,
         latency_ms: claudeLatencyMs,
         session_id: session_id ?? null,
+        company_id: body.company_id ?? null,
+        seller_id: body.seller_id ?? null,
       });
     }
 
@@ -738,8 +795,12 @@ Deno.serve(async (req) => {
         phase,
         input_tokens: inputTokens,
         output_tokens: outputTokens,
+        cached_tokens: cachedTokens,
+        cache_creation_tokens: cacheCreationTokens,
         latency_ms: claudeLatencyMs,
         session_id: session_id ?? null,
+        company_id: body.company_id ?? null,
+        seller_id: body.seller_id ?? null,
         analisis_turnos: evaluation.analisis_turnos,
       });
 

@@ -764,6 +764,8 @@ function PracticaPage() {
           conversation_history: conversationHistoryRef.current,
           elapsed_seconds,
           session_id: sessionCorrelationIdRef.current,
+          company_id: sellerData?.company_id ?? null,
+          seller_id: sellerData?.id ?? null,
           node_id: nodeId,
         }),
       });
@@ -940,6 +942,8 @@ function PracticaPage() {
             seller_name: sellerData?.full_name ?? "",
             conversation_history: history.slice(0, -1),
             session_id: sessionCorrelationIdRef.current,
+            company_id: sellerData?.company_id ?? null,
+            seller_id: sellerData?.id ?? null,
             taught_skills: skillsContextRef.current?.taughtSkills ?? [],
           }),
           signal: ctrl.signal,
@@ -1201,7 +1205,11 @@ function PracticaPage() {
           .filter((m) => m.phase === "you_do")
           .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
         session_id: sessionCorrelationIdRef.current,
+        company_id: sellerData?.company_id ?? null,
+        seller_id: sellerData?.id ?? null,
         taught_skills: skillsContextRef.current?.taughtSkills ?? [],
+
+
         cut_reason: cutReasonRef.current ?? "unknown",
         director_user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
       };
