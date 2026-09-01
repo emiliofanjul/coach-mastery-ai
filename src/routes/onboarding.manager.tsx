@@ -94,6 +94,7 @@ function ManagerOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // 0 = welcome
   const [a, setA] = useState<Answers>(EMPTY);
+  const [ext, setExt] = useState<ExtAnswers>({});
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -101,6 +102,7 @@ function ManagerOnboarding() {
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
 
   // Cargar perfil del manager
   useEffect(() => {
