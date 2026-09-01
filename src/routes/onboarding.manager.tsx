@@ -230,32 +230,32 @@ function ManagerOnboarding() {
   // === RENDER POR STEP ===
   return (
     <main style={{ minHeight: "100dvh", background: BG, color: "#F0F0F5", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
-      {step > 0 && step <= TOTAL_STEPS && <ProgressBar step={step} total={TOTAL_STEPS} />}
+      {step > 0 && step <= PROGRESS_TOTAL && <ProgressBar step={step} total={PROGRESS_TOTAL} />}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", maxWidth: 560, width: "100%", margin: "0 auto", padding: "1.5rem 1.2rem 2rem" }}>
         {step === 0 && <Welcome name={name} onNext={goNext} />}
         {step === 1 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 1 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 1 de 9">
             <Question text={QUESTIONS.q1_que_vendes.text} subtext={QUESTIONS.q1_que_vendes.subtext} />
             <TextArea value={a.q1} onChange={(v) => setA({ ...a, q1: v })} placeholder="Ej: Lubricantes y aceites de motor Bardahl y Repsol para refaccionarias y talleres mecánicos" min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q1.trim().length < 20} />
           </Block>
         )}
         {step === 2 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 2 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 2 de 9">
             <Question text={QUESTIONS.q2_a_quien.text} subtext={QUESTIONS.q2_a_quien.subtext} />
             <TextArea value={a.q2} onChange={(v) => setA({ ...a, q2: v })} placeholder="Ej: Dueños de refaccionarias y talleres mecánicos independientes. El dueño generalmente decide." min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q2.trim().length < 20} />
           </Block>
         )}
         {step === 3 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 3 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 3 de 9">
             <Question text={QUESTIONS.q3_como_gana.text} subtext={QUESTIONS.q3_como_gana.subtext} />
             <TextArea value={a.q3} onChange={(v) => setA({ ...a, q3: v })} placeholder="Ej: Mejor margen de ganancia en cada cambio de aceite y clientes que regresan por la calidad." min={20} max={300} />
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q3.trim().length < 20} />
           </Block>
         )}
         {step === 4 && (
-          <Block label="Bloque 1 de 3 — Tu negocio" qNumber="Pregunta 4 de 9">
+          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 4 de 9">
             <Question text="¿Cuál es el ticket promedio y con qué frecuencia compra?" subtext="Aproximado está bien." />
             <FieldLabel>Ticket promedio por visita</FieldLabel>
             <TextInput value={a.ticket} onChange={(v) => setA({ ...a, ticket: v })} placeholder="Ej: $1,500 pesos" />
@@ -265,7 +265,7 @@ function ManagerOnboarding() {
           </Block>
         )}
         {step === 5 && (
-          <Block label="Bloque 2 de 3 — Tu proceso" qNumber="Preguntas 5–7 de 9">
+          <Block label="Bloque 2 de 6 — Tu proceso" qNumber="Preguntas 5–7 de 9">
             <Question text={QUESTIONS.q5_interaccion.text} subtext={QUESTIONS.q5_interaccion.subtext} />
             <CheckCardList
               options={INTERACCION_OPTIONS}
@@ -280,7 +280,7 @@ function ManagerOnboarding() {
           </Block>
         )}
         {step === 6 && (
-          <Block label="Bloque 3 de 3 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 9">
+          <Block label="Bloque 3 de 6 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 9">
             <ImportantNote>
               Estas dos preguntas son las más importantes. Lo que escribas aquí es lo que hace que el entrenamiento sea específico para tu empresa y no genérico.
             </ImportantNote>
@@ -315,6 +315,78 @@ function ManagerOnboarding() {
         )}
       </div>
     </main>
+  );
+}
+
+/* ── BLOQUES 4-6: secciones declarativas ── */
+function ExtSectionStep({
+  section, ext, setExt, onBack, onNext, onSaveExit,
+}: {
+  section: ExtSection;
+  ext: ExtAnswers;
+  setExt: React.Dispatch<React.SetStateAction<ExtAnswers>>;
+  onBack: () => void;
+  onNext: () => void;
+  onSaveExit: () => void;
+}) {
+  const set = (id: string, v: string | string[]) => setExt((prev) => ({ ...prev, [id]: v }));
+  const complete = sectionComplete(section, ext);
+  return (
+    <Block label={section.label} qNumber={`${section.questions.length} preguntas`}>
+      {section.intro && <ImportantNote>{section.intro}</ImportantNote>}
+      {section.questions.map((q: ExtQuestion, i: number) => {
+        const val = ext[q.id];
+        return (
+          <div key={q.id} style={{ marginTop: i === 0 && !section.intro ? 0 : 26 }}>
+            <Question text={q.text} subtext={q.subtext} />
+            {q.kind === "textarea" && (
+              <TextArea
+                value={typeof val === "string" ? val : ""}
+                onChange={(v) => set(q.id, v)}
+                placeholder={q.placeholder ?? ""}
+                min={q.min ?? 0}
+                max={q.max ?? 2000}
+              />
+            )}
+            {q.kind === "text" && (
+              <TextInput
+                value={typeof val === "string" ? val : ""}
+                onChange={(v) => set(q.id, v)}
+                placeholder={q.placeholder ?? ""}
+              />
+            )}
+            {q.kind === "pills" && (
+              <Pills
+                options={q.options ?? []}
+                value={typeof val === "string" ? val : ""}
+                onChange={(v) => set(q.id, v)}
+              />
+            )}
+            {q.kind === "checks" && (
+              <CheckCardList
+                options={(q.options ?? []).map((o) => ({ id: o, label: o, icon: "•" }))}
+                values={Array.isArray(val) ? val : []}
+                onToggle={(id) => {
+                  const cur = Array.isArray(val) ? val : [];
+                  set(q.id, cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]);
+                }}
+              />
+            )}
+          </div>
+        );
+      })}
+      <NavButtons onBack={onBack} onNext={onNext} disabled={!complete} />
+      <button
+        type="button"
+        onClick={onSaveExit}
+        style={{
+          width: "100%", marginTop: 10, background: "transparent", border: "none",
+          color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.78rem", cursor: "pointer",
+        }}
+      >
+        Guardar y continuar después
+      </button>
+    </Block>
   );
 }
 
