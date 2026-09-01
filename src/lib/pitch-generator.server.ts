@@ -10,9 +10,28 @@ import {
 
 
 
-export const PITCH_PROMPT_VERSION = "pitch-v2.1.0-cerebro-v17";
+export const PITCH_PROMPT_VERSION = "pitch-v2.2.0-cerebro-v21-esqueleto";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
+
+/** V20 — largo máximo del `content` por sección (caracteres). Total objetivo < 4,500. */
+export const MAX_CONTENT_CHARS: Record<string, number> = {
+  introduccion: 250,
+  historia_breve: 250,
+  descubrimiento: 1200,
+  presentacion: 700,
+  cierre: 400,
+  consolidacion: 350,
+};
+
+/** V21 — alternativas. */
+export const MAX_ALTS = 3;
+export const MAX_ALT_CHARS = 200;
+
+const LIMIT_LINES = Object.entries(MAX_CONTENT_CHARS)
+  .map(([k, v]) => `  · ${k}: máximo ${v} caracteres`)
+  .join("\n");
+
 
 /** Nodos de desarrollo de cuenta: doctrina repartida que ningún mapeo por paso cubre. */
 export const RECURRENTE_NODE_IDS = ["3.7", "3.8", "3.9", "4.15", "5.14", "7.3"];
