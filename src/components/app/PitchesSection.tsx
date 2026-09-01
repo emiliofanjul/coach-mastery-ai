@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { generatePitchSection } from "@/lib/pitch-generator.functions";
+import { PitchViewer } from "@/components/pitch/PitchViewer";
 import {
   CHANNELS,
   CLIENT_TYPES,
@@ -39,6 +40,34 @@ export function PitchesSection({
   const [sections, setSections] = useState<Record<string, PitchSection[]>>({});
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<{ done: number; label: string } | null>(null);
+  const [regenPitchId, setRegenPitchId] = useState<string | null>(null);
+  const [regenStep, setRegenStep] = useState<number | null>(null);
+
+  async function refreshSections(pitchId: string) {
+    const rows = await fetchPitchSections(pitchId);
+    setSections((prev) => ({ ...prev, [pitchId]: rows.filter((x) => x.content) }));
+  }
+
+  async function handleRegenerateSection(pitchId: string, step: number) {
+    setRegenPitchId(pitchId);
+    setRegenStep(step);
+    try {
+      const res: any = await runGenerateSection({ data: { pitchId, step } });
+      if (!res?.ok) {
+        const detail =
+          res?.failed_validations?.join(" · ") ?? res?.detail ?? res?.error ?? "Error desconocido";
+        toast.error(`No se pudo regenerar: ${detail}`);
+        return;
+      }
+      await refreshSections(pitchId);
+      toast.success("Sección regenerada. Las otras cinco no se tocaron.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo regenerar la sección.");
+    } finally {
+      setRegenPitchId(null);
+      setRegenStep(null);
+    }
+  }
 
 
   useEffect(() => {
@@ -87,6 +116,14 @@ export function PitchesSection({
   }
 
   async function handleGenerate(pitchId: string) {
+    const already = (sections[pitchId]?.length ?? 0) > 0;
+    if (
+      already &&
+      !window.confirm(
+        "Regenerar el pitch completo reescribe los 6 pasos y cuesta 6 llamadas al modelo. Si solo quieres cambiar uno, usa el botón «Regenerar» de esa sección. ¿Continuar?",
+      )
+    )
+      return;
     setGenerating(pitchId);
     setProgress({ done: 0, label: PITCH_STEPS[0]?.label ?? "" });
     try {
@@ -184,7 +221,7 @@ export function PitchesSection({
                       </span>
                       <Button
                         onClick={() => handleGenerate(pitch.id)}
-                        disabled={generating !== null}
+                        disabled={generating !== null || regenStep !== null}
                         className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold disabled:opacity-60"
                       >
                         {generating === pitch.id ? (
