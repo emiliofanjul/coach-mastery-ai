@@ -10,9 +10,28 @@ import {
 
 
 
-export const PITCH_PROMPT_VERSION = "pitch-v2.1.0-cerebro-v17";
+export const PITCH_PROMPT_VERSION = "pitch-v2.2.0-cerebro-v21-esqueleto";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
+
+/** V20 — largo máximo del `content` por sección (caracteres). Total objetivo < 4,500. */
+export const MAX_CONTENT_CHARS: Record<string, number> = {
+  introduccion: 250,
+  historia_breve: 250,
+  descubrimiento: 1200,
+  presentacion: 700,
+  cierre: 400,
+  consolidacion: 350,
+};
+
+/** V21 — alternativas. */
+export const MAX_ALTS = 3;
+export const MAX_ALT_CHARS = 200;
+
+const LIMIT_LINES = Object.entries(MAX_CONTENT_CHARS)
+  .map(([k, v]) => `  · ${k}: máximo ${v} caracteres`)
+  .join("\n");
+
 
 /** Nodos de desarrollo de cuenta: doctrina repartida que ningún mapeo por paso cubre. */
 export const RECURRENTE_NODE_IDS = ["3.7", "3.8", "3.9", "4.15", "5.14", "7.3"];
@@ -222,6 +241,33 @@ Ejemplo de la diferencia:
           abre la puerta al descubrimiento, y si algo salió mal te enteras
           tú antes de que se vuelva un motivo para cambiar de proveedor."
 
+═══ ESTE PITCH SE APRENDE, NO SE LEE ═══
+
+El vendedor lo repasa antes de entrar y se lleva el esqueleto en la cabeza.
+En campo se explaya con sus palabras — lo que necesita de ti son los pasos
+claros y las frases clave, no un documento completo.
+
+Escribe el ESQUELETO, no el desarrollo. Cada sección debe caber en media
+pantalla de celular.
+
+· Introducción, historia breve, cierre y consolidación: 2 o 3 frases. Nada más.
+· Presentación: la estructura de la propuesta, no el guion palabra por palabra
+  de cada producto.
+· Descubrimiento: los 3 territorios con 2 o 3 preguntas cada uno, no un
+  catálogo. Un banco de 25 preguntas no se usa: se abandona.
+
+Si tienes que elegir entre completo y usable, elige USABLE. Lo que quede
+fuera vive en el mapa, y el vendedor lo aprende ahí.
+
+Esto NO es permiso para bajar el estándar: la doctrina se aplica igual, solo
+que en menos palabras. Recortas volumen, nunca calidad.
+
+LÍMITES DUROS DEL \`content\` (se validan; si te pasas, la sección se rechaza):
+${LIMIT_LINES}
+
+Los rationale_short y rationale_long NO tienen este límite: viven detrás del
+desplegable y no estorban la lectura.
+
 ═══ SOBRE LAS ALTERNATIVAS ═══
 
 Van RANKEADAS, y cada una explica por qué está en esa posición. Una lista
@@ -234,6 +280,11 @@ más segura", "Si el cliente es de trato rápido".
 
 Genera alternativas en: introducción, historia breve y cierre. En el
 descubrimiento no aplican (todo el banco de preguntas ya es un menú).
+
+LÍMITE DURO: máximo ${MAX_ALTS} alternativas por sección, y cada una máximo
+${MAX_ALT_CHARS} caracteres. Una alternativa es una variante de la MISMA frase,
+no otro pitch adentro del pitch.
+
 
 ═══ SOBRE missing_data ═══
 
@@ -279,8 +330,13 @@ export function parseDelimited(
     return null;
   }
 
+  // Las alternativas solo aplican en introducción, historia breve y cierre.
+  // Si el modelo las manda en otra sección, se descartan aquí (no se reintenta
+  // una generación entera por ruido de formato).
+  const ALT_SECTIONS = new Set(["introduccion", "historia_breve", "cierre"]);
   const alternatives: any[] = [];
-  for (let i = 1; i <= 6; i++) {
+
+  for (let i = 1; ALT_SECTIONS.has(spec.key) && i <= 6; i++) {
     const block = grab(`ALT-${i}`);
     if (!block) break;
     const lines = block.split("\n");
@@ -597,6 +653,39 @@ export function validatePitch(
         const m = aText.match(BRACKET)?.[0] ?? "";
         fails.push(
           `V17: corchete de relleno en la alternativa #${a?.rank} de ${key} ("${m}"); escríbela sin el marcador y declara el dato faltante en missing_data`,
+        );
+      }
+    }
+  }
+
+  // 20. Largo del content por sección. Un pitch que no se puede aprender no sirve.
+  //     Aplica a TODAS las secciones (munición incluida).
+  for (const s of sections) {
+    const key = String(s?.section_key ?? "");
+    const max = MAX_CONTENT_CHARS[key];
+    if (!max) continue;
+    const len = String(s?.content ?? "").trim().length;
+    if (len > max) {
+      fails.push(
+        `V20: ${key} tiene ${len} caracteres y el máximo es ${max}; escribe el esqueleto (frases clave y pasos), no el desarrollo — el vendedor lo repasa en la camioneta`,
+      );
+    }
+  }
+
+  // 21. Alternativas: máximo 3 por sección y 200 caracteres cada una.
+  for (const s of sections) {
+    const key = String(s?.section_key ?? "");
+    const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
+    if (alts.length > MAX_ALTS) {
+      fails.push(
+        `V21: ${key} trae ${alts.length} alternativas y el máximo es ${MAX_ALTS}; deja las mejores ${MAX_ALTS}`,
+      );
+    }
+    for (const a of alts) {
+      const len = String(a?.content ?? "").trim().length;
+      if (len > MAX_ALT_CHARS) {
+        fails.push(
+          `V21: la alternativa #${a?.rank} de ${key} tiene ${len} caracteres y el máximo es ${MAX_ALT_CHARS}; una alternativa es una variante de la misma frase, no otro pitch`,
         );
       }
     }
@@ -920,7 +1009,22 @@ El pitch se escribe por partes. En esta llamada escribes ÚNICAMENTE el
 paso ${spec.step}: ${spec.key} (section_kind "${spec.kind}"). No escribas
 los otros pasos.
 
+═══ PRESUPUESTO DE ESTA SECCIÓN (límite duro) ═══
+
+El \`content\` de ${spec.key} debe tener MÁXIMO ${MAX_CONTENT_CHARS[spec.key] ?? 700}
+caracteres. Cuéntalos antes de responder. Si te pasas, la sección se rechaza.
+${
+  spec.key === "descubrimiento"
+    ? "Los 3 territorios con 2 o 3 preguntas cada uno. No un catálogo: un banco de 25 preguntas no se usa, se abandona."
+    : spec.key === "presentacion"
+      ? "La estructura de la propuesta, no el guion palabra por palabra de cada producto."
+      : "2 o 3 frases. Nada más."
+}
+Alternativas: máximo ${MAX_ALTS}, cada una de máximo ${MAX_ALT_CHARS} caracteres.
+Los rationale NO cuentan para este límite: ahí sí desarrolla.
+
 ${prevBlock}
+
 
 ═══ REGLA ABSOLUTA: NI APROBACIÓN NI PRUEBA NI POSPONER ═══
 
