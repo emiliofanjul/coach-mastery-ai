@@ -15,6 +15,7 @@ interface BrainPayload {
   answers: AnswerInput[];
   companyName: string;
   openerLine: string;
+  companyId?: string | null;
 }
 
 const BRAIN_KEYS = [
@@ -60,6 +61,7 @@ Con base en las respuestas del onboarding del manager, devuelves un objeto JSON 
 
 Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
 
+    const started = Date.now();
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -85,6 +87,15 @@ Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
     }
 
     const json = await res.json();
+    const { logGatewayCall } = await import("@/lib/llm-usage.server");
+    await logGatewayCall({
+      phase: "onboarding_company",
+      model: "google/gemini-2.5-pro",
+      promptVersion: "onboarding-company-v1",
+      usage: json?.usage ?? null,
+      latencyMs: Date.now() - started,
+      companyId: data.companyId ?? null,
+    });
     const content: string = json.choices?.[0]?.message?.content ?? "{}";
     let raw: Record<string, unknown>;
     try {

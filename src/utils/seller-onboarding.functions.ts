@@ -9,6 +9,8 @@ interface SellerWelcomePayload {
   experience: string; // "nuevo" | "intermedio" | "experto"
   challenge: string; // "cierre" | "objeciones" | "prospeccion" | "retencion"
   companyName: string;
+  companyId?: string | null;
+  sellerId?: string | null;
 }
 
 const EXPERIENCE_LABELS: Record<string, string> = {
@@ -63,6 +65,7 @@ Para vendedor nuevo que quiere manejar objeciones:
 Responde SOLO con JSON válido, sin markdown:
 {"mensaje":"texto completo de las 3 oraciones","expectativa":"la oración de expectativa"}`;
 
+    const started = Date.now();
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -87,6 +90,16 @@ Responde SOLO con JSON válido, sin markdown:
     }
 
     const json = await res.json();
+    const { logGatewayCall } = await import("@/lib/llm-usage.server");
+    await logGatewayCall({
+      phase: "onboarding_seller",
+      model: "google/gemini-2.5-pro",
+      promptVersion: "onboarding-seller-v1",
+      usage: json?.usage ?? null,
+      latencyMs: Date.now() - started,
+      companyId: data.companyId ?? null,
+      sellerId: data.sellerId ?? null,
+    });
     const content: string = json.choices?.[0]?.message?.content ?? "{}";
     let parsed: { mensaje: string; expectativa: string };
     try {

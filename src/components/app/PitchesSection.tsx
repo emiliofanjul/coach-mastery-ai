@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { FileText, Sparkles, Loader2, AlertTriangle, ChevronDown } from "lucide-react";
+import { FileText, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { generatePitchSection } from "@/lib/pitch-generator.functions";
+import { PitchViewer } from "@/components/pitch/PitchViewer";
 import {
   CHANNELS,
   CLIENT_TYPES,
@@ -39,6 +40,34 @@ export function PitchesSection({
   const [sections, setSections] = useState<Record<string, PitchSection[]>>({});
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<{ done: number; label: string } | null>(null);
+  const [regenPitchId, setRegenPitchId] = useState<string | null>(null);
+  const [regenStep, setRegenStep] = useState<number | null>(null);
+
+  async function refreshSections(pitchId: string) {
+    const rows = await fetchPitchSections(pitchId);
+    setSections((prev) => ({ ...prev, [pitchId]: rows.filter((x) => x.content) }));
+  }
+
+  async function handleRegenerateSection(pitchId: string, step: number) {
+    setRegenPitchId(pitchId);
+    setRegenStep(step);
+    try {
+      const res: any = await runGenerateSection({ data: { pitchId, step } });
+      if (!res?.ok) {
+        const detail =
+          res?.failed_validations?.join(" · ") ?? res?.detail ?? res?.error ?? "Error desconocido";
+        toast.error(`No se pudo regenerar: ${detail}`);
+        return;
+      }
+      await refreshSections(pitchId);
+      toast.success("Sección regenerada. Las otras cinco no se tocaron.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo regenerar la sección.");
+    } finally {
+      setRegenPitchId(null);
+      setRegenStep(null);
+    }
+  }
 
 
   useEffect(() => {
@@ -87,6 +116,14 @@ export function PitchesSection({
   }
 
   async function handleGenerate(pitchId: string) {
+    const already = (sections[pitchId]?.length ?? 0) > 0;
+    if (
+      already &&
+      !window.confirm(
+        "Regenerar el pitch completo reescribe los 6 pasos y cuesta 6 llamadas al modelo. Si solo quieres cambiar uno, usa el botón «Regenerar» de esa sección. ¿Continuar?",
+      )
+    )
+      return;
     setGenerating(pitchId);
     setProgress({ done: 0, label: PITCH_STEPS[0]?.label ?? "" });
     try {
@@ -184,7 +221,7 @@ export function PitchesSection({
                       </span>
                       <Button
                         onClick={() => handleGenerate(pitch.id)}
-                        disabled={generating !== null}
+                        disabled={generating !== null || regenStep !== null}
                         className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold disabled:opacity-60"
                       >
                         {generating === pitch.id ? (
@@ -229,108 +266,15 @@ export function PitchesSection({
                 )}
 
                 {pitch && (sections[pitch.id]?.length ?? 0) > 0 && (
-                  <div className="mt-4 space-y-2">
-                    {sections[pitch.id]!.map((s) => {
-                      const label =
-                        PITCH_STEPS.find((x) => x.key === s.section_key)?.label ?? s.section_key;
-                      const open = expanded[s.id] === true;
-                      return (
-                        <div
-                          key={s.id}
-                          className="rounded-[14px] border border-white/10 bg-white/[0.02] p-3"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="font-['Syne'] font-bold text-white text-sm">
-                              {s.step}. {label}
-                            </span>
-                            {s.section_kind === "municion" && (
-                              <span className="rounded-[99px] bg-white/10 px-2 py-0.5 text-[10px] text-white/60 font-['DM_Sans']">
-                                munición
-                              </span>
-                            )}
-                          </div>
-                          {s.rationale_short && (
-                            <p className="mt-1 text-[11px] text-[#FF6B2B] font-['DM_Sans']">
-                              {s.rationale_short}
-                            </p>
-                          )}
-                          {s.warning && (
-                            <div className="mt-2 flex gap-2 rounded-[10px] border border-yellow-500/30 bg-yellow-500/10 p-2 text-[11px] text-yellow-200 font-['DM_Sans']">
-                              <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                              <span>{s.warning}</span>
-                            </div>
-                          )}
-                          <p className="mt-2 whitespace-pre-wrap text-sm text-white/80 font-['DM_Sans']">
-                            {s.content}
-                          </p>
-                          {(s.rationale_long || (s.alternatives?.length ?? 0) > 0) && (
-                            <button
-                              onClick={() =>
-                                setExpanded((prev) => ({ ...prev, [s.id]: !open }))
-                              }
-                              className="mt-2 inline-flex items-center gap-1 text-[11px] text-white/50 font-['DM_Sans'] hover:text-white"
-                            >
-                              <ChevronDown
-                                className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`}
-                              />
-                              {open ? "Ocultar" : "Leer más"}
-                            </button>
-                          )}
-                          {open && (
-                            <div className="mt-2 space-y-3">
-                              {s.rationale_long && (
-                                <p className="whitespace-pre-wrap text-xs text-white/60 font-['DM_Sans']">
-                                  {s.rationale_long}
-                                </p>
-                              )}
-                              {(s.alternatives ?? []).map((a) => (
-                                <div
-                                  key={a.rank}
-                                  className="rounded-[10px] border border-white/10 bg-black/30 p-2.5"
-                                >
-                                  <div className="text-[11px] font-['Syne'] font-bold text-white">
-                                    #{a.rank} · {a.label}
-                                  </div>
-                                  <p className="mt-1 whitespace-pre-wrap text-xs text-white/70 font-['DM_Sans']">
-                                    {a.content}
-                                  </p>
-                                  {a.why_ranked && (
-                                    <p className="mt-1 text-[11px] text-white/40 font-['DM_Sans']">
-                                      {a.why_ranked}
-                                    </p>
-                                  )}
-                                </div>
-                              ))}
-                              {(s.skill_ids?.length ?? 0) > 0 && (
-                                <div className="flex flex-wrap gap-1">
-                                  {s.skill_ids!.map((id) => (
-                                    <span
-                                      key={id}
-                                      className="rounded-[99px] bg-white/5 px-2 py-0.5 text-[10px] text-white/40 font-['DM_Sans']"
-                                    >
-                                      {id}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-
-                    {(pitch.missing_data?.length ?? 0) > 0 && (
-                      <div className="rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3">
-                        <div className="font-['Syne'] font-bold text-white text-sm">
-                          Para afinarlo, dime:
-                        </div>
-                        <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-white/70 font-['DM_Sans']">
-                          {pitch.missing_data!.map((q, i) => (
-                            <li key={i}>{q}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                  <div className="mt-4">
+                    <PitchViewer
+                      pitch={pitch}
+                      sections={sections[pitch.id]!}
+                      role="manager"
+                      regeneratingStep={regenPitchId === pitch.id ? regenStep : null}
+                      onRegenerateSection={(step) => handleRegenerateSection(pitch.id, step)}
+                      onSectionsChanged={() => refreshSections(pitch.id)}
+                    />
                   </div>
                 )}
               </div>

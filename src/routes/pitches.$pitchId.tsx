@@ -1,5 +1,15 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app/AppShell";
+import { PitchViewer } from "@/components/pitch/PitchViewer";
+import { restGetMaybeSingle } from "@/lib/supabase-rest";
+import {
+  CHANNELS,
+  CLIENT_TYPES,
+  fetchPitchSections,
+  type CompanyPitch,
+  type PitchSection,
+} from "@/lib/pitches";
 
 export const Route = createFileRoute("/pitches/$pitchId")({
   head: () => ({
@@ -23,20 +33,54 @@ export const Route = createFileRoute("/pitches/$pitchId")({
 
 function PitchDetailPage() {
   const { pitchId } = useParams({ from: "/pitches/$pitchId" });
+  const [loading, setLoading] = useState(true);
+  const [pitch, setPitch] = useState<CompanyPitch | null>(null);
+  const [sections, setSections] = useState<PitchSection[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const p = await restGetMaybeSingle<CompanyPitch>(
+        `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at,missing_data&id=eq.${pitchId}&status=eq.published&limit=1`,
+      );
+      const rows = p ? await fetchPitchSections(p.id) : [];
+      if (cancelled) return;
+      setPitch(p);
+      setSections(rows.filter((r) => r.content));
+      setLoading(false);
+    })().catch((e) => {
+      console.error("[pitch] load", e);
+      if (!cancelled) setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pitchId]);
+
+  const type = CLIENT_TYPES.find((t) => t.key === pitch?.client_type);
+  const ch = CHANNELS.find((c) => c.key === pitch?.channel);
 
   return (
     <div className="min-h-screen bg-[#08080F] text-white">
       <AppHeader title="Pitch" back={{ to: "/pitches", label: "Mis Pitches" }} />
       <div className="mx-auto w-full max-w-[560px] px-5 pt-2 pb-24">
-        <div className="rounded-[14px] border border-dashed border-white/10 bg-white/[0.02] p-8 text-center">
-          <div className="text-xs uppercase tracking-wide text-white/40 font-['DM_Sans']">
-            Próximamente
+        {loading ? (
+          <div className="text-sm text-white/50 font-['DM_Sans']">Cargando pitch…</div>
+        ) : !pitch ? (
+          <div className="rounded-[14px] border border-dashed border-white/10 bg-white/[0.02] p-8 text-center text-sm text-white/60 font-['DM_Sans']">
+            Este pitch no está publicado.
           </div>
-          <div className="mt-2 text-sm text-white/60 font-['DM_Sans']">
-            La lectura interactiva del pitch llega pronto.
-          </div>
-          <div className="mt-3 text-[11px] text-white/25 font-['DM_Sans'] break-all">{pitchId}</div>
-        </div>
+        ) : (
+          <>
+            <h1 className="font-['Syne'] text-2xl font-black tracking-tight">
+              {type?.label ?? pitch.client_type}
+            </h1>
+            <p className="mb-4 mt-0.5 text-xs text-white/50 font-['DM_Sans']">
+              {ch?.label ?? pitch.channel} · v{pitch.version}
+            </p>
+            <PitchViewer pitch={pitch} sections={sections} role="seller" />
+          </>
+        )}
       </div>
     </div>
   );

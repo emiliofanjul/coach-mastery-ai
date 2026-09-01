@@ -130,6 +130,8 @@ function SellerOnboarding() {
           experience: exp,
           challenge: ch,
           companyName,
+          companyId,
+          sellerId,
         },
       });
       setWelcomeMsg(res.mensaje);

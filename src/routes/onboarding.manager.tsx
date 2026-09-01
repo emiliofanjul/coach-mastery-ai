@@ -66,6 +66,7 @@ function ManagerOnboarding() {
   const [a, setA] = useState<Answers>(EMPTY);
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [companyId, setCompanyId] = useState<string | null>(null);
   const [brain, setBrain] = useState<Brain | null>(null);
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
@@ -88,6 +89,7 @@ function ManagerOnboarding() {
         return;
       }
       setName((profile.full_name ?? "").split(" ")[0] || "Manager");
+      setCompanyId(profile.company_id ?? null);
       if (profile.company_id) {
         const { data: comp } = await supabase
           .from("companies").select("name, onboarding_completed").eq("id", profile.company_id).single();
@@ -128,6 +130,7 @@ function ManagerOnboarding() {
       data: {
         answers,
         companyName: companyName || "tu empresa",
+        companyId,
         openerLine: "Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?",
       },
     })
