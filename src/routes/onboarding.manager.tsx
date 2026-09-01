@@ -291,10 +291,23 @@ function ManagerOnboarding() {
             <NavButtons onBack={goBack} onNext={goNext} disabled={a.q8.trim().length < 30 || a.q9.trim().length < 20} />
           </Block>
         )}
-        {step === 7 && (
+        {step >= EXT_START && step < CALIB_STEP && (() => {
+          const section = EXT_SECTIONS[step - EXT_START]!;
+          return (
+            <ExtSectionStep
+              section={section}
+              ext={ext}
+              setExt={setExt}
+              onBack={goBack}
+              onNext={goNext}
+              onSaveExit={() => navigate({ to: "/" })}
+            />
+          );
+        })()}
+        {step === CALIB_STEP && (
           <CalibrationStep brain={brain} loading={generating} error={genError} onBack={goBack} onNext={goNext} onRetry={() => { setBrain(null); setGenError(null); }} />
         )}
-        {step === 8 && (
+        {step === BRAIN_STEP && (
           <BrainStep companyName={companyName} brain={brain} onBack={goBack} onNext={goNext} />
         )}
         {step === 9 && (
