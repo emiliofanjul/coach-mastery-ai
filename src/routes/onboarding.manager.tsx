@@ -48,6 +48,34 @@ const EMPTY: Answers = {
 
 type Brain = Record<string, string>;
 
+/** Respuestas de los bloques 4-6 (catálogo, cartera, campo). */
+type ExtAnswers = Record<string, string | string[]>;
+
+// Mapa de pasos. Los bloques 1-3 ocupan 1..6; los bloques 4-6 (una pantalla
+// por sección) arrancan en 7; después van calibración, cerebro y equipo.
+const EXT_START = 7;
+const CALIB_STEP = EXT_START + EXT_SECTIONS.length;
+const BRAIN_STEP = CALIB_STEP + 1;
+const TEAM_STEP = CALIB_STEP + 2;
+const PROGRESS_TOTAL = TEAM_STEP;
+
+const draftKey = (companyId: string | null) => `closer_onboarding_draft_${companyId ?? "anon"}`;
+
+function extAnswerText(v: string | string[] | undefined): string {
+  if (Array.isArray(v)) return v.join(", ");
+  return (v ?? "").trim();
+}
+
+/** Una sección está completa cuando toda pregunta no opcional tiene respuesta suficiente. */
+function sectionComplete(section: ExtSection, ext: ExtAnswers): boolean {
+  return section.questions.every((q) => {
+    if (q.optional) return true;
+    const txt = extAnswerText(ext[q.id]);
+    if (!txt) return false;
+    return txt.length >= (q.min ?? 1);
+  });
+}
+
 // Llaves que jamás deben persistirse en companies.company_sales_brain.
 // `__preview_response` es la respuesta efímera del cliente para el preview del
 // onboarding. `DON_RAMON_RESPUESTA` es una llave legacy que se solía persistir
