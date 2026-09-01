@@ -50,7 +50,16 @@ export type SkillRef = {
   node_id?: string | null;
 };
 
-/** Catálogo de skills (nombre, código, mundo) + nodo primario donde se enseña. */
+/**
+ * Catálogo de skills (nombre, código, mundo) + nodo donde se enseña.
+ *
+ * Resolución de la liga, en orden:
+ *   1) node_skills con is_primary = true
+ *   2) cualquier node_skills del skill
+ *   3) primer nodo (order_index) del mundo donde se introduce el skill
+ * Si ninguna resuelve, node_id queda null y el visor NO renderiza liga
+ * (badge inerte) — nunca una liga muerta.
+ */
 export async function fetchSkillRefs(skillIds: string[]): Promise<Record<string, SkillRef>> {
   const ids = Array.from(new Set(skillIds.filter(Boolean)));
   if (ids.length === 0) return {};
@@ -61,18 +70,41 @@ export async function fetchSkillRefs(skillIds: string[]): Promise<Record<string,
       `node_skills?select=skill_id,node_id,is_primary&skill_id=in.(${list})&order=is_primary.desc`,
     ),
   ]);
+
+  // Fallback por mundo: primer nodo de cada mundo involucrado.
+  const worlds = Array.from(new Set(skills.map((s) => s.world_id_introduced).filter((w) => w != null)));
+  let firstNodeByWorld: Record<number, string> = {};
+  if (worlds.length > 0) {
+    const nodes = await restGet<{ id: string; world_id: number; order_index: number }>(
+      `nodes?select=id,world_id,order_index&world_id=in.(${worlds.join(",")})&order=world_id.asc,order_index.asc`,
+    );
+    for (const n of nodes) {
+      if (firstNodeByWorld[n.world_id] == null) firstNodeByWorld[n.world_id] = n.id;
+    }
+  }
+
   const out: Record<string, SkillRef> = {};
   for (const s of skills) {
-    out[s.id] = { ...s, node_id: links.find((l) => l.skill_id === s.id)?.node_id ?? null };
+    const primary = links.find((l) => l.skill_id === s.id && l.is_primary)?.node_id;
+    const any = links.find((l) => l.skill_id === s.id)?.node_id;
+    out[s.id] = {
+      ...s,
+      node_id: primary ?? any ?? firstNodeByWorld[s.world_id_introduced] ?? null,
+    };
   }
   return out;
 }
 
-/** El manager elige una alternativa: reemplaza el content y marca edición. */
+/**
+ * El manager elige una alternativa que Closer mismo generó.
+ * NO marca `edited_by_manager`: las tres alternativas son correctas según
+ * doctrina, elegir entre ellas no es ir contra ella. Ese flag queda reservado
+ * para cambios que contradigan la doctrina (edición forzada desde el chat).
+ */
 export async function applyAlternative(sectionId: string, content: string): Promise<void> {
   await restMutate(`pitch_sections?id=eq.${sectionId}`, {
     method: "PATCH",
-    body: { content, edited_by_manager: true },
+    body: { content },
   });
 }
 
