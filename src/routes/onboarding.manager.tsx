@@ -138,12 +138,35 @@ function ManagerOnboarding() {
     return () => { active = false; };
   }, [navigate]);
 
+  // Borrador local: el cuestionario es largo a propósito, así que el manager
+  // puede salir y volver sin perder nada.
+  useEffect(() => {
+    if (!authReady || draftLoaded) return;
+    try {
+      const raw = localStorage.getItem(draftKey(companyId));
+      if (raw) {
+        const d = JSON.parse(raw) as { step?: number; a?: Answers; ext?: ExtAnswers };
+        if (d.a) setA({ ...EMPTY, ...d.a });
+        if (d.ext) setExt(d.ext);
+        if (typeof d.step === "number" && d.step > 0 && d.step < CALIB_STEP) setStep(d.step);
+      }
+    } catch { /* borrador corrupto: se ignora */ }
+    setDraftLoaded(true);
+  }, [authReady, draftLoaded, companyId]);
+
+  useEffect(() => {
+    if (!draftLoaded) return;
+    try {
+      localStorage.setItem(draftKey(companyId), JSON.stringify({ step, a, ext }));
+    } catch { /* sin espacio: no bloquea */ }
+  }, [draftLoaded, step, a, ext, companyId]);
+
   const goNext = () => setStep((s) => s + 1);
   const goBack = () => setStep((s) => Math.max(0, s - 1));
 
-  // Generar Brain al entrar al step 7
+  // Generar Brain al entrar al paso de calibración
   useEffect(() => {
-    if (step !== 7 || brain || generating) return;
+    if (step !== CALIB_STEP || brain || generating) return;
     setGenerating(true);
     setGenError(null);
     const answers = [
