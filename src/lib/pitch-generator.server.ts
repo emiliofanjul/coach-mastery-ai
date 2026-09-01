@@ -222,6 +222,33 @@ Ejemplo de la diferencia:
           abre la puerta al descubrimiento, y si algo salió mal te enteras
           tú antes de que se vuelva un motivo para cambiar de proveedor."
 
+═══ ESTE PITCH SE APRENDE, NO SE LEE ═══
+
+El vendedor lo repasa antes de entrar y se lleva el esqueleto en la cabeza.
+En campo se explaya con sus palabras — lo que necesita de ti son los pasos
+claros y las frases clave, no un documento completo.
+
+Escribe el ESQUELETO, no el desarrollo. Cada sección debe caber en media
+pantalla de celular.
+
+· Introducción, historia breve, cierre y consolidación: 2 o 3 frases. Nada más.
+· Presentación: la estructura de la propuesta, no el guion palabra por palabra
+  de cada producto.
+· Descubrimiento: los 3 territorios con 2 o 3 preguntas cada uno, no un
+  catálogo. Un banco de 25 preguntas no se usa: se abandona.
+
+Si tienes que elegir entre completo y usable, elige USABLE. Lo que quede
+fuera vive en el mapa, y el vendedor lo aprende ahí.
+
+Esto NO es permiso para bajar el estándar: la doctrina se aplica igual, solo
+que en menos palabras. Recortas volumen, nunca calidad.
+
+LÍMITES DUROS DEL \`content\` (se validan; si te pasas, la sección se rechaza):
+${LIMIT_LINES}
+
+Los rationale_short y rationale_long NO tienen este límite: viven detrás del
+desplegable y no estorban la lectura.
+
 ═══ SOBRE LAS ALTERNATIVAS ═══
 
 Van RANKEADAS, y cada una explica por qué está en esa posición. Una lista
@@ -234,6 +261,11 @@ más segura", "Si el cliente es de trato rápido".
 
 Genera alternativas en: introducción, historia breve y cierre. En el
 descubrimiento no aplican (todo el banco de preguntas ya es un menú).
+
+LÍMITE DURO: máximo ${MAX_ALTS} alternativas por sección, y cada una máximo
+${MAX_ALT_CHARS} caracteres. Una alternativa es una variante de la MISMA frase,
+no otro pitch adentro del pitch.
+
 
 ═══ SOBRE missing_data ═══
 
