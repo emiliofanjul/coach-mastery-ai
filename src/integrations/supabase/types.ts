@@ -1979,6 +1979,69 @@ export type Database = {
           },
         ]
       }
+      tts_calls: {
+        Row: {
+          cache_hit: boolean
+          characters: number
+          company_id: string | null
+          created_at: string
+          estimated_usd: number
+          id: string
+          latency_ms: number | null
+          model: string | null
+          node_id: string | null
+          phase: string | null
+          seller_id: string | null
+          session_id: string | null
+          voice_id: string | null
+        }
+        Insert: {
+          cache_hit?: boolean
+          characters?: number
+          company_id?: string | null
+          created_at?: string
+          estimated_usd?: number
+          id?: string
+          latency_ms?: number | null
+          model?: string | null
+          node_id?: string | null
+          phase?: string | null
+          seller_id?: string | null
+          session_id?: string | null
+          voice_id?: string | null
+        }
+        Update: {
+          cache_hit?: boolean
+          characters?: number
+          company_id?: string | null
+          created_at?: string
+          estimated_usd?: number
+          id?: string
+          latency_ms?: number | null
+          model?: string | null
+          node_id?: string | null
+          phase?: string | null
+          seller_id?: string | null
+          session_id?: string | null
+          voice_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tts_calls_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tts_calls_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       worlds: {
         Row: {
           boss_level_description: string | null
@@ -2043,6 +2106,16 @@ export type Database = {
       }
       is_manager: { Args: never; Returns: boolean }
       join_company_with_code: { Args: { _code: string }; Returns: Json }
+      llm_call_usd: {
+        Args: {
+          _cache_write: number
+          _cached: number
+          _input: number
+          _model: string
+          _output: number
+        }
+        Returns: number
+      }
       llm_usage_report: {
         Args: { _from: string; _to: string }
         Returns: {
@@ -2085,6 +2158,23 @@ export type Database = {
       update_company_identity: {
         Args: { _industry: string; _logo_url: string; _name: string }
         Returns: Json
+      }
+      usage_cost_report: {
+        Args: { _from: string; _to: string }
+        Returns: {
+          company_id: string
+          company_name: string
+          llm_cached_tokens: number
+          llm_calls: number
+          llm_input_tokens: number
+          llm_output_tokens: number
+          llm_usd: number
+          total_usd: number
+          tts_cache_hits: number
+          tts_calls: number
+          tts_characters: number
+          tts_usd: number
+        }[]
       }
       validate_invite_code: { Args: { _code: string }; Returns: Json }
     }
