@@ -28,6 +28,7 @@ import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
 import { Route as EquipoSellerIdRouteImport } from './routes/equipo.$sellerId'
 import { Route as NodoNodeIdQuizRouteImport } from './routes/nodo.$nodeId.quiz'
 import { Route as NodoNodeIdPracticaRouteImport } from './routes/nodo.$nodeId.practica'
+import { Route as ApiPublicCoachTestRouteImport } from './routes/api/public/coach-test'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -124,6 +125,11 @@ const NodoNodeIdPracticaRoute = NodoNodeIdPracticaRouteImport.update({
   path: '/practica',
   getParentRoute: () => NodoNodeIdRoute,
 } as any)
+const ApiPublicCoachTestRoute = ApiPublicCoachTestRouteImport.update({
+  id: '/api/public/coach-test',
+  path: '/api/public/coach-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo/': typeof EquipoIndexRoute
   '/pitches/': typeof PitchesIndexRoute
+  '/api/public/coach-test': typeof ApiPublicCoachTestRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo': typeof EquipoIndexRoute
   '/pitches': typeof PitchesIndexRoute
+  '/api/public/coach-test': typeof ApiPublicCoachTestRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/pitches/$pitchId': typeof PitchesPitchIdRoute
   '/equipo/': typeof EquipoIndexRoute
   '/pitches/': typeof PitchesIndexRoute
+  '/api/public/coach-test': typeof ApiPublicCoachTestRoute
   '/nodo/$nodeId/practica': typeof NodoNodeIdPracticaRoute
   '/nodo/$nodeId/quiz': typeof NodoNodeIdQuizRoute
 }
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/pitches/$pitchId'
     | '/equipo/'
     | '/pitches/'
+    | '/api/public/coach-test'
     | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   fileRoutesByTo: FileRoutesByTo
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/pitches/$pitchId'
     | '/equipo'
     | '/pitches'
+    | '/api/public/coach-test'
     | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   id:
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/pitches/$pitchId'
     | '/equipo/'
     | '/pitches/'
+    | '/api/public/coach-test'
     | '/nodo/$nodeId/practica'
     | '/nodo/$nodeId/quiz'
   fileRoutesById: FileRoutesById
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   PitchesPitchIdRoute: typeof PitchesPitchIdRoute
   EquipoIndexRoute: typeof EquipoIndexRoute
   PitchesIndexRoute: typeof PitchesIndexRoute
+  ApiPublicCoachTestRoute: typeof ApiPublicCoachTestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -410,6 +423,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NodoNodeIdPracticaRouteImport
       parentRoute: typeof NodoNodeIdRoute
     }
+    '/api/public/coach-test': {
+      id: '/api/public/coach-test'
+      path: '/api/public/coach-test'
+      fullPath: '/api/public/coach-test'
+      preLoaderRoute: typeof ApiPublicCoachTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   PitchesPitchIdRoute: PitchesPitchIdRoute,
   EquipoIndexRoute: EquipoIndexRoute,
   PitchesIndexRoute: PitchesIndexRoute,
+  ApiPublicCoachTestRoute: ApiPublicCoachTestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
