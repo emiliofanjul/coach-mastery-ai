@@ -21,9 +21,10 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 interface CoachBubbleProps {
   hidden?: boolean;
   context?: string; // pista de en qué pantalla está el usuario
+  sellerId?: string; // para que el coach lea su empresa y su avance
 }
 
-export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
+export function CoachBubble({ hidden = false, context, sellerId }: CoachBubbleProps) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMsg[]>([]);
@@ -45,7 +46,7 @@ export function CoachBubble({ hidden = false, context }: CoachBubbleProps) {
     setDraft("");
     setLoading(true);
     try {
-      const res = await coachChat({ data: { messages: next, context } });
+      const res = await coachChat({ data: { messages: next, context, sellerId } });
       setMessages((m) => [...m, { role: "assistant", content: res.reply || "..." }]);
     } catch (err: any) {
       setMessages((m) => [
