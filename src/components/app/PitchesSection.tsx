@@ -44,6 +44,12 @@ export function PitchesSection({
   const [progress, setProgress] = useState<{ done: number; label: string } | null>(null);
   const [regenPitchId, setRegenPitchId] = useState<string | null>(null);
   const [regenStep, setRegenStep] = useState<number | null>(null);
+  const [publishWarning, setPublishWarning] = useState<{
+    pitchId: string;
+    warnings: string[];
+    stale: string[];
+  } | null>(null);
+
 
   async function refreshSections(pitchId: string) {
     const rows = await fetchPitchSections(pitchId);
@@ -72,14 +78,19 @@ export function PitchesSection({
   }
 
 
-  async function handlePublish(pitchId: string) {
+  async function handlePublish(pitchId: string, force = false) {
     setPublishing(pitchId);
     try {
-      const res: any = await runPublish({ data: { pitchId } });
+      const res: any = await runPublish({ data: { pitchId, force } });
+      if (res?.needs_confirmation) {
+        setPublishWarning({ pitchId, warnings: res.warnings ?? [], stale: res.stale ?? [] });
+        return;
+      }
       if (!res?.ok) {
         toast.error(res?.problems?.join(" · ") ?? "No se pudo publicar el pitch.");
         return;
       }
+      setPublishWarning(null);
       setPitches(await fetchCompanyPitches(companyId));
       toast.success("Pitch publicado. Tu equipo ya lo ve.");
     } catch (e: any) {
@@ -88,6 +99,7 @@ export function PitchesSection({
       setPublishing(null);
     }
   }
+
 
   useEffect(() => {
     let cancelled = false;
@@ -296,6 +308,50 @@ export function PitchesSection({
                     </div>
                   </div>
                 )}
+
+                {pitch && publishWarning?.pitchId === pitch.id && (
+                  <div className="mt-3 rounded-[14px] border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100 font-['DM_Sans']">
+                    {publishWarning.warnings.map((w, i) => (
+                      <div key={i} className="mb-1">
+                        {w}
+                      </div>
+                    ))}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {publishWarning.stale.length > 0 && (
+                        <Button
+                          onClick={() => {
+                            const key = publishWarning.stale[0];
+                            const step =
+                              PITCH_STEPS.find((s) => s.key === key)?.step ?? null;
+                            setPublishWarning(null);
+                            if (step) handleRegenerateSection(pitch.id, step);
+                          }}
+                          disabled={regenStep !== null || generating !== null}
+                          className="rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold"
+                        >
+                          Regenerar esa sección
+                        </Button>
+                      )}
+                      <Button
+                        onClick={() => handlePublish(pitch.id, true)}
+                        disabled={publishing !== null}
+                        variant="outline"
+                        className="rounded-[99px] border-white/15 text-white font-['Syne'] font-bold"
+                      >
+                        Publicar de todos modos
+                      </Button>
+                      <Button
+                        onClick={() => setPublishWarning(null)}
+                        variant="ghost"
+                        className="rounded-[99px] text-white/60 font-['DM_Sans']"
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+
 
                 {pitch && (sections[pitch.id]?.length ?? 0) > 0 && (
                   <div className="mt-4">

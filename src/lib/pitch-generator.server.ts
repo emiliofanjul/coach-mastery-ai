@@ -637,18 +637,18 @@ export function validatePitch(
   }
 
 
-  // 17. Ningún corchete de relleno en las secciones de GUION (content ni alternatives).
-  //     Las secciones 'municion' quedan exceptuadas: un banco de preguntas puede
-  //     usar plantillas. Escape igual que V10: sin el marcador + missing_data.
+  // 17. Ningún corchete de relleno en NINGUNA sección (content ni alternatives).
+  //     Antes las secciones 'municion' estaban exceptuadas; ya no: el fix real
+  //     es Suggestive Language (V25), no dejar huecos por llenar.
   const BRACKET = /\[[^\]\n]{0,120}\]/;
-  for (const s of guionSections) {
+  for (const s of sections) {
     const key = String(s?.section_key ?? "");
 
     const cText = String(s?.content ?? "");
     if (BRACKET.test(cText)) {
       const m = cText.match(BRACKET)?.[0] ?? "";
       fails.push(
-        `V17: corchete de relleno en el contenido de ${key} ("${m}"); escríbelo sin el marcador y declara el dato faltante en missing_data`,
+        `V17: corchete de relleno en el contenido de ${key} ("${m}"); si es una pregunta, sugiere opciones reales del brain (Suggestive Language) en vez del hueco, y declara el dato faltante en missing_data`,
       );
     }
     const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
@@ -662,6 +662,21 @@ export function validatePitch(
       }
     }
   }
+
+  // 25. Suggestive Language (la S de FUJIES) en el descubrimiento: después de
+  //     preguntar, sugerir opciones. "¿Qué familias se te mueven?
+  //     ¿Anticongelantes? ¿Aceite de motor?" — o eligen, o te corrigen con el dato.
+  const desc = byKey("descubrimiento");
+  if (desc && (!ctx.only || ctx.only === "descubrimiento")) {
+    const dText = String(desc.content ?? "");
+    const suggestive = dText.match(/\?[^?¿\n]{0,20}¿[^?¿\n]{1,40}\?/g) ?? [];
+    if (suggestive.length < 3) {
+      fails.push(
+        `V25: el descubrimiento solo trae ${suggestive.length} preguntas con opciones sugeridas y se necesitan al menos 3. Después de cada pregunta abierta, sugiere opciones reales del brain: "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?" o "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"`,
+      );
+    }
+  }
+
 
   // 20. Largo del content por sección. Un pitch que no se puede aprender no sirve.
   //     Aplica a TODAS las secciones (munición incluida).
@@ -928,7 +943,12 @@ async function markSectionStale(
   }
 }
 
-/** Un pitch es publicable solo si TODAS sus secciones son de la misma versión y ninguna está desactualizada. */
+/**
+ * Integridad de un pitch antes de publicar.
+ * - BLOQUEA solo lo que rompe el pitch: sin secciones o con alguna vacía.
+ * - ADVIERTE (sin bloquear) si hay secciones desactualizadas o de versión
+ *   distinta: el manager decide si publica así o regenera primero.
+ */
 export async function checkPitchIntegrity(admin: any, pitchId: string) {
   const { data } = await admin
     .from("pitch_sections")
@@ -940,18 +960,31 @@ export async function checkPitchIntegrity(admin: any, pitchId: string) {
   const stale = rows.filter((r) => r.is_stale).map((r) => r.section_key);
   const empty = rows.filter((r) => !r.content).map((r) => r.section_key);
   const problems: string[] = [];
+  const warnings: string[] = [];
   if (rows.length === 0) problems.push("El pitch no tiene secciones generadas.");
-  if (empty.length) problems.push(`Secciones vacías: ${empty.join(", ")}.`);
-  if (stale.length)
+  if (empty.length)
     problems.push(
-      `Secciones desactualizadas (su última regeneración falló): ${stale.join(", ")}. Regenéralas antes de publicar.`,
+      `Falta el contenido de: ${empty.join(", ")}. Un pitch sin un paso está roto: genéralo antes de publicar.`,
+    );
+  if (stale.length)
+    warnings.push(
+      `La sección ${stale.join(", ")} quedó de una versión anterior (su última regeneración falló). Puedes publicar así o regenerarla primero.`,
     );
   if (versions.length > 1)
-    problems.push(
-      `El pitch está mezclado: sus secciones vienen de versiones distintas del generador (${versions.join(", ")}). Regenera el pitch completo.`,
+    warnings.push(
+      `Este pitch mezcla versiones del generador (${versions.join(", ")}). Puedes publicar así o regenerar las secciones viejas.`,
     );
-  return { ok: problems.length === 0, problems, versions, stale, sections: rows.length };
+  return {
+    ok: problems.length === 0,
+    problems,
+    warnings,
+    versions,
+    stale,
+    empty,
+    sections: rows.length,
+  };
 }
+
 
 export type GeneratePitchResult =
   | { ok: true; generated: any; prompt_version: string; dry_run?: boolean }
@@ -1153,6 +1186,24 @@ Descubrimiento. Ejemplo de diferencia:
 ✓ "¿Siempre está así de movido o hoy le tocó?"`
     : ""
 }
+
+${
+  spec.key === "descubrimiento"
+    ? `═══ SUGGESTIVE LANGUAGE (la S de FUJIES) — OBLIGATORIO AQUÍ ═══
+Después de preguntar, SUGIERE OPCIONES. Al menos 3 de las preguntas del banco
+llevan sus opciones sugeridas, tomadas de datos reales de LA EMPRESA (arriba).
+✗ "¿Qué familias son las que más se te mueven?"
+✓ "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?"
+✗ "¿A cómo compras el líquido de frenos?"
+✓ "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"
+Por qué: o elige una opción, o te corrige con el dato real ("no, más bien 95"),
+y esa corrección es información que la pregunta abierta nunca saca.
+PROHIBIDO el corchete de relleno: en vez de "[familia específica que maneja]",
+escribe la pregunta con opciones reales.`
+    : ""
+}
+
+
 
 ═══ VERACIDAD Y CONTEXTO ═══
 NUNCA inventes clientes, ubicaciones ni casos de éxito. Si el brain no trae

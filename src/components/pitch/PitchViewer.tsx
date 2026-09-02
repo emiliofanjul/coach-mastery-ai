@@ -146,11 +146,12 @@ export function PitchViewer({
                     <AlertTriangle className="h-3 w-3" /> restricción
                   </span>
                 )}
-                {s.is_stale && (
+                {s.is_stale && role === "manager" && (
                   <span className="inline-flex items-center gap-1 rounded-[99px] bg-red-500/20 px-2 py-0.5 text-[10px] text-red-300 font-['DM_Sans']">
                     <AlertTriangle className="h-3 w-3" /> desactualizada
                   </span>
                 )}
+
                 {s.edited_by_manager && (
                   <span className="rounded-[99px] bg-white/10 px-2 py-0.5 text-[10px] text-white/50 font-['DM_Sans']">
                     editado por tu equipo
@@ -173,7 +174,7 @@ export function PitchViewer({
                 )}
               </header>
 
-              {s.is_stale && !sellerMode && (
+              {s.is_stale && !sellerMode && role === "manager" && (
                 <div className="mt-2 rounded-[14px] border border-red-500/30 bg-red-500/10 p-3 text-[12px] text-red-200 font-['DM_Sans']">
                   Esta sección quedó desactualizada: su última regeneración falló y abajo
                   sigue el texto de la versión anterior. Regenérala antes de publicar.
