@@ -736,8 +736,11 @@ export function validatePitch(
       /\b\d{2,5}\s*(pesos|mxn)\b/i.test(ctx.brain) ||
       /\b(precio|costo|lista)\b[^\n]{0,40}\d{2,5}/i.test(ctx.brain);
     if (tocaPrecio && !brainPrecios) {
-      const md = (payload as any)?.missing_data;
-      const mdText = Array.isArray(md) ? md.join(" ") : String(md ?? "");
+      const md = [
+        ...(ctx.missingData ?? []),
+        ...(Array.isArray((parsed as any)?.missing_data) ? (parsed as any).missing_data : []),
+      ];
+      const mdText = md.join(" ");
       if (!/(precio|lista de precios|tarifa)/i.test(mdText)) {
         fails.push(
           `V27: el descubrimiento toca precio y el brain no trae cifras, pero missing_data no pide la lista de precios. Agrega en missing_data la petición explícita de los precios de lista por presentación`,
