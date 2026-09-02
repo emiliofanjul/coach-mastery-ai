@@ -27,7 +27,11 @@ function section(over: Record<string, unknown> = {}) {
       "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel? " +
       "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90? " +
       "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual?",
+    rationale_short: "Da opciones reales para que corrija con su dato.",
+    rationale_long:
+      "Suggestive Language: al sugerir familias y precios reales, el cliente elige o corrige con el dato exacto, y esa corrección es información que la pregunta abierta no saca.",
     skill_ids: ["sce"],
+
     alternatives: [{ rank: 1, content: "¿Qué línea se te queda parada? ¿Moto? ¿Diésel?", skill_ids: [] }],
     ...over,
   };
