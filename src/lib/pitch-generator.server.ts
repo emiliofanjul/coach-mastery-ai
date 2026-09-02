@@ -1187,6 +1187,24 @@ Descubrimiento. Ejemplo de diferencia:
     : ""
 }
 
+${
+  spec.key === "descubrimiento"
+    ? `═══ SUGGESTIVE LANGUAGE (la S de FUJIES) — OBLIGATORIO AQUÍ ═══
+Después de preguntar, SUGIERE OPCIONES. Al menos 3 de las preguntas del banco
+llevan sus opciones sugeridas, tomadas de datos reales de LA EMPRESA (arriba).
+✗ "¿Qué familias son las que más se te mueven?"
+✓ "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?"
+✗ "¿A cómo compras el líquido de frenos?"
+✓ "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"
+Por qué: o elige una opción, o te corrige con el dato real ("no, más bien 95"),
+y esa corrección es información que la pregunta abierta nunca saca.
+PROHIBIDO el corchete de relleno: en vez de "[familia específica que maneja]",
+escribe la pregunta con opciones reales.`
+    : ""
+}
+
+
+
 ═══ VERACIDAD Y CONTEXTO ═══
 NUNCA inventes clientes, ubicaciones ni casos de éxito. Si el brain no trae
 casos reales, usa el Efecto Jones en genérico o pide el dato en missing_data.
