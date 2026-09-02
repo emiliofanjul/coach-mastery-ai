@@ -3570,7 +3570,7 @@ function FeedbackPhase({
       </div>
       <AnimatePresence mode="wait">
         <motion.div
-          key={msgIdx}
+          key={slowNotice ? "slow" : msgIdx}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
@@ -3578,11 +3578,15 @@ function FeedbackPhase({
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 14,
-            color: "rgba(255,255,255,0.5)",
+            color: slowNotice ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.5)",
             textAlign: "center",
+            maxWidth: 400,
           }}
         >
-          {ANALYSIS_MESSAGES[msgIdx]}
+          {slowNotice
+            ? "Esto está tardando más de lo normal, dame unos segundos más."
+            : ANALYSIS_MESSAGES[msgIdx]}
+
         </motion.div>
       </AnimatePresence>
     </motion.div>
