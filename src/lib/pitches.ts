@@ -1,7 +1,7 @@
 // Modelo compartido del Pitch Builder (Fase 1).
 // Solo datos + helpers de lectura/escritura vía PostgREST.
 
-import { restGet, restMutate } from "@/lib/supabase-rest";
+import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 
 /** Eje 1 — RELACIÓN: ¿ya te compra? Define la estructura del pitch. */
 export type Relationship = "nuevo" | "recurrente";
@@ -20,7 +20,7 @@ export type CompanyPitch = {
   version: number;
   published_at: string | null;
   updated_at: string | null;
-  missing_data?: string[] | null;
+  missing_data?: unknown[] | null;
 };
 
 export type PitchAlternative = {
@@ -237,4 +237,202 @@ export async function activatePitch(args: {
   });
 
   return pitch;
+}
+
+// ───────────────────────── Datos faltantes (missing_data) ─────────────────────────
+// El generador devuelve renglones sueltos y repetidos ("precios de lista" tres
+// veces con distinta redacción). Aquí se agrupan en TEMAS accionables: una
+// pregunta por tema, la llave del brain donde se guarda la respuesta, y qué
+// secciones se pueden regenerar con ella.
+
+export type MissingItem = {
+  tema: string;
+  pregunta: string;
+  desbloquea: string;
+  secciones_afectadas: string[];
+  brain_key: string;
+  prioridad: "alta" | "media" | "baja";
+  detalle: string[];
+};
+
+type TopicSpec = Omit<MissingItem, "detalle"> & { match: RegExp };
+
+/** El nombre/teléfono del vendedor NO es un dato faltante: es del lector. */
+const NOT_MISSING =
+  /(nombre|tel[eé]fono|whats\s?app|celular|contacto)\s+(completo\s+)?(del|de la|de tu|de los)?\s*(vendedor|ejecutiv|representante|asesor)/i;
+
+const TOPICS: TopicSpec[] = [
+  {
+    tema: "Precios de lista y descuentos",
+    pregunta:
+      "¿Cuáles son tus precios por presentación y qué descuentos aplicas (volumen, contado, línea)?",
+    desbloquea: "El triple desglose con cifras reales y las opciones de precio del descubrimiento",
+    secciones_afectadas: ["presentacion", "descubrimiento"],
+    brain_key: "PRESENTACIONES_Y_PRECIOS",
+    prioridad: "alta",
+    match: /(precio|lista de precios|tarifa|descuento|margen|costo)/i,
+  },
+  {
+    tema: "Productos y presentaciones",
+    pregunta: "¿Qué productos y líneas manejas, y en qué presentaciones se venden?",
+    desbloquea: "Que el cierre enumere el pedido y el descubrimiento sugiera familias reales",
+    secciones_afectadas: ["cierre", "descubrimiento"],
+    brain_key: "PRODUCTOS_Y_PRESENTACIONES",
+    prioridad: "alta",
+    match: /(producto|presentaci[oó]n|l[ií]nea|familia|sku|cat[aá]logo)/i,
+  },
+  {
+    tema: "Cantidades típicas del pedido",
+    pregunta: "¿Qué cantidades maneja normalmente un cliente de este tipo en su pedido?",
+    desbloquea: "El resumen del pedido en el cierre (qué y cuánto)",
+    secciones_afectadas: ["cierre"],
+    brain_key: "CANTIDADES_TIPICAS",
+    prioridad: "alta",
+    match: /(cantidad|volumen|pedido t[ií]pico|cu[aá]nto compra|rotaci[oó]n)/i,
+  },
+  {
+    tema: "Condiciones comerciales",
+    pregunta: "¿Manejas crédito? ¿Qué plazos, formas de pago y tiempos de entrega ofreces?",
+    desbloquea: "La escalera de precio por plazo y el cierre con condiciones reales",
+    secciones_afectadas: ["presentacion", "cierre"],
+    brain_key: "CONDICIONES_COMERCIALES",
+    prioridad: "media",
+    match: /(cr[eé]dito|plazo|pago|contado|entrega|log[ií]stica|flete)/i,
+  },
+  {
+    tema: "Casos reales de clientes",
+    pregunta: "¿Tienes casos reales de clientes con resultados que se puedan mencionar?",
+    desbloquea: "El Efecto Jones con casos verificables en vez de genéricos",
+    secciones_afectadas: ["historia_breve", "presentacion"],
+    brain_key: "CASOS_REALES",
+    prioridad: "media",
+    match: /(caso|testimonio|referencia|cliente que|resultado real|historia de)/i,
+  },
+  {
+    tema: "Competencia y proveedores",
+    pregunta: "¿Contra qué marcas o proveedores compites normalmente en esta zona?",
+    desbloquea: "Sugerir marcas reales en el descubrimiento sin inventarlas",
+    secciones_afectadas: ["descubrimiento"],
+    brain_key: "COMPETENCIA",
+    prioridad: "media",
+    match: /(competencia|competidor|proveedor|marca)/i,
+  },
+  {
+    tema: "Diferenciadores y respaldo",
+    pregunta: "¿Qué te distingue de la competencia: garantía, respaldo técnico, servicio?",
+    desbloquea: "La primera mitad de la presentación y la historia breve",
+    secciones_afectadas: ["historia_breve", "presentacion"],
+    brain_key: "DIFERENCIADORES",
+    prioridad: "media",
+    match: /(diferenciador|ventaja|garant[ií]a|respaldo|soporte|servicio|capacitaci[oó]n)/i,
+  },
+  {
+    tema: "Seguimiento y frecuencia de visita",
+    pregunta: "¿Cada cuándo se visita o se le llama a un cliente después de la venta?",
+    desbloquea: "La consolidación con un compromiso concreto de seguimiento",
+    secciones_afectadas: ["consolidacion"],
+    brain_key: "SEGUIMIENTO",
+    prioridad: "baja",
+    match: /(seguimiento|visita|frecuencia|recompra|posventa|consolidaci[oó]n)/i,
+  },
+];
+
+const OTROS: Omit<MissingItem, "detalle"> = {
+  tema: "Otros datos por confirmar",
+  pregunta: "¿Puedes darme estos datos sueltos que Closer necesitó y no encontró?",
+  desbloquea: "Afinar detalles del pitch",
+  secciones_afectadas: [],
+  brain_key: "OTROS_DATOS",
+  prioridad: "baja",
+};
+
+const ORDEN: Record<MissingItem["prioridad"], number> = { alta: 0, media: 1, baja: 2 };
+
+/** Agrupa y deduplica los renglones crudos del generador en temas accionables. */
+export function normalizeMissingData(raw: unknown): MissingItem[] {
+  const list: string[] = Array.isArray(raw)
+    ? raw
+        .map((r) => (typeof r === "string" ? r : String((r as any)?.pregunta ?? (r as any)?.tema ?? "")))
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+
+  const buckets = new Map<string, MissingItem>();
+  for (const line of list) {
+    if (NOT_MISSING.test(line)) continue; // el nombre del vendedor no es un faltante
+    const spec = TOPICS.find((t) => t.match.test(line));
+    const base = spec ? (({ match, ...rest }) => rest)(spec) : OTROS;
+    const cur = buckets.get(base.brain_key) ?? { ...base, detalle: [] };
+    if (!cur.detalle.some((d) => d.toLowerCase() === line.toLowerCase())) cur.detalle.push(line);
+    buckets.set(base.brain_key, cur);
+  }
+  return Array.from(buckets.values()).sort(
+    (a, b) => ORDEN[a.prioridad] - ORDEN[b.prioridad] || a.tema.localeCompare(b.tema),
+  );
+}
+
+/** Guarda la respuesta del manager en el cerebro de la empresa, bajo su llave. */
+export async function saveBrainAnswer(
+  companyId: string,
+  brainKey: string,
+  answer: string,
+): Promise<void> {
+  const company = await restGetMaybeSingle<{ company_sales_brain: Record<string, unknown> | null }>(
+    `companies?select=company_sales_brain&id=eq.${companyId}&limit=1`,
+  );
+  const brain = { ...(company?.company_sales_brain ?? {}), [brainKey]: answer };
+  await restMutate(`rpc/update_company_brain`, { method: "POST", body: { _brain: brain } });
+}
+
+/** Quita del missing_data guardado los renglones ya cubiertos por un tema. */
+export async function dropMissingTopic(
+  pitchId: string,
+  current: unknown,
+  item: MissingItem,
+): Promise<void> {
+  const list: string[] = Array.isArray(current) ? current.map(String) : [];
+  const rest = list.filter((l) => !item.detalle.some((d) => d.toLowerCase() === l.toLowerCase()));
+  await restMutate(`company_pitches?id=eq.${pitchId}`, {
+    method: "PATCH",
+    body: { missing_data: rest },
+  });
+}
+
+// ───────────────────────── Placeholders del lector ─────────────────────────
+// El pitch lo leen todos los vendedores: "[tu nombre]" no es un dato faltante,
+// es una variable que se resuelve con el perfil de quien lo está leyendo.
+
+export function fillReaderPlaceholders(
+  text: string | null | undefined,
+  reader: { name?: string | null; phone?: string | null },
+): string {
+  let out = String(text ?? "");
+  const name = (reader.name ?? "").trim();
+  const phone = (reader.phone ?? "").trim();
+  out = out.replace(/\[tu nombre\]/gi, name || "[tu nombre]");
+  out = out.replace(/\[tu (tel[eé]fono|whatsapp|n[uú]mero)\]/gi, phone || "[tu teléfono]");
+  return out;
+}
+
+/** Aplica un contenido acordado en el chat de la sección. */
+export async function applySectionContent(
+  sectionId: string,
+  content: string,
+  editedByManager: boolean,
+): Promise<void> {
+  await restMutate(`pitch_sections?id=eq.${sectionId}`, {
+    method: "PATCH",
+    body: editedByManager ? { content, edited_by_manager: true } : { content },
+  });
+}
+
+export async function logPitchFeedback(row: {
+  pitch_id: string;
+  section_id: string;
+  manager_message: string | null;
+  closer_response: string | null;
+  classification: string | null;
+  outcome: string | null;
+}): Promise<void> {
+  await restMutate(`pitch_feedback`, { method: "POST", body: row });
 }

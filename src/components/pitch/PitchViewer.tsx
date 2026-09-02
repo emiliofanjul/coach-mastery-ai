@@ -2,8 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowRight, Loader2, RefreshCw, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
+import { SectionChat } from "@/components/pitch/SectionChat";
+import { MissingDataPanel } from "@/components/pitch/MissingDataPanel";
 import {
   PITCH_STEPS,
+  fillReaderPlaceholders,
   applyAlternative,
   fetchSkillRefs,
   type CompanyPitch,
@@ -11,7 +14,7 @@ import {
   type SkillRef,
 } from "@/lib/pitches";
 
-type Tab = "porque" | "tecnicas" | "opciones";
+type Tab = "porque" | "tecnicas" | "opciones" | "cambio";
 
 export function PitchViewer({
   pitch,
@@ -20,6 +23,7 @@ export function PitchViewer({
   onRegenerateSection,
   regeneratingStep,
   onSectionsChanged,
+  reader,
 }: {
   pitch: CompanyPitch;
   sections: PitchSection[];
@@ -27,6 +31,8 @@ export function PitchViewer({
   onRegenerateSection?: (step: number) => void;
   regeneratingStep?: number | null;
   onSectionsChanged?: () => void;
+  /** Quien lee el pitch: resuelve [tu nombre] / [tu teléfono]. */
+  reader?: { name?: string | null; phone?: string | null };
 }) {
   // Capa 4: el vendedor arranca en modo vendedor; el manager, en modo detalle.
   const [sellerMode, setSellerMode] = useState(role === "seller");
@@ -190,7 +196,7 @@ export function PitchViewer({
                   sellerMode ? "text-[18px] leading-[1.75]" : "text-[16px] leading-[1.7]",
                 ].join(" ")}
               >
-                {s.content}
+                {fillReaderPlaceholders(s.content, reader ?? {})}
               </p>
 
               {!sellerMode && (
@@ -239,7 +245,31 @@ export function PitchViewer({
                         </Indicator>
                       </>
                     )}
+                    {role === "manager" && (
+                      <>
+                        <span>·</span>
+                        <Indicator
+                          active={tab === "cambio"}
+                          onClick={() =>
+                            setOpenTab((p) => ({
+                              ...p,
+                              [s.id]: tab === "cambio" ? null : "cambio",
+                            }))
+                          }
+                        >
+                          Pedir un cambio
+                        </Indicator>
+                      </>
+                    )}
                   </div>
+
+                  {tab === "cambio" && role === "manager" && (
+                    <SectionChat
+                      section={s}
+                      onApplied={() => onSectionsChanged?.()}
+                      onClose={() => setOpenTab((p) => ({ ...p, [s.id]: null }))}
+                    />
+                  )}
 
                   {/* Capa 3: el detalle */}
                   {tab === "porque" && (
@@ -346,15 +376,17 @@ export function PitchViewer({
         })}
       </div>
 
-      {!sellerMode && (pitch.missing_data?.length ?? 0) > 0 && (
-        <div className="mt-4 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3">
-          <div className="font-['Syne'] font-bold text-white text-sm">Para afinarlo, dime:</div>
-          <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-white/70 font-['DM_Sans']">
-            {pitch.missing_data!.map((q, i) => (
-              <li key={i}>{q}</li>
-            ))}
-          </ul>
-        </div>
+      {!sellerMode && role === "manager" && (
+        <MissingDataPanel
+          pitch={pitch}
+          onChanged={() => onSectionsChanged?.()}
+          onRegenerateSections={(keys) => {
+            for (const k of keys) {
+              const step = PITCH_STEPS.find((x) => x.key === k)?.step;
+              if (step) onRegenerateSection?.(step);
+            }
+          }}
+        />
       )}
     </div>
   );

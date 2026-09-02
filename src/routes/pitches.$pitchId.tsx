@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/app/AppShell";
 import { PitchViewer } from "@/components/pitch/PitchViewer";
 import { restGetMaybeSingle } from "@/lib/supabase-rest";
+import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import {
   CHANNELS,
   pitchLabel,
@@ -36,6 +37,9 @@ function PitchDetailPage() {
   const [loading, setLoading] = useState(true);
   const [pitch, setPitch] = useState<CompanyPitch | null>(null);
   const [sections, setSections] = useState<PitchSection[]>([]);
+  // El pitch lo leen todos los vendedores: [tu nombre] se resuelve con el
+  // perfil de QUIEN lo está leyendo, no con un dato faltante de la empresa.
+  const [reader, setReader] = useState<{ name?: string | null }>({});
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +48,14 @@ function PitchDetailPage() {
         `company_pitches?select=id,company_id,relationship,client_type,channel,status,version,published_at,updated_at,missing_data&id=eq.${pitchId}&status=eq.published&limit=1`,
       );
       const rows = p ? await fetchPitchSections(p.id) : [];
+      const session = getStoredSupabaseSession();
+      const me = session
+        ? await restGetMaybeSingle<{ full_name: string | null }>(
+            `profiles?select=full_name&id=eq.${session.userId}&limit=1`,
+          )
+        : null;
       if (cancelled) return;
+      setReader({ name: me?.full_name ?? null });
       setPitch(p);
       setSections(rows.filter((r) => r.content));
       setLoading(false);
@@ -78,7 +89,7 @@ function PitchDetailPage() {
             <p className="mb-4 mt-0.5 text-xs text-white/50 font-['DM_Sans']">
               {ch?.label ?? pitch.channel} · v{pitch.version}
             </p>
-            <PitchViewer pitch={pitch} sections={sections} role="seller" />
+            <PitchViewer pitch={pitch} sections={sections} role="seller" reader={reader} />
           </>
         )}
       </div>

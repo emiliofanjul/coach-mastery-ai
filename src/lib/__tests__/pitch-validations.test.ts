@@ -476,3 +476,49 @@ describe("V26 en todas las secciones (cifras de dinero sin sustento)", () => {
     expect(fails31.some((f) => f.startsWith("V11"))).toBe(true);
   });
 });
+
+// ── Datos faltantes: agrupación, deduplicación y variables del lector ──
+import { normalizeMissingData, fillReaderPlaceholders } from "@/lib/pitches";
+
+describe("missing_data agrupado", () => {
+  it("deduplica tres redacciones de precios en un solo tema", () => {
+    const items = normalizeMissingData([
+      "¿Cuáles son tus precios de lista?",
+      "Necesito la lista de precios por presentación",
+      "¿Qué descuentos aplicas por volumen?",
+    ]);
+    expect(items).toHaveLength(1);
+    expect(items[0]!.brain_key).toBe("PRESENTACIONES_Y_PRECIOS");
+    expect(items[0]!.detalle).toHaveLength(3);
+    expect(items[0]!.secciones_afectadas).toContain("presentacion");
+  });
+
+  it("descarta el nombre y el teléfono del vendedor: no son datos faltantes", () => {
+    const items = normalizeMissingData([
+      "¿Cuál es el nombre del vendedor?",
+      "¿Cuál es el teléfono del vendedor para el cierre?",
+    ]);
+    expect(items).toHaveLength(0);
+  });
+
+  it("ordena por prioridad: precios antes que seguimiento", () => {
+    const items = normalizeMissingData([
+      "¿Cada cuándo se hace el seguimiento posventa?",
+      "¿Cuáles son tus precios de lista?",
+    ]);
+    expect(items[0]!.prioridad).toBe("alta");
+    expect(items[1]!.brain_key).toBe("SEGUIMIENTO");
+  });
+});
+
+describe("variables del lector", () => {
+  it("sustituye [tu nombre] con el nombre de quien lee", () => {
+    expect(fillReaderPlaceholders("Soy [tu nombre], de Bardahl.", { name: "Emilio" })).toBe(
+      "Soy Emilio, de Bardahl.",
+    );
+  });
+
+  it("deja el marcador si el perfil no trae el dato", () => {
+    expect(fillReaderPlaceholders("Soy [tu nombre].", {})).toBe("Soy [tu nombre].");
+  });
+});
