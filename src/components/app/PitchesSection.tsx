@@ -72,14 +72,19 @@ export function PitchesSection({
   }
 
 
-  async function handlePublish(pitchId: string) {
+  async function handlePublish(pitchId: string, force = false) {
     setPublishing(pitchId);
     try {
-      const res: any = await runPublish({ data: { pitchId } });
+      const res: any = await runPublish({ data: { pitchId, force } });
+      if (res?.needs_confirmation) {
+        setPublishWarning({ pitchId, warnings: res.warnings ?? [], stale: res.stale ?? [] });
+        return;
+      }
       if (!res?.ok) {
         toast.error(res?.problems?.join(" · ") ?? "No se pudo publicar el pitch.");
         return;
       }
+      setPublishWarning(null);
       setPitches(await fetchCompanyPitches(companyId));
       toast.success("Pitch publicado. Tu equipo ya lo ve.");
     } catch (e: any) {
@@ -88,6 +93,7 @@ export function PitchesSection({
       setPublishing(null);
     }
   }
+
 
   useEffect(() => {
     let cancelled = false;
