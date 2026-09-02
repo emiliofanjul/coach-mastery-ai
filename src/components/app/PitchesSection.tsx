@@ -309,6 +309,50 @@ export function PitchesSection({
                   </div>
                 )}
 
+                {pitch && publishWarning?.pitchId === pitch.id && (
+                  <div className="mt-3 rounded-[14px] border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100 font-['DM_Sans']">
+                    {publishWarning.warnings.map((w, i) => (
+                      <div key={i} className="mb-1">
+                        {w}
+                      </div>
+                    ))}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {publishWarning.stale.length > 0 && (
+                        <Button
+                          onClick={() => {
+                            const key = publishWarning.stale[0];
+                            const step =
+                              PITCH_STEPS.find((s) => s.key === key)?.step ?? null;
+                            setPublishWarning(null);
+                            if (step) handleRegenerateSection(pitch.id, step);
+                          }}
+                          disabled={regenStep !== null || generating !== null}
+                          className="rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold"
+                        >
+                          Regenerar esa sección
+                        </Button>
+                      )}
+                      <Button
+                        onClick={() => handlePublish(pitch.id, true)}
+                        disabled={publishing !== null}
+                        variant="outline"
+                        className="rounded-[99px] border-white/15 text-white font-['Syne'] font-bold"
+                      >
+                        Publicar de todos modos
+                      </Button>
+                      <Button
+                        onClick={() => setPublishWarning(null)}
+                        variant="ghost"
+                        className="rounded-[99px] text-white/60 font-['DM_Sans']"
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+
+
                 {pitch && (sections[pitch.id]?.length ?? 0) > 0 && (
                   <div className="mt-4">
                     <PitchViewer
