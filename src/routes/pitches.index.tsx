@@ -106,25 +106,57 @@ function PitchesPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3">
-            {pitches.map((p) => {
-              const type = CLIENT_TYPES.find((t) => t.key === p.client_type);
-              const ch = CHANNELS.find((c) => c.key === p.channel);
-              return (
-                <Link
-                  key={p.id}
-                  to="/pitches/$pitchId"
-                  params={{ pitchId: p.id }}
-                  className="block rounded-[14px] border border-white/10 bg-white/[0.03] p-4 hover:border-[#FF6B2B]/50 transition-colors"
-                >
-                  <div className="font-['Syne'] font-bold text-white">{type?.label ?? p.client_type}</div>
-                  <div className="mt-0.5 text-xs text-white/50 font-['DM_Sans']">
-                    {ch?.label ?? p.channel} · v{p.version}
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <>
+            <Selector
+              label="¿Ya te compra?"
+              options={RELATIONSHIPS.filter((r) => pitches.some((p) => p.relationship === r.key))}
+              value={rel}
+              onChange={(v) => setRel(v as Relationship)}
+            />
+            <Selector
+              label="¿Qué hace con el producto?"
+              options={CLIENT_TYPES.filter((t) =>
+                pitches.some((p) => p.relationship === rel && p.client_type === t.key),
+              )}
+              value={use}
+              onChange={(v) => setUse(v as ClientType)}
+            />
+
+            <div className="mt-5 grid grid-cols-1 gap-3">
+              {(() => {
+                const matches = pitches.filter(
+                  (p) => p.relationship === rel && p.client_type === use,
+                );
+                if (matches.length === 0) {
+                  return (
+                    <div className="rounded-[14px] border border-dashed border-white/10 bg-white/[0.02] p-8 text-center text-sm text-white/60 font-['DM_Sans']">
+                      Tu líder todavía no publica un pitch para esta combinación.
+                    </div>
+                  );
+                }
+                return matches.map((p) => {
+                  const ch = CHANNELS.find((c) => c.key === p.channel);
+                  return (
+                    <Link
+                      key={p.id}
+                      to="/pitches/$pitchId"
+                      params={{ pitchId: p.id }}
+                      className="block rounded-[14px] border border-white/10 bg-white/[0.03] p-4 hover:border-[#FF6B2B]/50 transition-colors"
+                    >
+                      <div className="font-['Syne'] font-bold text-white">
+                        {RELATIONSHIPS.find((r) => r.key === p.relationship)?.label ?? p.relationship}
+                        {" · "}
+                        {CLIENT_TYPES.find((t) => t.key === p.client_type)?.label ?? p.client_type}
+                      </div>
+                      <div className="mt-0.5 text-xs text-white/50 font-['DM_Sans']">
+                        {ch?.label ?? p.channel} · v{p.version}
+                      </div>
+                    </Link>
+                  );
+                });
+              })()}
+            </div>
+          </>
         )}
       </div>
     </div>
