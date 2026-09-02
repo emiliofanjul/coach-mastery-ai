@@ -672,10 +672,47 @@ export function validatePitch(
     const suggestive = dText.match(/\?[^?¿\n]{0,20}¿[^?¿\n]{1,40}\?/g) ?? [];
     if (suggestive.length < 3) {
       fails.push(
-        `V25: el descubrimiento solo trae ${suggestive.length} preguntas con opciones sugeridas y se necesitan al menos 3. Después de cada pregunta abierta, sugiere opciones reales del brain: "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?" o "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"`,
+        `V25: el descubrimiento solo trae ${suggestive.length} preguntas con opciones sugeridas y se necesitan al menos 3. Después de cada pregunta abierta, sugiere opciones reales del brain: "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?". Si el brain no trae precios, NO sugieras rangos de precio: usa familias, presentaciones y frecuencias reales`,
       );
     }
   }
+
+  // 26. Las opciones sugeridas tienen que ser REALES del brain. Sugerir una
+  //     marca que la empresa no maneja, o un rango de precio inventado,
+  //     demuestra lo contrario de lo que buscaba el Suggestive Language.
+  if (desc && (!ctx.only || ctx.only === "descubrimiento")) {
+    const dText = String(desc.content ?? "");
+
+    // 26a. Marcas del sector sugeridas que el brain no menciona.
+    const MARCAS = [
+      "Castrol", "Pennzoil", "Mobil", "Shell", "Valvoline", "Quaker State",
+      "Chevron", "Total", "Roshfrans", "Akron", "LTH", "Gulf", "Motul",
+      "Liqui Moly", "Repsol", "Bardahl", "Mexlub",
+    ];
+    for (const marca of MARCAS) {
+      const enTexto = new RegExp(`\\b${marca.replace(/ /g, "\\s+")}\\b`, "i").test(dText);
+      if (enTexto && !brainLower.includes(marca.toLowerCase())) {
+        fails.push(
+          `V26: el descubrimiento sugiere la marca "${marca}" y el brain de la empresa no la menciona; sugiere solo marcas y líneas reales del brain, o deja la pregunta abierta y pide el dato en missing_data`,
+        );
+      }
+    }
+
+    // 26b. Rangos de precio numéricos cuando el brain no trae precios.
+    // El brain "trae precios" solo si hay CIFRAS, no si menciona el concepto.
+    const brainTraePrecios =
+      /\$\s*\d/.test(ctx.brain) ||
+      /\b\d{2,5}\s*(pesos|mxn)\b/i.test(ctx.brain) ||
+      /\b(precio|costo|lista)\b[^\n]{0,40}\d{2,5}/i.test(ctx.brain);
+    const rangoPrecio = dText.match(/(a cómo|precio|cuánto (te|le) cuesta|está comprando|compras)[^\n]{0,90}?¿\s*(en|a)?\s*\$?\s*\d{2,4}\s*\?/i);
+    if (!brainTraePrecios && rangoPrecio) {
+      fails.push(
+        `V26: el descubrimiento sugiere rangos de precio ("${rangoPrecio[0].slice(0, 60)}…") y el brain no trae precios; omite los números en esa pregunta y pide la lista de precios en missing_data`,
+      );
+    }
+  }
+
+
 
 
   // 20. Largo del content por sección. Un pitch que no se puede aprender no sirve.
@@ -1188,20 +1225,48 @@ Descubrimiento. Ejemplo de diferencia:
 }
 
 ${
+  spec.key === "presentacion"
+    ? `═══ LA PRESENTACIÓN NO ES EL CIERRE ═══
+La presentación NO enumera cantidades ni precios producto por producto. Eso
+pertenece al resumen del pedido, en el cierre. Aquí se presenta la ESTRUCTURA
+de la propuesta: qué resuelve, qué gana el cliente, y el precio en escalera.
+Si te encuentras listando SKUs con cifras, estás escribiendo el cierre en el
+lugar equivocado.`
+    : ""
+}
+
+${
   spec.key === "descubrimiento"
     ? `═══ SUGGESTIVE LANGUAGE (la S de FUJIES) — OBLIGATORIO AQUÍ ═══
 Después de preguntar, SUGIERE OPCIONES. Al menos 3 de las preguntas del banco
 llevan sus opciones sugeridas, tomadas de datos reales de LA EMPRESA (arriba).
 ✗ "¿Qué familias son las que más se te mueven?"
 ✓ "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?"
-✗ "¿A cómo compras el líquido de frenos?"
-✓ "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"
+✗ "¿Cada cuándo te surten?"
+✓ "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual?"
+(Las opciones de PRECIO con cifras solo si LA EMPRESA trae precios; si no, la
+pregunta de precio va sin números y el dato se pide en missing_data.)
 Por qué: o elige una opción, o te corrige con el dato real ("no, más bien 95"),
 y esa corrección es información que la pregunta abierta nunca saca.
+
+LAS OPCIONES TIENEN QUE SER REALES: solo familias, líneas, presentaciones y
+marcas que LA EMPRESA (arriba) realmente maneja. Sugerir algo que no maneja
+demuestra lo contrario de lo que buscabas. Si el brain NO trae los productos
+con precios, las opciones de precio NO se inventan: se omiten (la pregunta va
+sin rangos) y el dato se pide en missing_data.
+
+COHERENCIA CON EL TIPO DE CLIENTE (${String(pitch.client_type)}):
+· autoconsumo → qué usa, cada cuánto repone, cuántas unidades. NUNCA familias
+  que "vende" ni a quién le surte: este cliente consume, no revende.
+· distribuidor → qué líneas mueve, en qué zonas, a cuántos surte.
+· recurrente → qué familias maneja y con quién las compra hoy.
+Usa SOLO el enfoque del tipo de cliente de este pitch.
+
 PROHIBIDO el corchete de relleno: en vez de "[familia específica que maneja]",
 escribe la pregunta con opciones reales.`
     : ""
 }
+
 
 
 

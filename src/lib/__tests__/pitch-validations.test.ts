@@ -9,7 +9,12 @@ const BRAIN = [
   "DALFAN distribuye lubricantes y aditivos: anticongelantes, aceite de motor,",
   "línea diésel, línea moto, líquido de frenos. Presentaciones de 19 litros y",
   "cajas de 24. Cobertura en refaccionarias y talleres.",
+  "Precio de lista: cubeta de 19 litros $1,850; caja de 24 $1,200.",
 ].join(" ");
+
+// Brain SIN precios: para probar que V26 bloquea los rangos inventados.
+const BRAIN_SIN_PRECIOS = BRAIN.replace("Precio de lista: cubeta de 19 litros $1,850; caja de 24 $1,200.", "");
+
 
 const ctx = (over: Partial<Parameters<typeof validatePitch>[1]> = {}) => ({
   validSkillIds: new Set(["linea_recta", "sce", "mindset"]),
@@ -99,5 +104,80 @@ describe("validaciones de pitch sin modelo", () => {
       ctx({ only: "descubrimiento" }),
     );
     expect(fails.some((f) => f.startsWith("V3"))).toBe(true);
+  });
+});
+
+// ── Fixtures de fallas REALES en producción ──────────────────────────────
+// Estos outputs ya pasaron: son los mejores casos de prueba que existen.
+describe("fixtures de outputs reales que fallaron", () => {
+  it("V20: el descubrimiento de 5,573 caracteres (autoconsumo podrido)", () => {
+    const fails = validatePitch(
+      wrap(section({ content: "¿Anticongelantes? ¿Aceite? ".repeat(250) })),
+      ctx({ only: "descubrimiento" }),
+    );
+    expect(fails.some((f) => f.startsWith("V20"))).toBe(true);
+  });
+
+  it("V22: los talleres inventados de Insurgentes", () => {
+    const fails = validatePitch(
+      {
+        sections: [
+          {
+            step: 2,
+            section_key: "historia_breve",
+            section_kind: "guion",
+            content:
+              "Mire, en el taller Hermanos Pérez de avenida Insurgentes 420 subieron la rotación 30% desde que trabajan con nosotros.",
+            rationale_short: "Prueba social.",
+            rationale_long: "Efecto Jones con un caso concreto.",
+            skill_ids: ["linea_recta"],
+            alternatives: [],
+          },
+        ],
+      },
+      ctx(),
+    );
+    expect(fails.some((f) => f.startsWith("V22"))).toBe(true);
+  });
+
+  it("V26: marca sugerida que la empresa no maneja", () => {
+    const fails = validatePitch(
+      wrap(
+        section({
+          content:
+            section().content +
+            " ¿Qué marcas manejas? ¿Castrol? ¿Pennzoil? ¿Mobil?",
+        }),
+      ),
+      ctx({ only: "descubrimiento" }),
+    );
+    expect(fails.filter((f) => f.startsWith("V26")).length).toBeGreaterThan(0);
+  });
+
+  it("V26: rango de precio inventado cuando el brain no trae precios", () => {
+    const fails = validatePitch(
+      wrap(
+        section({
+          content:
+            "¿Qué familias se te mueven? ¿Anticongelantes? ¿Aceite de motor? " +
+            "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? " +
+            "¿Cada cuánto te ajustan? ¿Mensual? ¿Trimestral? " +
+            "¿A cómo compras el aceite multigrado? ¿70? ¿80? ¿90?",
+        }),
+      ),
+      ctx({ only: "descubrimiento", brain: BRAIN_SIN_PRECIOS }),
+    );
+    expect(fails.some((f) => f.startsWith("V26"))).toBe(true);
+  });
+
+  it("V26: no dispara con marcas que sí están en el brain", () => {
+    const fails = validatePitch(
+      wrap(section({ content: section().content + " ¿Trae Bardahl o Repsol?" })),
+      ctx({
+        only: "descubrimiento",
+        brain: BRAIN + " Distribuimos las marcas Repsol, Bardahl y Mexlub.",
+      }),
+    );
+    expect(fails.some((f) => f.startsWith("V26"))).toBe(false);
   });
 });
