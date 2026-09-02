@@ -1322,8 +1322,9 @@ b) LA EMPRESA no trae precios → las opciones NO se inventan, pero la pregunta
    ✓ "¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?"
    ✓ "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?"
    ✓ "¿Te avisan antes de subir o te enteras al pedir?"
-   Y declara en missing_data que faltan los precios de lista por presentación
-   para poder sugerir rangos.
+   Y en missing_data incluye OBLIGATORIAMENTE esta línea, tal cual:
+   "Precios de lista por presentación, para poder sugerir rangos en la pregunta de precio"
+   (sin ella la sección se rechaza).
 Al menos UNA pregunta del territorio precio lleva opciones sugeridas.
 
 ═══ NINGUNA PREGUNTA ASUME UN HECHO NO DECLARADO ═══
