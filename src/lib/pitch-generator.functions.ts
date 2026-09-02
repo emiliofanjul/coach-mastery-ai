@@ -50,3 +50,63 @@ export const generatePitchSection = createServerFn({ method: "POST" })
       dryRun: data.dryRun === true,
     });
   });
+
+/**
+ * Publica un pitch. Solo si es homogéneo: todas las secciones de la misma
+ * versión del generador y ninguna marcada como desactualizada.
+ */
+export const publishPitch = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { pitchId: string }) => {
+    if (!input?.pitchId) throw new Error("pitchId required");
+    return input;
+  })
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role, company_id")
+      .eq("id", userId)
+      .maybeSingle();
+    if (!profile || profile.role !== "manager" || !profile.company_id) {
+      return { ok: false as const, error: "forbidden", problems: ["No autorizado."] };
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { checkPitchIntegrity } = await import("@/lib/pitch-generator.server");
+
+    const { data: pitch } = await supabaseAdmin
+      .from("company_pitches")
+      .select("id, company_id, version")
+      .eq("id", data.pitchId)
+      .maybeSingle();
+    if (!pitch || pitch.company_id !== profile.company_id) {
+      return { ok: false as const, error: "not_found", problems: ["Pitch no encontrado."] };
+    }
+
+    const integrity = await checkPitchIntegrity(supabaseAdmin, data.pitchId);
+    if (!integrity.ok) {
+      return { ok: false as const, error: "inconsistent", problems: integrity.problems };
+    }
+
+    const { data: sections } = await supabaseAdmin
+      .from("pitch_sections")
+      .select("*")
+      .eq("pitch_id", data.pitchId)
+      .order("step");
+
+    const nextVersion = Number(pitch.version ?? 1);
+    await supabaseAdmin.from("pitch_versions").insert([
+      {
+        pitch_id: data.pitchId,
+        version: nextVersion,
+        snapshot: { sections, prompt_version: integrity.versions[0] } as any,
+        published_by: userId,
+      },
+    ] as any);
+    await supabaseAdmin
+      .from("company_pitches")
+      .update({ status: "published", published_at: new Date().toISOString() } as any)
+      .eq("id", data.pitchId);
+
+    return { ok: true as const, version: nextVersion, prompt_version: integrity.versions[0] };
+  });

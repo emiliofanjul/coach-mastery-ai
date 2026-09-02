@@ -1226,6 +1226,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pitch_feedback_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "pitch_version_integrity"
+            referencedColumns: ["pitch_id"]
+          },
+          {
             foreignKeyName: "pitch_feedback_section_id_fkey"
             columns: ["section_id"]
             isOneToOne: false
@@ -1241,13 +1248,16 @@ export type Database = {
           created_at: string
           edited_by_manager: boolean
           id: string
+          is_stale: boolean
           order_index: number
           pitch_id: string
+          prompt_version: string | null
           rationale_long: string | null
           rationale_short: string | null
           section_key: string
           section_kind: string
           skill_ids: string[]
+          stale_reason: string | null
           step: number
           warning: string | null
         }
@@ -1257,13 +1267,16 @@ export type Database = {
           created_at?: string
           edited_by_manager?: boolean
           id?: string
+          is_stale?: boolean
           order_index: number
           pitch_id: string
+          prompt_version?: string | null
           rationale_long?: string | null
           rationale_short?: string | null
           section_key: string
           section_kind?: string
           skill_ids?: string[]
+          stale_reason?: string | null
           step: number
           warning?: string | null
         }
@@ -1273,13 +1286,16 @@ export type Database = {
           created_at?: string
           edited_by_manager?: boolean
           id?: string
+          is_stale?: boolean
           order_index?: number
           pitch_id?: string
+          prompt_version?: string | null
           rationale_long?: string | null
           rationale_short?: string | null
           section_key?: string
           section_kind?: string
           skill_ids?: string[]
+          stale_reason?: string | null
           step?: number
           warning?: string | null
         }
@@ -1290,6 +1306,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "company_pitches"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pitch_sections_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "pitch_version_integrity"
+            referencedColumns: ["pitch_id"]
           },
         ]
       }
@@ -1325,6 +1348,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "company_pitches"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pitch_versions_pitch_id_fkey"
+            columns: ["pitch_id"]
+            isOneToOne: false
+            referencedRelation: "pitch_version_integrity"
+            referencedColumns: ["pitch_id"]
           },
           {
             foreignKeyName: "pitch_versions_published_by_fkey"
@@ -2080,7 +2110,29 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      pitch_version_integrity: {
+        Row: {
+          channel: string | null
+          client_type: string | null
+          company_id: string | null
+          pitch_id: string | null
+          sections: number | null
+          sections_desactualizadas: number | null
+          sections_sin_version: number | null
+          status: string | null
+          versiones: string[] | null
+          versiones_distintas: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_pitches_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       _company_prefix: { Args: { _name: string }; Returns: string }
