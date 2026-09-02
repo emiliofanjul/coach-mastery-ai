@@ -1,7 +1,7 @@
 // Modelo compartido del Pitch Builder (Fase 1).
 // Solo datos + helpers de lectura/escritura vía PostgREST.
 
-import { restGet, restMutate } from "@/lib/supabase-rest";
+import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 
 /** Eje 1 — RELACIÓN: ¿ya te compra? Define la estructura del pitch. */
 export type Relationship = "nuevo" | "recurrente";
