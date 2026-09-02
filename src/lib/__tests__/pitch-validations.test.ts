@@ -9,11 +9,11 @@ const BRAIN = [
   "DALFAN distribuye lubricantes y aditivos: anticongelantes, aceite de motor,",
   "línea diésel, línea moto, líquido de frenos. Presentaciones de 19 litros y",
   "cajas de 24. Cobertura en refaccionarias y talleres.",
-  "Lista de precios vigente por cubeta y por caja.",
+  "Precio de lista: cubeta de 19 litros $1,850; caja de 24 $1,200.",
 ].join(" ");
 
 // Brain SIN precios: para probar que V26 bloquea los rangos inventados.
-const BRAIN_SIN_PRECIOS = BRAIN.replace("Lista de precios vigente por cubeta y por caja.", "");
+const BRAIN_SIN_PRECIOS = BRAIN.replace("Precio de lista: cubeta de 19 litros $1,850; caja de 24 $1,200.", "");
 
 
 const ctx = (over: Partial<Parameters<typeof validatePitch>[1]> = {}) => ({
