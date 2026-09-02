@@ -41,6 +41,29 @@ function PitchesPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [pitches, setPitches] = useState<CompanyPitch[]>([]);
+  const [rel, setRel] = useState<Relationship>("nuevo");
+  const [use, setUse] = useState<ClientType>("revende");
+
+  // Persistencia de la última selección del vendedor.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as { rel?: Relationship; use?: ClientType };
+      if (saved.rel) setRel(saved.rel);
+      if (saved.use) setUse(saved.use);
+    } catch {
+      /* selección no crítica */
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ rel, use }));
+    } catch {
+      /* selección no crítica */
+    }
+  }, [rel, use]);
 
   useEffect(() => {
     let cancelled = false;
