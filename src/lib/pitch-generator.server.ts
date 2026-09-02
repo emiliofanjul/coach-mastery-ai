@@ -719,12 +719,13 @@ export function validatePitch(
     const dText = String(desc.content ?? "");
     const PRECIO_TERRITORIO =
       /(a c[óo]mo|precio|costo|c[óo]mo (?:est[áa]s? )?(?:compra|comprando)|te suben|aumento|ajustan|plazo|cr[ée]dito|contado|d[íi]as de pago|forma de pago)/i;
-    // Pares "pregunta? ¿opción? ¿opción?"
-    const conOpciones = [
-      ...dText.matchAll(/([^¿\n]{0,140}\?)((?:\s*¿[^?¿\n]{1,40}\?)+)/g),
-    ];
+    // Cada fragmento entre "¿" es una pregunta u opción; una pregunta "lleva
+    // opciones" si el fragmento siguiente es corto (una opción sugerida).
+    const frags = dText.split("¿").map((f) => f.trim()).filter(Boolean);
     const tocaPrecio = PRECIO_TERRITORIO.test(dText);
-    const precioConOpciones = conOpciones.some((m) => PRECIO_TERRITORIO.test(m[1] ?? ""));
+    const precioConOpciones = frags.some(
+      (f, i) => PRECIO_TERRITORIO.test(f) && (frags[i + 1]?.length ?? 999) <= 45,
+    );
     if (tocaPrecio && !precioConOpciones) {
       fails.push(
         `V27: el territorio PRECIO va sin Suggestive Language: las preguntas de precio están desnudas. Si el brain trae precios, sugiere los rangos con esas cifras; si no los trae, sugiere sobre otras dimensiones que sí conoces ("¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?", "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?") y declara en missing_data que faltan los precios de lista`,
