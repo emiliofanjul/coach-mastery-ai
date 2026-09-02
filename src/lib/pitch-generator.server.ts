@@ -943,7 +943,12 @@ async function markSectionStale(
   }
 }
 
-/** Un pitch es publicable solo si TODAS sus secciones son de la misma versión y ninguna está desactualizada. */
+/**
+ * Integridad de un pitch antes de publicar.
+ * - BLOQUEA solo lo que rompe el pitch: sin secciones o con alguna vacía.
+ * - ADVIERTE (sin bloquear) si hay secciones desactualizadas o de versión
+ *   distinta: el manager decide si publica así o regenera primero.
+ */
 export async function checkPitchIntegrity(admin: any, pitchId: string) {
   const { data } = await admin
     .from("pitch_sections")
@@ -955,18 +960,31 @@ export async function checkPitchIntegrity(admin: any, pitchId: string) {
   const stale = rows.filter((r) => r.is_stale).map((r) => r.section_key);
   const empty = rows.filter((r) => !r.content).map((r) => r.section_key);
   const problems: string[] = [];
+  const warnings: string[] = [];
   if (rows.length === 0) problems.push("El pitch no tiene secciones generadas.");
-  if (empty.length) problems.push(`Secciones vacías: ${empty.join(", ")}.`);
-  if (stale.length)
+  if (empty.length)
     problems.push(
-      `Secciones desactualizadas (su última regeneración falló): ${stale.join(", ")}. Regenéralas antes de publicar.`,
+      `Falta el contenido de: ${empty.join(", ")}. Un pitch sin un paso está roto: genéralo antes de publicar.`,
+    );
+  if (stale.length)
+    warnings.push(
+      `La sección ${stale.join(", ")} quedó de una versión anterior (su última regeneración falló). Puedes publicar así o regenerarla primero.`,
     );
   if (versions.length > 1)
-    problems.push(
-      `El pitch está mezclado: sus secciones vienen de versiones distintas del generador (${versions.join(", ")}). Regenera el pitch completo.`,
+    warnings.push(
+      `Este pitch mezcla versiones del generador (${versions.join(", ")}). Puedes publicar así o regenerar las secciones viejas.`,
     );
-  return { ok: problems.length === 0, problems, versions, stale, sections: rows.length };
+  return {
+    ok: problems.length === 0,
+    problems,
+    warnings,
+    versions,
+    stale,
+    empty,
+    sections: rows.length,
+  };
 }
+
 
 export type GeneratePitchResult =
   | { ok: true; generated: any; prompt_version: string; dry_run?: boolean }
