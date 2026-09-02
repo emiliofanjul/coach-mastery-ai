@@ -231,7 +231,7 @@ JSON con esta forma exacta:
       "content": "lo que el vendedor dice, con saltos de línea",
       "rationale_short": "UNA sola frase. Es lo primero que ve el manager al
                           abrir el desplegable, y tiene que dejarlo entender en
-                          tres segundos. Máximo 25 palabras.",
+                          tres segundos. Máximo 30 palabras.",
       "rationale_long": "el desarrollo completo, detrás de un 'leer más'.
                          Escrito para alguien que NO ha tomado el curso: explica
                          el mecanismo, no cites reglas.",
@@ -740,6 +740,43 @@ export function validatePitch(
     }
   }
 
+  // 26c. (extensión de V26 a TODAS las secciones) Ninguna sección puede escribir
+  //      una cifra de DINERO que el brain no traiga. Se bloquea solo dinero:
+  //      símbolo de moneda, pesos/mxn, número pegado a precio/costo/descuento/
+  //      ahorro/lista, o porcentaje aplicado a dinero. Plazos ("a 15 días"),
+  //      frecuencias, cantidades del pedido y tiempos PASAN.
+  {
+    const brainNums = new Set(
+      (ctx.brain.match(/\d[\d,.]*/g) ?? []).map((n) => n.replace(/[.,]/g, "")),
+    );
+    const MONEY_PATTERNS: RegExp[] = [
+      /\$\s?\d[\d,.]*/g,
+      /\b\d[\d,.]*\s*(?:pesos|mxn)\b/gi,
+      /\b(?:precio|costo|cuesta|lista|descuento|ahorro|ahorra|queda en|sale en|baja a)\b[^.\n]{0,25}?\b\d[\d,.]*\b/gi,
+      /\b\d{1,3}\s*%[^.\n]{0,25}\b(?:descuento|precio|ahorro|costo|margen)\b/gi,
+      /\b(?:descuento|ahorro|margen)\b[^.\n]{0,20}\d{1,3}\s*%/gi,
+    ];
+    for (const s of sections) {
+      if (ctx.only && s?.section_key !== ctx.only) continue;
+      const t = textOf(s);
+      const seen = new Set<string>();
+      for (const rx of MONEY_PATTERNS) {
+        for (const m of t.match(rx) ?? []) {
+          const nums = (m.match(/\d[\d,.]*/g) ?? []).map((n) => n.replace(/[.,]/g, ""));
+          for (const n of nums) {
+            if (n.length < 2) continue; // "3 cubetas", "2 días": no es cifra de precio
+            if (brainNums.has(n) || seen.has(n)) continue;
+            seen.add(n);
+            fails.push(
+              `V26: ${s?.section_key} escribe una cifra de dinero inventada ("${m.trim().slice(0, 50)}") y el brain de la empresa no trae ese número. No inventes precios, descuentos ni ahorros: escribe la ESTRUCTURA del desglose sin cifras ("le sale en el precio de lista; como recurrente le aplica el descuento por volumen; y de contado baja otro tanto") y pide los precios de lista en missing_data. Plazos, frecuencias y cantidades sí pueden llevar número`,
+            );
+          }
+        }
+      }
+    }
+  }
+
+
   // 27. El territorio PRECIO también necesita Suggestive Language. V26 prohíbe
   //     inventar CIFRAS, no prohíbe sugerir: si no hay precios en el brain, se
   //     sugiere sobre plazo, forma de pago o frecuencia de aumento.
@@ -932,12 +969,19 @@ export function validatePitch(
   //     la presentación; el resumen del pedido (qué y cuánto) va en el cierre.
   if (pres && (!ctx.only || ctx.only === "presentacion")) {
     const pText = String(pres.content ?? "");
+    const brainTraePreciosPres =
+      /\$\s*\d/.test(ctx.brain) ||
+      /\b\d{2,5}\s*(pesos|mxn)\b/i.test(ctx.brain) ||
+      /\b(precio|costo|lista)\b[^\n]{0,40}\d{2,5}/i.test(ctx.brain);
     const cifras = pText.match(/\$\s?\d[\d,.]*|\b\d{2,6}\s*(?:pesos|mxn)\b/gi) ?? [];
-    if (cifras.length >= 2) {
-      // Con cifras basta: el desglose está escrito.
+    // RUTA A — el brain trae precios: la escalera va con cifras reales.
+    if (brainTraePreciosPres && cifras.length >= 2) {
+      // Válido: V26 ya verificó que esas cifras existen en el brain.
     } else {
+      // RUTA B — sin precios en el brain: escalera con la ESTRUCTURA, sin cifras,
+      // y missing_data pidiendo los precios de lista.
       const estructura =
-        /(desglose|por (?:cubeta|litro|pieza|unidad|caja)|precio por|escalera|se desglosa|precio de lista|por volumen|por presentaci[óo]n)/i.test(
+        /(desglose|por (?:cubeta|litro|pieza|unidad|caja)|precio por|escalera|se desglosa|precio de lista|por volumen|por presentaci[óo]n|descuento por|de contado|pronto pago)/i.test(
           pText,
         );
       const md = [
@@ -947,11 +991,12 @@ export function validatePitch(
       const pidePrecios = /(precio|lista de precios|tarifa)/i.test(md);
       if (!estructura || !pidePrecios) {
         fails.push(
-          "V28: la presentación no trae el triple desglose de precio. Debe llevar al menos dos cifras con su motivo nombrado (qué justifica cada una). Si el brain no trae precios, escribe la ESTRUCTURA del desglose sin cifras y pide los precios de lista en missing_data — el paso nunca se omite",
+          "V28: la presentación no trae el triple desglose de precio. Con precios en el brain: escalera con al menos dos cifras REALES, cada una con su motivo nombrado. Sin precios en el brain: escribe la escalera como ESTRUCTURA sin cifras (\"le sale en el precio de lista; como cliente recurrente le aplica el descuento por volumen; y de contado baja otro tanto\") y pide los precios de lista en missing_data — el paso nunca se omite y las cifras nunca se inventan",
         );
       }
     }
   }
+
 
   // 24. La pregunta de introducción abre conversación; producto/proveedor/necesidad
   // pertenecen al descubrimiento.
@@ -973,7 +1018,7 @@ export function validatePitch(
     const short = String(s?.rationale_short ?? "").trim();
     const long = String(s?.rationale_long ?? "").trim();
     if (!short) fails.push(`V12: falta rationale_short en ${s?.section_key}`);
-    else if (words(short) > 25)
+    else if (words(short) > 30)
       fails.push(`V11: rationale_short de ${words(short)} palabras en ${s?.section_key}`);
     if (!long) fails.push(`V12: falta rationale_long en ${s?.section_key}`);
   }
@@ -1385,14 +1430,28 @@ PRIMERA MITAD — lo que vas a hacer por él: conectas con el dolor que encontra
 y explicas cómo lo resuelves. Todavía sin producto.
 SEGUNDA MITAD — resumen breve del producto + EL TRIPLE DESGLOSE DE PRECIOS.
 
-EL PRECIO SÍ VA AQUÍ. Es obligatorio y no se pospone: al menos dos cifras, cada
-una con su motivo nombrado (qué la justifica: volumen, presentación, plazo,
-línea). Eso es el triple desglose.
-· Si LA EMPRESA (arriba) trae precios: úsalos tal cual, con su motivo.
-· Si NO los trae: escribe la ESTRUCTURA del desglose sin cifras ("el precio se
-  desglosa por presentación, por volumen y por plazo de pago") y agrega a
-  missing_data la petición de los precios de lista por presentación. El paso
-  NUNCA se omite.
+EL PRECIO SÍ VA AQUÍ. Es obligatorio y no se pospone: el desglose en escalera,
+cada escalón con su motivo nombrado (qué lo justifica: volumen, presentación,
+plazo, línea). Dos rutas, y solo dos:
+· Si LA EMPRESA (arriba) trae precios: úsalos TAL CUAL, al menos dos cifras
+  reales, cada una con su motivo.
+· Si NO los trae: escribe la escalera como ESTRUCTURA, SIN CIFRAS ("normalmente
+  le sale en el precio de lista; como es cliente recurrente le aplica el
+  descuento por volumen; y de contado baja otro tanto") y agrega a missing_data
+  la petición de los precios de lista por presentación. El paso NUNCA se omite.
+PROHIBIDO INVENTAR CIFRAS DE DINERO en cualquier sección: precios, descuentos,
+porcentajes o ahorros que no estén en LA EMPRESA. El vendedor conoce sus precios
+y los pone; lo que no puede es leer números que tú inventaste. Plazos ("a 15
+días"), frecuencias ("cada mes") y cantidades del pedido sí llevan número.
+
+CERO CORCHETES, tampoco de instrucción al vendedor. Nada de
+"[usa sus palabras]", "[el dolor que encontró]", "[marca]". Para retomar el
+dolor escribe una frase genérica pero DECIBLE tal cual: "eso que me decía de
+quedarse sin producto cuando le entra movimiento". Si te falta el dato, la
+frase se dice igual y el faltante va en missing_data.
+
+CABE EN 850 CARACTERES: dos mitades cortas. Si la escalera de precio te empuja
+al límite, recorta la primera mitad — el desglose no se sacrifica.
 
 LO QUE NO VA AQUÍ: el resumen del pedido, o sea la lista de qué y cuánto lleva
 (SKUs con cantidades). Eso pertenece al cierre. Precio ≠ resumen del pedido.`
@@ -1554,7 +1613,7 @@ WHY: por qué va en esta posición
 el texto de la alternativa, en texto plano
 ---END-ALT-1---
 ---META---
-{ "rationale_short": "UNA frase de 25 palabras o menos — cuéntalas antes de escribirla",
+{ "rationale_short": "UNA frase de 30 palabras o menos — cuéntalas antes de escribirla",
   "rationale_long": "el desarrollo completo",
   "skill_ids": ["..."],
   "warning": null,
@@ -1587,7 +1646,7 @@ Reglas del formato:
         ? variable
         : `${variable}\n\n═══ REINTENTO ═══\nEl intento anterior falló estas validaciones. Corrígelas todas SIN romper ninguna otra regla:\n${fails
             .map((f) => `- ${f}`)
-            .join("\n")}\n\nRECORDATORIO INVIOLABLE al corregir: CERO corchetes de relleno en el contenido y en las alternativas ("[producto]", "[marca]", "[otra marca]", "[otro proveedor]", "[número]", "[precio]", "[X]"...). Si no tienes el dato, escribe la frase de forma genérica pero decible y declara el faltante en missing_data. Y rationale_short: 25 palabras o menos, cuéntalas.`;
+            .join("\n")}\n\nRECORDATORIO INVIOLABLE al corregir: CERO corchetes de relleno en el contenido y en las alternativas ("[producto]", "[marca]", "[otra marca]", "[otro proveedor]", "[número]", "[precio]", "[X]"...). Si no tienes el dato, escribe la frase de forma genérica pero decible y declara el faltante en missing_data. Y rationale_short: 30 palabras o menos, cuéntalas.`;
     const prompt: PitchPromptBlock[] = [cachedBase, { type: "text", text: tail }];
     let raw = "";
     const t0 = Date.now();

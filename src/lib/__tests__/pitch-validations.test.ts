@@ -402,3 +402,77 @@ describe("dos ejes: relación y uso", () => {
     expect(fails.some((f) => f.startsWith("V4"))).toBe(true);
   });
 });
+
+// ── V26 extendida a todas las secciones: dinero inventado ──
+describe("V26 en todas las secciones (cifras de dinero sin sustento)", () => {
+  const pres4 = (content: string) => ({
+    step: 4,
+    section_key: "presentacion",
+    section_kind: "guion",
+    content,
+    rationale_short: "Conecta el dolor con la solución y pone el precio en escalera con su motivo.",
+    rationale_long:
+      "La presentación resuelve el dolor encontrado y aterriza el precio en su desglose para que la cifra llegue con motivo y no sola.",
+    skill_ids: ["linea_recta"],
+    alternatives: [{ rank: 1, content: "Te lo dejo en cubeta y baja el costo por litro.", skill_ids: [] }],
+  });
+
+  it("rechaza la presentación con cifras de precio que NO están en el brain", () => {
+    const fails = validatePitch(
+      wrap(
+        pres4(
+          "El precio de lista son $850 por cubeta. Como es cliente recurrente le queda en $780, " +
+            "y de contado cierra en $720: son $130 de ahorro por cubeta.",
+        ),
+      ),
+      ctx({ only: "presentacion", brain: BRAIN_SIN_PRECIOS }),
+    );
+    expect(fails.some((f) => f.startsWith("V26"))).toBe(true);
+  });
+
+  it("acepta cifras de precio que sí están en el brain", () => {
+    const fails = validatePitch(
+      wrap(
+        pres4(
+          "La cubeta de 19 litros te sale en $1,850 porque el costo por litro baja con el volumen, " +
+            "y la caja de 24 en $1,200 porque ahí entras a precio de lista.",
+        ),
+      ),
+      ctx({ only: "presentacion" }),
+    );
+    expect(fails.filter((f) => f.startsWith("V26"))).toEqual([]);
+    expect(fails.filter((f) => f.startsWith("V28"))).toEqual([]);
+  });
+
+  it("no bloquea plazos, frecuencias ni cantidades", () => {
+    const fails = validatePitch(
+      wrap(
+        pres4(
+          "Le sale en el precio de lista; como es cliente recurrente le aplica el descuento por " +
+            "volumen; y de contado baja otro tanto. Le surtimos cada 15 días y le entregamos en 24 horas.",
+        ),
+      ),
+      ctx({
+        only: "presentacion",
+        brain: BRAIN_SIN_PRECIOS,
+        missingData: ["Precios de lista por presentación"],
+      }),
+    );
+    expect(fails.filter((f) => f.startsWith("V26"))).toEqual([]);
+    expect(fails.filter((f) => f.startsWith("V28"))).toEqual([]);
+  });
+
+  it("V11 acepta rationale_short de hasta 30 palabras", () => {
+    const short = Array.from({ length: 30 }, (_, i) => `palabra${i + 1}`).join(" ");
+    const fails = validatePitch(
+      wrap(pres4("Le sale en el precio de lista; de contado baja otro tanto.")),
+      ctx({ only: "presentacion", brain: BRAIN_SIN_PRECIOS, missingData: ["precios de lista"] }),
+    );
+    expect(fails.filter((f) => f.startsWith("V11"))).toEqual([]);
+    const fails31 = validatePitch(
+      wrap({ ...pres4("Le sale en el precio de lista; de contado baja otro tanto."), rationale_short: short + " extra" }),
+      ctx({ only: "presentacion", brain: BRAIN_SIN_PRECIOS, missingData: ["precios de lista"] }),
+    );
+    expect(fails31.some((f) => f.startsWith("V11"))).toBe(true);
+  });
+});
