@@ -637,18 +637,18 @@ export function validatePitch(
   }
 
 
-  // 17. Ningún corchete de relleno en las secciones de GUION (content ni alternatives).
-  //     Las secciones 'municion' quedan exceptuadas: un banco de preguntas puede
-  //     usar plantillas. Escape igual que V10: sin el marcador + missing_data.
+  // 17. Ningún corchete de relleno en NINGUNA sección (content ni alternatives).
+  //     Antes las secciones 'municion' estaban exceptuadas; ya no: el fix real
+  //     es Suggestive Language (V25), no dejar huecos por llenar.
   const BRACKET = /\[[^\]\n]{0,120}\]/;
-  for (const s of guionSections) {
+  for (const s of sections) {
     const key = String(s?.section_key ?? "");
 
     const cText = String(s?.content ?? "");
     if (BRACKET.test(cText)) {
       const m = cText.match(BRACKET)?.[0] ?? "";
       fails.push(
-        `V17: corchete de relleno en el contenido de ${key} ("${m}"); escríbelo sin el marcador y declara el dato faltante en missing_data`,
+        `V17: corchete de relleno en el contenido de ${key} ("${m}"); si es una pregunta, sugiere opciones reales del brain (Suggestive Language) en vez del hueco, y declara el dato faltante en missing_data`,
       );
     }
     const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
@@ -662,6 +662,21 @@ export function validatePitch(
       }
     }
   }
+
+  // 25. Suggestive Language (la S de FUJIES) en el descubrimiento: después de
+  //     preguntar, sugerir opciones. "¿Qué familias se te mueven?
+  //     ¿Anticongelantes? ¿Aceite de motor?" — o eligen, o te corrigen con el dato.
+  const desc = byKey("descubrimiento");
+  if (desc && (!ctx.only || ctx.only === "descubrimiento")) {
+    const dText = String(desc.content ?? "");
+    const suggestive = dText.match(/\?[^?¿\n]{0,20}¿[^?¿\n]{1,40}\?/g) ?? [];
+    if (suggestive.length < 3) {
+      fails.push(
+        `V25: el descubrimiento solo trae ${suggestive.length} preguntas con opciones sugeridas y se necesitan al menos 3. Después de cada pregunta abierta, sugiere opciones reales del brain: "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?" o "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"`,
+      );
+    }
+  }
+
 
   // 20. Largo del content por sección. Un pitch que no se puede aprender no sirve.
   //     Aplica a TODAS las secciones (munición incluida).
