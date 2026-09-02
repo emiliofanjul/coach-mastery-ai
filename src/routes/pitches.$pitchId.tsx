@@ -57,7 +57,7 @@ function PitchDetailPage() {
     };
   }, [pitchId]);
 
-  const type = CLIENT_TYPES.find((t) => t.key === pitch?.client_type);
+  const type = pitch ? { label: pitchLabel(pitch) } : null;
   const ch = CHANNELS.find((c) => c.key === pitch?.channel);
 
   return (
