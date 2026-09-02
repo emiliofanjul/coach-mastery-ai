@@ -44,6 +44,12 @@ export function PitchesSection({
   const [progress, setProgress] = useState<{ done: number; label: string } | null>(null);
   const [regenPitchId, setRegenPitchId] = useState<string | null>(null);
   const [regenStep, setRegenStep] = useState<number | null>(null);
+  const [publishWarning, setPublishWarning] = useState<{
+    pitchId: string;
+    warnings: string[];
+    stale: string[];
+  } | null>(null);
+
 
   async function refreshSections(pitchId: string) {
     const rows = await fetchPitchSections(pitchId);
