@@ -699,9 +699,11 @@ export function validatePitch(
     }
 
     // 26b. Rangos de precio numéricos cuando el brain no trae precios.
+    // El brain "trae precios" solo si hay CIFRAS, no si menciona el concepto.
     const brainTraePrecios =
       /\$\s*\d/.test(ctx.brain) ||
-      /\b(precio de lista|lista de precios|costo por (litro|cubeta)|precio por (litro|cubeta))\b/i.test(ctx.brain);
+      /\b\d{2,5}\s*(pesos|mxn)\b/i.test(ctx.brain) ||
+      /\b(precio|costo|lista)\b[^\n]{0,40}\d{2,5}/i.test(ctx.brain);
     const rangoPrecio = dText.match(/(a cómo|precio|cuánto (te|le) cuesta|está comprando|compras)[^\n]{0,90}?¿\s*(en|a)?\s*\$?\s*\d{2,4}\s*\?/i);
     if (!brainTraePrecios && rangoPrecio) {
       fails.push(
