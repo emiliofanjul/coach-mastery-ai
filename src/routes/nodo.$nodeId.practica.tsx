@@ -3095,6 +3095,8 @@ function FeedbackPhase({
   evaluation,
   companyId,
   sellerId,
+  evalError,
+  onRetryEvaluation,
 }: {
   onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
@@ -3106,15 +3108,39 @@ function FeedbackPhase({
   evaluation: any;
   companyId?: string | null;
   sellerId?: string | null;
+  evalError?: string | null;
+  onRetryEvaluation?: () => void;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
+  const [slowNotice, setSlowNotice] = useState(false);
 
   useEffect(() => {
     if (feedback !== null) {
       setStep("result");
     }
   }, [feedback]);
+
+  // Salida por error: si el evaluador falla o se pasa del timeout.
+  useEffect(() => {
+    if (evalError) setStep("eval_error");
+  }, [evalError]);
+
+  // Reintento: volvemos a la animación.
+  useEffect(() => {
+    if (!evalError && feedback === null && step === "eval_error") setStep("analyzing");
+  }, [evalError, feedback, step]);
+
+  // "Esto está tardando más de lo normal" a los 25s.
+  useEffect(() => {
+    if (step !== "analyzing") {
+      setSlowNotice(false);
+      return;
+    }
+    setSlowNotice(false);
+    const t = setTimeout(() => setSlowNotice(true), 25_000);
+    return () => clearTimeout(t);
+  }, [step]);
 
   useEffect(() => {
     if (step !== "analyzing") return;
@@ -3123,6 +3149,7 @@ function FeedbackPhase({
     }, 2000);
     return () => clearInterval(i);
   }, [step]);
+
 
   const score = feedback?.score ?? 0;
   const stars: 1 | 2 | 3 = feedback?.stars ?? 1;
