@@ -4,7 +4,17 @@ import { FileText } from "lucide-react";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGetMaybeSingle } from "@/lib/supabase-rest";
-import { CLIENT_TYPES, CHANNELS, fetchPublishedPitches, type CompanyPitch } from "@/lib/pitches";
+import {
+  CLIENT_TYPES,
+  RELATIONSHIPS,
+  CHANNELS,
+  fetchPublishedPitches,
+  type ClientType,
+  type CompanyPitch,
+  type Relationship,
+} from "@/lib/pitches";
+
+const STORAGE_KEY = "closer:pitch-selection";
 
 export const Route = createFileRoute("/pitches/")({
   head: () => ({
