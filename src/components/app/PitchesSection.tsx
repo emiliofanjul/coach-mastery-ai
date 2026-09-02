@@ -386,6 +386,9 @@ export function PitchesSection({
 
             );
           })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </section>
