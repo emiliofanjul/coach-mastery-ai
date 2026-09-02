@@ -247,7 +247,7 @@ export function PitchesSection({
                     {CHANNELS.map((c) => (
                       <button
                         key={c.key}
-                        onClick={() => setChannel((prev) => ({ ...prev, [t.key]: c.key }))}
+                        onClick={() => setChannel((prev) => ({ ...prev, [key]: c.key }))}
                         className={[
                           "rounded-[99px] px-3 py-1.5 text-xs font-['DM_Sans'] border transition-colors",
                           ch === c.key
