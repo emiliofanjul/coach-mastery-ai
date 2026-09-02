@@ -119,7 +119,7 @@ function PitchesPage() {
                 pitches.some((p) => p.relationship === rel && p.client_type === t.key),
               )}
               value={use}
-              onChange={(v) => setUse(v as ClientType)}
+              onChange={(v: string) => setUse(v as ClientType)}
             />
 
             <div className="mt-5 grid grid-cols-1 gap-3">
