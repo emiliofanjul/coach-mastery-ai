@@ -10,7 +10,7 @@ import {
 
 
 
-export const PITCH_PROMPT_VERSION = "pitch-v2.2.0-cerebro-v21-esqueleto";
+export const PITCH_PROMPT_VERSION = "pitch-v2.3.0-cerebro-v24-veracidad-contexto";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
 
@@ -58,6 +58,31 @@ export function buildPitchPrompt(args: {
   clientType: string;
   channel: string;
 }): string {
+  const clientRule =
+    args.clientType === "nuevo"
+      ? `NUEVO — el vendedor es un desconocido. Aplica la doctrina completa de
+adquisición: ganarse la entrada, historia breve, encontrar el DOLOR y presentar
+la solución. No existe pedido base, relación ni conversación anterior.`
+      : args.clientType === "recurrente"
+        ? `RECURRENTE — el cliente ya compra y está contento. Aplica desarrollo de cuenta:
+· El motivo declarado NO es levantar el pedido, es dar seguimiento.
+· El descubrimiento tiene DOS MITADES: hacia adentro y hacia el HUECO lateral.
+· La presentación no ataca al proveedor actual; vende consolidación.
+· El cierre es del INCREMENTO, no reabre el pedido base.`
+        : args.clientType === "autoconsumo"
+          ? `AUTOCONSUMO — el cliente usa el producto, no lo revende. NUNCA preguntes
+qué vende ni qué se le mueve. Pregunta qué usa, cuántas unidades maneja, cada
+cuánto repone y cuánto le dura.`
+          : `DISTRIBUIDOR — pregunta por sus líneas, a cuántos surte y qué zona cubre.`;
+  const channelRule =
+    args.channel === "telefono"
+      ? `TELÉFONO — no puedes ver el lugar. Sustituye observaciones visuales por
+una apertura conversacional breve. Frases cortas.`
+      : args.channel === "whatsapp"
+        ? `WHATSAPP — mensajes cortos, uno por idea. Sin párrafos largos. El cierre
+debe poder contestarse con una palabra.`
+        : `PRESENCIAL — puedes observar el lugar. El ice breaker parte de algo real
+y visible, nunca de un detalle inventado.`;
   return `Eres Closer, el sistema de entrenamiento de ventas. Vas a escribir el pitch
 de esta empresa para un tipo de cliente específico.
 
@@ -149,44 +174,24 @@ Canal: ${args.channel}
      cantidades típicas maneja un cliente ${args.clientType}? Con eso el
      cierre puede enumerar el pedido en lugar de dejarlo en genérico."
 
+10. NUNCA INVENTES CLIENTES, UBICACIONES NI CASOS DE ÉXITO. Si el brain no
+    trae casos reales verificables, usa el Efecto Jones solo en genérico
+    ("varios negocios como el suyo") o pide los casos en missing_data. No
+    inventes calles, colonias, referencias como "el de la esquina", ni una
+    cantidad de clientes. Un caso inventado se descubre en la primera visita
+    y destruye la relación.
 
-═══ REGLAS POR TIPO DE CLIENTE ═══
+11. LA INTRODUCCIÓN ROMPE EL HIELO; NO DIAGNOSTICA. Incluye saludo con energía,
+    observación real e ICE BREAKER ligero y genuino. La pregunta abre
+    CONVERSACIÓN. Preguntar por productos, volúmenes, proveedores, rotación o
+    necesidades pertenece al Descubrimiento y aquí salta un paso completo.
 
-NUEVO — el vendedor es un desconocido. Aplica la doctrina completa de
-adquisición: ganarse la entrada, historia breve, encontrar el DOLOR,
-presentar la solución.
 
-RECURRENTE — el cliente ya compra y está contento. Aplica la doctrina de
-desarrollo de cuenta:
-  · El motivo declarado de la visita NO es levantar el pedido, es dar
-    seguimiento. Al que solo toma pedidos lo reemplaza un WhatsApp.
-  · El descubrimiento tiene DOS MITADES: hacia adentro (cómo va lo que ya
-    le vendes) y hacia los lados (el HUECO — familias que compra con otro
-    o que no compra con nadie).
-  · Si la empresa tiene más de una familia de producto, la mitad lateral es
-    obligatoria, con las tres herramientas: lee el lugar, pregunta por lo
-    que le piden, ancla en negocios similares.
-  · La presentación del hueco NO ataca al proveedor actual. Vende
-    CONSOLIDACIÓN: menos proveedores que seguir, todo en una entrega.
-  · El cierre es del INCREMENTO, no del pedido base. El pedido base ya iba
-    a existir; no lo reabras.
+═══ REGLA DEL TIPO DE CLIENTE ACTUAL (solo esta aplica) ═══
+${clientRule}
 
-AUTOCONSUMO — el cliente usa el producto, no lo revende. NUNCA preguntes
-qué vende ni qué se le mueve: no vende nada. Pregunta qué USA, cuántas
-unidades maneja, cada cuánto repone, cuánto le dura.
-
-DISTRIBUIDOR — pregunta por sus líneas, a cuántos surte, qué zona cubre.
-
-═══ REGLAS POR CANAL ═══
-
-PRESENCIAL — todo aplica. En descubrimiento lateral, "lee el lugar" es la
-herramienta principal.
-
-TELÉFONO — no puedes ver el lugar, así que "lee el lugar" se sustituye por
-preguntar el catálogo. Frases más cortas. Sin referencias visuales.
-
-WHATSAPP — mensajes cortos, uno por idea. Sin párrafos largos. El cierre
-tiene que ser contestable con una palabra.
+═══ REGLA DEL CANAL ACTUAL (solo esta aplica) ═══
+${channelRule}
 
 ═══ FORMATO DE SALIDA ═══
 
@@ -691,6 +696,72 @@ export function validatePitch(
     }
   }
 
+  // 22. Prueba social y ubicaciones específicas deben existir literalmente en el brain.
+  // El Efecto Jones genérico sí está permitido; los hechos concretos, no.
+  const normalize = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  const normalizedBrain = normalize(ctx.brain);
+  const SPECIFIC_SOCIAL = [
+    /\b(?:calle|avenida|av\.|colonia|esquina|insurgentes|carretera)\s+(?:de\s+|del\s+|la\s+)?([\p{L}\d][\p{L}\d .'-]{2,45})/giu,
+    /\bel\s+(?:taller|negocio|cliente|local|que)\s+(?:de|en|sobre|por)\s+(?:la\s+|el\s+)?([\p{L}\d][\p{L}\d .'-]{2,45})/giu,
+    /\b(?:como\s+)?(\d+|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)\s+(?:clientes|talleres|negocios|refaccionarias|locales)\b/giu,
+  ];
+  for (const s of sections) {
+    const t = textOf(s);
+    for (const rx of SPECIFIC_SOCIAL) {
+      for (const match of t.matchAll(rx)) {
+        const claim = String(match[0] ?? "").trim();
+        if (claim && !normalizedBrain.includes(normalize(claim))) {
+          fails.push(
+            `V22: referencia específica no sustentada por el brain en ${s?.section_key} ("${claim}"); usa Efecto Jones genérico o pide el caso real en missing_data`,
+          );
+        }
+      }
+    }
+  }
+
+  // 23. Un cliente nuevo no tiene pedido, relación ni conversación previos.
+  if (ctx.clientType === "nuevo") {
+    const PREVIOUS_INTERACTION = [
+      /\blo de siempre\b/i,
+      /\bcomo siempre\b/i,
+      /\bla vez pasada\b/i,
+      /\b(?:lo|eso|esto) que (?:me|nos) coment[oó]\b/i,
+      /\b(?:me|nos) dijo (?:antes|la otra vez)\b/i,
+      /\b(?:su|tu) pedido (?:base|habitual|de siempre)\b/i,
+      /\bherramientas para cuenta recurrente\b/i,
+    ];
+    for (const s of sections) {
+      const t = textOf(s);
+      for (const rx of PREVIOUS_INTERACTION) {
+        const m = t.match(rx);
+        if (m) {
+          fails.push(
+            `V23: ${s?.section_key} trata al cliente nuevo como recurrente ("${m[0]}"); no existe interacción ni pedido anterior`,
+          );
+          break;
+        }
+      }
+    }
+  }
+
+  // 24. La pregunta de introducción abre conversación; producto/proveedor/necesidad
+  // pertenecen al descubrimiento.
+  const intro = byKey("introduccion");
+  if (intro) {
+    const introText = textOf(intro);
+    const DIAGNOSTIC_OPENING = /[¿?][^¿?]*(?:producto|aceite|viscosidad|marca|proveedor|volumen|cantidad|necesita|hace falta|se (?:mueve|vende)|le (?:llega|piden)|comprando|surtido)[^¿?]*\?/i;
+    const m = introText.match(DIAGNOSTIC_OPENING);
+    if (m) {
+      fails.push(
+        `V24: la introducción diagnostica antes de romper el hielo ("${m[0].trim()}"); abre conversación con calidez, no preguntes por negocio, producto o necesidad`,
+      );
+    }
+  }
+
 
   // 11 y 12. rationale_short / rationale_long
   for (const s of sections) {
@@ -1022,6 +1093,23 @@ ${
 }
 Alternativas: máximo ${MAX_ALTS}, cada una de máximo ${MAX_ALT_CHARS} caracteres.
 Los rationale NO cuentan para este límite: ahí sí desarrolla.
+
+${
+  spec.key === "introduccion"
+    ? `═══ INTRODUCCIÓN: ROMPE EL HIELO, NO DIAGNOSTIQUES ═══
+Incluye saludo con energía + observación real + ice breaker ligero. La pregunta
+abre CONVERSACIÓN y baja la guardia. No preguntes aquí por productos, marcas,
+vehículos, volúmenes, proveedores, rotación ni necesidades: eso pertenece al
+Descubrimiento. Ejemplo de diferencia:
+✗ "¿Qué tipo de vehículos les están llegando?"
+✓ "¿Siempre está así de movido o hoy le tocó?"`
+    : ""
+}
+
+═══ VERACIDAD Y CONTEXTO ═══
+NUNCA inventes clientes, ubicaciones ni casos de éxito. Si el brain no trae
+casos reales, usa el Efecto Jones en genérico o pide el dato en missing_data.
+${String(pitch.client_type) === "nuevo" ? 'Este cliente es NUEVO: no existe "lo de siempre", conversación previa, pedido base ni dato que ya te comentó.' : ""}
 
 ${prevBlock}
 
