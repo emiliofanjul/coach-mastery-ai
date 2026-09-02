@@ -1,0 +1,2 @@
+ALTER TABLE public.pitch_feedback DROP CONSTRAINT IF EXISTS pitch_feedback_outcome_check;
+ALTER TABLE public.pitch_feedback ADD CONSTRAINT pitch_feedback_outcome_check CHECK (outcome IS NULL OR outcome IN ('aceptado','rechazado','forzado_por_manager','en_conversacion','aplicado','aplicado_por_el_equipo','sin_cambio'));
