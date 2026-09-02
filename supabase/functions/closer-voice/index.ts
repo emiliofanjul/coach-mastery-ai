@@ -662,8 +662,10 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: CLAUDE_MODEL,
         // evaluate devuelve analisis_turnos (un bloque por turno): con 1024
-        // se truncaba el JSON en prácticas largas.
-        max_tokens: phase === "evaluate" ? 4096 : 1024,
+        // se truncaba el JSON en prácticas largas, y 4096 seguía quedando corto
+        // en prácticas de 12 turnos (nodo 3.6) → JSON truncado → parseo fallido.
+        max_tokens: phase === "evaluate" ? 8192 : 1024,
+
         system,
         messages,
       }),
