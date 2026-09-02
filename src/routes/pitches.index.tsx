@@ -111,7 +111,7 @@ function PitchesPage() {
               label="¿Ya te compra?"
               options={RELATIONSHIPS.filter((r) => pitches.some((p) => p.relationship === r.key))}
               value={rel}
-              onChange={(v) => setRel(v as Relationship)}
+              onChange={(v: string) => setRel(v as Relationship)}
             />
             <Selector
               label="¿Qué hace con el producto?"
