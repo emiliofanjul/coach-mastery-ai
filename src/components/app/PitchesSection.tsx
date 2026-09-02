@@ -3,7 +3,7 @@ import { FileText, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
-import { generatePitchSection } from "@/lib/pitch-generator.functions";
+import { generatePitchSection, publishPitch } from "@/lib/pitch-generator.functions";
 import { PitchViewer } from "@/components/pitch/PitchViewer";
 import {
   CHANNELS,
@@ -27,6 +27,8 @@ export function PitchesSection({
   userId: string;
 }) {
   const runGenerateSection = useServerFn(generatePitchSection);
+  const runPublish = useServerFn(publishPitch);
+  const [publishing, setPublishing] = useState<string | null>(null);
   const [pitches, setPitches] = useState<CompanyPitch[]>([]);
   const [loading, setLoading] = useState(true);
   const [channel, setChannel] = useState<Record<ClientType, Channel>>({
@@ -69,6 +71,23 @@ export function PitchesSection({
     }
   }
 
+
+  async function handlePublish(pitchId: string) {
+    setPublishing(pitchId);
+    try {
+      const res: any = await runPublish({ data: { pitchId } });
+      if (!res?.ok) {
+        toast.error(res?.problems?.join(" · ") ?? "No se pudo publicar el pitch.");
+        return;
+      }
+      setPitches(await fetchCompanyPitches(companyId));
+      toast.success("Pitch publicado. Tu equipo ya lo ve.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo publicar el pitch.");
+    } finally {
+      setPublishing(null);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -235,6 +254,19 @@ export function PitchesSection({
                             ? "Regenerar con Closer"
                             : "Generar con Closer"}
                       </Button>
+                      {(sections[pitch.id]?.length ?? 0) > 0 && (
+                        <Button
+                          onClick={() => handlePublish(pitch.id)}
+                          disabled={publishing !== null || generating !== null}
+                          variant="outline"
+                          className="rounded-[99px] border-white/15 text-white font-['Syne'] font-bold disabled:opacity-60"
+                        >
+                          {publishing === pitch.id ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : null}
+                          {pitch.status === "published" ? "Republicar" : "Publicar"}
+                        </Button>
+                      )}
                     </>
                   ) : (
                     <Button

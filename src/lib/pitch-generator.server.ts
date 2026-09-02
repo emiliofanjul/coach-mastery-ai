@@ -906,9 +906,57 @@ async function callClaude(
 }
 
 
+/**
+ * Marca una sección como DESACTUALIZADA cuando su regeneración falla.
+ * Nunca borra el texto viejo (el manager lo sigue viendo), pero deja el
+ * pitch en estado mezclado explícito: la UI lo muestra y no deja publicar.
+ */
+async function markSectionStale(
+  admin: any,
+  pitchId: string,
+  step: number,
+  reason: string,
+): Promise<void> {
+  try {
+    await admin
+      .from("pitch_sections")
+      .update({ is_stale: true, stale_reason: reason.slice(0, 500) })
+      .eq("pitch_id", pitchId)
+      .eq("step", step);
+  } catch {
+    /* nunca romper el flujo de generación por el marcado */
+  }
+}
+
+/** Un pitch es publicable solo si TODAS sus secciones son de la misma versión y ninguna está desactualizada. */
+export async function checkPitchIntegrity(admin: any, pitchId: string) {
+  const { data } = await admin
+    .from("pitch_sections")
+    .select("step, section_key, prompt_version, is_stale, content")
+    .eq("pitch_id", pitchId)
+    .order("step");
+  const rows: any[] = Array.isArray(data) ? data : [];
+  const versions = Array.from(new Set(rows.map((r) => r.prompt_version ?? "(sin version)")));
+  const stale = rows.filter((r) => r.is_stale).map((r) => r.section_key);
+  const empty = rows.filter((r) => !r.content).map((r) => r.section_key);
+  const problems: string[] = [];
+  if (rows.length === 0) problems.push("El pitch no tiene secciones generadas.");
+  if (empty.length) problems.push(`Secciones vacías: ${empty.join(", ")}.`);
+  if (stale.length)
+    problems.push(
+      `Secciones desactualizadas (su última regeneración falló): ${stale.join(", ")}. Regenéralas antes de publicar.`,
+    );
+  if (versions.length > 1)
+    problems.push(
+      `El pitch está mezclado: sus secciones vienen de versiones distintas del generador (${versions.join(", ")}). Regenera el pitch completo.`,
+    );
+  return { ok: problems.length === 0, problems, versions, stale, sections: rows.length };
+}
+
 export type GeneratePitchResult =
   | { ok: true; generated: any; prompt_version: string; dry_run?: boolean }
   | { ok: false; error: string; failed_validations?: string[]; detail?: string };
+
 
 export type PitchAttemptLog = { attempt: number; ms: number; fails: string[] };
 
@@ -1233,6 +1281,12 @@ Reglas del formato:
     try {
       raw = await callClaude(admin, prompt, apiKey, pitch.company_id ?? null);
     } catch (e) {
+      await markSectionStale(
+        admin,
+        args.pitchId,
+        spec.step,
+        `La regeneración falló (error del modelo): ${String((e as Error)?.message ?? e)}`,
+      );
       return {
         ok: false,
         step: spec.step,
@@ -1242,6 +1296,7 @@ Reglas del formato:
         ...(attemptLog.length ? { attempts: attemptLog } : {}),
       } as any;
     }
+
     const parsed = parseDelimited(raw, spec);
     if (!parsed) {
       fails = ["V0: la respuesta no trae los bloques ---CONTENT--- / ---META---"];
@@ -1267,6 +1322,12 @@ Reglas del formato:
 
 
   if (!section || fails.length > 0) {
+    await markSectionStale(
+      admin,
+      args.pitchId,
+      spec.step,
+      `La regeneración falló las validaciones: ${fails.join(" · ")}`,
+    );
     return {
       ok: false,
       step: spec.step,
@@ -1308,8 +1369,12 @@ Reglas del formato:
       skill_ids: Array.isArray(section?.skill_ids) ? section.skill_ids : [],
       alternatives: Array.isArray(section?.alternatives) ? section.alternatives : [],
       edited_by_manager: false,
+      prompt_version: PITCH_PROMPT_VERSION,
+      is_stale: false,
+      stale_reason: null,
     },
   ] as any);
+
   if (insErr) {
     return {
       ok: false,

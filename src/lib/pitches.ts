@@ -40,6 +40,9 @@ export type PitchSection = {
   skill_ids: string[] | null;
   alternatives: PitchAlternative[] | null;
   edited_by_manager?: boolean | null;
+  prompt_version?: string | null;
+  is_stale?: boolean | null;
+  stale_reason?: string | null;
 };
 
 export type SkillRef = {
@@ -110,7 +113,7 @@ export async function applyAlternative(sectionId: string, content: string): Prom
 
 export async function fetchPitchSections(pitchId: string): Promise<PitchSection[]> {
   return restGet<PitchSection>(
-    `pitch_sections?select=id,pitch_id,step,section_key,section_kind,edited_by_manager,content,rationale_short,rationale_long,warning,skill_ids,alternatives&pitch_id=eq.${pitchId}&order=step.asc`,
+    `pitch_sections?select=id,pitch_id,step,section_key,section_kind,edited_by_manager,prompt_version,is_stale,stale_reason,content,rationale_short,rationale_long,warning,skill_ids,alternatives&pitch_id=eq.${pitchId}&order=step.asc`,
   );
 }
 
