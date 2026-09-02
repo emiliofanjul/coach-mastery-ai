@@ -697,7 +697,13 @@ Deno.serve(async (req) => {
     const outputTokens: number | null = claudeJson?.usage?.output_tokens ?? null;
     const cachedTokens: number | null = claudeJson?.usage?.cache_read_input_tokens ?? null;
     const cacheCreationTokens: number | null = claudeJson?.usage?.cache_creation_input_tokens ?? null;
-    console.log("[closer-voice] usage", { phase, inputTokens, cachedTokens, cacheCreationTokens, outputTokens });
+    const stopReason: string | null = claudeJson?.stop_reason ?? null;
+    console.log("[closer-voice] usage", { phase, inputTokens, cachedTokens, cacheCreationTokens, outputTokens, stopReason });
+    if (stopReason === "max_tokens") {
+      // Diagnóstico explícito: la respuesta viene truncada y el JSON no parsea.
+      console.error("[closer-voice] TRUNCADO por max_tokens", { phase, outputTokens });
+    }
+
 
     // Fire-and-forget observability write. En evaluate se difiere hasta tener
     // el analisis_turnos parseado (se audita en llm_calls).
