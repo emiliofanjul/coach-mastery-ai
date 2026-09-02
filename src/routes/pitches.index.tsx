@@ -162,3 +162,40 @@ function PitchesPage() {
     </div>
   );
 }
+
+function Selector({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: Array<{ key: string; label: string }>;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  if (options.length === 0) return null;
+  return (
+    <div className="mb-3">
+      <div className="mb-1.5 text-[11px] uppercase tracking-wide text-white/40 font-['DM_Sans']">
+        {label}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map((o) => (
+          <button
+            key={o.key}
+            onClick={() => onChange(o.key)}
+            className={[
+              "rounded-[99px] px-3 py-1.5 text-xs font-['DM_Sans'] border transition-colors",
+              value === o.key
+                ? "border-[#FF6B2B] text-[#FF6B2B] bg-[#FF6B2B]/10"
+                : "border-white/10 text-white/60 hover:text-white",
+            ].join(" ")}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
