@@ -200,6 +200,14 @@ Canal: ${args.channel}
      cantidades típicas maneja un cliente ${args.clientType}? Con eso el
      cierre puede enumerar el pedido en lugar de dejarlo en genérico."
 
+9b. EL NOMBRE DEL VENDEDOR ES UNA VARIABLE, NO UN DATO FALTANTE. Este pitch lo
+    leen TODOS los vendedores de la empresa, así que cada uno debe ver el suyo.
+    Donde vaya el nombre escribe exactamente "[tu nombre]" y, si hace falta el
+    contacto, exactamente "[tu teléfono]" — el visor los sustituye con el perfil
+    de quien lo lee. Son los DOS ÚNICOS corchetes permitidos. Y NUNCA pidas el
+    nombre, teléfono o WhatsApp del vendedor en missing_data: no es un dato de
+    la empresa.
+
 10. NUNCA INVENTES CLIENTES, UBICACIONES NI CASOS DE ÉXITO. Si el brain no
     trae casos reales verificables, usa el Efecto Jones solo en genérico
     ("varios negocios como el suyo") o pide los casos en missing_data. No
@@ -669,10 +677,15 @@ export function validatePitch(
   //     Antes las secciones 'municion' estaban exceptuadas; ya no: el fix real
   //     es Suggestive Language (V25), no dejar huecos por llenar.
   const BRACKET = /\[[^\]\n]{0,120}\]/;
+  // Excepción: [tu nombre] y [tu teléfono] NO son huecos por llenar, son
+  // variables del LECTOR — el visor las sustituye con el perfil del vendedor
+  // que está leyendo el pitch. Cada vendedor debe ver el SUYO.
+  const READER = /\[tu (nombre|tel[eé]fono|whatsapp|n[uú]mero)\]/gi;
+  const strip = (t: string) => t.replace(READER, "");
   for (const s of sections) {
     const key = String(s?.section_key ?? "");
 
-    const cText = String(s?.content ?? "");
+    const cText = strip(String(s?.content ?? ""));
     if (BRACKET.test(cText)) {
       const m = cText.match(BRACKET)?.[0] ?? "";
       fails.push(
@@ -681,7 +694,7 @@ export function validatePitch(
     }
     const alts = Array.isArray(s?.alternatives) ? s.alternatives : [];
     for (const a of alts) {
-      const aText = String(a?.content ?? "");
+      const aText = strip(String(a?.content ?? ""));
       if (BRACKET.test(aText)) {
         const m = aText.match(BRACKET)?.[0] ?? "";
         fails.push(
