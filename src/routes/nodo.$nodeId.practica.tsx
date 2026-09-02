@@ -1876,6 +1876,9 @@ function PracticaPage() {
         {phase === "feedback" && (
           <FeedbackPhase
             key="feedback"
+            evalError={evalError}
+            onRetryEvaluation={() => { void runEvaluation(); }}
+
             conversation={youDoHistory}
             feedback={feedbackResult}
             worldId={nodeData?.world_id ?? 0}
