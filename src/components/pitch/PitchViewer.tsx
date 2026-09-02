@@ -146,11 +146,12 @@ export function PitchViewer({
                     <AlertTriangle className="h-3 w-3" /> restricción
                   </span>
                 )}
-                {s.is_stale && (
+                {s.is_stale && role === "manager" && (
                   <span className="inline-flex items-center gap-1 rounded-[99px] bg-red-500/20 px-2 py-0.5 text-[10px] text-red-300 font-['DM_Sans']">
                     <AlertTriangle className="h-3 w-3" /> desactualizada
                   </span>
                 )}
+
                 {s.edited_by_manager && (
                   <span className="rounded-[99px] bg-white/10 px-2 py-0.5 text-[10px] text-white/50 font-['DM_Sans']">
                     editado por tu equipo
