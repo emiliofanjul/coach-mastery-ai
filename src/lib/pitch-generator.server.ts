@@ -712,6 +712,62 @@ export function validatePitch(
     }
   }
 
+  // 27. El territorio PRECIO también necesita Suggestive Language. V26 prohíbe
+  //     inventar CIFRAS, no prohíbe sugerir: si no hay precios en el brain, se
+  //     sugiere sobre plazo, forma de pago o frecuencia de aumento.
+  if (desc && (!ctx.only || ctx.only === "descubrimiento")) {
+    const dText = String(desc.content ?? "");
+    const PRECIO_TERRITORIO =
+      /(a c[óo]mo|precio|costo|c[óo]mo (?:est[áa]s? )?(?:compra|comprando)|te suben|aumento|ajustan|plazo|cr[ée]dito|contado|d[íi]as de pago|forma de pago)/i;
+    // Pares "pregunta? ¿opción? ¿opción?"
+    const conOpciones = [
+      ...dText.matchAll(/([^¿\n]{0,140}\?)((?:\s*¿[^?¿\n]{1,40}\?)+)/g),
+    ];
+    const tocaPrecio = PRECIO_TERRITORIO.test(dText);
+    const precioConOpciones = conOpciones.some((m) => PRECIO_TERRITORIO.test(m[1] ?? ""));
+    if (tocaPrecio && !precioConOpciones) {
+      fails.push(
+        `V27: el territorio PRECIO va sin Suggestive Language: las preguntas de precio están desnudas. Si el brain trae precios, sugiere los rangos con esas cifras; si no los trae, sugiere sobre otras dimensiones que sí conoces ("¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?", "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?") y declara en missing_data que faltan los precios de lista`,
+      );
+    }
+    // Si no hay precios en el brain, missing_data debe pedirlos.
+    const brainPrecios =
+      /\$\s*\d/.test(ctx.brain) ||
+      /\b\d{2,5}\s*(pesos|mxn)\b/i.test(ctx.brain) ||
+      /\b(precio|costo|lista)\b[^\n]{0,40}\d{2,5}/i.test(ctx.brain);
+    if (tocaPrecio && !brainPrecios) {
+      const md = (payload as any)?.missing_data;
+      const mdText = Array.isArray(md) ? md.join(" ") : String(md ?? "");
+      if (!/(precio|lista de precios|tarifa)/i.test(mdText)) {
+        fails.push(
+          `V27: el descubrimiento toca precio y el brain no trae cifras, pero missing_data no pide la lista de precios. Agrega en missing_data la petición explícita de los precios de lista por presentación`,
+        );
+      }
+    }
+  }
+
+  // 14b. Ninguna pregunta puede asumir un hecho que el cliente no declaró.
+  //      "¿Qué es lo que más te pesa de trabajar con varios proveedores?"
+  //      asume que trabaja con varios. Primero se averigua si X existe.
+  const ASUME_HECHO = [
+    /(qu[ée]|cu[áá]l)[^.?!¿]{0,25}(m[áa]s )?(te|le) (pesa|cuesta|duele|complica|estorba|frustra)[^.?!]{0,60}/i,
+    /c[óo]mo (te|le) (afecta|pega|golpea|impacta)[^.?!]{0,60}/i,
+    /(qu[ée]|cu[áá]nto)[^.?!¿]{0,25}(problema|dolor|batalla|broncas?)[^.?!]{0,20}(te|le) (da|dan|causa|causan)[^.?!]{0,60}/i,
+  ];
+  for (const s of sections) {
+    const t = textOf(s);
+    for (const rx of ASUME_HECHO) {
+      const m = t.match(rx);
+      if (m) {
+        fails.push(
+          `V14b: pregunta que planta en vez de descubrir en ${s?.section_key} ("${m[0].trim()}"): asume un hecho que el cliente no ha declarado. Pártela en dos: primero averigua si existe con opciones ("¿Con cuántos proveedores te manejas hoy? ¿Uno? ¿Dos? ¿Más?") y solo después explora ("¿y eso te complica algo?")`,
+        );
+        break;
+      }
+    }
+  }
+
+
 
 
 
