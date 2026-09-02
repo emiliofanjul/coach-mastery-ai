@@ -3400,7 +3400,126 @@ function FeedbackPhase({
     );
   }
 
+  if (step === "eval_error") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 18,
+          padding: "1.2rem",
+        }}
+      >
+        <CloserCharacter size={86} state="motivation" />
+        <div
+          style={{
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 800,
+            fontSize: 22,
+            color: "#fff",
+            textAlign: "center",
+          }}
+        >
+          No pude cerrar tu análisis
+        </div>
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 14,
+            color: "rgba(255,255,255,0.6)",
+            textAlign: "center",
+            maxWidth: 400,
+            lineHeight: 1.5,
+          }}
+        >
+          {evalError} Tu conversación completa quedó guardada.
+        </div>
+        <button
+          onClick={() => onRetryEvaluation?.()}
+          style={{
+            width: "100%",
+            maxWidth: 400,
+            height: 52,
+            borderRadius: 99,
+            border: "none",
+            background: ORANGE,
+            color: "#08080F",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: "pointer",
+            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+          }}
+        >
+          Reintentar análisis
+        </button>
+        <button
+          onClick={() => setStep("transcript_only")}
+          style={{
+            width: "100%",
+            maxWidth: 400,
+            height: 48,
+            borderRadius: 99,
+            border: "1px solid rgba(255,255,255,0.18)",
+            background: "transparent",
+            color: "#fff",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 15,
+            cursor: "pointer",
+          }}
+        >
+          Ver mi conversación
+        </button>
+      </motion.div>
+    );
+  }
+
+  if (step === "transcript_only") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "1.2rem" }}
+      >
+        <div style={{ maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 20, color: "#fff" }}>
+            Tu conversación
+          </div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
+            Sin análisis todavía. Puedes reintentarlo cuando quieras — la práctica está guardada.
+          </div>
+          <ConversationTranscript conversation={conversation} />
+          <button
+            onClick={() => onRetryEvaluation?.()}
+            style={{
+              width: "100%",
+              height: 52,
+              borderRadius: 99,
+              border: "none",
+              background: ORANGE,
+              color: "#08080F",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: 16,
+              cursor: "pointer",
+            }}
+          >
+            Reintentar análisis
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
   // analyzing
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
