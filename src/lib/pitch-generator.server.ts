@@ -1303,16 +1303,37 @@ llevan sus opciones sugeridas, tomadas de datos reales de LA EMPRESA (arriba).
 ✓ "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?"
 ✗ "¿Cada cuándo te surten?"
 ✓ "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual?"
-(Las opciones de PRECIO con cifras solo si LA EMPRESA trae precios; si no, la
-pregunta de precio va sin números y el dato se pide en missing_data.)
 Por qué: o elige una opción, o te corrige con el dato real ("no, más bien 95"),
 y esa corrección es información que la pregunta abierta nunca saca.
 
 LAS OPCIONES TIENEN QUE SER REALES: solo familias, líneas, presentaciones y
 marcas que LA EMPRESA (arriba) realmente maneja. Sugerir algo que no maneja
-demuestra lo contrario de lo que buscabas. Si el brain NO trae los productos
-con precios, las opciones de precio NO se inventan: se omiten (la pregunta va
-sin rangos) y el dato se pide en missing_data.
+demuestra lo contrario de lo que buscabas.
+
+═══ EL TERRITORIO PRECIO TAMBIÉN LLEVA SUGGESTIVE LANGUAGE ═══
+Se prohíbe inventar CIFRAS de precio. NO se prohíbe sugerir en el territorio
+precio. Dos casos:
+a) LA EMPRESA trae precios reales → las opciones se construyen con esos números:
+   "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"
+b) LA EMPRESA no trae precios → las opciones NO se inventan, pero la pregunta
+   tampoco se deja desnuda: sugiere sobre dimensiones que sí conoces.
+   ✗ "¿A cómo estás comprando hoy el aceite de motor?" (desnuda)
+   ✓ "¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?"
+   ✓ "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?"
+   ✓ "¿Te avisan antes de subir o te enteras al pedir?"
+   Y declara en missing_data que faltan los precios de lista por presentación
+   para poder sugerir rangos.
+Al menos UNA pregunta del territorio precio lleva opciones sugeridas.
+
+═══ NINGUNA PREGUNTA ASUME UN HECHO NO DECLARADO ═══
+Descubrir es señalar lo que existe. Asumirlo en la pregunta es plantarlo.
+✗ "¿Qué es lo que más te pesa de trabajar con varios proveedores?" (asume que
+  trabaja con varios)
+✓ "¿Con cuántos proveedores te manejas hoy? ¿Uno? ¿Dos? ¿Más?" y solo después,
+  si dice que varios, "¿y eso te complica algo?"
+Prohibido "¿qué es lo que más te pesa de X?" o "¿cómo te afecta X?" cuando X
+no está establecido. Primero se averigua si X existe, después se explora.
+
 
 COHERENCIA CON EL TIPO DE CLIENTE (${String(pitch.client_type)}):
 · autoconsumo → qué usa, cada cuánto repone, cuántas unidades. NUNCA familias
