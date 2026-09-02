@@ -530,6 +530,7 @@ export type Database = {
           id: string
           missing_data: Json
           published_at: string | null
+          relationship: string
           status: string
           updated_at: string
           version: number
@@ -543,6 +544,7 @@ export type Database = {
           id?: string
           missing_data?: Json
           published_at?: string | null
+          relationship?: string
           status?: string
           updated_at?: string
           version?: number
@@ -556,6 +558,7 @@ export type Database = {
           id?: string
           missing_data?: Json
           published_at?: string | null
+          relationship?: string
           status?: string
           updated_at?: string
           version?: number

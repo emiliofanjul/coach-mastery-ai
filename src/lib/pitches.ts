@@ -3,13 +3,17 @@
 
 import { restGet, restMutate } from "@/lib/supabase-rest";
 
-export type ClientType = "nuevo" | "recurrente" | "autoconsumo" | "distribuidor";
+/** Eje 1 — RELACIÓN: ¿ya te compra? Define la estructura del pitch. */
+export type Relationship = "nuevo" | "recurrente";
+/** Eje 2 — USO: ¿qué hace con el producto? Define solo el vocabulario. */
+export type ClientType = "revende" | "consume" | "distribuye";
 export type Channel = "presencial" | "telefono" | "whatsapp";
 export type PitchStatus = "draft" | "published" | "archived";
 
 export type CompanyPitch = {
   id: string;
   company_id: string;
+  relationship: Relationship;
   client_type: ClientType;
   channel: Channel;
   status: PitchStatus;
@@ -118,28 +122,45 @@ export async function fetchPitchSections(pitchId: string): Promise<PitchSection[
 }
 
 
-export const CLIENT_TYPES: Array<{ key: ClientType; label: string; blurb: string }> = [
+export const RELATIONSHIPS: Array<{ key: Relationship; label: string; blurb: string }> = [
   {
     key: "nuevo",
     label: "Cliente nuevo",
-    blurb: "Primera visita: no te conoce, no confía todavía.",
+    blurb: "Todavía no te compra: te presentas y buscas el dolor.",
   },
   {
     key: "recurrente",
     label: "Cliente recurrente",
-    blurb: "Ya te compra: el reto es crecer el ticket sin quemar la relación.",
+    blurb: "Ya te compra: no te presentas, buscas el hueco lateral.",
+  },
+];
+
+export const CLIENT_TYPES: Array<{ key: ClientType; label: string; blurb: string }> = [
+  {
+    key: "revende",
+    label: "Revende",
+    blurb: "Vende tu producto en su mostrador: rotación y margen.",
   },
   {
-    key: "autoconsumo",
-    label: "Autoconsumo",
+    key: "consume",
+    label: "Consume",
     blurb: "Usa el producto él mismo: vende resultado, no reventa.",
   },
   {
-    key: "distribuidor",
-    label: "Distribuidor",
-    blurb: "Revende: vende rotación, margen y respaldo.",
+    key: "distribuye",
+    label: "Distribuye",
+    blurb: "Surte a otros: líneas, zonas y respaldo.",
   },
 ];
+
+export function pitchLabel(p: {
+  relationship?: Relationship | string | null;
+  client_type?: ClientType | string | null;
+}): string {
+  const rel = RELATIONSHIPS.find((r) => r.key === p.relationship)?.label ?? String(p.relationship ?? "");
+  const use = CLIENT_TYPES.find((t) => t.key === p.client_type)?.label ?? String(p.client_type ?? "");
+  return `${rel} · ${use}`;
+}
 
 export const CHANNELS: Array<{ key: Channel; label: string }> = [
   { key: "presencial", label: "Presencial" },
@@ -169,19 +190,20 @@ export function statusLabel(status?: PitchStatus | null): string {
 
 export async function fetchCompanyPitches(companyId: string): Promise<CompanyPitch[]> {
   return restGet<CompanyPitch>(
-    `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at,missing_data&company_id=eq.${companyId}&status=neq.archived&order=created_at.asc`,
+    `company_pitches?select=id,company_id,relationship,client_type,channel,status,version,published_at,updated_at,missing_data&company_id=eq.${companyId}&status=neq.archived&order=created_at.asc`,
   );
 }
 
 export async function fetchPublishedPitches(companyId: string): Promise<CompanyPitch[]> {
   return restGet<CompanyPitch>(
-    `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at&company_id=eq.${companyId}&status=eq.published&order=client_type.asc`,
+    `company_pitches?select=id,company_id,relationship,client_type,channel,status,version,published_at,updated_at&company_id=eq.${companyId}&status=eq.published&order=relationship.asc,client_type.asc`,
   );
 }
 
 /** Crea el pitch en borrador y sus 6 secciones vacías. */
 export async function activatePitch(args: {
   companyId: string;
+  relationship: Relationship;
   clientType: ClientType;
   channel: Channel;
   createdBy: string;
@@ -191,6 +213,7 @@ export async function activatePitch(args: {
     prefer: "return=representation",
     body: {
       company_id: args.companyId,
+      relationship: args.relationship,
       client_type: args.clientType,
       channel: args.channel,
       status: "draft",

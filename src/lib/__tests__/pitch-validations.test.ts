@@ -19,7 +19,8 @@ const BRAIN_SIN_PRECIOS = BRAIN.replace("Precio de lista: cubeta de 19 litros $1
 const ctx = (over: Partial<Parameters<typeof validatePitch>[1]> = {}) => ({
   validSkillIds: new Set(["linea_recta", "sce", "mindset"]),
   brain: BRAIN,
-  clientType: "recurrente",
+  relationship: "recurrente",
+  clientType: "revende",
   ...over,
 });
 
@@ -259,5 +260,145 @@ describe("territorio precio y preguntas que asumen hechos", () => {
       ctx({ only: "descubrimiento" }),
     );
     expect(fails.some((f) => f.startsWith("V14b"))).toBe(false);
+  });
+});
+
+// ── Dos ejes: relación (nuevo|recurrente) × uso (revende|consume|distribuye) ──
+describe("dos ejes: relación y uso", () => {
+  const pres = (content: string) => ({
+    step: 4,
+    section_key: "presentacion",
+    section_kind: "guion",
+    content,
+    rationale_short: "Conecta el dolor con la solución y pone el precio.",
+    rationale_long:
+      "La presentación resuelve el dolor encontrado y aterriza el precio en su triple desglose para que la cifra llegue con motivo y no sola.",
+    skill_ids: ["linea_recta"],
+    alternatives: [{ rank: 1, content: "Te lo dejo en cubeta y te bajo el costo por litro.", skill_ids: [] }],
+  });
+
+  it("V28: acepta la presentación con triple desglose (dos cifras con motivo)", () => {
+    const fails = validatePitch(
+      wrap(
+        pres(
+          "Lo que te está costando es la merma. Te lo resuelvo con presentación grande: " +
+            "la cubeta de 19 litros te sale en $1,850 porque el costo por litro baja con el volumen, " +
+            "y la caja de 24 en $1,200 porque ahí ya entras a precio de lista de distribuidor.",
+        ),
+      ),
+      ctx({ only: "presentacion" }),
+    );
+    expect(fails.filter((f) => f.startsWith("V28"))).toEqual([]);
+  });
+
+  it("V28: rechaza la presentación sin desglose ni petición de precios", () => {
+    const fails = validatePitch(
+      wrap(pres("Lo que te está costando es la merma y eso te lo resuelvo con nuestra línea premium.")),
+      ctx({ only: "presentacion" }),
+    );
+    expect(fails.some((f) => f.startsWith("V28"))).toBe(true);
+  });
+
+  it("V28: acepta estructura sin cifras si missing_data pide los precios de lista", () => {
+    const fails = validatePitch(
+      wrap(
+        pres(
+          "Te resuelvo la merma con presentación grande: el precio se desglosa por presentación, " +
+            "por volumen y por plazo de pago, para que veas dónde ganas en cada escalón.",
+        ),
+      ),
+      ctx({
+        only: "presentacion",
+        brain: BRAIN_SIN_PRECIOS,
+        missingData: ["Tus precios de lista por presentación."],
+      }),
+    );
+    expect(fails.filter((f) => f.startsWith("V28"))).toEqual([]);
+  });
+
+  it("V28/V9: rechaza enumerar SKUs con cantidades en la presentación", () => {
+    const fails = validatePitch(
+      wrap(
+        pres(
+          "Te llevas 3 cubetas de anticongelante a $1,850, 2 cajas de aceite de motor de 24 a $1,200 " +
+            "y 4 cubetas de diésel a $1,850, y con eso cubres el mes completo sin quedarte corto.",
+        ),
+      ),
+      ctx({ only: "presentacion" }),
+    );
+    // El resumen del pedido pertenece al cierre, no aquí.
+    expect(fails.length).toBeGreaterThan(0);
+  });
+
+  it("V29: recurrente no se presenta con nombre y empresa", () => {
+    const fails = validatePitch(
+      wrap({
+        step: 1,
+        section_key: "introduccion",
+        section_kind: "guion",
+        content: "Buenas, soy Emilio de DALFAN, vengo a ver cómo le fue con lo del mes pasado.",
+        rationale_short: "Abre la visita.",
+        rationale_long:
+          "La apertura debe reconectar con el cliente sin robarle tiempo y abrir la conversación de seguimiento.",
+        skill_ids: ["linea_recta"],
+        alternatives: [{ rank: 1, content: "Buenas, ¿cómo le fue con lo del mes pasado?", skill_ids: [] }],
+      }),
+      ctx({ only: "introduccion", relationship: "recurrente" }),
+    );
+    expect(fails.some((f) => f.startsWith("V29"))).toBe(true);
+  });
+
+  it("V29: recurrente no abre preguntando características permanentes", () => {
+    const fails = validatePitch(
+      wrap({
+        step: 1,
+        section_key: "introduccion",
+        section_kind: "guion",
+        content: "Qué tal, ¿ya tiene rato con el negocio aquí?",
+        rationale_short: "Abre la visita.",
+        rationale_long:
+          "La apertura debe reconectar con el cliente sin robarle tiempo y abrir la conversación de seguimiento.",
+        skill_ids: ["linea_recta"],
+        alternatives: [{ rank: 1, content: "Qué tal, ¿cómo se movió la semana?", skill_ids: [] }],
+      }),
+      ctx({ only: "introduccion", relationship: "recurrente" }),
+    );
+    expect(fails.some((f) => f.startsWith("V29"))).toBe(true);
+  });
+
+  it("V30: nuevo no puede referenciar interacciones previas", () => {
+    const fails = validatePitch(
+      wrap({
+        step: 6,
+        section_key: "consolidacion",
+        section_kind: "guion",
+        content: "Te lo mando como la vez pasada y quedamos igual que siempre.",
+        rationale_short: "Cierra la visita dejando el siguiente paso puesto.",
+        rationale_long:
+          "La consolidación deja amarrado el siguiente contacto para que la relación no dependa de que el cliente se acuerde.",
+        skill_ids: ["linea_recta"],
+        alternatives: [{ rank: 1, content: "Te lo mando el jueves y paso el lunes.", skill_ids: [] }],
+      }),
+      ctx({ only: "consolidacion", relationship: "nuevo" }),
+    );
+    expect(fails.some((f) => f.startsWith("V30"))).toBe(true);
+  });
+
+  it("V4: a un cliente que CONSUME no se le pregunta qué vende", () => {
+    const fails = validatePitch(
+      wrap({
+        step: 1,
+        section_key: "introduccion",
+        section_kind: "guion",
+        content: "Qué tal, ¿qué vende más aquí?",
+        rationale_short: "Abre la visita.",
+        rationale_long:
+          "La apertura debe abrir conversación sin robarle tiempo y sin entrar todavía al descubrimiento.",
+        skill_ids: ["linea_recta"],
+        alternatives: [{ rank: 1, content: "Qué tal, ¿qué tal la semana?", skill_ids: [] }],
+      }),
+      ctx({ only: "introduccion", relationship: "nuevo", clientType: "consume" }),
+    );
+    expect(fails.some((f) => f.startsWith("V4"))).toBe(true);
   });
 });

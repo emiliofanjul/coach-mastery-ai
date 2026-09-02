@@ -10,7 +10,7 @@ import {
 
 
 
-export const PITCH_PROMPT_VERSION = "pitch-v2.3.0-cerebro-v24-veracidad-contexto";
+export const PITCH_PROMPT_VERSION = "pitch-v3.0.0-dos-ejes-relacion-uso";
 export const PITCH_MODEL = "claude-sonnet-4-5";
 const TIMEOUT_MS = 300_000;
 
@@ -19,7 +19,7 @@ export const MAX_CONTENT_CHARS: Record<string, number> = {
   introduccion: 250,
   historia_breve: 250,
   descubrimiento: 1200,
-  presentacion: 700,
+  presentacion: 850,
   cierre: 400,
   consolidacion: 350,
 };
@@ -55,25 +55,49 @@ export function buildPitchPrompt(args: {
   cerebroBlock: string;
   criteriosBlock: string;
   brain: string;
+  relationship: string;
   clientType: string;
   channel: string;
 }): string {
-  const clientRule =
-    args.clientType === "nuevo"
-      ? `NUEVO — el vendedor es un desconocido. Aplica la doctrina completa de
-adquisición: ganarse la entrada, historia breve, encontrar el DOLOR y presentar
-la solución. No existe pedido base, relación ni conversación anterior.`
-      : args.clientType === "recurrente"
-        ? `RECURRENTE — el cliente ya compra y está contento. Aplica desarrollo de cuenta:
+  // EJE 1 — RELACIÓN (Cerebro, 'aplicacion' 4.0b). Define la estructura entera.
+  const relationRule =
+    args.relationship === "recurrente"
+      ? `RECURRENTE — el cliente ya te compra. Aplica desarrollo de cuenta:
+· NO te presentas: ya te conoce. Nada de nombre ni empresa en la apertura.
+· La apertura observa lo que CAMBIÓ desde la última visita (Cerebro 4.1b), no
+  características permanentes del negocio. "¿Ya tiene rato con el negocio?" o
+  "¿siempre está así de movido?" son preguntas de PRIMERA visita: aquí están mal.
 · El motivo declarado NO es levantar el pedido, es dar seguimiento.
-· El descubrimiento tiene DOS MITADES: hacia adentro y hacia el HUECO lateral.
+· El descubrimiento tiene DOS MITADES: el DOLOR hacia adentro y el HUECO lateral
+  (lo que hoy le compra a otro).
 · La presentación no ataca al proveedor actual; vende consolidación.
 · El cierre es del INCREMENTO, no reabre el pedido base.`
-        : args.clientType === "autoconsumo"
-          ? `AUTOCONSUMO — el cliente usa el producto, no lo revende. NUNCA preguntes
-qué vende ni qué se le mueve. Pregunta qué usa, cuántas unidades maneja, cada
-cuánto repone y cuánto le dura.`
-          : `DISTRIBUIDOR — pregunta por sus líneas, a cuántos surte y qué zona cubre.`;
+      : `NUEVO — el vendedor es un desconocido. Aplica la doctrina completa de
+adquisición:
+· TE PRESENTAS con nombre y empresa.
+· Ganarse la entrada, historia breve, encontrar el DOLOR con los 3 territorios.
+· CERO referencias a interacciones previas: no existe "lo de siempre", "la vez
+  pasada", "lo que me comentó", pedido base ni relación anterior.
+· El cierre es de ARRANQUE: el primer pedido.`;
+
+  // EJE 2 — USO. Solo cambia el VOCABULARIO del descubrimiento.
+  const usoRule =
+    args.clientType === "consume"
+      ? `CONSUME — el cliente usa el producto, no lo revende. NUNCA preguntes qué
+vende ni qué se le mueve. Pregunta qué usa, cuántas unidades maneja, cada cuánto
+repone y cuánto le dura.`
+      : args.clientType === "distribuye"
+        ? `DISTRIBUYE — pregunta qué líneas mueve, a cuántos surte y qué zona cubre.`
+        : `REVENDE — pregunta qué maneja, qué le piden sus clientes y qué se le
+queda parado.`;
+  const clientRule = `EJE 1 · RELACIÓN (${args.relationship}) — define la ESTRUCTURA:
+${relationRule}
+
+EJE 2 · USO (${args.clientType}) — define SOLO el vocabulario del descubrimiento:
+${usoRule}
+
+Los dos ejes se cruzan y son independientes: un cliente que consume puede ser
+nuevo o recurrente. Nunca mezcles la estructura de uno con la del otro.`;
   const channelRule =
     args.channel === "telefono"
       ? `TELÉFONO — no puedes ver el lugar. Sustituye observaciones visuales por
@@ -109,7 +133,8 @@ ${args.brain}
 
 
 ═══ EL ENCARGO ═══
-Tipo de cliente: ${args.clientType}
+Relación con el cliente: ${args.relationship} (¿ya te compra?)
+Qué hace con el producto: ${args.clientType}
 Canal: ${args.channel}
 
 ═══ REGLAS DURAS ═══
@@ -152,9 +177,10 @@ Canal: ${args.channel}
 
 9. EL RESUMEN DEL PEDIDO VA EN EL CIERRE, NUNCA EN LA PRESENTACIÓN. Antes de
    la pregunta de cierre, enumera brevemente lo que lleva: qué y cuánto.
-   · En la presentación NO se enumera: hacerlo concreto mientras construyes
-     valor hace que el cliente empiece a sumar el total, y eso sube el costo
-     percibido en el peor momento.
+   · En la presentación NO se enumera SKU por SKU con cantidades: hacerlo
+     concreto mientras construyes valor hace que el cliente empiece a sumar el
+     total. Ojo: esto NO prohíbe el precio en la presentación — el PRECIO sí va
+     ahí, en su triple desglose. Lo que no va es la lista de qué y cuánto lleva.
    · En el cierre hace lo contrario: confirma que lo escuchaste, previene que
      cancele cuando llegue el pedido, y es la rampa natural del cierre —
      terminas de enumerar y sigues sin pausa con la alternativa.
@@ -387,6 +413,8 @@ export function validatePitch(
     validSkillIds: Set<string>;
     brain: string;
     clientType: string;
+    /** Eje 1: 'nuevo' | 'recurrente'. */
+    relationship?: string;
     only?: string;
     missingData?: string[];
   },
@@ -463,9 +491,9 @@ export function validatePitch(
       fails.push(`V4: término de industria ajena "${term}"`);
     }
   }
-  if (ctx.clientType === "autoconsumo") {
+  if (ctx.clientType === "consume") {
     if (/(qué|que)\s+(vende|se le mueve|le compran|revende)/i.test(guionText)) {
-      fails.push("V4: en autoconsumo se pregunta qué vende");
+      fails.push("V4: este cliente CONSUME el producto y se le pregunta qué vende");
     }
   }
 
@@ -835,12 +863,15 @@ export function validatePitch(
     }
   }
 
-  // 23. Un cliente nuevo no tiene pedido, relación ni conversación previos.
-  if (ctx.clientType === "nuevo") {
+  // 30. (reemplaza a V23, que estaba atada a client_type) Un cliente con el que
+  //     NO hay relación previa no tiene pedido, historia ni conversación anterior.
+  const relationship = ctx.relationship ?? "";
+  if (relationship === "nuevo") {
     const PREVIOUS_INTERACTION = [
       /\blo de siempre\b/i,
       /\bcomo siempre\b/i,
       /\bla vez pasada\b/i,
+      /\bla (?:última|ultima) (?:vez|visita)\b/i,
       /\b(?:lo|eso|esto) que (?:me|nos) coment[oó]\b/i,
       /\b(?:me|nos) dijo (?:antes|la otra vez)\b/i,
       /\b(?:su|tu) pedido (?:base|habitual|de siempre)\b/i,
@@ -852,10 +883,72 @@ export function validatePitch(
         const m = t.match(rx);
         if (m) {
           fails.push(
-            `V23: ${s?.section_key} trata al cliente nuevo como recurrente ("${m[0]}"); no existe interacción ni pedido anterior`,
+            `V30: ${s?.section_key} trata a un cliente NUEVO como recurrente ("${m[0]}"); con relación 'nuevo' no existe interacción, visita ni pedido anterior`,
           );
           break;
         }
+      }
+    }
+  }
+
+  // 29. Con relación 'recurrente' el vendedor ya es conocido: ni se presenta ni
+  //     abre preguntando por características permanentes (eso es primera visita).
+  if (relationship === "recurrente") {
+    const introRel = byKey("introduccion");
+    const introRelText = introRel ? textOf(introRel) : "";
+    const SELF_INTRO = [
+      /\b(?:mi nombre es|me llamo|soy)\s+[A-ZÁÉÍÓÚÑ][\p{L}]+/u,
+      /\b(?:le|te) (?:saluda|habla)\s+[A-ZÁÉÍÓÚÑ][\p{L}]+/u,
+      /\bvengo de parte de\b/i,
+      /\b(?:soy|vengo) de\s+[A-ZÁÉÍÓÚÑ][\p{L}]+/u,
+    ];
+    for (const rx of SELF_INTRO) {
+      const m = introRelText.match(rx);
+      if (m) {
+        fails.push(
+          `V29: con un cliente RECURRENTE no te presentas ("${m[0].trim()}"): ya te conoce. Abre por lo que cambió desde la última visita`,
+        );
+        break;
+      }
+    }
+    const PRIMERA_VISITA = [
+      /¿\s*(?:siempre|normalmente)[^?¿\n]{0,60}\?/i,
+      /¿[^?¿\n]{0,40}\bya (?:tiene|tienes|lleva|llevas)\b[^?¿\n]{0,40}(?:rato|años|tiempo)[^?¿\n]{0,30}\?/i,
+      /¿[^?¿\n]{0,40}\bdesde cu[áa]ndo\b[^?¿\n]{0,50}\?/i,
+      /¿[^?¿\n]{0,40}\bcu[áa]nto (?:tiempo )?(?:tiene|lleva)[^?¿\n]{0,40}\?/i,
+    ];
+    for (const rx of PRIMERA_VISITA) {
+      const m = introRelText.match(rx);
+      if (m) {
+        fails.push(
+          `V29: la apertura pregunta por una característica permanente del negocio ("${m[0].trim()}") y eso es una pregunta de PRIMERA visita. Con un recurrente se observa lo que CAMBIÓ desde la última vez (Cerebro 4.1b)`,
+        );
+        break;
+      }
+    }
+  }
+
+  // 28. La presentación DEBE traer el triple desglose de precio. El precio va en
+  //     la presentación; el resumen del pedido (qué y cuánto) va en el cierre.
+  if (pres && (!ctx.only || ctx.only === "presentacion")) {
+    const pText = String(pres.content ?? "");
+    const cifras = pText.match(/\$\s?\d[\d,.]*|\b\d{2,6}\s*(?:pesos|mxn)\b/gi) ?? [];
+    if (cifras.length >= 2) {
+      // Con cifras basta: el desglose está escrito.
+    } else {
+      const estructura =
+        /(desglose|por (?:cubeta|litro|pieza|unidad|caja)|precio por|escalera|se desglosa|precio de lista|por volumen|por presentaci[óo]n)/i.test(
+          pText,
+        );
+      const md = [
+        ...(ctx.missingData ?? []),
+        ...(Array.isArray((parsed as any)?.missing_data) ? (parsed as any).missing_data : []),
+      ].join(" ");
+      const pidePrecios = /(precio|lista de precios|tarifa)/i.test(md);
+      if (!estructura || !pidePrecios) {
+        fails.push(
+          "V28: la presentación no trae el triple desglose de precio. Debe llevar al menos dos cifras con su motivo nombrado (qué justifica cada una). Si el brain no trae precios, escribe la ESTRUCTURA del desglose sin cifras y pide los precios de lista en missing_data — el paso nunca se omite",
+        );
       }
     }
   }
@@ -1144,7 +1237,7 @@ async function loadContext(
   spec: { key: string; worlds: number[] },
 ) {
   const extraNodes =
-    String(pitch.client_type) === "recurrente" ? RECURRENTE_NODE_IDS : [];
+    String(pitch.relationship) === "recurrente" ? RECURRENTE_NODE_IDS : [];
 
   const [skillsRes, companyRes, cerebroBlock, criteriosWorlds, criteriosNodes] =
     await Promise.all([
@@ -1212,7 +1305,7 @@ export async function runPitchSection(args: {
 
   const { data: pitch } = await admin
     .from("company_pitches")
-    .select("id, company_id, client_type, channel")
+    .select("id, company_id, relationship, client_type, channel")
     .eq("id", args.pitchId)
     .maybeSingle();
   if (!pitch) return { ok: false, step: args.step, error: "pitch_not_found" };
@@ -1247,6 +1340,7 @@ export async function runPitchSection(args: {
     cerebroBlock,
     criteriosBlock: "",
     brain,
+    relationship: String(pitch.relationship ?? "nuevo"),
     clientType: String(pitch.client_type),
     channel: String(pitch.channel),
   });
@@ -1286,12 +1380,22 @@ Descubrimiento. Ejemplo de diferencia:
 
 ${
   spec.key === "presentacion"
-    ? `═══ LA PRESENTACIÓN NO ES EL CIERRE ═══
-La presentación NO enumera cantidades ni precios producto por producto. Eso
-pertenece al resumen del pedido, en el cierre. Aquí se presenta la ESTRUCTURA
-de la propuesta: qué resuelve, qué gana el cliente, y el precio en escalera.
-Si te encuentras listando SKUs con cifras, estás escribiendo el cierre en el
-lugar equivocado.`
+    ? `═══ LA PRESENTACIÓN TIENE DOS MITADES ═══
+PRIMERA MITAD — lo que vas a hacer por él: conectas con el dolor que encontraste
+y explicas cómo lo resuelves. Todavía sin producto.
+SEGUNDA MITAD — resumen breve del producto + EL TRIPLE DESGLOSE DE PRECIOS.
+
+EL PRECIO SÍ VA AQUÍ. Es obligatorio y no se pospone: al menos dos cifras, cada
+una con su motivo nombrado (qué la justifica: volumen, presentación, plazo,
+línea). Eso es el triple desglose.
+· Si LA EMPRESA (arriba) trae precios: úsalos tal cual, con su motivo.
+· Si NO los trae: escribe la ESTRUCTURA del desglose sin cifras ("el precio se
+  desglosa por presentación, por volumen y por plazo de pago") y agrega a
+  missing_data la petición de los precios de lista por presentación. El paso
+  NUNCA se omite.
+
+LO QUE NO VA AQUÍ: el resumen del pedido, o sea la lista de qué y cuánto lleva
+(SKUs con cantidades). Eso pertenece al cierre. Precio ≠ resumen del pedido.`
     : ""
 }
 
@@ -1337,12 +1441,19 @@ Prohibido "¿qué es lo que más te pesa de X?" o "¿cómo te afecta X?" cuando 
 no está establecido. Primero se averigua si X existe, después se explora.
 
 
-COHERENCIA CON EL TIPO DE CLIENTE (${String(pitch.client_type)}):
-· autoconsumo → qué usa, cada cuánto repone, cuántas unidades. NUNCA familias
-  que "vende" ni a quién le surte: este cliente consume, no revende.
-· distribuidor → qué líneas mueve, en qué zonas, a cuántos surte.
-· recurrente → qué familias maneja y con quién las compra hoy.
-Usa SOLO el enfoque del tipo de cliente de este pitch.
+VOCABULARIO SEGÚN QUÉ HACE CON EL PRODUCTO (${String(pitch.client_type)}):
+· consume → qué usa, cada cuánto repone, cuántas unidades, cuánto le dura.
+  NUNCA familias que "vende" ni a quién le surte: este cliente consume.
+· distribuye → qué líneas mueve, en qué zonas, a cuántos surte.
+· revende → qué maneja, qué le piden sus clientes, qué se le queda parado.
+Usa SOLO el vocabulario de ${String(pitch.client_type)}.
+
+ESTRUCTURA SEGÚN LA RELACIÓN (${String(pitch.relationship ?? "nuevo")}):
+${
+  String(pitch.relationship) === "recurrente"
+    ? "· recurrente → el descubrimiento va en DOS MITADES: el DOLOR hacia adentro y el HUECO lateral (qué le compra hoy a otro proveedor)."
+    : "· nuevo → el descubrimiento busca el DOLOR con los 3 territorios (producto, servicio, precio). No hay hueco lateral que explorar todavía."
+}
 
 PROHIBIDO el corchete de relleno: en vez de "[familia específica que maneja]",
 escribe la pregunta con opciones reales.`
@@ -1355,7 +1466,11 @@ escribe la pregunta con opciones reales.`
 ═══ VERACIDAD Y CONTEXTO ═══
 NUNCA inventes clientes, ubicaciones ni casos de éxito. Si el brain no trae
 casos reales, usa el Efecto Jones en genérico o pide el dato en missing_data.
-${String(pitch.client_type) === "nuevo" ? 'Este cliente es NUEVO: no existe "lo de siempre", conversación previa, pedido base ni dato que ya te comentó.' : ""}
+${
+  String(pitch.relationship) === "recurrente"
+    ? 'Este cliente es RECURRENTE: ya te conoce, así que NO te presentas con nombre ni empresa, y la apertura observa lo que CAMBIÓ desde la última visita — nunca características permanentes ("¿siempre está así?", "¿ya tiene rato con el negocio?").'
+    : 'Este cliente es NUEVO: te presentas con nombre y empresa, y no existe "lo de siempre", conversación previa, pedido base ni dato que ya te comentó.'
+}
 
 ${prevBlock}
 
@@ -1509,6 +1624,7 @@ Reglas del formato:
         validSkillIds,
         brain,
         clientType: String(pitch.client_type),
+        relationship: String(pitch.relationship ?? "nuevo"),
         only: spec.key,
         missingData: missing,
       },

@@ -5,7 +5,7 @@ import { PitchViewer } from "@/components/pitch/PitchViewer";
 import { restGetMaybeSingle } from "@/lib/supabase-rest";
 import {
   CHANNELS,
-  CLIENT_TYPES,
+  pitchLabel,
   fetchPitchSections,
   type CompanyPitch,
   type PitchSection,
@@ -41,7 +41,7 @@ function PitchDetailPage() {
     let cancelled = false;
     (async () => {
       const p = await restGetMaybeSingle<CompanyPitch>(
-        `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at,missing_data&id=eq.${pitchId}&status=eq.published&limit=1`,
+        `company_pitches?select=id,company_id,relationship,client_type,channel,status,version,published_at,updated_at,missing_data&id=eq.${pitchId}&status=eq.published&limit=1`,
       );
       const rows = p ? await fetchPitchSections(p.id) : [];
       if (cancelled) return;
@@ -57,7 +57,7 @@ function PitchDetailPage() {
     };
   }, [pitchId]);
 
-  const type = CLIENT_TYPES.find((t) => t.key === pitch?.client_type);
+  const type = pitch ? { label: pitchLabel(pitch) } : null;
   const ch = CHANNELS.find((c) => c.key === pitch?.channel);
 
   return (

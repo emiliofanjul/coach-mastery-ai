@@ -8,6 +8,7 @@ import { PitchViewer } from "@/components/pitch/PitchViewer";
 import {
   CHANNELS,
   CLIENT_TYPES,
+  RELATIONSHIPS,
   PITCH_STEPS,
   activatePitch,
   fetchCompanyPitches,
@@ -17,7 +18,12 @@ import {
   type ClientType,
   type CompanyPitch,
   type PitchSection,
+  type Relationship,
 } from "@/lib/pitches";
+
+/** Clave de celda de la matriz 2×3: relación × uso. */
+type CellKey = `${Relationship}:${ClientType}`;
+const cellKey = (r: Relationship, t: ClientType): CellKey => `${r}:${t}`;
 
 export function PitchesSection({
   companyId,
@@ -31,13 +37,8 @@ export function PitchesSection({
   const [publishing, setPublishing] = useState<string | null>(null);
   const [pitches, setPitches] = useState<CompanyPitch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [channel, setChannel] = useState<Record<ClientType, Channel>>({
-    nuevo: "presencial",
-    recurrente: "presencial",
-    autoconsumo: "presencial",
-    distribuidor: "presencial",
-  });
-  const [busy, setBusy] = useState<ClientType | null>(null);
+  const [channel, setChannel] = useState<Partial<Record<CellKey, Channel>>>({});
+  const [busy, setBusy] = useState<CellKey | null>(null);
   const [generating, setGenerating] = useState<string | null>(null);
   const [sections, setSections] = useState<Record<string, PitchSection[]>>({});
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -123,16 +124,20 @@ export function PitchesSection({
     };
   }, [companyId]);
 
-  function pitchFor(type: ClientType, ch: Channel) {
-    return pitches.find((p) => p.client_type === type && p.channel === ch) ?? null;
+  function pitchFor(rel: Relationship, type: ClientType, ch: Channel) {
+    return (
+      pitches.find(
+        (p) => p.relationship === rel && p.client_type === type && p.channel === ch,
+      ) ?? null
+    );
   }
 
-  async function handleActivate(type: ClientType) {
-    const ch = channel[type];
-    setBusy(type);
+  async function handleActivate(rel: Relationship, type: ClientType, ch: Channel) {
+    setBusy(cellKey(rel, type));
     try {
       const created = await activatePitch({
         companyId,
+        relationship: rel,
         clientType: type,
         channel: ch,
         createdBy: userId,
@@ -190,20 +195,32 @@ export function PitchesSection({
         <h2 className="font-['Syne'] font-bold text-white text-lg">Pitches</h2>
       </div>
       <p className="mb-4 text-xs text-white/50 font-['DM_Sans']">
-        El guion de tu empresa, por tipo de cliente. Actívalo aquí; tu equipo lo verá cuando lo publiques.
+        Dos ejes que se cruzan: la <strong className="text-white/70">relación</strong> (¿ya te compra?)
+        define la estructura; el <strong className="text-white/70">uso</strong> (¿qué hace con el producto?)
+        define el vocabulario. Activa las combinaciones que vendes.
       </p>
 
       {loading ? (
         <div className="text-sm text-white/50 font-['DM_Sans']">Cargando pitches…</div>
       ) : (
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-5">
+          {RELATIONSHIPS.map((rel) => (
+            <div key={rel.key}>
+              <div className="mb-2">
+                <div className="font-['Syne'] font-bold text-white text-sm">{rel.label}</div>
+                <div className="text-[11px] text-white/40 font-['DM_Sans']">{rel.blurb}</div>
+              </div>
+              <div className="grid grid-cols-1 gap-3">
           {CLIENT_TYPES.map((t) => {
-            const ch = channel[t.key];
-            const pitch = pitchFor(t.key, ch);
-            const anyActive = pitches.some((p) => p.client_type === t.key);
+            const key = cellKey(rel.key, t.key);
+            const ch = channel[key] ?? "presencial";
+            const pitch = pitchFor(rel.key, t.key, ch);
+            const anyActive = pitches.some(
+              (p) => p.relationship === rel.key && p.client_type === t.key,
+            );
             return (
               <div
-                key={t.key}
+                key={key}
                 className="rounded-[14px] border border-white/10 bg-black/30 p-4"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -230,7 +247,7 @@ export function PitchesSection({
                     {CHANNELS.map((c) => (
                       <button
                         key={c.key}
-                        onClick={() => setChannel((prev) => ({ ...prev, [t.key]: c.key }))}
+                        onClick={() => setChannel((prev) => ({ ...prev, [key]: c.key }))}
                         className={[
                           "rounded-[99px] px-3 py-1.5 text-xs font-['DM_Sans'] border transition-colors",
                           ch === c.key
@@ -282,11 +299,11 @@ export function PitchesSection({
                     </>
                   ) : (
                     <Button
-                      onClick={() => handleActivate(t.key)}
-                      disabled={busy === t.key}
+                      onClick={() => handleActivate(rel.key, t.key, ch)}
+                      disabled={busy === key}
                       className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold"
                     >
-                      {busy === t.key ? (
+                      {busy === key ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       ) : null}
                       Activar
@@ -369,6 +386,9 @@ export function PitchesSection({
 
             );
           })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </section>
