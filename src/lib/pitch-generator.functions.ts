@@ -57,7 +57,7 @@ export const generatePitchSection = createServerFn({ method: "POST" })
  */
 export const publishPitch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { pitchId: string }) => {
+  .inputValidator((input: { pitchId: string; force?: boolean }) => {
     if (!input?.pitchId) throw new Error("pitchId required");
     return input;
   })
@@ -84,9 +84,20 @@ export const publishPitch = createServerFn({ method: "POST" })
     }
 
     const integrity = await checkPitchIntegrity(supabaseAdmin, data.pitchId);
+    // Secciones vacías → bloquea. Desactualizadas / versión distinta → advierte.
     if (!integrity.ok) {
-      return { ok: false as const, error: "inconsistent", problems: integrity.problems };
+      return { ok: false as const, error: "incomplete", problems: integrity.problems };
     }
+    if (integrity.warnings.length > 0 && data.force !== true) {
+      return {
+        ok: false as const,
+        error: "needs_confirmation",
+        needs_confirmation: true as const,
+        warnings: integrity.warnings,
+        stale: integrity.stale,
+      };
+    }
+
 
     const { data: sections } = await supabaseAdmin
       .from("pitch_sections")
