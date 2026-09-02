@@ -19,7 +19,8 @@ const BRAIN_SIN_PRECIOS = BRAIN.replace("Precio de lista: cubeta de 19 litros $1
 const ctx = (over: Partial<Parameters<typeof validatePitch>[1]> = {}) => ({
   validSkillIds: new Set(["linea_recta", "sce", "mindset"]),
   brain: BRAIN,
-  clientType: "recurrente",
+  relationship: "recurrente",
+  clientType: "revende",
   ...over,
 });
 
