@@ -41,7 +41,7 @@ function PitchDetailPage() {
     let cancelled = false;
     (async () => {
       const p = await restGetMaybeSingle<CompanyPitch>(
-        `company_pitches?select=id,company_id,client_type,channel,status,version,published_at,updated_at,missing_data&id=eq.${pitchId}&status=eq.published&limit=1`,
+        `company_pitches?select=id,company_id,relationship,client_type,channel,status,version,published_at,updated_at,missing_data&id=eq.${pitchId}&status=eq.published&limit=1`,
       );
       const rows = p ? await fetchPitchSections(p.id) : [];
       if (cancelled) return;
