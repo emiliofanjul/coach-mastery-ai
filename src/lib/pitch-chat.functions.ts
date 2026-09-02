@@ -62,6 +62,7 @@ opinión sobre el precio.
   "mensaje": "lo que le dices al manager",
   "propuesta": "texto completo de la sección como quedaría, o null",
   "propuesta_label": "etiqueta corta del botón, p.ej. 'Con tu lenguaje' o 'La alternativa'",
+  "propuesta_manager": "solo cuando acuerdo_pendiente es true: el texto completo de la sección HECHA COMO ÉL LA PIDE, para que pueda aplicarla como decisión de su equipo; si no, null",
   "acuerdo_pendiente": true | false }`;
 
 export const pitchSectionChat = createServerFn({ method: "POST" })
@@ -185,6 +186,10 @@ ${(section as any).content ?? "(vacío)"}`;
           ? String(parsed.propuesta).trim()
           : null,
       propuesta_label: String(parsed?.propuesta_label ?? "La versión nueva"),
+      propuesta_manager:
+        typeof parsed?.propuesta_manager === "string" && parsed.propuesta_manager.trim()
+          ? String(parsed.propuesta_manager).trim()
+          : null,
       acuerdo_pendiente: parsed?.acuerdo_pendiente === true,
     };
 
