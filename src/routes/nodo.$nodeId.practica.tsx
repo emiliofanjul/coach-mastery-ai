@@ -87,7 +87,11 @@ function PracticaPage() {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [feedbackResult, setFeedbackResult] = useState<FeedbackResult | null>(null);
+  const [evalError, setEvalError] = useState<string | null>(null);
+  const savedSessionRef = useRef<any>(null);
+  const audioBlobPromiseRef = useRef<Promise<Blob | null> | null>(null);
   const rawEvaluationRef = useRef<any>(null);
+
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
   const [prepError, setPrepError] = useState<string | null>(null);
@@ -1191,7 +1195,7 @@ function PracticaPage() {
     stopRecognition();
     stopAudio();
     // Detener captura de audio en paralelo (no bloquea el feedback)
-    const audioBlobPromise = stopAudioCapture();
+    audioBlobPromiseRef.current = stopAudioCapture();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
     const youDoConv = youDo.map((m) => ({
@@ -1199,9 +1203,52 @@ function PracticaPage() {
       content: m.text,
     }));
     setYouDoHistory(youDoConv);
-    // 1) Show feedback (loading) screen immediately
+    // 1) Mostrar pantalla de análisis
     setPhase("feedback");
-    // 2) Run evaluation in background
+    // 2) GUARDAR LA PRÁCTICA ANTES DE EVALUAR — si el análisis falla,
+    //    la conversación ya está persistida y se puede reintentar.
+    await persistPracticeSession();
+    // 3) Evaluar (reintentable)
+    await runEvaluation();
+  }
+
+  /** Inserta practice_sessions con el transcript, antes de cualquier llamada al evaluador. */
+  async function persistPracticeSession() {
+    if (savedSessionRef.current) return;
+    const nodeType: string = nodeDataRef.current?.node_type ?? nodeData?.node_type ?? "skill_drill";
+    const practiceType =
+      nodeType === "boss" ? "boss" : nodeType === "full_sim" ? "full_sim" : "skill_drill";
+    try {
+      const sessionRows = await restMutate<any>("practice_sessions", {
+        method: "POST",
+        prefer: "return=representation",
+        body: {
+          seller_id: sellerData.id,
+          company_id: sellerData.company_id,
+          node_id: nodeId,
+          world_id: nodeData?.world_id ?? 0,
+          practice_type: practiceType,
+          is_boss_level: nodeType === "boss" || nodeData?.is_boss === true,
+          transcript: JSON.stringify(transcriptFullRef.current),
+          conversation_history: conversationHistoryRef.current as any,
+        },
+      });
+      savedSessionRef.current = sessionRows[0] ?? null;
+      setSessionId(savedSessionRef.current?.id ?? null);
+    } catch (sessionErr) {
+      console.error("[practica] insert practice_sessions failed:", sessionErr);
+    }
+  }
+
+  /**
+   * Llama al evaluador con el MISMO transcript. Reintentable sin perder nada.
+   * Timeout duro de 60s: la pantalla de análisis nunca se queda sin salida.
+   */
+  async function runEvaluation() {
+    setEvalError(null);
+    setFeedbackResult(null);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 60_000);
     try {
       const evaluatePayload = {
         transcript: "",
@@ -1230,6 +1277,7 @@ function PracticaPage() {
           Authorization: `Bearer ${SUPABASE_ANON}`,
         },
         body: JSON.stringify(evaluatePayload),
+        signal: ctrl.signal,
       });
       const rawText = await evaluateRes.text();
       console.log("[closer-voice evaluate] ← status", evaluateRes.status, "body:", rawText);
@@ -1313,33 +1361,13 @@ function PracticaPage() {
             ? "full_sim"
             : "skill_drill";
       const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
-      let session: any = null;
-      try {
-        const sessionRows = await restMutate<any>("practice_sessions", {
-          method: "POST",
-          prefer: "return=representation",
-          body: {
-            seller_id: sellerData.id,
-            company_id: sellerData.company_id,
-            node_id: nodeId,
-            world_id: nodeData?.world_id ?? 0,
-            practice_type: practiceType,
-            is_boss_level: isBossLevel,
-            transcript: JSON.stringify(transcriptFullRef.current),
-            conversation_history: conversationHistoryRef.current as any,
-          },
-        });
-        session = sessionRows[0] ?? null;
-      } catch (sessionErr) {
-        console.error("[practica] insert practice_sessions failed:", sessionErr);
-      }
-      setSessionId(session?.id ?? null);
+      const session = savedSessionRef.current;
 
       // Registrar seller_event + subir audio (si hay consent) vía Edge Function (service role)
       if (!audioUploadedRef.current) {
         audioUploadedRef.current = true;
         try {
-          const audioBlob = await audioBlobPromise;
+          const audioBlob = await (audioBlobPromiseRef.current ?? Promise.resolve(null));
           const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
           const form = new FormData();
           form.append(
@@ -1405,11 +1433,19 @@ function PracticaPage() {
         }
       }
     } catch (err) {
-      console.error("[practica] handleSessionEnd error:", err);
+      console.error("[practica] runEvaluation error:", err);
       setFeedbackResult(null);
-      setConnectionError("No se pudo generar el feedback. Toca para reintentar.");
+      const aborted = (err as any)?.name === "AbortError";
+      setEvalError(
+        aborted
+          ? "El análisis tardó demasiado. Tu práctica está guardada — puedes reintentarlo."
+          : "No pude generar tu análisis. Tu práctica está guardada — puedes reintentarlo.",
+      );
+    } finally {
+      clearTimeout(timer);
     }
   }
+
 
 
   async function handleReplay() {
@@ -1840,6 +1876,9 @@ function PracticaPage() {
         {phase === "feedback" && (
           <FeedbackPhase
             key="feedback"
+            evalError={evalError}
+            onRetryEvaluation={() => { void runEvaluation(); }}
+
             conversation={youDoHistory}
             feedback={feedbackResult}
             worldId={nodeData?.world_id ?? 0}
@@ -2693,7 +2732,7 @@ const ANALYSIS_MESSAGES = [
   "Casi listo...",
 ];
 
-type FeedbackStep = "analyzing" | "result" | "victory";
+type FeedbackStep = "analyzing" | "result" | "victory" | "eval_error" | "transcript_only";
 
 function ObservationCard({ obs }: { obs: ObservationItem }) {
   const [open, setOpen] = useState(false);
@@ -3056,6 +3095,8 @@ function FeedbackPhase({
   evaluation,
   companyId,
   sellerId,
+  evalError,
+  onRetryEvaluation,
 }: {
   onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
@@ -3067,15 +3108,39 @@ function FeedbackPhase({
   evaluation: any;
   companyId?: string | null;
   sellerId?: string | null;
+  evalError?: string | null;
+  onRetryEvaluation?: () => void;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
+  const [slowNotice, setSlowNotice] = useState(false);
 
   useEffect(() => {
     if (feedback !== null) {
       setStep("result");
     }
   }, [feedback]);
+
+  // Salida por error: si el evaluador falla o se pasa del timeout.
+  useEffect(() => {
+    if (evalError) setStep("eval_error");
+  }, [evalError]);
+
+  // Reintento: volvemos a la animación.
+  useEffect(() => {
+    if (!evalError && feedback === null && step === "eval_error") setStep("analyzing");
+  }, [evalError, feedback, step]);
+
+  // "Esto está tardando más de lo normal" a los 25s.
+  useEffect(() => {
+    if (step !== "analyzing") {
+      setSlowNotice(false);
+      return;
+    }
+    setSlowNotice(false);
+    const t = setTimeout(() => setSlowNotice(true), 25_000);
+    return () => clearTimeout(t);
+  }, [step]);
 
   useEffect(() => {
     if (step !== "analyzing") return;
@@ -3084,6 +3149,7 @@ function FeedbackPhase({
     }, 2000);
     return () => clearInterval(i);
   }, [step]);
+
 
   const score = feedback?.score ?? 0;
   const stars: 1 | 2 | 3 = feedback?.stars ?? 1;
@@ -3334,7 +3400,126 @@ function FeedbackPhase({
     );
   }
 
+  if (step === "eval_error") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 18,
+          padding: "1.2rem",
+        }}
+      >
+        <CloserCharacter size={86} state="motivation" />
+        <div
+          style={{
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 800,
+            fontSize: 22,
+            color: "#fff",
+            textAlign: "center",
+          }}
+        >
+          No pude cerrar tu análisis
+        </div>
+        <div
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 14,
+            color: "rgba(255,255,255,0.6)",
+            textAlign: "center",
+            maxWidth: 400,
+            lineHeight: 1.5,
+          }}
+        >
+          {evalError} Tu conversación completa quedó guardada.
+        </div>
+        <button
+          onClick={() => onRetryEvaluation?.()}
+          style={{
+            width: "100%",
+            maxWidth: 400,
+            height: 52,
+            borderRadius: 99,
+            border: "none",
+            background: ORANGE,
+            color: "#08080F",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 16,
+            cursor: "pointer",
+            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+          }}
+        >
+          Reintentar análisis
+        </button>
+        <button
+          onClick={() => setStep("transcript_only")}
+          style={{
+            width: "100%",
+            maxWidth: 400,
+            height: 48,
+            borderRadius: 99,
+            border: "1px solid rgba(255,255,255,0.18)",
+            background: "transparent",
+            color: "#fff",
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 15,
+            cursor: "pointer",
+          }}
+        >
+          Ver mi conversación
+        </button>
+      </motion.div>
+    );
+  }
+
+  if (step === "transcript_only") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "1.2rem" }}
+      >
+        <div style={{ maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 20, color: "#fff" }}>
+            Tu conversación
+          </div>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
+            Sin análisis todavía. Puedes reintentarlo cuando quieras — la práctica está guardada.
+          </div>
+          <ConversationTranscript conversation={conversation} />
+          <button
+            onClick={() => onRetryEvaluation?.()}
+            style={{
+              width: "100%",
+              height: 52,
+              borderRadius: 99,
+              border: "none",
+              background: ORANGE,
+              color: "#08080F",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: 16,
+              cursor: "pointer",
+            }}
+          >
+            Reintentar análisis
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
   // analyzing
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -3385,7 +3570,7 @@ function FeedbackPhase({
       </div>
       <AnimatePresence mode="wait">
         <motion.div
-          key={msgIdx}
+          key={slowNotice ? "slow" : msgIdx}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
@@ -3393,11 +3578,15 @@ function FeedbackPhase({
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 14,
-            color: "rgba(255,255,255,0.5)",
+            color: slowNotice ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.5)",
             textAlign: "center",
+            maxWidth: 400,
           }}
         >
-          {ANALYSIS_MESSAGES[msgIdx]}
+          {slowNotice
+            ? "Esto está tardando más de lo normal, dame unos segundos más."
+            : ANALYSIS_MESSAGES[msgIdx]}
+
         </motion.div>
       </AnimatePresence>
     </motion.div>
