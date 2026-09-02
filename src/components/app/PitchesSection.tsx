@@ -299,11 +299,11 @@ export function PitchesSection({
                     </>
                   ) : (
                     <Button
-                      onClick={() => handleActivate(t.key)}
-                      disabled={busy === t.key}
+                      onClick={() => handleActivate(rel.key, t.key, ch)}
+                      disabled={busy === key}
                       className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold"
                     >
-                      {busy === t.key ? (
+                      {busy === key ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       ) : null}
                       Activar
