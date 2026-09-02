@@ -5,7 +5,7 @@ import { PitchViewer } from "@/components/pitch/PitchViewer";
 import { restGetMaybeSingle } from "@/lib/supabase-rest";
 import {
   CHANNELS,
-  CLIENT_TYPES,
+  pitchLabel,
   fetchPitchSections,
   type CompanyPitch,
   type PitchSection,
