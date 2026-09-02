@@ -2732,7 +2732,7 @@ const ANALYSIS_MESSAGES = [
   "Casi listo...",
 ];
 
-type FeedbackStep = "analyzing" | "result" | "victory";
+type FeedbackStep = "analyzing" | "result" | "victory" | "eval_error" | "transcript_only";
 
 function ObservationCard({ obs }: { obs: ObservationItem }) {
   const [open, setOpen] = useState(false);
