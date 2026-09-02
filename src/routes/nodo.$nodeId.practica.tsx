@@ -1195,7 +1195,7 @@ function PracticaPage() {
     stopRecognition();
     stopAudio();
     // Detener captura de audio en paralelo (no bloquea el feedback)
-    const audioBlobPromise = stopAudioCapture();
+    audioBlobPromiseRef.current = stopAudioCapture();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
     const youDoConv = youDo.map((m) => ({
@@ -1203,9 +1203,52 @@ function PracticaPage() {
       content: m.text,
     }));
     setYouDoHistory(youDoConv);
-    // 1) Show feedback (loading) screen immediately
+    // 1) Mostrar pantalla de análisis
     setPhase("feedback");
-    // 2) Run evaluation in background
+    // 2) GUARDAR LA PRÁCTICA ANTES DE EVALUAR — si el análisis falla,
+    //    la conversación ya está persistida y se puede reintentar.
+    await persistPracticeSession();
+    // 3) Evaluar (reintentable)
+    await runEvaluation();
+  }
+
+  /** Inserta practice_sessions con el transcript, antes de cualquier llamada al evaluador. */
+  async function persistPracticeSession() {
+    if (savedSessionRef.current) return;
+    const nodeType: string = nodeDataRef.current?.node_type ?? nodeData?.node_type ?? "skill_drill";
+    const practiceType =
+      nodeType === "boss" ? "boss" : nodeType === "full_sim" ? "full_sim" : "skill_drill";
+    try {
+      const sessionRows = await restMutate<any>("practice_sessions", {
+        method: "POST",
+        prefer: "return=representation",
+        body: {
+          seller_id: sellerData.id,
+          company_id: sellerData.company_id,
+          node_id: nodeId,
+          world_id: nodeData?.world_id ?? 0,
+          practice_type: practiceType,
+          is_boss_level: nodeType === "boss" || nodeData?.is_boss === true,
+          transcript: JSON.stringify(transcriptFullRef.current),
+          conversation_history: conversationHistoryRef.current as any,
+        },
+      });
+      savedSessionRef.current = sessionRows[0] ?? null;
+      setSessionId(savedSessionRef.current?.id ?? null);
+    } catch (sessionErr) {
+      console.error("[practica] insert practice_sessions failed:", sessionErr);
+    }
+  }
+
+  /**
+   * Llama al evaluador con el MISMO transcript. Reintentable sin perder nada.
+   * Timeout duro de 60s: la pantalla de análisis nunca se queda sin salida.
+   */
+  async function runEvaluation() {
+    setEvalError(null);
+    setFeedbackResult(null);
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 60_000);
     try {
       const evaluatePayload = {
         transcript: "",
@@ -1234,6 +1277,7 @@ function PracticaPage() {
           Authorization: `Bearer ${SUPABASE_ANON}`,
         },
         body: JSON.stringify(evaluatePayload),
+        signal: ctrl.signal,
       });
       const rawText = await evaluateRes.text();
       console.log("[closer-voice evaluate] ← status", evaluateRes.status, "body:", rawText);
@@ -1317,33 +1361,13 @@ function PracticaPage() {
             ? "full_sim"
             : "skill_drill";
       const isBossLevel = nodeType === "boss" || nodeData?.is_boss === true;
-      let session: any = null;
-      try {
-        const sessionRows = await restMutate<any>("practice_sessions", {
-          method: "POST",
-          prefer: "return=representation",
-          body: {
-            seller_id: sellerData.id,
-            company_id: sellerData.company_id,
-            node_id: nodeId,
-            world_id: nodeData?.world_id ?? 0,
-            practice_type: practiceType,
-            is_boss_level: isBossLevel,
-            transcript: JSON.stringify(transcriptFullRef.current),
-            conversation_history: conversationHistoryRef.current as any,
-          },
-        });
-        session = sessionRows[0] ?? null;
-      } catch (sessionErr) {
-        console.error("[practica] insert practice_sessions failed:", sessionErr);
-      }
-      setSessionId(session?.id ?? null);
+      const session = savedSessionRef.current;
 
       // Registrar seller_event + subir audio (si hay consent) vía Edge Function (service role)
       if (!audioUploadedRef.current) {
         audioUploadedRef.current = true;
         try {
-          const audioBlob = await audioBlobPromise;
+          const audioBlob = await (audioBlobPromiseRef.current ?? Promise.resolve(null));
           const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
           const form = new FormData();
           form.append(
@@ -1409,11 +1433,19 @@ function PracticaPage() {
         }
       }
     } catch (err) {
-      console.error("[practica] handleSessionEnd error:", err);
+      console.error("[practica] runEvaluation error:", err);
       setFeedbackResult(null);
-      setConnectionError("No se pudo generar el feedback. Toca para reintentar.");
+      const aborted = (err as any)?.name === "AbortError";
+      setEvalError(
+        aborted
+          ? "El análisis tardó demasiado. Tu práctica está guardada — puedes reintentarlo."
+          : "No pude generar tu análisis. Tu práctica está guardada — puedes reintentarlo.",
+      );
+    } finally {
+      clearTimeout(timer);
     }
   }
+
 
 
   async function handleReplay() {
