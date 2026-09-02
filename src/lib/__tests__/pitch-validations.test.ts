@@ -181,3 +181,83 @@ describe("fixtures de outputs reales que fallaron", () => {
     expect(fails.some((f) => f.startsWith("V26"))).toBe(false);
   });
 });
+
+// ── V27 / V14b ───────────────────────────────────────────────────────────
+describe("territorio precio y preguntas que asumen hechos", () => {
+  const CON_PRECIO_DESNUDO =
+    "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel? " +
+    "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual? " +
+    "¿Qué presentación te sirve más? ¿Cubeta de 19? ¿Caja de 24? " +
+    "¿A cómo estás comprando hoy el aceite de motor?";
+
+  it("V27 rechaza la pregunta de precio sin opciones sugeridas", () => {
+    const fails = validatePitch(
+      wrap(section({ content: CON_PRECIO_DESNUDO })),
+      ctx({ only: "descubrimiento", brain: BRAIN_SIN_PRECIOS }),
+    );
+    expect(fails.some((f) => f.startsWith("V27"))).toBe(true);
+  });
+
+  it("V27 acepta sugerir sobre plazo/frecuencia cuando el brain no trae precios", () => {
+    const fails = validatePitch(
+      {
+        sections: [
+          section({
+            content:
+              "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel? " +
+              "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual? " +
+              "¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso? " +
+              "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?",
+          }),
+        ],
+        missing_data: ["los precios de lista por presentación"],
+      },
+      ctx({ only: "descubrimiento", brain: BRAIN_SIN_PRECIOS }),
+    );
+    expect(fails.filter((f) => f.startsWith("V27"))).toEqual([]);
+    expect(fails.some((f) => f.startsWith("V26"))).toBe(false);
+  });
+
+  it("V27 exige que missing_data pida los precios de lista", () => {
+    const fails = validatePitch(
+      wrap(
+        section({
+          content:
+            "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel? " +
+            "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual? " +
+            "¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?",
+        }),
+      ),
+      ctx({ only: "descubrimiento", brain: BRAIN_SIN_PRECIOS }),
+    );
+    expect(fails.some((f) => f.startsWith("V27") && /missing_data/.test(f))).toBe(true);
+  });
+
+  it("V14b rechaza la pregunta que asume que trabaja con varios proveedores", () => {
+    const fails = validatePitch(
+      wrap(
+        section({
+          content:
+            section().content +
+            " ¿Qué es lo que más te pesa de trabajar con varios proveedores?",
+        }),
+      ),
+      ctx({ only: "descubrimiento" }),
+    );
+    expect(fails.some((f) => f.startsWith("V14b"))).toBe(true);
+  });
+
+  it("V14b no dispara con la versión en dos pasos", () => {
+    const fails = validatePitch(
+      wrap(
+        section({
+          content:
+            section().content +
+            " ¿Con cuántos proveedores te manejas hoy? ¿Uno? ¿Dos? ¿Más?",
+        }),
+      ),
+      ctx({ only: "descubrimiento" }),
+    );
+    expect(fails.some((f) => f.startsWith("V14b"))).toBe(false);
+  });
+});

@@ -712,6 +712,66 @@ export function validatePitch(
     }
   }
 
+  // 27. El territorio PRECIO también necesita Suggestive Language. V26 prohíbe
+  //     inventar CIFRAS, no prohíbe sugerir: si no hay precios en el brain, se
+  //     sugiere sobre plazo, forma de pago o frecuencia de aumento.
+  if (desc && (!ctx.only || ctx.only === "descubrimiento")) {
+    const dText = String(desc.content ?? "");
+    const PRECIO_TERRITORIO =
+      /(a c[óo]mo|precio|costo|c[óo]mo (?:est[áa]s? )?(?:compra|comprando)|te suben|aumento|ajustan|plazo|cr[ée]dito|contado|d[íi]as de pago|forma de pago)/i;
+    // Cada fragmento entre "¿" es una pregunta u opción; una pregunta "lleva
+    // opciones" si el fragmento siguiente es corto (una opción sugerida).
+    const frags = dText.split("¿").map((f) => f.trim()).filter(Boolean);
+    const tocaPrecio = PRECIO_TERRITORIO.test(dText);
+    const precioConOpciones = frags.some(
+      (f, i) => PRECIO_TERRITORIO.test(f) && (frags[i + 1]?.length ?? 999) <= 45,
+    );
+    if (tocaPrecio && !precioConOpciones) {
+      fails.push(
+        `V27: el territorio PRECIO va sin Suggestive Language: las preguntas de precio están desnudas. Si el brain trae precios, sugiere los rangos con esas cifras; si no los trae, sugiere sobre otras dimensiones que sí conoces ("¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?", "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?") y declara en missing_data que faltan los precios de lista`,
+      );
+    }
+    // Si no hay precios en el brain, missing_data debe pedirlos.
+    const brainPrecios =
+      /\$\s*\d/.test(ctx.brain) ||
+      /\b\d{2,5}\s*(pesos|mxn)\b/i.test(ctx.brain) ||
+      /\b(precio|costo|lista)\b[^\n]{0,40}\d{2,5}/i.test(ctx.brain);
+    if (tocaPrecio && !brainPrecios) {
+      const md = [
+        ...(ctx.missingData ?? []),
+        ...(Array.isArray((parsed as any)?.missing_data) ? (parsed as any).missing_data : []),
+      ];
+      const mdText = md.join(" ");
+      if (!/(precio|lista de precios|tarifa)/i.test(mdText)) {
+        fails.push(
+          `V27: el descubrimiento toca precio y el brain no trae cifras, pero missing_data no pide la lista de precios. Agrega en missing_data la petición explícita de los precios de lista por presentación`,
+        );
+      }
+    }
+  }
+
+  // 14b. Ninguna pregunta puede asumir un hecho que el cliente no declaró.
+  //      "¿Qué es lo que más te pesa de trabajar con varios proveedores?"
+  //      asume que trabaja con varios. Primero se averigua si X existe.
+  const ASUME_HECHO = [
+    /(qu[ée]|cu[áá]l)[^.?!¿]{0,25}(m[áa]s )?(te|le) (pesa|cuesta|duele|complica|estorba|frustra)[^.?!]{0,60}/i,
+    /c[óo]mo (te|le) (afecta|pega|golpea|impacta)[^.?!]{0,60}/i,
+    /(qu[ée]|cu[áá]nto)[^.?!¿]{0,25}(problema|dolor|batalla|broncas?)[^.?!]{0,20}(te|le) (da|dan|causa|causan)[^.?!]{0,60}/i,
+  ];
+  for (const s of sections) {
+    const t = textOf(s);
+    for (const rx of ASUME_HECHO) {
+      const m = t.match(rx);
+      if (m) {
+        fails.push(
+          `V14b: pregunta que planta en vez de descubrir en ${s?.section_key} ("${m[0].trim()}"): asume un hecho que el cliente no ha declarado. Pártela en dos: primero averigua si existe con opciones ("¿Con cuántos proveedores te manejas hoy? ¿Uno? ¿Dos? ¿Más?") y solo después explora ("¿y eso te complica algo?")`,
+        );
+        break;
+      }
+    }
+  }
+
+
 
 
 
@@ -1244,16 +1304,38 @@ llevan sus opciones sugeridas, tomadas de datos reales de LA EMPRESA (arriba).
 ✓ "¿Qué familias son las que más se te mueven? ¿Anticongelantes? ¿Aceite de motor? ¿Diésel?"
 ✗ "¿Cada cuándo te surten?"
 ✓ "¿Cada cuándo te surten? ¿Semanal? ¿Quincenal? ¿Mensual?"
-(Las opciones de PRECIO con cifras solo si LA EMPRESA trae precios; si no, la
-pregunta de precio va sin números y el dato se pide en missing_data.)
 Por qué: o elige una opción, o te corrige con el dato real ("no, más bien 95"),
 y esa corrección es información que la pregunta abierta nunca saca.
 
 LAS OPCIONES TIENEN QUE SER REALES: solo familias, líneas, presentaciones y
 marcas que LA EMPRESA (arriba) realmente maneja. Sugerir algo que no maneja
-demuestra lo contrario de lo que buscabas. Si el brain NO trae los productos
-con precios, las opciones de precio NO se inventan: se omiten (la pregunta va
-sin rangos) y el dato se pide en missing_data.
+demuestra lo contrario de lo que buscabas.
+
+═══ EL TERRITORIO PRECIO TAMBIÉN LLEVA SUGGESTIVE LANGUAGE ═══
+Se prohíbe inventar CIFRAS de precio. NO se prohíbe sugerir en el territorio
+precio. Dos casos:
+a) LA EMPRESA trae precios reales → las opciones se construyen con esos números:
+   "¿A cómo compras el líquido de frenos? ¿70? ¿80? ¿90?"
+b) LA EMPRESA no trae precios → las opciones NO se inventan, pero la pregunta
+   tampoco se deja desnuda: sugiere sobre dimensiones que sí conoces.
+   ✗ "¿A cómo estás comprando hoy el aceite de motor?" (desnuda)
+   ✓ "¿Cada cuándo te suben? ¿Cada mes? ¿Cada trimestre? ¿Sin aviso?"
+   ✓ "¿Te manejan crédito o de contado? ¿A 15 días? ¿A 30?"
+   ✓ "¿Te avisan antes de subir o te enteras al pedir?"
+   Y en missing_data incluye OBLIGATORIAMENTE esta línea, tal cual:
+   "Precios de lista por presentación, para poder sugerir rangos en la pregunta de precio"
+   (sin ella la sección se rechaza).
+Al menos UNA pregunta del territorio precio lleva opciones sugeridas.
+
+═══ NINGUNA PREGUNTA ASUME UN HECHO NO DECLARADO ═══
+Descubrir es señalar lo que existe. Asumirlo en la pregunta es plantarlo.
+✗ "¿Qué es lo que más te pesa de trabajar con varios proveedores?" (asume que
+  trabaja con varios)
+✓ "¿Con cuántos proveedores te manejas hoy? ¿Uno? ¿Dos? ¿Más?" y solo después,
+  si dice que varios, "¿y eso te complica algo?"
+Prohibido "¿qué es lo que más te pesa de X?" o "¿cómo te afecta X?" cuando X
+no está establecido. Primero se averigua si X existe, después se explora.
+
 
 COHERENCIA CON EL TIPO DE CLIENTE (${String(pitch.client_type)}):
 · autoconsumo → qué usa, cada cuánto repone, cuántas unidades. NUNCA familias
