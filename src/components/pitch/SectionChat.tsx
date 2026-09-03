@@ -3,12 +3,13 @@ import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { pitchSectionChat } from "@/lib/pitch-chat.functions";
-import { applySectionContent, logPitchFeedback, type PitchSection } from "@/lib/pitches";
+import { logPitchFeedback, type PitchSection } from "@/lib/pitches";
+import { applyPitchSection } from "@/lib/pitch-audit.functions";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 type Reply = {
-  clasificacion: "estilo" | "hecho" | "doctrina";
+  clasificacion: "estilo" | "hecho" | "correccion" | "doctrina";
   mensaje: string;
   propuesta: string | null;
   propuesta_label: string;
@@ -16,9 +17,10 @@ type Reply = {
   acuerdo_pendiente: boolean;
 };
 
-const ETIQUETA: Record<Reply["clasificacion"], string> = {
+const ETIQUETA: Record = {
   estilo: "es tu lenguaje",
   hecho: "es un hecho de tu negocio",
+  correccion: "tienes razón, el pitch estaba mal",
   doctrina: "aquí no coincidimos",
 };
 
@@ -38,11 +40,15 @@ export function SectionChat({
   onClose: () => void;
 }) {
   const ask = useServerFn(pitchSectionChat);
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const applyFn = useServerFn(applyPitchSection);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [reply, setReply] = useState<Reply | null>(null);
+  const [reply, setReply] = useState(null);
   const [applying, setApplying] = useState(false);
+  const [audit, setAudit] = useState;
+    sin_respaldo: string[];
+  }>(null);
   const rounds = useRef(0);
 
   const desacuerdos = messages.filter((m) => m.role === "user").length;
@@ -78,7 +84,12 @@ export function SectionChat({
   async function apply(content: string, forced: boolean) {
     setApplying(true);
     try {
-      await applySectionContent(section.id, content, forced);
+      const res: any = await applyFn({
+        data: { sectionId: section.id, content, editedByManager: forced },
+      });
+      if (!res?.ok) throw new Error("No se pudo aplicar el cambio.");
+      const veredicto = res.audit ?? null;
+      setAudit(veredicto);
       await logPitchFeedback({
         pitch_id: section.pitch_id,
         section_id: section.id,
@@ -87,6 +98,15 @@ export function SectionChat({
         classification: forced ? "doctrina" : (reply?.clasificacion ?? null),
         outcome: forced ? "aplicado_por_el_equipo" : "aplicado",
       });
+      if (veredicto && veredicto.status !== "limpio") {
+        toast.warning(
+          veredicto.status === "falla"
+            ? "Aplicado, pero la sección incumple un criterio grave."
+            : "Aplicado, con observaciones.",
+        );
+        onApplied();
+        return; // se queda abierto para que vea el veredicto
+      }
       toast.success(
         forced
           ? "Aplicado y marcado como decisión de tu equipo."
@@ -122,52 +142,75 @@ export function SectionChat({
   const mostrarForzar = desacuerdos >= 3 && reply?.clasificacion === "doctrina";
 
   return (
-    <div className="mt-3 rounded-[10px] border border-white/10 bg-black/30 p-3">
-      <div className="mb-2 text-[12px] text-white/50 font-['DM_Sans']">
+    
+
+
+      
+
+
         Dime qué le cambiarías a esta sección. Closer nunca la modifica solo: te muestra
         el texto y tú aplicas.
-      </div>
+      
 
-      <div className="space-y-2">
+
+      
+
+
         {messages.map((m, i) => (
-          <div
-            key={i}
-            className={[
-              "whitespace-pre-wrap rounded-[10px] p-2.5 text-[13px] font-['DM_Sans']",
-              m.role === "user"
-                ? "bg-white/[0.06] text-white/85"
-                : "bg-[#FF6B2B]/10 text-white/85",
-            ].join(" ")}
-          >
+          
+
+
             {m.content}
-          </div>
+          
+
+
         ))}
         {sending && (
-          <div className="flex items-center gap-2 text-[12px] text-white/40 font-['DM_Sans']">
-            <Loader2 className="h-3 w-3 animate-spin" /> Closer está pensando…
-          </div>
+          
+
+
+             Closer está pensando…
+          
+
+
         )}
-      </div>
+      
+
 
       {reply && (
-        <div className="mt-2">
-          <span className="rounded-[99px] bg-white/10 px-2 py-0.5 text-[10px] text-white/50 font-['DM_Sans']">
+        
+
+
+          
             {ETIQUETA[reply.clasificacion]}
-          </span>
-        </div>
+          
+        
+
+
       )}
 
       {reply?.propuesta && (
-        <div className="mt-2 rounded-[10px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3">
-          <div className="text-[11px] uppercase tracking-wide text-[#FF6B2B] font-['Syne'] font-bold">
+        
+
+
+          
+
+
             {reply.propuesta_label}
-          </div>
-          <p className="mt-1.5 whitespace-pre-wrap text-[13px] text-white/85 font-['DM_Sans']">
+          
+
+
+          
+
+
             {reply.propuesta}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              onClick={() => apply(reply.propuesta!, false)}
+          
+
+
+          
+
+
+             apply(reply.propuesta!, false)}
               disabled={applying}
               className="rounded-[99px] bg-[#FF6B2B] px-3.5 py-1.5 text-[12px] font-['Syne'] font-bold text-black disabled:opacity-50"
             >
@@ -176,30 +219,72 @@ export function SectionChat({
                 : reply.clasificacion === "doctrina"
                   ? "Aplicar la alternativa"
                   : "Aplicar este cambio"}
-            </button>
-            <button
-              onClick={() => setReply({ ...reply, propuesta: null })}
+            
+             setReply({ ...reply, propuesta: null })}
               className="rounded-[99px] border border-white/15 px-3.5 py-1.5 text-[12px] text-white/70 font-['DM_Sans']"
             >
               Seguir platicando
-            </button>
+            
             {mostrarForzar && reply.propuesta_manager && (
-              <button
-                onClick={() => apply(reply.propuesta_manager!, true)}
+               apply(reply.propuesta_manager!, true)}
                 disabled={applying}
                 className="rounded-[99px] border border-red-400/40 px-3.5 py-1.5 text-[12px] text-red-200 font-['DM_Sans'] disabled:opacity-50"
               >
                 Hacerlo como lo pedí
-              </button>
+              
             )}
-          </div>
-        </div>
+          
+
+
+        
+
+
       )}
 
-      <div className="mt-3 flex items-end gap-2">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+      {audit && audit.status !== "limpio" && (
+        
+
+
+          
+
+
+            {audit.status === "falla" ? "Revisión: falla un criterio" : "Revisión: con observaciones"}
+          
+
+
+          
+
+
+            {audit.violations.map((v, i) => (
+              
+
+
+                «{v.evidencia}» — {v.explicacion}
+              
+
+
+            ))}
+            {audit.sin_respaldo.map((x, i) => (
+              
+
+
+                Sin respaldo en el cerebro de tu empresa: {x}
+              
+
+
+            ))}
+          
+
+
+        
+
+
+      )}
+
+      
+
+
+         setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
