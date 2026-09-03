@@ -1,35 +1,23 @@
 ## Objetivo
-Sincronizar automáticamente el código de este proyecto de Lovable con un repositorio en la cuenta de GitHub `emiliofanjul1@hotmail.com`.
+Ejecutar la migración `closer_mundo3_v2_tres_territorios.sql` (auditoría de pitch + vía "correccion" en feedback) y guardarla como `supabase/migrations/20260903120000_pitch_audit_y_correccion.sql`.
 
 ## Alcance
-Git sync de Lovable (backup + edición bidireccional del código). No es el GitHub API connector para llamadas dentro de la app.
+Solo la migración SQL adjunta. No se modifica código de la app ni otras tablas.
 
 ## Pasos
 
-### 1. Iniciar Git sync desde el editor de Lovable
-- En el editor del proyecto, abrir el menú **Plus (+)** del chat input.
-- Seleccionar **GitHub → Connect project**.
-- Esto abre el flujo de autorización de la GitHub App de Lovable.
+### 1. Ejecutar la migración en Lovable Cloud
+- Usar el migration tool con el SQL exacto proporcionado.
+- Descripción: "Pitch Builder: auditoría de secciones + vía 'correccion' en feedback."
 
-### 2. Autorizar GitHub
-- Iniciar sesión con la cuenta `emiliofanjul1@hotmail.com` si no está activa.
-- Autorizar a la GitHub App de Lovable a acceder a la cuenta.
+### 2. Guardar el archivo en el repo
+- Crear/actualizar `supabase/migrations/20260903120000_pitch_audit_y_correccion.sql` con el mismo SQL.
 
-### 3. Seleccionar cuenta u organización
-- Elegir la cuenta personal u organización de GitHub donde vivirá el repo.
-
-### 4. Crear o seleccionar repositorio
-- Lovable ofrece crear un repo nuevo con el código actual del proyecto.
-- Confirmar el nombre del repositorio y crearlo.
-
-### 5. Verificar sincronización
-- Esperar que Lovable confirme que el repo está conectado.
-- Opcional: hacer un pequeño cambio en Lovable y confirmar que aparece en GitHub, o viceversa.
-
-## Notas
-- Una vez conectado, los cambios en Lovable se empujan automáticamente a GitHub y los pushes a GitHub se reflejan en Lovable.
-- Si más adelante querés que la app use la API de GitHub (issues, repos, etc.), eso requiere el GitHub connector aparte.
+### 3. Verificar
+- Confirmar que `pitch_sections` tiene las columnas `audit`, `audited_at` y `audit_status`.
+- Confirmar que el CHECK de `pitch_feedback.classification` acepta `'correccion'`.
 
 ## Criterio de aceptación
-- El proyecto aparece conectado a un repo de GitHub en el UI de Lovable.
-- El código del proyecto está disponible en el repo de GitHub.
+- La migración se ejecuta sin errores.
+- Las columnas y el constraint quedan como se describe en el SQL.
+- El archivo de migración existe en `supabase/migrations/`.
