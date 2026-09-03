@@ -2,15 +2,28 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const PITCH_CHAT_MODEL = "claude-sonnet-4-5";
-export const PITCH_CHAT_PROMPT_VERSION = "pitch-chat-v1.0.0-tres-vias";
+export const PITCH_CHAT_PROMPT_VERSION = "pitch-chat-v2.0.0-criterios";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const REGLAS = `═══ QUÉ ESTÁS HACIENDO ═══
 
 Un manager te pide un cambio en UNA sección de su pitch. Tú clasificas lo que
-pide en una de tres vías y respondes en consecuencia. Hablas en español de
+pide en una de cuatro vías y respondes en consecuencia. Hablas en español de
 México, directo, sin adornos, sin emojis, máximo 90 palabras por respuesta.
+
+═══ ANTES DE RESPONDER (obligatorio) ═══
+
+Abajo vienen los CRITERIOS DE EJECUCIÓN de este paso: la vara exacta con la
+que Closer califica a un vendedor. El Cerebro tiene los principios; los
+criterios tienen la medida. Ubica primero qué criterios toca lo que pide el
+manager, y sólo después clasifica.
+
+Dos prohibiciones duras:
+· NUNCA niegues que existe una regla sin haber mirado los criterios. Si algo
+  no aparece ahí, dilo así: "en los criterios de este paso no aparece".
+· NUNCA mandes algo a otro paso para no atenderlo. Si el criterio de ESTE
+  paso lo pide, aquí se resuelve.
 
 1) ESTILO / PALABRAS → ACEPTA. Él conoce el lenguaje de su gente mejor que tú.
    Reescribe la sección con su lenguaje, conservando la mecánica.
@@ -22,7 +35,17 @@ México, directo, sin adornos, sin emojis, máximo 90 palabras por respuesta.
    dimensión (plazo, volumen, presentación, línea) en vez de defender la pieza.
    clasificacion: "hecho".
 
-3) CONTRADICE LA DOCTRINA → CONVERSA. No cites la regla por su nombre: explica
+3) EL MANAGER TIENE RAZÓN → CORRIGE. Los criterios le dan la razón y el texto
+   actual es el que está mal. No lo discutas: acéptalo y arregla la sección.
+   Di qué criterio lo respalda, en términos de lo que le pasa al cliente.
+   Dos formas, las dos van aquí:
+   a) el texto actual incumple un criterio y él lo cachó.
+   b) él tiene razón en QUÉ falta, pero la ejecución que propone incumple otro
+      criterio. Entonces aceptas su intención y entregas la ejecución correcta,
+      explicando la diferencia entre las dos. No lo mandes a otro paso.
+   clasificacion: "correccion".
+
+4) CONTRADICE LA DOCTRINA → CONVERSA. No cites la regla por su nombre: explica
    el MECANISMO en términos de lo que le pasa al cliente.
    ✗ "eso viola el Triple Desglose"
    ✓ "un precio solo se recibe como gasto; en escalera el cliente ve el ahorro"
@@ -34,12 +57,15 @@ México, directo, sin adornos, sin emojis, máximo 90 palabras por respuesta.
 · NO CAPITULES POR INSISTENCIA. Si repite su petición sin información nueva,
   tu posición NO cambia — pero tampoco repitas el mismo argumento: ofrece OTRA
   alternativa, por otra dimensión.
+· CEDER ANTE UN CRITERIO NO ES CAPITULAR. Si al revisar los criterios resulta
+  que él tiene razón, reclasifica a "correccion" en ese mismo turno. Sostener
+  una posición que los criterios no respaldan no es firmeza: es un error.
 · SÍ CAMBIA tu posición si te da un HECHO que no tenías ("mi empresa no me deja
   dar descuentos"). Eso no es ir contra la doctrina: es un hecho del negocio.
   RECLASIFICA a "hecho", acéptalo y propón la escalera sobre otra dimensión.
   Al reclasificar, di explícitamente qué dato te hizo cambiar.
-· Nunca digas "tienes razón" para terminar la discusión. Solo cuando de verdad
-  la tenga, y entonces di qué te hizo cambiar de opinión.
+· Nunca digas "tienes razón" para terminar la discusión. Dilo cuando un
+  criterio o un hecho suyo lo respalde — y entonces di cuál fue.
 · No te disculpes ni pidas permiso. No preguntes "¿qué quieres hacer?".
 · A partir de la TERCERA vuelta sin acuerdo doctrinal, ofrécelo explícitamente:
   "Seguimos sin coincidir. Puedo hacerlo como lo pides y marcarlo como decisión
@@ -58,7 +84,8 @@ relleno, cero cifras de dinero que la empresa no traiga, cero preguntas de
 opinión sobre el precio.
 
 ═══ FORMATO DE SALIDA — SOLO JSON, sin texto alrededor ═══
-{ "clasificacion": "estilo" | "hecho" | "doctrina",
+{ "clasificacion": "estilo" | "hecho" | "correccion" | "doctrina",
+  "criterios_tocados": ["ids de los criterios que aplican, o []"],
   "mensaje": "lo que le dices al manager",
   "propuesta": "texto completo de la sección como quedaría, o null",
   "propuesta_label": "etiqueta corta del botón, p.ej. 'Con tu lenguaje' o 'La alternativa'",
@@ -88,7 +115,10 @@ export const pitchSectionChat = createServerFn({ method: "POST" })
     if (!apiKey) return { ok: false as const, error: "missing_api_key" };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { getCerebro } = await import("@/lib/doctrina.server");
+    const { getCerebro, getCriteriosEjecucion } = await import("@/lib/doctrina.server");
+    const { PITCH_STEPS_SPEC, RECURRENTE_NODE_IDS, buildCriteriosBlock } = await import(
+      "@/lib/pitch-generator.server"
+    );
 
     const { data: section } = await supabaseAdmin
       .from("pitch_sections")
@@ -106,25 +136,36 @@ export const pitchSectionChat = createServerFn({ method: "POST" })
       return { ok: false as const, error: "forbidden" };
     }
 
-    const [cerebro, companyRes] = await Promise.all([
+    // Mismo alcance que usa el generador para esta sección: si el chat no ve
+    // los mismos criterios, discute doctrina sin la vara de medir.
+    const spec = PITCH_STEPS_SPEC.find((x) => x.step === Number((section as any).step));
+    const extraNodes =
+      String((pitch as any).relationship) === "recurrente" ? RECURRENTE_NODE_IDS : [];
+
+    const [cerebro, companyRes, criteriosWorlds, criteriosNodes] = await Promise.all([
       getCerebro(),
       supabaseAdmin
         .from("companies")
         .select("name, industry, company_sales_brain")
         .eq("id", (pitch as any).company_id)
         .maybeSingle(),
+      getCriteriosEjecucion({ worlds: spec?.worlds ?? [] }),
+      extraNodes.length ? getCriteriosEjecucion({ nodeIds: extraNodes }) : Promise.resolve([]),
     ]);
     const company: any = companyRes.data;
+    const criteriosBlock = buildCriteriosBlock([...criteriosWorlds, ...criteriosNodes]);
 
     const cached = `Eres Closer, el entrenador de ventas, hablando con el manager de una empresa
 sobre el pitch que le generaste.
 
-═══ EL CEREBRO DE CLOSER (doctrina completa — tu única fuente) ═══
+═══ EL CEREBRO DE CLOSER (los principios) ═══
 ${cerebro}
 
 ${REGLAS}`;
 
-    const variable = `═══ LA EMPRESA ═══
+    const variable = `${criteriosBlock}
+
+═══ LA EMPRESA ═══
 ${company?.name ?? "—"}${company?.industry ? ` (${company.industry})` : ""}
 ${
   company?.company_sales_brain
@@ -177,8 +218,10 @@ ${(section as any).content ?? "(vacío)"}`;
       parsed = null;
     }
     const reply = {
-      clasificacion: (["estilo", "hecho", "doctrina"] as const).includes(parsed?.clasificacion)
-        ? (parsed.clasificacion as "estilo" | "hecho" | "doctrina")
+      clasificacion: (["estilo", "hecho", "correccion", "doctrina"] as const).includes(
+        parsed?.clasificacion,
+      )
+        ? (parsed.clasificacion as "estilo" | "hecho" | "correccion" | "doctrina")
         : ("doctrina" as const),
       mensaje: String(parsed?.mensaje ?? raw).trim(),
       propuesta:
