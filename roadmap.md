@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Fix typecheck build errors (SectionChat.tsx was corrupt; restored previous working version).
 - [ ] Identify the affected `nuevo` pitch, client type, and recorded prompt version.
 - [ ] Prove why V20/V21 were bypassed or failed.
 - [ ] Add V22 (no fabricated clients/locations/case counts).
