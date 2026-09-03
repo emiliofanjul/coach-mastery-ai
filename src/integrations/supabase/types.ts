@@ -1247,6 +1247,9 @@ export type Database = {
       pitch_sections: {
         Row: {
           alternatives: Json
+          audit: Json | null
+          audit_status: string | null
+          audited_at: string | null
           content: string | null
           created_at: string
           edited_by_manager: boolean
@@ -1266,6 +1269,9 @@ export type Database = {
         }
         Insert: {
           alternatives?: Json
+          audit?: Json | null
+          audit_status?: string | null
+          audited_at?: string | null
           content?: string | null
           created_at?: string
           edited_by_manager?: boolean
@@ -1285,6 +1291,9 @@ export type Database = {
         }
         Update: {
           alternatives?: Json
+          audit?: Json | null
+          audit_status?: string | null
+          audited_at?: string | null
           content?: string | null
           created_at?: string
           edited_by_manager?: boolean
