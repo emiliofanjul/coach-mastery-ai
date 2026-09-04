@@ -181,43 +181,69 @@ TEXTO ACTUAL:
 ${(section as any).content ?? "(vacío)"}`;
 
     const started = Date.now();
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "Content-Type": "application/json",
-        "anthropic-beta": "extended-cache-ttl-2025-04-11",
-      },
-      body: JSON.stringify({
-        model: PITCH_CHAT_MODEL,
-        max_tokens: 1600,
-        system: [
-          { type: "text", text: cached, cache_control: { type: "ephemeral", ttl: "1h" } },
-          { type: "text", text: variable },
-        ],
-        messages: data.messages.map((m) => ({ role: m.role, content: m.content })),
-      }),
-    });
-    if (!res.ok) {
-      const txt = await res.text();
-      return { ok: false as const, error: "model_error", detail: txt.slice(0, 300) };
-    }
-    const json: any = await res.json();
-    const raw: string = (json?.content ?? [])
-      .filter((b: any) => b?.type === "text")
-      .map((b: any) => b.text)
-      .join("")
-      .trim();
+    // Se llama dos veces: la propuesta original y, si el auditor la reprueba,
+    // una corrección con las violaciones en la mano.
+    const pedirAlModelo = async (extra: string | null) => {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "Content-Type": "application/json",
+          "anthropic-beta": "extended-cache-ttl-2025-04-11",
+        },
+        body: JSON.stringify({
+          model: PITCH_CHAT_MODEL,
+          max_tokens: 1600,
+          system: [
+            { type: "text", text: cached, cache_control: { type: "ephemeral", ttl: "1h" } },
+            { type: "text", text: extra ? `${variable}\n\n${extra}` : variable },
+          ],
+          messages: data.messages.map((m) => ({ role: m.role, content: m.content })),
+        }),
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(`model_error:${txt.slice(0, 300)}`);
+      }
+      const json: any = await res.json();
+      const raw: string = (json?.content ?? [])
+        .filter((b: any) => b?.type === "text")
+        .map((b: any) => b.text)
+        .join("")
+        .trim();
 
-    let parsed: any = null;
+      let parsed: any = null;
+      try {
+        const m = raw.match(/\{[\s\S]*\}/);
+        parsed = m ? JSON.parse(m[0]) : null;
+      } catch {
+        parsed = null;
+      }
+      return { raw, parsed, usage: json?.usage ?? null };
+    };
+
+    // Acumulado de las dos llamadas posibles, para que el costo quede medido.
+    const uso = { input: 0, output: 0, cached: 0, cacheCreate: 0 };
+    const sumar = (u: any) => {
+      uso.input += u?.input_tokens ?? 0;
+      uso.output += u?.output_tokens ?? 0;
+      uso.cached += u?.cache_read_input_tokens ?? 0;
+      uso.cacheCreate += u?.cache_creation_input_tokens ?? 0;
+    };
+
+    let primera: { raw: string; parsed: any; usage: any };
     try {
-      const m = raw.match(/\{[\s\S]*\}/);
-      parsed = m ? JSON.parse(m[0]) : null;
-    } catch {
-      parsed = null;
+      primera = await pedirAlModelo(null);
+    } catch (e) {
+      return {
+        ok: false as const,
+        error: "model_error",
+        detail: String((e as Error)?.message ?? e).slice(0, 300),
+      };
     }
-    const reply = {
+
+    const armar = (parsed: any, raw: string) => ({
       clasificacion: (["estilo", "hecho", "correccion", "doctrina"] as const).includes(
         parsed?.clasificacion,
       )
@@ -234,7 +260,53 @@ ${(section as any).content ?? "(vacío)"}`;
           ? String(parsed.propuesta_manager).trim()
           : null,
       acuerdo_pendiente: parsed?.acuerdo_pendiente === true,
-    };
+    });
+
+    sumar(primera.usage);
+    let reply = armar(primera.parsed, primera.raw);
+
+    // El chat optimiza local: atiende el criterio del que le hablaron y pisa
+    // otro sin darse cuenta. El auditor revisa la propuesta COMPLETA antes de
+    // enseñarla, y si hay violación grave se le devuelve para que corrija.
+    let auditoria: any = null;
+    if (reply.propuesta) {
+      try {
+        const { auditPitchSectionContent } = await import("@/lib/pitch-audit.server");
+        auditoria = await auditPitchSectionContent({
+          admin: supabaseAdmin,
+          apiKey,
+          content: reply.propuesta,
+          step: Number((section as any).step),
+          sectionKey: String((section as any).section_key),
+          sectionKind: String((section as any).section_kind),
+          companyId: String((pitch as any).company_id),
+          relationship: String((pitch as any).relationship ?? "nuevo"),
+        });
+        const graves = auditoria.violations.filter(
+          (v: any) => v.severity === "critical" || v.severity === "major",
+        );
+        if (graves.length > 0) {
+          const aviso = `═══ TU PROPUESTA NO PASÓ LA REVISIÓN ═══
+Atendiste lo que el manager pidió, pero rompiste otros criterios de este mismo
+paso. Reescríbela cumpliendo TODOS los criterios a la vez, no sólo el que se
+está discutiendo. No quites nada que el paso exija para meter lo nuevo.
+
+${graves
+  .map((v: any) => `- ${v.criterio_id}: ${v.explicacion} — lo dispara: "${v.evidencia}"`)
+  .join("\n")}
+
+Devuelve el MISMO formato JSON, con la propuesta corregida.`;
+          const segunda = await pedirAlModelo(aviso);
+          sumar(segunda.usage);
+          const corregida = armar(segunda.parsed, segunda.raw);
+          if (corregida.propuesta) {
+            reply = { ...corregida, clasificacion: reply.clasificacion };
+          }
+        }
+      } catch (e) {
+        console.error("[pitch-chat] audit failed", e);
+      }
+    }
 
     const lastUser = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? null;
     try {
