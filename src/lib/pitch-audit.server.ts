@@ -298,12 +298,15 @@ ${content}`;
     .filter(Boolean)
     .slice(0, 12);
 
+  const todas = [...violations, ...no_cumplidos];
   return {
-    status: auditStatusOf(violations, sin_respaldo),
+    status: auditStatusOf(todas, sin_respaldo),
     skill_ids,
     violations,
+    no_cumplidos,
     sin_respaldo,
     descartadas,
+    skills_descartados: [...new Set(skills_descartados)],
     prompt_version: PITCH_AUDIT_PROMPT_VERSION,
   };
 }
