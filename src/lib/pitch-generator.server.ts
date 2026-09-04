@@ -1652,6 +1652,7 @@ Reglas del formato:
   let section: any = null;
   let missing: string[] = [];
   let fails: string[] = [];
+  let lastAudit: import("@/lib/pitch-audit.server").AuditResult | null = null;
   const attemptLog: Array<{ attempt: number; ms: number; fails: string[] }> = [];
   for (let attempt = 1; attempt <= 3; attempt++) {
     const tail =
@@ -1701,6 +1702,30 @@ Reglas del formato:
         missingData: missing,
       },
     );
+    if (fails.length === 0 && section?.content) {
+      try {
+        const { auditPitchSectionContent } = await import("@/lib/pitch-audit.server");
+        lastAudit = await auditPitchSectionContent({
+          admin,
+          apiKey,
+          content: String(section.content),
+          step: spec.step,
+          sectionKey: spec.key,
+          sectionKind: spec.kind,
+          companyId: String(pitch.company_id),
+          relationship: String(pitch.relationship ?? "nuevo"),
+        });
+        const graves = lastAudit.violations.filter(
+          (v) => v.severity === "critical" || v.severity === "major",
+        );
+        fails = graves.map(
+          (v) => `AUDIT ${v.criterio_id}: ${v.explicacion} — lo dispara esta parte del texto: "${v.evidencia}"`,
+        );
+      } catch (e) {
+        console.error("[pitch-generator] audit failed", e);
+        lastAudit = null;
+      }
+    }
     attemptLog.push({ attempt, ms: Date.now() - t0, fails });
     if (fails.length === 0) break;
   }
@@ -1752,7 +1777,14 @@ Reglas del formato:
       rationale_short: section?.rationale_short ?? null,
       rationale_long: section?.rationale_long ?? null,
       warning: section?.warning ?? null,
-      skill_ids: Array.isArray(section?.skill_ids) ? section.skill_ids : [],
+      skill_ids: lastAudit
+        ? lastAudit.skill_ids
+        : Array.isArray(section?.skill_ids)
+          ? section.skill_ids
+          : [],
+      audit: (lastAudit as any) ?? null,
+      audit_status: lastAudit?.status ?? null,
+      audited_at: lastAudit ? new Date().toISOString() : null,
       alternatives: Array.isArray(section?.alternatives) ? section.alternatives : [],
       edited_by_manager: false,
       prompt_version: PITCH_PROMPT_VERSION,
