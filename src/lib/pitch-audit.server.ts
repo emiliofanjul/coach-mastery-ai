@@ -22,7 +22,7 @@ import {
 } from "@/lib/pitch-generator.server";
 
 export const PITCH_AUDIT_MODEL = "claude-sonnet-4-5";
-export const PITCH_AUDIT_PROMPT_VERSION = "pitch-audit-v1.0.0";
+export const PITCH_AUDIT_PROMPT_VERSION = "pitch-audit-v2.0.0-veredictos";
 
 export type AuditSeverity = "critical" | "major" | "minor" | "normal";
 export type AuditStatus = "limpio" | "advertencia" | "falla";
