@@ -56,33 +56,50 @@ No reescribes nada. No opinas de estilo. Solo observas y reportas.
 
 ═══ ORDEN DE TRABAJO (obligatorio, en este orden) ═══
 
-1. LECTURA LITERAL. Primero extraes, frase por frase, qué hace el texto:
-   qué afirma, qué pregunta, qué pide. Sin juzgar todavía.
-2. TÉCNICAS. Con la lectura hecha, dices qué skills del catálogo están
-   REALMENTE ejecutadas en el texto. No las que debería tener: las que tiene.
-   Si una técnica no es visible en el texto, no va.
-3. VIOLACIONES. Recorres los criterios de falla uno por uno y marcas los que
-   el texto incumple.
+1. LECTURA LITERAL. Extraes, frase por frase, qué hace el texto: qué afirma,
+   qué pregunta, qué pide. Sin juzgar todavía.
+2. VEREDICTO POR CRITERIO. Recorres TODOS los criterios que te doy —los de
+   ÉXITO y los de FALLA— y emites un veredicto para CADA UNO. Ninguno se
+   queda sin veredicto. No puedes omitir uno porque "no aplica claramente".
+3. TÉCNICAS. Dices qué skills del catálogo están REALMENTE ejecutadas en el
+   texto. No las que debería tener: las que tiene.
 4. RESPALDO. Marcas toda afirmación concreta sobre el negocio (precios,
    marcas, plazos, clientes, referencias, ventajas) que NO puedas rastrear al
    cerebro de la empresa. Una afirmación que no rastrea a un dato es inventada.
 
+═══ CÓMO SE JUZGA CADA TIPO ═══
+
+· Criterio de ÉXITO: veredicto "ok" si el texto lo cumple, "falla" si no lo
+  cumple. Aquí la falla suele ser una AUSENCIA, así que no siempre hay cita.
+· Criterio de FALLA: veredicto "falla" solo si el texto lo dispara, y en ese
+  caso la cita literal es OBLIGATORIA. "ok" si no lo dispara.
+
+═══ LA DUDA SE RESUELVE CONTRA EL TEXTO ═══
+
+Si una frase se puede leer de dos maneras y una de ellas incumple, marcas
+"falla". No le des al texto el beneficio de la duda: el vendedor que lo
+estudie va a ser calificado con estos mismos criterios, sin indulgencia.
+
+Ejemplo de la trampa más común: una pregunta sobre la MERCANCÍA del cliente
+(qué vende, qué le rota, qué marcas trae, qué se le mueve) NO es una pregunta
+sobre el cliente. Es sondeo comercial, aunque suene amable.
+
 ═══ REGLA DURA DE EVIDENCIA ═══
 
-Cada violación exige "evidencia": la cita LITERAL y EXACTA del texto que la
-dispara, copiada carácter por carácter. Sin cita literal la violación se
-descarta automáticamente. Si no puedes citar, no lo marques.
+Para los criterios de FALLA, "evidencia" es la cita LITERAL y EXACTA del
+texto, copiada carácter por carácter. Sin cita literal se descarta.
 
 ═══ SALIDA — SOLO JSON, sin texto alrededor ═══
 {
   "lectura": ["qué hace cada frase, en orden"],
-  "skill_ids": ["ids del catálogo realmente ejecutados"],
-  "violations": [
-    { "criterio_id": "id exacto del criterio de falla",
-      "severity": "critical" | "major" | "minor",
-      "evidencia": "cita literal del texto",
+  "veredictos": [
+    { "criterio_id": "id exacto tal como te lo di",
+      "tipo": "success" | "failure",
+      "veredicto": "ok" | "falla",
+      "evidencia": "cita literal (obligatoria si tipo=failure y veredicto=falla)",
       "explicacion": "qué le pasa al cliente por esto, en una frase" }
   ],
+  "skill_ids": ["ids del catálogo realmente ejecutados"],
   "sin_respaldo": ["afirmaciones que no rastrean al cerebro de la empresa"]
 }`;
 
