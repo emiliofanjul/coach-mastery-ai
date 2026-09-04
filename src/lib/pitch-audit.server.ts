@@ -229,44 +229,69 @@ ${content}`;
   }
   if (!parsed) throw new Error("audit_parse_error");
 
-  // skill_ids: solo los que existen en el catálogo.
+  // Índice de criterios del alcance, por id.
+  const porId = new Map(criterios.map((c) => [c.skill_id, c]));
+
+  const contentNorm = normalizar(content);
+  let descartadas = 0;
+  const violations: AuditViolation[] = [];
+  const no_cumplidos: AuditViolation[] = [];
+  const exitoFallado = new Set<string>();
+
+  for (const v of Array.isArray(parsed.veredictos) ? parsed.veredictos : []) {
+    const id = String(v?.criterio_id ?? "");
+    const criterio = porId.get(id);
+    if (!criterio) {
+      descartadas++;
+      continue;
+    }
+    if (String(v?.veredicto ?? "") !== "falla") continue;
+
+    const evidencia = String(v?.evidencia ?? "").trim();
+    const explicacion = String(v?.explicacion ?? "").trim();
+    const sev = String(v?.severity ?? criterio.severity ?? "normal") as AuditSeverity;
+    const item: AuditViolation = {
+      criterio_id: id,
+      severity: SEVERITIES.includes(sev) ? sev : "normal",
+      evidencia,
+      explicacion,
+    };
+
+    if (criterio.tipo === "failure") {
+      // Algo que SÍ está en el texto: exige cita literal o se descarta.
+      if (!evidencia || !contentNorm.includes(normalizar(evidencia))) {
+        descartadas++;
+        continue;
+      }
+      violations.push(item);
+    } else {
+      // Criterio de éxito no cumplido: la falla suele ser una AUSENCIA, así
+      // que no se le puede exigir cita. Un criterio de éxito incumplido pesa
+      // como major: es lo que el paso exige y el texto no entrega.
+      no_cumplidos.push({ ...item, severity: "major" });
+      exitoFallado.add(id);
+    }
+  }
+
+  // Una técnica solo se etiqueta si su criterio de éxito se cumple. Si el
+  // texto falla el criterio de un skill, ese skill no está ejecutado: está
+  // intentado. Etiquetarlo es lo que hacía que la Historia Breve apareciera
+  // con "relevancia al cliente" mientras incumplía justo ese criterio.
+  const skills_descartados: string[] = [];
   const skill_ids = [
     ...new Set(
       (Array.isArray(parsed.skill_ids) ? parsed.skill_ids : [])
         .map((x: unknown) => String(x))
-        .filter((x: string) => validSkillIds.has(x)),
+        .filter((x: string) => {
+          if (!validSkillIds.has(x)) return false;
+          if (exitoFallado.has(x)) {
+            skills_descartados.push(x);
+            return false;
+          }
+          return true;
+        }),
     ),
   ] as string[];
-
-  // Violaciones: el id tiene que ser un criterio de falla real del alcance,
-  // y la evidencia tiene que aparecer LITERALMENTE en el texto.
-  const fallasValidas = new Map(
-    criterios.filter((c) => c.tipo === "failure").map((c) => [c.skill_id, c]),
-  );
-  const contentNorm = normalizar(content);
-
-  let descartadas = 0;
-  const violations: AuditViolation[] = [];
-  for (const raw of Array.isArray(parsed.violations) ? parsed.violations : []) {
-    const id = String(raw?.criterio_id ?? "");
-    const evidencia = String(raw?.evidencia ?? "").trim();
-    const criterio = fallasValidas.get(id);
-    if (!criterio || !evidencia) {
-      descartadas++;
-      continue;
-    }
-    if (!contentNorm.includes(normalizar(evidencia))) {
-      descartadas++; // cita fabricada: fuera.
-      continue;
-    }
-    const sev = String(raw?.severity ?? criterio.severity ?? "normal") as AuditSeverity;
-    violations.push({
-      criterio_id: id,
-      severity: SEVERITIES.includes(sev) ? sev : "normal",
-      evidencia,
-      explicacion: String(raw?.explicacion ?? "").trim(),
-    });
-  }
 
   const sin_respaldo = (Array.isArray(parsed.sin_respaldo) ? parsed.sin_respaldo : [])
     .map((x: unknown) => String(x).trim())
