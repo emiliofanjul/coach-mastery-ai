@@ -282,7 +282,7 @@ ${(section as any).content ?? "(vacío)"}`;
           companyId: String((pitch as any).company_id),
           relationship: String((pitch as any).relationship ?? "nuevo"),
         });
-        const graves = auditoria.violations.filter(
+        const graves = [...auditoria.violations, ...auditoria.no_cumplidos].filter(
           (v: any) => v.severity === "critical" || v.severity === "major",
         );
         if (graves.length > 0) {
@@ -292,7 +292,11 @@ paso. Reescríbela cumpliendo TODOS los criterios a la vez, no sólo el que se
 está discutiendo. No quites nada que el paso exija para meter lo nuevo.
 
 ${graves
-  .map((v: any) => `- ${v.criterio_id}: ${v.explicacion} — lo dispara: "${v.evidencia}"`)
+  .map((v: any) =>
+    v.evidencia
+      ? `- ${v.criterio_id}: ${v.explicacion} — lo dispara: "${v.evidencia}"`
+      : `- ${v.criterio_id}: ${v.explicacion} — el texto no lo cumple.`,
+  )
   .join("\n")}
 
 Devuelve el MISMO formato JSON, con la propuesta corregida.`;

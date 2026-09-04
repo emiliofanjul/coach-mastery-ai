@@ -1715,11 +1715,13 @@ Reglas del formato:
           companyId: String(pitch.company_id),
           relationship: String(pitch.relationship ?? "nuevo"),
         });
-        const graves = lastAudit.violations.filter(
+        const graves = [...lastAudit.violations, ...lastAudit.no_cumplidos].filter(
           (v) => v.severity === "critical" || v.severity === "major",
         );
-        fails = graves.map(
-          (v) => `AUDIT ${v.criterio_id}: ${v.explicacion} — lo dispara esta parte del texto: "${v.evidencia}"`,
+        fails = graves.map((v) =>
+          v.evidencia
+            ? `AUDIT ${v.criterio_id}: ${v.explicacion} — lo dispara esta parte del texto: "${v.evidencia}"`
+            : `AUDIT ${v.criterio_id}: ${v.explicacion} — el texto no lo cumple.`,
         );
       } catch (e) {
         console.error("[pitch-generator] audit failed", e);
