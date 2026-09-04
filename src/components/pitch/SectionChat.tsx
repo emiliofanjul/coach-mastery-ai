@@ -3,12 +3,13 @@ import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { pitchSectionChat } from "@/lib/pitch-chat.functions";
-import { applySectionContent, logPitchFeedback, type PitchSection } from "@/lib/pitches";
+import { logPitchFeedback, type PitchSection } from "@/lib/pitches";
+import { applyPitchSection } from "@/lib/pitch-audit.functions";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 type Reply = {
-  clasificacion: "estilo" | "hecho" | "doctrina";
+  clasificacion: "estilo" | "hecho" | "correccion" | "doctrina";
   mensaje: string;
   propuesta: string | null;
   propuesta_label: string;
@@ -19,6 +20,7 @@ type Reply = {
 const ETIQUETA: Record<Reply["clasificacion"], string> = {
   estilo: "es tu lenguaje",
   hecho: "es un hecho de tu negocio",
+  correccion: "tienes razón, el pitch estaba mal",
   doctrina: "aquí no coincidimos",
 };
 
@@ -38,11 +40,17 @@ export function SectionChat({
   onClose: () => void;
 }) {
   const ask = useServerFn(pitchSectionChat);
+  const applyFn = useServerFn(applyPitchSection);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [reply, setReply] = useState<Reply | null>(null);
   const [applying, setApplying] = useState(false);
+  const [audit, setAudit] = useState<{
+    status: "falla" | "advertencia" | "limpio";
+    violations: { evidencia: string; explicacion: string }[];
+    sin_respaldo: string[];
+  } | null>(null);
   const rounds = useRef(0);
 
   const desacuerdos = messages.filter((m) => m.role === "user").length;
@@ -78,7 +86,13 @@ export function SectionChat({
   async function apply(content: string, forced: boolean) {
     setApplying(true);
     try {
-      await applySectionContent(section.id, content, forced);
+      const res: any = await applyFn({
+        data: { sectionId: section.id, content, editedByManager: forced },
+      });
+      if (!res?.ok) throw new Error("No se pudo aplicar el cambio.");
+      const veredicto = res.audit ?? null;
+      setAudit(veredicto);
+
       await logPitchFeedback({
         pitch_id: section.pitch_id,
         section_id: section.id,
@@ -87,6 +101,15 @@ export function SectionChat({
         classification: forced ? "doctrina" : (reply?.clasificacion ?? null),
         outcome: forced ? "aplicado_por_el_equipo" : "aplicado",
       });
+      if (veredicto && veredicto.status !== "limpio") {
+        toast.warning(
+          veredicto.status === "falla"
+            ? "Aplicado, pero la sección incumple un criterio grave."
+            : "Aplicado, con observaciones.",
+        );
+        onApplied();
+        return;
+      }
       toast.success(
         forced
           ? "Aplicado y marcado como decisión de tu equipo."
@@ -193,6 +216,26 @@ export function SectionChat({
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      {audit && audit.status !== "limpio" && (
+        <div className="mt-3 rounded-[10px] border border-white/10 bg-black/40 p-3">
+          <div className="text-[12px] font-['Syne'] font-bold text-white/90">
+            {audit.status === "falla" ? "Revisión: falla un criterio" : "Revisión: con observaciones"}
+          </div>
+          <ul className="mt-2 list-disc space-y-1 pl-4 text-[12px] text-white/70 font-['DM_Sans']">
+            {audit.violations.map((v, i) => (
+              <li key={i}>
+                «{v.evidencia}» — {v.explicacion}
+              </li>
+            ))}
+            {audit.sin_respaldo.map((x, i) => (
+              <li key={i}>
+                Sin respaldo en el cerebro de tu empresa: {x}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
