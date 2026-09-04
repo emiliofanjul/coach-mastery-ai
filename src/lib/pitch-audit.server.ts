@@ -38,8 +38,11 @@ export type AuditResult = {
   status: AuditStatus;
   skill_ids: string[];
   violations: AuditViolation[];
+  /** Criterios de ÉXITO del paso que el texto no cumple. */
+  no_cumplidos: AuditViolation[];
   sin_respaldo: string[];
   descartadas: number;
+  skills_descartados: string[];
   prompt_version: string;
 };
 
