@@ -1516,6 +1516,45 @@ export type Database = {
           },
         ]
       }
+      reglas: {
+        Row: {
+          canal: string
+          cita_cerebro: string
+          created_at: string
+          id: string
+          paso: number
+          procedencia: string
+          resumen: string
+          severidad_default: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          canal: string
+          cita_cerebro: string
+          created_at?: string
+          id: string
+          paso: number
+          procedencia: string
+          resumen: string
+          severidad_default?: string | null
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          canal?: string
+          cita_cerebro?: string
+          created_at?: string
+          id?: string
+          paso?: number
+          procedencia?: string
+          resumen?: string
+          severidad_default?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       seller_archetype_performance: {
         Row: {
           archetype_id: string
