@@ -1,0 +1,1402 @@
+[
+ {
+  "id": "opening.see",
+  "paso": 1,
+  "tipo": "herramienta",
+  "canal": "presencial",
+  "procedencia": "FUENTE",
+  "resumen": "Sonrisa, Contacto visual, Entusiasmo. Se enseña y se pide; no se califica en texto.",
+  "cita_cerebro": "signo internacional de amistad. Elimina el miedo y crea confianza",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.energia_verbal",
+  "paso": 1,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "El equivalente evaluable del SEE: la energía que sale por las palabras.",
+  "cita_cerebro": "Lo que sí se evalúa es su equivalente verbal: la energía que sale por las palabras",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "opening.regla_10",
+  "paso": 1,
+  "tipo": "herramienta",
+  "canal": "presencial",
+  "procedencia": "FUENTE",
+  "resumen": "Calibrar la propia energía 10% por encima de la del cliente. Es tono, no palabras.",
+  "cita_cerebro": "Lee el nivel de emoción del cliente y ponte 10% por encima de él. No al doble: 10%",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.ice_breaker",
+  "paso": 1,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Cumplido genuino, chiste sencillo o comentario ligero sobre la persona, el lugar o algo en común. Entregarlo como pregunta es la forma que permite al cliente responder y relajarse.",
+  "cita_cerebro": "Cumplido genuino, chiste sencillo o comentario ligero. Puede ser sobre la persona, el lugar, o algo en común",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.halago_falso",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Halago exagerado o inventado. El cliente lo detecta y se cierra más que antes.",
+  "cita_cerebro": "El halago exagerado o inventado. El cliente lo lee al instante y se cierra más que antes",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "opening.gasman",
+  "paso": 1,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Entrar asumido y confiado, con la autoridad de quien debe estar ahí.",
+  "cita_cerebro": "La autoridad no se pide. Se asume",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.pide_permiso",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Pedir autorización para hablar. Entrega el control y ofrece una salida gratis.",
+  "cita_cerebro": "Cuando preguntas «¿tiene un minutito?» haces dos cosas a la vez — le entregas el control, y le ofreces una salida que no le cuesta nada tomar",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "opening.identificacion",
+  "paso": 1,
+  "tipo": "neutro",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Decir nombre y empresa está permitido pero nunca se requiere. Su ausencia jamás se penaliza.",
+  "cita_cerebro": "La identificación (nombre y empresa) es permitida pero nunca requerida aquí. Su ausencia jamás se penaliza",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.curiosidad_abierta",
+  "paso": 1,
+  "tipo": "premio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Abrir sin identificarse deja al cliente con la pregunta. Que él pregunte quién eres es ganar la introducción.",
+  "cita_cerebro": "Si el cliente pregunta «¿y usted quién es?», ganaste la introducción — esa pregunta es la puerta natural al Paso 2",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.identificacion_prematura",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Abrir identificándose ANTES de conectar. El orden es el problema, no el dato: identificarse después del ice breaker ya es Paso 2.",
+  "cita_cerebro": "Aquí no dices quién eres ni a qué vienes. Eso es el Paso 2",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "opening.pitch_prematuro",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Decir a qué vienes, mencionar producto, promoción o motivo de venta en la apertura.",
+  "cita_cerebro": "Aquí no dices quién eres ni a qué vienes. Eso es el Paso 2. Confundirlos es el error doctrinal más común",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "story.quien_eres_por_que",
+  "paso": 2,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Decir quién eres, qué estás haciendo y por qué necesitas su tiempo.",
+  "cita_cerebro": "Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "story.kiss",
+  "paso": 2,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Keep It Short and Simple. Lo más conciso posible.",
+  "cita_cerebro": "Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "story.kill",
+  "paso": 2,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Alargarse. Cada frase de más gasta la atención recién ganada y suena a discurso.",
+  "cita_cerebro": "Cada frase de más gasta la atención que acabas de ganar. Lo que suena impresionante en tu cabeza suena a discurso en la de él",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "story.pregunta_despues",
+  "paso": 2,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Después de la historia, preguntas. La historia existe para ganarte el derecho de preguntarle a él.",
+  "cita_cerebro": "Existe para ganarte el derecho de preguntarle a él",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "story.cierra_con_afirmacion",
+  "paso": 2,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Terminar la historia sin pregunta deja al cliente sin qué contestar y le devuelve el control.",
+  "cita_cerebro": "en la mayoría de los casos es más efectivo pasar directamente a las preguntas de calificación que dar una larga explicación",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "relationship.cpr",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Create Personal Relations. Transversal a toda la conversación. Decide si tus argumentos pesan o se descuentan.",
+  "cita_cerebro": "Se aplica durante TODA la conversación, no en un paso",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "relationship.forms",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Family, Occupation, Recreation, Motivation, Sports. Los cinco caminos a la persona.",
+  "cita_cerebro": "Los cinco caminos a la persona. Más cumplidos genuinos y chistes sencillos",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "relationship.interes_fingido",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Interés fingido. Cuesta más que no haber preguntado, porque el cliente sabe que le aplicaron una técnica.",
+  "cita_cerebro": "Un interés fingido se nota, y cuesta más que no haber preguntado",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "story.desvio_con_regreso",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Salir de la línea uno o dos intercambios y regresar. El cliente nunca te regresa.",
+  "cita_cerebro": "El cliente NUNCA te va a regresar a la línea",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "story.nunca_sale",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "No salir nunca de la línea: sin relación, el Paso 3 recibe respuestas de cortesía.",
+  "cita_cerebro": "Nunca salir → no hay relación, y no te van a contestar nada en el Paso 3",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "story.sale_sin_regresar",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Salir a lo personal y no regresar. La venta se estanca en plática cómoda.",
+  "cita_cerebro": "Salir y no regresar → el cliente se acomoda a platicar y la venta se estanca",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "blocks.bloqueo_vs_objecion",
+  "paso": 0,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "El bloqueo es reflejo y llega antes de entender; la objeción es razonada y llega después.",
+  "cita_cerebro": "La misma frase se maneja de dos maneras opuestas según cuándo llegó",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "blocks.discute_bloqueo",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Discutir un bloqueo lo convierte en posición y le crea al cliente un no que no tenía.",
+  "cita_cerebro": "Le acabas de crear un «no» real que no tenía",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "blocks.air",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Agree, Ignore, Resume. Para bloqueos al inicio.",
+  "cita_cerebro": "reconoce con «entiendo» o «por supuesto», no lo discutas, y continúa",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "blocks.air_sin_resume",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Aceptar e ignorar bien pero no retomar: quedarse esperando o volver a pedir permiso.",
+  "cita_cerebro": "El tercer movimiento es el que falla",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "blocks.ataque_preventivo",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Dar el negativo conocido del territorio antes que el cliente.",
+  "cita_cerebro": "si das la negativa antes de que el cliente lo haga, ya no es una negativa",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "blocks.ataque_en_disculpa",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Ataque preventivo en tono de disculpa: se vuelve defenderse de algo que nadie reclamó.",
+  "cita_cerebro": "En tono de disculpa → deja de ser adelantarse y se vuelve defenderse de algo que nadie reclamó",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "blocks.negativo_inventado",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Adelantar un negativo que no existe: planta una preocupación nueva.",
+  "cita_cerebro": "Con un negativo inventado → no desactivas nada, plantas una preocupación nueva",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close_with_action",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE+CAMPO",
+  "resumen": "Pregunta o acción cuya respuesta solo tiene sentido si el cliente avanza. Se ejecuta en cada tramo de la línea.",
+  "cita_cerebro": "Una pregunta o acción cuya respuesta solo tiene sentido si el cliente está avanzando. Su respuesta es el sí",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "close.devuelve_el_volante",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Quedarse callado esperando permiso después de resolver algo. El cliente retoma el control.",
+  "cita_cerebro": "No te está rechazando: le devolviste el volante",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.examen_antes_receta",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Primero el examen, luego la receta. Diagnosticar antes de recetar.",
+  "cita_cerebro": "Primero el examen, luego la receta",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.rrr",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Read, Relate, Relax. Leer ambiente, demografía y estado de ánimo, y adaptarse primero.",
+  "cita_cerebro": "Tú te adaptas primero",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.tres_territorios",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Todo dolor comercial vive en PRODUCTO, SERVICIO o PRECIO.",
+  "cita_cerebro": "PRODUCTO — lo que vende o usa; SERVICIO — cómo lo trata su proveedor actual; PRECIO — lo que paga y lo que gana",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.opinion_de_precio",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Pedirle al cliente su opinión o aprobación sobre precios. Crea una objeción que no existía y cede la autoridad.",
+  "cita_cerebro": "NUNCA le pidas al cliente su opinión ni su aprobación sobre precios",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "discovery.precio_por_hechos",
+  "paso": 3,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "El territorio precio se investiga con hechos: a cómo compra, cada cuánto le suben, qué plazo, cuánto margen.",
+  "cita_cerebro": "Lo que sí se investiga en este territorio son HECHOS, no opiniones",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.escalera_capas",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Capa 1 hechos, capa 2 la puerta, capa 3 el dolor. Solo se abre si recoges la pista.",
+  "cita_cerebro": "CAPA 3 — El dolor. Solo se abre si recoges la pista y profundizas con preguntas abiertas",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.pregunta_especifica",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Nombrar un dato o situación concreta que el cliente tenga que ir a buscar, en vez de preguntar al aire.",
+  "cita_cerebro": "El «bien» no es información: es un reflejo social",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "discovery.pregunta_normalizada",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Dar permiso citando a otros. Es el Efecto Jones aplicado a descubrimiento.",
+  "cita_cerebro": "Varios clientes me comentan que batallan con faltantes, ¿a usted le pasa?",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.suggestive_language",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Después de preguntar, sugerir tres o cuatro opciones reales del giro. Transversal: sirve después de cualquier pregunta.",
+  "cita_cerebro": "La solución: después de preguntar, sugiere opciones",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.opciones_ajenas",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Sugerir opciones que no son del giro del cliente: demuestra lo contrario de conocer su negocio.",
+  "cita_cerebro": "Si sugieres familias que él no maneja, demuestras lo contrario de lo que buscabas",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.planta_respuesta",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Insistir en la propia opción cuando el cliente corrige. Su corrección es la respuesta buena.",
+  "cita_cerebro": "Si el cliente te corrige, esa es la respuesta buena — no insistas en la tuya",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.barrido",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Territorio limpio: ni insistir ni rendirse, cambiar de territorio.",
+  "cita_cerebro": "Insistir en zona sana te vuelve interrogador; rendirte regala la visita",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "discovery.dolor_directo",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Preguntar el dolor de frente. «¿Qué problemas tiene?» produce «ninguno», garantizado.",
+  "cita_cerebro": "El dolor nunca se pregunta directo",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.confirmacion_con_sus_palabras",
+  "paso": 3,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Cuando el dolor aparece, devolvérselo con SUS palabras.",
+  "cita_cerebro": "devuélveselo con SUS palabras",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.confirmacion_no_requerida",
+  "paso": 3,
+  "tipo": "neutro",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "La confirmación explícita del dolor no es requisito para avanzar. Basta evidencia suficiente.",
+  "cita_cerebro": "Lo que no necesitas es su permiso verbal",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.fabrica_dolor",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Afirmar un problema que el cliente ya negó o del que no hay indicio. Leer un dolor probable no es inventarlo.",
+  "cita_cerebro": "Fabricar es afirmar un problema que el cliente ya negó o del que no hay ningún indicio",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "discovery.pelea_reconocimiento",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Insistir en que el cliente admita el problema. Lo pone a la defensiva y mata lo emocional.",
+  "cita_cerebro": "Insistir en que el cliente admita un problema lo pone a la defensiva y mata lo emocional, que era donde estaba la venta",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.luz_verde",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "10% negativos, 80% indiferentes, 10% positivos. Salir rápido de los rojos.",
+  "cita_cerebro": "10% negativos · 80% indiferentes · 10% positivos",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.rojo_vs_amarrado",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "El que quiere y no puede no es rojo: es verde amarrado. Se distinguen por el trato.",
+  "cita_cerebro": "Este no es rojo: es verde amarrado",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.bordes_restriccion",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Casi toda restricción tiene bordes: qué cubre, qué queda fuera, hasta cuándo dura.",
+  "cita_cerebro": "Casi toda restricción tiene bordes",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.presiona_compromiso",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Insistir en lo que el cliente ya dijo que está dentro de su compromiso: es pedirle que rompa su palabra.",
+  "cita_cerebro": "insistir en eso es pedirle que rompa su palabra — y eso quema la relación",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "discovery.qtqp",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Quality Time with Quality People. Cada minuto con un rojo se lo quitas a un amarillo.",
+  "cita_cerebro": "Perder tiempo y energía con las personas equivocadas destruye tu capacidad de ser lo suficientemente urgente",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.beneficio_no_caracteristica",
+  "paso": 4,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Traducir toda característica a dinero, clientes o tranquilidad.",
+  "cita_cerebro": "Nadie compra lo que algo es: compran lo que van a ganar",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "present.caracteristica_sin_traducir",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Enumerar características sin traducir a beneficio. Si el cliente puede decir «¿y eso a mí de qué me sirve?», falló.",
+  "cita_cerebro": "Si el cliente puede contestar «¿y eso a mí de qué me sirve?», la traducción falló",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.pintar_imagenes",
+  "paso": 4,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Que el cliente imagine que ya lo tiene. No argumenta, hace sentir.",
+  "cita_cerebro": "Pintar imágenes — que imaginen que ya lo tienen",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.balas",
+  "paso": 4,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Hechos positivos y concretos sobre ti, el producto o el precio.",
+  "cita_cerebro": "La persona con más balas claramente tiene el control, siempre y cuando conserve su munición",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "present.bala_generica",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Afirmación que la competencia podría decir igual. No era bala, era aire.",
+  "cita_cerebro": "si la competencia puede decir exactamente lo mismo, no era bala",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.dosificacion_balas",
+  "paso": 4,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Guardar balas para los pasos 4 y 5. Gastarlas al principio deja la mano vacía cuando el impulso baje.",
+  "cita_cerebro": "no dispares todas las balas al principio",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.dos_mitades",
+  "paso": 4,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Primera mitad: lo que vas a hacer por él, sin producto. Segunda: producto y precio.",
+  "cita_cerebro": "lo que vas a hacer por él",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.precio_va_aqui",
+  "paso": 4,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "El precio sí va en la presentación. Omitirlo la deja a medias.",
+  "cita_cerebro": "El precio SÍ va en la presentación",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "present.skus_en_presentacion",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Enumerar SKUs con cantidades en la presentación: es escribir el cierre en el lugar equivocado.",
+  "cita_cerebro": "Enumerar SKUs con cantidades en la presentación es escribir el cierre en el lugar equivocado",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.triple_desglose",
+  "paso": 4,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE+CAMPO",
+  "resumen": "Tres cifras bajando, cada escalón con su motivo nombrado, y el ahorro dicho en voz alta.",
+  "cita_cerebro": "cada escalón necesita un motivo nombrado",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "present.escalon_sin_motivo",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Bajar el precio sin razón nombrada: dice que el primero estaba inflado y te vuelve regateable.",
+  "cita_cerebro": "Un precio que baja sin razón le dice al cliente que el primero estaba inflado",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.precio_unico",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Dar un solo precio: es un gasto sin ahorro visible que lo compense.",
+  "cita_cerebro": "Nunca un solo precio",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "impulse.curva",
+  "paso": 0,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "El impulso sube y baja; se construye gradualmente para no abrumar. Se cierra en el pico.",
+  "cita_cerebro": "hay que construirlo gradualmente para no abrumar",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "impulse.miedo_perdida",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Miedo a la pérdida. Pesa más que la necesidad de ganancia.",
+  "cita_cerebro": "Miedo a la pérdida > necesidad de ganancia",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "impulse.urgencia",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Urgencia. Motion creates emotion, y comunica que tienes éxito.",
+  "cita_cerebro": "motion creates emotion",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "impulse.avaricia",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Avaricia. Contraste entre lo que costaba y lo que cuesta.",
+  "cita_cerebro": "normalmente $100, con la promo queda en solo $59.99",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "impulse.indiferencia",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Indiferencia. SW3: Some Will, Some Won't, So What. Entusiasmo por la persona, indiferencia por la compra.",
+  "cita_cerebro": "be excited about the person and the product, but indifferent whether they buy",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "impulse.efecto_jones",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Prueba social. La gente deja que sus cercanos validen el producto por ella.",
+  "cita_cerebro": "La gente no confía naturalmente en un desconocido incentivado a vender — pero sí deja que sus vecinos, amigos y familia validen el producto por ella",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "impulse.jones_vago",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Prueba social que el vendedor no puede sostener si el cliente pregunta «¿como quiénes?».",
+  "cita_cerebro": "tengo como 20 clientes en esta zona que...",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "impulse.tren_del_si",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "El cliente debería decir que sí al menos 6 veces durante el proceso.",
+  "cita_cerebro": "El cliente debería decir que sí al menos 6 veces durante el proceso",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "impulse.opcion_que_permite_no",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Dejar una opción que se puede traducir en un no.",
+  "cita_cerebro": "Elimina cualquier opción que se pueda traducir en un no",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close.asumir_venta",
+  "paso": 5,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Si llegaste aquí, presume que tienes un comprador.",
+  "cita_cerebro": "presume que tienes un comprador",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "close.mal_cierre",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Cierres que invitan al no: ¿le gustaría comprar?, ¿está interesado?, ¿qué le parece?",
+  "cita_cerebro": "Malos cierres — todos invitan al no",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "close.alternativa",
+  "paso": 5,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Alternativas donde ambas opciones sirven.",
+  "cita_cerebro": "Buenos cierres — alternativas donde ambas opciones sirven",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "close.aguanta_silencio",
+  "paso": 5,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Después de pedir la decisión, no llenar el silencio.",
+  "cita_cerebro": "El primero que habla después de un cierre, pierde",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "close.llena_el_silencio",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Retirar la pregunta, suavizarla o contestarla uno mismo.",
+  "cita_cerebro": "El vendedor que retira la pregunta, la suaviza o la contesta él mismo, pierde",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close.fishbbod",
+  "paso": 5,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Señales de compra. En cuanto reconoces una, detienes la presentación y cierras.",
+  "cita_cerebro": "En cuanto reconoces una, DETIENES la presentación y CIERRAS",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "close.sigue_presentando",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Ver la señal de compra y seguir vendiendo. El impulso baja.",
+  "cita_cerebro": "Señal de compra = deja de presentar y cierra. Aunque te queden balas",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.es_senal_de_compra",
+  "paso": 0,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "El que no tiene interés no objeta: se despide.",
+  "cita_cerebro": "Objeción = señal de compra",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "objection.discutir",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Discutir con el cliente. Ganar la discusión es perder la venta.",
+  "cita_cerebro": "Nunca discutas con un cliente. Ganar la discusión es perder la venta",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "objection.rrr",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Repeat, Reassure, Resume. Para objeciones menores y comunes.",
+  "cita_cerebro": "repite la objeción en sus términos, para que vea que la escuchaste",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "objection.rrr_sin_resume",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Responder bien y quedarse callado. Ahí el cliente encuentra la siguiente objeción.",
+  "cita_cerebro": "La tercera R es la que falla",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.fff",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Feel, Felt, Found, más tres balas y Close With Action. No termina en la tercera F.",
+  "cita_cerebro": "FFF no termina en la tercera F",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "objection.circulo_de_cierre",
+  "paso": 0,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Atravesar la objeción, re-impulsar con una bala NUEVA, y cerrar.",
+  "cita_cerebro": "atravesar solo detiene la caída del impulso — no lo sube",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.cierra_sin_bala",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala nueva.",
+  "cita_cerebro": "El error más común: atravesar la objeción y cerrar de inmediato, saltándose la bala",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.bala_repetida",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Re-impulsar con un argumento ya usado: comunica que ya no tienes más.",
+  "cita_cerebro": "Repetir un argumento ya usado no sube nada",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.regla_de_los_no",
+  "paso": 0,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Tres no CONSECUTIVOS y sigues adelante. La racha se rompe si la conversación avanza.",
+  "cita_cerebro": "Tienen que ser CONSECUTIVOS",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "consolidation.rehash",
+  "paso": 6,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Remember Everyone Has Another Sale Hidden. Capitalizar a un cliente ya positivo.",
+  "cita_cerebro": "la gente compra de sus amigos mucho más fácil que de un desconocido",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "consolidation.arrepentimiento",
+  "paso": 6,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Apenas dice que sí, el impulso cae. Es automático y no es desconfianza.",
+  "cita_cerebro": "Apenas dice que sí, el impulso cae",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "consolidation.sigue_vendiendo",
+  "paso": 6,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Reforzar la compra después del sí. Le dice al cliente que necesitabas la venta, y toda la conversación se vuelve técnica retroactivamente.",
+  "cita_cerebro": "Retroactivamente, toda la conversación se convierte en una técnica",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "consolidation.misma_actitud",
+  "paso": 6,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Demostrar que nada cambió: misma indiferencia sobre la compra, misma calidez sobre la relación, cero producto.",
+  "cita_cerebro": "Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero producto",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "consolidation.siguientes_pasos",
+  "paso": 6,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Dejar claro qué sigue. La falta de entendimiento es la causa número uno de cancelaciones.",
+  "cita_cerebro": "la causa número uno de cancelaciones es la falta de entendimiento",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "monologo",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Turnos largos que no dejan entrar al cliente. En cualquier paso.",
+  "cita_cerebro": "de los discursos uno se defiende",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "story.kill_curriculum",
+  "paso": 2,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Historia breve inflada con credenciales, años, catálogo.",
+  "cita_cerebro": "Lo que suena impresionante en tu cabeza suena a discurso en la de él",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "adapt.recurrente_sin_nombre",
+  "paso": 2,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Con cliente que ya te conoce, la historia breve NO repite nombre ni empresa: solo el porqué de hoy.",
+  "cita_cerebro": "con un cliente que ya te conoce, la Historia Breve NO incluye tu nombre ni el de tu empresa",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "adapt.omite_lo_resuelto",
+  "paso": 0,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Si algo del objetivo del paso ya está resuelto con este cliente, no aparece en el texto.",
+  "cita_cerebro": "Si concluiste que algo ya está resuelto, ese algo no aparece en el texto",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "adapt.observacion_de_primera_visita",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Con un recurrente, observar como si fuera la primera vez comunica que no lo tienes presente.",
+  "cita_cerebro": "Preguntarlo le comunica al cliente que no lo tiene presente",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.dolor_vs_hueco",
+  "paso": 3,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "El dolor tiene señal verbal (el «aunque»); el hueco no: se ve, no se oye.",
+  "cita_cerebro": "HUECO — algo que podría comprarte y no te compra. No tiene señal verbal: se ve, no se oye",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.lee_el_lugar",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Lo que ves dice qué maneja y de quién: estante vacío es hueco, producto empolvado es dolor.",
+  "cita_cerebro": "Un producto de otra marca es un espacio ocupado; un estante vacío es una familia que nadie cubre",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.pregunta_lo_que_le_piden",
+  "paso": 3,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "«¿Le ha tocado que le pidan algo que no maneje?» Demanda que existe sin oferta.",
+  "cita_cerebro": "le ha tocado que le pidan algo que no maneje",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.hueco_inventado",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Fabricar un hueco: venderle un problema que no tiene.",
+  "cita_cerebro": "Descubrir un hueco es señalar algo que ya existe. Fabricarlo es venderle un problema que no tiene",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "present.argumento_del_hueco",
+  "paso": 4,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "La pregunta que define el argumento: ¿qué gana él con que tú se lo surtas? Consolidación, conveniencia, complementariedad o una condición concreta.",
+  "cita_cerebro": "qué gana él con que tú se lo surtas",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "present.consolidacion_falsa",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Usar «menos proveedores» cuando el producto es complementario y el cliente pasa a tener más, no menos.",
+  "cita_cerebro": "La consolidación NO es un argumento universal",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.ataca_proveedor",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Criticar al proveedor actual es criticar la decisión del cliente.",
+  "cita_cerebro": "Nunca ataques al proveedor actual",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "present.ventaja_no_verificable",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Afirmar ventajas competitivas que no puedes sostener. En una cuenta de años se descubre siempre.",
+  "cita_cerebro": "No afirmes ventajas que no puedes verificar",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "present.pide_que_pruebe",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "«Le pongo unas pocas para que lo pruebe» le pasa el riesgo al cliente.",
+  "cita_cerebro": "Nunca le pidas que «pruebe»",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.conviccion_sin_garantia",
+  "paso": 4,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "«No le puedo garantizar nada, pero estoy seguro de que le va a servir», más la razón detrás. Y ahí te callas.",
+  "cita_cerebro": "Convicción, sin garantía",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "present.garantiza",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Garantizar resultados. Admitir el límite es lo que hace creíble lo que sí afirmas.",
+  "cita_cerebro": "Admitir lo que no controlas hace creíble lo que sí afirmas",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.plan_b",
+  "paso": 4,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "«Y si no funciona lo ajustamos» mete una duda que no tenía y desmiente la convicción.",
+  "cita_cerebro": "No ofrezcas el plan B",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "present.capital_del_record",
+  "paso": 4,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "La segunda vez el cliente compra por tu récord. Solo se recomienda lo que de verdad sirve a ese perfil.",
+  "cita_cerebro": "La primera vez que recomiendas algo, el cliente compra por la relación. La segunda vez, compra por tu récord",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close.cierra_solo_incremento",
+  "paso": 5,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Con cliente que ya compra, se cierra lo que se agrega. El pedido base ya existía.",
+  "cita_cerebro": "Lo que se cierra es lo que se agrega",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "close.reabre_pedido_base",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Volver a confirmar o poner en duda el pedido de siempre invita al cliente a revisar toda la orden.",
+  "cita_cerebro": "Reabrir el pedido base al cerrar pone sobre la mesa algo que ya estaba resuelto",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "develop.visita_tramite",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Levantar el pedido de siempre y despedirse sin explorar nada. Al que solo toma pedidos lo reemplaza un formulario.",
+  "cita_cerebro": "Al que solo toma pedidos lo reemplaza un formulario",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.rojo_insistir",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Insistir ante un rojo genuino desgasta la actitud y le roba tiempo a un amarillo.",
+  "cita_cerebro": "Sal de las luces rojas rápido y educadamente",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.suelta_amarrado",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Rendirse ante quien quiere y no puede: ese cliente sí quería comprar y el vendedor se fue solo.",
+  "cita_cerebro": "con él, rendirse es la falla más cara del oficio",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.interrogatorio",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Ráfagas de preguntas desconectadas de las respuestas. Insistir en zona sana te vuelve interrogador.",
+  "cita_cerebro": "Insistir en zona sana te vuelve interrogador",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "discovery.solo_cerradas",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CLOSER",
+  "resumen": "Todas las preguntas de sí o no. La capa 3 solo se abre con abiertas.",
+  "cita_cerebro": "Solo se abre si recoges la pista y profundizas con preguntas abiertas",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.lectura_falsa",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Reconocer un estado que el cliente no mostró. Leer es leer, no suponer.",
+  "cita_cerebro": "Tres cosas que leer: el ambiente, la demografía de la persona, y su estado de ánimo",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "relationship.familiaridad_excesiva",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Confianza que todavía no se ganó: apodos, tuteo forzado. Se construye en el registro del cliente.",
+  "cita_cerebro": "Tú te adaptas primero",
+  "severidad_sugerida": "minor"
+ },
+ {
+  "id": "impulse.indiferencia_teatral",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Fingir indiferencia con amenaza. La indiferencia real es tranquila.",
+  "cita_cerebro": "be excited about the person and the product, but indifferent whether they buy",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "impulse.presion_directa",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Convertir la indiferencia en presión frontal para forzar la decisión.",
+  "cita_cerebro": "Some Will, Some Won't, So What",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "impulse.ruega",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Suplicar la oportunidad. Ellos tienen una oportunidad de comprarte; tú tienes cien clientes.",
+  "cita_cerebro": "Ellos solo tienen una oportunidad de comprarte; tú tienes más de cien clientes",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "impulse.miedo_perdida_generico",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Hablar de pérdida en abstracto sin anclar en algo concreto del cliente.",
+  "cita_cerebro": "La gente dice que sí impulsivamente porque no quiere que algo se le vaya",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "impulse.escasez_inventada",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Inventar escasez, urgencia o promoción sin ancla real.",
+  "cita_cerebro": "fabricar urgencia, escasez o problemas no lo es",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "close.descuento_de_panico",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Ceder precio por pánico. El problema nunca está en el número: está en la balanza.",
+  "cita_cerebro": "El problema nunca está en el número: está en la balanza",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close.persigue",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Cambiar el asumir por súplica cuando el cliente titubea.",
+  "cita_cerebro": "la mayoría de las personas que batallan para cerrar simplemente no están rompiendo la zona de confort que viene con pedir algo",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close.asume_con_presion",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Confundir asumir con imponer: dar por cerrada una venta no aceptada.",
+  "cita_cerebro": "Un cierre no es algo que le haces a alguien",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "close.pide_aprobacion",
+  "paso": 5,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Tras el precio, preguntar qué le parece o cómo lo ve. Invita al no.",
+  "cita_cerebro": "¿Qué le parece? · ¿Cómo lo ve?",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "consolidation.sobre_celebra",
+  "paso": 6,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Festejo desbordado tras el sí. Huele a que necesitabas la venta.",
+  "cita_cerebro": "Seguir vendiendo después del sí le dice al cliente que necesitabas la venta",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "consolidation.referido_en_frio",
+  "paso": 6,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Pedir referidos sin ancla y en tono transaccional.",
+  "cita_cerebro": "la gente compra de sus amigos mucho más fácil que de un desconocido",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "consolidation.salida_seca",
+  "paso": 6,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Salir sin dejar puerta abierta ni cerrar en buenos términos.",
+  "cita_cerebro": "Dejarlo positivo y entendiendo los siguientes pasos",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.air_a_objecion",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Aplicar AIR a una objeción real: evadir a alguien que habló en serio.",
+  "cita_cerebro": "E ignorar una objeción real ofende a alguien que sí te escuchó y sí pensó",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "objection.vacia_el_cargador",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Apilar argumentos en una respuesta. Las balas se dosifican.",
+  "cita_cerebro": "Reserva algunas para que no importe cuántas balas tenga tu cliente",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "objection.se_desanima",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "La segunda objeción drena el ánimo. KILT: la actitud es la variable de entrada.",
+  "cita_cerebro": "interactuar de más con él desgasta tu actitud, que es la variable de entrada de todo tu sistema",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "discovery.receta_sin_diagnostico",
+  "paso": 3,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Presentar producto o precio antes de terminar el diagnóstico. En cuanto presentas, el cliente deja de revelar. (Antes compartía etiqueta con opening.pitch_prematuro.)",
+  "cita_cerebro": "Primero el examen, luego la receta",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "opening.ice_breaker_generico",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Observación que sirve para cualquier negocio y cualquier persona. No es de ESE cliente en ESE momento.",
+  "cita_cerebro": "Puede ser sobre la persona, el lugar, o algo en común",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "opening.pregunta_cerrada",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Cerrar la apertura con pregunta de sí o no, o sin pregunta. Deja al cliente sin cómo entrar.",
+  "cita_cerebro": "le ofreces una salida que no le cuesta nada tomar",
+  "severidad_sugerida": "major"
+ }
+]
