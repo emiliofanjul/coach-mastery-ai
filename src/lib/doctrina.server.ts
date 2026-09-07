@@ -156,7 +156,7 @@ export async function getCriteriosEjecucion(opts: {
   if (error) throw new Error(`criterios: ${error.message}`);
 
   const value = (data ?? []).flatMap((n) =>
-    extract(n.practice_script, n.id, n.world_id),
+    extract(n.practice_script, n.id!, n.world_id!),
   );
   criteriosCache.set(cacheKey, { at: Date.now(), value });
   return value;
