@@ -183,8 +183,8 @@ Deno.serve(async (req) => {
 
     // Fetch practice_script for the target node
     const { data: nodeRows, error: nodeErr } = await admin
-      .from("nodes")
-      .select("id, practice_script")
+      .from("v_nodes_resueltos")
+      .select("id, practice_script:practice_script_resuelto")
       .eq("id", nodeId)
       .limit(1);
     if (nodeErr || !nodeRows || nodeRows.length === 0) {
