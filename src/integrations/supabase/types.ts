@@ -923,6 +923,13 @@ export type Database = {
             foreignKeyName: "node_cards_node_id_fkey"
             columns: ["node_id"]
             isOneToOne: false
+            referencedRelation: "v_nodes_resueltos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "node_cards_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
             referencedRelation: "v_severidad_overrides"
             referencedColumns: ["nodo"]
           },
@@ -987,6 +994,13 @@ export type Database = {
             foreignKeyName: "node_progress_node_id_fkey"
             columns: ["node_id"]
             isOneToOne: false
+            referencedRelation: "v_nodes_resueltos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "node_progress_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
             referencedRelation: "v_severidad_overrides"
             referencedColumns: ["nodo"]
           },
@@ -1013,6 +1027,7 @@ export type Database = {
           option_d: string | null
           question_order: number
           question_text: string
+          regla_id: string | null
         }
         Insert: {
           correct_option: string
@@ -1027,6 +1042,7 @@ export type Database = {
           option_d?: string | null
           question_order: number
           question_text: string
+          regla_id?: string | null
         }
         Update: {
           correct_option?: string
@@ -1041,6 +1057,7 @@ export type Database = {
           option_d?: string | null
           question_order?: number
           question_text?: string
+          regla_id?: string | null
         }
         Relationships: [
           {
@@ -1054,8 +1071,22 @@ export type Database = {
             foreignKeyName: "node_quiz_questions_node_id_fkey"
             columns: ["node_id"]
             isOneToOne: false
+            referencedRelation: "v_nodes_resueltos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "node_quiz_questions_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
             referencedRelation: "v_severidad_overrides"
             referencedColumns: ["nodo"]
+          },
+          {
+            foreignKeyName: "node_quiz_questions_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "reglas"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1481,6 +1512,13 @@ export type Database = {
             columns: ["node_id"]
             isOneToOne: false
             referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "practice_sessions_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "v_nodes_resueltos"
             referencedColumns: ["id"]
           },
           {
@@ -2212,6 +2250,74 @@ export type Database = {
           },
         ]
       }
+      v_nodes_resueltos: {
+        Row: {
+          boss_goal: string | null
+          checkpoints: Json | null
+          conversation_scope: string | null
+          description: string | null
+          difficulty_level: number | null
+          engine_type: string | null
+          field_mission: string | null
+          id: string | null
+          is_boss: boolean | null
+          name: string | null
+          node_type: string | null
+          order_index: number | null
+          practice_script: Json | null
+          practice_script_resuelto: Json | null
+          reps_required: number | null
+          technique: string | null
+          world_id: number | null
+        }
+        Insert: {
+          boss_goal?: string | null
+          checkpoints?: Json | null
+          conversation_scope?: string | null
+          description?: string | null
+          difficulty_level?: number | null
+          engine_type?: string | null
+          field_mission?: string | null
+          id?: string | null
+          is_boss?: boolean | null
+          name?: string | null
+          node_type?: string | null
+          order_index?: number | null
+          practice_script?: Json | null
+          practice_script_resuelto?: never
+          reps_required?: number | null
+          technique?: string | null
+          world_id?: number | null
+        }
+        Update: {
+          boss_goal?: string | null
+          checkpoints?: Json | null
+          conversation_scope?: string | null
+          description?: string | null
+          difficulty_level?: number | null
+          engine_type?: string | null
+          field_mission?: string | null
+          id?: string | null
+          is_boss?: boolean | null
+          name?: string | null
+          node_type?: string | null
+          order_index?: number | null
+          practice_script?: Json | null
+          practice_script_resuelto?: never
+          reps_required?: number | null
+          technique?: string | null
+          world_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nodes_world_id_fkey"
+            columns: ["world_id"]
+            isOneToOne: false
+            referencedRelation: "worlds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_severidad_overrides: {
         Row: {
           criterio: string | null
@@ -2279,6 +2385,7 @@ export type Database = {
         Args: { _code: string }
         Returns: undefined
       }
+      resolver_practice_script: { Args: { ps: Json }; Returns: Json }
       revoke_company_invite: { Args: never; Returns: Json }
       save_onboarding_answer: {
         Args: {

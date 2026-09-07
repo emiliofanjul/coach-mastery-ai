@@ -145,9 +145,9 @@ export async function getCriteriosEjecucion(opts: {
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.value;
 
   let q = supabaseAdmin
-    .from("nodes")
-    .select("id, world_id, order_index, practice_script")
-    .not("practice_script", "is", null);
+    .from("v_nodes_resueltos")
+    .select("id, world_id, order_index, practice_script:practice_script_resuelto")
+    .not("practice_script_resuelto", "is", null);
 
   if (opts.worlds?.length) q = q.in("world_id", opts.worlds);
   if (opts.nodeIds?.length) q = q.in("id", opts.nodeIds);
@@ -156,7 +156,7 @@ export async function getCriteriosEjecucion(opts: {
   if (error) throw new Error(`criterios: ${error.message}`);
 
   const value = (data ?? []).flatMap((n) =>
-    extract(n.practice_script, n.id, n.world_id),
+    extract(n.practice_script, n.id!, n.world_id!),
   );
   criteriosCache.set(cacheKey, { at: Date.now(), value });
   return value;

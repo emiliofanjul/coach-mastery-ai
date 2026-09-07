@@ -9,7 +9,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto. Presentar es el paso 4. Llegar ahi sin haber pasado por los pasos 2 y 3 es construir sobre nada: el cliente no sabe con quien habla y tu no sabes que necesita. Por eso esa presentacion no se sostiene.",
-    "explanation_wrong": "Ir al grano se siente eficiente y es lo contrario. La presentacion es el paso 4 y solo funciona si antes el cliente supo quien eres (paso 2) y tu supiste que necesita (paso 3). Sin eso, le estas hablando de algo que no pidio."
+    "explanation_wrong": "Ir al grano se siente eficiente y es lo contrario. La presentacion es el paso 4 y solo funciona si antes el cliente supo quien eres (paso 2) y tu supiste que necesita (paso 3). Sin eso, le estas hablando de algo que no pidio.",
+    "regla_id": "opening.pitch_prematuro"
   },
   {
     "node_id": "1.0",
@@ -21,7 +22,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Asi es. Lo que ya recorriste no se borra. Sales, resuelves, y vuelves exactamente al punto donde ibas. La pausa dura lo que tu decidas que dure.",
-    "explanation_wrong": "Ninguna de las dos. Lo que ya recorriste ya quedo: el cliente no olvida quien eres ni lo que ya platicaron. No se borra ni se acaba, solo se pausa. Tu trabajo es regresar a la linea y seguir avanzando."
+    "explanation_wrong": "Ninguna de las dos. Lo que ya recorriste ya quedo: el cliente no olvida quien eres ni lo que ya platicaron. No se borra ni se acaba, solo se pausa. Tu trabajo es regresar a la linea y seguir avanzando.",
+    "regla_id": "story.desvio_con_regreso"
   },
   {
     "node_id": "1.0",
@@ -33,7 +35,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Esa pregunta si tiene respuesta, y una respuesta se puede corregir manana. Las otras dos terminan en encogerse de hombros.",
-    "explanation_wrong": "Esas dos preguntas no llevan a ningun lado: una te deja repasando frases sueltas y la otra le echa la culpa a la suerte. Con la linea en la cabeza puedes ubicar el punto exacto donde se salio la conversacion, y eso si se corrige."
+    "explanation_wrong": "Esas dos preguntas no llevan a ningun lado: una te deja repasando frases sueltas y la otra le echa la culpa a la suerte. Con la linea en la cabeza puedes ubicar el punto exacto donde se salio la conversacion, y eso si se corrige.",
+    "regla_id": "story.sale_sin_regresar"
   },
   {
     "node_id": "1.1",
@@ -45,7 +48,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Correcto. En diez segundos nadie decide una compra. Lo que si decide es si vale la pena seguir escuchandote, y sin eso no hay nada mas.",
-    "explanation_wrong": "La compra se decide mucho despues, en el paso 5. Lo unico que hacen los primeros segundos, y es suficiente, es ganarte el derecho a seguir hablando. Si eso se pierde, ya no importa que tan bueno sea lo que traias."
+    "explanation_wrong": "La compra se decide mucho despues, en el paso 5. Lo unico que hacen los primeros segundos, y es suficiente, es ganarte el derecho a seguir hablando. Si eso se pierde, ya no importa que tan bueno sea lo que traias.",
+    "regla_id": "opening.energia_verbal"
   },
   {
     "node_id": "1.1",
@@ -57,7 +61,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Sonrisa, Contacto visual y Entusiasmo. En ingles son los SEE factors: Smile, Eye contact, Enthusiasm. Tres cosas, ni una mas.",
-    "explanation_wrong": "Son Sonrisa, Contacto visual y Entusiasmo. Vienen de los SEE factors en ingles: Smile, Eye contact, Enthusiasm. Vale la pena memorizarlas asi, porque son las tres cosas que deciden los primeros segundos."
+    "explanation_wrong": "Son Sonrisa, Contacto visual y Entusiasmo. Vienen de los SEE factors en ingles: Smile, Eye contact, Enthusiasm. Vale la pena memorizarlas asi, porque son las tres cosas que deciden los primeros segundos.",
+    "regla_id": "opening.see"
   },
   {
     "node_id": "1.1",
@@ -69,7 +74,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Asi es. Son parte fundamental de la doctrina y se practican en cada visita real. Pero Closer solo evalua lo que de verdad puede observar en tus palabras. Lo demas te lo ensena y confia en ti.",
-    "explanation_wrong": "Al contrario, son fundamentales, y por eso se ensenan. Lo que pasa es que Closer no puede verte ni oirte, y una calificacion inventada no te sirve de nada. Esa parte la afinas en campo con tu entrenador."
+    "explanation_wrong": "Al contrario, son fundamentales, y por eso se ensenan. Lo que pasa es que Closer no puede verte ni oirte, y una calificacion inventada no te sirve de nada. Esa parte la afinas en campo con tu entrenador.",
+    "regla_id": "opening.see"
   },
   {
     "node_id": "1.3",
@@ -81,7 +87,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto. No es un problema de educacion sino de estructura: le diste a elegir, y la opcion comoda siempre es la que no lo compromete. El cliente no esta siendo grosero, esta tomando la salida que tu le abriste.",
-    "explanation_wrong": "El problema no es el tono ni la duracion. Es que esa pregunta le entrega el control y le abre una salida que no le cuesta nada tomar. Cualquiera contestaria que no."
+    "explanation_wrong": "El problema no es el tono ni la duracion. Es que esa pregunta le entrega el control y le abre una salida que no le cuesta nada tomar. Cualquiera contestaria que no.",
+    "regla_id": "opening.pide_permiso"
   },
   {
     "node_id": "1.3",
@@ -93,7 +100,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Asi es. No era el permiso ni el uniforme: era la postura. La autoridad no se pide, se asume. Y se nota en el primer segundo.",
-    "explanation_wrong": "No era ningun permiso ni respaldo externo. Era que actuaba como quien pertenece: llegaba, saludaba y pasaba. La gente reacciona a esa postura mucho antes de reaccionar a las palabras."
+    "explanation_wrong": "No era ningun permiso ni respaldo externo. Era que actuaba como quien pertenece: llegaba, saludaba y pasaba. La gente reacciona a esa postura mucho antes de reaccionar a las palabras.",
+    "regla_id": "opening.gasman"
   },
   {
     "node_id": "1.3",
@@ -105,7 +113,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto. Lo que no se puede calificar se enseña igual y se pide igual. Un vendedor que solo entrena lo que se le califica llega al campo entrenado a medias.",
-    "explanation_wrong": "Lo físico no cabe en un texto, pero sí cabe en tu preparación. La app te dice de frente qué no puede medir para que tú lo practiques de todos modos."
+    "explanation_wrong": "Lo físico no cabe en un texto, pero sí cabe en tu preparación. La app te dice de frente qué no puede medir para que tú lo practiques de todos modos.",
+    "regla_id": "opening.see"
   },
   {
     "node_id": "2.0",
@@ -117,7 +126,8 @@
     "option_d": null,
     "correct_option": "A",
     "explanation_correct": "Exacto. Corta y simple. Lo contrario es KILL, Keep It Long and Lengthy, y es lo que hace que el cliente se desconecte justo cuando ya te habia puesto atencion.",
-    "explanation_wrong": "KISS es Keep It Short and Simple: corta y simple. La historia breve no busca impresionar ni sonar formal, busca ser el puente mas corto entre no te conozco y a ver, cuenteme."
+    "explanation_wrong": "KISS es Keep It Short and Simple: corta y simple. La historia breve no busca impresionar ni sonar formal, busca ser el puente mas corto entre no te conozco y a ver, cuenteme.",
+    "regla_id": "story.kiss"
   },
   {
     "node_id": "2.0",
@@ -129,7 +139,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Asi es. La doctrina es clara: es mucho mas efectivo pasar directo a las preguntas que dar una explicacion larga. Tu historia no existe para que te entiendan a ti.",
-    "explanation_wrong": "Explicar mas gasta la atencion que acabas de ganar, y esperar deja la conversacion en el aire para que el cliente decida si sigue. Lo que sigue es preguntarle a el: para eso te ganaste el derecho."
+    "explanation_wrong": "Explicar mas gasta la atencion que acabas de ganar, y esperar deja la conversacion en el aire para que el cliente decida si sigue. Lo que sigue es preguntarle a el: para eso te ganaste el derecho.",
+    "regla_id": "story.pregunta_despues"
   },
   {
     "node_id": "2.3",
@@ -141,7 +152,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Correcto. No ha probado tu producto ni conoce tu empresa. Lo unico que si puede juzgar de inmediato eres tu, y esa decision la toma mucho antes que la otra.",
-    "explanation_wrong": "No es por la comision ni porque los productos sean iguales. Es que el cliente no tiene forma de evaluar tu producto todavia, pero a ti si te evalua desde que te ve. Esa es la unica informacion que tiene al principio."
+    "explanation_wrong": "No es por la comision ni porque los productos sean iguales. Es que el cliente no tiene forma de evaluar tu producto todavia, pero a ti si te evalua desde que te ve. Esa es la unica informacion que tiene al principio.",
+    "regla_id": "relationship.cpr"
   },
   {
     "node_id": "2.3",
@@ -153,7 +165,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Asi es, y eso lo hace distinto de todo lo demas. Los seis pasos van en orden; el CPR los atraviesa todos.",
-    "explanation_wrong": "El CPR no ocupa un lugar en el mapa. Se hace durante toda la conversacion, desde el primer segundo hasta el ultimo. Es lo unico que no es un paso."
+    "explanation_wrong": "El CPR no ocupa un lugar en el mapa. Se hace durante toda la conversacion, desde el primer segundo hasta el ultimo. Es lo unico que no es un paso.",
+    "regla_id": "relationship.cpr"
   },
   {
     "node_id": "2.4",
@@ -165,7 +178,8 @@
     "option_d": null,
     "correct_option": "A",
     "explanation_correct": "Familia, Ocupacion, Recreacion, Motivacion y Deportes. Cinco puertas a la persona, y siempre hay al menos una abierta.",
-    "explanation_wrong": "FORMS es Family, Occupation, Recreation, Motivation, Sports: los cinco temas para crear relacion personal. Vale la pena memorizarlos, porque son la respuesta a de que le hablo."
+    "explanation_wrong": "FORMS es Family, Occupation, Recreation, Motivation, Sports: los cinco temas para crear relacion personal. Vale la pena memorizarlos, porque son la respuesta a de que le hablo.",
+    "regla_id": "relationship.forms"
   },
   {
     "node_id": "2.4",
@@ -177,7 +191,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto. La doctrina insiste en la palabra genuinos por algo. Hay cinco puertas justamente para que encuentres una que si te interese.",
-    "explanation_wrong": "Fingir interes se nota siempre, y sale mas caro que no preguntar, porque el cliente se da cuenta de que le estas aplicando una tecnica. Y renunciar al CPR tampoco: hay cinco puertas, busca otra."
+    "explanation_wrong": "Fingir interes se nota siempre, y sale mas caro que no preguntar, porque el cliente se da cuenta de que le estas aplicando una tecnica. Y renunciar al CPR tampoco: hay cinco puertas, busca otra.",
+    "regla_id": "relationship.interes_fingido"
   },
   {
     "node_id": "2.6",
@@ -189,7 +204,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Correcto. No puede rechazar algo que todavia no conoce. Es la puerta cerrandose sola, la misma respuesta que le da a cualquiera que llega.",
-    "explanation_wrong": "No puede ser una objecion porque no sabe todavia que le ofreces: no hubo nada que evaluar. Es un bloqueo, un reflejo automatico. Y por eso no se discute, se atraviesa."
+    "explanation_wrong": "No puede ser una objecion porque no sabe todavia que le ofreces: no hubo nada que evaluar. Es un bloqueo, un reflejo automatico. Y por eso no se discute, se atraviesa.",
+    "regla_id": "blocks.bloqueo_vs_objecion"
   },
   {
     "node_id": "2.6",
@@ -201,7 +217,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Asi es. Nadie se deja convencer de que no esta ocupado. Al pelearlo obligas al cliente a sostener algo que habia dicho sin pensar.",
-    "explanation_wrong": "Al contrario. Un bloqueo se dice sin pensar; si lo peleas, el cliente tiene que defenderlo, y al defenderlo se lo cree. Convertiste un reflejo en una posicion."
+    "explanation_wrong": "Al contrario. Un bloqueo se dice sin pensar; si lo peleas, el cliente tiene que defenderlo, y al defenderlo se lo cree. Convertiste un reflejo en una posicion.",
+    "regla_id": "blocks.discute_bloqueo"
   },
   {
     "node_id": "2.6",
@@ -213,7 +230,8 @@
     "option_d": null,
     "correct_option": "A",
     "explanation_correct": "Acepta lo que te dijo, no lo discutas, y sigue con lo tuyo. Tres movimientos, dos segundos.",
-    "explanation_wrong": "AIR es Agree, Ignore, Resume: acepta, ignora, resume. Ignorar aqui significa no discutirlo, no que lo pases por alto sin reconocerlo."
+    "explanation_wrong": "AIR es Agree, Ignore, Resume: acepta, ignora, resume. Ignorar aqui significa no discutirlo, no que lo pases por alto sin reconocerlo.",
+    "regla_id": "blocks.air"
   },
   {
     "node_id": "2.6",
@@ -225,7 +243,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto. Esa llega despues de entender: el cliente evaluo su situacion y encontro una razon concreta. Las otras dos son reflejos que se dicen sin pensar.",
-    "explanation_wrong": "Esas dos son bloqueos: se dicen en automatico, sin haber evaluado nada. Ya tengo proveedor y me cumple bien es distinto, porque ahi si hubo un razonamiento sobre su situacion real."
+    "explanation_wrong": "Esas dos son bloqueos: se dicen en automatico, sin haber evaluado nada. Ya tengo proveedor y me cumple bien es distinto, porque ahi si hubo un razonamiento sobre su situacion real.",
+    "regla_id": "blocks.bloqueo_vs_objecion"
   },
   {
     "node_id": "3.0",
@@ -237,7 +256,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Esa invitacion es una trampa dulce. El Closer responde con jiu-jitsu: \"Con gusto — pero primero cuenteme un poco de su negocio para no hacerle perder tiempo con cosas que no le sirvan. Que es lo que mas se le mueve?\" Diagnostico primero, siempre.",
-    "explanation_wrong": "La invitacion del cliente no cambia el orden del sistema. Presentar sin diagnosticar produce una presentacion generica — y las genericas no venden. Lo correcto: agradecer la apertura y voltear a preguntar primero. El cliente lo respeta mas, no menos."
+    "explanation_wrong": "La invitacion del cliente no cambia el orden del sistema. Presentar sin diagnosticar produce una presentacion generica — y las genericas no venden. Lo correcto: agradecer la apertura y voltear a preguntar primero. El cliente lo respeta mas, no menos.",
+    "regla_id": "discovery.receta_sin_diagnostico"
   },
   {
     "node_id": "3.0",
@@ -249,7 +269,8 @@
     "option_d": null,
     "correct_option": "A",
     "explanation_correct": "Exacto. Uno llega con la receta escrita buscando paciente. El otro examina primero — y su receta, cuando llega, cae en tierra preparada. Por eso el que pregunta vende mas que el que habla.",
-    "explanation_wrong": "No es carisma ni horas — es el ORDEN. El promedio receta primero (su producto favorito buscando donde caber). El doctor examina primero y receta despues. Ese orden invertido es toda la diferencia en conversion."
+    "explanation_wrong": "No es carisma ni horas — es el ORDEN. El promedio receta primero (su producto favorito buscando donde caber). El doctor examina primero y receta despues. Ese orden invertido es toda la diferencia en conversion.",
+    "regla_id": "discovery.examen_antes_receta"
   },
   {
     "node_id": "3.0",
@@ -261,7 +282,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Eso es el barrido. Un positivo limpio y genuino significa que el dolor no vive en ese territorio — no que no exista. Los otros dos territorios siguen sin examinar: que lineas le faltan? a cuanto esta comprando? El mapa tiene tres zonas por algo.",
-    "explanation_wrong": "Insistir en un territorio limpio te vuelve interrogador y quema la conversacion; rendirte regala la visita. El dolor casi siempre existe — solo que vive en OTRO territorio. Positivo limpio = cambia de zona y sigue examinando."
+    "explanation_wrong": "Insistir en un territorio limpio te vuelve interrogador y quema la conversacion; rendirte regala la visita. El dolor casi siempre existe — solo que vive en OTRO territorio. Positivo limpio = cambia de zona y sigue examinando.",
+    "regla_id": "discovery.barrido"
   },
   {
     "node_id": "3.0",
@@ -273,7 +295,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Su alarma esta calibrada para el vendedor que llega hablando de su producto. El que pregunta con interes genuino por SU negocio rompe el patron — y el cerebro del cliente lo reclasifica: de amenaza a conversacion.",
-    "explanation_wrong": "No es distraccion ni confusion — es reclasificacion. Su alarma anti-vendedor espera un monologo de producto. Cuando en lugar de eso recibe interes genuino por su negocio, el patron no coincide y la guardia baja. Preguntar es la forma mas rapida de dejar de parecer vendedor."
+    "explanation_wrong": "No es distraccion ni confusion — es reclasificacion. Su alarma anti-vendedor espera un monologo de producto. Cuando en lugar de eso recibe interes genuino por su negocio, el patron no coincide y la guardia baja. Preguntar es la forma mas rapida de dejar de parecer vendedor.",
+    "regla_id": "discovery.examen_antes_receta"
   },
   {
     "node_id": "3.5",
@@ -285,7 +308,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Doble señal de compra en una frase: presentación (ya se imagina comprándolo) y precio (ya está evaluando). El cliente te está diciendo \"me interesa\" sin decirlo. Detectarlo a tiempo cambia todo lo que sigue.",
-    "explanation_wrong": "Preguntar precio no es buscar pretexto — es la señal de compra más clásica que existe. Nadie evalúa el costo de lo que no piensa comprar. Ese cliente encendió la verde: tu trabajo es verla."
+    "explanation_wrong": "Preguntar precio no es buscar pretexto — es la señal de compra más clásica que existe. Nadie evalúa el costo de lo que no piensa comprar. Ese cliente encendió la verde: tu trabajo es verla.",
+    "regla_id": "close.fishbbod"
   },
   {
     "node_id": "3.5",
@@ -297,7 +321,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "La trampa del rojo encantador. Veinte minutos, cero señales: ni una pregunta de producto, ni una mención de compra, y \"está bonito su catálogo\" es un cumplido de despedida, no de interés. Cierra con cariño y ve por tus amarillos.",
-    "explanation_wrong": "El café y las risas se sienten increíbles — y no son señales de compra. Señal es: pregunta de producto, mención de necesidad, evaluación de precio. Cero de eso en 20 minutos es un cliente que disfruta tu compañía, no tu oferta. Amable ≠ verde."
+    "explanation_wrong": "El café y las risas se sienten increíbles — y no son señales de compra. Señal es: pregunta de producto, mención de necesidad, evaluación de precio. Cero de eso en 20 minutos es un cliente que disfruta tu compañía, no tu oferta. Amable ≠ verde.",
+    "regla_id": "discovery.luz_verde"
   },
   {
     "node_id": "3.5",
@@ -309,7 +334,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Tiempo de calidad con gente de calidad. Rápido porque cada minuto ahí se lo robas a un persuadible; amable porque hoy es rojo pero en seis meses quién sabe — y la zona escucha cómo tratas a la gente.",
-    "explanation_wrong": "Ni insistir (el 10% rojo no compra HOY hagas lo que hagas — es matemática, no reto de técnica) ni quedarte por pena (tu tiempo es tu herramienta más cara). La salida correcta: rápida, cálida, puerta abierta. Y de vuelta a tus amarillos."
+    "explanation_wrong": "Ni insistir (el 10% rojo no compra HOY hagas lo que hagas — es matemática, no reto de técnica) ni quedarte por pena (tu tiempo es tu herramienta más cara). La salida correcta: rápida, cálida, puerta abierta. Y de vuelta a tus amarillos.",
+    "regla_id": "discovery.rojo_insistir"
   },
   {
     "node_id": "4.0",
@@ -321,7 +347,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Subió el valor, y fíjate cómo: no habló del producto en abstracto — habló de lo que el producto hace EN el negocio del cliente: menos reclamos, más recompra. Valor es siempre el producto traducido a la vida del cliente.",
-    "explanation_wrong": "No mencionó precio ni facilidades — habló de lo que el cliente GANA: menos reclamos, clientes que regresan. Eso es subir el plato del valor. El plato del costo ni se tocó en esa frase."
+    "explanation_wrong": "No mencionó precio ni facilidades — habló de lo que el cliente GANA: menos reclamos, clientes que regresan. Eso es subir el plato del valor. El plato del costo ni se tocó en esa frase.",
+    "regla_id": "present.beneficio_no_caracteristica"
   },
   {
     "node_id": "4.0",
@@ -333,7 +360,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto — y es de los errores más caros. Al retroceder ante la primera duda, el mensaje real fue: \"tiene razón, no lo vale.\" La duda del cliente pedía MÁS valor (más conexión con su dolor), no un producto más chico.",
-    "explanation_wrong": "Parece flexibilidad, pero mira el mensaje de fondo: el cliente dudó del valor, y el vendedor en lugar de construir valor... le dio la razón bajándose de producto. La respuesta a la duda es subir el plato del valor, no encoger la oferta."
+    "explanation_wrong": "Parece flexibilidad, pero mira el mensaje de fondo: el cliente dudó del valor, y el vendedor en lugar de construir valor... le dio la razón bajándose de producto. La respuesta a la duda es subir el plato del valor, no encoger la oferta.",
+    "regla_id": "close.descuento_de_panico"
   },
   {
     "node_id": "4.0",
@@ -345,7 +373,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Esa es la mecánica: $500 por \"un aceite\" suena caro; $500 por \"dejar de mandar clientes a la competencia cada quincena\" suena regalado. El mismo número, distinta balanza. Primero construyes el peso del valor — luego el costo cae solo.",
-    "explanation_wrong": "El precio sí se menciona — en su momento. La clave es el orden: descuentos y facilidades sobre algo que el cliente aún no valora provocan sospecha (¿por qué me lo remata?). Valor primero, y el costo se encoge solo en comparación."
+    "explanation_wrong": "El precio sí se menciona — en su momento. La clave es el orden: descuentos y facilidades sobre algo que el cliente aún no valora provocan sospecha (¿por qué me lo remata?). Valor primero, y el costo se encoge solo en comparación.",
+    "regla_id": "present.dos_mitades"
   },
   {
     "node_id": "4.4",
@@ -357,7 +386,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Doble señal de compra (precio + entrega) = pico de la curva. Ese era EL momento. Cada minuto extra de presentación desde ahí no suma — enfría. El catálogo completo no le importa a alguien que ya quiere comprar.",
-    "explanation_wrong": "La interrupción del cliente era la mejor noticia del día: preguntó precio Y entrega — pico de curva, señales gritando. Seguir presentando ahí es servir el postre cuando el cliente ya pidió la cuenta. La información completa vale menos que el momento."
+    "explanation_wrong": "La interrupción del cliente era la mejor noticia del día: preguntó precio Y entrega — pico de curva, señales gritando. Seguir presentando ahí es servir el postre cuando el cliente ya pidió la cuenta. La información completa vale menos que el momento.",
+    "regla_id": "close.sigue_presentando"
   },
   {
     "node_id": "4.4",
@@ -369,7 +399,8 @@
     "option_d": null,
     "correct_option": "A",
     "explanation_correct": "Exacto. El impulso se construye gradual: primero confianza, luego interés, luego deseo. Descargar todo en el minuto uno es pedirle a alguien que salte del piso al techo — no puede, y además le da miedo el intento.",
-    "explanation_wrong": "No es prohibición ni silencio — es secuencia. La curva necesita escalones: la apertura construye el primero, la historia el segundo, el descubrimiento el tercero... Saltárselos con artillería temprana no acelera la subida: derrumba la escalera."
+    "explanation_wrong": "No es prohibición ni silencio — es secuencia. La curva necesita escalones: la apertura construye el primero, la historia el segundo, el descubrimiento el tercero... Saltárselos con artillería temprana no acelera la subida: derrumba la escalera.",
+    "regla_id": "impulse.curva"
   },
   {
     "node_id": "4.4",
@@ -381,7 +412,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Curva bajando se responde con menos presión, no con más. Empujar una curva que baja la hunde. Se regresa a lo que la subió (valor, su dolor, su escena) — o si ya no hay materia, se cierra la visita con calidad para volver otro día con la curva en cero, no en negativo.",
-    "explanation_wrong": "Empujar una curva que baja es acelerar cuesta abajo: cada insistencia la hunde más. Lo que baja la curva casi siempre es exceso de presión o pérdida de conexión — y ninguna de las dos se arregla con más presión. Se arregla con valor... o con una buena retirada."
+    "explanation_wrong": "Empujar una curva que baja es acelerar cuesta abajo: cada insistencia la hunde más. Lo que baja la curva casi siempre es exceso de presión o pérdida de conexión — y ninguna de las dos se arregla con más presión. Se arregla con valor... o con una buena retirada.",
+    "regla_id": "impulse.curva"
   },
   {
     "node_id": "5.0",
@@ -393,7 +425,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "La conversación había construido el sí — y la pregunta lo regaló. \"¿Le interesa?\" invita a evaluar desde cero algo que ya estaba decidido en los hechos. El cierre correcto era asumir y ofrecer opciones: ¿5 u 8? ¿lunes o miércoles?",
-    "explanation_wrong": "El interés estaba — tres síes y la cuenta hecha lo prueban. Lo que falló fue la puerta: una pregunta de sí/no al final le ofrece al cliente una salida que no buscaba, y el \"déjeme pensarlo\" es la salida más cómoda. El precio no tuvo nada que ver."
+    "explanation_wrong": "El interés estaba — tres síes y la cuenta hecha lo prueban. Lo que falló fue la puerta: una pregunta de sí/no al final le ofrece al cliente una salida que no buscaba, y el \"déjeme pensarlo\" es la salida más cómoda. El precio no tuvo nada que ver.",
+    "regla_id": "close.mal_cierre"
   },
   {
     "node_id": "5.0",
@@ -405,7 +438,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Esa es la mecánica del cierre asumido: la decisión grande ya la tomó la conversación — dolor, valor, síes, señales. La pregunta de opciones solo le da al cliente el volante de los detalles. Elegir miércoles ES decir sí.",
-    "explanation_wrong": "No es cuestión de sonar profesional ni de logística. Es arquitectura de la decisión: \"¿quiere que...?\" reabre la pregunta grande (¿compro o no?); \"¿lunes o miércoles?\" la da por resuelta y pregunta la chica. El cliente decide cómodo — y decide que sí."
+    "explanation_wrong": "No es cuestión de sonar profesional ni de logística. Es arquitectura de la decisión: \"¿quiere que...?\" reabre la pregunta grande (¿compro o no?); \"¿lunes o miércoles?\" la da por resuelta y pregunta la chica. El cliente decide cómodo — y decide que sí.",
+    "regla_id": "close.alternativa"
   },
   {
     "node_id": "5.0",
@@ -417,7 +451,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Un cierre extrae una decisión — no siempre una venta. Este no es claro, tiene razón real y trae fecha: el otro mes, con dinero del contrato. Comparado con un \"déjeme pensarlo\" eterno, esto es un mapa del tesoro. Agenda la vuelta y consolida la relación.",
-    "explanation_wrong": "No confundas cierre con venta. La visita SÍ cerró: decisión clara, razón concreta, fecha de regreso. Insistir contra un \"no puedo pagar ahorita\" genuino solo quema la relación — la jugada es capitalizar la decisión: \"perfecto, entonces lo veo el mes que entra ya con lo del contrato, ¿como qué fecha le cae?\""
+    "explanation_wrong": "No confundas cierre con venta. La visita SÍ cerró: decisión clara, razón concreta, fecha de regreso. Insistir contra un \"no puedo pagar ahorita\" genuino solo quema la relación — la jugada es capitalizar la decisión: \"perfecto, entonces lo veo el mes que entra ya con lo del contrato, ¿como qué fecha le cae?\"",
+    "regla_id": "close.asumir_venta"
   },
   {
     "node_id": "5.4",
@@ -429,7 +464,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto — la herramienta correcta en el momento equivocado. Ese cliente entendió la oferta y dio un motivo concreto: merece una respuesta real, no una evasión. AIR es para reflejos pre-comprensión; a las objeciones se les responde con reencuadre y balas.",
-    "explanation_wrong": "Parece AIR de libro — pero mira el MOMENTO: llegó después de la presentación, con motivo concreto (proveedor, precio). Eso es objeción, no bloqueo. Evadirla con cambio de tema le dice al cliente \"no tengo respuesta\" — y la conversación seria se acabó ahí."
+    "explanation_wrong": "Parece AIR de libro — pero mira el MOMENTO: llegó después de la presentación, con motivo concreto (proveedor, precio). Eso es objeción, no bloqueo. Evadirla con cambio de tema le dice al cliente \"no tengo respuesta\" — y la conversación seria se acabó ahí.",
+    "regla_id": "objection.air_a_objecion"
   },
   {
     "node_id": "5.4",
@@ -441,7 +477,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Información pura: hay demanda real, hay presupuesto real, y hay un incumbente con debilidades que su propio cliente conoce. La respuesta correcta es curiosidad genuina — ¿qué tal se porta con las entregas? — nunca defensa ni ataque al otro.",
-    "explanation_wrong": "Ni tarde ni para atacar al otro (hablar mal del proveedor te hace ver desesperado y de paso insulta el criterio del cliente). \"Ya tengo proveedor\" = compra esto, paga esto, y el lugar existe. Pregunta cómo se porta el otro — la puerta te la va a abrir él solito."
+    "explanation_wrong": "Ni tarde ni para atacar al otro (hablar mal del proveedor te hace ver desesperado y de paso insulta el criterio del cliente). \"Ya tengo proveedor\" = compra esto, paga esto, y el lugar existe. Pregunta cómo se porta el otro — la puerta te la va a abrir él solito.",
+    "regla_id": "objection.es_senal_de_compra"
   },
   {
     "node_id": "5.4",
@@ -453,7 +490,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "La objeción es engagement: entendió, le importa, y está negociando consigo mismo enfrente de ti — dándote el mapa exacto de lo que falta. El \"ahí lo pensamos\" educado es la desconexión disfrazada. Aprende a alegrarte cuando escuches una objeción: la venta sigue viva.",
-    "explanation_wrong": "Suenan parecido y son opuestos: la objeción trae contenido (caro, proveedor, consultar) porque hay interés real detrás procesando tu oferta. El \"gracias, ahí lo pensamos\" no trae nada — es la salida cómoda del que ya se fue. La objeción es la venta respirando."
+    "explanation_wrong": "Suenan parecido y son opuestos: la objeción trae contenido (caro, proveedor, consultar) porque hay interés real detrás procesando tu oferta. El \"gracias, ahí lo pensamos\" no trae nada — es la salida cómoda del que ya se fue. La objeción es la venta respirando.",
+    "regla_id": "objection.es_senal_de_compra"
   },
   {
     "node_id": "6.0",
@@ -465,7 +503,8 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "La causa #1 de cancelación no es arrepentimiento del producto — es no haber entendido algo. Cuándo llega, qué hace si falla, qué sigue. Cada hueco es una grieta, y las grietas se sellan ANTES de salir por la puerta, no \"cualquier cosa me marca\".",
-    "explanation_wrong": "La venta cerrada es la venta más frágil que existe — esa noche llega el remordimiento del comprador, y busca grietas: ¿cuándo llega? ¿y si sale mal? El \"cualquier cosa me marca\" no sella nada. La consolidación era el paso que faltó — y puede costar la venta completa."
+    "explanation_wrong": "La venta cerrada es la venta más frágil que existe — esa noche llega el remordimiento del comprador, y busca grietas: ¿cuándo llega? ¿y si sale mal? El \"cualquier cosa me marca\" no sella nada. La consolidación era el paso que faltó — y puede costar la venta completa.",
+    "regla_id": "consolidation.siguientes_pasos"
   },
   {
     "node_id": "6.0",
@@ -477,18 +516,20 @@
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Los dos, en ese orden: primero la claridad — qué llega, cuándo, qué sigue, qué hace si algo falla — que blinda la venta contra el remordimiento. Y luego la cosecha: la relación sembrada y la puerta a la siguiente venta o al referido.",
-    "explanation_wrong": "Ni la prisa ni la re-presentación. Repetir la venta después del sí siembra dudas (¿por qué me sigue convenciendo?). Los dos propósitos reales: comprensión total (la venta que se entiende no se cancela) y capitalización (la relación y la siguiente puerta)."
+    "explanation_wrong": "Ni la prisa ni la re-presentación. Repetir la venta después del sí siembra dudas (¿por qué me sigue convenciendo?). Los dos propósitos reales: comprensión total (la venta que se entiende no se cancela) y capitalización (la relación y la siguiente puerta).",
+    "regla_id": "consolidation.siguientes_pasos"
   },
   {
     "node_id": "6.0",
     "question_order": 3,
-    "question_text": "¿Por qué \"la venta se cierra en el paso 4 pero se GANA en el 5\"?",
-    "option_a": "Porque en el 5 se firma el contrato legal.",
-    "option_b": "Porque el sí del paso 4 es frágil hasta que la comprensión y la confianza del paso 5 lo blindan — y porque del 5 salen la recompra y los referidos.",
-    "option_c": "Porque el paso 5 es donde se negocia el precio final.",
+    "question_text": "¿Por qué \"la venta se cierra en el Paso 5 pero se GANA en el 6\"?",
+    "option_a": "Porque en el 6 se firma el contrato legal.",
+    "option_b": "Porque el sí del Paso 5 es frágil hasta que la comprensión y la confianza del Paso 6 lo blindan — y porque del 6 salen la recompra y los referidos.",
+    "option_c": "Porque el Paso 6 es donde se negocia el precio final.",
     "option_d": null,
     "correct_option": "B",
     "explanation_correct": "Exacto. Sin consolidación, el sí es una promesa a merced del remordimiento nocturno. Con ella, es una decisión blindada — y además sembraste la siguiente: el cliente que se queda tranquilo es el que te recomienda y te recompra.",
-    "explanation_wrong": "No es papeleo ni precio — es blindaje y siembra. El sí recién nacido es frágil: el paso 5 lo protege con comprensión total, y de pasada construye lo que vale más que esta venta: la relación que trae la siguiente."
+    "explanation_wrong": "No es papeleo ni precio — es blindaje y siembra. El sí recién nacido es frágil: el Paso 6 lo protege con comprensión total, y de pasada construye lo que vale más que esta venta: la relación que trae la siguiente.",
+    "regla_id": "consolidation.arrepentimiento"
   }
 ]
