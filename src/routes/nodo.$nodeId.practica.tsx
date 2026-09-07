@@ -2865,6 +2865,7 @@ function ReplicaChat({
         },
         body: JSON.stringify({
           phase: "replica",
+          node_id: nodeId,
           practice_script: practiceScript,
           original_evaluation: evaluation,
           conversation_history: conversation,
