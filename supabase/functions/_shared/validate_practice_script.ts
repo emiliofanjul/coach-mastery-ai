@@ -83,15 +83,42 @@ export async function validateSkillsExist(
   }));
 }
 
+/**
+ * Límite de skills_in_focus por tipo de nodo.
+ *
+ * 6 en nodos de entrenamiento: más de eso deja de entrenar una técnica y se
+ * vuelve un examen. Hasta 8 en BOSS, que existen justamente para integrar la
+ * conversación completa — el certificado final entrena 8 y eso es correcto.
+ * El schema no puede distinguirlo porque no conoce el node_type.
+ */
+export function validateSkillsInFocusLimit(
+  script: unknown,
+  nodeType?: string | null,
+): ValidationError | null {
+  const foco = (script as any)?.scope?.skills_in_focus;
+  if (!Array.isArray(foco)) return null;
+  const max = nodeType === "boss" ? 8 : 6;
+  if (foco.length > max) {
+    return {
+      path: "/scope/skills_in_focus",
+      message: `${foco.length} skills en foco; el máximo para un nodo ${nodeType === "boss" ? "boss" : "de entrenamiento"} es ${max}`,
+    };
+  }
+  return null;
+}
+
 export async function validatePracticeScriptFull(
   script: unknown,
   admin: any,
+  nodeType?: string | null,
 ): Promise<ValidationResult> {
   const structural = validatePracticeScriptStructure(script);
   if (!structural.valid) return structural;
   const errors: ValidationError[] = [];
   const w = validateWeightsSum(script);
   if (w) errors.push(w);
+  const f = validateSkillsInFocusLimit(script, nodeType);
+  if (f) errors.push(f);
   errors.push(...(await validateSkillsExist(script, admin)));
   return { valid: errors.length === 0, errors };
 }
