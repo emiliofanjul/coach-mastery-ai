@@ -82,6 +82,12 @@ type NextPhase = Phase | "end";
 interface ReqBody {
   transcript?: string;
   phase: Phase;
+  // Nodo que se está practicando. El servidor busca el practice_script
+  // RESUELTO (v_nodes_resueltos) por este id y lo usa como autoridad.
+  // Obligatorio en evaluate y replica: la vara con la que se califica no
+  // se acepta del cliente.
+  node_id?: string | null;
+  /** @deprecated El servidor lo resuelve por node_id. Solo respaldo para fases del Actor. */
   practice_script?: any;
   company_brain?: string;
   seller_name?: string;
@@ -522,9 +528,49 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
-    const { transcript, phase, practice_script, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief, cut_reason, director_user_turns } = body;
+    const { transcript, phase, practice_script: practice_script_body, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief, cut_reason, director_user_turns } = body;
+
+    // ── El servidor es la autoridad sobre el practice_script ──────────
+    // Se busca el guion RESUELTO por node_id (definición canónica de cada
+    // regla, severidad por defecto salvo override declarado, cita del
+    // Cerebro). Lo que mande el cliente sólo sirve de respaldo para las
+    // fases del Actor; para calificar es obligatorio el del servidor.
+    let practice_script: any = practice_script_body ?? null;
+    let script_source: "server" | "body" | "none" = practice_script_body ? "body" : "none";
+    const node_id = typeof body.node_id === "string" && body.node_id.trim() ? body.node_id.trim() : null;
+    if (phase !== "generate_example" && node_id) {
+      const adminForScript = getAdmin();
+      if (adminForScript) {
+        const { data: nodeRow, error: nodeErr } = await adminForScript
+          .from("v_nodes_resueltos")
+          .select("practice_script_resuelto")
+          .eq("id", node_id)
+          .maybeSingle();
+        if (!nodeErr && nodeRow?.practice_script_resuelto) {
+          practice_script = nodeRow.practice_script_resuelto;
+          script_source = "server";
+        } else {
+          console.error("[closer-voice] no se pudo resolver practice_script por node_id", { node_id, err: nodeErr?.message });
+        }
+      }
+    }
+    const esFaseDeCalificacion = phase === "evaluate" || phase === "replica";
+    if (esFaseDeCalificacion && script_source !== "server") {
+      return new Response(
+        JSON.stringify({
+          error: "node_id_required",
+          message: node_id
+            ? "No se pudo cargar el guion de este nodo desde el servidor."
+            : "La evaluación requiere node_id: el guion de calificación no se acepta del cliente.",
+        }),
+        { status: node_id ? 500 : 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    if (phase !== "generate_example" && script_source === "body") {
+      console.warn("[closer-voice] practice_script tomado del cliente (sin node_id). Fase:", phase);
+    }
     if (phase === "evaluate") {
-      console.log("[closer-voice evaluate body]", { session_id, cut_reason, director_user_turns, taught_skills });
+      console.log("[closer-voice evaluate body]", { session_id, node_id, script_source, cut_reason, director_user_turns, taught_skills });
     }
 
     if (!phase) {
