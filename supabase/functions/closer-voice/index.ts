@@ -537,17 +537,19 @@ Deno.serve(async (req) => {
     // fases del Actor; para calificar es obligatorio el del servidor.
     let practice_script: any = practice_script_body ?? null;
     let script_source: "server" | "body" | "none" = practice_script_body ? "body" : "none";
+    let node_type: string | null = null;
     const node_id = typeof body.node_id === "string" && body.node_id.trim() ? body.node_id.trim() : null;
     if (phase !== "generate_example" && node_id) {
       const adminForScript = getAdmin();
       if (adminForScript) {
         const { data: nodeRow, error: nodeErr } = await adminForScript
           .from("v_nodes_resueltos")
-          .select("practice_script_resuelto")
+          .select("practice_script_resuelto, node_type")
           .eq("id", node_id)
           .maybeSingle();
         if (!nodeErr && nodeRow?.practice_script_resuelto) {
           practice_script = nodeRow.practice_script_resuelto;
+          node_type = (nodeRow as any).node_type ?? null;
           script_source = "server";
         } else {
           console.error("[closer-voice] no se pudo resolver practice_script por node_id", { node_id, err: nodeErr?.message });
@@ -599,7 +601,7 @@ Deno.serve(async (req) => {
     if (phase !== "generate_example" && practice_script) {
       const admin = getAdmin();
       if (admin) {
-        const result = await validatePracticeScriptFull(practice_script, admin);
+        const result = await validatePracticeScriptFull(practice_script, admin, node_type);
         if (!result.valid) {
           await logLlmCall({
             phase: "validation_error",
