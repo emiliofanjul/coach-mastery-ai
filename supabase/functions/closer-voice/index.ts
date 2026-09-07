@@ -82,6 +82,12 @@ type NextPhase = Phase | "end";
 interface ReqBody {
   transcript?: string;
   phase: Phase;
+  // Nodo que se está practicando. El servidor busca el practice_script
+  // RESUELTO (v_nodes_resueltos) por este id y lo usa como autoridad.
+  // Obligatorio en evaluate y replica: la vara con la que se califica no
+  // se acepta del cliente.
+  node_id?: string | null;
+  /** @deprecated El servidor lo resuelve por node_id. Solo respaldo para fases del Actor. */
   practice_script?: any;
   company_brain?: string;
   seller_name?: string;
