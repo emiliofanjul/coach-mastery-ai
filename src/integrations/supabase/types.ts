@@ -919,6 +919,13 @@ export type Database = {
             referencedRelation: "nodes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "node_cards_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "v_severidad_overrides"
+            referencedColumns: ["nodo"]
+          },
         ]
       }
       node_progress: {
@@ -975,6 +982,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "nodes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "node_progress_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "v_severidad_overrides"
+            referencedColumns: ["nodo"]
           },
           {
             foreignKeyName: "node_progress_seller_id_fkey"
@@ -1035,6 +1049,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "nodes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "node_quiz_questions_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "v_severidad_overrides"
+            referencedColumns: ["nodo"]
           },
         ]
       }
@@ -1461,6 +1482,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "nodes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "practice_sessions_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "v_severidad_overrides"
+            referencedColumns: ["nodo"]
           },
           {
             foreignKeyName: "practice_sessions_seller_id_fkey"
@@ -2183,6 +2211,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_severidad_overrides: {
+        Row: {
+          criterio: string | null
+          default_regla: string | null
+          node_type: string | null
+          nodo: string | null
+          razon: string | null
+          regla: string | null
+          severidad: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
