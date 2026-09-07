@@ -601,7 +601,7 @@ Deno.serve(async (req) => {
     if (phase !== "generate_example" && practice_script) {
       const admin = getAdmin();
       if (admin) {
-        const result = await validatePracticeScriptFull(practice_script, admin);
+        const result = await validatePracticeScriptFull(practice_script, admin, node_type);
         if (!result.valid) {
           await logLlmCall({
             phase: "validation_error",
