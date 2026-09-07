@@ -148,6 +148,15 @@ describe("Cobertura: lo que se exige se enseña", () => {
   });
 });
 
+describe("Quizzes: cada pregunta evalúa una regla", () => {
+  it("toda pregunta tiene regla_id y apunta a una regla existente", () => {
+    const mal = quizzes
+      .filter((q) => !q.regla_id || !porId.has(q.regla_id))
+      .map((q) => `${q.node_id}#${q.question_order}→${q.regla_id ?? "∅"}`);
+    expect(mal).toEqual([]);
+  });
+});
+
 describe("Quizzes: sin cifras que la doctrina no respalda", () => {
   it("todo porcentaje en un quiz existe en el Cerebro", () => {
     const cifrasCerebro = new Set(cerebro.match(/\d+\s*%/g) ?? []);
