@@ -1254,6 +1254,7 @@ function PracticaPage() {
       const evaluatePayload = {
         transcript: "",
         phase: "evaluate" as const,
+        node_id: nodeId,
         practice_script: nodeDataRef.current?.practice_script ?? null,
         company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
         seller_name: sellerData?.full_name ?? "",
