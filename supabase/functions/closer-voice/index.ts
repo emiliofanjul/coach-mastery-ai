@@ -917,6 +917,24 @@ Deno.serve(async (req) => {
           : [];
       evaluation.regresiones_detectadas = regresiones;
 
+      // Siguiente nivel: coaching fuera de alcance. Se sanea igual que el
+      // radar y NUNCA toca el score — el score ya se calculó arriba.
+      const rawSiguiente = (evaluation as any).siguiente_nivel;
+      evaluation.siguiente_nivel = Array.isArray(rawSiguiente)
+        ? rawSiguiente
+            .filter(
+              (x: any) =>
+                x && typeof x === "object" &&
+                typeof x.observacion === "string" && x.observacion.trim().length > 0,
+            )
+            .slice(0, 2)
+            .map((x: any) => ({
+              observacion: String(x.observacion).trim(),
+              ejemplo: typeof x.ejemplo === "string" ? x.ejemplo.trim() : "",
+              por_que: typeof x.por_que === "string" ? x.por_que.trim() : "",
+            }))
+        : [];
+
       // Derive stars for backward compatibility with existing consumers.
       const stars = evaluation.score >= 85 ? 3 : evaluation.score >= 60 ? 2 : 1;
       return new Response(JSON.stringify({ ...evaluation, stars, end_session: true, ...meta }), {

@@ -62,6 +62,8 @@ interface FeedbackResult {
   observations: ObservationItem[];
   mision: string;
   radarLines: string[];
+  /** Coaching fuera del alcance del nodo. No afecta la calificación. */
+  siguiente_nivel: { observacion: string; ejemplo: string; por_que: string }[];
 }
 
 function PracticaPage() {
@@ -1353,6 +1355,9 @@ function PracticaPage() {
         observations: evaluation.observations.slice(0, 3),
         mision: evaluation.mision,
         radarLines,
+        siguiente_nivel: Array.isArray((evaluation as any).siguiente_nivel)
+          ? (evaluation as any).siguiente_nivel
+          : [],
       });
 
       const nodeType: string = nodeData?.node_type ?? "skill_drill";
