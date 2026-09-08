@@ -3301,6 +3301,82 @@ function FeedbackPhase({
             )}
           </div>
 
+          {Array.isArray((feedback as any)?.siguiente_nivel) &&
+            (feedback as any).siguiente_nivel.length > 0 && (
+              <div
+                style={{
+                  width: "100%",
+                  padding: 16,
+                  borderRadius: 14,
+                  background: "rgba(120,180,255,0.08)",
+                  border: "1px solid rgba(120,180,255,0.35)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "Syne, sans-serif",
+                    fontWeight: 800,
+                    fontSize: 13,
+                    color: "rgba(160,200,255,0.95)",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.8,
+                  }}
+                >
+                  Lo que viene después
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 12,
+                    color: "rgba(255,255,255,0.5)",
+                  }}
+                >
+                  Esto no cuenta en tu calificación. Es lo que sigue cuando domines este nodo.
+                </div>
+                {(feedback as any).siguiente_nivel.map((x: any, i: number) => (
+                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                    <div
+                      style={{
+                        fontFamily: "'DM Sans', sans-serif",
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                        color: "#fff",
+                      }}
+                    >
+                      {x.observacion}
+                    </div>
+                    {x.ejemplo ? (
+                      <div
+                        style={{
+                          fontFamily: "'DM Sans', sans-serif",
+                          fontSize: 13,
+                          lineHeight: 1.5,
+                          color: "rgba(255,255,255,0.6)",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {x.ejemplo}
+                      </div>
+                    ) : null}
+                    {x.por_que ? (
+                      <div
+                        style={{
+                          fontFamily: "'DM Sans', sans-serif",
+                          fontSize: 12,
+                          color: "rgba(160,200,255,0.75)",
+                        }}
+                      >
+                        {x.por_que}
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
+
           {feedback?.mision && (
             <div
               style={{
