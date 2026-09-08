@@ -3458,7 +3458,7 @@ function FeedbackPhase({
             </div>
           )}
 
-          <ConversationTranscript conversation={conversation} />
+          <ConversationTranscript conversation={conversation} closerMsgs={closerMsgs} />
 
           {worldId !== 9 && evaluation && (
             <ReplicaChat
@@ -3595,7 +3595,7 @@ function FeedbackPhase({
           <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
             Sin análisis todavía. Puedes reintentarlo cuando quieras — la práctica está guardada.
           </div>
-          <ConversationTranscript conversation={conversation} />
+          <ConversationTranscript conversation={conversation} closerMsgs={closerMsgs} />
           <button
             onClick={() => onRetryEvaluation?.()}
             style={{
