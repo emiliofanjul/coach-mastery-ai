@@ -234,6 +234,7 @@ PASO 2 — RESTA por flags detectados (solo si hay flags):
 
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
+- Un orden que el criterio no nombra NO puede bajar la base. Antes de escribir "no exploró", "se fue directo a", "sin antes", "debió primero", verifica que ese orden esté literalmente pedido en la descripción del criterio. Si no está, no es observación: como mucho es "siguiente_nivel".
 - El score sale ÚNICAMENTE de los success_criteria del nodo y de sus flags. Nada que esté fuera del alcance de esos criterios puede bajar el score, por buena que sea la observación. Lo bueno que veas fuera de alcance va a "siguiente_nivel" y NO cuesta puntos.
 - Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta. Puntúa lo que SÍ ejecutó bien además del desvío.
 - Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
