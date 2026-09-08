@@ -176,7 +176,7 @@ async function runClassifier(
   // Fijo primero (cacheado), variable después.
   const system = [
     { type: "text", text: CLASSIFIER_RULES, cache_control: { type: "ephemeral" } },
-    { type: "text", text: `OBJETIVO DE LA PRÁCTICA:\n${objective}` },
+    { type: "text", text: `CRITERIOS DE ÉXITO DEL NODO (lo que el evaluador va a calificar — mandan sobre el objetivo):\n${criterios}\n\nOBJETIVO DE LA PRÁCTICA (contexto, no rúbrica):\n${objective}` },
   ];
 
   const user = `TRANSCRIPT:
