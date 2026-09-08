@@ -136,6 +136,13 @@ interface RegresionDetectada {
   evidencia: string;
 }
 
+/** Coaching hacia adelante: mejora fuera del alcance del nodo. Nunca puntúa. */
+interface SiguienteNivel {
+  observacion: string;
+  ejemplo: string;
+  por_que: string;
+}
+
 interface TurnAnalysis {
   turno: number;
   texto_literal: string;
@@ -152,6 +159,7 @@ interface EvaluationResponse {
   criterios_cumplidos: string[];
   mision: string;
   regresiones_detectadas: RegresionDetectada[];
+  siguiente_nivel: SiguienteNivel[];
 }
 
 interface RadarSkill {
@@ -183,6 +191,10 @@ REGLAS DE EVALUACIÓN:
 7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
 8. MECÁNICA, NO DIRECCIÓN: evalúas la ejecución de la MECÁNICA que el nodo entrena. Cuando existen múltiples vías comerciales legítimas (por ejemplo, en descubrimiento el dolor puede vivir en el producto que SÍ vende, en el que no vende, o en el que no tiene), NUNCA presentes una dirección específica como LA correcta ni castigues la elección de vía del vendedor. Evalúa cómo ejecutó la mecánica en LA VÍA QUE ÉL ELIGIÓ, y construye los ejemplos de mejora sobre esa misma vía.
 9. EVIDENCIA COMPLETA PARA FLAGS: un failure_criteria solo se marca si su patrón COMPLETO aparece literal en el transcript. Si la sesión fue cortada antes de que el patrón pudiera completarse, NO se marca.
+9b. ALCANCE CERRADO DEL CRITERIO — regla dura de puntuación:
+La descripción de cada success_criteria define su alcance COMPLETO. Lo que esa descripción no pide, NO se exige y NO baja la base. Está PROHIBIDO extender un criterio hasta doctrina de otros nodos aunque sea doctrina válida: si el criterio pide investigar los límites de una restricción (qué cubre, qué queda fuera, hasta cuándo dura) y el vendedor hizo las tres, ese criterio está CUMPLIDO — aunque no haya explorado el dolor de la línea libre, porque eso no está pedido aquí.
+Cada criterio puede traer campos de apoyo: "regla_resumen" es su definición canónica, "contexto_nodo" es cómo se ve en este escenario, y "cita_cerebro" es el texto de doctrina que lo respalda. Esos tres delimitan el alcance — no lo amplían.
+Antes de bajar la base por un criterio, verifica que lo que falta esté literalmente pedido en su descripción. Si no está, el criterio se cuenta como cumplido y lo que observaste va a "siguiente_nivel", no a "observations".
 10. TERMINOLOGÍA DEL GUION: en observations y mision usa exactamente los nombres y términos que aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra.
 11. VERIFICACIÓN LITERAL: antes de afirmar que el vendedor hizo o no hizo algo, localiza la evidencia textual exacta en el transcript. Si no puedes citar la frase concreta, NO hagas la afirmación. Prohibido describir lo que el vendedor "no hizo" sin haber revisado su turno completo palabra por palabra.
 12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar "pitch_prematuro" cuando en ningún turno del vendedor aparece un producto, marca o motivo de venta.
@@ -219,6 +231,7 @@ PASO 2 — RESTA por flags detectados (solo si hay flags):
 
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
+- El score sale ÚNICAMENTE de los success_criteria del nodo y de sus flags. Nada que esté fuera del alcance de esos criterios puede bajar el score, por buena que sea la observación. Lo bueno que veas fuera de alcance va a "siguiente_nivel" y NO cuesta puntos.
 - Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta. Puntúa lo que SÍ ejecutó bien además del desvío.
 - Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
 - Nunca hundas el score por un solo minor si los criterios centrales están presentes.`;
@@ -280,8 +293,21 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
   "flags_detected": ["<solo IDs de failure_criteria detectados>"],
   "criterios_cumplidos": ["<IDs de success_criteria que ejecutó bien>"],
   "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo",
-  "regresiones_detectadas": [{"skill_id": "<id de la lista del radar>", "evidencia": "cita corta del transcript"}]
-}`;
+  "regresiones_detectadas": [{"skill_id": "<id de la lista del radar>", "evidencia": "cita corta del transcript"}],
+  "siguiente_nivel": [
+    {
+      "observacion": "qué viste que puede llevar su ejecución más lejos, más allá de lo que este nodo entrena",
+      "ejemplo": "cómo habría sonado, en primera persona del vendedor, con el nombre real del cliente",
+      "por_que": "una línea: qué gana el vendedor con eso"
+    }
+  ]
+}
+
+SOBRE "siguiente_nivel" (máximo 2, puede ir vacío):
+Es coaching hacia adelante, NO una falta. Aquí va lo que observaste que mejoraría la ejecución pero está FUERA del alcance de los criterios de este nodo — típicamente doctrina de pasos posteriores que el vendedor todavía no entrena aquí.
+- JAMÁS afecta el score. JAMÁS va en observations ni en flags_detected ni en la mision.
+- Se escribe en tono de oportunidad, nunca de carencia: "lo que sigue", "cuando llegues a", "aquí también cabía". Prohibido "te faltó", "no hiciste", "debiste".
+- Si no observaste nada de valor fuera de alcance, devuelve [].`;
 
   return [cached(EVALUATE_STATIC_PROMPT), plain(variable)];
 }
