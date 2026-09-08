@@ -1062,10 +1062,12 @@ function PracticaPage() {
         };
         transcriptFullRef.current = [...transcriptFullRef.current, agentItem];
         setTranscriptFull([...transcriptFullRef.current]);
-        conversationHistoryRef.current = [
-          ...conversationHistoryRef.current,
-          { role: "assistant", content: message },
-        ];
+        if (!metaTurn) {
+          conversationHistoryRef.current = [
+            ...conversationHistoryRef.current,
+            { role: "assistant", content: message },
+          ];
+        }
         setIsProcessing(false);
         await playTTS(message);
         // Un cut pudo llegar mientras el Actor hablaba (audio.pause en hardStop).
