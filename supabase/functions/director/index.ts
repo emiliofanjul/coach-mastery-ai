@@ -162,6 +162,7 @@ REGLAS:
 
 async function runClassifier(
   objective: string,
+  criterios: string,
   conversation_history: { role: string; content: string }[],
   apiKey: string,
   session_id: string | null,
