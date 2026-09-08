@@ -18,16 +18,22 @@ describe("Actor: el meta-comentario no entra al diálogo", () => {
     expect(fn).toMatch(/\(c\) Si el usuario LE HABLA AL SISTEMA/);
   });
 
-  it("aplica el desvío con regreso, los tres movimientos", () => {
-    expect(fn).toMatch(/EL DESVÍO CON REGRESO/);
+  it("contesta en una frase y devuelve la palabra AL VENDEDOR, no al cliente", () => {
     expect(fn).toMatch(/1\. Contestas en UNA frase/);
-    expect(fn).toMatch(/2\. Regresas TÚ/);
-    expect(fn).toMatch(/3\. Devuelves la palabra retomando la ÚLTIMA FRASE VIVA/);
+    expect(fn).toMatch(/2\. Le devuelves la palabra AL VENDEDOR/);
+    expect(fn).toMatch(/"Sigue tú:"/);
   });
 
-  it("regresar no es pedir permiso", () => {
-    expect(fn).toMatch(/Nunca preguntas si pueden seguir/);
-    expect(fn).toMatch(/es pedir permiso — justo lo que la doctrina prohíbe/);
+  it("en el turno meta el cliente NO habla (evita inversión y repetición)", () => {
+    expect(fn).toMatch(/EN ESTE TURNO EL CLIENTE NO HABLA/);
+    expect(fn).toMatch(/no repitas tu turno anterior/);
+  });
+
+  it("marca el turno con meta_turn y el cliente lo saca del historial del Actor", () => {
+    expect(fn).toMatch(/"meta_turn": true/);
+    expect(fn).toMatch(/meta_turn\?: boolean/);
+    expect(ui).toMatch(/const metaTurn: boolean = data\?\.meta_turn === true/);
+    expect(ui).toMatch(/if \(!metaTurn\) \{\s*conversationHistoryRef\.current = \[/);
   });
 });
 
