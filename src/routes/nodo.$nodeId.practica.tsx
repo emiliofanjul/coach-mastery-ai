@@ -1011,6 +1011,19 @@ function PracticaPage() {
       const nextPhase: string = data?.next_phase ?? claudePhaseRef.current;
       const endSession: boolean = !!data?.end_session;
 
+      // Closer salió del personaje por un meta-comentario (puerta c). Este
+      // intercambio NO es diálogo de venta: no entra al historial que ve el
+      // Actor ni el Director, y en el transcript se firma como Closer.
+      const metaTurn: boolean = data?.meta_turn === true;
+      if (metaTurn) {
+        // Quitar el turno meta del vendedor del historial (fue el último user).
+        const h = conversationHistoryRef.current;
+        if (h.length > 0 && h[h.length - 1]?.role === "user") {
+          conversationHistoryRef.current = h.slice(0, -1);
+        }
+        if (message.trim()) closerMsgsRef.current.add(message.trim());
+      }
+
       const inIDo = claudePhaseRef.current === "i_do";
 
       // BUG 1 fix: en i_do, si Claude termina, marcamos sessionEnded ANTES de TTS

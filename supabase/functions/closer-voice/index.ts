@@ -975,6 +975,11 @@ Deno.serve(async (req) => {
       );
     }
 
+    // meta_turn: Closer salió del personaje por un meta-comentario. Solo tiene
+    // sentido en las fases del Actor; en cualquier otra se descarta.
+    const metaTurn = (phase === "you_do" || phase === "boss_sim") && closerResponse.meta_turn === true;
+    closerResponse.meta_turn = metaTurn;
+
     return new Response(JSON.stringify({ ...closerResponse, ...meta }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
