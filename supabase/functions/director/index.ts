@@ -152,13 +152,17 @@ function extractJson<T>(text: string): T | null {
 const CLASSIFIER_RULES = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false}. Sin texto fuera del JSON. Sin markdown.
 
 REGLAS:
-- scope_covered = true SOLO si el vendedor (user) ya ejecutó de forma COMPLETA lo que el objetivo pide.
+- LOS CRITERIOS MANDAN. El objetivo en prosa da contexto, pero lo que define la cobertura son los CRITERIOS DE ÉXITO del nodo: son exactamente lo que el evaluador va a calificar. Si el objetivo pide algo que ningún criterio mide, ESO NO CUENTA para scope_covered — el vendedor no puede ser cortado ni retenido por una meta que nadie va a calificar.
+- scope_covered = true SOLO si el vendedor (user) ya ejecutó de forma COMPLETA lo que piden los CRITERIOS DE ÉXITO.
+- Si un criterio enumera elementos concretos (por ejemplo: qué cubre, qué queda fuera, hasta cuándo dura), scope_covered = true solo cuando TODOS aparecen en el transcript.
+- No exijas un ORDEN que los criterios no nombren. Hay varias rutas válidas para llegar a lo mismo.
 - evidence_sufficient = true si el transcript ya contiene material SUFICIENTE para EVALUAR el desempeño del vendedor en ese objetivo, LO HAYA LOGRADO O NO — sus intentos, su approach y su nivel ya son visibles y más turnos no agregarían información nueva.
 - Prefiere evidence_sufficient=true cuando el vendedor ya intentó su approach 2-3 veces sin cambiar de estrategia: ya sabes cómo lo hace.
 - Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).`;
 
 async function runClassifier(
   objective: string,
+  criterios: string,
   conversation_history: { role: string; content: string }[],
   apiKey: string,
   session_id: string | null,
@@ -172,7 +176,7 @@ async function runClassifier(
   // Fijo primero (cacheado), variable después.
   const system = [
     { type: "text", text: CLASSIFIER_RULES, cache_control: { type: "ephemeral" } },
-    { type: "text", text: `OBJETIVO DE LA PRÁCTICA:\n${objective}` },
+    { type: "text", text: `CRITERIOS DE ÉXITO DEL NODO (lo que el evaluador va a calificar — mandan sobre el objetivo):\n${criterios}\n\nOBJETIVO DE LA PRÁCTICA (contexto, no rúbrica):\n${objective}` },
   ];
 
   const user = `TRANSCRIPT:
@@ -313,7 +317,18 @@ Deno.serve(async (req) => {
       return respond({ ...base, decision: "continue", reason: "classifier_error" });
     }
 
-    const cls = await runClassifier(objective, conversation_history, apiKey, session_id ?? null, {
+    // Los criterios que el evaluador va a calificar. Sin ellos el Director
+    // persigue una prosa que puede pedir más (o menos) de lo que se mide.
+    const successCriteria = Array.isArray(practice_script?.success_criteria)
+      ? practice_script.success_criteria
+      : [];
+    const criterios = successCriteria.length > 0
+      ? successCriteria
+          .map((c: any) => `- [peso ${c?.weight ?? "?"}] ${c?.regla_resumen ?? ""}${c?.contexto_nodo ? ` — En este nodo: ${c.contexto_nodo}` : ` ${c?.description ?? ""}`}`)
+          .join("\n")
+      : "(este nodo no declara criterios de éxito; usa solo el objetivo)";
+
+    const cls = await runClassifier(objective, criterios, conversation_history, apiKey, session_id ?? null, {
       company_id: body.company_id ?? null,
       seller_id: body.seller_id ?? null,
     });
