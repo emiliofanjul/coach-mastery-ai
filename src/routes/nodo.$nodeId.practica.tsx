@@ -85,6 +85,8 @@ function PracticaPage() {
   const [, setSessionId] = useState<string | null>(null);
   const [, setYouDoTranscript] = useState<TranscriptItem[]>([]);
   const [youDoHistory, setYouDoHistory] = useState<{ role: string; content: string }[]>([]);
+  // Textos con los que Closer sale del personaje al cortar (deterministas, del guion).
+  const closerMsgsRef = useRef<Set<string>>(new Set());
   const [, setSaving] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
@@ -372,6 +374,14 @@ function PracticaPage() {
       setSellerData(seller);
       setNodeData(node);
       nodeDataRef.current = node;
+      {
+        const cl = (node as any)?.practice_script?.phases?.closing ?? {};
+        closerMsgsRef.current = new Set(
+          [cl?.message, cl?.message_incomplete]
+            .filter((x: unknown): x is string => typeof x === "string" && x.trim().length > 0)
+            .map((x: string) => x.trim()),
+        );
+      }
       setCompanyData(company);
       setSkillsContext(ctx);
       skillsContextRef.current = ctx;
@@ -1530,6 +1540,7 @@ function PracticaPage() {
         {(phase === "i_do" || phase === "you_do") && (
           <>
             <VoicePhase
+              closerMsgs={closerMsgsRef.current}
               key={phase}
               currentPhase={currentPhase}
               iDoPassive={
@@ -1882,6 +1893,7 @@ function PracticaPage() {
         )}
         {phase === "feedback" && (
           <FeedbackPhase
+            closerMsgs={closerMsgsRef.current}
             key="feedback"
             evalError={evalError}
             onRetryEvaluation={() => { void runEvaluation(); }}
@@ -2339,6 +2351,7 @@ function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onTo
 }
 
 function VoicePhase({
+  closerMsgs,
   currentPhase,
   iDoPassive,
   isAgentSpeaking,
@@ -2357,6 +2370,7 @@ function VoicePhase({
   onTextSubmit,
   onPlayAgentAudio,
 }: {
+  closerMsgs: Set<string>;
   currentPhase: TurnPhase;
   iDoPassive: boolean;
   isAgentSpeaking: boolean;
@@ -2474,7 +2488,7 @@ function VoicePhase({
                 <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isAgent ? "flex-start" : "flex-end" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: isAgent ? ORANGE : "rgba(255,255,255,0.5)" }}>
-                      {isIDo ? (isAgent ? "Closer (demo)" : "Tú (cliente)") : (isAgent ? "Cliente" : "Tú")}
+                      {isIDo ? (isAgent ? "Closer (demo)" : "Tú (cliente)") : (isAgent ? etiquetaAsistente(m.content, closerMsgs) : "Tú")}
                     </div>
                     {isAgent && (
                       <button
@@ -3093,6 +3107,7 @@ function ReplicaChat({
 }
 
 function FeedbackPhase({
+  closerMsgs,
   onContinue,
   conversation,
   feedback,
@@ -3106,6 +3121,7 @@ function FeedbackPhase({
   evalError,
   onRetryEvaluation,
 }: {
+  closerMsgs: Set<string>;
   onContinue: (stars: 1 | 2 | 3) => void;
   conversation: { role: string; content: string }[];
   feedback: FeedbackResult | null;
@@ -3442,7 +3458,7 @@ function FeedbackPhase({
             </div>
           )}
 
-          <ConversationTranscript conversation={conversation} />
+          <ConversationTranscript conversation={conversation} closerMsgs={closerMsgs} />
 
           {worldId !== 9 && evaluation && (
             <ReplicaChat
@@ -3579,7 +3595,7 @@ function FeedbackPhase({
           <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
             Sin análisis todavía. Puedes reintentarlo cuando quieras — la práctica está guardada.
           </div>
-          <ConversationTranscript conversation={conversation} />
+          <ConversationTranscript conversation={conversation} closerMsgs={closerMsgs} />
           <button
             onClick={() => onRetryEvaluation?.()}
             style={{
@@ -3764,10 +3780,23 @@ function ExitDialog({
   );
 }
 
+/**
+ * Etiqueta de un mensaje del asistente en el transcript.
+ * El Actor habla como cliente; pero al cortar, Closer sale del personaje con el
+ * mensaje de cierre del guion (phases.closing.message / message_incomplete),
+ * que es determinista. Ese mensaje se firma como Closer, no como Cliente —
+ * si no, parece que el cliente felicitó al vendedor por su técnica de ventas.
+ */
+function etiquetaAsistente(content: string, closerMsgs: Set<string>): "Closer" | "Cliente" {
+  return closerMsgs.has((content ?? "").trim()) ? "Closer" : "Cliente";
+}
+
 function ConversationTranscript({
   conversation,
+  closerMsgs = new Set<string>(),
 }: {
   conversation: { role: string; content: string }[];
+  closerMsgs?: Set<string>;
 }) {
   const [open, setOpen] = useState(false);
   const items = conversation.filter(
@@ -3837,7 +3866,7 @@ function ConversationTranscript({
                     color: isAgent ? ORANGE : "rgba(255,255,255,0.5)",
                   }}
                 >
-                  {isAgent ? "Cliente" : "Tú"}
+                  {isAgent ? etiquetaAsistente(m.content, closerMsgs) : "Tú"}
                 </div>
                 <div
                   style={{
