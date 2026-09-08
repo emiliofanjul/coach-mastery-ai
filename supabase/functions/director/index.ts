@@ -152,7 +152,10 @@ function extractJson<T>(text: string): T | null {
 const CLASSIFIER_RULES = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false}. Sin texto fuera del JSON. Sin markdown.
 
 REGLAS:
-- scope_covered = true SOLO si el vendedor (user) ya ejecutó de forma COMPLETA lo que el objetivo pide.
+- LOS CRITERIOS MANDAN. El objetivo en prosa da contexto, pero lo que define la cobertura son los CRITERIOS DE ÉXITO del nodo: son exactamente lo que el evaluador va a calificar. Si el objetivo pide algo que ningún criterio mide, ESO NO CUENTA para scope_covered — el vendedor no puede ser cortado ni retenido por una meta que nadie va a calificar.
+- scope_covered = true SOLO si el vendedor (user) ya ejecutó de forma COMPLETA lo que piden los CRITERIOS DE ÉXITO.
+- Si un criterio enumera elementos concretos (por ejemplo: qué cubre, qué queda fuera, hasta cuándo dura), scope_covered = true solo cuando TODOS aparecen en el transcript.
+- No exijas un ORDEN que los criterios no nombren. Hay varias rutas válidas para llegar a lo mismo.
 - evidence_sufficient = true si el transcript ya contiene material SUFICIENTE para EVALUAR el desempeño del vendedor en ese objetivo, LO HAYA LOGRADO O NO — sus intentos, su approach y su nivel ya son visibles y más turnos no agregarían información nueva.
 - Prefiere evidence_sufficient=true cuando el vendedor ya intentó su approach 2-3 veces sin cambiar de estrategia: ya sabes cómo lo hace.
 - Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).`;
