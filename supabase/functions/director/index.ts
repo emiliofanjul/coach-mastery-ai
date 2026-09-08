@@ -317,7 +317,18 @@ Deno.serve(async (req) => {
       return respond({ ...base, decision: "continue", reason: "classifier_error" });
     }
 
-    const cls = await runClassifier(objective, conversation_history, apiKey, session_id ?? null, {
+    // Los criterios que el evaluador va a calificar. Sin ellos el Director
+    // persigue una prosa que puede pedir más (o menos) de lo que se mide.
+    const successCriteria = Array.isArray(practice_script?.success_criteria)
+      ? practice_script.success_criteria
+      : [];
+    const criterios = successCriteria.length > 0
+      ? successCriteria
+          .map((c: any) => `- [peso ${c?.weight ?? "?"}] ${c?.regla_resumen ?? ""}${c?.contexto_nodo ? ` — En este nodo: ${c.contexto_nodo}` : ` ${c?.description ?? ""}`}`)
+          .join("\n")
+      : "(este nodo no declara criterios de éxito; usa solo el objetivo)";
+
+    const cls = await runClassifier(objective, criterios, conversation_history, apiKey, session_id ?? null, {
       company_id: body.company_id ?? null,
       seller_id: body.seller_id ?? null,
     });
