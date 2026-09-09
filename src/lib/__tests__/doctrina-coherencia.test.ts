@@ -40,6 +40,8 @@ const reglas: Regla[] = JSON.parse(read("reglas.json"));
 const nodos: Nodo[] = JSON.parse(read(process.env.KB_NODOS ?? "nodos_snapshot.json"));
 const quizzes: any[] = JSON.parse(read(process.env.KB_QUIZZES ?? "quizzes_snapshot.json"));
 const cards: any[] = JSON.parse(read("cards_snapshot.json"));
+const skills: any[] = JSON.parse(read("skills_snapshot.json"));
+const nodeSkills: any[] = JSON.parse(read("node_skills_snapshot.json"));
 
 const porId = new Map(reglas.map((r) => [r.id, r]));
 const ORD: Record<string, number> = { minor: 0, major: 1, critical: 2 };
@@ -121,6 +123,58 @@ describe("Severidad: consistente salvo override declarado", () => {
       }
     }
     expect(bajadas).toEqual([]);
+  });
+});
+
+describe("Fuente única: node_skills manda", () => {
+  // Tres lugares decían "qué entrena un nodo": node_skills (FK a skills), el
+  // JSON scope.skills_in_focus, y los ids de success_criteria. El JSON aceptaba
+  // cualquier cosa: así entró un criterio sin skill (sept-2026, nodos 1.2/1.6,
+  // 422 en la práctica). Ahora node_skills es la fuente y la base valida al
+  // escribir. Estas pruebas verifican el mismo invariante sobre los snapshots.
+  const enTabla = new Set(nodeSkills.map((r: any) => `${r.node_id}|${r.skill_id}`));
+  const catalogo = new Set(skills.filter((s: any) => s.status === "active").map((s: any) => s.id));
+  const porSkill = new Map(skills.map((s: any) => [s.id, s]));
+
+  it("cada criterio de éxito tiene su fila en node_skills", () => {
+    const faltan: string[] = [];
+    for (const n of nodos) {
+      const ps = typeof n.practice_script === "string" ? JSON.parse(n.practice_script) : n.practice_script;
+      for (const c of ps?.success_criteria ?? []) {
+        if (!enTabla.has(`${n.id}|${c.id}`)) faltan.push(`${n.id}:${c.id}`);
+      }
+    }
+    expect(faltan).toEqual([]);
+  });
+
+  it("cada fila de node_skills apunta a un skill activo", () => {
+    const rotos = nodeSkills.filter((r: any) => !catalogo.has(r.skill_id)).map((r: any) => `${r.node_id}:${r.skill_id}`);
+    expect(rotos).toEqual([]);
+  });
+
+  it("skills_in_focus es exactamente los ids de success_criteria (derivado, no dato)", () => {
+    const dif: string[] = [];
+    for (const n of nodos) {
+      const ps = typeof n.practice_script === "string" ? JSON.parse(n.practice_script) : n.practice_script;
+      if (!ps?.success_criteria) continue;
+      const foco = [...(ps.scope?.skills_in_focus ?? [])].sort();
+      const crit = ps.success_criteria.map((c: any) => c.id).sort();
+      if (JSON.stringify(foco) !== JSON.stringify(crit)) dif.push(n.id);
+    }
+    expect(dif).toEqual([]);
+  });
+
+  it("todo skill medido por un criterio tiene regla_id, y coincide con la del criterio", () => {
+    const mal: string[] = [];
+    for (const n of nodos) {
+      const ps = typeof n.practice_script === "string" ? JSON.parse(n.practice_script) : n.practice_script;
+      for (const c of ps?.success_criteria ?? []) {
+        const sk = porSkill.get(c.id);
+        if (!sk?.regla_id) mal.push(`${n.id}:${c.id} sin regla_id`);
+        else if (c.regla_id && sk.regla_id !== c.regla_id) mal.push(`${n.id}:${c.id} skill→${sk.regla_id} ≠ criterio→${c.regla_id}`);
+      }
+    }
+    expect(mal).toEqual([]);
   });
 });
 

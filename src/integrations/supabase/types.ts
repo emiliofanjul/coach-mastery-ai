@@ -2066,6 +2066,7 @@ export type Database = {
           mastery_threshold: number
           name: string
           parent_skill_id: string | null
+          regla_id: string | null
           reinforcement_threshold: number
           requires_audio: boolean
           short_description: string | null
@@ -2087,6 +2088,7 @@ export type Database = {
           mastery_threshold?: number
           name: string
           parent_skill_id?: string | null
+          regla_id?: string | null
           reinforcement_threshold?: number
           requires_audio?: boolean
           short_description?: string | null
@@ -2108,6 +2110,7 @@ export type Database = {
           mastery_threshold?: number
           name?: string
           parent_skill_id?: string | null
+          regla_id?: string | null
           reinforcement_threshold?: number
           requires_audio?: boolean
           short_description?: string | null
@@ -2122,6 +2125,13 @@ export type Database = {
             columns: ["parent_skill_id"]
             isOneToOne: false
             referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "skills_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "reglas"
             referencedColumns: ["id"]
           },
         ]
