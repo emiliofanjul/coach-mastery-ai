@@ -1320,9 +1320,12 @@ function PracticaPage() {
       console.log("[closer-voice evaluate] parsed:", evaluation);
       if (typeof evaluation?.prompt_version === "string") promptVersionRef.current = evaluation.prompt_version;
       if (typeof evaluation?.model === "string") modelRef.current = evaluation.model;
+      // Una ejecución limpia devuelve observations: []. Exigir al menos una
+      // observación obligaba al evaluador a inventar defectos — y desde que le
+      // cerramos el alcance (sept-2026), una práctica impecable en un nodo
+      // corto legítimamente no tiene nada que corregir.
       const obsValid =
         Array.isArray(evaluation?.observations) &&
-        evaluation.observations.length > 0 &&
         evaluation.observations.every(
           (o: any) =>
             o && typeof o === "object" &&
@@ -3312,18 +3315,20 @@ function FeedbackPhase({
                 color: "#fff",
               }}
             >
-              Observaciones de Closer
+{observations.length === 0 ? "Ejecución limpia" : "Observaciones de Closer"}
             </div>
-            {observations.length === 0 ? (
+{observations.length === 0 ? (
+              // Cero observaciones NO es un fallo: es que ejecutó bien todos los
+              // criterios de este nodo. Antes esto se pintaba como error.
               <div
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
                   lineHeight: 1.5,
-                  color: "rgba(255,180,180,0.9)",
+                  color: "rgba(255,255,255,0.8)",
                 }}
               >
-                No se pudo generar el feedback de esta sesión. Intenta de nuevo más tarde.
+                Cumpliste todo lo que este nodo mide. No hay nada que corregir aquí.
               </div>
             ) : (
               observations.map((o, i) => (
