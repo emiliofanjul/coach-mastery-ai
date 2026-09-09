@@ -1,1283 +1,1297 @@
 [
     {
-        "weight": 1.0,
         "node_id": "1.0",
-        "relation": "introduces",
         "skill_id": "foundation.linea_recta",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.0",
-        "relation": "introduces",
         "skill_id": "foundation.sistema_6_pasos",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.1",
-        "relation": "introduces",
         "skill_id": "opening.energia_vocal",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.1",
-        "relation": "introduces",
         "skill_id": "opening.sce",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.1",
-        "relation": "introduces",
         "skill_id": "opening.sonrisa_audible",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "1.2",
-        "relation": "practices",
-        "skill_id": "opening.estructura_apertura",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "1.2",
-        "relation": "practices",
-        "skill_id": "opening.personalizacion",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "1.3",
         "relation": "introduces",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "1.2",
+        "skill_id": "opening.curiosidad_abierta",
+        "relation": "introduces",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "1.2",
+        "skill_id": "opening.estructura_apertura",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "1.2",
+        "skill_id": "opening.personalizacion",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "1.3",
         "skill_id": "mindset.controlables",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.3",
-        "relation": "introduces",
         "skill_id": "mindset.gasman_theory",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.3",
-        "relation": "introduces",
         "skill_id": "mindset.gumball",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.3",
-        "relation": "introduces",
         "skill_id": "mindset.ley_promedios",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.3",
-        "relation": "introduces",
         "skill_id": "mindset.tres_tipos_dia",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.4",
-        "relation": "practices",
         "skill_id": "mindset.regla_10_por_ciento",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.4",
-        "relation": "practices",
         "skill_id": "opening.arranque_sin_disculpa",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.4",
-        "relation": "practices",
         "skill_id": "opening.estructura_apertura",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "1.5",
-        "relation": "practices",
         "skill_id": "opening.ice_breaker",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "1.5",
-        "relation": "practices",
         "skill_id": "opening.personalizacion",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "1.6",
-        "relation": "assesses",
         "skill_id": "mindset.regla_10_por_ciento",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "1.6",
-        "relation": "assesses",
         "skill_id": "opening.arranque_sin_disculpa",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "1.6",
-        "relation": "assesses",
+        "skill_id": "opening.curiosidad_abierta",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "1.6",
         "skill_id": "opening.estructura_apertura",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "1.6",
-        "relation": "assesses",
         "skill_id": "opening.ice_breaker",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "1.6",
         "relation": "assesses",
-        "skill_id": "opening.personalizacion",
+        "weight": 1.0,
         "is_primary": false
     },
     {
+        "node_id": "1.6",
+        "skill_id": "opening.personalizacion",
+        "relation": "assesses",
         "weight": 1.0,
+        "is_primary": false
+    },
+    {
         "node_id": "2.1",
-        "relation": "practices",
         "skill_id": "story.brevedad",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.1",
-        "relation": "practices",
         "skill_id": "story.historia_breve",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.1",
-        "relation": "practices",
         "skill_id": "story.relevancia_cliente",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.10",
-        "relation": "assesses",
         "skill_id": "blocks.air",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "2.10",
-        "relation": "assesses",
         "skill_id": "flow.close_with_action",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "2.10",
-        "relation": "assesses",
         "skill_id": "relationship.cpr",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "2.10",
-        "relation": "assesses",
         "skill_id": "story.brevedad",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "2.10",
         "relation": "assesses",
-        "skill_id": "story.historia_breve",
+        "weight": 1.0,
         "is_primary": false
     },
     {
+        "node_id": "2.10",
+        "skill_id": "story.historia_breve",
+        "relation": "assesses",
         "weight": 1.0,
+        "is_primary": false
+    },
+    {
         "node_id": "2.2",
-        "relation": "practices",
         "skill_id": "story.relevancia_cliente",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "2.5",
-        "relation": "practices",
         "skill_id": "relationship.cpr",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.5",
-        "relation": "practices",
         "skill_id": "relationship.forms",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "2.7",
         "relation": "practices",
-        "skill_id": "blocks.air",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.7",
-        "relation": "introduces",
+        "skill_id": "blocks.air",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "2.7",
         "skill_id": "blocks.no_engancharse",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.8",
-        "relation": "practices",
         "skill_id": "blocks.air",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "2.8",
-        "relation": "practices",
         "skill_id": "blocks.pre_emptive_strike",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "2.9",
-        "relation": "practices",
         "skill_id": "blocks.air",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "2.9",
-        "relation": "practices",
         "skill_id": "flow.close_with_action",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.0",
-        "relation": "introduces",
         "skill_id": "discovery.preguntar_antes_presentar",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.0",
-        "relation": "introduces",
         "skill_id": "discovery.preguntas_capas",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.0",
-        "relation": "introduces",
         "skill_id": "mindset.doctor_vendedor",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.1",
-        "relation": "practices",
         "skill_id": "discovery.escucha_activa",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "3.1",
         "relation": "practices",
-        "skill_id": "mindset.rrr",
+        "weight": 1.0,
         "is_primary": true
     },
     {
+        "node_id": "3.1",
+        "skill_id": "mindset.rrr",
+        "relation": "practices",
         "weight": 1.0,
+        "is_primary": true
+    },
+    {
         "node_id": "3.10",
-        "relation": "assesses",
         "skill_id": "blocks.air",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.10",
-        "relation": "assesses",
         "skill_id": "discovery.dolor_real",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.10",
-        "relation": "assesses",
         "skill_id": "discovery.escucha_activa",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.10",
-        "relation": "assesses",
         "skill_id": "discovery.preguntas_capas",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.10",
-        "relation": "practices",
         "skill_id": "discovery.suggestive_language",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "3.10",
-        "relation": "assesses",
-        "skill_id": "mindset.rrr",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "3.10",
-        "relation": "assesses",
-        "skill_id": "story.historia_breve",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "3.2",
         "relation": "practices",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "3.10",
+        "skill_id": "mindset.rrr",
+        "relation": "assesses",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "3.10",
+        "skill_id": "story.historia_breve",
+        "relation": "assesses",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "3.2",
         "skill_id": "discovery.dolor_real",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.2",
-        "relation": "practices",
         "skill_id": "discovery.pregunta_especifica",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.2",
-        "relation": "practices",
         "skill_id": "discovery.preguntas_capas",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.2",
-        "relation": "introduces",
         "skill_id": "discovery.suggestive_language",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.3",
-        "relation": "practices",
         "skill_id": "discovery.escucha_activa",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.3",
-        "relation": "practices",
         "skill_id": "discovery.preguntas_capas",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.3",
-        "relation": "practices",
         "skill_id": "discovery.suggestive_language",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.4",
-        "relation": "practices",
         "skill_id": "discovery.preguntas_capas",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.4",
-        "relation": "practices",
         "skill_id": "discovery.suggestive_language",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.4",
-        "relation": "practices",
         "skill_id": "relationship.cpr",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.5",
-        "relation": "introduces",
         "skill_id": "qualification.luz_verde",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.6",
-        "relation": "practices",
         "skill_id": "discovery.preguntas_capas",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "3.6",
         "relation": "practices",
-        "skill_id": "qualification.luz_verde",
+        "weight": 1.0,
         "is_primary": false
     },
     {
+        "node_id": "3.6",
+        "skill_id": "qualification.luz_verde",
+        "relation": "practices",
         "weight": 1.0,
+        "is_primary": false
+    },
+    {
         "node_id": "3.7",
+        "skill_id": "discovery.hueco",
         "relation": "introduces",
-        "skill_id": "discovery.hueco",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.8",
-        "relation": "practices",
         "skill_id": "discovery.hueco",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.8",
-        "relation": "practices",
         "skill_id": "discovery.lee_el_lugar",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "3.8",
-        "relation": "practices",
         "skill_id": "discovery.suggestive_language",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.9",
-        "relation": "practices",
         "skill_id": "discovery.hueco",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.9",
-        "relation": "practices",
         "skill_id": "discovery.lee_el_lugar",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.9",
-        "relation": "practices",
         "skill_id": "discovery.suggestive_language",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "3.9",
-        "relation": "practices",
         "skill_id": "impulse.efecto_jones",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.0",
-        "relation": "introduces",
         "skill_id": "presentation.costo_vs_valor",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.1",
-        "relation": "practices",
         "skill_id": "presentation.beneficio_no_caracteristica",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.1",
-        "relation": "practices",
         "skill_id": "presentation.conectar_dolor",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.1",
-        "relation": "practices",
         "skill_id": "presentation.valor_personalizado",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.10",
-        "relation": "practices",
         "skill_id": "impulse.indiferencia",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.10",
-        "relation": "practices",
         "skill_id": "mindset.kilt",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.11",
-        "relation": "practices",
         "skill_id": "impulse.poder_asumir",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.11",
-        "relation": "practices",
         "skill_id": "presentation.tren_si_si",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.12",
-        "relation": "practices",
         "skill_id": "presentation.beneficio_no_caracteristica",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "4.12",
         "relation": "practices",
-        "skill_id": "presentation.tren_si_si",
+        "weight": 1.0,
         "is_primary": false
     },
     {
+        "node_id": "4.12",
+        "skill_id": "presentation.tren_si_si",
+        "relation": "practices",
         "weight": 1.0,
+        "is_primary": false
+    },
+    {
         "node_id": "4.13",
+        "skill_id": "presentation.price_breakdown",
         "relation": "introduces",
-        "skill_id": "presentation.price_breakdown",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.14",
-        "relation": "practices",
         "skill_id": "flow.close_with_action",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.14",
-        "relation": "practices",
         "skill_id": "presentation.price_breakdown",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.15",
-        "relation": "practices",
         "skill_id": "presentation.beneficio_no_caracteristica",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.15",
-        "relation": "practices",
         "skill_id": "presentation.consolidacion_proveedor",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.16",
-        "relation": "assesses",
         "skill_id": "discovery.dolor_real",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.16",
-        "relation": "assesses",
         "skill_id": "presentation.conectar_dolor",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.16",
-        "relation": "assesses",
         "skill_id": "presentation.pintar_imagenes",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.16",
-        "relation": "assesses",
         "skill_id": "presentation.tren_si_si",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.16",
-        "relation": "assesses",
         "skill_id": "presentation.valor_personalizado",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.16",
-        "relation": "assesses",
         "skill_id": "relationship.cpr",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.2",
-        "relation": "practices",
         "skill_id": "presentation.beneficio_no_caracteristica",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.3",
-        "relation": "practices",
         "skill_id": "presentation.conectar_dolor",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.3",
-        "relation": "practices",
         "skill_id": "presentation.pintar_imagenes",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.4",
-        "relation": "introduces",
         "skill_id": "impulse.curva_impulso",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.5",
-        "relation": "introduces",
         "skill_id": "objections.bullet_theory",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.6",
-        "relation": "practices",
         "skill_id": "objections.bullet_theory",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.7",
-        "relation": "introduces",
         "skill_id": "impulse.curva_impulso",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "4.8",
-        "relation": "practices",
         "skill_id": "impulse.miedo_perdida",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.8",
-        "relation": "practices",
         "skill_id": "impulse.urgencia",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.9",
-        "relation": "practices",
         "skill_id": "impulse.avaricia",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "4.9",
-        "relation": "practices",
         "skill_id": "impulse.efecto_jones",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.0",
-        "relation": "introduces",
         "skill_id": "closing.cierre_natural",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.1",
-        "relation": "practices",
-        "skill_id": "closing.cierre_asumido",
-        "is_primary": true
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.1",
-        "relation": "practices",
-        "skill_id": "impulse.poder_asumir",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.10",
-        "relation": "practices",
-        "skill_id": "flow.close_with_action",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.10",
-        "relation": "practices",
-        "skill_id": "objections.bullet_theory",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.10",
-        "relation": "practices",
-        "skill_id": "objections.circulo_cierre",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.11",
         "relation": "introduces",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "5.1",
+        "skill_id": "closing.cierre_asumido",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": true
+    },
+    {
+        "node_id": "5.1",
+        "skill_id": "impulse.poder_asumir",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "5.10",
+        "skill_id": "flow.close_with_action",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "5.10",
+        "skill_id": "objections.bullet_theory",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "5.10",
+        "skill_id": "objections.circulo_cierre",
+        "relation": "practices",
+        "weight": 1.0,
+        "is_primary": false
+    },
+    {
+        "node_id": "5.11",
         "skill_id": "objections.regla_no",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.11",
-        "relation": "introduces",
         "skill_id": "qualification.luz_verde",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.12",
-        "relation": "assesses",
         "skill_id": "impulse.indiferencia",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.12",
-        "relation": "assesses",
         "skill_id": "objections.bullet_theory",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.12",
-        "relation": "assesses",
         "skill_id": "objections.no_defensivo",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.12",
         "relation": "assesses",
-        "skill_id": "objections.reframe",
+        "weight": 1.0,
         "is_primary": false
     },
     {
+        "node_id": "5.12",
+        "skill_id": "objections.reframe",
+        "relation": "assesses",
         "weight": 1.0,
+        "is_primary": false
+    },
+    {
         "node_id": "5.13",
-        "relation": "practices",
         "skill_id": "closing.sin_miedo",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.13",
-        "relation": "practices",
         "skill_id": "impulse.indiferencia",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.14",
-        "relation": "practices",
         "skill_id": "closing.cerrar_incremento",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.14",
-        "relation": "practices",
         "skill_id": "closing.cierre_asumido",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.14",
-        "relation": "practices",
         "skill_id": "flow.close_with_action",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.15",
-        "relation": "assesses",
         "skill_id": "blocks.air",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.15",
-        "relation": "assesses",
         "skill_id": "closing.cierre_asumido",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.15",
-        "relation": "assesses",
         "skill_id": "discovery.dolor_real",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.15",
-        "relation": "assesses",
         "skill_id": "objections.bullet_theory",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.15",
-        "relation": "assesses",
         "skill_id": "objections.no_defensivo",
-        "is_primary": false
-    },
-    {
-        "weight": 1.0,
-        "node_id": "5.15",
         "relation": "assesses",
-        "skill_id": "objections.reframe",
+        "weight": 1.0,
         "is_primary": false
     },
     {
+        "node_id": "5.15",
+        "skill_id": "objections.reframe",
+        "relation": "assesses",
         "weight": 1.0,
+        "is_primary": false
+    },
+    {
         "node_id": "5.2",
-        "relation": "introduces",
         "skill_id": "qualification.senales_compra",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.3",
-        "relation": "practices",
         "skill_id": "closing.cierre_asumido",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.3",
-        "relation": "practices",
         "skill_id": "closing.lectura_senales",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.3",
-        "relation": "practices",
         "skill_id": "qualification.senales_compra",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.5",
-        "relation": "introduces",
         "skill_id": "flow.close_with_action",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.5",
-        "relation": "introduces",
         "skill_id": "objections.rrr_objeciones",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.6",
-        "relation": "practices",
         "skill_id": "flow.close_with_action",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.6",
-        "relation": "practices",
         "skill_id": "objections.rrr_objeciones",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.7",
-        "relation": "introduces",
         "skill_id": "flow.close_with_action",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.7",
-        "relation": "introduces",
         "skill_id": "impulse.efecto_jones",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.7",
-        "relation": "introduces",
         "skill_id": "objections.bullet_theory",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.7",
-        "relation": "introduces",
         "skill_id": "objections.fff",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.8",
-        "relation": "practices",
         "skill_id": "objections.bullet_theory",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.8",
-        "relation": "practices",
         "skill_id": "objections.fff",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.8",
-        "relation": "practices",
         "skill_id": "objections.no_defensivo",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.8",
-        "relation": "practices",
         "skill_id": "objections.reframe",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "5.9",
-        "relation": "introduces",
         "skill_id": "objections.bullet_theory",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "5.9",
-        "relation": "introduces",
         "skill_id": "objections.circulo_cierre",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "6.0",
-        "relation": "introduces",
         "skill_id": "consolidation.relacion_largo_plazo",
+        "relation": "introduces",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "6.1",
+        "skill_id": "consolidation.rehash",
         "relation": "introduces",
-        "skill_id": "consolidation.rehash",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "6.2",
-        "relation": "practices",
         "skill_id": "consolidation.proteger_venta",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "6.2",
-        "relation": "practices",
         "skill_id": "relationship.cpr",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "6.3",
-        "relation": "practices",
         "skill_id": "consolidation.siguiente_oportunidad",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": true
     },
     {
-        "weight": 1.0,
         "node_id": "6.3",
-        "relation": "practices",
         "skill_id": "relationship.cpr",
+        "relation": "practices",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "6.4",
-        "relation": "assesses",
         "skill_id": "consolidation.proteger_venta",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "6.4",
-        "relation": "assesses",
         "skill_id": "consolidation.relacion_largo_plazo",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "6.4",
-        "relation": "assesses",
         "skill_id": "consolidation.siguiente_oportunidad",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "6.4",
-        "relation": "assesses",
         "skill_id": "relationship.cpr",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.0",
-        "relation": "assesses",
         "skill_id": "closing.cierre_asumido",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.0",
-        "relation": "assesses",
         "skill_id": "consolidation.proteger_venta",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.0",
-        "relation": "assesses",
         "skill_id": "discovery.dolor_real",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.0",
-        "relation": "assesses",
         "skill_id": "opening.estructura_apertura",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.0",
-        "relation": "assesses",
         "skill_id": "presentation.conectar_dolor",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.0",
-        "relation": "assesses",
         "skill_id": "story.historia_breve",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.1",
-        "relation": "assesses",
         "skill_id": "consolidation.siguiente_oportunidad",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.1",
-        "relation": "assesses",
         "skill_id": "discovery.preguntas_capas",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.1",
-        "relation": "assesses",
         "skill_id": "qualification.luz_verde",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.2",
-        "relation": "assesses",
         "skill_id": "impulse.efecto_jones",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.2",
-        "relation": "assesses",
         "skill_id": "impulse.indiferencia",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.2",
-        "relation": "assesses",
         "skill_id": "impulse.miedo_perdida",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.2",
-        "relation": "assesses",
         "skill_id": "impulse.poder_asumir",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.2",
-        "relation": "assesses",
         "skill_id": "objections.reframe",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.2",
-        "relation": "assesses",
         "skill_id": "presentation.conectar_dolor",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.3",
-        "relation": "assesses",
         "skill_id": "closing.cerrar_incremento",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.3",
-        "relation": "assesses",
         "skill_id": "consolidation.rehash",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.3",
-        "relation": "assesses",
         "skill_id": "discovery.hueco",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.3",
-        "relation": "assesses",
         "skill_id": "discovery.lee_el_lugar",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.3",
-        "relation": "assesses",
         "skill_id": "presentation.consolidacion_proveedor",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "blocks.air",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "closing.cierre_asumido",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "closing.sin_miedo",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "consolidation.proteger_venta",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "discovery.dolor_real",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "impulse.indiferencia",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "objections.reframe",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     },
     {
-        "weight": 1.0,
         "node_id": "7.4",
-        "relation": "assesses",
         "skill_id": "presentation.conectar_dolor",
+        "relation": "assesses",
+        "weight": 1.0,
         "is_primary": false
     }
 ]
