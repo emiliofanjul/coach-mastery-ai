@@ -1,0 +1,1 @@
+ALTER FUNCTION public.validar_practice_script() SET search_path = public;
