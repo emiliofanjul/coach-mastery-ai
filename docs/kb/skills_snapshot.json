@@ -1,0 +1,682 @@
+[
+    {
+        "id": "blocks.air",
+        "code": "S-006",
+        "name": "AIR para Bloqueos",
+        "status": "active",
+        "category": "blocks",
+        "skill_type": "tecnica",
+        "short_description": "Agree, Ignore, Resume para resistencia automática",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "blocks.no_engancharse",
+        "code": "S-025",
+        "name": "No engancharse con el bloqueo",
+        "status": "active",
+        "category": "blocks",
+        "skill_type": "habito",
+        "short_description": "No pelea ni se frustra con el no reflejo",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "blocks.pre_emptive_strike",
+        "code": "S-056",
+        "name": "Ataque Preventivo",
+        "status": "active",
+        "category": "blocks",
+        "skill_type": "tecnica",
+        "short_description": "Desactiva un negativo conocido diciendolo tu antes que el cliente. Si das la negativa antes de que el la de, deja de ser negativa.",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "closing.cerrar_incremento",
+        "code": "S-068",
+        "name": "Cerrar el Incremento",
+        "status": "active",
+        "category": "closing",
+        "skill_type": "tecnica",
+        "short_description": "Con un cliente recurrente el pedido base ya iba a existir. Lo que se cierra es lo que se agrega: las cajas de mas, la familia nueva.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "closing.cierre_asumido",
+        "code": "S-050",
+        "name": "El Cierre Asumido",
+        "status": "active",
+        "category": "closing",
+        "skill_type": "tecnica",
+        "short_description": "Cierra con preguntas que asumen la decisión y ofrecen opciones (¿5 u 8 cajas? ¿lunes o miércoles?) — nunca preguntas que abren la puerta al no (¿le interesa? ¿qué piensa?).",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "closing.cierre_natural",
+        "code": "S-022",
+        "name": "Cierre natural",
+        "status": "active",
+        "category": "closing",
+        "skill_type": "tecnica",
+        "short_description": "Lleva a la decisión sin presión",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "closing.lectura_senales",
+        "code": "S-023",
+        "name": "Lectura de señales",
+        "status": "active",
+        "category": "closing",
+        "skill_type": "tecnica",
+        "short_description": "Detecta cuándo el cliente está listo",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "closing.sin_miedo",
+        "code": "S-024",
+        "name": "Cerrar sin miedo",
+        "status": "active",
+        "category": "closing",
+        "skill_type": "habito",
+        "short_description": "Pide la decisión sin titubear",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "consolidation.proteger_venta",
+        "code": "S-028",
+        "name": "Proteger la venta",
+        "status": "active",
+        "category": "consolidation",
+        "skill_type": "tecnica",
+        "short_description": "Asegura el compromiso, evita arrepentimiento",
+        "world_id_introduced": 6
+    },
+    {
+        "id": "consolidation.rehash",
+        "code": "S-064",
+        "name": "El Rehash",
+        "status": "active",
+        "category": "consolidation",
+        "skill_type": "tecnica",
+        "short_description": "Despues del si, el impulso cae y aparece el arrepentimiento. Se disuelve manteniendo la misma postura de antes: indiferente sobre la compra, amigable sobre la relacion, disponible para lo que necesite. Nunca volviendo a vender.",
+        "world_id_introduced": 6
+    },
+    {
+        "id": "consolidation.relacion_largo_plazo",
+        "code": "S-030",
+        "name": "Relación de largo plazo",
+        "status": "active",
+        "category": "consolidation",
+        "skill_type": "conceptual",
+        "short_description": "Piensa en la relación, no en la transacción",
+        "world_id_introduced": 6
+    },
+    {
+        "id": "consolidation.siguiente_oportunidad",
+        "code": "S-029",
+        "name": "Siguiente oportunidad",
+        "status": "active",
+        "category": "consolidation",
+        "skill_type": "tecnica",
+        "short_description": "Abre la puerta a la próxima interacción",
+        "world_id_introduced": 6
+    },
+    {
+        "id": "discovery.dolor_real",
+        "code": "S-018",
+        "name": "Identificar el dolor real",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "tecnica",
+        "short_description": "Llega a la necesidad detrás de la necesidad",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.escucha_activa",
+        "code": "S-016",
+        "name": "Escucha activa",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "habito",
+        "short_description": "Construye sobre lo que el cliente dice",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.hueco",
+        "code": "S-065",
+        "name": "El Hueco",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "tecnica",
+        "short_description": "Encuentra lo que el cliente podria comprarte y no te compra: familias que maneja con otro proveedor o que no maneja nadie. El hueco se ve, no se oye.",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.lee_el_lugar",
+        "code": "S-066",
+        "name": "Lee el Lugar",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "tecnica",
+        "short_description": "El mostrador te dice que familias maneja, de quien, y que le falta. Lo que no esta es oportunidad; lo que esta y no se mueve es problema.",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.pregunta_especifica",
+        "code": "S-052",
+        "name": "Pregunta Especifica",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "tecnica",
+        "short_description": "Vence el bien automatico: en vez de pedir opiniones generales, pregunta por datos y situaciones concretas que el cliente tiene que ir a buscar en su experiencia real. Es la base sobre la que despues se monta el Efecto Jones.",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.preguntar_antes_presentar",
+        "code": "S-017",
+        "name": "Preguntar antes de presentar",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "conceptual",
+        "short_description": "No presenta producto antes de entender",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.preguntas_capas",
+        "code": "S-015",
+        "name": "Preguntas por capas",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "tecnica",
+        "short_description": "Pregunta de superficie a profundidad",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "discovery.suggestive_language",
+        "code": "S-069",
+        "name": "Suggestive Language",
+        "status": "active",
+        "category": "discovery",
+        "skill_type": "tecnica",
+        "short_description": "Despues de preguntar, sugiere opciones. Le das al cliente de donde agarrarse: o elige una, o te corrige con el dato real — y esa correccion es la informacion que buscabas.",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "flow.close_with_action",
+        "code": "S-057",
+        "name": "Close With Action",
+        "status": "active",
+        "category": "flow",
+        "skill_type": "tecnica",
+        "short_description": "Avanzar en la linea sin esperar a que el cliente tome el control. Una pregunta o accion cuya respuesta solo tiene sentido si el cliente sigue avanzando.",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "foundation.linea_recta",
+        "code": "S-053",
+        "name": "La Linea Recta",
+        "status": "active",
+        "category": "foundation",
+        "skill_type": "concepto",
+        "short_description": "Entiende que una venta avanza en orden, que nada te regresa, y que cuando algo te saca de la linea tu trabajo es volver y seguir avanzando.",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "foundation.sistema_6_pasos",
+        "code": "S-001",
+        "name": "Los 6 Pasos de una Conversación",
+        "status": "active",
+        "category": "foundation",
+        "skill_type": "conceptual",
+        "short_description": "Marco completo de una venta",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "impulse.avaricia",
+        "code": "S-046",
+        "name": "Avaricia — Más por Menos",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "tecnica",
+        "short_description": "Muestra la ganancia extra concreta de decidir bien: el margen, el ahorro, el beneficio adicional — en números del negocio del cliente.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "impulse.curva_impulso",
+        "code": "S-043",
+        "name": "La Curva de Impulso",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "conceptual",
+        "short_description": "Entiende que el impulso de compra sube gradual y tiene un pico — y que se construye por escalones, sin abrumar al inicio ni dejar pasar el punto alto.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "impulse.efecto_jones",
+        "code": "S-047",
+        "name": "Efecto Jones",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "tecnica",
+        "short_description": "Usa la prueba social real: otros negocios como el suyo ya lo venden y les funciona — específico y verificable, nunca inventado.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "impulse.indiferencia",
+        "code": "S-048",
+        "name": "Indiferencia — SW3",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "habito",
+        "short_description": "Emocionado por el producto, indiferente a si ESTE cliente compra. La postura que elimina la presión y paradójicamente vende más.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "impulse.miedo_perdida",
+        "code": "S-044",
+        "name": "Miedo a la Pérdida",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "tecnica",
+        "short_description": "Hace tangible lo que el cliente está perdiendo HOY por no decidir — con datos reales de su negocio, nunca con amenazas inventadas.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "impulse.poder_asumir",
+        "code": "S-049",
+        "name": "Poder de Asumir y Sugerir",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "tecnica",
+        "short_description": "Avanza asumiendo el interés y sugiriendo el siguiente paso con naturalidad — elimina las puertas al no sin presionar.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "impulse.urgencia",
+        "code": "S-045",
+        "name": "Urgencia",
+        "status": "active",
+        "category": "impulse",
+        "skill_type": "tecnica",
+        "short_description": "Da razones reales y verificables para decidir ahora: inventario real, fechas reales, ciclos reales del negocio. El movimiento crea emoción.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "mindset.controlables",
+        "code": "S-036",
+        "name": "Controlables vs No Controlables",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Enfoca energía solo en lo que puede cambiar.",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "mindset.doctor_vendedor",
+        "code": "S-031",
+        "name": "Doctor Vendedor",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Diagnostica antes de recetar",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "mindset.gasman_theory",
+        "code": "S-004",
+        "name": "Gasman Theory",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Entrar con autoridad de quien pertenece, sin disculpas",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "mindset.gumball",
+        "code": "S-033",
+        "name": "Teoría de las Máquinas de Chicles",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Persistencia con método: cada rojo te acerca al verde.",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "mindset.kilt",
+        "code": "S-035",
+        "name": "KILT — Lógica sobre emoción",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Kindness, Indifference, Law of averages, Treat everyone like your first.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "mindset.ley_promedios",
+        "code": "S-032",
+        "name": "Ley de los Promedios",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Éxito = proporción + volumen.",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "mindset.regla_10_por_ciento",
+        "code": "S-003",
+        "name": "Regla del 10%",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Calibrar 10% por encima de la energía del cliente",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "mindset.rrr",
+        "code": "S-005",
+        "name": "RRR — Leer, Conectar, Relajar",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "tecnica",
+        "short_description": "Sistema de calibración continua",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "mindset.tres_tipos_dia",
+        "code": "S-034",
+        "name": "Los 3 Tipos de Día",
+        "status": "active",
+        "category": "mindset",
+        "skill_type": "conceptual",
+        "short_description": "Reconoce días A, B y C; mantiene actitud todo el día.",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "objections.bullet_theory",
+        "code": "S-051",
+        "name": "Teoria de las Balas",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Tus balas son hechos positivos sobre ti, tu producto y tu precio que suben el impulso. No las dispares todas: cada objecion del cliente te consume una, y necesitas municion para el cierre.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "objections.circulo_cierre",
+        "code": "S-062",
+        "name": "El Circulo de Cierre",
+        "status": "active",
+        "category": "objections",
+        "skill_type": "tecnica",
+        "short_description": "Atraviesa la objecion, re-impulsa con una bala nueva, y vuelve a cerrar con accion. El circuito completo.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "objections.fff",
+        "code": "S-061",
+        "name": "FFF — Feel, Felt, Found",
+        "status": "active",
+        "category": "objections",
+        "skill_type": "tecnica",
+        "short_description": "Para preocupaciones serias: entiendo como se siente, mi ultimo cliente sintio lo mismo, y lo que encontramos fue. Nunca discutir.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "objections.no_defensivo",
+        "code": "S-027",
+        "name": "Respuesta no defensiva",
+        "status": "active",
+        "category": "objections",
+        "skill_type": "habito",
+        "short_description": "No se pone a la defensiva ante objeción real",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "objections.reframe",
+        "code": "S-026",
+        "name": "Reencuadre de objeción real",
+        "status": "active",
+        "category": "objections",
+        "skill_type": "tecnica",
+        "short_description": "Convierte la objeción razonada en oportunidad",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "objections.regla_no",
+        "code": "S-063",
+        "name": "La Regla de los No",
+        "status": "active",
+        "category": "qualification",
+        "skill_type": "concepto",
+        "short_description": "Sigues avanzando hasta tres no seguidos. De ahi sueltas: se volvio rojo. Tienen que ser consecutivos.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "objections.rrr_objeciones",
+        "code": "S-060",
+        "name": "RRR — Repeat, Reassure, Resume",
+        "status": "active",
+        "category": "objections",
+        "skill_type": "tecnica",
+        "short_description": "Para objeciones menores y comunes: repite la objecion, da la respuesta, y retoma sin pausa.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "opening.arranque_sin_disculpa",
+        "code": "S-007",
+        "name": "Arranque con confianza",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "habito",
+        "short_description": "No pide permiso ni se disculpa al abrir",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "opening.energia_vocal",
+        "code": "S-010",
+        "name": "Energía vocal",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "habito",
+        "short_description": "Ritmo, variación y presencia en la voz",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "opening.estructura_apertura",
+        "code": "S-008",
+        "name": "Estructura de apertura",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "tecnica",
+        "short_description": "Saludo + observación del entorno + pregunta abierta",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "opening.ice_breaker",
+        "code": "S-054",
+        "name": "Ice Breaker",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "tecnica",
+        "short_description": "Rompe la tension con un comentario ligero y genuino sobre la persona, el lugar o algo en comun. Baja la guardia antes de que exista una conversacion de negocio.",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "opening.personalizacion",
+        "code": "S-009",
+        "name": "Personalización",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "tecnica",
+        "short_description": "Usa el nombre y referencia el contexto del cliente",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "opening.sce",
+        "code": "S-002",
+        "name": "Apertura SCE",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "habito",
+        "short_description": "Sonrisa, Contacto visual, Entusiasmo en los primeros 10s",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "opening.sonrisa_audible",
+        "code": "S-011",
+        "name": "Sonrisa audible",
+        "status": "active",
+        "category": "opening",
+        "skill_type": "habito",
+        "short_description": "Calidez perceptible en la voz",
+        "world_id_introduced": 1
+    },
+    {
+        "id": "presentation.beneficio_no_caracteristica",
+        "code": "S-021",
+        "name": "Beneficio sobre característica",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "conceptual",
+        "short_description": "Habla de resultados, no de specs",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.conectar_dolor",
+        "code": "S-020",
+        "name": "Conectar con el dolor",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Liga el producto al dolor identificado",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.consolidacion_proveedor",
+        "code": "S-067",
+        "name": "Presentar el Hueco",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Cuando la oportunidad es una familia que compra con otro: no atacas al proveedor, vendes consolidacion. Y ofreces conviccion con razon, nunca garantia ni prueba.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.costo_vs_valor",
+        "code": "S-039",
+        "name": "Costo vs Valor",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "conceptual",
+        "short_description": "Entiende que la venta ocurre cuando el valor percibido supera el costo percibido — y que cada frase sube o baja uno de los dos.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.pintar_imagenes",
+        "code": "S-040",
+        "name": "Pintar Imágenes",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Hace que el cliente se imagine ya usando el producto: escenas concretas de su negocio con el problema resuelto.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.price_breakdown",
+        "code": "S-059",
+        "name": "Triple Desglose de Precios",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Presenta el precio en escalones con motivo: lo que normalmente cuesta, lo que queda con cada descuento, y el ahorro visible. Cada escalon necesita una razon nombrada.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.tren_si_si",
+        "code": "S-041",
+        "name": "El Tren del Sí",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Construye acuerdo con preguntas de sí natural a lo largo de la presentación — cada sí sube el impulso un escalón.",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "presentation.valor_personalizado",
+        "code": "S-019",
+        "name": "Valor personalizado",
+        "status": "active",
+        "category": "presentation",
+        "skill_type": "tecnica",
+        "short_description": "Presenta según lo que descubrió, no genérico",
+        "world_id_introduced": 4
+    },
+    {
+        "id": "qualification.luz_verde",
+        "code": "S-037",
+        "name": "Luz Verde — Calificación 10/80/10",
+        "status": "active",
+        "category": "qualification",
+        "skill_type": "tecnica",
+        "short_description": "Clasifica al cliente en vivo: verde (compraría ya), amarillo (persuadible — ahí vive el trabajo), rojo (no comprará — salir rápido y amable). Invierte el tiempo donde hay retorno.",
+        "world_id_introduced": 3
+    },
+    {
+        "id": "qualification.senales_compra",
+        "code": "S-038",
+        "name": "Señales de Compra",
+        "status": "active",
+        "category": "qualification",
+        "skill_type": "tecnica",
+        "short_description": "Detecta las señales de interés en la conversación: preguntas del cliente sobre producto, precio, entrega o uso; afirmaciones de situación de compra. Reconocerlas a tiempo cambia el rumbo de la venta.",
+        "world_id_introduced": 5
+    },
+    {
+        "id": "relationship.cpr",
+        "code": "S-042",
+        "name": "CPR — Gánatelos Como Amigos",
+        "status": "active",
+        "category": "relationship",
+        "skill_type": "tecnica",
+        "short_description": "Conecta persona a persona con FORMD (Familia, Ocupación, Recreación, Motivación, Deportes) y cumplidos genuinos.",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "relationship.forms",
+        "code": "S-055",
+        "name": "FORMS",
+        "status": "active",
+        "category": "relationship",
+        "skill_type": "tecnica",
+        "short_description": "Los cinco caminos a la persona: Family, Occupation, Recreation, Motivation, Sports. De que hablar para crear relacion personal.",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "story.brevedad",
+        "code": "S-014",
+        "name": "Brevedad",
+        "status": "active",
+        "category": "story",
+        "skill_type": "habito",
+        "short_description": "No se extiende; respeta el tiempo del cliente",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "story.historia_breve",
+        "code": "S-012",
+        "name": "Historia breve",
+        "status": "active",
+        "category": "story",
+        "skill_type": "tecnica",
+        "short_description": "Quién eres y por qué estás ahí, sin currículum",
+        "world_id_introduced": 2
+    },
+    {
+        "id": "story.relevancia_cliente",
+        "code": "S-013",
+        "name": "Relevancia al cliente",
+        "status": "active",
+        "category": "story",
+        "skill_type": "tecnica",
+        "short_description": "Conecta tu historia con la realidad del cliente",
+        "world_id_introduced": 2
+    }
+]
