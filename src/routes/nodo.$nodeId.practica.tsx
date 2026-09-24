@@ -1925,6 +1925,7 @@ function PracticaPage() {
             evaluation={rawEvaluationRef.current}
             companyId={sellerData?.company_id ?? null}
             sellerId={sellerData?.id ?? null}
+            onLeaveWithoutEval={() => navigate({ to: "/mapa" })}
             onContinue={async (stars) => {
               setSaving(true);
 
@@ -3127,6 +3128,7 @@ function ReplicaChat({
 function FeedbackPhase({
   closerMsgs,
   onContinue,
+  onLeaveWithoutEval,
   conversation,
   feedback,
   worldId,
@@ -3141,6 +3143,8 @@ function FeedbackPhase({
 }: {
   closerMsgs: Set<string>;
   onContinue: (stars: 1 | 2 | 3) => void;
+  /** Salir sin evaluación: no guarda estrellas, solo devuelve al mapa. */
+  onLeaveWithoutEval: () => void;
   conversation: { role: string; content: string }[];
   feedback: FeedbackResult | null;
   worldId: number;
@@ -3632,6 +3636,26 @@ function FeedbackPhase({
             }}
           >
             Reintentar análisis
+          </button>
+          {/* Salida SIEMPRE disponible. Antes, si el reintento también fallaba,
+              el vendedor quedaba atrapado y tenía que cerrar la app. Ningún
+              error debe dejar sin salida: la práctica ya está guardada. */}
+          <button
+            onClick={onLeaveWithoutEval}
+            style={{
+              width: "100%",
+              height: 48,
+              borderRadius: 99,
+              border: "1px solid rgba(255,255,255,0.25)",
+              background: "transparent",
+              color: "rgba(255,255,255,0.75)",
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              fontSize: 15,
+              cursor: "pointer",
+            }}
+          >
+            Volver al mapa
           </button>
         </div>
       </motion.div>
