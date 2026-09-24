@@ -858,7 +858,13 @@ Deno.serve(async (req) => {
       const evaluation = parsed as EvaluationResponse & { stars?: number };
       const obsCount = Array.isArray(evaluation.observations) ? evaluation.observations.length : 0;
       const scoreOk = typeof evaluation.score === "number" && evaluation.score >= 0 && evaluation.score <= 100;
-      const expectedObsOk = scoreOk && obsCount >= 1 && obsCount <= 3;
+      // De 0 a 3: una ejecución limpia devuelve observations: []. Exigir al
+      // menos una obligaba al evaluador a inventar defectos, y desde que le
+      // cerramos el alcance una práctica impecable legítimamente no tiene nada
+      // que corregir. Esta era la tercera capa con la suposición vieja: el
+      // prompt y el cliente ya la habían soltado, esta no — y rechazaba con
+      // 502 antes de que la evaluación saliera, sin dejar rastro en los logs.
+      const expectedObsOk = scoreOk && Array.isArray(evaluation.observations) && obsCount <= 3;
       const obsValid = expectedObsOk && (evaluation.observations as any[]).every(
         (o) =>
           o && typeof o === "object" &&
@@ -878,6 +884,14 @@ Deno.serve(async (req) => {
           typeof t.por_que === "string",
       );
       if (!scoreOk || !obsValid || !flagsValid || !cumplidosValid || !turnosValid || typeof evaluation.mision !== "string") {
+        // Sin esto, un rechazo aquí no deja NINGUNA línea en los logs: solo se
+        // ve el `usage` correcto y parece que la función respondió bien.
+        console.error("[closer-voice] evaluación rechazada por el contrato", {
+          scoreOk, obsValid, flagsValid, cumplidosValid, turnosValid,
+          misionOk: typeof evaluation.mision === "string",
+          obsCount,
+          score: (evaluation as any)?.score,
+        });
         return new Response(
           JSON.stringify({ error: "Malformed evaluation response", parsed: evaluation }),
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
