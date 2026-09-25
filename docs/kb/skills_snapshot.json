@@ -569,7 +569,7 @@
         "world_id_introduced": 1,
         "skill_type": "tecnica",
         "status": "active",
-        "regla_id": "opening.ice_breaker"
+        "regla_id": "opening.especificidad"
     },
     {
         "id": "opening.sce",

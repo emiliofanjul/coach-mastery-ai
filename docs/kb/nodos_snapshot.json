@@ -57,12 +57,6 @@
                     "description": "Cierra la apertura con una pregunta de si o no (tiene un minuto, puedo pasar, esta ocupado). Le entrega al cliente la respuesta mas facil, que es no."
                 },
                 {
-                    "id": "observacion_generica",
-                    "regla_id": "opening.ice_breaker_generico",
-                    "severity": "major",
-                    "description": "La observacion sirve para cualquier negocio y cualquier persona. No comunica que lo esta viendo a EL."
-                },
-                {
                     "id": "pitch_prematuro",
                     "regla_id": "opening.pitch_prematuro",
                     "severity": "critical",
@@ -70,7 +64,7 @@
                 },
                 {
                     "id": "sin_pregunta",
-                    "regla_id": "opening.pregunta_cerrada",
+                    "regla_id": "opening.sin_pregunta",
                     "severity": "major",
                     "description": "Saluda y observa pero no pregunta nada. La conversacion se muere ahi porque el cliente no tiene que contestar."
                 }
@@ -80,13 +74,13 @@
                     "id": "opening.estructura_apertura",
                     "weight": 0.4,
                     "regla_id": "opening.ice_breaker",
-                    "description": "La apertura tiene las tres piezas: saludo con energia, observacion, y pregunta abierta al final. El orden importa: la pregunta cierra la apertura y le devuelve la palabra al cliente. Sin producto, sin motivo de venta. NO se requiere que se identifique con nombre ni empresa: eso pertenece a la Historia Breve y su ausencia aqui no resta. La identificación con nombre y empresa no se requiere aquí y su ausencia no se penaliza."
+                    "description": "La apertura tiene las tres piezas: saludo con energia, observacion, y una pregunta que le devuelva la palabra. La mejor forma es que la pregunta salga de la observacion y cierre la apertura; una pregunta de cortesia dentro del saludo cumple lo minimo. Sin producto, sin motivo de venta. La identificacion con nombre y empresa no se requiere aqui y su ausencia no se penaliza."
                 },
                 {
                     "id": "opening.personalizacion",
                     "weight": 0.4,
-                    "regla_id": "opening.ice_breaker",
-                    "description": "La observacion es de ESA persona o ESE lugar en ESE momento: algo que no le diria a cualquiera. Un saludo generico (buen dia, como esta, que tal todo) no cumple. Tampoco cumple una observacion inventada que el cliente no confirma."
+                    "regla_id": "opening.especificidad",
+                    "description": "La observacion y la pregunta se miden en la escalera de la especificidad: se la harias a cualquiera? Escalon 1, de cortesia (buen dia, como esta): acredita un tercio. Escalon 2, algo de ESA persona o ESE lugar en ESE momento: acredita completo. Una observacion inventada que el cliente no confirma no cumple."
                 },
                 {
                     "id": "opening.curiosidad_abierta",
@@ -225,12 +219,6 @@
             "i_do_type": "demo",
             "failure_criteria": [
                 {
-                    "id": "observacion_plana",
-                    "regla_id": "opening.ice_breaker_generico",
-                    "severity": "major",
-                    "description": "El comentario es correcto pero no rompe nada: describe lo obvio sin ligereza. El cliente confirma y la guardia sigue arriba."
-                },
-                {
                     "id": "halago_falso",
                     "regla_id": "opening.halago_falso",
                     "severity": "major",
@@ -259,7 +247,7 @@
                 {
                     "id": "opening.personalizacion",
                     "weight": 0.4,
-                    "regla_id": "opening.ice_breaker",
+                    "regla_id": "opening.especificidad",
                     "description": "El comentario es sobre algo VERDADERO y especifico. Un halago inventado, exagerado o que el cliente no puede confirmar no cumple, y ademas cuesta: se siente falso."
                 }
             ]
@@ -330,12 +318,6 @@
                     "description": "Cierra la apertura con una pregunta de si o no."
                 },
                 {
-                    "id": "observacion_generica",
-                    "regla_id": "opening.ice_breaker_generico",
-                    "severity": "major",
-                    "description": "Saludo o comentario que serviria para cualquier persona en cualquier lugar."
-                },
-                {
                     "id": "se_encoge",
                     "regla_id": "opening.energia_verbal",
                     "severity": "major",
@@ -352,7 +334,7 @@
                 {
                     "id": "opening.personalizacion",
                     "weight": 0.2,
-                    "regla_id": "opening.ice_breaker",
+                    "regla_id": "opening.especificidad",
                     "description": "La observacion es de ESE cliente y ESE momento, verificable en lo que el cliente dice o hace. Nada generico ni inventado."
                 },
                 {
