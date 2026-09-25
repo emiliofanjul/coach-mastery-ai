@@ -102,6 +102,9 @@ describe("Harness: hay un caso por cada error encontrado practicando", () => {
   it("pregunta hablada sin signo", () => {
     expect(ids.has("G22_pregunta_hablada_sin_signo")).toBe(true);
   });
+  it("pregunta de cortesía cuenta (escalón 1)", () => {
+    expect(ids.has("G25_pregunta_de_cortesia_cuenta")).toBe(true);
+  });
   it("curiosidad abierta", () => {
     expect(ids.has("G23_curiosidad_abierta")).toBe(true);
   });

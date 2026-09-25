@@ -75,3 +75,20 @@ describe("Reglas que definen una prueba", () => {
     expect(fn).not.toMatch(/en ningún turno del vendedor aparece un producto, marca o motivo de venta/);
   });
 });
+
+describe("Calidad no es falla (escalera de la especificidad)", () => {
+  it("distingue falla (daño o ausencia) de calidad (qué tan bien se hizo)", () => {
+    expect(fn).toMatch(/9d\. CALIDAD NO ES FALLA/);
+    expect(fn).toMatch(/Una falla es DAÑO o AUSENCIA/);
+  });
+  it("prohíbe castigar dos veces el mismo hecho", () => {
+    expect(fn).toMatch(/Nunca castigues dos veces el mismo hecho/);
+  });
+  it("una pregunta de cortesía no dispara sin_pregunta", () => {
+    expect(fn).toMatch(/"¿cómo está\?" ES una pregunta: está en el escalón 1, no dispara "sin_pregunta"/);
+  });
+  it("el evaluador corre con temperatura 0; el Actor no", () => {
+    expect(fn).toMatch(/\.\.\.\(phase === "evaluate" \? \{ temperature: 0 \} : \{\}\)/);
+  });
+});
+
