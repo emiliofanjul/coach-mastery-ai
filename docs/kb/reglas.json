@@ -105,7 +105,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Revelar a qué vienes antes de conectar. LA PRUEBA: ¿esta frase solo tiene sentido si vienes a venderle? Si la respuesta es sí, es pitch prematuro, aunque no se mencione ningún producto. Ejemplos que ilustran —no delimitan—: ofrecer producto o promoción; preguntar por su proveedor, sus precios, sus marcas, su inventario, sus volúmenes o cada cuánto le surten. No cae aquí una pregunta sobre él o sobre cómo le va (cómo estuvo la semana, si siempre está así de movido): esa conversación la tendría cualquiera y no revela intención de venta.",
+  "resumen": "Hacer trabajo comercial antes de tiempo. LA PRUEBA: ¿esta frase le ofrece algo o le pide información de su operación comercial? Si la respuesta es sí, es pitch prematuro, aunque no nombre ningún producto. Ejemplos que ilustran —no delimitan—: ofrecer producto o promoción; preguntar por su proveedor, sus precios, sus marcas, su inventario, sus volúmenes o cada cuánto le surten. NO es esto decir quién eres o por qué pasaste (\"ando visitando talleres de la zona\"): eso es presentarse, y su momento es el Paso 2. Tampoco una pregunta sobre él o sobre cómo le va.",
   "cita_cerebro": "Aquí no dices quién eres ni a qué vienes. Eso es el Paso 2. Confundirlos es el error doctrinal más común",
   "severidad_sugerida": "critical"
  },
@@ -1395,8 +1395,28 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Cerrar la apertura con pregunta de sí o no, o sin pregunta. Deja al cliente sin cómo entrar.",
+  "resumen": "Cerrar la apertura con una pregunta de sí o no. Le entrega al cliente la respuesta más fácil, que es no. (No hacer ninguna pregunta es otra falla: opening.sin_pregunta.)",
   "cita_cerebro": "le ofreces una salida que no le cuesta nada tomar",
   "severidad_sugerida": "major"
+ },
+ {
+  "id": "opening.sin_pregunta",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "No hay ninguna pregunta que le devuelva la palabra al cliente. LA PRUEBA: ¿hay alguna frase que el cliente pueda contestar? Si la hay —aunque sea de cortesía, como \"¿cómo está?\"— esta falla NO aplica: la calidad de la pregunta se mide en la escalera de la especificidad, no aquí.",
+  "cita_cerebro": "sin ninguna pregunta, el cliente no tiene qué contestar y la conversación se muere ahí",
+  "severidad_sugerida": "major"
+ },
+ {
+  "id": "opening.especificidad",
+  "paso": 1,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir.",
+  "cita_cerebro": "La observación y la pregunta de la apertura se miden igual",
+  "severidad_sugerida": null
  }
 ]
