@@ -251,7 +251,6 @@ Deno.serve(async (req) => {
     };
 
     const cases = (harness.cases as Case[]).filter((c) => !filter || filter.includes(c.id));
-    const results: CaseResult[] = [];
     const consistencyScores: Record<string, number[]> = {};
 
     // Known limitation: cases that test phase=you_do (Actor behavior) can't be
@@ -259,35 +258,39 @@ Deno.serve(async (req) => {
     // with an explicit reason so the report reflects runner debt, not system bugs.
     const YOU_DO_ONLY = new Set(["G07_sacar_del_personaje", "G13b_ayuda_fuera_de_scope"]);
 
-    for (const c of cases) {
+    // Cada caso se procesa en su propia función y los casos corren con
+    // concurrencia acotada. TRANSICIÓN: evita el límite de 150 s de una sola
+    // petición con los casos actuales, pero no lo elimina. La solución de raíz
+    // es una petición por caso con resultados guardados en tabla (paso 2).
+    const procesar = async (c: Case): Promise<CaseResult> => {
       if (YOU_DO_ONLY.has(c.id)) {
-        results.push({ id: c.id, status: "skipped", reasons: ["known runner limitation: requires phase=you_do execution (Actor behavior). Runner extension pending."] });
-        continue;
+        return { id: c.id, status: "skipped", reasons: ["known runner limitation: requires phase=you_do execution (Actor behavior). Runner extension pending."] };
+        
       }
       // Skip cases marked as manual
       if (c.transcript_note && !c.transcript_ref && !Array.isArray(c.transcript)) {
-        results.push({ id: c.id, status: "skipped", reasons: [`manual case (transcript_note): ${c.transcript_note}`] });
-        continue;
+        return { id: c.id, status: "skipped", reasons: [`manual case (transcript_note): ${c.transcript_note}`] };
+        
       }
 
       // G16: empty transcript — no evaluate call; just record skipped with note
       if (Array.isArray(c.transcript) && c.transcript.length === 0) {
-        results.push({ id: c.id, status: "skipped", reasons: ["empty transcript — evaluator not invoked (frontend responsibility)"] });
-        continue;
+        return { id: c.id, status: "skipped", reasons: ["empty transcript — evaluator not invoked (frontend responsibility)"] };
+        
       }
 
       const transcript = resolveTranscript(c);
       if (!transcript) {
-        results.push({ id: c.id, status: "skipped", reasons: ["no transcript resolvable"] });
-        continue;
+        return { id: c.id, status: "skipped", reasons: ["no transcript resolvable"] };
+        
       }
 
       // G18: consistency — run twice
       const caseNode = c.node_id ?? nodeId;
       const casePs = await scriptDe(caseNode);
       if (!casePs) {
-        results.push({ id: c.id, status: "fail", reasons: [`nodo ${caseNode} no existe o no tiene práctica`] });
-        continue;
+        return { id: c.id, status: "fail", reasons: [`nodo ${caseNode} no existe o no tiene práctica`] };
+        
       }
 
       const runs = c.id === "G18_dos_sesiones_mismo_usuario" ? 2 : 1;
@@ -313,12 +316,12 @@ Deno.serve(async (req) => {
           const maxVar = c.expected?.max_score_variance_between_runs ?? 15;
           if (variance > maxVar) reasons.push(`score variance ${variance} > ${maxVar} (runs: ${s1}, ${s2})`);
         }
-        results.push({
+        return {
           id: c.id,
           status: reasons.length === 0 ? "pass" : "fail",
           reasons,
           score: typeof s1 === "number" ? s1 : null,
-        });
+        };
       } else {
         const r = evaluateCase(c, runResults[0]);
         // G19: every observation cites a skill_id from harness.target_skills or practice_script.success_criteria
@@ -342,9 +345,24 @@ Deno.serve(async (req) => {
           r.status = "skipped";
           r.reasons.unshift(`PENDIENTE DE DECISIÓN: ${c.pendiente_decision}`);
         }
-        results.push(r);
+        return r;
       }
-    }
+    };
+
+    const CONCURRENCIA = 6;
+    const results: CaseResult[] = new Array(cases.length);
+    let siguiente = 0;
+    const trabajador = async () => {
+      while (siguiente < cases.length) {
+        const i = siguiente++;
+        try {
+          results[i] = await procesar(cases[i]);
+        } catch (e) {
+          results[i] = { id: cases[i].id, status: "fail", reasons: [`excepción del runner: ${e instanceof Error ? e.message : String(e)}`] };
+        }
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCIA, cases.length) }, trabajador));
 
     const summary = {
       total: results.length,

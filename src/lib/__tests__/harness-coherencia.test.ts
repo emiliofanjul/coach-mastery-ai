@@ -90,13 +90,16 @@ describe("Harness: hay un caso por cada error encontrado practicando", () => {
   });
 });
 
-describe("Harness: decisiones doctrinales pendientes", () => {
-  // Visibles en cada corrida, sin tumbar el build: un build rojo por algo que
-  // nadie ha decidido enseña a ignorar los builds rojos.
-  for (const c of casos.filter((x) => x.pendiente_decision)) {
-    it.todo(`${c.id}: ${c.pendiente_decision}`);
-  }
-});
+// Decisiones doctrinales pendientes: visibles en cada corrida, sin tumbar el
+// build. El bloque solo existe cuando hay pendientes — un bloque vacío lo
+// cuenta el ejecutor de pruebas como falla, y permitir bloques vacíos en toda
+// la configuración taparía errores reales en cualquier otra prueba.
+const pendientes = casos.filter((x) => x.pendiente_decision);
+if (pendientes.length > 0) {
+  describe("Harness: decisiones doctrinales pendientes", () => {
+    for (const c of pendientes) it.todo(`${c.id}: ${c.pendiente_decision}`);
+  });
+}
 
 describe("Harness: prueba de generalización", () => {
   // G24 demuestra que pitch_prematuro es un PRINCIPIO y no una lista: usa una
@@ -136,6 +139,15 @@ describe("Harness runner: invariantes", () => {
     expect(runner).toMatch(/CHEQUEOS UNIVERSALES/);
     expect(runner).toMatch(/corchetes de relleno/);
   });
+  it("procesa los casos con concurrencia acotada (transición hasta el paso 2)", () => {
+    expect(runner).toMatch(/const CONCURRENCIA = \d+;/);
+    expect(runner).toMatch(/Promise\.all\(Array\.from\(\{ length: Math\.min\(CONCURRENCIA/);
+  });
+
+  it("una excepción en un caso no tumba a los demás", () => {
+    expect(runner).toMatch(/excepción del runner/);
+  });
+
   it("solo lo puede correr un manager", () => {
     expect(runner).toMatch(/prof\.role !== "manager"/);
   });
