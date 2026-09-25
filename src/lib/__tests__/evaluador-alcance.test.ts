@@ -59,3 +59,19 @@ describe("Canal 'siguiente_nivel': coaching que no castiga", () => {
     expect(ui).toMatch(/no cuenta en tu calificación/i);
   });
 });
+
+describe("Reglas que definen una prueba", () => {
+  it("el evaluador aplica la prueba a cualquier frase, esté o no en los ejemplos", () => {
+    expect(fn).toMatch(/9c\. REGLAS QUE DEFINEN UNA PRUEBA/);
+    expect(fn).toMatch(/LA PRUEBA ES EL ALCANCE y los ejemplos solo ilustran/);
+    expect(fn).toMatch(/que un caso no esté en la lista NO lo exime/);
+  });
+
+  it("sigue prohibido inventar pruebas que la regla no escribe", () => {
+    expect(fn).toMatch(/inventar una prueba que la regla no escribe/);
+  });
+
+  it("la regla 12 ya no define pitch_prematuro como lista", () => {
+    expect(fn).not.toMatch(/en ningún turno del vendedor aparece un producto, marca o motivo de venta/);
+  });
+});

@@ -12,6 +12,10 @@ const corsHeaders = {
 
 type Case = {
   id: string;
+  /** Nodo vivo contra el que se evalúa este caso. Cada caso declara el suyo. */
+  node_id?: string;
+  /** Caso con decisión doctrinal pendiente: se reporta pero no cuenta como falla. */
+  pendiente_decision?: string;
   description?: string;
   transcript?: { role: string; text: string }[];
   transcript_ref?: string;
@@ -44,7 +48,7 @@ function stringifyAll(obj: any): string {
   try { return JSON.stringify(obj).toLowerCase(); } catch { return String(obj).toLowerCase(); }
 }
 
-async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, supabaseUrl: string, anonKey: string): Promise<any> {
+async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string): Promise<any> {
   const conversation_history = transcript.map((t) => ({
     role: t.role === "assistant" ? "assistant" : "user",
     content: t.text,
@@ -54,6 +58,10 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
     headers: { "Content-Type": "application/json", "apikey": anonKey, "Authorization": `Bearer ${anonKey}` },
     body: JSON.stringify({
       phase: "evaluate",
+      // Obligatorio: closer-voice resuelve el guion por node_id y rechaza
+      // evaluate sin él (400 node_id_required). Sin esta línea el harness
+      // fallaba en todos los casos desde sept-2026 sin que nadie lo notara.
+      node_id: nodeId,
       practice_script,
       conversation_history,
       company_brain: "Taller mecánico, distribución de aceites Bardahl",
@@ -157,6 +165,27 @@ function evaluateCase(c: Case, response: any): CaseResult {
     if (!hit) reasons.push(`feedback did not mention any of: [${alts.join(", ")}]`);
   }
 
+  // max_observations: una ejecución limpia puede y debe devolver [].
+  if (typeof exp.max_observations === "number") {
+    const n = Array.isArray(parsed.observations) ? parsed.observations.length : -1;
+    if (n > exp.max_observations) reasons.push(`observations: ${n} > máximo ${exp.max_observations}`);
+  }
+
+  // ── CHEQUEOS UNIVERSALES — corren en TODOS los casos ──────────────
+  // Cada uno reproduce un error real encontrado practicando (sept-2026).
+  const ejemplos: string[] = [
+    ...(Array.isArray(parsed.observations) ? parsed.observations : []).map((o: any) => String(o?.ejemplo ?? "")),
+    ...(Array.isArray(parsed.siguiente_nivel) ? parsed.siguiente_nivel : []).map((x: any) => String(x?.ejemplo ?? "")),
+  ];
+  const conCorchete = ejemplos.find((e) => /\[[^\]]{2,}\]/.test(e));
+  if (conCorchete) reasons.push(`UNIVERSAL: ejemplo con corchetes de relleno: "${conCorchete.slice(0, 90)}"`);
+
+  const textoFeedback = stringifyAll([parsed.observations, parsed.mision, parsed.siguiente_nivel]);
+  if (/signo de interrogaci|signos de interrogaci|termine en signo/.test(textoFeedback)) {
+    reasons.push("UNIVERSAL: el feedback habla de puntuación — el vendedor habla, no escribe");
+  }
+  if (!Array.isArray(parsed.observations)) reasons.push("UNIVERSAL: observations no es un arreglo");
+
   return {
     id: c.id,
     status: reasons.length === 0 ? "pass" : "fail",
@@ -174,11 +203,26 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
     const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 
+    // Solo un manager puede correrlo: cada corrida llama al modelo ~24 veces.
+    // Antes era público, y el repo es público: cualquiera podía gastar créditos.
+    const jwt = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+    const { data: who } = jwt ? await admin.auth.getUser(jwt) : { data: null as any };
+    const uid = who?.user?.id ?? null;
+    const { data: prof } = uid
+      ? await admin.from("profiles").select("role").eq("id", uid).maybeSingle()
+      : { data: null as any };
+    if (!prof || prof.role !== "manager") {
+      return new Response(JSON.stringify({ error: "forbidden", detail: "solo managers pueden correr el harness" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     let body: any = {};
     if (req.method === "POST") {
       try { body = await req.json(); } catch { body = {}; }
     }
-    const nodeId: string = body.node_id ?? harness.target_node ?? "0.1";
+    const nodeId: string = body.node_id ?? harness.target_node ?? "1.2";
     const filter: string[] | null = Array.isArray(body.case_ids) && body.case_ids.length > 0 ? body.case_ids : null;
 
     // Fetch practice_script for the target node
@@ -194,6 +238,17 @@ Deno.serve(async (req) => {
       });
     }
     const practice_script = nodeRows[0].practice_script;
+
+    // Cada caso se evalúa contra SU nodo. Caché para no releer el mismo guion.
+    const scripts = new Map<string, any>([[nodeId, practice_script]]);
+    const scriptDe = async (id: string) => {
+      if (scripts.has(id)) return scripts.get(id);
+      const { data } = await admin.from("v_nodes_resueltos")
+        .select("practice_script:practice_script_resuelto").eq("id", id).maybeSingle();
+      const ps = (data as any)?.practice_script ?? null;
+      scripts.set(id, ps);
+      return ps;
+    };
 
     const cases = (harness.cases as Case[]).filter((c) => !filter || filter.includes(c.id));
     const results: CaseResult[] = [];
@@ -228,11 +283,18 @@ Deno.serve(async (req) => {
       }
 
       // G18: consistency — run twice
+      const caseNode = c.node_id ?? nodeId;
+      const casePs = await scriptDe(caseNode);
+      if (!casePs) {
+        results.push({ id: c.id, status: "fail", reasons: [`nodo ${caseNode} no existe o no tiene práctica`] });
+        continue;
+      }
+
       const runs = c.id === "G18_dos_sesiones_mismo_usuario" ? 2 : 1;
       const runResults: any[] = [];
       for (let i = 0; i < runs; i++) {
         try {
-          const resp = await callEvaluate(transcript, practice_script, supabaseUrl, anonKey);
+          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey);
           runResults.push(resp);
         } catch (e) {
           runResults.push({ status: 0, parsed: null, raw: String(e) });
@@ -263,8 +325,8 @@ Deno.serve(async (req) => {
         if (c.expected?.every_observation_cites_skill_id) {
           const validIds = new Set<string>([
             ...(harness.target_skills ?? []),
-            ...((practice_script?.success_criteria ?? []).map((s: any) => s.id)),
-            ...((practice_script?.failure_criteria ?? []).map((s: any) => s.id)),
+            ...((casePs?.success_criteria ?? []).map((s: any) => s.id)),
+            ...((casePs?.failure_criteria ?? []).map((s: any) => s.id)),
           ].map((x) => String(x).toLowerCase()));
           const obs = runResults[0]?.parsed?.observations ?? [];
           obs.forEach((o: any, i: number) => {
@@ -275,6 +337,10 @@ Deno.serve(async (req) => {
               r.status = "fail";
             }
           });
+        }
+        if (c.pendiente_decision && r.status === "fail") {
+          r.status = "skipped";
+          r.reasons.unshift(`PENDIENTE DE DECISIÓN: ${c.pendiente_decision}`);
         }
         results.push(r);
       }
@@ -289,7 +355,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({
       harness_version: harness.harness_version,
-      prompt_version_expected: "v1.1.0",
+      prompt_version_expected: "v2",
       node_id: nodeId,
       summary,
       results,
