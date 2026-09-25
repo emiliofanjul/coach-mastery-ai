@@ -51,15 +51,16 @@
       "expected": {
         "director_cut_after_turn": null,
         "score_range": [
-          10,
-          40
+          0,
+          30
         ],
         "must_flag": [
           "pitch_prematuro"
         ],
         "must_cite_negative": [
           "opening.estructura_apertura"
-        ]
+        ],
+        "score_range_nota": "Un flag critical deja el score en máximo 30 (regla de puntuación del evaluador). El rango anterior se escribió antes de normalizar severidades y la contradecía. Rango anterior: [10, 40]."
       },
       "node_id": "1.2"
     },
@@ -74,15 +75,16 @@
       ],
       "expected": {
         "score_range": [
-          10,
-          45
+          0,
+          30
         ],
         "must_flag": [
           "se_disculpa"
         ],
         "must_cite_negative": [
           "opening.arranque_sin_disculpa"
-        ]
+        ],
+        "score_range_nota": "Un flag critical deja el score en máximo 30 (regla de puntuación del evaluador). El rango anterior se escribió antes de normalizar severidades y la contradecía. Rango anterior: [10, 45]."
       },
       "node_id": "1.4"
     },
@@ -159,8 +161,8 @@
       ],
       "expected": {
         "score_range": [
-          40,
-          75
+          0,
+          30
         ],
         "feedback_must_mention": "el nodo practica solo la apertura",
         "must_not_treat_as": "error grave — es habilidad de otro paso, no un error de venta",
@@ -168,7 +170,8 @@
         "must_flag": [
           "pitch_prematuro"
         ],
-        "rationale_v2": "Decisión de Emilio (sept-2026): preguntar por proveedores en la apertura ES pitch_prematuro. Cerebro: 'aquí no dices a qué vienes'; el proveedor actual es territorio del Descubrimiento."
+        "rationale_v2": "Decisión de Emilio (sept-2026): preguntar por proveedores en la apertura ES pitch_prematuro. Cerebro: 'aquí no dices a qué vienes'; el proveedor actual es territorio del Descubrimiento.",
+        "score_range_nota": "Un flag critical deja el score en máximo 30 (regla de puntuación del evaluador). El rango anterior se escribió antes de normalizar severidades y la contradecía. Rango anterior: [40, 75]."
       },
       "node_id": "1.2"
     },
@@ -363,13 +366,14 @@
       ],
       "expected": {
         "score_range": [
-          40,
-          65
+          0,
+          30
         ],
         "must_flag": [
           "pitch_prematuro"
         ],
-        "feedback_must_mention": "la apertura iba perfecta hasta la mención del producto"
+        "feedback_must_mention": "la apertura iba perfecta hasta la mención del producto",
+        "score_range_nota": "Un flag critical deja el score en máximo 30 (regla de puntuación del evaluador). El rango anterior se escribió antes de normalizar severidades y la contradecía. Rango anterior: [40, 65]."
       },
       "node_id": "1.2"
     },
@@ -397,8 +401,8 @@
           "pitch_prematuro"
         ],
         "score_range": [
-          15,
-          45
+          0,
+          30
         ],
         "feedback_must_mention_any_of": [
           "brevedad",
@@ -408,7 +412,8 @@
           "monologo",
           "monólogo"
         ],
-        "rationale_v2": "El nodo 1.2 no mide monologo: con alcance cerrado no puede flaggearlo. La falta de brevedad debe aparecer igual (observación o siguiente_nivel)."
+        "rationale_v2": "El nodo 1.2 no mide monologo: con alcance cerrado no puede flaggearlo. La falta de brevedad debe aparecer igual (observación o siguiente_nivel).",
+        "score_range_nota": "Un flag critical deja el score en máximo 30. Rango anterior [15, 45] contradecía la regla; pasaba en la corrida real solo porque el score cayó dentro por suerte."
       },
       "node_id": "1.2"
     },
@@ -555,10 +560,11 @@
           "pitch_prematuro"
         ],
         "score_range": [
-          10,
-          60
+          0,
+          30
         ],
-        "rationale": "Si el evaluador solo castiga lo que aparece en los ejemplos, la regla sigue siendo una lista. Este caso usa una pregunta que ninguna regla ni el prompt enumeran como ejemplo."
+        "rationale": "Si el evaluador solo castiga lo que aparece en los ejemplos, la regla sigue siendo una lista. Este caso usa una pregunta que ninguna regla ni el prompt enumeran como ejemplo.",
+        "score_range_nota": "Un flag critical deja el score en máximo 30. Rango anterior [10, 60] contradecía la regla; pasaba en la corrida real solo porque el score cayó dentro por suerte."
       }
     }
   ]
