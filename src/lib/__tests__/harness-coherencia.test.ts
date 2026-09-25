@@ -65,6 +65,23 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
     expect(malos).toEqual([]);
   });
 
+  it("un caso que exige un flag CRITICAL tiene rango máximo 30", () => {
+    // Regla de puntuación del evaluador: "Un flag critical DOMINA: score final
+    // máximo 30". Sept-2026: cuatro casos esperaban 40-75 con un critical y la
+    // red los reportaba como falla del evaluador, cuando la falla era del caso.
+    const severidad = (nodo: string, flag: string) =>
+      (guion(nodo)?.failure_criteria ?? []).find((f: any) => f.id === flag)?.severity;
+    const malos = casos.flatMap((c) => {
+      const tope = Array.isArray(c.expected?.score_range) ? c.expected.score_range[1] : null;
+      if (tope === null) return [];
+      const criticos = (c.expected?.must_flag ?? []).filter((f: string) => severidad(c.node_id, f) === "critical");
+      return criticos.length > 0 && tope > 30
+        ? [`${c.id}: exige ${criticos.join(", ")} (critical) pero su rango llega a ${tope}`]
+        : [];
+    });
+    expect(malos).toEqual([]);
+  });
+
   it("los rangos de score son coherentes", () => {
     const malos = casos
       .filter((c) => Array.isArray(c.expected?.score_range))
