@@ -206,6 +206,8 @@ La descripción de cada success_criteria define su alcance COMPLETO. Lo que esa 
 Cada criterio puede traer campos de apoyo: "regla_resumen" es su definición canónica, "contexto_nodo" es cómo se ve en este escenario, y "cita_cerebro" es el texto de doctrina que lo respalda. Esos tres delimitan el alcance — no lo amplían.
 Antes de bajar la base por un criterio, verifica que lo que falta esté literalmente pedido en su descripción. Si no está, el criterio se cuenta como cumplido y lo que observaste va a "siguiente_nivel", no a "observations".
 9c. REGLAS QUE DEFINEN UNA PRUEBA. Algunas reglas definen su alcance con una PRUEBA explícita — por ejemplo "¿esta frase solo tiene sentido si vienes a venderle?" — y después dan ejemplos. En esas reglas LA PRUEBA ES EL ALCANCE y los ejemplos solo ilustran. Aplica la prueba a cualquier frase del vendedor, aparezca o no entre los ejemplos: que un caso no esté en la lista NO lo exime. Esto no contradice el alcance cerrado — la prueba está escrita en la regla, así que está literalmente pedida. Lo que sigue prohibido es lo contrario: inventar una prueba que la regla no escribe.
+9d. CALIDAD NO ES FALLA. Una falla es DAÑO o AUSENCIA: pedir permiso, meter producto, mentir en un halago, o que de plano no exista lo que el paso exige. La calidad es qué tan bien se hizo algo que SÍ se hizo. Lo que se hizo con poca calidad NO se castiga con una falla: se acredita parcialmente en su criterio de éxito y en "siguiente_nivel" se muestra cómo subir. Nunca castigues dos veces el mismo hecho — si algo ya te bajó un criterio de éxito por baja calidad, no lo marques además como falla.
+Cuando un criterio describe una ESCALERA de niveles (por ejemplo, la escalera de la especificidad), identifica en qué escalón quedó el vendedor y acredita lo que la escalera indica para ese escalón. Una pregunta de cortesía como "¿cómo está?" ES una pregunta: está en el escalón 1, no dispara "sin_pregunta".
 10. TERMINOLOGÍA DEL GUION: en observations y mision usa exactamente los nombres y términos que aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra.
 11. VERIFICACIÓN LITERAL: antes de afirmar que el vendedor hizo o no hizo algo, localiza la evidencia textual exacta en el transcript. Si no puedes citar la frase concreta, NO hagas la afirmación. Prohibido describir lo que el vendedor "no hizo" sin haber revisado su turno completo palabra por palabra.
 12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar un flag sin poder citar la frase exacta del vendedor que lo dispara. Si la regla define una prueba, la cita es la frase que la reprueba — no hace falta que mencione un producto: "¿cada cuánto le vienen a surtir?" reprueba la prueba de pitch_prematuro sin nombrar ninguno.
@@ -759,6 +761,10 @@ Deno.serve(async (req) => {
         // se truncaba el JSON en prácticas largas, y 4096 seguía quedando corto
         // en prácticas de 12 turnos (nodo 3.6) → JSON truncado → parseo fallido.
         max_tokens: phase === "evaluate" ? 8192 : 1024,
+        // El evaluador califica: la misma conversación debe recibir la misma
+        // calificación. Temperatura 0 solo en evaluate — el Actor sí necesita
+        // variar para sonar como una persona.
+        ...(phase === "evaluate" ? { temperature: 0 } : {}),
 
         system,
         messages,
