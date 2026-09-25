@@ -178,6 +178,36 @@ describe("Fuente única: node_skills manda", () => {
   });
 });
 
+describe("Una regla, un concepto", () => {
+  // Sept-2026: tres reglas de la apertura mezclaban dos conceptos, y eso produjo
+  // doble castigo y calificaciones que cambiaban entre corridas (92 y 55 para la
+  // misma apertura). Se separaron las de la apertura; quedan 24 nodos con dos
+  // criterios distintos en la misma regla. TRINQUETE: este número solo puede
+  // bajar. Cuando arregles uno, baja DEUDA_MAXIMA.
+  const DEUDA_MAXIMA = 24;
+  it(`no hay más de ${DEUDA_MAXIMA} nodos con criterios distintos compartiendo regla`, () => {
+    const conDeuda = new Set<string>();
+    for (const n of nodos) {
+      for (const tipo of ["success", "failure"] as const) {
+        const porRegla = new Map<string, Set<string>>();
+        for (const c of criterios(n).filter((x) => x._tipo === tipo)) {
+          if (!c.regla_id) continue;
+          if (!porRegla.has(c.regla_id)) porRegla.set(c.regla_id, new Set());
+          porRegla.get(c.regla_id)!.add(c.id);
+        }
+        for (const ids of porRegla.values()) if (ids.size > 1) conDeuda.add(`${n.id}:${tipo}`);
+      }
+    }
+    expect(conDeuda.size).toBeLessThanOrEqual(DEUDA_MAXIMA);
+  });
+  it("sin_pregunta y pregunta_cerrada tienen reglas distintas", () => {
+    const reglasDe = (id: string) =>
+      new Set(nodos.flatMap((n) => criterios(n).filter((c) => c.id === id).map((c) => c.regla_id)));
+    const a = reglasDe("sin_pregunta"), b = reglasDe("pregunta_cerrada");
+    expect([...a].some((r) => b.has(r))).toBe(false);
+  });
+});
+
 describe("Canal: lo presencial no se califica en texto", () => {
   it("ninguna regla de canal presencial aparece como criterio de práctica", () => {
     const presenciales = new Set(reglas.filter((r) => r.canal === "presencial").map((r) => r.id));

@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.1.0-prueba-funcional",
+  "harness_version": "v2.2.0-escalera",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -107,9 +107,11 @@
         ],
         "must_not_flag": [
           "pitch_prematuro",
-          "se_disculpa"
+          "se_disculpa",
+          "sin_pregunta"
         ],
-        "rationale": "Saludo cortés pero vacío (sin nombre, sin entorno) cumple ~1 de 3 criterios: 25-45 es lectura honesta. La regla probada es que sin disculpa_inicial ni pitch_prematuro el score no colapsa a <25 — un saludo digno aunque incompleto no es fracaso."
+        "rationale": "Saludo cortés pero vacío (sin nombre, sin entorno) cumple ~1 de 3 criterios: 25-45 es lectura honesta. La regla probada es que sin disculpa_inicial ni pitch_prematuro el score no colapsa a <25 — un saludo digno aunque incompleto no es fracaso.",
+        "rationale_v3": "Decisión de Emilio (sept-2026): '¿cómo le va?' ES una pregunta (escalón 1). No dispara sin_pregunta."
       },
       "node_id": "1.2"
     },
@@ -237,7 +239,12 @@
         "score_range": [
           75,
           100
-        ]
+        ],
+        "must_not_flag": [
+          "pitch_prematuro",
+          "sin_pregunta"
+        ],
+        "rationale_v3": "'Ando visitando talleres y quise pasar a saludarlo', dicho después de conectar, es presentarse (Paso 2): no es trabajo comercial. Y '¿cómo está?' es pregunta (escalón 1)."
       },
       "node_id": "1.2"
     },
@@ -565,6 +572,32 @@
         ],
         "rationale": "Si el evaluador solo castiga lo que aparece en los ejemplos, la regla sigue siendo una lista. Este caso usa una pregunta que ninguna regla ni el prompt enumeran como ejemplo.",
         "score_range_nota": "Un flag critical deja el score en máximo 30. Rango anterior [10, 60] contradecía la regla; pasaba en la corrida real solo porque el score cayó dentro por suerte."
+      }
+    },
+    {
+      "id": "G25_pregunta_de_cortesia_cuenta",
+      "node_id": "1.2",
+      "description": "La única pregunta es de cortesía. Es escalón 1 de la escalera: cuenta como pregunta, se acredita poco, y NO dispara sin_pregunta.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenos días Don Ramón, ¿cómo está?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, bien, gracias. Aquí trabajando."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "sin_pregunta",
+          "pitch_prematuro"
+        ],
+        "score_range": [
+          20,
+          70
+        ],
+        "rationale": "Una pregunta de cortesía no es una falla: es el primer escalón (Cerebro, escalera de la especificidad)."
       }
     }
   ]

@@ -1,4 +1,6 @@
-### La escalera de la especificidad `CAMPO` `UNIVERSAL`
+INSERT INTO public.doctrina (version, section_key, order_index, title, body, is_active, created_by)
+SELECT 2, section_key, order_index, title,
+  CASE WHEN section_key='pasos' THEN replace(body, E'\n### Teoría del Gasman', E'\n' || $esc$### La escalera de la especificidad `CAMPO` `UNIVERSAL`
 
 La observación y la pregunta de la apertura se miden igual: **¿se la harías a cualquiera?** Entre más específica para ESE cliente en ESE momento, más vale.
 
@@ -12,4 +14,11 @@ La observación y la pregunta de la apertura se miden igual: **¿se la harías a
 
 **Una pregunta de cortesía no es una falla: es el primer escalón.** La falla es no preguntar nada: sin ninguna pregunta, el cliente no tiene qué contestar y la conversación se muere ahí.
 
-**Y la pregunta que mejor devuelve la palabra es la que sale de la observación y cierra la apertura:** *"veo que no paran, ¿siempre está así de movido?"*. Un *"¿cómo está?"* dentro del saludo cumple, pero si después sigues hablando, el cliente espera a que termines en vez de contestar. Convertir la observación en la pregunta final es como se sube de escalón.
+**Y la pregunta que mejor devuelve la palabra es la que sale de la observación y cierra la apertura:** *"veo que no paran, ¿siempre está así de movido?"*. Un *"¿cómo está?"* dentro del saludo cumple, pero si después sigues hablando, el cliente espera a que termines en vez de contestar. Convertir la observación en la pregunta final es como se sube de escalón.$esc$ || E'\n\n### Teoría del Gasman') ELSE body END,
+  true, created_by
+FROM public.doctrina WHERE version=1 AND is_active;
+UPDATE public.doctrina SET is_active=false WHERE version=1;
+DO $$ BEGIN
+  IF (SELECT count(*) FROM public.doctrina WHERE version=2 AND is_active) <> 7 THEN RAISE EXCEPTION 'faltan secciones v2'; END IF;
+  IF NOT EXISTS (SELECT 1 FROM public.doctrina WHERE version=2 AND section_key='pasos' AND position('### La escalera de la especificidad' in body) BETWEEN 1 AND position('### Teoría del Gasman' in body)) THEN RAISE EXCEPTION 'escalera no insertada'; END IF;
+END $$;
