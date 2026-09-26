@@ -29,6 +29,8 @@ type CaseResult = {
   reasons: string[];
   score?: number | null;
   raw?: any;
+  /** Lo que decidió el evaluador por criterio: "criterio:nivel". Para diagnosticar volteos. */
+  veredictos?: string[];
 };
 
 function getCase(id: string): Case | undefined {
@@ -197,6 +199,21 @@ function evaluateCase(c: Case, response: any): CaseResult {
     if (n > exp.max_observations) reasons.push(`observations: ${n} > máximo ${exp.max_observations}`);
   }
 
+  // niveles_esperados: la DECISIÓN del evaluador por criterio, leída del
+  // desglose de la rúbrica. El nivel se deriva del crédito (no de la etiqueta
+  // que eligió el modelo): 1 → cumple, entre 0 y 1 → parcial, 0 → no_cumple.
+  const nivelDe = (credito: number) => (credito >= 1 ? "cumple" : credito > 0 ? "parcial" : "no_cumple");
+  const desgloseCrit: any[] = Array.isArray(parsed?.desglose?.criterios) ? parsed.desglose.criterios : [];
+  const nivelPorCriterio = new Map<string, string>(
+    desgloseCrit.map((d: any) => [String(d.criterio_id), nivelDe(Number(d.credito ?? 0))]),
+  );
+  if (exp.niveles_esperados && typeof exp.niveles_esperados === "object") {
+    for (const [id, esperado] of Object.entries(exp.niveles_esperados as Record<string, string>)) {
+      const real = nivelPorCriterio.get(id);
+      if (real !== esperado) reasons.push(`nivel de ${id}: esperaba ${esperado}, decidió ${real ?? "sin veredicto"}`);
+    }
+  }
+
   // ── CHEQUEOS UNIVERSALES — corren en TODOS los casos ──────────────
   // Cada uno reproduce un error real encontrado practicando (sept-2026).
   const ejemplos: string[] = [
@@ -229,6 +246,10 @@ function evaluateCase(c: Case, response: any): CaseResult {
     status: reasons.length === 0 ? "pass" : "fail",
     reasons,
     score: typeof parsed.score === "number" ? parsed.score : null,
+    veredictos: desgloseCrit.map((d: any) => {
+      const n = nivelDe(Number(d.credito ?? 0));
+      return `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;
+    }),
   };
 }
 
@@ -260,6 +281,22 @@ Deno.serve(async (req) => {
     if (req.method === "POST") {
       try { body = await req.json(); } catch { body = {}; }
     }
+    // listar: la página de la red pide la lista y luego corre cada caso en su
+    // propia petición. Así no hay límite de tiempo total (antes, una sola
+    // petición con todos los casos chocaba con los 150 s).
+    if (body.listar === true) {
+      const lista = (harness.cases as Case[]).map((c) => ({
+        id: c.id,
+        node_id: c.node_id ?? harness.target_node ?? "1.2",
+        mundo: Number(String(c.node_id ?? harness.target_node ?? "1.2").split(".")[0]),
+        descripcion: c.description ?? "",
+      }));
+      return new Response(JSON.stringify({ version: harness.harness_version, casos: lista }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const nodeId: string = body.node_id ?? harness.target_node ?? "1.2";
     const filter: string[] | null = Array.isArray(body.case_ids) && body.case_ids.length > 0 ? body.case_ids : null;
 

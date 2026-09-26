@@ -111,6 +111,17 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
     expect(repetidos).toEqual([]);
   });
 
+  it("los niveles esperados apuntan a criterios de éxito reales de su nodo", () => {
+    const validos = new Set(["cumple", "parcial", "no_cumple"]);
+    const malos = casos.flatMap((c) =>
+      Object.entries(c.expected?.niveles_esperados ?? {}).flatMap(([id, nivel]) => [
+        ...(exito(c.node_id).has(id) ? [] : [`${c.id}: '${id}' no es criterio de éxito de ${c.node_id}`]),
+        ...(validos.has(String(nivel)) ? [] : [`${c.id}: nivel inválido '${nivel}'`]),
+      ]),
+    );
+    expect(malos).toEqual([]);
+  });
+
   it("los rangos de score son coherentes", () => {
     const malos = casos
       .filter((c) => Array.isArray(c.expected?.score_range))
@@ -206,6 +217,14 @@ describe("Harness runner: invariantes", () => {
   it("la trampa universal vigila huecos de datos, no acotaciones", () => {
     expect(runner).toMatch(/HUECO_DE_DATO/);
     expect(runner).not.toMatch(/corchetes de relleno: "\$\{conCorchete/);
+  });
+
+  it("puede listar sus casos para que la página los corra uno por uno", () => {
+    expect(runner).toMatch(/body\.listar === true/);
+  });
+  it("revisa las decisiones por criterio y las devuelve en cada resultado", () => {
+    expect(runner).toMatch(/niveles_esperados/);
+    expect(runner).toMatch(/veredictos: desgloseCrit\.map/);
   });
 
   it("verifica en todos los casos que la nota salió de la rúbrica", () => {
