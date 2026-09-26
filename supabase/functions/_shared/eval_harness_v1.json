@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.3.0",
+  "harness_version": "v2.4.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -202,13 +202,7 @@
     {
       "id": "G08_max_turns_alcanzado",
       "description": "Conversación llega al límite de turnos sin cubrir el scope",
-      "transcript_note": "Simular 20 turnos de usuario divagando sin completar apertura",
-      "transcript": [
-        {
-          "role": "user",
-          "text": "[turno 20 de conversación divagante]"
-        }
-      ],
+      "transcript_note": "Requiere ejecutar al Director (corte por max_turns); este runner solo evalúa. Antes tenía un transcript falso ('[turno 20 de conversación divagante]') y contaba como aprobado sin probar nada.",
       "expected": {
         "director_cut_after_turn": 20,
         "cut_reason": "max_turns",
@@ -401,7 +395,7 @@
       "transcript": [
         {
           "role": "user",
-          "text": "[monólogo de 200+ palabras que incluye saludo, historia personal, mención de 3 productos, precios y una anécdota]"
+          "text": "¡Buenos días Don Ramón! Oiga, fíjese que yo antes trabajaba en un taller igualito a este allá en Córdoba, y le aprendí mucho a mi patrón, un señor bien trabajador que empezó desde abajo con una sola fosa y terminó con tres sucursales. Por eso cuando veo un negocio así de movido me acuerdo de él. Bueno, le cuento: yo ando con Distribuidora DALFAN y traemos aceite Bardahl multigrado a 95 el litro, el aditivo para inyectores a 120 la pieza, y el líquido de frenos DOT 4 a 68. Y fíjese que hace un mes un cliente en Xalapa me compró cinco cubetas del multigrado y a los tres días ya me estaba pidiendo más, porque se le movió rapidísimo, dice que sus clientes lo notaron en el motor. Imagínese, él no lo creía hasta que lo probó. Entonces pensé en usted, porque se nota que aquí sí tienen movimiento y seguro le sirve tener buen producto a buen precio. Además le damos crédito a quince días, entrega en su local el mismo día, y si le sobra producto se lo cambiamos sin problema. Y si quiere también le traigo el catálogo completo para que vea todo lo que manejamos. ¿Qué le parece si le dejo unas cubetas para empezar?"
         }
       ],
       "expected": {
@@ -421,7 +415,8 @@
           "monólogo"
         ],
         "rationale_v2": "El nodo 1.2 no mide monologo: con alcance cerrado no puede flaggearlo. La falta de brevedad debe aparecer igual (observación o siguiente_nivel).",
-        "score_range_nota": "Un flag critical deja el score en máximo 30. Rango anterior [15, 45] contradecía la regla; pasaba en la corrida real solo porque el score cayó dentro por suerte."
+        "score_range_nota": "Un flag critical deja el score en máximo 30. Rango anterior [15, 45] contradecía la regla; pasaba en la corrida real solo porque el score cayó dentro por suerte.",
+        "rationale_v3": "Antes el transcript era una descripción entre corchetes, no un monólogo: el evaluador calificaba una nota del autor del caso y 'pasaba' por suerte. Ahora es un monólogo real."
       },
       "node_id": "1.2"
     },
@@ -626,8 +621,6 @@
           "pide_permiso"
         ],
         "feedback_must_not_contain": [
-          "te presentaste",
-          "te identificaste",
           "nombre implícito",
           "nombre implicito",
           "la semana pasada",
@@ -637,7 +630,11 @@
           "me contó",
           "cliente recurrente"
         ],
-        "rationale": "Especificidad y ligereza son conceptos distintos: la personalización se acredita (escalón 2) y el ice breaker no del todo, porque el comentario es descriptivo. 'Don Ramón' es el nombre del cliente, no una presentación. Y no hay historia con el cliente: ningún ejemplo puede inventarla."
+        "rationale": "Especificidad y ligereza son conceptos distintos: la personalización se acredita (escalón 2) y el ice breaker no del todo, porque el comentario es descriptivo. 'Don Ramón' es el nombre del cliente, no una presentación. Y no hay historia con el cliente: ningún ejemplo puede inventarla.",
+        "feedback_must_not_match": [
+          "(?<!no )(?<!nunca )te (presentaste|identificaste)"
+        ],
+        "rationale_v2": "La lista de textos marcaba 'no te presentaste' —el comportamiento correcto— como si fuera el error. El patrón solo atrapa la acusación, no su negación."
       }
     }
   ]

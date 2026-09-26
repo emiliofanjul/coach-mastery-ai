@@ -21,6 +21,7 @@ const plain = (text: string): PromptBlock => ({ type: "text", text });
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
+import { aplicarTopeCritico, estrellasDe } from "../_shared/puntuacion.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -195,7 +196,7 @@ REGLAS DE EVALUACIÓN:
 4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
 5. Cantidad de observations: de 0 a 3. Reporta tantas como problemas reales haya DENTRO del alcance de los criterios de este nodo, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Y si el vendedor ejecutó bien todos los criterios, **devuelve observations: []** — una ejecución limpia se reconoce, no se le busca defecto. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también. Cuando observations va vacío, la "mision" no corrige: consolida lo que ya hace bien y lo empuja al siguiente nivel de exigencia.
 6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
-6b. LOS EJEMPLOS VAN COMPLETOS, SIN HUECOS. Todo "ejemplo" —en observations y en siguiente_nivel— se escribe como una línea que el vendedor podría decir tal cual, con el nombre real del cliente y los datos reales de su empresa que aparecen en el contexto. PROHIBIDOS los corchetes de relleno: "[empresa]", "[sector]", "[área relevante]", "[producto]". Un ejemplo con huecos no es un ejemplo: es una plantilla que el vendedor tiene que resolver solo, justo cuando necesita ver cómo se hace. Si no tienes el dato real, redacta el ejemplo de modo que no lo necesite.
+6b. LOS EJEMPLOS VAN COMPLETOS, SIN HUECOS. Todo "ejemplo" —en observations y en siguiente_nivel— se escribe como una línea que el vendedor podría decir tal cual, con el nombre real del cliente y los datos reales de su empresa que aparecen en el contexto. PROHIBIDOS los corchetes de relleno: "[empresa]", "[sector]", "[área relevante]", "[producto]". Y PROHIBIDAS también las acotaciones entre corchetes, como "[pausa]" o "[cliente responde]": el ejemplo contiene SOLO lo que el vendedor dice. Si una indicación de entrega importa —hacer una pausa, esperar la respuesta—, va en "mejora", nunca dentro del ejemplo. Un ejemplo con huecos no es un ejemplo: es una plantilla que el vendedor tiene que resolver solo, justo cuando necesita ver cómo se hace. Si no tienes el dato real, redacta el ejemplo de modo que no lo necesite.
 6c. NUNCA INVENTES HECHOS DEL CLIENTE. En ningún ejemplo, observación ni "siguiente_nivel" pongas algo del cliente que no aparezca en el transcript o en el contexto: enfermedades, familia, una visita anterior, una compra pasada, algo "que te contó". Si no está ahí, no existe. Tampoco asumas que el cliente es recurrente: si la conversación no muestra historia con él, trátalo como cliente nuevo. Inventar que recuerdas algo es peor que no recordar nada — y un ejemplo inventado le enseña al vendedor a hacer exactamente eso.
 
 7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
@@ -976,8 +977,20 @@ Deno.serve(async (req) => {
             }))
         : [];
 
-      // Derive stars for backward compatibility with existing consumers.
-      const stars = evaluation.score >= 85 ? 3 : evaluation.score >= 60 ? 2 : 1;
+      // El modelo juzga; el código calcula. El tope de un flag critical es
+      // aritmética: se aplica aquí, no se confía al modelo (sept-2026: marcó
+      // pitch_prematuro critical y devolvió 35).
+      const tope = aplicarTopeCritico(evaluation.score, evaluation.flags_detected, practice_script?.failure_criteria);
+      if (tope.topado) {
+        console.warn("[closer-voice] score topado por flag critical", {
+          session_id, node_id, del_modelo: evaluation.score, final: tope.score, criticos: tope.criticos,
+        });
+        (evaluation as any).score_del_modelo = evaluation.score;
+        evaluation.score = tope.score;
+      }
+
+      // Estrellas a partir del score YA topado.
+      const stars = estrellasDe(evaluation.score);
       return new Response(JSON.stringify({ ...evaluation, stars, end_session: true, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
