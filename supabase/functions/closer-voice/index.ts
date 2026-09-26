@@ -21,7 +21,7 @@ const plain = (text: string): PromptBlock => ({ type: "text", text });
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
-import { aplicarTopeCritico, estrellasDe } from "../_shared/puntuacion.ts";
+import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntuacion.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -226,33 +226,24 @@ DESPUÉS de tener ese análisis completo, y SOLO basándote en él, calcula el s
 
 CÁLCULO DEL SCORE — MODELO "BASE + RESTA" (aplícalo en este orden exacto, después del PASO 0):
 
-PASO 1 — BASE por ejecución de success_criteria (empieza por lo que SÍ hizo):
-- Todos los criterios bien ejecutados → base 85-100
-- La mayoría bien ejecutados, uno ausente o débil → base 55-75
-- Solo alguno parcial → base 35-55
-- Ninguno ejecutado → base 10-30
+CÓMO SE CALIFICA — tú decides, el código suma:
+Tú NO calculas el score final. Das una decisión por cada criterio de éxito, detectas los flags, y el código suma con una rúbrica fija. Así la misma ejecución recibe siempre la misma nota.
 
-EJEMPLOS DE CALIBRACIÓN DE BASE (úsalos como ancla numérica, no como rangos abstractos):
-- SCE completo — saludo + nombre real del cliente + observación del entorno + sin disculpa + sin pitch → base 92.
-- Saludo + nombre pero SIN observación del entorno, resto correcto → base 65.
-- Saludo genérico y cortés ('buenos días, ¿cómo está?') sin nombre del cliente ni observación del entorno, pero SIN disculpa y SIN pitch → base 45-55. Regla dura de piso: sin flags de disculpa_inicial ni pitch_prematuro, el score final nunca es menor a 25 — un intento digno aunque incompleto no puntúa como fracaso total.
-- Criterios centrales bien ejecutados + un desvío minor (ej. adelantarse a preguntas de discovery) → base 60-70, resta minor 10-20 → score final 45-55. El desvío del ejercicio no borra lo bien ejecutado.
-- Sin flags detectados = NO hay resta: el score final ES la base.
+PASO 1 — VEREDICTO POR CRITERIO. Para CADA success_criterion evaluable (sin requires_audio) devuelve en "veredictos_criterios" uno de:
+- "cumple": el vendedor ejecutó lo que la descripción del criterio pide.
+- "parcial": lo intentó y lo hizo a medias.
+- "no_cumple": no lo hizo.
+Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especificidad), agrega "escalon": 1, 2 o 3 según el escalón en que quedó. Recuerda: calidad baja no es falla — va aquí como "parcial" o escalón bajo, nunca como flag.
 
-PASO 2 — RESTA por flags detectados (solo si hay flags):
-- Cada flag minor resta 10-20 puntos desde la base
-- Cada flag major resta 25-40 puntos desde la base
-- Un flag critical DOMINA: score final máximo 30, sin importar la base
-- Para cada flag en flags_detected, consulta su campo "severity" en failure_criteria y aplica la resta correspondiente (minor 10-20, major 25-40, critical → score final máximo 30). El nombre del flag NO determina la severidad — el campo "severity" sí.
-- Cada flag detectado se resta UNA sola vez, sin importar cuántos turnos ocupe el desvío en el transcript. Dos o más apariciones del mismo desvío = un solo flag = una sola resta. El flag señala el concepto equivocado, no cuenta repeticiones.
+PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara, con su cita literal. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
+
+La rúbrica que aplica el código, para que sepas qué pesan tus decisiones: cumple vale el peso completo del criterio; parcial, la mitad; en escaleras, el escalón 1 vale un tercio y el 2 o el 3 el peso completo. Cada flag major resta 30, cada minor resta 15, y un critical deja el score en máximo 30. Devuelve también "score" con tu estimado: se guarda para comparar, pero la nota final la calcula el código.
 
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
 - Un orden que el criterio no nombra NO puede bajar la base. Antes de escribir "no exploró", "se fue directo a", "sin antes", "debió primero", verifica que ese orden esté literalmente pedido en la descripción del criterio. Si no está, no es observación: como mucho es "siguiente_nivel".
 - El score sale ÚNICAMENTE de los success_criteria del nodo y de sus flags. Nada que esté fuera del alcance de esos criterios puede bajar el score, por buena que sea la observación. Lo bueno que veas fuera de alcance va a "siguiente_nivel" y NO cuesta puntos.
-- Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta. Puntúa lo que SÍ ejecutó bien además del desvío.
-- Score mínimo 5 si el usuario hizo un intento genuino de práctica (aunque sea débil).
-- Nunca hundas el score por un solo minor si los criterios centrales están presentes.`;
+- Los flags minor señalan DESVÍOS del ejercicio, no fallas de venta: lo que SÍ ejecutó bien se acredita en sus criterios además del desvío.`;
 
 // Bloques del evaluador: [fijo cacheado] + [variable: criterios del nodo,
 // radar, contexto de corte y contrato de salida].
@@ -299,7 +290,10 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
       "por_que": "<una línea>"
     }
   ],
-  "score": <entero 0-100>,
+  "veredictos_criterios": [
+    { "criterio_id": "<id de success_criteria>", "nivel": "cumple | parcial | no_cumple", "escalon": <1|2|3, SOLO si el criterio es una escalera> }
+  ],
+  "score": <entero 0-100, tu estimado; la nota final la calcula el código>,
   "observations": [
     {
       "criterio_id": "<uno de: ${successIds.join(" | ")}>",
@@ -979,16 +973,33 @@ Deno.serve(async (req) => {
             }))
         : [];
 
-      // El modelo juzga; el código calcula. El tope de un flag critical es
-      // aritmética: se aplica aquí, no se confía al modelo (sept-2026: marcó
-      // pitch_prematuro critical y devolvió 35).
-      const tope = aplicarTopeCritico(evaluation.score, evaluation.flags_detected, practice_script?.failure_criteria);
-      if (tope.topado) {
-        console.warn("[closer-voice] score topado por flag critical", {
-          session_id, node_id, del_modelo: evaluation.score, final: tope.score, criticos: tope.criticos,
-        });
-        (evaluation as any).score_del_modelo = evaluation.score;
+      // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
+      // aplicada a los veredictos del modelo por criterio (sept-2026: la misma
+      // conversación sacaba 55 y 75 con temperatura 0 cuando el número lo
+      // decidía el modelo).
+      const rubrica = calcularScore({
+        veredictos: (evaluation as any).veredictos_criterios,
+        successCriteria: practice_script?.success_criteria,
+        flags: evaluation.flags_detected,
+        failureCriteria: practice_script?.failure_criteria,
+      });
+      (evaluation as any).score_del_modelo = evaluation.score;
+      if (rubrica.valido) {
+        evaluation.score = rubrica.score;
+        evaluation.criterios_cumplidos = rubrica.cumplidos;
+        (evaluation as any).desglose = {
+          base: rubrica.base, criterios: rubrica.desglose, restas: rubrica.restas,
+          topado: rubrica.topado, sin_veredicto: rubrica.sin_veredicto,
+        };
+        if (rubrica.sin_veredicto.length > 0) {
+          console.warn("[closer-voice] criterios sin veredicto (contados como no cumplidos)", { session_id, node_id, sin_veredicto: rubrica.sin_veredicto });
+        }
+      } else {
+        // Plan B: el modelo no entregó veredictos utilizables. Se usa su número,
+        // con el tope critical aplicado por código. Se registra para medirlo.
+        const tope = aplicarTopeCritico(evaluation.score, evaluation.flags_detected, practice_script?.failure_criteria);
         evaluation.score = tope.score;
+        console.warn("[closer-voice] sin veredictos por criterio: plan B con el score del modelo", { session_id, node_id, score: tope.score, topado: tope.topado });
       }
 
       // Estrellas a partir del score YA topado.

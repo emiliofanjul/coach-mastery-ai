@@ -208,6 +208,10 @@ describe("Harness runner: invariantes", () => {
     expect(runner).not.toMatch(/corchetes de relleno: "\$\{conCorchete/);
   });
 
+  it("verifica en todos los casos que la nota salió de la rúbrica", () => {
+    expect(runner).toMatch(/la nota salió del plan B/);
+  });
+
   it("puede verificar qué criticó el evaluador, no solo cómo lo redactó", () => {
     expect(runner).toMatch(/observations_must_not_target/);
   });
