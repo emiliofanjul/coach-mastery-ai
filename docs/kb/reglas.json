@@ -85,7 +85,7 @@
   "tipo": "premio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Abrir sin identificarse deja al cliente con la pregunta. Que él pregunte quién eres es ganar la introducción.",
+  "resumen": "Abrir sin identificarse deja al cliente con la pregunta. Que él pregunte quién eres es ganar la introducción. Identificarse es decir TU nombre o el de TU empresa. Usar el nombre DEL CLIENTE (\"buenos días, Don Ramón\") NO es identificarse: es personalización, y es bueno.",
   "cita_cerebro": "Si el cliente pregunta «¿y usted quién es?», ganaste la introducción — esa pregunta es la puerta natural al Paso 2",
   "severidad_sugerida": null
  },
@@ -95,7 +95,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Abrir identificándose ANTES de conectar. El orden es el problema, no el dato: identificarse después del ice breaker ya es Paso 2.",
+  "resumen": "Abrir identificándose ANTES de conectar. El orden es el problema, no el dato: identificarse después del ice breaker ya es Paso 2. Identificarse es decir TU nombre o el de TU empresa. Usar el nombre DEL CLIENTE (\"buenos días, Don Ramón\") NO es identificarse: es personalización, y es bueno.",
   "cita_cerebro": "Aquí no dices quién eres ni a qué vienes. Eso es el Paso 2",
   "severidad_sugerida": "minor"
  },
@@ -1415,7 +1415,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir.",
+  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir. El escalón 3 exige historia REAL con el cliente: si la conversación no muestra ninguna, no está disponible y no se sugiere — jamás inventando un recuerdo.",
   "cita_cerebro": "La observación y la pregunta de la apertura se miden igual",
   "severidad_sugerida": null
  }
