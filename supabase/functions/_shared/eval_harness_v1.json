@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.4.0",
+  "harness_version": "v2.5.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -15,7 +15,7 @@
   "cases": [
     {
       "id": "G01_sce_perfecto",
-      "description": "Apertura ideal: saludo con nombre, observación del entorno, pregunta abierta, sin producto",
+      "description": "Una apertura que cumple todos los criterios de la introducción, en el contexto de un taller. No es 'la' apertura ideal: cada industria, cliente y lenguaje tiene la suya (decisión de Emilio, sept-2026). La red vigila los criterios, no las palabras.",
       "transcript": [
         {
           "role": "user",
@@ -37,8 +37,7 @@
           "se_disculpa"
         ]
       },
-      "node_id": "1.6",
-      "pendiente_decision": "Con la doctrina actual, en el BOSS 1.6 (que exige ligereza), la frase de G01 es específica pero plana: ya no es la apertura ideal. Falta que Emilio defina la apertura ideal para cliente nuevo."
+      "node_id": "1.6"
     },
     {
       "id": "G02_pitch_prematuro",
@@ -406,17 +405,10 @@
           0,
           30
         ],
-        "feedback_must_mention_any_of": [
-          "brevedad",
-          "breve",
-          "más corto",
-          "mas corto",
-          "monologo",
-          "monólogo"
-        ],
         "rationale_v2": "El nodo 1.2 no mide monologo: con alcance cerrado no puede flaggearlo. La falta de brevedad debe aparecer igual (observación o siguiente_nivel).",
         "score_range_nota": "Un flag critical deja el score en máximo 30. Rango anterior [15, 45] contradecía la regla; pasaba en la corrida real solo porque el score cayó dentro por suerte.",
-        "rationale_v3": "Antes el transcript era una descripción entre corchetes, no un monólogo: el evaluador calificaba una nota del autor del caso y 'pasaba' por suerte. Ahora es un monólogo real."
+        "rationale_v3": "Antes el transcript era una descripción entre corchetes, no un monólogo: el evaluador calificaba una nota del autor del caso y 'pasaba' por suerte. Ahora es un monólogo real.",
+        "rationale_v4": "Ya no se exige que el feedback mencione la brevedad: es del Paso 2, no del nodo 1.2; 'siguiente_nivel' es opcional y de máximo dos; y ante un pitch crítico con productos y precios, enfocarse en eso es la prioridad correcta."
       },
       "node_id": "1.2"
     },
@@ -635,6 +627,42 @@
           "(?<!no )(?<!nunca )te (presentaste|identificaste)"
         ],
         "rationale_v2": "La lista de textos marcaba 'no te presentaste' —el comportamiento correcto— como si fuera el error. El patrón solo atrapa la acusación, no su negación."
+      }
+    },
+    {
+      "id": "G27_buen_ice_breaker_cliente_frio",
+      "node_id": "1.6",
+      "description": "El vendedor hace un buen ice breaker —específico y con un guiño— y el cliente contesta cortante, de mal humor. La ejecución fue buena: la reacción del cliente confirma, nunca condena (decisión de Emilio, sept-2026).",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días Don Ramón! ¿Qué les pasó hoy que está lleno el taller? ¿Regalan algo o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "No. ¿Qué se le ofrece?"
+        }
+      ],
+      "expected": {
+        "score_range": [
+          70,
+          100
+        ],
+        "must_cite_positive": [
+          "opening.ice_breaker",
+          "opening.personalizacion"
+        ],
+        "must_not_flag": [
+          "pitch_prematuro",
+          "se_disculpa",
+          "pide_permiso"
+        ],
+        "feedback_must_not_match": [
+          "no (le )?(hizo|causó|dio) gracia",
+          "(el|tu) (chiste|humor|guiño) no funcion",
+          "no logr(ó|aste) (bajar|romper)"
+        ],
+        "rationale": "Un buen chiste que no le hace gracia a un cliente rojo o de mal humor se hizo bien. Si la red castigara esto, le enseñaría al vendedor que su ejecución depende del humor del otro."
       }
     }
   ]
