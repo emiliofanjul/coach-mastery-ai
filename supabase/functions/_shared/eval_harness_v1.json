@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.5.0",
+  "harness_version": "v2.6.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -15,11 +15,15 @@
   "cases": [
     {
       "id": "G01_sce_perfecto",
-      "description": "Una apertura que cumple todos los criterios de la introducción, en el contexto de un taller. No es 'la' apertura ideal: cada industria, cliente y lenguaje tiene la suya (decisión de Emilio, sept-2026). La red vigila los criterios, no las palabras.",
+      "description": "Una apertura que cumple todos los criterios de la introducción, en un taller: usa el nombre del cliente, sale de lo que ve, trae un guiño, cierra con pregunta y no se presenta. No es 'la' apertura ideal: cada industria, cliente y lenguaje tiene la suya. Hace par con G27 — la misma frase del vendedor con un cliente cortante — para probar que la reacción no cambia el veredicto.",
       "transcript": [
         {
           "role": "user",
-          "text": "¡Buenos días Don Ramón! ¿Cómo está? Oiga, qué movido se ve el negocio hoy, veo que no paran."
+          "text": "¡Buenos días Don Ramón! ¿Qué les pasó hoy que está lleno el taller? ¿Regalan algo o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "¡Ja! Ojalá. Así de puro trabajo, desde temprano. ¿Y usted qué se le ofrece?"
         }
       ],
       "expected": {
@@ -35,7 +39,8 @@
         "must_not_flag": [
           "pitch_prematuro",
           "se_disculpa"
-        ]
+        ],
+        "nota_v5": "Antes usaba la misma frase y el mismo nodo que G26 con un rango incompatible ([85,100] contra [60,90]): era imposible cumplir los dos. Ahora tiene una apertura que sí cumple todos los criterios, ligereza incluida."
       },
       "node_id": "1.6"
     },
@@ -623,10 +628,11 @@
           "cliente recurrente"
         ],
         "rationale": "Especificidad y ligereza son conceptos distintos: la personalización se acredita (escalón 2) y el ice breaker no del todo, porque el comentario es descriptivo. 'Don Ramón' es el nombre del cliente, no una presentación. Y no hay historia con el cliente: ningún ejemplo puede inventarla.",
-        "feedback_must_not_match": [
-          "(?<!no )(?<!nunca )te (presentaste|identificaste)"
+        "rationale_v2": "La lista de textos marcaba 'no te presentaste' —el comportamiento correcto— como si fuera el error. El patrón solo atrapa la acusación, no su negación.",
+        "observations_must_not_target": [
+          "opening.curiosidad_abierta"
         ],
-        "rationale_v2": "La lista de textos marcaba 'no te presentaste' —el comportamiento correcto— como si fuera el error. El patrón solo atrapa la acusación, no su negación."
+        "rationale_v3": "Se verifica la decisión (que no critique la curiosidad abierta, porque el vendedor no se presentó), no la redacción: los patrones de negación fallaban con 'ni te presentaste', 'tampoco…', etc."
       }
     },
     {
@@ -657,12 +663,11 @@
           "se_disculpa",
           "pide_permiso"
         ],
-        "feedback_must_not_match": [
-          "no (le )?(hizo|causó|dio) gracia",
-          "(el|tu) (chiste|humor|guiño) no funcion",
-          "no logr(ó|aste) (bajar|romper)"
+        "rationale": "Un buen chiste que no le hace gracia a un cliente rojo o de mal humor se hizo bien. Si la red castigara esto, le enseñaría al vendedor que su ejecución depende del humor del otro.",
+        "observations_must_not_target": [
+          "opening.ice_breaker"
         ],
-        "rationale": "Un buen chiste que no le hace gracia a un cliente rojo o de mal humor se hizo bien. Si la red castigara esto, le enseñaría al vendedor que su ejecución depende del humor del otro."
+        "rationale_v2": "Mismo motivo que G26: un patrón habría castigado 'aunque no le hizo gracia, tu ejecución fue correcta', que es justo el comportamiento correcto. Se verifica que no critique el ice breaker."
       }
     }
   ]

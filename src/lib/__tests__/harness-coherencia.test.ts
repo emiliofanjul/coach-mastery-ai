@@ -94,6 +94,23 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
     expect(falsos).toEqual([]);
   });
 
+  it("dos casos no pueden tener la misma entrada", () => {
+    // Sept-2026: G01 y G26 usaban la misma frase en el mismo nodo. Uno afirmaba
+    // "cumple todos los criterios" y el otro "específica pero plana": las dos
+    // cosas no pueden ser verdad. Sus rangos se cruzaban solo entre 85 y 90, y
+    // G01 pasó una vez por caer en esa franja. Misma entrada = mismo caso: si
+    // hacen falta dos expectativas sobre la misma conversación, van en uno solo.
+    // (Los casos de consistencia usan transcript_ref y no cuentan aquí.)
+    const vistos = new Map<string, string>();
+    const repetidos: string[] = [];
+    for (const c of casos.filter((x) => Array.isArray(x.transcript) && x.transcript.length > 0)) {
+      const k = `${c.node_id}|${JSON.stringify(c.transcript)}`;
+      if (vistos.has(k)) repetidos.push(`${vistos.get(k)} y ${c.id}`);
+      else vistos.set(k, c.id);
+    }
+    expect(repetidos).toEqual([]);
+  });
+
   it("los rangos de score son coherentes", () => {
     const malos = casos
       .filter((c) => Array.isArray(c.expected?.score_range))
@@ -189,6 +206,10 @@ describe("Harness runner: invariantes", () => {
   it("la trampa universal vigila huecos de datos, no acotaciones", () => {
     expect(runner).toMatch(/HUECO_DE_DATO/);
     expect(runner).not.toMatch(/corchetes de relleno: "\$\{conCorchete/);
+  });
+
+  it("puede verificar qué criticó el evaluador, no solo cómo lo redactó", () => {
+    expect(runner).toMatch(/observations_must_not_target/);
   });
 
   it("soporta patrones que distinguen una acusación de su negación", () => {
