@@ -178,6 +178,19 @@ describe("Fuente única: node_skills manda", () => {
   });
 });
 
+describe("Identificarse está definido", () => {
+  // Sept-2026: el evaluador leyó "Buenos días, Don Ramón" como si el vendedor se
+  // hubiera presentado, y su ejemplo le quitó al saludo el nombre del cliente.
+  it("las reglas de identificación distinguen tu nombre del nombre del cliente", () => {
+    for (const id of ["opening.curiosidad_abierta", "opening.identificacion_prematura"]) {
+      expect(porId.get(id)?.resumen ?? "").toMatch(/Usar el nombre DEL CLIENTE/);
+    }
+  });
+  it("el escalón 3 no se ofrece sin historia real", () => {
+    expect((porId.get("opening.especificidad") as any)?.resumen ?? "").toMatch(/no está disponible/);
+  });
+});
+
 describe("Una regla, un concepto", () => {
   // Sept-2026: tres reglas de la apertura mezclaban dos conceptos, y eso produjo
   // doble castigo y calificaciones que cambiaban entre corridas (92 y 55 para la
