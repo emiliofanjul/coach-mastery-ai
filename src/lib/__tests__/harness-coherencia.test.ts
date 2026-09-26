@@ -82,6 +82,18 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
     expect(malos).toEqual([]);
   });
 
+  it("ningún transcript es un marcador en vez de una conversación", () => {
+    // Sept-2026: G08 y G17 tenían como transcript una descripción entre
+    // corchetes ("[monólogo de 200+ palabras…]"). El evaluador calificaba una
+    // nota del autor y el caso contaba como aprobado sin probar nada.
+    const falsos = casos.flatMap((c) =>
+      (c.transcript ?? [])
+        .filter((t: any) => /\[[^\]]{8,}\]/.test(String(t.text ?? "")))
+        .map(() => c.id),
+    );
+    expect(falsos).toEqual([]);
+  });
+
   it("los rangos de score son coherentes", () => {
     const malos = casos
       .filter((c) => Array.isArray(c.expected?.score_range))
@@ -169,6 +181,10 @@ describe("Harness runner: invariantes", () => {
 
   it("una excepción en un caso no tumba a los demás", () => {
     expect(runner).toMatch(/excepción del runner/);
+  });
+
+  it("soporta patrones que distinguen una acusación de su negación", () => {
+    expect(runner).toMatch(/feedback_must_not_match/);
   });
 
   it("solo lo puede correr un manager", () => {

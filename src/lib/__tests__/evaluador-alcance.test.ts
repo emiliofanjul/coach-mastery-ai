@@ -102,3 +102,10 @@ describe("Nunca inventar hechos del cliente", () => {
   });
 });
 
+describe("Los ejemplos no llevan acotaciones", () => {
+  it("prohíbe [pausa], [cliente responde] y similares dentro del ejemplo", () => {
+    expect(fn).toMatch(/PROHIBIDAS también las acotaciones entre corchetes/);
+    expect(fn).toMatch(/va en "mejora", nunca dentro del ejemplo/);
+  });
+});
+
