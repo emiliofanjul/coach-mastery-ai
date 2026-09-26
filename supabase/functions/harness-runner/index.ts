@@ -189,8 +189,15 @@ function evaluateCase(c: Case, response: any): CaseResult {
     ...(Array.isArray(parsed.observations) ? parsed.observations : []).map((o: any) => String(o?.ejemplo ?? "")),
     ...(Array.isArray(parsed.siguiente_nivel) ? parsed.siguiente_nivel : []).map((x: any) => String(x?.ejemplo ?? "")),
   ];
-  const conCorchete = ejemplos.find((e) => /\[[^\]]{2,}\]/.test(e));
-  if (conCorchete) reasons.push(`UNIVERSAL: ejemplo con corchetes de relleno: "${conCorchete.slice(0, 90)}"`);
+  // Solo los huecos de un DATO que el vendedor tendría que inventar
+  // ("[empresa/sector]", "[área relevante]", "[nombre del cliente]"). Las
+  // acotaciones ("[pausa]", "[el cliente responde]") están permitidas: no
+  // dejan nada incompleto (decisión de Emilio, sept-2026).
+  const HUECO_DE_DATO = /\[(?:empresa|sector|producto|marca|nombre|ciudad|zona|área|area|industria|giro|precio|dato)[^\]]*\]/i;
+  for (const e of ejemplos) {
+    const m = e.match(HUECO_DE_DATO);
+    if (m) { reasons.push(`UNIVERSAL: ejemplo con hueco de dato ${m[0]} en: "${e.slice(0, 120)}"`); break; }
+  }
 
   const textoFeedback = stringifyAll([parsed.observations, parsed.mision, parsed.siguiente_nivel]);
   if (/signo de interrogaci|signos de interrogaci|termine en signo/.test(textoFeedback)) {
