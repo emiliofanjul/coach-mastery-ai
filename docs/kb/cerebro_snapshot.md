@@ -1,4 +1,4 @@
-# fundamento (version 2)
+# fundamento (version 3)
 
 # EL CEREBRO DE CLOSER
 ## Doctrina canónica del sistema de venta
@@ -114,7 +114,7 @@ Esto no contradice el diagnóstico ni la construcción de valor: los explica. La
 
 ---
 
-# pasos (version 2)
+# pasos (version 3)
 
 # PARTE 2 · LOS 6 PASOS
 
@@ -169,6 +169,16 @@ La observación y la pregunta de la apertura se miden igual: **¿se la harías a
 **Una pregunta de cortesía no es una falla: es el primer escalón.** La falla es no preguntar nada: sin ninguna pregunta, el cliente no tiene qué contestar y la conversación se muere ahí.
 
 **Y la pregunta que mejor devuelve la palabra es la que sale de la observación y cierra la apertura:** *"veo que no paran, ¿siempre está así de movido?"*. Un *"¿cómo está?"* dentro del saludo cumple, pero si después sigues hablando, el cliente espera a que termines en vez de contestar. Convertir la observación en la pregunta final es como se sube de escalón.
+
+### Especificidad y ligereza son dos cosas distintas `CAMPO` `UNIVERSAL`
+
+Un comentario de apertura se mide con dos preguntas diferentes. **¿Se lo dirías a cualquiera?** es la especificidad: la escalera. **¿Baja la guardia?** es la ligereza: humor suave, un guiño o calidez en lo que dices.
+
+Una no garantiza la otra. *"Veo que tiene cuatro cajas de filtros de una marca y dos de otra"* es muy específico, y suena a inspección. *"¡Qué buen día hace, eh!"* es ligero, y se lo dirías a cualquiera. *"¿Qué les pasó hoy que está lleno? ¿Regalan algo o qué?"* tiene las dos.
+
+**La ligereza se mide en lo que haces, no en cómo reacciona el cliente.** Un buen chiste puede no hacerle gracia a un cliente rojo, o a alguien que viene enojado ese día, y no por eso se hizo mal. La reacción del cliente puede confirmar que algo funcionó; nunca puede condenar una acción bien hecha. Es la lógica de los controlables: al vendedor se le mide por lo que controla, y el humor del cliente no es una de esas cosas.
+
+La calidez que vive en el tono de voz no se puede calificar por escrito: se enseña igual, se practica igual, y la escucha el manager (ver 1.7).
 
 ### Teoría del Gasman `FUENTE` `UNIVERSAL`
 Ser asumido y confiado, con alta indiferencia.
@@ -714,7 +724,7 @@ Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero produ
 
 ---
 
-# mentalidad (version 2)
+# mentalidad (version 3)
 
 # PARTE 3 · LA MENTALIDAD
 ### *La segunda fundación*
@@ -810,7 +820,7 @@ Escríbelas, hazlas evaluar por alguien, y recompénsate al lograrlas.
 
 ---
 
-# aplicacion (version 2)
+# aplicacion (version 3)
 
 # PARTE 4 · APLICAR EL SISTEMA A CUALQUIER CLIENTE
 
@@ -988,7 +998,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# canales (version 2)
+# canales (version 3)
 
 # PARTE 5 · MODIFICADORES DE CANAL
 
@@ -1005,7 +1015,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# jerarquia (version 2)
+# jerarquia (version 3)
 
 # PARTE 6 · JERARQUÍA DE REGLAS
 
@@ -1049,7 +1059,7 @@ Tono, vocabulario, longitud de frases, formalidad. **El manager conoce el lengua
 
 ---
 
-# razonamiento (version 2)
+# razonamiento (version 3)
 
 # PARTE 7 · CÓMO RAZONAR CON ESTE DOCUMENTO
 
