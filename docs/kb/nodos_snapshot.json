@@ -73,8 +73,8 @@
                 {
                     "id": "opening.estructura_apertura",
                     "weight": 0.4,
-                    "regla_id": "opening.ice_breaker",
-                    "description": "La apertura tiene las tres piezas: saludo con energia, observacion, y una pregunta que le devuelva la palabra. La mejor forma es que la pregunta salga de la observacion y cierre la apertura; una pregunta de cortesia dentro del saludo cumple lo minimo. Sin producto, sin motivo de venta. La identificacion con nombre y empresa no se requiere aqui y su ausencia no se penaliza."
+                    "regla_id": "opening.estructura",
+                    "description": "La apertura tiene sus tres piezas: saludo con energia, una observacion y alguna pregunta que le devuelva la palabra. Si estan las tres, aunque la pregunta sea de cortesia, este criterio se cumple. La calidad de la pregunta y de la observacion no se mide aqui: se mide en la escalera de la especificidad. Sin producto, sin motivo de venta. La identificacion con nombre y empresa no se requiere aqui y su ausencia no se penaliza."
                 },
                 {
                     "id": "opening.personalizacion",
@@ -176,7 +176,7 @@
                 {
                     "id": "opening.estructura_apertura",
                     "weight": 0.3,
-                    "regla_id": "opening.ice_breaker",
+                    "regla_id": "opening.estructura",
                     "description": "Mantiene la estructura de apertura aprendida: saludo con energia, observacion real, pregunta abierta. La presion del cliente ocupado no debe desarmar la formula."
                 }
             ]
@@ -328,7 +328,7 @@
                 {
                     "id": "opening.estructura_apertura",
                     "weight": 0.2,
-                    "regla_id": "opening.ice_breaker",
+                    "regla_id": "opening.estructura",
                     "description": "Las tres piezas presentes: saludo con energia, observacion real, pregunta abierta. Sin producto ni motivo de venta. Identificarse no se requiere aquí: eso es trabajo del Paso 2."
                 },
                 {
@@ -4259,7 +4259,7 @@
                 {
                     "id": "opening.estructura_apertura",
                     "weight": 0.15,
-                    "regla_id": "opening.ice_breaker",
+                    "regla_id": "opening.estructura",
                     "description": "Apertura completa y calibrada: saludo + observación específica + inicio de conversación, sin producto, con seguridad tipo gasman."
                 },
                 {
