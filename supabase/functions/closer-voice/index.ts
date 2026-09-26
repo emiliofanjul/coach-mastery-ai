@@ -238,6 +238,7 @@ Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especif
 PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara, con su cita literal. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
 
 La rúbrica que aplica el código, para que sepas qué pesan tus decisiones: cumple vale el peso completo del criterio; parcial, la mitad; en escaleras, el escalón 1 vale un tercio y el 2 o el 3 el peso completo. Cada flag major resta 30, cada minor resta 15, y un critical deja el score en máximo 30. Devuelve también "score" con tu estimado: se guarda para comparar, pero la nota final la calcula el código.
+
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces.
 - Un orden que el criterio no nombra NO puede bajar la base. Antes de escribir "no exploró", "se fue directo a", "sin antes", "debió primero", verifica que ese orden esté literalmente pedido en la descripción del criterio. Si no está, no es observación: como mucho es "siguiente_nivel".
@@ -1000,6 +1001,7 @@ Deno.serve(async (req) => {
         evaluation.score = tope.score;
         console.warn("[closer-voice] sin veredictos por criterio: plan B con el score del modelo", { session_id, node_id, score: tope.score, topado: tope.topado });
       }
+
       // Estrellas a partir del score YA topado.
       const stars = estrellasDe(evaluation.score);
       return new Response(JSON.stringify({ ...evaluation, stars, end_session: true, ...meta }), {
