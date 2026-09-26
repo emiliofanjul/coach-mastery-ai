@@ -1,14 +1,3 @@
--- ============================================================
--- Dos errores reales del evaluador, encontrados en la respuesta cruda de G01
--- (sept-2026):
---   1. Leyó "¡Buenos días Don Ramón!" como si el vendedor se hubiera
---      presentado, y su ejemplo le quitó al saludo el nombre del cliente.
---      Causa: ninguna regla definía qué es "identificarse".
---   2. Asumió un cliente recurrente e inventó un recuerdo ("¿ya se le quitó lo
---      del catarro?"). Causa: el escalón 3 no exigía historia real.
--- (La tercera parte del arreglo —prohibir inventar hechos del cliente— va en
--- el prompt del evaluador, regla 6c.)
--- ============================================================
 UPDATE public.reglas SET resumen = 'Abrir sin identificarse deja al cliente con la pregunta. Que él pregunte quién eres es ganar la introducción. Identificarse es decir TU nombre o el de TU empresa. Usar el nombre DEL CLIENTE ("buenos días, Don Ramón") NO es identificarse: es personalización, y es bueno.', updated_at = now() WHERE id = 'opening.curiosidad_abierta';
 UPDATE public.reglas SET resumen = 'Abrir identificándose ANTES de conectar. El orden es el problema, no el dato: identificarse después del ice breaker ya es Paso 2. Identificarse es decir TU nombre o el de TU empresa. Usar el nombre DEL CLIENTE ("buenos días, Don Ramón") NO es identificarse: es personalización, y es bueno.', updated_at = now() WHERE id = 'opening.identificacion_prematura';
 UPDATE public.reglas SET resumen = 'La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía ("¿cómo está?"): acredita un tercio. Escalón 2, del entorno ("veo que no paran, ¿siempre está así de movido?"): acredita completo con cliente nuevo. Escalón 3, de él ("¿cómo sigue? ¿va mejorando?"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir. El escalón 3 exige historia REAL con el cliente: si la conversación no muestra ninguna, no está disponible y no se sugiere — jamás inventando un recuerdo.', updated_at = now() WHERE id = 'opening.especificidad';

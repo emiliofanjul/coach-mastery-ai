@@ -105,6 +105,9 @@ describe("Harness: hay un caso por cada error encontrado practicando", () => {
   it("pregunta de cortesía cuenta (escalón 1)", () => {
     expect(ids.has("G25_pregunta_de_cortesia_cuenta")).toBe(true);
   });
+  it("específica pero plana: vigila nombre del cliente y memoria inventada", () => {
+    expect(ids.has("G26_especifica_pero_plana")).toBe(true);
+  });
   it("curiosidad abierta", () => {
     expect(ids.has("G23_curiosidad_abierta")).toBe(true);
   });

@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.2.0-escalera",
+  "harness_version": "v2.3.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -37,7 +37,8 @@
           "se_disculpa"
         ]
       },
-      "node_id": "1.6"
+      "node_id": "1.6",
+      "pendiente_decision": "Con la doctrina actual, en el BOSS 1.6 (que exige ligereza), la frase de G01 es específica pero plana: ya no es la apertura ideal. Falta que Emilio defina la apertura ideal para cliente nuevo."
     },
     {
       "id": "G02_pitch_prematuro",
@@ -598,6 +599,45 @@
           70
         ],
         "rationale": "Una pregunta de cortesía no es una falla: es el primer escalón (Cerebro, escalera de la especificidad)."
+      }
+    },
+    {
+      "id": "G26_especifica_pero_plana",
+      "node_id": "1.6",
+      "description": "Apertura específica pero sin ligereza. Usa el nombre DEL CLIENTE y no se presenta. Vigila dos errores reales del evaluador (sept-2026): confundir el nombre del cliente con presentarse, e inventar un recuerdo o una relación.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días Don Ramón! ¿Cómo está? Oiga, qué movido se ve el negocio hoy, veo que no paran."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          60,
+          90
+        ],
+        "must_cite_positive": [
+          "opening.personalizacion",
+          "opening.arranque_sin_disculpa"
+        ],
+        "must_not_flag": [
+          "pitch_prematuro",
+          "se_disculpa",
+          "pide_permiso"
+        ],
+        "feedback_must_not_contain": [
+          "te presentaste",
+          "te identificaste",
+          "nombre implícito",
+          "nombre implicito",
+          "la semana pasada",
+          "la vez pasada",
+          "la última vez",
+          "se le quitó",
+          "me contó",
+          "cliente recurrente"
+        ],
+        "rationale": "Especificidad y ligereza son conceptos distintos: la personalización se acredita (escalón 2) y el ice breaker no del todo, porque el comentario es descriptivo. 'Don Ramón' es el nombre del cliente, no una presentación. Y no hay historia con el cliente: ningún ejemplo puede inventarla."
       }
     }
   ]

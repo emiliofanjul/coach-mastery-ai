@@ -92,3 +92,13 @@ describe("Calidad no es falla (escalera de la especificidad)", () => {
   });
 });
 
+describe("Nunca inventar hechos del cliente", () => {
+  it("prohíbe inventar datos del cliente en ejemplos y siguiente_nivel", () => {
+    expect(fn).toMatch(/6c\. NUNCA INVENTES HECHOS DEL CLIENTE/);
+    expect(fn).toMatch(/Si no está ahí, no existe/);
+  });
+  it("sin historia visible, el cliente se trata como nuevo", () => {
+    expect(fn).toMatch(/si la conversación no muestra historia con él, trátalo como cliente nuevo/);
+  });
+});
+
