@@ -1,4 +1,4 @@
-# fundamento (version 3)
+# fundamento (version 4)
 
 # EL CEREBRO DE CLOSER
 ## Doctrina canónica del sistema de venta
@@ -114,7 +114,7 @@ Esto no contradice el diagnóstico ni la construcción de valor: los explica. La
 
 ---
 
-# pasos (version 3)
+# pasos (version 4)
 
 # PARTE 2 · LOS 6 PASOS
 
@@ -161,6 +161,8 @@ La observación y la pregunta de la apertura se miden igual: **¿se la harías a
 - **Escalón 1 — de cortesía.** Se la harías a cualquiera: *"¿cómo está?"*, *"qué gusto saludarlo"*. Cumple lo mínimo porque le devuelve la palabra, pero no construye nada.
 - **Escalón 2 — del entorno.** Sale de lo que ves ahí, en ese momento: *"veo que no paran, ¿siempre está así de movido?"*. Solo tiene sentido en ese lugar.
 - **Escalón 3 — de él.** Solo se la harías a él, porque sabes algo de antes: *"¿cómo sigue? ¿va mejorando?"*.
+
+**La prueba del escalón 2:** nombra algo concreto que viste ahí —el movimiento, que está lleno, un cambio, algo nuevo—. Un adjetivo genérico, como *"qué bien se ve el local"* o *"qué bonito"*, se lo dirías a cualquiera: es escalón 1.
 
 > **Las mismas palabras pueden estar en escalones distintos.** *"¿Cómo está?"* a secas es escalón 1; *"¿cómo está? ¿va mejorando?"* a alguien que estuvo enfermo es escalón 3. Lo que sube el escalón no son las palabras: es qué tanto sabe la pregunta de él.
 
@@ -724,7 +726,7 @@ Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero produ
 
 ---
 
-# mentalidad (version 3)
+# mentalidad (version 4)
 
 # PARTE 3 · LA MENTALIDAD
 ### *La segunda fundación*
@@ -820,7 +822,7 @@ Escríbelas, hazlas evaluar por alguien, y recompénsate al lograrlas.
 
 ---
 
-# aplicacion (version 3)
+# aplicacion (version 4)
 
 # PARTE 4 · APLICAR EL SISTEMA A CUALQUIER CLIENTE
 
@@ -998,7 +1000,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# canales (version 3)
+# canales (version 4)
 
 # PARTE 5 · MODIFICADORES DE CANAL
 
@@ -1015,7 +1017,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# jerarquia (version 3)
+# jerarquia (version 4)
 
 # PARTE 6 · JERARQUÍA DE REGLAS
 
@@ -1059,7 +1061,7 @@ Tono, vocabulario, longitud de frases, formalidad. **El manager conoce el lengua
 
 ---
 
-# razonamiento (version 3)
+# razonamiento (version 4)
 
 # PARTE 7 · CÓMO RAZONAR CON ESTE DOCUMENTO
 
