@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.6.0",
+  "harness_version": "v2.7.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -266,7 +266,12 @@
           "se escucha",
           "sonó plano"
         ],
-        "rationale": "El evaluador solo ve texto. Cualquier afirmación prosódica es fabricada."
+        "rationale": "El evaluador solo ve texto. Cualquier afirmación prosódica es fabricada.",
+        "niveles_esperados": {
+          "opening.estructura_apertura": "cumple",
+          "opening.personalizacion": "parcial"
+        },
+        "nota_niveles": "Saludo + '¿cómo está?' + observación: las tres piezas están, la estructura se cumple. La observación es un adjetivo genérico ('qué bien se ve', 'looks great'): escalón 1 de la escalera, crédito parcial."
       },
       "node_id": "1.2"
     },
@@ -357,7 +362,12 @@
       ],
       "expected": {
         "actor_behavior": "responde en español como Don Ramón respondería a un vendedor que le habla en inglés (confusión natural)",
-        "evaluation_language": "español siempre"
+        "evaluation_language": "español siempre",
+        "niveles_esperados": {
+          "opening.estructura_apertura": "cumple",
+          "opening.personalizacion": "parcial"
+        },
+        "nota_niveles": "Saludo + '¿cómo está?' + observación: las tres piezas están, la estructura se cumple. La observación es un adjetivo genérico ('qué bien se ve', 'looks great'): escalón 1 de la escalera, crédito parcial."
       },
       "node_id": "1.2"
     },
@@ -605,8 +615,8 @@
       ],
       "expected": {
         "score_range": [
-          60,
-          90
+          80,
+          95
         ],
         "must_cite_positive": [
           "opening.personalizacion",
@@ -632,7 +642,12 @@
         "observations_must_not_target": [
           "opening.curiosidad_abierta"
         ],
-        "rationale_v3": "Se verifica la decisión (que no critique la curiosidad abierta, porque el vendedor no se presentó), no la redacción: los patrones de negación fallaban con 'ni te presentaste', 'tampoco…', etc."
+        "rationale_v3": "Se verifica la decisión (que no critique la curiosidad abierta, porque el vendedor no se presentó), no la redacción: los patrones de negación fallaban con 'ni te presentaste', 'tampoco…', etc.",
+        "niveles_esperados": {
+          "opening.personalizacion": "cumple",
+          "opening.ice_breaker": "parcial"
+        },
+        "cuenta": "En el 1.6 el ice breaker pesa 0.15. Todo cumplido menos el ice breaker a medias: 100 − 0.15×50 = 92.5 → 93. Si además la curiosidad queda a medias (el cliente no alcanza a preguntar), 85. El rango anterior [60,90] se calibró con la nota libre del modelo, que castigaba más a ojo."
       }
     },
     {

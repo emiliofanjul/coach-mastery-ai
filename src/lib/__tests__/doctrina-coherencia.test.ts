@@ -199,9 +199,9 @@ describe("Una regla, un concepto", () => {
   // Sept-2026: tres reglas de la apertura mezclaban dos conceptos, y eso produjo
   // doble castigo y calificaciones que cambiaban entre corridas (92 y 55 para la
   // misma apertura). Se separaron las de la apertura; quedan 24 nodos con dos
-  // criterios distintos en la misma regla. TRINQUETE: este número solo puede
+  // criterios distintos en la misma regla (24 → 23 al separar la estructura del ice breaker). TRINQUETE: este número solo puede
   // bajar. Cuando arregles uno, baja DEUDA_MAXIMA.
-  const DEUDA_MAXIMA = 24;
+  const DEUDA_MAXIMA = 23;
   it(`no hay más de ${DEUDA_MAXIMA} nodos con criterios distintos compartiendo regla`, () => {
     const conDeuda = new Set<string>();
     for (const n of nodos) {
