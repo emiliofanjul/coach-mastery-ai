@@ -140,6 +140,18 @@ function evaluateCase(c: Case, response: any): CaseResult {
     if (!dump.includes(String(s).toLowerCase())) reasons.push(`missing negative citation: ${s}`);
   }
 
+  // feedback_must_not_match: patrones (regex, sin distinguir mayúsculas).
+  // Una lista de textos no distingue "te presentaste" de "NO te presentaste":
+  // castigaría justo el comportamiento correcto. Un patrón sí puede.
+  if (Array.isArray(exp.feedback_must_not_match)) {
+    for (const pat of exp.feedback_must_not_match) {
+      let re: RegExp | null = null;
+      try { re = new RegExp(String(pat), "i"); } catch { reasons.push(`patrón inválido: ${pat}`); }
+      if (re && re.test(dump)) reasons.push(`patrón prohibido presente: /${pat}/`);
+    }
+  }
+
+
   // must_not_flag / must_not_contain / feedback_must_not_contain / must_not_include_in_response
   const forbidLists = [exp.must_not_flag, exp.must_not_contain, exp.feedback_must_not_contain, exp.must_not_include_in_response];
   for (const list of forbidLists) {
