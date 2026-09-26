@@ -187,6 +187,9 @@ describe("Identificarse está definido", () => {
       expect(porId.get(id)?.resumen ?? "").toMatch(/Usar el nombre DEL CLIENTE/);
     }
   });
+  it("el ice breaker se juzga por lo que dice el vendedor, nunca por la reacción", () => {
+    expect((porId.get("opening.ice_breaker") as any)?.resumen ?? "").toMatch(/nunca por la reacción del cliente/);
+  });
   it("el escalón 3 no se ofrece sin historia real", () => {
     expect((porId.get("opening.especificidad") as any)?.resumen ?? "").toMatch(/no está disponible/);
   });

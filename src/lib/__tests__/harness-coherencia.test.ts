@@ -120,6 +120,9 @@ describe("Harness: hay un caso por cada error encontrado practicando", () => {
   it("específica pero plana: vigila nombre del cliente y memoria inventada", () => {
     expect(ids.has("G26_especifica_pero_plana")).toBe(true);
   });
+  it("buen ice breaker con cliente frío (la reacción no condena)", () => {
+    expect(ids.has("G27_buen_ice_breaker_cliente_frio")).toBe(true);
+  });
   it("curiosidad abierta", () => {
     expect(ids.has("G23_curiosidad_abierta")).toBe(true);
   });
@@ -172,7 +175,7 @@ describe("Harness runner: invariantes", () => {
   });
   it("aplica los chequeos universales a todos los casos", () => {
     expect(runner).toMatch(/CHEQUEOS UNIVERSALES/);
-    expect(runner).toMatch(/corchetes de relleno/);
+    expect(runner).toMatch(/hueco de dato/);
   });
   it("procesa los casos con concurrencia acotada (transición hasta el paso 2)", () => {
     expect(runner).toMatch(/const CONCURRENCIA = \d+;/);
@@ -181,6 +184,11 @@ describe("Harness runner: invariantes", () => {
 
   it("una excepción en un caso no tumba a los demás", () => {
     expect(runner).toMatch(/excepción del runner/);
+  });
+
+  it("la trampa universal vigila huecos de datos, no acotaciones", () => {
+    expect(runner).toMatch(/HUECO_DE_DATO/);
+    expect(runner).not.toMatch(/corchetes de relleno: "\$\{conCorchete/);
   });
 
   it("soporta patrones que distinguen una acusación de su negación", () => {

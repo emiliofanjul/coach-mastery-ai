@@ -102,10 +102,19 @@ describe("Nunca inventar hechos del cliente", () => {
   });
 });
 
-describe("Los ejemplos no llevan acotaciones", () => {
-  it("prohíbe [pausa], [cliente responde] y similares dentro del ejemplo", () => {
-    expect(fn).toMatch(/PROHIBIDAS también las acotaciones entre corchetes/);
-    expect(fn).toMatch(/va en "mejora", nunca dentro del ejemplo/);
+describe("Acotaciones permitidas, huecos de datos no", () => {
+  it("las acotaciones entre corchetes están explícitamente permitidas", () => {
+    expect(fn).toMatch(/SÍ están permitidas: no dejan nada incompleto/);
+    expect(fn).not.toMatch(/PROHIBIDAS también las acotaciones/);
   });
 });
 
+describe("La reacción del cliente confirma, nunca condena", () => {
+  it("existe como principio general del evaluador", () => {
+    expect(fn).toMatch(/9e\. LA REACCIÓN DEL CLIENTE CONFIRMA, NUNCA CONDENA/);
+    expect(fn).toMatch(/Calificas la EJECUCIÓN del vendedor, no el resultado/);
+  });
+  it("una pregunta sin respuesta sigue siendo pregunta", () => {
+    expect(fn).toMatch(/la respuesta confirma, su ausencia no condena/);
+  });
+});
