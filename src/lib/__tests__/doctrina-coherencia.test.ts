@@ -32,6 +32,7 @@ type Regla = {
   canal: string;
   cita_cerebro: string;
   severidad_sugerida: string | null;
+  resumen?: string;
 };
 type Nodo = { id: string; node_type?: string; practice_script?: any };
 
