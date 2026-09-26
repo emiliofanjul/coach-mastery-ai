@@ -1415,8 +1415,18 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir. El escalón 3 exige historia REAL con el cliente: si la conversación no muestra ninguna, no está disponible y no se sugiere — jamás inventando un recuerdo.",
+  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir. El escalón 3 exige historia REAL con el cliente: si la conversación no muestra ninguna, no está disponible y no se sugiere — jamás inventando un recuerdo. LA PRUEBA DEL ESCALÓN 2: nombra algo concreto que viste ahí —el movimiento, que está lleno, un cambio, algo nuevo—. Un adjetivo genérico (\"qué bien se ve el local\", \"qué bonito\") se lo dirías a cualquiera: es escalón 1.",
   "cita_cerebro": "La observación y la pregunta de la apertura se miden igual",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "opening.estructura",
+  "paso": 1,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "La apertura tiene sus tres piezas: saludo, una observación y alguna pregunta que le devuelva la palabra. Si están las tres —aunque la pregunta sea de cortesía, como \"¿cómo está?\"—, este criterio se CUMPLE. Aquí solo se mide que las piezas estén; la calidad de cada una se mide en su propio criterio (la especificidad en la escalera, la ligereza en el ice breaker). Medirla también aquí sería castigar dos veces el mismo hecho.",
+  "cita_cerebro": "dentro del saludo cumple",
   "severidad_sugerida": null
  }
 ]
