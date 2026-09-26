@@ -118,3 +118,11 @@ describe("La reacción del cliente confirma, nunca condena", () => {
     expect(fn).toMatch(/la respuesta confirma, su ausencia no condena/);
   });
 });
+
+describe("Si el contexto del nodo contradice la regla, manda la regla", () => {
+  it("la precedencia está escrita", () => {
+    expect(fn).toMatch(/MANDA LA REGLA: el contexto ilustra cómo se ve el criterio en este escenario/);
+    expect(fn).toMatch(/Si la regla dice explícitamente que algo NO cae en el criterio, no cae/);
+  });
+});
+

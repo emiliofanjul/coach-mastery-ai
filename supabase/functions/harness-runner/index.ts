@@ -140,6 +140,20 @@ function evaluateCase(c: Case, response: any): CaseResult {
     if (!dump.includes(String(s).toLowerCase())) reasons.push(`missing negative citation: ${s}`);
   }
 
+  // observations_must_not_target: ninguna observación puede criticar estos
+  // criterios. Verifica la DECISIÓN del evaluador (qué criticó), no su
+  // redacción: perseguir negaciones con patrones ("no te presentaste", "ni te
+  // presentaste", "tampoco…") es un parche que nunca termina (sept-2026).
+  if (Array.isArray(exp.observations_must_not_target)) {
+    const criticados = new Set(
+      (Array.isArray(parsed.observations) ? parsed.observations : [])
+        .map((o: any) => String(o?.criterio_id ?? "")),
+    );
+    for (const id of exp.observations_must_not_target) {
+      if (criticados.has(String(id))) reasons.push(`criticó un criterio que no debía: ${id}`);
+    }
+  }
+
   // feedback_must_not_match: patrones (regex, sin distinguir mayúsculas).
   // Una lista de textos no distingue "te presentaste" de "NO te presentaste":
   // castigaría justo el comportamiento correcto. Un patrón sí puede.
