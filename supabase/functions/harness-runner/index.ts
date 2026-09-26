@@ -218,6 +218,11 @@ function evaluateCase(c: Case, response: any): CaseResult {
     reasons.push("UNIVERSAL: el feedback habla de puntuación — el vendedor habla, no escribe");
   }
   if (!Array.isArray(parsed.observations)) reasons.push("UNIVERSAL: observations no es un arreglo");
+  // La nota debe salir de la rúbrica. Sin "desglose", el modelo no mandó sus
+  // veredictos por criterio y la nota salió del plan B (su número libre).
+  if (!parsed.desglose || typeof parsed.desglose !== "object") {
+    reasons.push("UNIVERSAL: la nota salió del plan B — el evaluador no mandó veredictos por criterio");
+  }
 
   return {
     id: c.id,

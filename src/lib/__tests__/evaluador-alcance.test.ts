@@ -126,3 +126,15 @@ describe("Si el contexto del nodo contradice la regla, manda la regla", () => {
   });
 });
 
+describe("La rúbrica: el modelo decide por criterio, el código suma", () => {
+  it("el prompt ya no le pide al modelo calcular la nota final", () => {
+    expect(fn).toMatch(/Tú NO calculas el score final/);
+    expect(fn).toMatch(/"veredictos_criterios"/);
+  });
+  it("no quedan anclas numéricas de la apertura en el prompt general", () => {
+    expect(fn).not.toMatch(/SCE completo — saludo/);
+    expect(fn).not.toMatch(/disculpa_inicial/);
+    expect(fn).not.toMatch(/Cada flag major resta 25-40/);
+  });
+});
+

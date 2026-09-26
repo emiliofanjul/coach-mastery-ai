@@ -49,11 +49,15 @@ describe("estrellas salen del score YA topado", () => {
 
 describe("closer-voice usa esta función", () => {
   const fn = readFileSync(join(process.cwd(), "supabase/functions/closer-voice/index.ts"), "utf8");
-  it("importa y aplica el tope antes de calcular estrellas", () => {
-    expect(fn).toMatch(/import \{ aplicarTopeCritico, estrellasDe \} from "\.\.\/_shared\/puntuacion\.ts"/);
-    const iTope = fn.indexOf("aplicarTopeCritico(evaluation.score");
+  it("calcula la nota con la rúbrica, y las estrellas después", () => {
+    expect(fn).toMatch(/import \{ aplicarTopeCritico, calcularScore, estrellasDe \} from "\.\.\/_shared\/puntuacion\.ts"/);
+    const iRubrica = fn.indexOf("calcularScore({");
     const iEstrellas = fn.indexOf("estrellasDe(evaluation.score)");
-    expect(iTope).toBeGreaterThan(0);
-    expect(iEstrellas).toBeGreaterThan(iTope);
+    expect(iRubrica).toBeGreaterThan(0);
+    expect(iEstrellas).toBeGreaterThan(iRubrica);
+  });
+  it("si el modelo no manda veredictos, el plan B conserva el tope critical", () => {
+    expect(fn).toMatch(/Plan B: el modelo no entregó veredictos utilizables/);
+    expect(fn).toMatch(/aplicarTopeCritico\(evaluation\.score, evaluation\.flags_detected/);
   });
 });
