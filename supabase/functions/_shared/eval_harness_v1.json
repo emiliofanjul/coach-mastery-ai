@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v2.7.0",
+  "harness_version": "v3.0.0-mundos-2-3",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -615,8 +615,8 @@
       ],
       "expected": {
         "score_range": [
-          80,
-          95
+          75,
+          90
         ],
         "must_cite_positive": [
           "opening.personalizacion",
@@ -645,9 +645,9 @@
         "rationale_v3": "Se verifica la decisión (que no critique la curiosidad abierta, porque el vendedor no se presentó), no la redacción: los patrones de negación fallaban con 'ni te presentaste', 'tampoco…', etc.",
         "niveles_esperados": {
           "opening.personalizacion": "cumple",
-          "opening.ice_breaker": "parcial"
+          "opening.ice_breaker": "no_cumple"
         },
-        "cuenta": "En el 1.6 el ice breaker pesa 0.15. Todo cumplido menos el ice breaker a medias: 100 − 0.15×50 = 92.5 → 93. Si además la curiosidad queda a medias (el cliente no alcanza a preguntar), 85. El rango anterior [60,90] se calibró con la nota libre del modelo, que castigaba más a ojo."
+        "cuenta": "El nodo 1.6 dice textual: 'un comentario meramente descriptivo no cumple'. La frase no trae humor, guiño ni calidez en las palabras: no_cumple (el ice breaker es una lista de opciones, no tiene punto medio). Todo lo demás cumplido: 100 − 15 = 85. Si la curiosidad queda a medias, 77.5."
       }
     },
     {
@@ -683,6 +683,911 @@
           "opening.ice_breaker"
         ],
         "rationale_v2": "Mismo motivo que G26: un patrón habría castigado 'aunque no le hizo gracia, tu ejecución fue correcta', que es justo el comportamiento correcto. Se verifica que no critique el ice breaker."
+      }
+    },
+    {
+      "id": "P2_1_perfecto",
+      "node_id": "2.1",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Ejecución perfecta del nodo 2.1 (Tu Historia Breve), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, Don Chuy! Oiga, qué ordenado tiene el taller, ¿así lo tiene siempre?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues se hace el intento, hay que tenerlo presentable. ¿Y usted quién es?"
+        },
+        {
+          "role": "user",
+          "text": "Me llamo Luis, vengo de Distribuidora del Golfo, aquí en Córdoba. Ando conociendo a los talleres de la zona, porque los que se ven así de cuidados suelen ser los que más clientes repiten. ¿Cuánto tiempo lleva con el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, ya van a ser doce años. Empecé yo solo con mi hermano."
+        }
+      ],
+      "traza": {
+        "story.historia_breve": "Me llamo Luis, vengo de Distribuidora del Golfo, aquí en Córdoba. Ando conociendo a los talleres de la zona",
+        "story.brevedad": "Me llamo Luis, vengo de Distribuidora del Golfo",
+        "story.relevancia_cliente": "los que se ven así de cuidados suelen ser los que más clientes repiten. ¿Cuánto tiempo lleva con el taller?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "story.historia_breve": "cumple",
+          "story.brevedad": "cumple",
+          "story.relevancia_cliente": "cumple"
+        },
+        "must_not_flag": [
+          "historia_larga",
+          "curriculum",
+          "sin_gancho",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_2_perfecto",
+      "node_id": "2.2",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de medicamentos genéricos y material de curación para farmacias independientes.",
+      "description": "Ejecución perfecta del nodo 2.2 (Devuelve la Palabra), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenos días, Doña Carmen. Qué bonita quedó la farmacia con los anaqueles nuevos, ¿los cambiaron hace poco?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ay, sí, apenas el mes pasado. Ya no cabía nada en los viejos."
+        },
+        {
+          "role": "user",
+          "text": "Se nota el cambio, se ve mucho más amplio. ¿Qué fue lo que más le costó acomodar?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues los genéricos, porque son un montón de presentaciones y la gente los pide por el nombre de la sal."
+        },
+        {
+          "role": "user",
+          "text": "Me imagino, con tanta variedad hay que tener memoria de elefante. ¿Y sus clientes ya notaron el cambio?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, varios me han dicho que ahora sí se ve como farmacia de ciudad."
+        }
+      ],
+      "traza": {
+        "story.relevancia_cliente": "¿Y sus clientes ya notaron el cambio?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "story.relevancia_cliente": "cumple"
+        },
+        "must_not_flag": [
+          "turno_sin_pregunta",
+          "rafaga_de_preguntas",
+          "solo_cerradas",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_5_perfecto",
+      "node_id": "2.5",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de abarrotes, botanas y bebidas para tiendas de esquina.",
+      "description": "Ejecución perfecta del nodo 2.5 (El Desvio con Regreso), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas, Don Toño! Veo que ya le pintaron la fachada, quedó muy vistosa. ¿Quién escogió el color?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mi hija, ella es la que decide todo eso. Ahorita anda estudiando diseño en Xalapa."
+        },
+        {
+          "role": "user",
+          "text": "¡Qué bárbaro, con razón le atinó al color! ¿Y en qué semestre va?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya en quinto. Dice que cuando termine me va a hacer el logo de la tienda."
+        },
+        {
+          "role": "user",
+          "text": "Pues ya tiene clienta asegurada. Oiga, y hablando de la tienda, ¿cómo le ha ido estas semanas con tanto calor?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues con el calor se vende mucho refresco y agua, eso no para."
+        }
+      ],
+      "traza": {
+        "relationship.cpr": "¡Qué bárbaro, con razón le atinó al color! ¿Y en qué semestre va?",
+        "relationship.forms": "Oiga, y hablando de la tienda, ¿cómo le ha ido estas semanas con tanto calor?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "relationship.cpr": "cumple",
+          "relationship.forms": "cumple"
+        },
+        "must_not_flag": [
+          "ignora_lo_personal",
+          "se_queda_platicando",
+          "interes_de_compromiso",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_7_perfecto",
+      "node_id": "2.7",
+      "tipo": "perfecto",
+      "company_brain": "Proveedor de ferretería (tornillería, herramienta manual, pinturas) para ferreterías de barrio.",
+      "description": "Ejecución perfecta del nodo 2.7 (AIR en Vivo), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, Don Rafa! Qué movimiento tiene hoy, no le para el mostrador. ¿Así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita no tengo tiempo, joven, ya tengo mis proveedores."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí, Don Rafa. Oiga, y esa fila de clientes, ¿es por la obra que están haciendo aquí enfrente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, sí, de ahí me vienen los albañiles todo el día, por eso ando así."
+        }
+      ],
+      "traza": {
+        "blocks.air": "Claro que sí, Don Rafa. Oiga, y esa fila de clientes, ¿es por la obra que están haciendo aquí enfrente?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple"
+        },
+        "must_not_flag": [
+          "discute_el_bloqueo",
+          "se_disculpa_o_se_va",
+          "pide_permiso_de_nuevo",
+          "ignora_sin_aceptar"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_8_perfecto",
+      "node_id": "2.8",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de papelería y consumibles de oficina para papelerías y negocios.",
+      "description": "Ejecución perfecta del nodo 2.8 (El Ataque Preventivo), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, Don Memo! Me llamo Carlos, vengo de Papelera del Centro. Seguro le llegan vendedores cada semana que se presentan y luego ya no regresan; yo paso por esta calle cada quince días, así que me va a ver seguido. ¿Cuántos años lleva con la papelería?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, sí, vienen muchos y luego ni vuelven. Ya van a ser quince años, pero ahorita la verdad no necesito nada."
+        },
+        {
+          "role": "user",
+          "text": "Claro, lo entiendo perfecto. Quince años es mucho aguante; ¿cómo le hizo cuando abrieron las tiendas grandes en la plaza?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues me enfoqué en los estudiantes, con copias e impresiones. Eso las tiendas grandes no lo hacen bien."
+        }
+      ],
+      "traza": {
+        "blocks.pre_emptive_strike": "Seguro le llegan vendedores cada semana que se presentan y luego ya no regresan",
+        "blocks.air": "Claro, lo entiendo perfecto. Quince años es mucho aguante"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.pre_emptive_strike": "cumple",
+          "blocks.air": "cumple"
+        },
+        "must_not_flag": [
+          "no_se_adelanta",
+          "tono_de_disculpa",
+          "negativo_inventado",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_9_perfecto",
+      "node_id": "2.9",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Ejecución perfecta del nodo 2.9 (Seguir Avanzando), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas, Doña Lupita! Me llamo Andrés, vengo de Lubricantes del Golfo, aquí de Córdoba. Ando conociendo las refaccionarias de la zona. ¿Hace cuánto abrieron aquí?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, joven, ahorita estoy muy ocupada."
+        },
+        {
+          "role": "user",
+          "text": "Claro, se ve que hay movimiento. ¿Esta es la original o tienen otra sucursal?"
+        },
+        {
+          "role": "assistant",
+          "text": "Es la original. Pero la verdad no creo que necesitemos otro proveedor."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo, y está bien. ¿Y quién le ayuda a atender cuando se llena así?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mi sobrino, en las tardes. En las mañanas estoy yo sola."
+        }
+      ],
+      "traza": {
+        "flow.close_with_action": "Entiendo, y está bien. ¿Y quién le ayuda a atender cuando se llena así?",
+        "blocks.air": "Claro, se ve que hay movimiento."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "flow.close_with_action": "cumple",
+          "blocks.air": "cumple"
+        },
+        "must_not_flag": [
+          "se_queda_esperando",
+          "pide_autorizacion",
+          "avanza_atropellando",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_10_perfecto",
+      "node_id": "2.10",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de medicamentos genéricos y material de curación para farmacias independientes.",
+      "description": "Ejecución perfecta del nodo 2.10 (BOSS: La Puerta Fria), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, Doña Elena! Qué fresca está la farmacia con este calor. ¿Les instalaron clima nuevo?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, apenas. Pero mire, ahorita no puedo atender vendedores."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí, Doña Elena. Me llamo Sofía, vengo de Distribuidora Médica del Sureste, en Veracruz; ando conociendo las farmacias independientes de la zona, que son las que la gente busca cuando quiere que la atiendan en persona. ¿Cuánto tiempo lleva con la farmacia?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya son veinte años. Mi mamá la abrió, y ahora me ayuda mi nieto los sábados."
+        },
+        {
+          "role": "user",
+          "text": "¡Tres generaciones! ¿Y a su nieto sí le late el negocio?"
+        },
+        {
+          "role": "assistant",
+          "text": "Jaja, le gusta, quiere estudiar farmacia. Pero bueno, ya le dije que no necesito nada."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado el barrio?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uf, antes era pura casa; ahora hay oficinas y mucha gente de paso."
+        }
+      ],
+      "traza": {
+        "blocks.air": "Claro que sí, Doña Elena.",
+        "story.historia_breve": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste, en Veracruz; ando conociendo las farmacias independientes de la zona",
+        "story.brevedad": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste",
+        "relationship.cpr": "¡Tres generaciones! ¿Y a su nieto sí le late el negocio?",
+        "flow.close_with_action": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado el barrio?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "story.historia_breve": "cumple",
+          "story.brevedad": "cumple",
+          "relationship.cpr": "cumple",
+          "flow.close_with_action": "cumple"
+        },
+        "must_not_flag": [
+          "discute_el_bloqueo",
+          "se_disculpa_o_se_va",
+          "se_queda_esperando",
+          "historia_larga",
+          "ignora_lo_personal",
+          "se_queda_platicando",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_1_perfecto",
+      "node_id": "3.1",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Ejecución perfecta del nodo 3.1 (RRR: Lee, Conecta, Relaja), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, Don Beto! ¿Cómo va la mañana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues apurado, joven, tengo tres coches en espera y me falta un mecánico."
+        },
+        {
+          "role": "user",
+          "text": "Uy, se ve que hoy está a tope. Voy directo entonces: ¿cuál de los tres coches es el que más le urge?"
+        },
+        {
+          "role": "assistant",
+          "text": "El Tsuru de allá, que el cliente viene a las doce."
+        },
+        {
+          "role": "user",
+          "text": "Entonces no le quito tiempo. Nomás una: el mecánico que le falta, ¿es por hoy o ya tiene días así?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya lleva una semana que se me fue a otro taller. Por eso ando así."
+        }
+      ],
+      "traza": {
+        "mindset.rrr": "Uy, se ve que hoy está a tope. Voy directo entonces",
+        "discovery.escucha_activa": "el mecánico que le falta, ¿es por hoy o ya tiene días así?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "mindset.rrr": "cumple",
+          "discovery.escucha_activa": "cumple"
+        },
+        "must_not_flag": [
+          "ignora_estado",
+          "lectura_falsa",
+          "pitch_prematuro",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_2_perfecto",
+      "node_id": "3.2",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Ejecución perfecta del nodo 3.2 (Preguntas por Capas), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Don Chuy, para ubicarme: ¿qué aceites maneja más aquí en el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues de todo un poco, lo que vaya pidiendo el coche."
+        },
+        {
+          "role": "user",
+          "text": "Claro. ¿Más multigrado 20W50, sintético 5W30 o de motos? ¿Cuál se le va más?"
+        },
+        {
+          "role": "assistant",
+          "text": "El 20W50, de lejos. Sintético casi no."
+        },
+        {
+          "role": "user",
+          "text": "¿Y quién se lo surte ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Un distribuidor de Veracruz. Viene cada semana, aunque a veces se le olvidan cosas del pedido."
+        },
+        {
+          "role": "user",
+          "text": "¿Y a cómo le está saliendo la cubeta de 20W50?"
+        },
+        {
+          "role": "assistant",
+          "text": "Como a mil doscientos, más o menos."
+        },
+        {
+          "role": "user",
+          "text": "¿Qué fue lo último que se le olvidó traerle?"
+        },
+        {
+          "role": "assistant",
+          "text": "La semana pasada, las cubetas de 20W50. Tuve que mandar a mi chalán a comprarlas a la refaccionaria de enfrente, más caras."
+        },
+        {
+          "role": "user",
+          "text": "¿Y cómo le afectó eso ese día con los clientes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues dos coches se quedaron esperando medio día. Uno de los clientes ya ni regresó."
+        },
+        {
+          "role": "user",
+          "text": "O sea que cuando el distribuidor le falla con el 20W50, no nomás le sale más caro: se le quedan coches parados y hasta pierde clientes. ¿Qué tan seguido le pasa eso?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues una o dos veces al mes, fácil."
+        }
+      ],
+      "traza": {
+        "discovery.preguntas_capas": "¿Qué fue lo último que se le olvidó traerle?",
+        "discovery.pregunta_especifica": "¿Qué fue lo último que se le olvidó traerle?",
+        "discovery.dolor_real": "O sea que cuando el distribuidor le falla con el 20W50, no nomás le sale más caro: se le quedan coches parados y hasta pierde clientes.",
+        "discovery.suggestive_language": "¿Más multigrado 20W50, sintético 5W30 o de motos?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.preguntas_capas": "cumple",
+          "discovery.pregunta_especifica": "cumple",
+          "discovery.dolor_real": "cumple",
+          "discovery.suggestive_language": "cumple"
+        },
+        "must_not_flag": [
+          "ignora_pistas",
+          "pregunta_generica_en_capa2",
+          "insiste_dolor_negado",
+          "insistencia_territorio_seco",
+          "interrogatorio",
+          "pitch_prematuro",
+          "pregunta_cerrada_en_capa_profunda"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_3_perfecto",
+      "node_id": "3.3",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de abarrotes, botanas y bebidas para tiendas de esquina.",
+      "description": "Ejecución perfecta del nodo 3.3 (Escucha Que Construye), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Don Toño, ¿qué es lo que más se le vende en la tienda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Refresco y botana. Y ahora que mi hijo abrió su taller de bicis aquí al lado, vienen muchos chavos."
+        },
+        {
+          "role": "user",
+          "text": "¿El taller de bicis de su hijo? ¿Y esos chavos qué le compran cuando vienen?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pura agua y bebidas energéticas. A veces ya no me alcanza en la tarde."
+        },
+        {
+          "role": "user",
+          "text": "¿Qué pasa cuando ya no le alcanza en la tarde?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues los chavos se van a la tienda de la esquina. Y ya ve, luego se quedan comprando allá."
+        },
+        {
+          "role": "user",
+          "text": "¿Y quién le surte las energéticas ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Un repartidor que pasa los lunes nada más."
+        }
+      ],
+      "traza": {
+        "discovery.escucha_activa": "¿El taller de bicis de su hijo? ¿Y esos chavos qué le compran cuando vienen?",
+        "discovery.preguntas_capas": "¿Qué pasa cuando ya no le alcanza en la tarde?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.escucha_activa": "cumple",
+          "discovery.preguntas_capas": "cumple"
+        },
+        "must_not_flag": [
+          "ignora_pistas",
+          "interrogatorio",
+          "pitch_prematuro",
+          "monologo",
+          "conversacion_desconectada"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_4_perfecto",
+      "node_id": "3.4",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de medicamentos genéricos y material de curación para farmacias independientes.",
+      "description": "Ejecución perfecta del nodo 3.4 (CPR en el Descubrimiento), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Doña Carmen, ¿qué es lo que más le piden aquí?"
+        },
+        {
+          "role": "assistant",
+          "text": "Genéricos para la presión y la diabetes. Y perdone si ando distraída, mañana es la graduación de mi hija."
+        },
+        {
+          "role": "user",
+          "text": "¡Felicidades! ¿De qué se gradúa?"
+        },
+        {
+          "role": "assistant",
+          "text": "De enfermera. Está feliz, ya tiene trabajo en el hospital."
+        },
+        {
+          "role": "user",
+          "text": "Qué orgullo, y qué bueno que ya tiene dónde. Oiga, regresando a los genéricos de la presión: ¿quién se los surte ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Una distribuidora de Puebla. Tardan como cuatro días en llegar."
+        },
+        {
+          "role": "user",
+          "text": "¿Y en esos cuatro días, cómo le hace si se le acaban?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues luego sí se me acaban y tengo que decirle a la gente que regrese."
+        }
+      ],
+      "traza": {
+        "relationship.cpr": "¡Felicidades! ¿De qué se gradúa?",
+        "discovery.preguntas_capas": "regresando a los genéricos de la presión: ¿quién se los surte ahorita?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "relationship.cpr": "cumple",
+          "discovery.preguntas_capas": "cumple"
+        },
+        "must_not_flag": [
+          "cuestionario_frio",
+          "ignora_lo_personal",
+          "se_queda_platicando",
+          "interes_de_compromiso",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_6_perfecto",
+      "node_id": "3.6",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Ejecución perfecta del nodo 3.6 (Leer el No), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Don Arturo, ¿con quién anda comprando los aceites ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mire, le voy a ser honesto: hace dos semanas firmé con otro proveedor y quedé amarrado un rato."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno que me lo dice de frente. ¿Y ese compromiso qué cubre exactamente, todo lo que maneja o solo algunas líneas?"
+        },
+        {
+          "role": "assistant",
+          "text": "Nada más aceites de motor y grasas. Anticongelantes y aditivos los puedo ver con quien quiera."
+        },
+        {
+          "role": "user",
+          "text": "¿Y hasta cuándo dura el compromiso?"
+        },
+        {
+          "role": "assistant",
+          "text": "Seis meses; vence como en marzo."
+        },
+        {
+          "role": "user",
+          "text": "Muy bien, Don Arturo. Entonces en marzo platicamos de los aceites, y mientras tanto, para anticongelantes y aditivos aquí me tiene. Paso la próxima semana a saludarlo, ¿le queda mejor el martes o el jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "El jueves está bien."
+        }
+      ],
+      "traza": {
+        "qualification.luz_verde": "Entonces en marzo platicamos de los aceites",
+        "discovery.preguntas_capas": "¿Y ese compromiso qué cubre exactamente, todo lo que maneja o solo algunas líneas?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "qualification.luz_verde": "cumple",
+          "discovery.preguntas_capas": "cumple"
+        },
+        "must_not_flag": [
+          "insiste_en_rojo",
+          "suelta_un_amarillo",
+          "no_califica",
+          "no_investiga_limites",
+          "salida_seca",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_8_perfecto",
+      "node_id": "3.8",
+      "tipo": "perfecto",
+      "company_brain": "Proveedor de ferretería (tornillería, herramienta manual, pinturas) para ferreterías de barrio.",
+      "description": "Ejecución perfecta del nodo 3.8 (Lee el Lugar), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Don Rafa, ya vi que la tornillería va bien. Oiga, además de lo que le traigo yo, ¿qué otras familias maneja aquí?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues pinturas, plomería, eléctrico y herramienta."
+        },
+        {
+          "role": "user",
+          "text": "¿Y la plomería y lo eléctrico de quién los trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "La plomería de un proveedor de Puebla, lo eléctrico de otro de aquí. Y fíjese que me piden mucho impermeabilizante y ese no lo manejo."
+        },
+        {
+          "role": "user",
+          "text": "O sea que el impermeabilizante se lo piden y hoy no lo tiene. ¿Cada cuánto se lo piden?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, en temporada de lluvias, diario. Los mando a la tienda grande."
+        }
+      ],
+      "traza": {
+        "discovery.lee_el_lugar": "además de lo que le traigo yo, ¿qué otras familias maneja aquí?",
+        "discovery.hueco": "O sea que el impermeabilizante se lo piden y hoy no lo tiene."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.lee_el_lugar": "cumple",
+          "discovery.hueco": "cumple"
+        },
+        "must_not_flag": [
+          "solo_revisa_la_cuenta",
+          "busca_dolor_donde_no_hay",
+          "hueco_inventado",
+          "pitch_prematuro"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_9_perfecto",
+      "node_id": "3.9",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de abarrotes, botanas y bebidas para tiendas de esquina. Referencia real y verificable: la tienda La Esperanza, de la colonia Centro, maneja hielo con nosotros desde hace un año, con un congelador chico, y su dueña dice que el hielo le trae clientes a toda la tienda.",
+      "description": "Ejecución perfecta del nodo 3.9 (El Hueco en Vivo), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Listo, Don Toño, ya quedó su pedido de siempre: refresco, galletas y botana. Oiga, además de esto, ¿qué otras cosas maneja en la tienda y de quién las trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues lácteos de un repartidor, pan de la panadería, y ya."
+        },
+        {
+          "role": "user",
+          "text": "¿Y hay algo que le pidan seguido y no tenga?"
+        },
+        {
+          "role": "assistant",
+          "text": "Hielo. En estas calores me lo piden a cada rato y no tengo dónde tenerlo."
+        },
+        {
+          "role": "user",
+          "text": "Ahí hay un hueco: el hielo se lo piden diario y hoy se va con otro. La tienda La Esperanza, en la colonia Centro, empezó a manejar hielo con nosotros hace un año, con un congelador chico, y su dueña dice que le trae clientes a toda la tienda. ¿Cuántas bolsas cree que le pedirían en un día de calor?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, fácil unas veinte o treinta."
+        }
+      ],
+      "traza": {
+        "discovery.hueco": "el hielo se lo piden diario y hoy se va con otro",
+        "discovery.lee_el_lugar": "además de esto, ¿qué otras cosas maneja en la tienda y de quién las trae?",
+        "impulse.efecto_jones": "La tienda La Esperanza, en la colonia Centro, empezó a manejar hielo con nosotros hace un año"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.hueco": "cumple",
+          "discovery.lee_el_lugar": "cumple",
+          "impulse.efecto_jones": "cumple"
+        },
+        "must_not_flag": [
+          "solo_levanta_pedido",
+          "hueco_inventado",
+          "jones_falso",
+          "busca_dolor_donde_no_hay"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P3_10_perfecto",
+      "node_id": "3.10",
+      "tipo": "perfecto",
+      "company_brain": "Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Ejecución perfecta del nodo 3.10 (BOSS: El Diagnóstico), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, Ingeniero! Veo que ya tienen las seis camionetas nuevas en el patio. ¿Las estrenaron este mes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, apenas. Tengo prisa, ¿qué se le ofrece?"
+        },
+        {
+          "role": "user",
+          "text": "Lo noto con prisa, voy directo. Soy Pablo, de Lubricantes del Golfo; atiendo flotillas de la zona. ¿Esas seis camionetas son para reparto?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, de reparto. Pero ya tenemos proveedor de aceite, no estamos buscando."
+        },
+        {
+          "role": "user",
+          "text": "Claro, entiendo. ¿Cada cuántos kilómetros les hacen el cambio?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cada cinco mil. Aunque a veces se nos pasa porque el taller está lejos."
+        },
+        {
+          "role": "user",
+          "text": "¿Qué pasó la última vez que se les pasó?"
+        },
+        {
+          "role": "assistant",
+          "text": "Una camioneta se desvieló en carretera. Fueron tres días sin repartir y la reparación salió carísima."
+        },
+        {
+          "role": "user",
+          "text": "¿Y cómo les afectó esos tres días sin esa camioneta?"
+        },
+        {
+          "role": "assistant",
+          "text": "Tuvimos que rentar otra y aun así se nos atrasaron entregas con dos clientes grandes."
+        },
+        {
+          "role": "user",
+          "text": "Entonces el problema no es el aceite: es que el taller está lejos, los cambios se pasan, y eso ya les costó un motor, tres días sin reparto y entregas atrasadas. ¿Qué tan seguido se les pasan los cambios?"
+        },
+        {
+          "role": "assistant",
+          "text": "Más de lo que quisiera, la verdad. Una o dos camionetas al mes."
+        }
+      ],
+      "traza": {
+        "discovery.preguntas_capas": "¿Qué pasó la última vez que se les pasó?",
+        "discovery.dolor_real": "Entonces el problema no es el aceite: es que el taller está lejos, los cambios se pasan",
+        "discovery.escucha_activa": "es que el taller está lejos, los cambios se pasan",
+        "mindset.rrr": "Lo noto con prisa, voy directo.",
+        "blocks.air": "Claro, entiendo. ¿Cada cuántos kilómetros les hacen el cambio?",
+        "story.historia_breve": "Soy Pablo, de Lubricantes del Golfo; atiendo flotillas de la zona."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.preguntas_capas": "cumple",
+          "discovery.dolor_real": "cumple",
+          "discovery.escucha_activa": "cumple",
+          "mindset.rrr": "cumple",
+          "blocks.air": "cumple",
+          "story.historia_breve": "cumple"
+        },
+        "must_not_flag": [
+          "pitch_prematuro",
+          "ignora_pistas",
+          "debate_bloqueo",
+          "ignora_estado",
+          "interrogatorio",
+          "kill_curriculum",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
     }
   ]

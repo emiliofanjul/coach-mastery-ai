@@ -1,7 +1,3 @@
--- Nodo 3.3: la descripción de discovery.preguntas_capas era una copia exacta de
--- la de discovery.escucha_activa. El evaluador calificaba dos veces la escucha y
--- nunca las capas. Se restituye desde la regla discovery.escalera_capas
--- ("capa 1 hechos, capa 2 la puerta, capa 3 el dolor").
 UPDATE public.nodes
 SET practice_script = jsonb_set(practice_script, '{success_criteria}', (
   SELECT jsonb_agg(CASE WHEN c->>'id' = 'discovery.preguntas_capas'

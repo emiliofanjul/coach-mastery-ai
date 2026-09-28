@@ -460,134 +460,6 @@
         }
     },
     {
-        "id": "2.10",
-        "world_id": 2,
-        "name": "BOSS: La Puerta Fria",
-        "node_type": "boss",
-        "practice_script": {
-            "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento.",
-            "scope": {
-                "skills_in_focus": [
-                    "blocks.air",
-                    "story.historia_breve",
-                    "story.brevedad",
-                    "relationship.cpr",
-                    "flow.close_with_action"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 12,
-                "max_duration_seconds": 300,
-                "min_turns_before_evaluation": 4
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Este es el examen del mundo. Bloqueo de entrada, historia breve, relacion personal y seguir avanzando: todo junto y con un cliente que no ayuda.\n\nSin pistas.",
-                    "first_message": "Entiendo perfecto, no se preocupe. Soy Emilio, ando trabajando con los negocios de esta zona y quise pasar a conocer el suyo.\n\nDigame una cosa, cuanto tiempo lleva usted aqui?"
-                },
-                "you_do": {
-                    "prompt": "REGLA NUMERO CERO, POR ENCIMA DE TODO LO DEMAS: en esta conversacion NO EXISTE el tema de que vende este senor, que trae, a que viene, ni en que te puede servir. Jamas preguntas eso. Ni con esas palabras ni con ninguna otra. Prohibidas de forma absoluta las frases: que se le ofrece, que necesita, que anda buscando, a que viene, que trae, de que se trata, en que le puedo servir, y cualquier variante. Tu no sabes que es vendedor y no te interesa averiguarlo. Si el menciona por su cuenta un producto o una marca, contestas ah orale y sigues con lo tuyo sin preguntar nada. Si te quedas sin saber que decir, hablas de tu propio negocio o del dia, nunca de el.\n\nEres el encargado de un negocio, ocupado y con poca paciencia para vendedores. En tu PRIMERA respuesta sueltas un bloqueo de reflejo, con naturalidad y sin agresion: ahorita ando ocupado / no me interesa / no estoy comprando nada. TU COMPORTAMIENTO: eres cortes pero cerrado y contestas corto. NO ofreces informacion y NO llevas la conversacion. REGLAS DE REACCION: 1) Si el vendedor pelea el bloqueo, se disculpa o se va, lo despachas y la conversacion termina. 2) Si lo acepta y sigue, continuas con naturalidad. 3) Si su historia breve se alarga mas de tres o cuatro frases, te desconectas: contestas ajam y dices que andas ocupado. 4) Si el vendedor resuelve algo y se queda callado esperando, TU tomas el control y empiezas a despedirte con amabilidad. 5) En tu tercera o cuarta respuesta, si la conversacion sigue viva, sueltas de manera natural UN dato personal tuyo, al pasar, sin darle importancia: elige entre familia, como empezaste, que haces los domingos, por que pusiste el negocio, o tu equipo. Si el vendedor lo ignora, te enfrias y ya no ofreces nada mas de ti. Si le entra con interes real, te abres notablemente. Si se queda platicando de eso mas de dos intercambios sin volver al negocio, te acomodas a platicar de la vida y ya nunca regresas tu al tema. 6) SOLO si el vendedor logra todo — atravesar el bloqueo, decir quien es breve y relevante, conectar contigo como persona y regresar, y avanzar sin pedir permiso — entonces te abres de verdad: le cuentas algo de tu negocio por tu cuenta y le preguntas en que le puede servir. Esa pregunta es la senal de que gano. NUNCA la hagas antes de que se lo gane. Responde en 1 o 2 frases.",
-                    "objective": "El vendedor atraviesa el bloqueo inicial, se presenta en quince segundos de forma relevante, conecta con el dato personal y regresa, y sostiene el avance sin pedir permiso. El scope se cubre cuando el cliente se abre por su propia voluntad y pregunta en que le puede servir."
-                },
-                "closing": {
-                    "message": "Ahi esta la puerta fria abierta. Atravesaste el bloqueo sin pelearlo, dijiste quien eras sin cansarlo, conectaste como persona y volviste, y nunca soltaste el control de la conversacion. Ese cliente ya quiere saber en que le puedes servir, y eso es exactamente lo que sigue. Vamos al detalle.",
-                    "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
-                }
-            },
-            "version": "2.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "discute_el_bloqueo",
-                    "regla_id": "blocks.discute_bloqueo",
-                    "severity": "critical",
-                    "description": "Pelea el bloqueo inicial o intenta convencer al cliente de que si le interesa."
-                },
-                {
-                    "id": "se_disculpa_o_se_va",
-                    "regla_id": "discovery.suelta_amarrado",
-                    "severity": "critical",
-                    "description": "Se disculpa, se despide o promete volver despues.",
-                    "severity_override": {
-                        "razon": "boss: escalada",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "se_queda_esperando",
-                    "regla_id": "close.devuelve_el_volante",
-                    "severity": "critical",
-                    "description": "Resuelve algo y se queda callado esperando permiso. El cliente toma el control y se despide.",
-                    "severity_override": {
-                        "razon": "boss: escalada",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "historia_larga",
-                    "regla_id": "story.kill",
-                    "severity": "major",
-                    "description": "La historia breve se extiende y el cliente se desconecta."
-                },
-                {
-                    "id": "ignora_lo_personal",
-                    "regla_id": "story.nunca_sale",
-                    "severity": "major",
-                    "description": "Pasa de largo el dato personal que el cliente ofrecio.",
-                    "severity_override": {
-                        "razon": "boss: escalada",
-                        "default": "minor"
-                    }
-                },
-                {
-                    "id": "se_queda_platicando",
-                    "regla_id": "story.sale_sin_regresar",
-                    "severity": "major",
-                    "description": "Le entra a lo personal y ya no vuelve al negocio."
-                },
-                {
-                    "id": "pitch_prematuro",
-                    "regla_id": "opening.pitch_prematuro",
-                    "severity": "critical",
-                    "description": "Mete producto, promocion o motivo de venta. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "blocks.air",
-                    "weight": 0.25,
-                    "regla_id": "blocks.air",
-                    "description": "Atraviesa el bloqueo inicial: lo acepta, no lo pelea, y retoma sin pedir permiso."
-                },
-                {
-                    "id": "story.historia_breve",
-                    "weight": 0.2,
-                    "regla_id": "story.quien_eres_por_que",
-                    "description": "Dice quien es y por que esta ahi: nombre, procedencia y motivo humano de la visita."
-                },
-                {
-                    "id": "story.brevedad",
-                    "weight": 0.15,
-                    "regla_id": "story.kiss",
-                    "description": "Dos o tres frases. Sin trayectoria de empresa, sin lista de productos, sin cifras."
-                },
-                {
-                    "id": "relationship.cpr",
-                    "weight": 0.2,
-                    "regla_id": "relationship.cpr",
-                    "description": "Detecta el dato personal, le entra con interes genuino, y REGRESA al negocio por su cuenta en uno o dos intercambios."
-                },
-                {
-                    "id": "flow.close_with_action",
-                    "weight": 0.2,
-                    "regla_id": "close_with_action",
-                    "description": "Despues de cada freno avanza por su cuenta, sin quedarse esperando ni pedir autorizacion. Sostiene el control de la conversacion toda la sesion."
-                }
-            ]
-        }
-    },
-    {
         "id": "2.2",
         "world_id": 2,
         "name": "Devuelve la Palabra",
@@ -1008,6 +880,134 @@
         }
     },
     {
+        "id": "2.10",
+        "world_id": 2,
+        "name": "BOSS: La Puerta Fria",
+        "node_type": "boss",
+        "practice_script": {
+            "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento.",
+            "scope": {
+                "skills_in_focus": [
+                    "blocks.air",
+                    "story.historia_breve",
+                    "story.brevedad",
+                    "relationship.cpr",
+                    "flow.close_with_action"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 12,
+                "max_duration_seconds": 300,
+                "min_turns_before_evaluation": 4
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Este es el examen del mundo. Bloqueo de entrada, historia breve, relacion personal y seguir avanzando: todo junto y con un cliente que no ayuda.\n\nSin pistas.",
+                    "first_message": "Entiendo perfecto, no se preocupe. Soy Emilio, ando trabajando con los negocios de esta zona y quise pasar a conocer el suyo.\n\nDigame una cosa, cuanto tiempo lleva usted aqui?"
+                },
+                "you_do": {
+                    "prompt": "REGLA NUMERO CERO, POR ENCIMA DE TODO LO DEMAS: en esta conversacion NO EXISTE el tema de que vende este senor, que trae, a que viene, ni en que te puede servir. Jamas preguntas eso. Ni con esas palabras ni con ninguna otra. Prohibidas de forma absoluta las frases: que se le ofrece, que necesita, que anda buscando, a que viene, que trae, de que se trata, en que le puedo servir, y cualquier variante. Tu no sabes que es vendedor y no te interesa averiguarlo. Si el menciona por su cuenta un producto o una marca, contestas ah orale y sigues con lo tuyo sin preguntar nada. Si te quedas sin saber que decir, hablas de tu propio negocio o del dia, nunca de el.\n\nEres el encargado de un negocio, ocupado y con poca paciencia para vendedores. En tu PRIMERA respuesta sueltas un bloqueo de reflejo, con naturalidad y sin agresion: ahorita ando ocupado / no me interesa / no estoy comprando nada. TU COMPORTAMIENTO: eres cortes pero cerrado y contestas corto. NO ofreces informacion y NO llevas la conversacion. REGLAS DE REACCION: 1) Si el vendedor pelea el bloqueo, se disculpa o se va, lo despachas y la conversacion termina. 2) Si lo acepta y sigue, continuas con naturalidad. 3) Si su historia breve se alarga mas de tres o cuatro frases, te desconectas: contestas ajam y dices que andas ocupado. 4) Si el vendedor resuelve algo y se queda callado esperando, TU tomas el control y empiezas a despedirte con amabilidad. 5) En tu tercera o cuarta respuesta, si la conversacion sigue viva, sueltas de manera natural UN dato personal tuyo, al pasar, sin darle importancia: elige entre familia, como empezaste, que haces los domingos, por que pusiste el negocio, o tu equipo. Si el vendedor lo ignora, te enfrias y ya no ofreces nada mas de ti. Si le entra con interes real, te abres notablemente. Si se queda platicando de eso mas de dos intercambios sin volver al negocio, te acomodas a platicar de la vida y ya nunca regresas tu al tema. 6) SOLO si el vendedor logra todo — atravesar el bloqueo, decir quien es breve y relevante, conectar contigo como persona y regresar, y avanzar sin pedir permiso — entonces te abres de verdad: le cuentas algo de tu negocio por tu cuenta y le preguntas en que le puede servir. Esa pregunta es la senal de que gano. NUNCA la hagas antes de que se lo gane. Responde en 1 o 2 frases.",
+                    "objective": "El vendedor atraviesa el bloqueo inicial, se presenta en quince segundos de forma relevante, conecta con el dato personal y regresa, y sostiene el avance sin pedir permiso. El scope se cubre cuando el cliente se abre por su propia voluntad y pregunta en que le puede servir."
+                },
+                "closing": {
+                    "message": "Ahi esta la puerta fria abierta. Atravesaste el bloqueo sin pelearlo, dijiste quien eras sin cansarlo, conectaste como persona y volviste, y nunca soltaste el control de la conversacion. Ese cliente ya quiere saber en que le puedes servir, y eso es exactamente lo que sigue. Vamos al detalle.",
+                    "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
+                }
+            },
+            "version": "2.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "discute_el_bloqueo",
+                    "regla_id": "blocks.discute_bloqueo",
+                    "severity": "critical",
+                    "description": "Pelea el bloqueo inicial o intenta convencer al cliente de que si le interesa."
+                },
+                {
+                    "id": "se_disculpa_o_se_va",
+                    "regla_id": "discovery.suelta_amarrado",
+                    "severity": "critical",
+                    "description": "Se disculpa, se despide o promete volver despues.",
+                    "severity_override": {
+                        "razon": "boss: escalada",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "se_queda_esperando",
+                    "regla_id": "close.devuelve_el_volante",
+                    "severity": "critical",
+                    "description": "Resuelve algo y se queda callado esperando permiso. El cliente toma el control y se despide.",
+                    "severity_override": {
+                        "razon": "boss: escalada",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "historia_larga",
+                    "regla_id": "story.kill",
+                    "severity": "major",
+                    "description": "La historia breve se extiende y el cliente se desconecta."
+                },
+                {
+                    "id": "ignora_lo_personal",
+                    "regla_id": "story.nunca_sale",
+                    "severity": "major",
+                    "description": "Pasa de largo el dato personal que el cliente ofrecio.",
+                    "severity_override": {
+                        "razon": "boss: escalada",
+                        "default": "minor"
+                    }
+                },
+                {
+                    "id": "se_queda_platicando",
+                    "regla_id": "story.sale_sin_regresar",
+                    "severity": "major",
+                    "description": "Le entra a lo personal y ya no vuelve al negocio."
+                },
+                {
+                    "id": "pitch_prematuro",
+                    "regla_id": "opening.pitch_prematuro",
+                    "severity": "critical",
+                    "description": "Mete producto, promocion o motivo de venta. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "blocks.air",
+                    "weight": 0.25,
+                    "regla_id": "blocks.air",
+                    "description": "Atraviesa el bloqueo inicial: lo acepta, no lo pelea, y retoma sin pedir permiso."
+                },
+                {
+                    "id": "story.historia_breve",
+                    "weight": 0.2,
+                    "regla_id": "story.quien_eres_por_que",
+                    "description": "Dice quien es y por que esta ahi: nombre, procedencia y motivo humano de la visita."
+                },
+                {
+                    "id": "story.brevedad",
+                    "weight": 0.15,
+                    "regla_id": "story.kiss",
+                    "description": "Dos o tres frases. Sin trayectoria de empresa, sin lista de productos, sin cifras."
+                },
+                {
+                    "id": "relationship.cpr",
+                    "weight": 0.2,
+                    "regla_id": "relationship.cpr",
+                    "description": "Detecta el dato personal, le entra con interes genuino, y REGRESA al negocio por su cuenta en uno o dos intercambios."
+                },
+                {
+                    "id": "flow.close_with_action",
+                    "weight": 0.2,
+                    "regla_id": "close_with_action",
+                    "description": "Despues de cada freno avanza por su cuenta, sin quedarse esperando ni pedir autorizacion. Sostiene el control de la conversacion toda la sesion."
+                }
+            ]
+        }
+    },
+    {
         "id": "3.0",
         "world_id": 3,
         "name": "El Doctor Vendedor",
@@ -1091,134 +1091,6 @@
                     "weight": 0.4,
                     "regla_id": "discovery.escalera_capas",
                     "description": "Sus turnos construyen sobre lo que el cliente acaba de decir — retoma sus palabras, su tema, su estado — en lugar de avanzar una agenda propia desconectada de las respuestas."
-                }
-            ]
-        }
-    },
-    {
-        "id": "3.10",
-        "world_id": 3,
-        "name": "BOSS: El Diagnóstico",
-        "node_type": "boss",
-        "practice_script": {
-            "notes": "BOSS del Mundo 3 — el más completo hasta ahora: integra M0 (apertura), M1 (temple ante sequedad analítica), M2 (historia + AIR) y M3 entero (RRR + capas + escucha + dolor). El Actor combina 4 mecánicas: estado de prisa, un bloqueo espejo, dolor por capas y datos laterales. pitch_prematuro es critical — la línea entre diagnóstico y receta es la frontera del mundo. 16 turnos y 6 mínimos: es una conversación larga de verdad.",
-            "scope": {
-                "skills_in_focus": [
-                    "discovery.preguntas_capas",
-                    "discovery.dolor_real",
-                    "discovery.escucha_activa",
-                    "mindset.rrr",
-                    "blocks.air",
-                    "story.historia_breve"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 16,
-                "max_duration_seconds": 360,
-                "min_turns_before_evaluation": 6
-            },
-            "phases": {
-                "you_do": {
-                    "prompt": "Eres el dueño de un negocio de perfil ANALÍTICO: preciso, algo reservado, respondes con datos y no con emociones, desconfías un poco de los vendedores porque varios te han hecho perder el tiempo. GUION DE LA SESIÓN: (1) Recibes la apertura con cortesía seca — hoy además andas algo APURADO (estado RRR: lo muestras en frases cortas y alguna mención de que traes pendientes). (2) En tus primeras 2-3 respuestas sueltas UN bloqueo reflejo suave: mire, la verdad ando corto de tiempo, o ya tengo con quién trabajo esto. Espejo AIR: si lo atraviesa bien, sigues; si lo debate, te enfrías. (3) Tienes un DOLOR REAL oculto — elige al azar: (tu proveedor actual te deja plantado con los pedidos cada quincena / tienes producto parado que no se mueve y te tiene el dinero muerto / te piden algo que tu proveedor no maneja). Lo revelas SOLO por capas: hechos → pista sutil en capa de experiencia (la palabra aunque) → dolor completo si excavan la pista. (4) MECÁNICA DE ESCUCHA: en tus respuestas de hechos regala UN dato lateral (un familiar en el negocio, un cambio reciente); si lo recogen, te abres más rápido — la capa 2 llega antes. (5) Si el vendedor lee tu prisa y la reconoce ajustando su ritmo, cooperas mejor. Si presenta producto en cualquier momento, te cierras con evasiva educada y la información se acaba. Tu techo emocional: cooperativo-interesado, nunca efusivo. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.\n\nREGLA DE OPCIONES SUGERIDAS: si el vendedor hace una pregunta y ADEMAS te avienta tres o cuatro opciones concretas (que familias manejas? anticongelantes? aceite de motor?, o a como lo compras? 70? 80? 90?), contestas de inmediato con un dato ESPECIFICO — o eliges una de sus opciones, o lo corriges con la cifra o el producto real. Nunca contestas pues no se a una pregunta con opciones. Si te hace una pregunta abierta sin opciones y no tienes el dato a la mano, SI puedes contestar vago.",
-                    "objective": "El vendedor completa el diagnóstico de punta a punta ante un cliente analítico y apurado: apertura correcta y calibrada, historia breve corta con gancho, UN bloqueo atravesado con AIR, lectura del estado (prisa) reconocida y ajustada, descubrimiento por capas que recoge las pistas laterales y excava la pista del dolor hasta la revelación completa, cerrando con la confirmación verbal del dolor en palabras propias (entonces lo que más le está pegando es X, ¿cierto?). El scope se cubre cuando el dolor real quedó revelado por el cliente Y confirmado por el vendedor."
-                },
-                "closing": {
-                    "message": "Diagnóstico completo: abriste, atravesaste el no, leíste su prisa, y excavaste hasta el dolor que no le cuenta a cualquiera. Un doctor de verdad. Vamos al desglose del mundo.",
-                    "message_incomplete": "Hasta aqui la sesion — un diagnostico de verdad no siempre se termina, pero siempre ensena. Vamos al desglose y te digo exactamente donde quedo la excavacion."
-                }
-            },
-            "version": "1.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "pitch_prematuro",
-                    "regla_id": "discovery.receta_sin_diagnostico",
-                    "severity": "critical",
-                    "description": "Presenta producto en cualquier punto — incluso al descubrir el dolor. El diagnóstico termina donde empieza la receta, y la receta es del siguiente mundo.",
-                    "severity_override": {
-                        "razon": "boss: escalada",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "ignora_pistas",
-                    "regla_id": "discovery.escalera_capas",
-                    "severity": "major",
-                    "description": "Deja pasar la pista del dolor (el aunque) o los datos laterales de forma sistemática."
-                },
-                {
-                    "id": "debate_bloqueo",
-                    "regla_id": "blocks.discute_bloqueo",
-                    "severity": "critical",
-                    "description": "Argumenta o negocia el bloqueo en lugar de atravesarlo con AIR.",
-                    "severity_fix": "major->critical (BOSS no baja errores de su paso)"
-                },
-                {
-                    "id": "ignora_estado",
-                    "regla_id": "discovery.rrr",
-                    "severity": "major",
-                    "description": "El cliente muestra prisa clara y el vendedor avanza a su ritmo propio sin reconocerla ni ajustar."
-                },
-                {
-                    "id": "interrogatorio",
-                    "regla_id": "discovery.interrogatorio",
-                    "severity": "minor",
-                    "description": "Ráfagas de preguntas desconectadas de las respuestas."
-                },
-                {
-                    "id": "kill_curriculum",
-                    "regla_id": "story.kill_curriculum",
-                    "severity": "minor",
-                    "description": "Historia breve inflada con credenciales.",
-                    "severity_override": {
-                        "razon": "incidental: error de otro paso",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "monologo",
-                    "regla_id": "monologo",
-                    "severity": "minor",
-                    "description": "Turnos largos ante un cliente con prisa."
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "discovery.preguntas_capas",
-                    "weight": 0.25,
-                    "regla_id": "discovery.escalera_capas",
-                    "description": "Descubrimiento con progresión de capas visible: hechos → experiencia → excavación de la pista (aunque...) hasta el dolor. Las preguntas nacen de las respuestas."
-                },
-                {
-                    "id": "discovery.dolor_real",
-                    "weight": 0.2,
-                    "regla_id": "discovery.confirmacion_con_sus_palabras",
-                    "description": "El dolor completo fue revelado por el cliente Y confirmado verbalmente por el vendedor en sus propias palabras antes del cierre de la sesión."
-                },
-                {
-                    "id": "discovery.escucha_activa",
-                    "weight": 0.15,
-                    "regla_id": "discovery.escalera_capas",
-                    "description": "Recoge al menos un dato lateral regalado por el cliente y construye sobre él con las palabras del cliente."
-                },
-                {
-                    "id": "mindset.rrr",
-                    "weight": 0.15,
-                    "regla_id": "discovery.rrr",
-                    "description": "Lee la prisa del cliente, la reconoce verbalmente con naturalidad y ajusta su ritmo — directo y sin rodeos, respetando el estado."
-                },
-                {
-                    "id": "blocks.air",
-                    "weight": 0.15,
-                    "regla_id": "blocks.air",
-                    "description": "Atraviesa el bloqueo con la secuencia completa: agree breve, ignore total del tema, resume por hilo natural."
-                },
-                {
-                    "id": "story.historia_breve",
-                    "weight": 0.1,
-                    "regla_id": "story.quien_eres_por_que",
-                    "description": "Historia breve correcta en su momento: quién es + por qué está ahí, corta, con gancho."
                 }
             ]
         }
@@ -1430,7 +1302,7 @@
                     "id": "discovery.preguntas_capas",
                     "weight": 0.4,
                     "regla_id": "discovery.escalera_capas",
-                    "description": "Al menos UNA de las preguntas del vendedor nace directamente de un dato que el cliente acaba de regalar, usando sus propias palabras. NO se exige recoger todos los datos que el cliente menciona: eso seria un interrogatorio. Se exige que la conversacion este HILADA — que se note que escucho. Explorar un solo hilo a fondo cumple; guardar los demas para mas adelante es estrategia legitima del vendedor y no se penaliza."
+                    "description": "Sostiene el avance del diagnostico por capas: ademas de recoger el dato que el cliente regala, sigue subiendo en el territorio de negocio —de los hechos a la puerta y de ahi al dolor— con preguntas que nacen de las respuestas anteriores. Recoger lo lateral no debe detener el diagnostico."
                 }
             ]
         }
@@ -1831,6 +1703,134 @@
         }
     },
     {
+        "id": "3.10",
+        "world_id": 3,
+        "name": "BOSS: El Diagnóstico",
+        "node_type": "boss",
+        "practice_script": {
+            "notes": "BOSS del Mundo 3 — el más completo hasta ahora: integra M0 (apertura), M1 (temple ante sequedad analítica), M2 (historia + AIR) y M3 entero (RRR + capas + escucha + dolor). El Actor combina 4 mecánicas: estado de prisa, un bloqueo espejo, dolor por capas y datos laterales. pitch_prematuro es critical — la línea entre diagnóstico y receta es la frontera del mundo. 16 turnos y 6 mínimos: es una conversación larga de verdad.",
+            "scope": {
+                "skills_in_focus": [
+                    "discovery.preguntas_capas",
+                    "discovery.dolor_real",
+                    "discovery.escucha_activa",
+                    "mindset.rrr",
+                    "blocks.air",
+                    "story.historia_breve"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 16,
+                "max_duration_seconds": 360,
+                "min_turns_before_evaluation": 6
+            },
+            "phases": {
+                "you_do": {
+                    "prompt": "Eres el dueño de un negocio de perfil ANALÍTICO: preciso, algo reservado, respondes con datos y no con emociones, desconfías un poco de los vendedores porque varios te han hecho perder el tiempo. GUION DE LA SESIÓN: (1) Recibes la apertura con cortesía seca — hoy además andas algo APURADO (estado RRR: lo muestras en frases cortas y alguna mención de que traes pendientes). (2) En tus primeras 2-3 respuestas sueltas UN bloqueo reflejo suave: mire, la verdad ando corto de tiempo, o ya tengo con quién trabajo esto. Espejo AIR: si lo atraviesa bien, sigues; si lo debate, te enfrías. (3) Tienes un DOLOR REAL oculto — elige al azar: (tu proveedor actual te deja plantado con los pedidos cada quincena / tienes producto parado que no se mueve y te tiene el dinero muerto / te piden algo que tu proveedor no maneja). Lo revelas SOLO por capas: hechos → pista sutil en capa de experiencia (la palabra aunque) → dolor completo si excavan la pista. (4) MECÁNICA DE ESCUCHA: en tus respuestas de hechos regala UN dato lateral (un familiar en el negocio, un cambio reciente); si lo recogen, te abres más rápido — la capa 2 llega antes. (5) Si el vendedor lee tu prisa y la reconoce ajustando su ritmo, cooperas mejor. Si presenta producto en cualquier momento, te cierras con evasiva educada y la información se acaba. Tu techo emocional: cooperativo-interesado, nunca efusivo. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.\n\nREGLA DE OPCIONES SUGERIDAS: si el vendedor hace una pregunta y ADEMAS te avienta tres o cuatro opciones concretas (que familias manejas? anticongelantes? aceite de motor?, o a como lo compras? 70? 80? 90?), contestas de inmediato con un dato ESPECIFICO — o eliges una de sus opciones, o lo corriges con la cifra o el producto real. Nunca contestas pues no se a una pregunta con opciones. Si te hace una pregunta abierta sin opciones y no tienes el dato a la mano, SI puedes contestar vago.",
+                    "objective": "El vendedor completa el diagnóstico de punta a punta ante un cliente analítico y apurado: apertura correcta y calibrada, historia breve corta con gancho, UN bloqueo atravesado con AIR, lectura del estado (prisa) reconocida y ajustada, descubrimiento por capas que recoge las pistas laterales y excava la pista del dolor hasta la revelación completa, cerrando con la confirmación verbal del dolor en palabras propias (entonces lo que más le está pegando es X, ¿cierto?). El scope se cubre cuando el dolor real quedó revelado por el cliente Y confirmado por el vendedor."
+                },
+                "closing": {
+                    "message": "Diagnóstico completo: abriste, atravesaste el no, leíste su prisa, y excavaste hasta el dolor que no le cuenta a cualquiera. Un doctor de verdad. Vamos al desglose del mundo.",
+                    "message_incomplete": "Hasta aqui la sesion — un diagnostico de verdad no siempre se termina, pero siempre ensena. Vamos al desglose y te digo exactamente donde quedo la excavacion."
+                }
+            },
+            "version": "1.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "pitch_prematuro",
+                    "regla_id": "discovery.receta_sin_diagnostico",
+                    "severity": "critical",
+                    "description": "Presenta producto en cualquier punto — incluso al descubrir el dolor. El diagnóstico termina donde empieza la receta, y la receta es del siguiente mundo.",
+                    "severity_override": {
+                        "razon": "boss: escalada",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "ignora_pistas",
+                    "regla_id": "discovery.escalera_capas",
+                    "severity": "major",
+                    "description": "Deja pasar la pista del dolor (el aunque) o los datos laterales de forma sistemática."
+                },
+                {
+                    "id": "debate_bloqueo",
+                    "regla_id": "blocks.discute_bloqueo",
+                    "severity": "critical",
+                    "description": "Argumenta o negocia el bloqueo en lugar de atravesarlo con AIR.",
+                    "severity_fix": "major->critical (BOSS no baja errores de su paso)"
+                },
+                {
+                    "id": "ignora_estado",
+                    "regla_id": "discovery.rrr",
+                    "severity": "major",
+                    "description": "El cliente muestra prisa clara y el vendedor avanza a su ritmo propio sin reconocerla ni ajustar."
+                },
+                {
+                    "id": "interrogatorio",
+                    "regla_id": "discovery.interrogatorio",
+                    "severity": "minor",
+                    "description": "Ráfagas de preguntas desconectadas de las respuestas."
+                },
+                {
+                    "id": "kill_curriculum",
+                    "regla_id": "story.kill_curriculum",
+                    "severity": "minor",
+                    "description": "Historia breve inflada con credenciales.",
+                    "severity_override": {
+                        "razon": "incidental: error de otro paso",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "monologo",
+                    "regla_id": "monologo",
+                    "severity": "minor",
+                    "description": "Turnos largos ante un cliente con prisa."
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "discovery.preguntas_capas",
+                    "weight": 0.25,
+                    "regla_id": "discovery.escalera_capas",
+                    "description": "Descubrimiento con progresión de capas visible: hechos → experiencia → excavación de la pista (aunque...) hasta el dolor. Las preguntas nacen de las respuestas."
+                },
+                {
+                    "id": "discovery.dolor_real",
+                    "weight": 0.2,
+                    "regla_id": "discovery.confirmacion_con_sus_palabras",
+                    "description": "El dolor completo fue revelado por el cliente Y confirmado verbalmente por el vendedor en sus propias palabras antes del cierre de la sesión."
+                },
+                {
+                    "id": "discovery.escucha_activa",
+                    "weight": 0.15,
+                    "regla_id": "discovery.escalera_capas",
+                    "description": "Recoge al menos un dato lateral regalado por el cliente y construye sobre él con las palabras del cliente."
+                },
+                {
+                    "id": "mindset.rrr",
+                    "weight": 0.15,
+                    "regla_id": "discovery.rrr",
+                    "description": "Lee la prisa del cliente, la reconoce verbalmente con naturalidad y ajusta su ritmo — directo y sin rodeos, respetando el estado."
+                },
+                {
+                    "id": "blocks.air",
+                    "weight": 0.15,
+                    "regla_id": "blocks.air",
+                    "description": "Atraviesa el bloqueo con la secuencia completa: agree breve, ignore total del tema, resume por hilo natural."
+                },
+                {
+                    "id": "story.historia_breve",
+                    "weight": 0.1,
+                    "regla_id": "story.quien_eres_por_que",
+                    "description": "Historia breve correcta en su momento: quién es + por qué está ahí, corta, con gancho."
+                }
+            ]
+        }
+    },
+    {
         "id": "4.0",
         "world_id": 4,
         "name": "La Balanza: Valor contra Costo",
@@ -1921,6 +1921,418 @@
                     "weight": 0.25,
                     "regla_id": "present.beneficio_no_caracteristica",
                     "description": "Traduce características a beneficios: cada dato del producto aparece acompañado de lo que el cliente GANA (deja de perder ventas, recupera dinero parado, clientes que regresan) — no specs sueltas."
+                }
+            ]
+        }
+    },
+    {
+        "id": "4.2",
+        "world_id": 4,
+        "name": "Beneficio, No Caracteristica",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "v2.0.0 Nodo nuevo. El espejo usa la pregunta que el vendedor promedio teme (y eso a mi de que me sirve?) como consecuencia automatica de no traducir. Ensena sin regano.",
+            "scope": {
+                "skills_in_focus": [
+                    "presentation.beneficio_no_caracteristica"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 10,
+                "max_duration_seconds": 210,
+                "min_turns_before_evaluation": 3
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Fijate en que nunca dejo una caracteristica sola. Digo lo que el producto es, y en la misma frase digo que gana el con eso.\n\nLa caracteristica es mi lenguaje; el beneficio es el suyo. Si solo hablo el mio, me escucha sin entender.",
+                    "first_message": "Este maneja una formulacion mas estable a temperatura alta. Que significa para usted: le dura mas antes del siguiente cambio, o sea menos servicios al ano por unidad y menos gente reclamandole.\n\nY como le dura mas, su cliente regresa contento en lugar de regresar a quejarse."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueno de un negocio, atento y de buena disposicion, escuchando lo que el vendedor te presenta. Ya platicaron antes y ya le contaste que tu problema es que pierdes ventas cuando te falta producto. TU REGLA PRINCIPAL: reaccionas segun el vendedor traduzca o no. Si menciona una CARACTERISTICA sin traducirla a un beneficio concreto (una especificacion tecnica, un dato del producto, una certificacion, una marca), respondes con desinteres educado y le devuelves la pregunta que el vendedor promedio teme: y eso a mi de que me sirve? / ajam, y eso que me ayuda? / si, y? SI la traduce a algo concreto que tu ganas (dinero, mas clientes, menos problemas, tiempo, tranquilidad), te enganchas: asientes, preguntas mas al respecto, y conectas con tu propia situacion. Si te tira MUCHAS caracteristicas juntas sin traducir ninguna, te saturas y dices que lo tienes que pensar. NUNCA traduzcas tu por el: si el no dice el beneficio, tu no lo adivinas. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+                    "objective": "El vendedor traduce cada caracteristica que menciona a un beneficio concreto para ese cliente: dinero, clientes, tiempo o tranquilidad. El scope se cubre cuando el cliente se engancha con al menos dos beneficios traducidos y conecta con su propia situacion."
+                },
+                "closing": {
+                    "message": "Eso es traducir. Dijiste lo que el producto es y en la misma frase lo que el gana. La caracteristica es tu idioma; el beneficio es el suyo. El que solo habla el propio, presenta para si mismo. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como presentas. Vamos al desglose y te digo cuales se quedaron sin traducir."
+                }
+            },
+            "version": "2.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "caracteristica_sin_traducir",
+                    "regla_id": "present.caracteristica_sin_traducir",
+                    "severity": "major",
+                    "description": "Menciona especificaciones, datos tecnicos o certificaciones sin decir que gana el cliente con eso. El cliente escucha sin entender y contesta y eso a mi de que me sirve."
+                },
+                {
+                    "id": "catalogo",
+                    "regla_id": "present.caracteristica_sin_traducir",
+                    "severity": "major",
+                    "description": "Encadena varias caracteristicas seguidas sin traducir ninguna. El cliente se satura y se defiende con un lo voy a pensar."
+                },
+                {
+                    "id": "beneficio_generico",
+                    "regla_id": "present.caracteristica_sin_traducir",
+                    "severity": "minor",
+                    "description": "Traduce a un beneficio que serviria para cualquier negocio (es de calidad, le va a gustar) en lugar de conectarlo con la situacion concreta del cliente.",
+                    "severity_override": {
+                        "razon": "incidental: fuera del foco del nodo",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "promesa_falsa",
+                    "regla_id": "present.bala_generica",
+                    "severity": "critical",
+                    "description": "Inventa un beneficio que el producto no da, o exagera un resultado para que suene mejor. El valor se construye con verdad.",
+                    "severity_override": {
+                        "razon": "escalada: habilidad espejo del nodo",
+                        "default": "major"
+                    }
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "presentation.beneficio_no_caracteristica",
+                    "weight": 1,
+                    "regla_id": "present.beneficio_no_caracteristica",
+                    "description": "Cada caracteristica que menciona va acompanada de su traduccion a algo concreto que el cliente gana: mas dinero, mas clientes, menos tiempo perdido o menos problemas. La traduccion debe ser especifica de ESE negocio, no generica. Mencionar la caracteristica sola no cumple, aunque sea impresionante."
+                }
+            ]
+        }
+    },
+    {
+        "id": "4.3",
+        "world_id": 4,
+        "name": "Pintar la Imagen",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "El Actor reacciona a imágenes, no a datos — la mecánica espejo enseña la diferencia entre explicar y pintar en vivo. La señal de scope: el cliente COMPLETÓ una escena con detalles propios (la prueba de que entró en ella).",
+            "scope": {
+                "skills_in_focus": [
+                    "presentation.pintar_imagenes",
+                    "presentation.conectar_dolor"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 10,
+                "max_duration_seconds": 210,
+                "min_turns_before_evaluation": 2
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Escucha la diferencia entre EXPLICAR y PINTAR. Explicar informa.\n\nPintar hace que el cliente se VEA en la escena — y de esa escena ya no se quiere salir.",
+                    "first_message": "Explicar suena así: El producto tiene buena movimiento y márgenes competitivos. — Correcto, y frío.\n\nPintar suena así: Imagínese la quincena que viene: llega el cliente de siempre por sus tres litros... y ahora sí los tiene.\n\nSe los lleva, le deja la ganancia a usted y no al de enfrente — y de pasada se lleva unas grasas porque ya que estaba aquí. ¿Ve la diferencia?\n\nEl cliente ya se vio ganando.\n\nAhora el producto no es un dato: es esa mañana."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueño de un negocio al final de un buen descubrimiento: ya contaste tu dolor. Elige uno al azar y menciónalo en tu primera línea: (pierdes ventas por faltantes de tu producto estrella / tienes dinero muerto en producto que no se mueve / te piden algo que tu proveedor no maneja). TU REGLA ESPEJO — reaccionas a IMÁGENES, no a datos: si el vendedor te pinta una escena concreta de TU negocio con el problema resuelto (imagínese que..., piense en la próxima quincena cuando..., usted abriendo la cortina y...), entras en la escena: la completas con detalles tuyos (pues sí, y hasta podría..., no pues eso me ahorraría el coraje de...), y tu interés crece visiblemente. Si el vendedor solo explica con datos y adjetivos (buena calidad, excelente margen, muy rentable), respondes cortés pero plano: ajá, ok, suena bien — sin entrar en ninguna escena. Si la escena que pinta es genérica y no usa TU dolor ni TU negocio, respondes: pues sí, como en todos lados, supongo. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+                    "objective": "El vendedor presenta pintando al menos DOS imágenes concretas del negocio del cliente con el problema resuelto: escenas específicas (con momento, personaje o situación reconocible de SU operación) construidas sobre el dolor declarado — no descripciones abstractas del producto. El scope se cubre cuando el cliente ENTRÓ en al menos una escena: la completó con sus propios detalles o expresó verse en ella."
+                },
+                "closing": {
+                    "message": "El cliente se vio en la escena — y de ahí ya no se quiso salir. Eso es pintar imágenes: la parte del cine que tiene este trabajo. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como pintas la imagen. Vamos al desglose."
+                }
+            },
+            "version": "1.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "explica_sin_pintar",
+                    "regla_id": "present.pintar_imagenes",
+                    "severity": "major",
+                    "description": "Presenta solo con datos y adjetivos (calidad, margen, rentable, confiable) sin construir una sola escena visualizable — el cliente permanece fuera, escuchando información."
+                },
+                {
+                    "id": "imagen_generica",
+                    "regla_id": "present.pintar_imagenes",
+                    "severity": "major",
+                    "description": "Sus escenas no usan el dolor ni el contexto del cliente — son postales genéricas de éxito que servirían para cualquiera (le va a ir muy bien, va a vender mucho)."
+                },
+                {
+                    "id": "presentacion_generica",
+                    "regla_id": "present.dos_mitades",
+                    "severity": "major",
+                    "description": "Ignora el dolor declarado y presenta catálogo."
+                },
+                {
+                    "id": "monologo",
+                    "regla_id": "monologo",
+                    "severity": "minor",
+                    "description": "Pinta sin pausa — no deja al cliente entrar a la escena."
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "presentation.pintar_imagenes",
+                    "weight": 0.6,
+                    "regla_id": "present.pintar_imagenes",
+                    "description": "Pinta al menos dos escenas concretas y específicas del negocio del cliente con el problema resuelto: usa lenguaje de visualización (imagínese, piense en, va a ver que) con momento, personajes o situaciones reconocibles de SU operación. Las escenas logran que el cliente entre: las complete o se vea en ellas."
+                },
+                {
+                    "id": "presentation.conectar_dolor",
+                    "weight": 0.4,
+                    "regla_id": "present.dos_mitades",
+                    "description": "Las imágenes nacen del dolor declarado: la escena pintada es exactamente ese problema resuelto — no una fantasía genérica de éxito."
+                }
+            ]
+        }
+    },
+    {
+        "id": "4.4",
+        "world_id": 4,
+        "name": "La Curva de Impulso",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "4.5",
+        "world_id": 4,
+        "name": "Las Balas: Tu Arsenal",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "4.6",
+        "world_id": 4,
+        "name": "Disparar Balas",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "v2.0.0 Nodo nuevo. Corrige la doctrina deformada: las balas son del VENDEDOR (hechos positivos sobre ti, producto y precio), no objeciones del cliente. El espejo tiene cuatro estados: dosificada sube, rafaga satura, vaga no mueve, exagerada baja.",
+            "scope": {
+                "skills_in_focus": [
+                    "objections.bullet_theory"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 10,
+                "max_duration_seconds": 210,
+                "min_turns_before_evaluation": 3
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Fijate en el ritmo. Disparo una bala, dejo que aterrice, y veo como reacciona antes de disparar la siguiente.\n\nNo suelto tres seguidas. Y fijate en algo mas: me guardo las mejores.\n\nTodavia no llego al precio ni a las objeciones, y ahi es donde de verdad las voy a necesitar.",
+                    "first_message": "Mire, algo que le puede servir: llevamos catorce anos surtiendo esta zona, asi que cuando hay desabasto general nosotros seguimos entregando. ...\n\nY le comento otra cosa: nuestro tiempo de entrega es de veinticuatro horas dentro de la ciudad."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueno de un negocio, ya en confianza con el vendedor y escuchando su propuesta con interes moderado. TU REGLA PRINCIPAL: tu nivel de interes sube y baja segun COMO disparen las balas. Si el vendedor da UN hecho positivo concreto y te deja reaccionar, tu interes SUBE de manera visible: comentas, preguntas mas, te enganchas. Si dispara TRES O MAS hechos seguidos sin pausa, te saturas: tu interes sube un momento y luego CAE, y respondes con algo como pues suena bien todo, dejeme lo pienso. Si el hecho es VAGO o generico (somos los mejores, tenemos calidad, damos buen servicio) no cuenta como bala: contestas con cortesia neutra y tu interes no se mueve. Si el vendedor dice algo que suena EXAGERADO o poco creible, tu interes BAJA y te pones esceptico: pregunta desconfiada tipo a poco?, y todo eso como me lo garantiza? NUNCA hagas objeciones de precio ni de competencia en este ejercicio. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+                    "objective": "El vendedor sube el impulso disparando balas concretas y verificables de una en una, midiendo la reaccion entre cada una, sin saturar y sin exagerar. El scope se cubre cuando el interes del cliente subio de forma sostenida con al menos dos balas bien colocadas."
+                },
+                "closing": {
+                    "message": "Eso es controlar el impulso. Balas reales, una a la vez, midiendo la reaccion. Y lo mas importante: te quedan balas. Cuando llegues al precio y a las objeciones vas a entender por que eso importa tanto. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como disparas. Vamos al desglose y te digo como quedo tu municion."
+                }
+            },
+            "version": "2.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "rafaga_de_balas",
+                    "regla_id": "present.dosificacion_balas",
+                    "severity": "major",
+                    "description": "Encadena tres o mas hechos positivos sin pausa. El cliente se satura, el impulso sube y cae, y el vendedor se queda sin municion para lo que viene."
+                },
+                {
+                    "id": "balas_vagas",
+                    "regla_id": "present.bala_generica",
+                    "severity": "major",
+                    "description": "Afirmaciones genericas sin dato concreto: somos los mejores, tenemos calidad, damos buen servicio. No mueven el impulso porque cualquiera las dice."
+                },
+                {
+                    "id": "bala_exagerada",
+                    "regla_id": "present.bala_generica",
+                    "severity": "critical",
+                    "description": "Exagera o inventa un hecho para que suene mejor. El cliente se pone esceptico y el impulso baja. El impulso se construye con verdad.",
+                    "severity_override": {
+                        "razon": "escalada: habilidad espejo del nodo",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "pitch_prematuro",
+                    "regla_id": "discovery.receta_sin_diagnostico",
+                    "severity": "minor",
+                    "description": "Se adelanta a precio o cierre. Aqui solo se construye impulso.",
+                    "severity_override": {
+                        "razon": "incidental: error de otro paso",
+                        "default": "major"
+                    }
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "objections.bullet_theory",
+                    "weight": 1,
+                    "regla_id": "present.balas",
+                    "description": "Dispara balas CONCRETAS y verificables sobre si mismo, su producto o su precio: datos, anos, tiempos, casos reales, condiciones especificas. Las dispara DOSIFICADAS, una a la vez, dejando espacio a la reaccion del cliente antes de la siguiente. Afirmaciones vagas (somos los mejores, damos calidad) no cuentan como balas. Encadenar tres o mas sin pausa no cumple, aunque sean buenas."
+                }
+            ]
+        }
+    },
+    {
+        "id": "4.7",
+        "world_id": 4,
+        "name": "FUJPIG: Los Seis Factores",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "4.8",
+        "world_id": 4,
+        "name": "Lo Que Pierde por Esperar",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "Primer drill de impulso. El Actor arranca en interesado-pasivo (déjeme pensarlo) — el estado real más común del campo. Espejo de tres vías: verdad tangible → movimiento; urgencia real → siguiente paso; teatro → escepticismo con castigo de confianza. impulso_falso es critical en TODO el mundo 5: la ética es el diseño.",
+            "scope": {
+                "skills_in_focus": [
+                    "impulse.miedo_perdida",
+                    "impulse.urgencia"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 10,
+                "max_duration_seconds": 210,
+                "min_turns_before_evaluation": 2
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Escucha los dos aceleradores — y fíjate en el detalle más importante: TODO lo que digo es verdad verificable. El miedo a la pérdida se construye con SUS números, y la urgencia con fechas y hechos reales.\n\nNi una gota de teatro.",
+                    "first_message": "Miedo a la pérdida, con sus datos: Usted me dijo que pierde como dos clientes al mes por faltantes. Son veinticuatro al año, Don Ramón — y cada uno se lleva sus compras a la competencia...\n\ny a veces ya no regresa. Eso está pasando hoy, mientras platicamos.\n\nUrgencia, con hechos reales: Esta semana ando levantando los pedidos de la zona — si lo dejamos para la otra, su primer surtido le llegaría hasta el mes que entra. ¿Ve?\n\nNada inventado: su pérdida es real y mi fecha es real. Por eso funciona."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor ya conectó con tu dolor (elígelo al azar: pierdes ~2 clientes al mes por faltantes de tu proveedor / tienes ~15 mil pesos muertos en producto que no se mueve / te piden algo que tu proveedor no maneja y se van con ella a otro lado) y estás INTERESADO PERO PASIVO: tu postura inicial es está bueno, déjeme pensarlo y luego le digo — sin rechazo, pura inercia de no decidir. TU REGLA ESPEJO: (A) si el vendedor hace TANGIBLE tu pérdida con TUS números y datos reales (lo que pierdes al mes, a dónde se va ese dinero, que está pasando HOY), tu pasividad se mueve: pues sí, viéndolo así... y preguntas algo concreto. (B) si te da una razón de urgencia REAL y verificable (su ruta de pedidos de la semana, tiempos de entrega reales, un ciclo real de tu negocio como la quincena o la temporada), tu decisión se acerca: preguntas por el siguiente paso. (C) si INVENTA escasez o urgencia con olor a teatro (es el último que me queda, la promoción se acaba HOY, ya casi no tengo), respondes con escepticismo directo: mmm, eso dicen todos, ¿no? — y tu confianza BAJA visiblemente. (D) si solo repite valor sin acelerador, permaneces amable y pasivo: sí, suena bien, yo le aviso.",
+                    "objective": "El vendedor mueve a un interesado-pasivo aplicando los dos aceleradores con verdad: (1) hace tangible la pérdida actual usando los números y datos que el cliente declaró (cuantifica lo que pierde por mes/año, nombra a dónde se va), y (2) da al menos una razón de urgencia real y verificable para decidir ahora (ruta, tiempos, ciclo del negocio) — sin inventar escasez ni teatro. El scope se cubre cuando el cliente pasó de déjeme pensarlo a preguntar por el siguiente paso concreto."
+                },
+                "closing": {
+                    "message": "Lo moviste — y sin inventarle nada: su pérdida era real y tu fecha era real. Así se acelera una curva sin quemar la confianza. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como manejas el miedo a perder. Vamos al desglose."
+                }
+            },
+            "version": "1.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "impulso_falso",
+                    "regla_id": "impulse.escasez_inventada",
+                    "severity": "critical",
+                    "description": "Inventa escasez, urgencia o presión sin ancla real: es el último, la promo se acaba hoy, ya casi no tengo, otros lo están apartando. El cliente lo huele (eso dicen todos) y la confianza construida en tres mundos se quema en una frase. El pecado capital de este mundo."
+                },
+                {
+                    "id": "presion_directa",
+                    "regla_id": "impulse.presion_directa",
+                    "severity": "major",
+                    "description": "Sustituye los aceleradores por presión frontal: ándele, anímese, no lo piense tanto, ¿entonces qué, sí o no? — empuja la curva en vez de acelerarla."
+                },
+                {
+                    "id": "perdida_generica",
+                    "regla_id": "impulse.miedo_perdida_generico",
+                    "severity": "major",
+                    "description": "Habla de pérdida en abstracto (está perdiendo dinero, le conviene) sin usar los números ni el dolor específico que el cliente declaró."
+                },
+                {
+                    "id": "monologo",
+                    "regla_id": "monologo",
+                    "severity": "minor",
+                    "description": "Descarga ambos aceleradores en un solo bloque sin dejar reaccionar al cliente."
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "impulse.miedo_perdida",
+                    "weight": 0.5,
+                    "regla_id": "impulse.miedo_perdida",
+                    "description": "Hace tangible la pérdida ACTUAL con los datos del cliente: cuantifica (clientes/dinero por mes o año), nombra el destino de la pérdida (la competencia, el dinero muerto), y la ancla en el presente (está pasando hoy). Todo derivado de lo que el cliente declaró — nada inventado."
+                },
+                {
+                    "id": "impulse.urgencia",
+                    "weight": 0.5,
+                    "regla_id": "impulse.urgencia",
+                    "description": "Da al menos una razón real y verificable para decidir ahora: su ruta o ciclo de pedidos, tiempos de entrega concretos, o un ciclo real del negocio del cliente. La urgencia nace de hechos, no de presión — y el cliente la recibe sin escepticismo."
+                }
+            ]
+        }
+    },
+    {
+        "id": "4.9",
+        "world_id": 4,
+        "name": "Mas por Menos y el Efecto Jones",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones falso. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable.",
+            "scope": {
+                "skills_in_focus": [
+                    "impulse.avaricia",
+                    "impulse.efecto_jones"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 10,
+                "max_duration_seconds": 210,
+                "min_turns_before_evaluation": 2
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Los últimos dos aceleradores. La avaricia bien usada no es codicia — es mostrarle la ganancia EXTRA en números de su negocio.\n\nY el efecto Jones es la fuerza más vieja del mundo: si a los de al lado les funciona, yo también quiero. Con nombres reales — o nada.",
+                    "first_message": "Más por menos, con números: Con el margen de esta línea, cada caja le deja ochenta pesos más que la que maneja — son como mil doscientos extra al mes sin vender ni una pieza más. Efecto Jones, con verdad: La negocios de la San José le entró hace dos meses — el señor Aurelio ya va en su tercer pedido.\n\nY el negocio grande de la avenida, igual. Por esta zona ya se está moviendo fuerte.\n\n¿Nota que no presioné? Solo le mostré la ganancia y le conté quién más ya la está cobrando."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueño de un negocio al final de una buena presentación conectada a tu dolor (elígelo al azar como en drills previos) y estás en modo interesado-pasivo: suena bien, déjeme pensarlo. TU REGLA ESPEJO: (A) si el vendedor te muestra ganancia EXTRA con números concretos y creíbles de tu operación (margen por caja, ahorro al mes, beneficio adicional calculado), tu interés se activa: haces cuentas en voz alta (a ver, ¿ochenta por caja?...) y preguntas detalles. (B) si te da prueba social ESPECÍFICA y verificable (negocio con nombre o ubicación reconocible de tu zona, tiempo que lleva, resultado concreto), tu confianza sube: ah, ¿el de la San José? sí lo ubico... y tu resistencia baja visiblemente. (C) si la prueba social es VAGA (muchos clientes, varios negocios, todo mundo lo está llevando — sin un solo nombre o referencia verificable), respondes escéptico: ¿ah sí? ¿como quiénes? — y si no puede concretar, tu desconfianza sube. (D) si los números de ganancia son exagerados o redondos sin sustento (va a duplicar sus ventas), respondes: mmm, eso suena a mucho, ¿no?",
+                    "objective": "El vendedor aplica los dos aceleradores con concreción: (1) muestra la ganancia extra en números específicos y creíbles del negocio del cliente (margen, ahorro o beneficio mensual calculado), y (2) da prueba social específica y verificable — al menos una referencia con nombre, ubicación o detalle reconocible, con su resultado concreto. El scope se cubre cuando el cliente hizo cuentas en voz alta O validó la referencia social, y pasó de pasivo a preguntar por el siguiente paso."
+                },
+                "closing": {
+                    "message": "Le mostraste la ganancia con números y le contaste quién ya la está cobrando — y su déjeme pensarlo se convirtió en cuánto y cuándo. Así trabajan estos dos. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como construyes la sensacion de ventaja. Vamos al desglose."
+                }
+            },
+            "version": "1.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "impulso_falso",
+                    "regla_id": "impulse.jones_vago",
+                    "severity": "critical",
+                    "description": "Inventa prueba social o números: referencias que no existen, cifras infladas, todo mundo lo lleva sin poder nombrar a nadie. Si el cliente pregunta ¿como quiénes? y no hay respuesta concreta, el factor era teatro."
+                },
+                {
+                    "id": "promesa_grandilocuente",
+                    "regla_id": "present.bala_generica",
+                    "severity": "major",
+                    "description": "Ganancias exageradas sin sustento: va a duplicar sus ventas, se va a llenar de clientes — el cliente responde eso suena a mucho."
+                },
+                {
+                    "id": "presion_directa",
+                    "regla_id": "impulse.presion_directa",
+                    "severity": "major",
+                    "description": "Cambia los aceleradores por empuje frontal: no se lo pierda, todos le están entrando, apúrese."
+                },
+                {
+                    "id": "perdida_generica",
+                    "regla_id": "impulse.miedo_perdida_generico",
+                    "severity": "minor",
+                    "description": "Ganancia en abstracto (le conviene, va a ganar más) sin un solo número.",
+                    "severity_override": {
+                        "razon": "incidental: fuera del foco del nodo",
+                        "default": "major"
+                    }
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "impulse.avaricia",
+                    "weight": 0.5,
+                    "regla_id": "impulse.avaricia",
+                    "description": "Muestra ganancia extra con números concretos y creíbles del negocio del cliente: margen por unidad, beneficio mensual calculado, ahorro específico — cifras que el cliente puede verificar con sus propias cuentas, no promesas redondas (duplicar ventas)."
+                },
+                {
+                    "id": "impulse.efecto_jones",
+                    "weight": 0.5,
+                    "regla_id": "impulse.efecto_jones",
+                    "description": "Da al menos una prueba social específica y verificable: negocio con nombre, ubicación o seña reconocible + tiempo + resultado concreto. El cliente la puede validar (o al menos ubicar) — nunca el vago muchos clientes ya lo llevan."
                 }
             ]
         }
@@ -2488,418 +2900,6 @@
         }
     },
     {
-        "id": "4.2",
-        "world_id": 4,
-        "name": "Beneficio, No Caracteristica",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "v2.0.0 Nodo nuevo. El espejo usa la pregunta que el vendedor promedio teme (y eso a mi de que me sirve?) como consecuencia automatica de no traducir. Ensena sin regano.",
-            "scope": {
-                "skills_in_focus": [
-                    "presentation.beneficio_no_caracteristica"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 10,
-                "max_duration_seconds": 210,
-                "min_turns_before_evaluation": 3
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Fijate en que nunca dejo una caracteristica sola. Digo lo que el producto es, y en la misma frase digo que gana el con eso.\n\nLa caracteristica es mi lenguaje; el beneficio es el suyo. Si solo hablo el mio, me escucha sin entender.",
-                    "first_message": "Este maneja una formulacion mas estable a temperatura alta. Que significa para usted: le dura mas antes del siguiente cambio, o sea menos servicios al ano por unidad y menos gente reclamandole.\n\nY como le dura mas, su cliente regresa contento en lugar de regresar a quejarse."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueno de un negocio, atento y de buena disposicion, escuchando lo que el vendedor te presenta. Ya platicaron antes y ya le contaste que tu problema es que pierdes ventas cuando te falta producto. TU REGLA PRINCIPAL: reaccionas segun el vendedor traduzca o no. Si menciona una CARACTERISTICA sin traducirla a un beneficio concreto (una especificacion tecnica, un dato del producto, una certificacion, una marca), respondes con desinteres educado y le devuelves la pregunta que el vendedor promedio teme: y eso a mi de que me sirve? / ajam, y eso que me ayuda? / si, y? SI la traduce a algo concreto que tu ganas (dinero, mas clientes, menos problemas, tiempo, tranquilidad), te enganchas: asientes, preguntas mas al respecto, y conectas con tu propia situacion. Si te tira MUCHAS caracteristicas juntas sin traducir ninguna, te saturas y dices que lo tienes que pensar. NUNCA traduzcas tu por el: si el no dice el beneficio, tu no lo adivinas. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-                    "objective": "El vendedor traduce cada caracteristica que menciona a un beneficio concreto para ese cliente: dinero, clientes, tiempo o tranquilidad. El scope se cubre cuando el cliente se engancha con al menos dos beneficios traducidos y conecta con su propia situacion."
-                },
-                "closing": {
-                    "message": "Eso es traducir. Dijiste lo que el producto es y en la misma frase lo que el gana. La caracteristica es tu idioma; el beneficio es el suyo. El que solo habla el propio, presenta para si mismo. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como presentas. Vamos al desglose y te digo cuales se quedaron sin traducir."
-                }
-            },
-            "version": "2.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "caracteristica_sin_traducir",
-                    "regla_id": "present.caracteristica_sin_traducir",
-                    "severity": "major",
-                    "description": "Menciona especificaciones, datos tecnicos o certificaciones sin decir que gana el cliente con eso. El cliente escucha sin entender y contesta y eso a mi de que me sirve."
-                },
-                {
-                    "id": "catalogo",
-                    "regla_id": "present.caracteristica_sin_traducir",
-                    "severity": "major",
-                    "description": "Encadena varias caracteristicas seguidas sin traducir ninguna. El cliente se satura y se defiende con un lo voy a pensar."
-                },
-                {
-                    "id": "beneficio_generico",
-                    "regla_id": "present.caracteristica_sin_traducir",
-                    "severity": "minor",
-                    "description": "Traduce a un beneficio que serviria para cualquier negocio (es de calidad, le va a gustar) en lugar de conectarlo con la situacion concreta del cliente.",
-                    "severity_override": {
-                        "razon": "incidental: fuera del foco del nodo",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "promesa_falsa",
-                    "regla_id": "present.bala_generica",
-                    "severity": "critical",
-                    "description": "Inventa un beneficio que el producto no da, o exagera un resultado para que suene mejor. El valor se construye con verdad.",
-                    "severity_override": {
-                        "razon": "escalada: habilidad espejo del nodo",
-                        "default": "major"
-                    }
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "presentation.beneficio_no_caracteristica",
-                    "weight": 1,
-                    "regla_id": "present.beneficio_no_caracteristica",
-                    "description": "Cada caracteristica que menciona va acompanada de su traduccion a algo concreto que el cliente gana: mas dinero, mas clientes, menos tiempo perdido o menos problemas. La traduccion debe ser especifica de ESE negocio, no generica. Mencionar la caracteristica sola no cumple, aunque sea impresionante."
-                }
-            ]
-        }
-    },
-    {
-        "id": "4.3",
-        "world_id": 4,
-        "name": "Pintar la Imagen",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "El Actor reacciona a imágenes, no a datos — la mecánica espejo enseña la diferencia entre explicar y pintar en vivo. La señal de scope: el cliente COMPLETÓ una escena con detalles propios (la prueba de que entró en ella).",
-            "scope": {
-                "skills_in_focus": [
-                    "presentation.pintar_imagenes",
-                    "presentation.conectar_dolor"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 10,
-                "max_duration_seconds": 210,
-                "min_turns_before_evaluation": 2
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Escucha la diferencia entre EXPLICAR y PINTAR. Explicar informa.\n\nPintar hace que el cliente se VEA en la escena — y de esa escena ya no se quiere salir.",
-                    "first_message": "Explicar suena así: El producto tiene buena movimiento y márgenes competitivos. — Correcto, y frío.\n\nPintar suena así: Imagínese la quincena que viene: llega el cliente de siempre por sus tres litros... y ahora sí los tiene.\n\nSe los lleva, le deja la ganancia a usted y no al de enfrente — y de pasada se lleva unas grasas porque ya que estaba aquí. ¿Ve la diferencia?\n\nEl cliente ya se vio ganando.\n\nAhora el producto no es un dato: es esa mañana."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueño de un negocio al final de un buen descubrimiento: ya contaste tu dolor. Elige uno al azar y menciónalo en tu primera línea: (pierdes ventas por faltantes de tu producto estrella / tienes dinero muerto en producto que no se mueve / te piden algo que tu proveedor no maneja). TU REGLA ESPEJO — reaccionas a IMÁGENES, no a datos: si el vendedor te pinta una escena concreta de TU negocio con el problema resuelto (imagínese que..., piense en la próxima quincena cuando..., usted abriendo la cortina y...), entras en la escena: la completas con detalles tuyos (pues sí, y hasta podría..., no pues eso me ahorraría el coraje de...), y tu interés crece visiblemente. Si el vendedor solo explica con datos y adjetivos (buena calidad, excelente margen, muy rentable), respondes cortés pero plano: ajá, ok, suena bien — sin entrar en ninguna escena. Si la escena que pinta es genérica y no usa TU dolor ni TU negocio, respondes: pues sí, como en todos lados, supongo. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-                    "objective": "El vendedor presenta pintando al menos DOS imágenes concretas del negocio del cliente con el problema resuelto: escenas específicas (con momento, personaje o situación reconocible de SU operación) construidas sobre el dolor declarado — no descripciones abstractas del producto. El scope se cubre cuando el cliente ENTRÓ en al menos una escena: la completó con sus propios detalles o expresó verse en ella."
-                },
-                "closing": {
-                    "message": "El cliente se vio en la escena — y de ahí ya no se quiso salir. Eso es pintar imágenes: la parte del cine que tiene este trabajo. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como pintas la imagen. Vamos al desglose."
-                }
-            },
-            "version": "1.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "explica_sin_pintar",
-                    "regla_id": "present.pintar_imagenes",
-                    "severity": "major",
-                    "description": "Presenta solo con datos y adjetivos (calidad, margen, rentable, confiable) sin construir una sola escena visualizable — el cliente permanece fuera, escuchando información."
-                },
-                {
-                    "id": "imagen_generica",
-                    "regla_id": "present.pintar_imagenes",
-                    "severity": "major",
-                    "description": "Sus escenas no usan el dolor ni el contexto del cliente — son postales genéricas de éxito que servirían para cualquiera (le va a ir muy bien, va a vender mucho)."
-                },
-                {
-                    "id": "presentacion_generica",
-                    "regla_id": "present.dos_mitades",
-                    "severity": "major",
-                    "description": "Ignora el dolor declarado y presenta catálogo."
-                },
-                {
-                    "id": "monologo",
-                    "regla_id": "monologo",
-                    "severity": "minor",
-                    "description": "Pinta sin pausa — no deja al cliente entrar a la escena."
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "presentation.pintar_imagenes",
-                    "weight": 0.6,
-                    "regla_id": "present.pintar_imagenes",
-                    "description": "Pinta al menos dos escenas concretas y específicas del negocio del cliente con el problema resuelto: usa lenguaje de visualización (imagínese, piense en, va a ver que) con momento, personajes o situaciones reconocibles de SU operación. Las escenas logran que el cliente entre: las complete o se vea en ellas."
-                },
-                {
-                    "id": "presentation.conectar_dolor",
-                    "weight": 0.4,
-                    "regla_id": "present.dos_mitades",
-                    "description": "Las imágenes nacen del dolor declarado: la escena pintada es exactamente ese problema resuelto — no una fantasía genérica de éxito."
-                }
-            ]
-        }
-    },
-    {
-        "id": "4.4",
-        "world_id": 4,
-        "name": "La Curva de Impulso",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "4.5",
-        "world_id": 4,
-        "name": "Las Balas: Tu Arsenal",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "4.6",
-        "world_id": 4,
-        "name": "Disparar Balas",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "v2.0.0 Nodo nuevo. Corrige la doctrina deformada: las balas son del VENDEDOR (hechos positivos sobre ti, producto y precio), no objeciones del cliente. El espejo tiene cuatro estados: dosificada sube, rafaga satura, vaga no mueve, exagerada baja.",
-            "scope": {
-                "skills_in_focus": [
-                    "objections.bullet_theory"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 10,
-                "max_duration_seconds": 210,
-                "min_turns_before_evaluation": 3
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Fijate en el ritmo. Disparo una bala, dejo que aterrice, y veo como reacciona antes de disparar la siguiente.\n\nNo suelto tres seguidas. Y fijate en algo mas: me guardo las mejores.\n\nTodavia no llego al precio ni a las objeciones, y ahi es donde de verdad las voy a necesitar.",
-                    "first_message": "Mire, algo que le puede servir: llevamos catorce anos surtiendo esta zona, asi que cuando hay desabasto general nosotros seguimos entregando. ...\n\nY le comento otra cosa: nuestro tiempo de entrega es de veinticuatro horas dentro de la ciudad."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueno de un negocio, ya en confianza con el vendedor y escuchando su propuesta con interes moderado. TU REGLA PRINCIPAL: tu nivel de interes sube y baja segun COMO disparen las balas. Si el vendedor da UN hecho positivo concreto y te deja reaccionar, tu interes SUBE de manera visible: comentas, preguntas mas, te enganchas. Si dispara TRES O MAS hechos seguidos sin pausa, te saturas: tu interes sube un momento y luego CAE, y respondes con algo como pues suena bien todo, dejeme lo pienso. Si el hecho es VAGO o generico (somos los mejores, tenemos calidad, damos buen servicio) no cuenta como bala: contestas con cortesia neutra y tu interes no se mueve. Si el vendedor dice algo que suena EXAGERADO o poco creible, tu interes BAJA y te pones esceptico: pregunta desconfiada tipo a poco?, y todo eso como me lo garantiza? NUNCA hagas objeciones de precio ni de competencia en este ejercicio. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-                    "objective": "El vendedor sube el impulso disparando balas concretas y verificables de una en una, midiendo la reaccion entre cada una, sin saturar y sin exagerar. El scope se cubre cuando el interes del cliente subio de forma sostenida con al menos dos balas bien colocadas."
-                },
-                "closing": {
-                    "message": "Eso es controlar el impulso. Balas reales, una a la vez, midiendo la reaccion. Y lo mas importante: te quedan balas. Cuando llegues al precio y a las objeciones vas a entender por que eso importa tanto. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como disparas. Vamos al desglose y te digo como quedo tu municion."
-                }
-            },
-            "version": "2.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "rafaga_de_balas",
-                    "regla_id": "present.dosificacion_balas",
-                    "severity": "major",
-                    "description": "Encadena tres o mas hechos positivos sin pausa. El cliente se satura, el impulso sube y cae, y el vendedor se queda sin municion para lo que viene."
-                },
-                {
-                    "id": "balas_vagas",
-                    "regla_id": "present.bala_generica",
-                    "severity": "major",
-                    "description": "Afirmaciones genericas sin dato concreto: somos los mejores, tenemos calidad, damos buen servicio. No mueven el impulso porque cualquiera las dice."
-                },
-                {
-                    "id": "bala_exagerada",
-                    "regla_id": "present.bala_generica",
-                    "severity": "critical",
-                    "description": "Exagera o inventa un hecho para que suene mejor. El cliente se pone esceptico y el impulso baja. El impulso se construye con verdad.",
-                    "severity_override": {
-                        "razon": "escalada: habilidad espejo del nodo",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "pitch_prematuro",
-                    "regla_id": "discovery.receta_sin_diagnostico",
-                    "severity": "minor",
-                    "description": "Se adelanta a precio o cierre. Aqui solo se construye impulso.",
-                    "severity_override": {
-                        "razon": "incidental: error de otro paso",
-                        "default": "major"
-                    }
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "objections.bullet_theory",
-                    "weight": 1,
-                    "regla_id": "present.balas",
-                    "description": "Dispara balas CONCRETAS y verificables sobre si mismo, su producto o su precio: datos, anos, tiempos, casos reales, condiciones especificas. Las dispara DOSIFICADAS, una a la vez, dejando espacio a la reaccion del cliente antes de la siguiente. Afirmaciones vagas (somos los mejores, damos calidad) no cuentan como balas. Encadenar tres o mas sin pausa no cumple, aunque sean buenas."
-                }
-            ]
-        }
-    },
-    {
-        "id": "4.7",
-        "world_id": 4,
-        "name": "FUJPIG: Los Seis Factores",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "4.8",
-        "world_id": 4,
-        "name": "Lo Que Pierde por Esperar",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "Primer drill de impulso. El Actor arranca en interesado-pasivo (déjeme pensarlo) — el estado real más común del campo. Espejo de tres vías: verdad tangible → movimiento; urgencia real → siguiente paso; teatro → escepticismo con castigo de confianza. impulso_falso es critical en TODO el mundo 5: la ética es el diseño.",
-            "scope": {
-                "skills_in_focus": [
-                    "impulse.miedo_perdida",
-                    "impulse.urgencia"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 10,
-                "max_duration_seconds": 210,
-                "min_turns_before_evaluation": 2
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Escucha los dos aceleradores — y fíjate en el detalle más importante: TODO lo que digo es verdad verificable. El miedo a la pérdida se construye con SUS números, y la urgencia con fechas y hechos reales.\n\nNi una gota de teatro.",
-                    "first_message": "Miedo a la pérdida, con sus datos: Usted me dijo que pierde como dos clientes al mes por faltantes. Son veinticuatro al año, Don Ramón — y cada uno se lleva sus compras a la competencia...\n\ny a veces ya no regresa. Eso está pasando hoy, mientras platicamos.\n\nUrgencia, con hechos reales: Esta semana ando levantando los pedidos de la zona — si lo dejamos para la otra, su primer surtido le llegaría hasta el mes que entra. ¿Ve?\n\nNada inventado: su pérdida es real y mi fecha es real. Por eso funciona."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor ya conectó con tu dolor (elígelo al azar: pierdes ~2 clientes al mes por faltantes de tu proveedor / tienes ~15 mil pesos muertos en producto que no se mueve / te piden algo que tu proveedor no maneja y se van con ella a otro lado) y estás INTERESADO PERO PASIVO: tu postura inicial es está bueno, déjeme pensarlo y luego le digo — sin rechazo, pura inercia de no decidir. TU REGLA ESPEJO: (A) si el vendedor hace TANGIBLE tu pérdida con TUS números y datos reales (lo que pierdes al mes, a dónde se va ese dinero, que está pasando HOY), tu pasividad se mueve: pues sí, viéndolo así... y preguntas algo concreto. (B) si te da una razón de urgencia REAL y verificable (su ruta de pedidos de la semana, tiempos de entrega reales, un ciclo real de tu negocio como la quincena o la temporada), tu decisión se acerca: preguntas por el siguiente paso. (C) si INVENTA escasez o urgencia con olor a teatro (es el último que me queda, la promoción se acaba HOY, ya casi no tengo), respondes con escepticismo directo: mmm, eso dicen todos, ¿no? — y tu confianza BAJA visiblemente. (D) si solo repite valor sin acelerador, permaneces amable y pasivo: sí, suena bien, yo le aviso.",
-                    "objective": "El vendedor mueve a un interesado-pasivo aplicando los dos aceleradores con verdad: (1) hace tangible la pérdida actual usando los números y datos que el cliente declaró (cuantifica lo que pierde por mes/año, nombra a dónde se va), y (2) da al menos una razón de urgencia real y verificable para decidir ahora (ruta, tiempos, ciclo del negocio) — sin inventar escasez ni teatro. El scope se cubre cuando el cliente pasó de déjeme pensarlo a preguntar por el siguiente paso concreto."
-                },
-                "closing": {
-                    "message": "Lo moviste — y sin inventarle nada: su pérdida era real y tu fecha era real. Así se acelera una curva sin quemar la confianza. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como manejas el miedo a perder. Vamos al desglose."
-                }
-            },
-            "version": "1.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "impulso_falso",
-                    "regla_id": "impulse.escasez_inventada",
-                    "severity": "critical",
-                    "description": "Inventa escasez, urgencia o presión sin ancla real: es el último, la promo se acaba hoy, ya casi no tengo, otros lo están apartando. El cliente lo huele (eso dicen todos) y la confianza construida en tres mundos se quema en una frase. El pecado capital de este mundo."
-                },
-                {
-                    "id": "presion_directa",
-                    "regla_id": "impulse.presion_directa",
-                    "severity": "major",
-                    "description": "Sustituye los aceleradores por presión frontal: ándele, anímese, no lo piense tanto, ¿entonces qué, sí o no? — empuja la curva en vez de acelerarla."
-                },
-                {
-                    "id": "perdida_generica",
-                    "regla_id": "impulse.miedo_perdida_generico",
-                    "severity": "major",
-                    "description": "Habla de pérdida en abstracto (está perdiendo dinero, le conviene) sin usar los números ni el dolor específico que el cliente declaró."
-                },
-                {
-                    "id": "monologo",
-                    "regla_id": "monologo",
-                    "severity": "minor",
-                    "description": "Descarga ambos aceleradores en un solo bloque sin dejar reaccionar al cliente."
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "impulse.miedo_perdida",
-                    "weight": 0.5,
-                    "regla_id": "impulse.miedo_perdida",
-                    "description": "Hace tangible la pérdida ACTUAL con los datos del cliente: cuantifica (clientes/dinero por mes o año), nombra el destino de la pérdida (la competencia, el dinero muerto), y la ancla en el presente (está pasando hoy). Todo derivado de lo que el cliente declaró — nada inventado."
-                },
-                {
-                    "id": "impulse.urgencia",
-                    "weight": 0.5,
-                    "regla_id": "impulse.urgencia",
-                    "description": "Da al menos una razón real y verificable para decidir ahora: su ruta o ciclo de pedidos, tiempos de entrega concretos, o un ciclo real del negocio del cliente. La urgencia nace de hechos, no de presión — y el cliente la recibe sin escepticismo."
-                }
-            ]
-        }
-    },
-    {
-        "id": "4.9",
-        "world_id": 4,
-        "name": "Mas por Menos y el Efecto Jones",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones falso. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable.",
-            "scope": {
-                "skills_in_focus": [
-                    "impulse.avaricia",
-                    "impulse.efecto_jones"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 10,
-                "max_duration_seconds": 210,
-                "min_turns_before_evaluation": 2
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Los últimos dos aceleradores. La avaricia bien usada no es codicia — es mostrarle la ganancia EXTRA en números de su negocio.\n\nY el efecto Jones es la fuerza más vieja del mundo: si a los de al lado les funciona, yo también quiero. Con nombres reales — o nada.",
-                    "first_message": "Más por menos, con números: Con el margen de esta línea, cada caja le deja ochenta pesos más que la que maneja — son como mil doscientos extra al mes sin vender ni una pieza más. Efecto Jones, con verdad: La negocios de la San José le entró hace dos meses — el señor Aurelio ya va en su tercer pedido.\n\nY el negocio grande de la avenida, igual. Por esta zona ya se está moviendo fuerte.\n\n¿Nota que no presioné? Solo le mostré la ganancia y le conté quién más ya la está cobrando."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueño de un negocio al final de una buena presentación conectada a tu dolor (elígelo al azar como en drills previos) y estás en modo interesado-pasivo: suena bien, déjeme pensarlo. TU REGLA ESPEJO: (A) si el vendedor te muestra ganancia EXTRA con números concretos y creíbles de tu operación (margen por caja, ahorro al mes, beneficio adicional calculado), tu interés se activa: haces cuentas en voz alta (a ver, ¿ochenta por caja?...) y preguntas detalles. (B) si te da prueba social ESPECÍFICA y verificable (negocio con nombre o ubicación reconocible de tu zona, tiempo que lleva, resultado concreto), tu confianza sube: ah, ¿el de la San José? sí lo ubico... y tu resistencia baja visiblemente. (C) si la prueba social es VAGA (muchos clientes, varios negocios, todo mundo lo está llevando — sin un solo nombre o referencia verificable), respondes escéptico: ¿ah sí? ¿como quiénes? — y si no puede concretar, tu desconfianza sube. (D) si los números de ganancia son exagerados o redondos sin sustento (va a duplicar sus ventas), respondes: mmm, eso suena a mucho, ¿no?",
-                    "objective": "El vendedor aplica los dos aceleradores con concreción: (1) muestra la ganancia extra en números específicos y creíbles del negocio del cliente (margen, ahorro o beneficio mensual calculado), y (2) da prueba social específica y verificable — al menos una referencia con nombre, ubicación o detalle reconocible, con su resultado concreto. El scope se cubre cuando el cliente hizo cuentas en voz alta O validó la referencia social, y pasó de pasivo a preguntar por el siguiente paso."
-                },
-                "closing": {
-                    "message": "Le mostraste la ganancia con números y le contaste quién ya la está cobrando — y su déjeme pensarlo se convirtió en cuánto y cuándo. Así trabajan estos dos. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como construyes la sensacion de ventaja. Vamos al desglose."
-                }
-            },
-            "version": "1.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "impulso_falso",
-                    "regla_id": "impulse.jones_vago",
-                    "severity": "critical",
-                    "description": "Inventa prueba social o números: referencias que no existen, cifras infladas, todo mundo lo lleva sin poder nombrar a nadie. Si el cliente pregunta ¿como quiénes? y no hay respuesta concreta, el factor era teatro."
-                },
-                {
-                    "id": "promesa_grandilocuente",
-                    "regla_id": "present.bala_generica",
-                    "severity": "major",
-                    "description": "Ganancias exageradas sin sustento: va a duplicar sus ventas, se va a llenar de clientes — el cliente responde eso suena a mucho."
-                },
-                {
-                    "id": "presion_directa",
-                    "regla_id": "impulse.presion_directa",
-                    "severity": "major",
-                    "description": "Cambia los aceleradores por empuje frontal: no se lo pierda, todos le están entrando, apúrese."
-                },
-                {
-                    "id": "perdida_generica",
-                    "regla_id": "impulse.miedo_perdida_generico",
-                    "severity": "minor",
-                    "description": "Ganancia en abstracto (le conviene, va a ganar más) sin un solo número.",
-                    "severity_override": {
-                        "razon": "incidental: fuera del foco del nodo",
-                        "default": "major"
-                    }
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "impulse.avaricia",
-                    "weight": 0.5,
-                    "regla_id": "impulse.avaricia",
-                    "description": "Muestra ganancia extra con números concretos y creíbles del negocio del cliente: margen por unidad, beneficio mensual calculado, ahorro específico — cifras que el cliente puede verificar con sus propias cuentas, no promesas redondas (duplicar ventas)."
-                },
-                {
-                    "id": "impulse.efecto_jones",
-                    "weight": 0.5,
-                    "regla_id": "impulse.efecto_jones",
-                    "description": "Da al menos una prueba social específica y verificable: negocio con nombre, ubicación o seña reconocible + tiempo + resultado concreto. El cliente la puede validar (o al menos ubicar) — nunca el vago muchos clientes ya lo llevan."
-                }
-            ]
-        }
-    },
-    {
         "id": "5.0",
         "world_id": 5,
         "name": "Un Cierre No Es Una Venta",
@@ -2988,6 +2988,332 @@
                 }
             ]
         }
+    },
+    {
+        "id": "5.2",
+        "world_id": 5,
+        "name": "Las Senales de Compra",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "5.3",
+        "world_id": 5,
+        "name": "Cerrar en el Pico",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "El drill del timing: la señal llega a MITAD del flujo del vendedor y el examen es soltar el guion. La curva del Actor baja de forma gradual y realista si la señal se ignora (tibio → déjeme pensarlo) — el vendedor siente el costo del pico perdido en vivo. sigue_presentando es critical: es la razón de ser del nodo.",
+            "scope": {
+                "skills_in_focus": [
+                    "closing.lectura_senales",
+                    "closing.cierre_asumido",
+                    "qualification.senales_compra"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 10,
+                "max_duration_seconds": 210,
+                "min_turns_before_evaluation": 3
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Esta es la disciplina más difícil del cierre: DEJAR DE PRESENTAR. Escucha — voy a la mitad de mi presentación cuando el cliente suelta la señal.\n\nFíjate lo que hago: no termino mi guion. Cierro ahí.",
+                    "first_message": "Voy presentando: ... y además del surtido semanal, el producto trae— y el cliente me interrumpe: ¿Y si le pido hoy, cuándo me estaría llegando?\n\n— ALTO. Esa es la señal: ya se está imaginando el pedido.\n\nMi guion traía tres beneficios más... y no los va a escuchar nadie: Le llega el lunes a primera hora.\n\n¿Le armo las 5 o el combo de 8? — Cerré a mitad de presentación.\n\nEl pico es del cliente, no de mi guion."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueño de un negocio interesado: la conversación viene bien, el vendedor conectó tu dolor (elígelo y menciónalo al abrir: faltantes / dinero parado / algo que no consigues) y está presentando su solución. TU MECÁNICA CENTRAL: cuando el vendedor lleve 2-3 turnos de presentación decente, SUELTA UNA SEÑAL DE COMPRA CLARA a mitad de su flujo — elige una: ¿y si le pido hoy cuándo me llega? / ¿ese combo cómo viene, con factura? / ¿y usted pasa cada semana o cómo le hago para resurtir? La sueltas con interés genuino: tu curva está en el pico. REGLAS ESPEJO: (1) Si el vendedor DETIENE su presentación al oír tu señal y cierra asumido ahí mismo, respondes eligiendo opción — decisión tomada, con gusto. (2) Si el vendedor responde tu pregunta PERO sigue presentando (te contesta lo del lunes y continúa: ...y además le decía que el producto también...), tu curva EMPIEZA A BAJAR: tu siguiente respuesta es más tibia (ah ok, sí, suena bien), y si insiste con más presentación, bajas a mmm, bueno, déjeme pensarlo entonces — el pico pasó y no vuelve. (3) Si nunca suelta el guion, la sesión muere en tu déjeme pensarlo. (4) Si cierra bien tras la señal pero con atropello (cantidades no platicadas), lo frenas suave y esperas la corrección.",
+                    "objective": "El vendedor presenta con normalidad Y detecta la señal de compra que el cliente suelta a mitad del flujo: DETIENE la presentación en ese instante (aunque le falte guion), responde lo puntual de la señal si aplica, y cierra asumido con opciones ahí mismo — cosechando el pico. El scope se cubre cuando el cierre ocurrió inmediatamente después de la señal y el cliente eligió opción."
+                },
+                "closing": {
+                    "message": "Dejaste guion sin decir — y esa es exactamente la victoria. El pico era del cliente, no de tu presentación. Lo viste, te callaste y cerraste. Eso separa a los que presentan bonito de los que venden. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como lees las senales. Vamos al desglose."
+                }
+            },
+            "version": "1.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "sigue_presentando",
+                    "regla_id": "close.sigue_presentando",
+                    "severity": "critical",
+                    "description": "Recibe la señal de compra y continúa presentando beneficios — deja pasar el pico. El asesino silencioso de ventas que este nodo existe para matar: sobre-presentar mata tantas ventas como presentar mal.",
+                    "severity_override": {
+                        "razon": "escalada: habilidad espejo del nodo",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "abre_puerta_al_no",
+                    "regla_id": "close.mal_cierre",
+                    "severity": "major",
+                    "description": "Detiene la presentación ante la señal... y remata con ¿le interesa? — vio el pico y lo regaló.",
+                    "severity_override": {
+                        "razon": "incidental: fuera del foco del nodo",
+                        "default": "critical"
+                    }
+                },
+                {
+                    "id": "atropello",
+                    "regla_id": "close.asume_con_presion",
+                    "severity": "minor",
+                    "description": "Cierra tras la señal pero asumiendo detalles nunca platicados.",
+                    "severity_override": {
+                        "razon": "incidental: fuera del foco del nodo",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "ignora_pistas",
+                    "regla_id": "discovery.escalera_capas",
+                    "severity": "major",
+                    "description": "Despacha la pregunta del cliente con un dato seco y vuelve al guion sin capitalizarla."
+                },
+                {
+                    "id": "monologo",
+                    "regla_id": "monologo",
+                    "severity": "minor",
+                    "description": "Sus turnos de presentación son bloques largos — con menos aire para que la señal aparezca y se escuche."
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "closing.lectura_senales",
+                    "weight": 0.4,
+                    "regla_id": "close.fishbbod",
+                    "description": "Detecta la señal de compra en el momento en que aparece — su turno inmediatamente posterior cambia de presentar a cerrar. La velocidad de reacción es el criterio: señal → cierre, sin beneficios extra en medio."
+                },
+                {
+                    "id": "closing.cierre_asumido",
+                    "weight": 0.35,
+                    "regla_id": "close.alternativa",
+                    "description": "El cierre tras la señal es asumido con opciones concretas — responde lo puntual de la señal (el dato del lunes) y pregunta la decisión chica, sin reabrir la grande."
+                },
+                {
+                    "id": "qualification.senales_compra",
+                    "weight": 0.25,
+                    "regla_id": "close.fishbbod",
+                    "description": "Trata la pregunta del cliente como lo que es — una señal, no una interrupción: la respuesta la honra (contesta el dato) y la capitaliza (cierra), en lugar de despacharla para volver al guion."
+                }
+            ]
+        }
+    },
+    {
+        "id": "5.4",
+        "world_id": 5,
+        "name": "Objecion = Senal de Compra",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "5.5",
+        "world_id": 5,
+        "name": "RRR: Repite, Tranquiliza, Retoma",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "5.6",
+        "world_id": 5,
+        "name": "RRR en Vivo",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "v2.0.0 Nodo nuevo. El espejo castiga el silencio con la consecuencia real: el cliente saca otra duda, y otra, hasta agotar la conversacion. Ensena que la tercera erre no es opcional.",
+            "scope": {
+                "skills_in_focus": [
+                    "objections.rrr_objeciones",
+                    "flow.close_with_action"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 12,
+                "max_duration_seconds": 240,
+                "min_turns_before_evaluation": 3
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Tres movimientos y fijate sobre todo en el tercero. Repito lo que me dijo para que vea que lo escuche.\n\nLe doy la respuesta concreta. Y sigo de largo, en la misma respiracion, sin esperar a ver si le convencio.\n\nEse no esperar es todo.",
+                    "first_message": "Entiendo, le preocupa el plazo de entrega. Mire, dentro de la ciudad entregamos en veinticuatro horas y si pide antes de mediodia sale el mismo dia.\n\nY digame, cuantas cajas maneja usted normalmente al mes?"
+                },
+                "you_do": {
+                    "prompt": "Eres el dueno de un negocio, interesado en la propuesta pero con dudas normales. TU REGLA PRINCIPAL: sueltas objeciones MENORES y comunes, una a la vez: cuanto tardan en entregar / manejan credito o es de contado / y si me sale malo el producto / que pasa si necesito devolver algo. No son preocupaciones graves, son dudas de tramite. REACCIONAS ASI: si el vendedor DISCUTE o se pone a la defensiva, insistes en esa duda y no avanzas. Si el vendedor responde bien pero SE QUEDA CALLADO esperando tu reaccion, tu tomas el control: sacas otra duda distinta, y otra, y otra, hasta agotar la conversacion sin decidir nada. Si el vendedor repite tu duda, la responde y RETOMA de inmediato con otra pregunta o con su tema, aceptas la respuesta con naturalidad y sigues la conversacion hacia donde el la lleve. NUNCA saques preocupaciones graves ni personales en este ejercicio: solo dudas de tramite. Responde en 1 o 2 frases.",
+                    "objective": "El vendedor atraviesa cada objecion menor con los tres movimientos y retoma sin pausa, sosteniendo el control de la conversacion. El scope se cubre cuando el cliente acepta las respuestas y la conversacion avanza en lugar de convertirse en un interrogatorio de dudas."
+                },
+                "closing": {
+                    "message": "Eso es RRR. Repetiste para que viera que lo escuchaste, respondiste concreto, y seguiste sin pedir permiso. Fijate en lo que no paso: no se convirtio en una lista interminable de dudas. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esas dudas."
+                }
+            },
+            "version": "2.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "responde_y_espera",
+                    "regla_id": "objection.rrr_sin_resume",
+                    "severity": "critical",
+                    "description": "Contesta bien pero se queda callado esperando la reaccion. El cliente usa ese espacio para sacar otra duda, y la conversacion se vuelve un interrogatorio sin decision.",
+                    "severity_override": {
+                        "razon": "escalada: habilidad espejo del nodo",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "se_defiende",
+                    "regla_id": "objection.discutir",
+                    "severity": "major",
+                    "description": "Se pone a la defensiva o justifica de mas. La defensa confirma que hay algo que defender.",
+                    "severity_override": {
+                        "razon": "incidental: fuera del foco del nodo",
+                        "default": "critical"
+                    }
+                },
+                {
+                    "id": "no_repite",
+                    "regla_id": "objection.rrr",
+                    "severity": "minor",
+                    "description": "Contesta directo sin repetir la objecion. Correcto pero frio: el cliente no siente que lo escucharon."
+                },
+                {
+                    "id": "pide_aprobacion",
+                    "regla_id": "close.pide_aprobacion",
+                    "severity": "major",
+                    "description": "Pregunta si quedo claro, si le parece bien, si asi si. Le devuelve el control despues de haber respondido bien.",
+                    "severity_override": {
+                        "razon": "incidental: fuera del foco del nodo",
+                        "default": "critical"
+                    }
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "objections.rrr_objeciones",
+                    "weight": 0.6,
+                    "regla_id": "objection.rrr",
+                    "description": "Los tres movimientos por cada objecion: REPITE la objecion en sus terminos para mostrar que la escucho, TRANQUILIZA con una respuesta concreta y verificable, y RETOMA. No se defiende, no discute, no justifica de mas."
+                },
+                {
+                    "id": "flow.close_with_action",
+                    "weight": 0.4,
+                    "regla_id": "close_with_action",
+                    "description": "Despues de responder, avanza en la MISMA intervencion con una pregunta o retomando su tema. Cero pausa esperando reaccion, cero preguntar si quedo claro o si le parece bien."
+                }
+            ]
+        }
+    },
+    {
+        "id": "5.7",
+        "world_id": 5,
+        "name": "FFF: Cuando la Preocupacion Es de Verdad",
+        "node_type": "knowledge",
+        "practice_script": null
+    },
+    {
+        "id": "5.8",
+        "world_id": 5,
+        "name": "FFF en Vivo",
+        "node_type": "skill_drill",
+        "practice_script": {
+            "notes": "⚡ PRIMER NODO CON OBJECIÓN REAL — el prompt del Actor lo instruye explícitamente (correcto: el vendedor llegó aquí con 7.0/7.1 completados). Tres variantes aleatorias (caro/proveedor/consultar) con espejo de cuatro anti-patrones: defensa, evasión-AIR, cargador vaciado y descuento de pánico. air_a_objecion como critical entrena la distinción central del sistema: la herramienta correcta según la especie del no.",
+            "scope": {
+                "skills_in_focus": [
+                    "objections.reframe",
+                    "objections.no_defensivo",
+                    "objections.bullet_theory"
+                ],
+                "out_of_scope_behavior": "redirect"
+            },
+            "limits": {
+                "max_turns": 8,
+                "max_duration_seconds": 180,
+                "min_turns_before_evaluation": 2
+            },
+            "phases": {
+                "i_do": {
+                    "briefing": "Mira el reencuadre completo ante una objeción real. Cuatro pasos: recibo sin pelear, entiendo qué hay detrás, respondo con UNA bala, y avanzo.\n\nFíjate sobre todo en lo que NO hago: no me defiendo, no cambio de tema, no vacío el cargador.",
+                    "first_message": "El cliente me dice: Está caro, el otro me lo da más barato. Recibo: Claro, entiendo — el precio siempre hay que verlo con lupa.\n\nEntiendo: ¿Más barato el litro, o ya sacando el costo por servicio? Porque ahí está el detalle...\n\nRespondo con la bala: Este rinde para 11 servicios por caja contra 8 del estándar — el servicio le sale 12 pesos abajo, aunque el litro se vea más caro. Avanzo: ¿Trae a la mano lo que paga por caja?\n\nSáquelo conmigo y comparamos ahorita mismo. — Una objeción, una bala, y la conversación avanzando.\n\nSin defenderme, sin evadir."
+                },
+                "you_do": {
+                    "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor conectó tu dolor (elígelo: faltantes / dinero parado / algo que no consigues) y el producto te interesa GENUINAMENTE — pero tienes una objeción real que necesitas resolver antes de decidir. ELIGE UNA al azar y suéltala clara tras tu primera línea: (A) está caro, comparado con lo que pago ahorita / (B) es que ya tengo proveedor de años, y cambiarle me da cosa / (C) déjeme consultarlo con mi socio, yo no decido solo estas cosas. REGLAS ESPEJO: (1) Si el vendedor RECIBE sin pelear (validación genuina), ENTIENDE (pregunta qué hay detrás cuando aplica) y RESPONDE con UNA bala concreta y verificable, tu objeción se ablanda: reconoces el punto (pues visto así...) y avanzas — la decisión camina. (2) Si el vendedor SE DEFIENDE (se ofende, discute, justifica atropellado: es que no está caro, es que nosotros somos mejores), te atrincheras: repites la objeción con más firmeza y tu tono se enfría. (3) Si te EVADE con cambio de tema estilo AIR (claro, no se preocupe... oiga qué bien está su local), lo notas y lo dices: oiga, no me cambió el tema — le pregunté por el precio. Tu confianza baja. (4) Si vacía el cargador (3+ argumentos apilados en una respuesta), te abruma: bueno, bueno, tampoco me eche el rollo completo. (5) Si su bala es vaga o suena inventada, la retas: ¿a poco? ¿como quién? — y la vaguedad te enfría. (6) Ante el descuento de pánico (si es el caso A), hueles debilidad: ¿entonces sí estaba caro, no? Tu techo: objeción resuelta y decisión avanzando con una condición práctica.",
+                    "objective": "El vendedor recibe UNA objeción real y ejecuta el reencuadre completo: recibe sin pelear ni defenderse (validación genuina, no evasión), entiende qué hay detrás (pregunta aclaratoria cuando el motivo lo pide), responde con UNA bala concreta y verificable ajustada al tipo de objeción, y avanza la conversación hacia la decisión sin dejar la objeción enfriándose. El scope se cubre cuando el cliente reconoció el punto y la decisión avanzó."
+                },
+                "closing": {
+                    "message": "Objeción real, reencuadre real: la recibiste, la entendiste, le pusiste una bala enfrente y avanzaste. Ni te defendiste ni la evadiste. Así se les habla a los que te hablan en serio. Vamos al detalle.",
+                    "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
+                }
+            },
+            "version": "1.0.0",
+            "i_do_type": "demo",
+            "failure_criteria": [
+                {
+                    "id": "se_pone_defensivo",
+                    "regla_id": "objection.discutir",
+                    "severity": "critical",
+                    "description": "Discute, se justifica atropellado o se ofende ante la objeción (es que no está caro, es que usted no entiende) — confirma los miedos del cliente y lo atrinchera. El anti-patrón central del mundo."
+                },
+                {
+                    "id": "air_a_objecion",
+                    "regla_id": "objection.air_a_objecion",
+                    "severity": "critical",
+                    "description": "Aplica AIR a la objeción real: la valida y cambia de tema sin responderla. El cliente lo nota (no me cambió el tema) y la confianza se rompe — la herramienta del bloqueo usada donde tocaba respuesta de verdad."
+                },
+                {
+                    "id": "vacia_el_cargador",
+                    "regla_id": "objection.vacia_el_cargador",
+                    "severity": "major",
+                    "description": "Apila 3+ argumentos en una respuesta — abruma, ninguno pega, y se queda sin munición."
+                },
+                {
+                    "id": "impulso_falso",
+                    "regla_id": "present.bala_generica",
+                    "severity": "critical",
+                    "description": "Su bala es inventada o no aguanta el ¿a poco?: casos sin nombre, cuentas infladas, garantías que no existen.",
+                    "severity_override": {
+                        "razon": "escalada: habilidad espejo del nodo",
+                        "default": "major"
+                    }
+                },
+                {
+                    "id": "descuento_de_panico",
+                    "regla_id": "close.descuento_de_panico",
+                    "severity": "major",
+                    "description": "Ante el está caro, baja el precio en lugar de defender el valor con la cuenta — le confirma al cliente que sí estaba caro."
+                },
+                {
+                    "id": "monologo",
+                    "regla_id": "monologo",
+                    "severity": "minor",
+                    "description": "Responde la objeción con un bloque largo — el reencuadre es quirúrgico, no discurso."
+                }
+            ],
+            "success_criteria": [
+                {
+                    "id": "objections.reframe",
+                    "weight": 0.4,
+                    "regla_id": "objection.rrr",
+                    "description": "Ejecuta la secuencia completa: recibe con validación genuina, entiende el motivo (pregunta aclaratoria si aplica — ¿caro comparado con qué?), responde al contenido específico de la objeción, y avanza hacia la decisión en el mismo movimiento. Los cuatro pasos visibles."
+                },
+                {
+                    "id": "objections.no_defensivo",
+                    "weight": 0.3,
+                    "regla_id": "objection.discutir",
+                    "description": "Cero defensa y cero evasión: no discute, no se justifica atropellado, no se ofende, y NO aplica AIR (la objeción se responde, nunca se ignora con cambio de tema). Su calidez es idéntica antes y después de la objeción."
+                },
+                {
+                    "id": "objections.bullet_theory",
+                    "weight": 0.3,
+                    "regla_id": "present.balas",
+                    "description": "Su respuesta central es UNA bala concreta y verificable, ajustada al cargador correcto (precio→cuenta de costo por uso; proveedor→caso comparable o constancia propia; consultar→material concreto para el socio o cita con ambos) — nunca argumentos apilados ni aire declarativo."
+                }
+            ]
+        }
+    },
+    {
+        "id": "5.9",
+        "world_id": 5,
+        "name": "El Circulo de Cierre",
+        "node_type": "knowledge",
+        "practice_script": null
     },
     {
         "id": "5.10",
@@ -3518,332 +3844,6 @@
                 }
             ]
         }
-    },
-    {
-        "id": "5.2",
-        "world_id": 5,
-        "name": "Las Senales de Compra",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "5.3",
-        "world_id": 5,
-        "name": "Cerrar en el Pico",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "El drill del timing: la señal llega a MITAD del flujo del vendedor y el examen es soltar el guion. La curva del Actor baja de forma gradual y realista si la señal se ignora (tibio → déjeme pensarlo) — el vendedor siente el costo del pico perdido en vivo. sigue_presentando es critical: es la razón de ser del nodo.",
-            "scope": {
-                "skills_in_focus": [
-                    "closing.lectura_senales",
-                    "closing.cierre_asumido",
-                    "qualification.senales_compra"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 10,
-                "max_duration_seconds": 210,
-                "min_turns_before_evaluation": 3
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Esta es la disciplina más difícil del cierre: DEJAR DE PRESENTAR. Escucha — voy a la mitad de mi presentación cuando el cliente suelta la señal.\n\nFíjate lo que hago: no termino mi guion. Cierro ahí.",
-                    "first_message": "Voy presentando: ... y además del surtido semanal, el producto trae— y el cliente me interrumpe: ¿Y si le pido hoy, cuándo me estaría llegando?\n\n— ALTO. Esa es la señal: ya se está imaginando el pedido.\n\nMi guion traía tres beneficios más... y no los va a escuchar nadie: Le llega el lunes a primera hora.\n\n¿Le armo las 5 o el combo de 8? — Cerré a mitad de presentación.\n\nEl pico es del cliente, no de mi guion."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueño de un negocio interesado: la conversación viene bien, el vendedor conectó tu dolor (elígelo y menciónalo al abrir: faltantes / dinero parado / algo que no consigues) y está presentando su solución. TU MECÁNICA CENTRAL: cuando el vendedor lleve 2-3 turnos de presentación decente, SUELTA UNA SEÑAL DE COMPRA CLARA a mitad de su flujo — elige una: ¿y si le pido hoy cuándo me llega? / ¿ese combo cómo viene, con factura? / ¿y usted pasa cada semana o cómo le hago para resurtir? La sueltas con interés genuino: tu curva está en el pico. REGLAS ESPEJO: (1) Si el vendedor DETIENE su presentación al oír tu señal y cierra asumido ahí mismo, respondes eligiendo opción — decisión tomada, con gusto. (2) Si el vendedor responde tu pregunta PERO sigue presentando (te contesta lo del lunes y continúa: ...y además le decía que el producto también...), tu curva EMPIEZA A BAJAR: tu siguiente respuesta es más tibia (ah ok, sí, suena bien), y si insiste con más presentación, bajas a mmm, bueno, déjeme pensarlo entonces — el pico pasó y no vuelve. (3) Si nunca suelta el guion, la sesión muere en tu déjeme pensarlo. (4) Si cierra bien tras la señal pero con atropello (cantidades no platicadas), lo frenas suave y esperas la corrección.",
-                    "objective": "El vendedor presenta con normalidad Y detecta la señal de compra que el cliente suelta a mitad del flujo: DETIENE la presentación en ese instante (aunque le falte guion), responde lo puntual de la señal si aplica, y cierra asumido con opciones ahí mismo — cosechando el pico. El scope se cubre cuando el cierre ocurrió inmediatamente después de la señal y el cliente eligió opción."
-                },
-                "closing": {
-                    "message": "Dejaste guion sin decir — y esa es exactamente la victoria. El pico era del cliente, no de tu presentación. Lo viste, te callaste y cerraste. Eso separa a los que presentan bonito de los que venden. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como lees las senales. Vamos al desglose."
-                }
-            },
-            "version": "1.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "sigue_presentando",
-                    "regla_id": "close.sigue_presentando",
-                    "severity": "critical",
-                    "description": "Recibe la señal de compra y continúa presentando beneficios — deja pasar el pico. El asesino silencioso de ventas que este nodo existe para matar: sobre-presentar mata tantas ventas como presentar mal.",
-                    "severity_override": {
-                        "razon": "escalada: habilidad espejo del nodo",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "abre_puerta_al_no",
-                    "regla_id": "close.mal_cierre",
-                    "severity": "major",
-                    "description": "Detiene la presentación ante la señal... y remata con ¿le interesa? — vio el pico y lo regaló.",
-                    "severity_override": {
-                        "razon": "incidental: fuera del foco del nodo",
-                        "default": "critical"
-                    }
-                },
-                {
-                    "id": "atropello",
-                    "regla_id": "close.asume_con_presion",
-                    "severity": "minor",
-                    "description": "Cierra tras la señal pero asumiendo detalles nunca platicados.",
-                    "severity_override": {
-                        "razon": "incidental: fuera del foco del nodo",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "ignora_pistas",
-                    "regla_id": "discovery.escalera_capas",
-                    "severity": "major",
-                    "description": "Despacha la pregunta del cliente con un dato seco y vuelve al guion sin capitalizarla."
-                },
-                {
-                    "id": "monologo",
-                    "regla_id": "monologo",
-                    "severity": "minor",
-                    "description": "Sus turnos de presentación son bloques largos — con menos aire para que la señal aparezca y se escuche."
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "closing.lectura_senales",
-                    "weight": 0.4,
-                    "regla_id": "close.fishbbod",
-                    "description": "Detecta la señal de compra en el momento en que aparece — su turno inmediatamente posterior cambia de presentar a cerrar. La velocidad de reacción es el criterio: señal → cierre, sin beneficios extra en medio."
-                },
-                {
-                    "id": "closing.cierre_asumido",
-                    "weight": 0.35,
-                    "regla_id": "close.alternativa",
-                    "description": "El cierre tras la señal es asumido con opciones concretas — responde lo puntual de la señal (el dato del lunes) y pregunta la decisión chica, sin reabrir la grande."
-                },
-                {
-                    "id": "qualification.senales_compra",
-                    "weight": 0.25,
-                    "regla_id": "close.fishbbod",
-                    "description": "Trata la pregunta del cliente como lo que es — una señal, no una interrupción: la respuesta la honra (contesta el dato) y la capitaliza (cierra), en lugar de despacharla para volver al guion."
-                }
-            ]
-        }
-    },
-    {
-        "id": "5.4",
-        "world_id": 5,
-        "name": "Objecion = Senal de Compra",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "5.5",
-        "world_id": 5,
-        "name": "RRR: Repite, Tranquiliza, Retoma",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "5.6",
-        "world_id": 5,
-        "name": "RRR en Vivo",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "v2.0.0 Nodo nuevo. El espejo castiga el silencio con la consecuencia real: el cliente saca otra duda, y otra, hasta agotar la conversacion. Ensena que la tercera erre no es opcional.",
-            "scope": {
-                "skills_in_focus": [
-                    "objections.rrr_objeciones",
-                    "flow.close_with_action"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 12,
-                "max_duration_seconds": 240,
-                "min_turns_before_evaluation": 3
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Tres movimientos y fijate sobre todo en el tercero. Repito lo que me dijo para que vea que lo escuche.\n\nLe doy la respuesta concreta. Y sigo de largo, en la misma respiracion, sin esperar a ver si le convencio.\n\nEse no esperar es todo.",
-                    "first_message": "Entiendo, le preocupa el plazo de entrega. Mire, dentro de la ciudad entregamos en veinticuatro horas y si pide antes de mediodia sale el mismo dia.\n\nY digame, cuantas cajas maneja usted normalmente al mes?"
-                },
-                "you_do": {
-                    "prompt": "Eres el dueno de un negocio, interesado en la propuesta pero con dudas normales. TU REGLA PRINCIPAL: sueltas objeciones MENORES y comunes, una a la vez: cuanto tardan en entregar / manejan credito o es de contado / y si me sale malo el producto / que pasa si necesito devolver algo. No son preocupaciones graves, son dudas de tramite. REACCIONAS ASI: si el vendedor DISCUTE o se pone a la defensiva, insistes en esa duda y no avanzas. Si el vendedor responde bien pero SE QUEDA CALLADO esperando tu reaccion, tu tomas el control: sacas otra duda distinta, y otra, y otra, hasta agotar la conversacion sin decidir nada. Si el vendedor repite tu duda, la responde y RETOMA de inmediato con otra pregunta o con su tema, aceptas la respuesta con naturalidad y sigues la conversacion hacia donde el la lleve. NUNCA saques preocupaciones graves ni personales en este ejercicio: solo dudas de tramite. Responde en 1 o 2 frases.",
-                    "objective": "El vendedor atraviesa cada objecion menor con los tres movimientos y retoma sin pausa, sosteniendo el control de la conversacion. El scope se cubre cuando el cliente acepta las respuestas y la conversacion avanza en lugar de convertirse en un interrogatorio de dudas."
-                },
-                "closing": {
-                    "message": "Eso es RRR. Repetiste para que viera que lo escuchaste, respondiste concreto, y seguiste sin pedir permiso. Fijate en lo que no paso: no se convirtio en una lista interminable de dudas. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esas dudas."
-                }
-            },
-            "version": "2.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "responde_y_espera",
-                    "regla_id": "objection.rrr_sin_resume",
-                    "severity": "critical",
-                    "description": "Contesta bien pero se queda callado esperando la reaccion. El cliente usa ese espacio para sacar otra duda, y la conversacion se vuelve un interrogatorio sin decision.",
-                    "severity_override": {
-                        "razon": "escalada: habilidad espejo del nodo",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "se_defiende",
-                    "regla_id": "objection.discutir",
-                    "severity": "major",
-                    "description": "Se pone a la defensiva o justifica de mas. La defensa confirma que hay algo que defender.",
-                    "severity_override": {
-                        "razon": "incidental: fuera del foco del nodo",
-                        "default": "critical"
-                    }
-                },
-                {
-                    "id": "no_repite",
-                    "regla_id": "objection.rrr",
-                    "severity": "minor",
-                    "description": "Contesta directo sin repetir la objecion. Correcto pero frio: el cliente no siente que lo escucharon."
-                },
-                {
-                    "id": "pide_aprobacion",
-                    "regla_id": "close.pide_aprobacion",
-                    "severity": "major",
-                    "description": "Pregunta si quedo claro, si le parece bien, si asi si. Le devuelve el control despues de haber respondido bien.",
-                    "severity_override": {
-                        "razon": "incidental: fuera del foco del nodo",
-                        "default": "critical"
-                    }
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "objections.rrr_objeciones",
-                    "weight": 0.6,
-                    "regla_id": "objection.rrr",
-                    "description": "Los tres movimientos por cada objecion: REPITE la objecion en sus terminos para mostrar que la escucho, TRANQUILIZA con una respuesta concreta y verificable, y RETOMA. No se defiende, no discute, no justifica de mas."
-                },
-                {
-                    "id": "flow.close_with_action",
-                    "weight": 0.4,
-                    "regla_id": "close_with_action",
-                    "description": "Despues de responder, avanza en la MISMA intervencion con una pregunta o retomando su tema. Cero pausa esperando reaccion, cero preguntar si quedo claro o si le parece bien."
-                }
-            ]
-        }
-    },
-    {
-        "id": "5.7",
-        "world_id": 5,
-        "name": "FFF: Cuando la Preocupacion Es de Verdad",
-        "node_type": "knowledge",
-        "practice_script": null
-    },
-    {
-        "id": "5.8",
-        "world_id": 5,
-        "name": "FFF en Vivo",
-        "node_type": "skill_drill",
-        "practice_script": {
-            "notes": "⚡ PRIMER NODO CON OBJECIÓN REAL — el prompt del Actor lo instruye explícitamente (correcto: el vendedor llegó aquí con 7.0/7.1 completados). Tres variantes aleatorias (caro/proveedor/consultar) con espejo de cuatro anti-patrones: defensa, evasión-AIR, cargador vaciado y descuento de pánico. air_a_objecion como critical entrena la distinción central del sistema: la herramienta correcta según la especie del no.",
-            "scope": {
-                "skills_in_focus": [
-                    "objections.reframe",
-                    "objections.no_defensivo",
-                    "objections.bullet_theory"
-                ],
-                "out_of_scope_behavior": "redirect"
-            },
-            "limits": {
-                "max_turns": 8,
-                "max_duration_seconds": 180,
-                "min_turns_before_evaluation": 2
-            },
-            "phases": {
-                "i_do": {
-                    "briefing": "Mira el reencuadre completo ante una objeción real. Cuatro pasos: recibo sin pelear, entiendo qué hay detrás, respondo con UNA bala, y avanzo.\n\nFíjate sobre todo en lo que NO hago: no me defiendo, no cambio de tema, no vacío el cargador.",
-                    "first_message": "El cliente me dice: Está caro, el otro me lo da más barato. Recibo: Claro, entiendo — el precio siempre hay que verlo con lupa.\n\nEntiendo: ¿Más barato el litro, o ya sacando el costo por servicio? Porque ahí está el detalle...\n\nRespondo con la bala: Este rinde para 11 servicios por caja contra 8 del estándar — el servicio le sale 12 pesos abajo, aunque el litro se vea más caro. Avanzo: ¿Trae a la mano lo que paga por caja?\n\nSáquelo conmigo y comparamos ahorita mismo. — Una objeción, una bala, y la conversación avanzando.\n\nSin defenderme, sin evadir."
-                },
-                "you_do": {
-                    "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor conectó tu dolor (elígelo: faltantes / dinero parado / algo que no consigues) y el producto te interesa GENUINAMENTE — pero tienes una objeción real que necesitas resolver antes de decidir. ELIGE UNA al azar y suéltala clara tras tu primera línea: (A) está caro, comparado con lo que pago ahorita / (B) es que ya tengo proveedor de años, y cambiarle me da cosa / (C) déjeme consultarlo con mi socio, yo no decido solo estas cosas. REGLAS ESPEJO: (1) Si el vendedor RECIBE sin pelear (validación genuina), ENTIENDE (pregunta qué hay detrás cuando aplica) y RESPONDE con UNA bala concreta y verificable, tu objeción se ablanda: reconoces el punto (pues visto así...) y avanzas — la decisión camina. (2) Si el vendedor SE DEFIENDE (se ofende, discute, justifica atropellado: es que no está caro, es que nosotros somos mejores), te atrincheras: repites la objeción con más firmeza y tu tono se enfría. (3) Si te EVADE con cambio de tema estilo AIR (claro, no se preocupe... oiga qué bien está su local), lo notas y lo dices: oiga, no me cambió el tema — le pregunté por el precio. Tu confianza baja. (4) Si vacía el cargador (3+ argumentos apilados en una respuesta), te abruma: bueno, bueno, tampoco me eche el rollo completo. (5) Si su bala es vaga o suena inventada, la retas: ¿a poco? ¿como quién? — y la vaguedad te enfría. (6) Ante el descuento de pánico (si es el caso A), hueles debilidad: ¿entonces sí estaba caro, no? Tu techo: objeción resuelta y decisión avanzando con una condición práctica.",
-                    "objective": "El vendedor recibe UNA objeción real y ejecuta el reencuadre completo: recibe sin pelear ni defenderse (validación genuina, no evasión), entiende qué hay detrás (pregunta aclaratoria cuando el motivo lo pide), responde con UNA bala concreta y verificable ajustada al tipo de objeción, y avanza la conversación hacia la decisión sin dejar la objeción enfriándose. El scope se cubre cuando el cliente reconoció el punto y la decisión avanzó."
-                },
-                "closing": {
-                    "message": "Objeción real, reencuadre real: la recibiste, la entendiste, le pusiste una bala enfrente y avanzaste. Ni te defendiste ni la evadiste. Así se les habla a los que te hablan en serio. Vamos al detalle.",
-                    "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
-                }
-            },
-            "version": "1.0.0",
-            "i_do_type": "demo",
-            "failure_criteria": [
-                {
-                    "id": "se_pone_defensivo",
-                    "regla_id": "objection.discutir",
-                    "severity": "critical",
-                    "description": "Discute, se justifica atropellado o se ofende ante la objeción (es que no está caro, es que usted no entiende) — confirma los miedos del cliente y lo atrinchera. El anti-patrón central del mundo."
-                },
-                {
-                    "id": "air_a_objecion",
-                    "regla_id": "objection.air_a_objecion",
-                    "severity": "critical",
-                    "description": "Aplica AIR a la objeción real: la valida y cambia de tema sin responderla. El cliente lo nota (no me cambió el tema) y la confianza se rompe — la herramienta del bloqueo usada donde tocaba respuesta de verdad."
-                },
-                {
-                    "id": "vacia_el_cargador",
-                    "regla_id": "objection.vacia_el_cargador",
-                    "severity": "major",
-                    "description": "Apila 3+ argumentos en una respuesta — abruma, ninguno pega, y se queda sin munición."
-                },
-                {
-                    "id": "impulso_falso",
-                    "regla_id": "present.bala_generica",
-                    "severity": "critical",
-                    "description": "Su bala es inventada o no aguanta el ¿a poco?: casos sin nombre, cuentas infladas, garantías que no existen.",
-                    "severity_override": {
-                        "razon": "escalada: habilidad espejo del nodo",
-                        "default": "major"
-                    }
-                },
-                {
-                    "id": "descuento_de_panico",
-                    "regla_id": "close.descuento_de_panico",
-                    "severity": "major",
-                    "description": "Ante el está caro, baja el precio en lugar de defender el valor con la cuenta — le confirma al cliente que sí estaba caro."
-                },
-                {
-                    "id": "monologo",
-                    "regla_id": "monologo",
-                    "severity": "minor",
-                    "description": "Responde la objeción con un bloque largo — el reencuadre es quirúrgico, no discurso."
-                }
-            ],
-            "success_criteria": [
-                {
-                    "id": "objections.reframe",
-                    "weight": 0.4,
-                    "regla_id": "objection.rrr",
-                    "description": "Ejecuta la secuencia completa: recibe con validación genuina, entiende el motivo (pregunta aclaratoria si aplica — ¿caro comparado con qué?), responde al contenido específico de la objeción, y avanza hacia la decisión en el mismo movimiento. Los cuatro pasos visibles."
-                },
-                {
-                    "id": "objections.no_defensivo",
-                    "weight": 0.3,
-                    "regla_id": "objection.discutir",
-                    "description": "Cero defensa y cero evasión: no discute, no se justifica atropellado, no se ofende, y NO aplica AIR (la objeción se responde, nunca se ignora con cambio de tema). Su calidez es idéntica antes y después de la objeción."
-                },
-                {
-                    "id": "objections.bullet_theory",
-                    "weight": 0.3,
-                    "regla_id": "present.balas",
-                    "description": "Su respuesta central es UNA bala concreta y verificable, ajustada al cargador correcto (precio→cuenta de costo por uso; proveedor→caso comparable o constancia propia; consultar→material concreto para el socio o cita con ambos) — nunca argumentos apilados ni aire declarativo."
-                }
-            ]
-        }
-    },
-    {
-        "id": "5.9",
-        "world_id": 5,
-        "name": "El Circulo de Cierre",
-        "node_type": "knowledge",
-        "practice_script": null
     },
     {
         "id": "6.0",
