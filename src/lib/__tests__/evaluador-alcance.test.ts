@@ -164,3 +164,9 @@ describe("Criterios condicionados a una situación o a una reacción", () => {
   });
 });
 
+describe("Veredictos siempre", () => {
+  it("aunque no haya intento de venta, manda veredictos (todos no_cumple)", () => {
+    expect(fn).toMatch(/Devuélvelos SIEMPRE, aunque no haya ningún intento de venta/);
+  });
+});
+

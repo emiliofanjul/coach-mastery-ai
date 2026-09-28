@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.1.0",
+  "harness_version": "v3.2.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -521,13 +521,11 @@
           "pregunta_cerrada",
           "sin_pregunta"
         ],
-        "feedback_must_not_contain": [
-          "signo de interrogación",
-          "signo de interrogacion",
-          "signos de interrogación",
-          "termine en signo"
-        ],
-        "rationale": "La puntuación no es evidencia: el cliente contestó, el turno devolvió la palabra."
+        "rationale": "La puntuación no es evidencia: el cliente contestó, el turno devolvió la palabra.",
+        "niveles_esperados": {
+          "opening.estructura_apertura": "cumple"
+        },
+        "nota_v2": "Se revisa la decisión (la estructura se cumple), no la redacción: el evaluador puede —y debe— explicar que contó como pregunta 'aunque no tuviera signos'. La trampa universal sigue vigilando que no le pida al vendedor puntuación."
       }
     },
     {
@@ -1036,23 +1034,31 @@
         },
         {
           "role": "assistant",
-          "text": "Jaja, le gusta, quiere estudiar farmacia. Pero bueno, ya le dije que no necesito nada."
+          "text": "Jaja, le gusta; quiere estudiar farmacia."
         },
         {
           "role": "user",
-          "text": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?"
+          "text": "Pues ya tiene quién la siga. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?"
         },
         {
           "role": "assistant",
-          "text": "Uf, muchísimo. Antes todo era de patente; ahora la gente llega preguntando por genéricos."
+          "text": "Uf, muchísimo. Antes todo era de patente. Pero bueno, ya le dije que no necesito nada."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo, y está bien. ¿Y cómo le hace para atender sola entre semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues con mucha paciencia, jaja. Entre semana me ayuda una muchacha en las tardes."
         }
       ],
       "traza": {
         "blocks.air": "Claro que sí, Doña Elena.",
         "story.historia_breve": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste, en Veracruz; ando conociendo las farmacias independientes de la zona",
         "story.brevedad": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste",
-        "relationship.cpr": "¡Tres generaciones! ¿Y a su nieto sí le late el negocio?",
-        "flow.close_with_action": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?"
+        "relationship.cpr": "Pues ya tiene quién la siga. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?",
+        "flow.close_with_action": "Entiendo, y está bien. ¿Y cómo le hace para atender sola entre semana?"
       },
       "expected": {
         "score_range": [

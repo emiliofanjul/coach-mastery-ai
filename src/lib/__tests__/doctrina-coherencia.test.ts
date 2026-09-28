@@ -190,6 +190,16 @@ describe("Identificarse está definido", () => {
   it("el ice breaker se juzga por lo que dice el vendedor, nunca por la reacción", () => {
     expect((porId.get("opening.ice_breaker") as any)?.resumen ?? "").toMatch(/nunca por la reacción del cliente/);
   });
+  it("presentarse se define en primera persona, sin pronombres ambiguos", () => {
+    for (const id of ["opening.curiosidad_abierta", "opening.identificacion_prematura"]) {
+      const r = String(porId.get(id)?.resumen ?? "");
+      expect(r).toMatch(/EN PRIMERA PERSONA/);
+      expect(r).not.toMatch(/TU nombre/);
+    }
+  });
+  it("la especificidad no mide la ligereza", () => {
+    expect((porId.get("opening.especificidad") as any)?.resumen ?? "").toMatch(/NO mide si el comentario es ligero o si suena a inspección/);
+  });
   it("el escalón 3 no se ofrece sin historia real", () => {
     expect((porId.get("opening.especificidad") as any)?.resumen ?? "").toMatch(/no está disponible/);
   });
