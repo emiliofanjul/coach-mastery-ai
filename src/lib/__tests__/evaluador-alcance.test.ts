@@ -152,3 +152,15 @@ describe("Los niveles se deciden por piezas, no por impresión", () => {
   });
 });
 
+describe("Criterios condicionados a una situación o a una reacción", () => {
+  it("si la situación no se presentó, el criterio se cumple", () => {
+    expect(fn).toMatch(/y esa situación NO se presentó en la conversación, no hay pieza faltante: el criterio se CUMPLE/);
+  });
+  it("una reacción del cliente 'máxima' confirma, no es requisito", () => {
+    expect(fn).toMatch(/esa reacción confirma, pero no es requisito para cumplir/);
+  });
+  it("nunca inventar una falta del vendedor", () => {
+    expect(fn).toMatch(/Nunca atribuyas al vendedor una falta que no esté en el transcript/);
+  });
+});
+

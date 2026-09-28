@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.0.0-mundos-2-3",
+  "harness_version": "v3.1.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -606,7 +606,7 @@
     {
       "id": "G26_especifica_pero_plana",
       "node_id": "1.6",
-      "description": "Apertura específica pero sin ligereza. Usa el nombre DEL CLIENTE y no se presenta. Vigila dos errores reales del evaluador (sept-2026): confundir el nombre del cliente con presentarse, e inventar un recuerdo o una relación.",
+      "description": "Apertura con un comentario ligero sobre el lugar, usando el nombre DEL CLIENTE y sin presentarse. Según el Cerebro ('cumplido genuino, chiste sencillo o comentario ligero') cumple el ice breaker. Vigila dos errores reales del evaluador: leer el nombre del cliente como si el vendedor se presentara, e inventar un recuerdo. (El nombre del caso es histórico: se escribió siguiendo un texto del nodo 1.6 que contradecía al Cerebro.)",
       "transcript": [
         {
           "role": "user",
@@ -615,8 +615,8 @@
       ],
       "expected": {
         "score_range": [
-          75,
-          90
+          85,
+          100
         ],
         "must_cite_positive": [
           "opening.personalizacion",
@@ -645,9 +645,10 @@
         "rationale_v3": "Se verifica la decisión (que no critique la curiosidad abierta, porque el vendedor no se presentó), no la redacción: los patrones de negación fallaban con 'ni te presentaste', 'tampoco…', etc.",
         "niveles_esperados": {
           "opening.personalizacion": "cumple",
-          "opening.ice_breaker": "no_cumple"
+          "opening.ice_breaker": "cumple",
+          "opening.curiosidad_abierta": "cumple"
         },
-        "cuenta": "El nodo 1.6 dice textual: 'un comentario meramente descriptivo no cumple'. La frase no trae humor, guiño ni calidez en las palabras: no_cumple (el ice breaker es una lista de opciones, no tiene punto medio). Todo lo demás cumplido: 100 − 15 = 85. Si la curiosidad queda a medias, 77.5."
+        "cuenta": "Todos los criterios cumplidos: 100. El vendedor no dijo su nombre ni el de su empresa: la curiosidad se cumple."
       }
     },
     {
@@ -683,6 +684,29 @@
           "opening.ice_breaker"
         ],
         "rationale_v2": "Mismo motivo que G26: un patrón habría castigado 'aunque no le hizo gracia, tu ejecución fue correcta', que es justo el comportamiento correcto. Se verifica que no critique el ice breaker."
+      }
+    },
+    {
+      "id": "G28_especifica_suena_a_inspeccion",
+      "node_id": "1.6",
+      "description": "Específica pero sin ligereza: el ejemplo del propio Cerebro de un comentario que suena a inspección. Prueba que especificidad y ligereza se miden por separado.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días Don Ramón! Veo que tiene cuatro cajas de filtros de una marca y dos de otra en el anaquel. ¿Usted mismo lo acomoda?"
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "opening.personalizacion": "cumple",
+          "opening.ice_breaker": "no_cumple"
+        },
+        "must_not_flag": [
+          "pitch_prematuro",
+          "se_disculpa",
+          "pide_permiso"
+        ],
+        "rationale": "Cerebro: 'Veo que tiene cuatro cajas de filtros de una marca y dos de otra es muy específico, y suena a inspección.'"
       }
     },
     {
@@ -1016,11 +1040,11 @@
         },
         {
           "role": "user",
-          "text": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado el barrio?"
+          "text": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?"
         },
         {
           "role": "assistant",
-          "text": "Uf, antes era pura casa; ahora hay oficinas y mucha gente de paso."
+          "text": "Uf, muchísimo. Antes todo era de patente; ahora la gente llega preguntando por genéricos."
         }
       ],
       "traza": {
@@ -1028,7 +1052,7 @@
         "story.historia_breve": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste, en Veracruz; ando conociendo las farmacias independientes de la zona",
         "story.brevedad": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste",
         "relationship.cpr": "¡Tres generaciones! ¿Y a su nieto sí le late el negocio?",
-        "flow.close_with_action": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado el barrio?"
+        "flow.close_with_action": "Entiendo, y está bien. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?"
       },
       "expected": {
         "score_range": [
@@ -1234,6 +1258,14 @@
         },
         {
           "role": "user",
+          "text": "¿Y qué pasa con esos chavos después?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues varios ya se quedaron comprando allá, porque ahí siempre hay. Esos ya no regresan."
+        },
+        {
+          "role": "user",
           "text": "¿Y quién le surte las energéticas ahorita?"
         },
         {
@@ -1243,7 +1275,7 @@
       ],
       "traza": {
         "discovery.escucha_activa": "¿El taller de bicis de su hijo? ¿Y esos chavos qué le compran cuando vienen?",
-        "discovery.preguntas_capas": "¿Qué pasa cuando ya no le alcanza en la tarde?"
+        "discovery.preguntas_capas": "¿Y qué pasa con esos chavos después?"
       },
       "expected": {
         "score_range": [

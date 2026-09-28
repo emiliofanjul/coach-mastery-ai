@@ -1,17 +1,3 @@
--- ============================================================
--- Dos criterios de la apertura que contradecían la doctrina (red de sept-2026):
---
--- 1. curiosidad_abierta decía "si el cliente termina preguntando quién es, es
---    el máximo". En conversaciones donde el cliente aún no pregunta, el
---    evaluador sentía que faltaba algo e INVENTABA una falta del vendedor
---    ("se presentó usando el nombre del cliente", "se identificó con 'sir'").
---    Doctrina: la reacción del cliente confirma, nunca condena. El vendedor
---    cumple si no dijo su nombre ni el de su empresa.
--- 2. El ice breaker del 1.6 decía "un comentario meramente descriptivo no
---    cumple"; el Cerebro dice "cumplido genuino, chiste sencillo o comentario
---    ligero". El evaluador se volteaba entre los dos. Manda el Cerebro: no
---    cumple lo que suena a inspección (su propio ejemplo).
--- ============================================================
 CREATE OR REPLACE FUNCTION pg_temp.apertura_v3(ps jsonb, nodo text) RETURNS jsonb LANGUAGE plpgsql AS $$
 DECLARE c jsonb; out jsonb := '[]'::jsonb;
 BEGIN

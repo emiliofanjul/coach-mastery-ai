@@ -195,6 +195,18 @@ describe("Identificarse está definido", () => {
   });
 });
 
+describe("El crédito no depende de la reacción del cliente", () => {
+  // Sept-2026: "si el cliente termina preguntando quién es, es el máximo" hacía
+  // que el evaluador inventara faltas del vendedor cuando el cliente no
+  // preguntaba. La reacción confirma, nunca condena.
+  it("ningún criterio de éxito dice que una reacción del cliente es 'el máximo'", () => {
+    const malos = nodos.flatMap((n) =>
+      criterios(n).filter((c) => c._tipo === "success" && /es el m[aá]ximo/i.test(String(c.description ?? ""))).map((c) => `${n.id}:${c.id}`),
+    );
+    expect(malos).toEqual([]);
+  });
+});
+
 describe("Ningún nodo repite una descripción", () => {
   // Sept-2026: en el 3.3, preguntas_capas traía copiada la descripción de
   // escucha_activa. El evaluador calificaba dos veces la escucha y nunca las capas.
