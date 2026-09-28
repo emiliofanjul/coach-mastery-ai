@@ -230,10 +230,11 @@ CÓMO SE CALIFICA — tú decides, el código suma:
 Tú NO calculas el score final. Das una decisión por cada criterio de éxito, detectas los flags, y el código suma con una rúbrica fija. Así la misma ejecución recibe siempre la misma nota.
 
 PASO 1 — VEREDICTO POR CRITERIO. Para CADA success_criterion evaluable (sin requires_audio) devuelve en "veredictos_criterios" uno de:
-- "cumple": el vendedor ejecutó lo que la descripción del criterio pide.
-- "parcial": lo intentó y lo hizo a medias.
-- "no_cumple": no lo hizo.
-Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especificidad), agrega "escalon": 1, 2 o 3 según el escalón en que quedó. Recuerda: calidad baja no es falla — va aquí como "parcial" o escalón bajo, nunca como flag.
+- "cumple": está TODO lo que la descripción del criterio pide.
+- "parcial": está una parte, y falta otra que la descripción NOMBRA — una pieza o una cualidad que la descripción exige.
+- "no_cumple": no está ninguna parte.
+Los niveles se deciden por PIEZAS, nunca por impresión. Antes de elegir "parcial", nombra la pieza que falta; si no puedes señalar una pieza que la descripción pida y que no esté, es "cumple". Si la descripción ofrece OPCIONES ("humor suave, un guiño o calidez"), con UNA basta para cumplir, y si no hay ninguna es "no_cumple": una lista de opciones no tiene punto medio. Cuando elijas "parcial" o "no_cumple", di en "falta" qué pieza falta, en pocas palabras.
+Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especificidad), agrega "escalon": 1, 2 o 3 según el escalón en que quedó: en las escaleras la calidad SÍ se mide, por escalones. Recuerda: calidad baja no es falla — nunca va como flag.
 
 PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara, con su cita literal. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
 
@@ -291,7 +292,7 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
     }
   ],
   "veredictos_criterios": [
-    { "criterio_id": "<id de success_criteria>", "nivel": "cumple | parcial | no_cumple", "escalon": <1|2|3, SOLO si el criterio es una escalera> }
+    { "criterio_id": "<id de success_criteria>", "nivel": "cumple | parcial | no_cumple", "escalon": <1|2|3, SOLO si el criterio es una escalera>, "falta": "<SOLO si es parcial o no_cumple: la pieza que falta>" }
   ],
   "score": <entero 0-100, tu estimado; la nota final la calcula el código>,
   "observations": [
