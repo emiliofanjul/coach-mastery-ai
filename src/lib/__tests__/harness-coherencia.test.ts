@@ -151,6 +151,9 @@ describe("Harness: hay un caso por cada error encontrado practicando", () => {
   it("buen ice breaker con cliente frío (la reacción no condena)", () => {
     expect(ids.has("G27_buen_ice_breaker_cliente_frio")).toBe(true);
   });
+  it("específica pero suena a inspección (especificidad y ligereza separadas)", () => {
+    expect(ids.has("G28_especifica_suena_a_inspeccion")).toBe(true);
+  });
   it("curiosidad abierta", () => {
     expect(ids.has("G23_curiosidad_abierta")).toBe(true);
   });
