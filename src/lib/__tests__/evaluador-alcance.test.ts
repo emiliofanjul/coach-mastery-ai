@@ -138,3 +138,17 @@ describe("La rúbrica: el modelo decide por criterio, el código suma", () => {
   });
 });
 
+describe("Los niveles se deciden por piezas, no por impresión", () => {
+  it("parcial exige una pieza que la descripción nombra", () => {
+    expect(fn).toMatch(/Los niveles se deciden por PIEZAS, nunca por impresión/);
+    expect(fn).toMatch(/si no puedes señalar una pieza que la descripción pida y que no esté, es "cumple"/);
+    expect(fn).not.toMatch(/lo intentó y lo hizo a medias/);
+  });
+  it("una lista de opciones no tiene punto medio", () => {
+    expect(fn).toMatch(/una lista de opciones no tiene punto medio/);
+  });
+  it("el contrato pide qué falta", () => {
+    expect(fn).toMatch(/"falta": "<SOLO si es parcial o no_cumple/);
+  });
+});
+

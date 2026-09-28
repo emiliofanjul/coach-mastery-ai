@@ -50,7 +50,7 @@ function stringifyAll(obj: any): string {
   try { return JSON.stringify(obj).toLowerCase(); } catch { return String(obj).toLowerCase(); }
 }
 
-async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string): Promise<any> {
+async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string): Promise<any> {
   const conversation_history = transcript.map((t) => ({
     role: t.role === "assistant" ? "assistant" : "user",
     content: t.text,
@@ -66,7 +66,9 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
       node_id: nodeId,
       practice_script,
       conversation_history,
-      company_brain: "Taller mecánico, distribución de aceites Bardahl",
+      // Cada caso puede declarar su empresa: la red debe probar la doctrina en
+      // cualquier industria, no premiar el vocabulario de un solo cliente.
+      company_brain: companyBrain ?? "Taller mecánico, distribución de aceites Bardahl",
       seller_name: "Vendedor",
       session_id: `harness-${crypto.randomUUID()}`,
     }),
@@ -173,7 +175,10 @@ function evaluateCase(c: Case, response: any): CaseResult {
   for (const list of forbidLists) {
     if (!Array.isArray(list)) continue;
     for (const s of list) {
-      if (dump.includes(String(s).toLowerCase())) reasons.push(`forbidden string present: "${s}"`);
+      const at = dump.indexOf(String(s).toLowerCase());
+      // Con el fragmento alrededor: no es lo mismo inventar un recuerdo en un
+      // ejemplo que mencionarlo en una explicación.
+      if (at >= 0) reasons.push(`forbidden string present: "${s}" en «…${dump.slice(Math.max(0, at - 70), at + String(s).length + 70)}…»`);
     }
   }
 
@@ -248,7 +253,8 @@ function evaluateCase(c: Case, response: any): CaseResult {
     score: typeof parsed.score === "number" ? parsed.score : null,
     veredictos: desgloseCrit.map((d: any) => {
       const n = nivelDe(Number(d.credito ?? 0));
-      return `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;
+      const base = `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;
+      return d.falta ? `${base}(falta: ${String(d.falta).slice(0, 60)})` : base;
     }),
   };
 }
@@ -372,7 +378,7 @@ Deno.serve(async (req) => {
       const runResults: any[] = [];
       for (let i = 0; i < runs; i++) {
         try {
-          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey);
+          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain);
           runResults.push(resp);
         } catch (e) {
           runResults.push({ status: 0, parsed: null, raw: String(e) });

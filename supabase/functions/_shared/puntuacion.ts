@@ -88,6 +88,8 @@ export interface LineaDesglose {
   nivel: string;
   escalon?: number;
   credito: number;
+  /** La pieza que el evaluador dijo que falta (parcial o no_cumple). */
+  falta?: string;
 }
 export interface Resta {
   flag: string;
@@ -154,7 +156,8 @@ export function calcularScore(args: {
     }
     sumaPesos += peso;
     sumaCredito += peso * credito;
-    desglose.push({ criterio_id: c.id, peso, nivel, ...(escalon ? { escalon } : {}), credito: Math.round(credito * 1000) / 1000 });
+    const falta = v && typeof v.falta === "string" && v.falta.trim() && credito < 1 ? v.falta.trim().slice(0, 120) : undefined;
+    desglose.push({ criterio_id: c.id, peso, nivel, ...(escalon ? { escalon } : {}), credito: Math.round(credito * 1000) / 1000, ...(falta ? { falta } : {}) });
   }
   const base = sumaPesos > 0 ? Math.round((100 * sumaCredito) / sumaPesos) : 0;
 

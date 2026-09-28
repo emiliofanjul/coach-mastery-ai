@@ -109,3 +109,21 @@ describe("La promesa: mismas decisiones, misma nota", () => {
     expect(notas.size).toBe(1);
   });
 });
+
+describe("El desglose dice qué pieza falta", () => {
+  it("conserva 'falta' en parcial y no_cumple, y lo descarta si se cumplió", () => {
+    const r = calcularScore({
+      veredictos: [
+        { criterio_id: "opening.estructura_apertura", nivel: "parcial", falta: "la pregunta final" },
+        { criterio_id: "opening.personalizacion", nivel: "cumple", escalon: 2, falta: "nada" },
+        { criterio_id: "opening.curiosidad_abierta", nivel: "no_cumple", falta: "se presentó de entrada" },
+      ],
+      successCriteria: exito12, flags: [], failureCriteria: fallas12,
+    });
+    const f = (id: string) => r.desglose.find((d) => d.criterio_id === id)?.falta;
+    expect(f("opening.estructura_apertura")).toBe("la pregunta final");
+    expect(f("opening.curiosidad_abierta")).toBe("se presentó de entrada");
+    expect(f("opening.personalizacion")).toBeUndefined();
+  });
+});
+

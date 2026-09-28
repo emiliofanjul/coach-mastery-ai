@@ -194,6 +194,45 @@ describe("Harness: prueba de generalización", () => {
   });
 });
 
+describe("Ejecuciones perfectas: auditables contra la doctrina escrita", () => {
+  // Cada caso "perfecto" se construyó criterio por criterio. Estas pruebas
+  // verifican, sin juicio humano, que la afirmación "es perfecto" sea completa.
+  const perfectos = casos.filter((c) => c.tipo === "perfecto");
+  const falla = (id: string) => new Set((guion(id)?.failure_criteria ?? []).map((c: any) => c.id));
+
+  it("hay ejecuciones perfectas", () => {
+    expect(perfectos.length).toBeGreaterThan(0);
+  });
+  it("cada una espera 'cumple' en TODOS los criterios de éxito de su nodo", () => {
+    const malos = perfectos.flatMap((c) => {
+      const esperados = c.expected?.niveles_esperados ?? {};
+      return [...exito(c.node_id)].filter((id) => esperados[id as string] !== "cumple").map((id) => `${c.id}: ${id}`);
+    });
+    expect(malos).toEqual([]);
+  });
+  it("cada una prohíbe TODOS los errores de su nodo", () => {
+    const malos = perfectos.flatMap((c) => {
+      const prohibidos = new Set(c.expected?.must_not_flag ?? []);
+      return [...falla(c.node_id)].filter((id) => !prohibidos.has(id)).map((id) => `${c.id}: ${id}`);
+    });
+    expect(malos).toEqual([]);
+  });
+  it("cada criterio de éxito tiene su frase en la traza, y la frase existe en lo que dijo el vendedor", () => {
+    const malos = perfectos.flatMap((c) => {
+      const dicho = (c.transcript ?? []).filter((t: any) => t.role === "user").map((t: any) => t.text).join(" \n ");
+      return [...exito(c.node_id)].flatMap((id) => {
+        const frase = c.traza?.[id as string];
+        if (!frase) return [`${c.id}: sin traza para ${id}`];
+        return dicho.includes(frase) ? [] : [`${c.id}: la frase de ${id} no aparece en la conversación`];
+      });
+    });
+    expect(malos).toEqual([]);
+  });
+  it("cada una declara el contexto de su empresa", () => {
+    expect(perfectos.filter((c) => !c.company_brain).map((c) => c.id)).toEqual([]);
+  });
+});
+
 describe("Harness runner: invariantes", () => {
   it("manda node_id a closer-voice", () => {
     expect(runner).toMatch(/node_id: nodeId,/);
@@ -237,6 +276,10 @@ describe("Harness runner: invariantes", () => {
 
   it("soporta patrones que distinguen una acusación de su negación", () => {
     expect(runner).toMatch(/feedback_must_not_match/);
+  });
+
+  it("usa el contexto de empresa de cada caso", () => {
+    expect(runner).toMatch(/companyBrain \?\? "Taller mecánico/);
   });
 
   it("solo lo puede correr un manager", () => {

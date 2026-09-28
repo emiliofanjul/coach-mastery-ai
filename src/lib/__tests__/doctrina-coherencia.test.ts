@@ -195,6 +195,24 @@ describe("Identificarse está definido", () => {
   });
 });
 
+describe("Ningún nodo repite una descripción", () => {
+  // Sept-2026: en el 3.3, preguntas_capas traía copiada la descripción de
+  // escucha_activa. El evaluador calificaba dos veces la escucha y nunca las capas.
+  it("dos criterios del mismo nodo no tienen la misma descripción", () => {
+    const repetidas: string[] = [];
+    for (const n of nodos) {
+      const vistos = new Map<string, string>();
+      for (const c of criterios(n)) {
+        const d = String(c.description ?? "").trim();
+        if (!d) continue;
+        if (vistos.has(d)) repetidas.push(`${n.id}: ${vistos.get(d)} y ${c.id}`);
+        else vistos.set(d, c.id);
+      }
+    }
+    expect(repetidas).toEqual([]);
+  });
+});
+
 describe("Una regla, un concepto", () => {
   // Sept-2026: tres reglas de la apertura mezclaban dos conceptos, y eso produjo
   // doble castigo y calificaciones que cambiaban entre corridas (92 y 55 para la

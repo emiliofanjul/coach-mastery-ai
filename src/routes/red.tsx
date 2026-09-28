@@ -134,12 +134,12 @@ function RedPage() {
               {m}
             </button>
           ))}
-          <span className="text-white/60 ml-3">Corridas:</span>
+          <span className="text-white/60 ml-3">Repetir cada caso:</span>
           {[1, 3].map((n) => (
             <button key={n} disabled={estado === "corriendo"} onClick={() => setCorridas(n)}
               className="px-3 py-1 rounded-full border"
               style={{ borderColor: corridas === n ? "#FF6B2B" : "rgba(255,255,255,0.2)", color: corridas === n ? "#FF6B2B" : "rgba(255,255,255,0.6)" }}>
-              {n}
+              {n === 1 ? "1 vez" : `${n} veces`}
             </button>
           ))}
         </div>
