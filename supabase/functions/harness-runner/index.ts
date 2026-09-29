@@ -50,7 +50,7 @@ function stringifyAll(obj: any): string {
   try { return JSON.stringify(obj).toLowerCase(); } catch { return String(obj).toLowerCase(); }
 }
 
-async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string): Promise<any> {
+async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string, sellerName?: string): Promise<any> {
   const conversation_history = transcript.map((t) => ({
     role: t.role === "assistant" ? "assistant" : "user",
     content: t.text,
@@ -68,8 +68,9 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
       conversation_history,
       // Cada caso puede declarar su empresa: la red debe probar la doctrina en
       // cualquier industria, no premiar el vocabulario de un solo cliente.
-      company_brain: companyBrain ?? "Taller mecánico, distribución de aceites Bardahl",
-      seller_name: "Vendedor",
+      company_brain: companyBrain ?? "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos.",
+      // Un nombre real, como en producción: con "Vendedor" el evaluador escribía "[tu nombre]".
+      seller_name: sellerName ?? "Luis",
       session_id: `harness-${crypto.randomUUID()}`,
     }),
   });
@@ -378,7 +379,7 @@ Deno.serve(async (req) => {
       const runResults: any[] = [];
       for (let i = 0; i < runs; i++) {
         try {
-          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain);
+          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain, (c as any).seller_name);
           runResults.push(resp);
         } catch (e) {
           runResults.push({ status: 0, parsed: null, raw: String(e) });
