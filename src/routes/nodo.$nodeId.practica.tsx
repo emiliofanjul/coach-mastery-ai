@@ -750,7 +750,7 @@ function PracticaPage() {
   async function obtenerTokenStt(): Promise<string> {
     const tok = getStoredSupabaseSession()?.accessToken;
     if (!tok) throw new Error("sin-sesion");
-    const r = await fetch(`${SUPABASE_URL}/functions/v1/closer-stt-token`, {
+    const r = await fetch("/api/stt-token", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${tok}`, apikey: SUPABASE_ANON },
     });

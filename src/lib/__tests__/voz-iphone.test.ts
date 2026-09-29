@@ -34,7 +34,7 @@ describe("La guía y el cierre dicen la verdad", () => {
 });
 
 describe("Un solo dueño del micrófono (sept-2026)", () => {
-  const fnToken = readFileSync(join(process.cwd(), "supabase/functions/closer-stt-token/index.ts"), "utf8");
+  const fnToken = readFileSync(join(process.cwd(), "src/routes/api/stt-token.ts"), "utf8");
   const guardado = readFileSync(join(process.cwd(), "supabase/functions/save-practice-event/index.ts"), "utf8");
 
   it("ya no usa el reconocimiento de voz del navegador", () => {

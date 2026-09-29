@@ -27,6 +27,7 @@ import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-
 import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
 import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
 import { Route as EquipoSellerIdRouteImport } from './routes/equipo.$sellerId'
+import { Route as ApiSttTokenRouteImport } from './routes/api/stt-token'
 import { Route as NodoNodeIdQuizRouteImport } from './routes/nodo.$nodeId.quiz'
 import { Route as NodoNodeIdPracticaRouteImport } from './routes/nodo.$nodeId.practica'
 
@@ -120,6 +121,11 @@ const EquipoSellerIdRoute = EquipoSellerIdRouteImport.update({
   path: '/equipo/$sellerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSttTokenRoute = ApiSttTokenRouteImport.update({
+  id: '/api/stt-token',
+  path: '/api/stt-token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NodoNodeIdQuizRoute = NodoNodeIdQuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/api/stt-token': typeof ApiSttTokenRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
   '/nodo/$nodeId': typeof NodoNodeIdRouteWithChildren
   '/onboarding/manager': typeof OnboardingManagerRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/api/stt-token': typeof ApiSttTokenRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
   '/nodo/$nodeId': typeof NodoNodeIdRouteWithChildren
   '/onboarding/manager': typeof OnboardingManagerRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/api/stt-token': typeof ApiSttTokenRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
   '/nodo/$nodeId': typeof NodoNodeIdRouteWithChildren
   '/onboarding/manager': typeof OnboardingManagerRoute
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/role'
     | '/signup'
+    | '/api/stt-token'
     | '/equipo/$sellerId'
     | '/nodo/$nodeId'
     | '/onboarding/manager'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/role'
     | '/signup'
+    | '/api/stt-token'
     | '/equipo/$sellerId'
     | '/nodo/$nodeId'
     | '/onboarding/manager'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/role'
     | '/signup'
+    | '/api/stt-token'
     | '/equipo/$sellerId'
     | '/nodo/$nodeId'
     | '/onboarding/manager'
@@ -278,6 +290,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
+  ApiSttTokenRoute: typeof ApiSttTokenRoute
   EquipoSellerIdRoute: typeof EquipoSellerIdRoute
   NodoNodeIdRoute: typeof NodoNodeIdRouteWithChildren
   OnboardingManagerRoute: typeof OnboardingManagerRoute
@@ -416,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipoSellerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/stt-token': {
+      id: '/api/stt-token'
+      path: '/api/stt-token'
+      fullPath: '/api/stt-token'
+      preLoaderRoute: typeof ApiSttTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nodo/$nodeId/quiz': {
       id: '/nodo/$nodeId/quiz'
       path: '/quiz'
@@ -458,6 +478,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
+  ApiSttTokenRoute: ApiSttTokenRoute,
   EquipoSellerIdRoute: EquipoSellerIdRoute,
   NodoNodeIdRoute: NodoNodeIdRouteWithChildren,
   OnboardingManagerRoute: OnboardingManagerRoute,
