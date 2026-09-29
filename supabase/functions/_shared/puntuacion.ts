@@ -52,9 +52,13 @@ export function aplicarTopeCritico(
   return { score: base, topado: false, criticos };
 }
 
-/** Estrellas a partir del score YA topado. */
-export function estrellasDe(score: number): 1 | 2 | 3 {
-  return score >= 85 ? 3 : score >= 60 ? 2 : 1;
+/**
+ * Estrellas a partir del score YA topado. Cero cuando el score es menor a 30:
+ * una sesión sin ejecución real no gana estrella, y la que ya tenías nunca se
+ * pierde (el guardado toma el máximo).
+ */
+export function estrellasDe(score: number): 0 | 1 | 2 | 3 {
+  return score >= 85 ? 3 : score >= 60 ? 2 : score >= 30 ? 1 : 0;
 }
 
 // ─────────────────────────────────────────────────────────────────────
