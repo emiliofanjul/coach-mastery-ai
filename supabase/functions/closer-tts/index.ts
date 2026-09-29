@@ -66,7 +66,7 @@ async function logTtsCall(row: {
 }
 
 function audioResponse(bytes: ArrayBuffer | Uint8Array, cacheHit: boolean) {
-  return new Response(bytes, {
+  return new Response(bytes as BodyInit, {
     status: 200,
     headers: {
       ...corsHeaders,
