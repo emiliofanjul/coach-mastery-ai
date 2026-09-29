@@ -111,6 +111,30 @@ function PracticaPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [interimTranscript, setInterimTranscript] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  // iPhone (Safari) solo deja reproducir audio en un elemento que se "desbloqueó"
+  // durante un toque del usuario. Antes se creaba un Audio nuevo después de
+  // esperar al servidor: Safari lo bloqueaba y el error se tragaba en silencio —
+  // la demostración "terminaba" al instante y las respuestas de Closer nunca se
+  // oían. Ahora hay UN reproductor que se desbloquea con el primer toque en
+  // cualquier parte de la pantalla y se reutiliza para todo lo que dice Closer.
+  const reproductorRef = useRef<HTMLAudioElement | null>(null);
+  const reproductorListoRef = useRef(false);
+  useEffect(() => {
+    const SILENCIO = "data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
+    const desbloquear = () => {
+      if (reproductorListoRef.current || audioRef.current) return; // ya listo, o Closer está hablando
+      const el = reproductorRef.current ?? new Audio();
+      reproductorRef.current = el;
+      el.src = SILENCIO;
+      const p = el.play();
+      if (p && typeof (p as Promise<void>).then === "function") {
+        (p as Promise<void>).then(() => { el.pause(); reproductorListoRef.current = true; }).catch(() => { /* se reintenta en el siguiente toque */ });
+      }
+    };
+    const opts = { capture: true } as AddEventListenerOptions;
+    for (const ev of ["pointerdown", "touchend", "click"]) document.addEventListener(ev, desbloquear, opts);
+    return () => { for (const ev of ["pointerdown", "touchend", "click"]) document.removeEventListener(ev, desbloquear, opts); };
+  }, []);
   const recognitionRef = useRef<any>(null);
   // Cierra el turno de voz en curso (envía lo transcrito y evita relanzar STT).
   const finishVoiceTurnRef = useRef<null | (() => void)>(null);
@@ -569,7 +593,9 @@ function PracticaPage() {
       const blob = await res.blob();
       if (ctrl.signal.aborted) return;
       const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
+      const audio = reproductorRef.current ?? new Audio();
+      reproductorRef.current = audio;
+      audio.src = url;
       audioRef.current = audio;
       await new Promise<void>((resolve, reject) => {
         // stopAudio() dispara este resolver cuando pausamos externamente,
@@ -599,7 +625,12 @@ function PracticaPage() {
         audio.play().catch(reject);
       });
     } catch (err) {
-      if ((err as any)?.name !== "AbortError") {
+      if ((err as any)?.name === "NotAllowedError") {
+        // El teléfono bloqueó el audio. Nunca más en silencio: se le dice al
+        // vendedor, y el toque en "reintentar" desbloquea el reproductor.
+        console.error("[voice] el navegador bloqueó el audio:", err);
+        setConnectionError("Tu teléfono bloqueó el audio de Closer. Toca aquí para escucharlo.");
+      } else if ((err as any)?.name !== "AbortError") {
         console.error("[voice] playTTS failed:", err);
       }
     } finally {
@@ -1712,7 +1743,7 @@ function PracticaPage() {
                         color: "#FF6B2B",
                       }}
                     >
-                      Closer habla primero
+                      Tú empiezas
                     </div>
                     <div
                       style={{
@@ -1742,7 +1773,7 @@ function PracticaPage() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Cuando el círculo pulsa en azul, Closer está hablando. Solo escucha.
+                      Toca el micrófono y saluda a tu cliente como lo harías en una visita real. Cuando el círculo pulse en azul, es tu cliente contestando: solo escucha.
                     </div>
                   </div>
 
@@ -3319,7 +3350,7 @@ function FeedbackPhase({
                 color: "#fff",
               }}
             >
-{observations.length === 0 ? "Ejecución limpia" : "Observaciones de Closer"}
+{observations.length === 0 ? (score >= 85 ? "Ejecución limpia" : "Sesión incompleta") : "Observaciones de Closer"}
             </div>
 {observations.length === 0 ? (
               // Cero observaciones NO es un fallo: es que ejecutó bien todos los
@@ -3332,7 +3363,9 @@ function FeedbackPhase({
                   color: "rgba(255,255,255,0.8)",
                 }}
               >
-                Cumpliste todo lo que este nodo mide. No hay nada que corregir aquí.
+                {score >= 85
+                  ? "Cumpliste todo lo que este nodo mide. No hay nada que corregir aquí."
+                  : "La práctica terminó antes de que se viera lo que este nodo mide. Vuelve a intentarlo: esta nota no refleja lo que sabes."}
               </div>
             ) : (
               observations.map((o, i) => (
