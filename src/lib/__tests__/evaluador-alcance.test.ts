@@ -179,3 +179,17 @@ describe("Escaleras y nombres faltantes", () => {
   });
 });
 
+describe("Auditor del feedback y lenguaje (sept-2026)", () => {
+  it("cada evaluación pasa por el auditor antes de salir", () => {
+    expect(fn).toMatch(/const r = aplicarAuditoria\(evaluation, veredictos\);/);
+    expect(fn).toMatch(/\(evaluation as any\)\.auditoria = auditoria;/);
+  });
+  it("Closer nunca dice groserías, y si se le escapa una, se reescribe", () => {
+    expect(fn).toMatch(/LENGUAJE: NUNCA dices groserías/);
+    expect(fn).toMatch(/if \(contieneGroserias\(closerResponse\.message\)\)/);
+  });
+  it("si el vendedor las usa, se le aconseja citando la regla", () => {
+    expect(fn).toMatch(/regla_id: "mindset\.sin_groserias"/);
+  });
+});
+

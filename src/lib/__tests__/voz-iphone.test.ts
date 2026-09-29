@@ -49,7 +49,8 @@ describe("Un solo dueño del micrófono (sept-2026)", () => {
     expect(ui).toMatch(/const permiso = await navigator\.mediaDevices\.getUserMedia\(\{ audio: true \}\);\s*permiso\.getTracks\(\)\.forEach\(\(t\) => t\.stop\(\)\);/);
   });
   it("mientras hay voz, el turno sigue vivo aunque el texto tarde", () => {
-    expect(ui).toMatch(/if \(n >= UMBRAL_VOZ && ahora - ultimoEmpujon > 250\)/);
+    expect(ui).toMatch(/const esVoz = n >= Math\.max\(UMBRAL_VOZ, pisoRuido \* 2\.5, 0\.22\);/);
+    expect(ui).toMatch(/if \(esVoz && ahora - ultimoEmpujon > 250\)/);
   });
   it("el primer toque activa también el procesador de audio", () => {
     expect(ui).toMatch(/desbloquearContextoAudio\(\);/);

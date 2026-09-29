@@ -281,6 +281,10 @@ describe("Harness runner: invariantes", () => {
     expect(runner).toMatch(/feedback_must_not_match/);
   });
 
+  it("exige que el auditor del feedback haya corrido", () => {
+    expect(runner).toMatch(/el auditor del feedback no corrió/);
+  });
+
   it("manda un nombre real de vendedor, nunca 'Vendedor'", () => {
     expect(runner).toMatch(/sellerName \?\? "Luis"/);
     expect(runner).not.toMatch(/seller_name: "Vendedor"/);
