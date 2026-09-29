@@ -61,3 +61,14 @@ describe("closer-voice usa esta función", () => {
     expect(fn).toMatch(/aplicarTopeCritico\(evaluation\.score, evaluation\.flags_detected/);
   });
 });
+
+describe("cero estrellas cuando no hubo ejecución real", () => {
+  it("0 → 0 estrellas; 30 → 1; 60 → 2; 85 → 3", () => {
+    expect(estrellasDe(0)).toBe(0);
+    expect(estrellasDe(29)).toBe(0);
+    expect(estrellasDe(30)).toBe(1);
+    expect(estrellasDe(60)).toBe(2);
+    expect(estrellasDe(85)).toBe(3);
+  });
+});
+

@@ -936,7 +936,9 @@ function MapNode({
     );
 
   // Estrellas debajo del nombre — para todos los nodos completados, incluidos Boss
-  const showStars = status === "completed" && stars > 0;
+  // Las estrellas se ven en cuanto se ganan, aunque el nodo siga en curso:
+  // antes con una estrella el nodo quedaba "en curso" y la estrella no se pintaba.
+  const showStars = stars > 0;
   // Si es el nodo recién completado y estamos animando: phase 2→1, phase 3→2, phase>=4→3
   const animStars =
     animationPhase >= 4 ? 3 : Math.max(0, animationPhase - 1);

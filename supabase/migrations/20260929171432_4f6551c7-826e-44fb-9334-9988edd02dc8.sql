@@ -12,8 +12,8 @@ FROM public.doctrina WHERE version = (SELECT max(version) FROM public.doctrina W
 UPDATE public.doctrina SET is_active = false
 WHERE is_active AND version < (SELECT max(version) FROM public.doctrina WHERE is_active);
 
-INSERT INTO public.reglas (id, paso, tipo, canal, procedencia, resumen, cita_cerebro, severidad_sugerida)
-VALUES ('mindset.sin_groserias', 0, 'principio', 'universal', 'CAMPO', 'Closer no dice groserías y el vendedor no las necesita: no hacen falta para comunicar lo que quiere decir y, en la mayoría de las empresas, le quitan profesionalidad. Si el cliente las usa, no hay que imitarlo para conectar: se conecta con interés genuino y con el sistema, no con el lenguaje.', 'Las groserías no hacen falta para comunicar lo que quieres decir', NULL)
+INSERT INTO public.reglas (id, paso, tipo, canal, procedencia, resumen, cita_cerebro)
+VALUES ('mindset.sin_groserias', 0, 'principio', 'universal', 'CAMPO', 'Closer no dice groserías y el vendedor no las necesita: no hacen falta para comunicar lo que quiere decir y, en la mayoría de las empresas, le quitan profesionalidad. Si el cliente las usa, no hay que imitarlo para conectar: se conecta con interés genuino y con el sistema, no con el lenguaje.', 'Las groserías no hacen falta para comunicar lo que quieres decir')
 ON CONFLICT (id) DO UPDATE SET resumen = EXCLUDED.resumen, cita_cerebro = EXCLUDED.cita_cerebro, updated_at = now();
 
 DO $$

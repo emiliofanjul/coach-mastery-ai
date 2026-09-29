@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useNavigate, useParams } from "@tanstack/react
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { invokeFunctionJson, restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { invokeFunctionJson, restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 
@@ -456,8 +456,27 @@ function NodoCardsPage() {
               } else if (hasScript) {
                 navigate({ to: "/nodo/$nodeId/practica", params: { nodeId } });
               } else {
-                // Nodo sin quiz ni script — cierra al mapa (caso raro/legacy)
-                navigate({ to: "/mapa" });
+                // Nodo de solo lectura (sin quiz ni práctica): leerlo lo da por
+                // hecho y abre el siguiente. Antes solo volvía al mapa y el
+                // vendedor se quedaba atorado ahí (p. ej. el 3.7).
+                void (async () => {
+                  try {
+                    const sellerId = attributionRef.current?.seller_id;
+                    if (sellerId) {
+                      const previo = await restGetMaybeSingle<{ id: string; status: string }>(
+                        `node_progress?select=id,status&seller_id=eq.${sellerId}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+                      );
+                      if (previo?.id) {
+                        if (previo.status !== "done") await restMutate(`node_progress?id=eq.${previo.id}`, { method: "PATCH", body: { status: "done" } });
+                      } else {
+                        await restMutate("node_progress", { method: "POST", body: { seller_id: sellerId, company_id: attributionRef.current?.company_id ?? null, node_id: nodeId, status: "done", stars: null } });
+                      }
+                    }
+                  } catch (err) {
+                    console.error("[nodo] no se pudo cerrar el nodo de lectura:", err);
+                  }
+                  navigate({ to: "/mapa" });
+                })();
               }
             }}
           />

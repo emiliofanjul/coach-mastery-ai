@@ -241,6 +241,10 @@ function evaluateCase(c: Case, response: any): CaseResult {
     reasons.push("UNIVERSAL: el feedback habla de puntuación — el vendedor habla, no escribe");
   }
   if (!Array.isArray(parsed.observations)) reasons.push("UNIVERSAL: observations no es un arreglo");
+  // El auditor del feedback debe haber corrido (revisa ejemplos, misión y consejos contra la doctrina).
+  const aud = parsed.auditoria;
+  if (!aud || typeof aud !== "object") reasons.push("UNIVERSAL: el auditor del feedback no corrió");
+  else if (aud.error) reasons.push("UNIVERSAL: el auditor del feedback falló (fail-open)");
   // "Lo que viene después" debe citar una regla del paso del nodo.
   for (const x of Array.isArray(parsed.siguiente_nivel) ? parsed.siguiente_nivel : []) {
     if (!x || typeof x.regla_id !== "string" || !x.regla_id) { reasons.push("UNIVERSAL: 'lo que viene después' sin regla de la doctrina"); break; }

@@ -59,7 +59,7 @@ interface ObservationItem {
 
 interface FeedbackResult {
   score: number;
-  stars: 1 | 2 | 3;
+  stars: 0 | 1 | 2 | 3;
   observations: ObservationItem[];
   mision: string;
   radarLines: string[];
@@ -620,6 +620,7 @@ function PracticaPage() {
     let turnClosed = false;
     let control: ControlTurno | null = null;
     let ultimoEmpujon = 0;
+    let pisoRuido = 0.3; // arranca alto y baja al primer silencio real
     const numeroTurno = ++turnoVozRef.current;
 
     //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras.
@@ -707,9 +708,14 @@ function PracticaPage() {
       onNivel: (n) => {
         if (turnClosed) return;
         setNivelVoz(n);
+        // El piso de ruido del lugar (ventilador, calle, ganancia automática del
+        // teléfono) se aprende despacio y no cuenta como voz; solo lo que sube
+        // claramente por encima mantiene vivo el turno.
+        pisoRuido = n < pisoRuido ? n : pisoRuido * 0.995 + n * 0.005;
+        const esVoz = n >= Math.max(UMBRAL_VOZ, pisoRuido * 2.5, 0.22);
         // Mientras hay voz, el turno sigue vivo aunque el texto tarde en llegar.
         const ahora = Date.now();
-        if (n >= UMBRAL_VOZ && ahora - ultimoEmpujon > 250) {
+        if (esVoz && ahora - ultimoEmpujon > 250) {
           ultimoEmpujon = ahora;
           scheduleFinish(finalText);
         }
@@ -1332,7 +1338,7 @@ function PracticaPage() {
         );
       if (
         typeof evaluation?.score !== "number" ||
-        ![1, 2, 3].includes(evaluation?.stars) ||
+        ![0, 1, 2, 3].includes(evaluation?.stars) ||
         !obsValid ||
         typeof evaluation?.mision !== "string"
       ) {
@@ -1852,7 +1858,7 @@ function PracticaPage() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Cuando termines, haz una pausa de 3 segundos. Closer detecta el silencio y responde automáticamente.
+                      Cuando termines, toca el botón para enviar. Si te quedas callado unos segundos, Closer entiende que terminaste y envía por ti.
                     </div>
                     <div
                       style={{
@@ -1866,7 +1872,7 @@ function PracticaPage() {
                         lineHeight: 1.45,
                       }}
                     >
-                      No necesitas tocar nada para enviar — el silencio lo hace automático.
+                      Puedes pausar a media frase para pensar: el turno sigue abierto mientras hables.
                     </div>
                   </div>
 
@@ -3153,7 +3159,7 @@ function FeedbackPhase({
   onRetryEvaluation,
 }: {
   closerMsgs: Set<string>;
-  onContinue: (stars: 1 | 2 | 3) => void;
+  onContinue: (stars: 0 | 1 | 2 | 3) => void;
   /** Salir sin evaluación: no guarda estrellas, solo devuelve al mapa. */
   onLeaveWithoutEval: () => void;
   conversation: { role: string; content: string }[];
@@ -3209,10 +3215,23 @@ function FeedbackPhase({
 
 
   const score = feedback?.score ?? 0;
-  const stars: 1 | 2 | 3 = feedback?.stars ?? 1;
+  const stars: 0 | 1 | 2 | 3 = feedback?.stars ?? 0;
   const observations = feedback?.observations ?? [];
 
   if (step === "victory") {
+    // Sin estrella no hay festejo: una pantalla neutra, sin confeti. La
+    // estrella que ya se tenía no se pierde (el guardado toma el máximo).
+    if (stars === 0) {
+      return (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, textAlign: "center" }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 24, color: "#F0F0F5", marginBottom: 10 }}>Esta vez no salió.</div>
+          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.7)", maxWidth: 360, lineHeight: 1.5, marginBottom: 24 }}>
+            No ganaste estrella en este intento, y las que ya tenías se conservan. Repite el nodo cuando quieras.
+          </div>
+          <button onClick={() => onContinue(0)} style={{ background: "#FF6B2B", color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, border: "none", borderRadius: 99, padding: "14px 28px", cursor: "pointer" }}>Volver al mapa →</button>
+        </motion.div>
+      );
+    }
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minHeight: 0 }}>
         <VictoryScreen

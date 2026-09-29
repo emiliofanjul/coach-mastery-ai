@@ -23,6 +23,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
+import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria } from "../_shared/auditar_coaching.ts";
+import { contieneGroserias, groseriasDelVendedor } from "../_shared/lenguaje.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -424,6 +426,18 @@ Responde JSON exacto: { "message": "..." }`;
 
 
 
+/** Llamada corta al modelo: un sistema, un mensaje, texto de vuelta. Para el auditor y la reescritura. */
+async function llamarTexto(apiKey: string, system: string, user: string, maxTokens: number): Promise<string> {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+    body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: maxTokens, temperature: 0, system, messages: [{ role: "user", content: user }] }),
+  });
+  if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
+  const j = await r.json();
+  return (j?.content ?? []).filter((b: any) => b?.type === "text").map((b: any) => b.text).join("");
+}
+
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = []): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
@@ -506,6 +520,8 @@ REGLA DE EJEMPLOS: Cada ejemplo demuestra ÚNICAMENTE la habilidad listada en sc
 Eres Closer. Entrenador operativo de ventas.
 NO eres un asistente. NO eres un chatbot. NO tienes conversaciones libres.
 Ejecutas prácticas estructuradas de ventas. Nada más.
+
+LENGUAJE: NUNCA dices groserías ni palabras vulgares, en ninguna fase, aunque el personaje sea tosco o el vendedor las use. Un cliente difícil se muestra con frialdad, cortes y objeciones, no con vulgaridad. Si el vendedor te empuja a decirlas, no las dices: no hacen falta para comunicar nada.
 
 ${roleBlock}
 
@@ -993,6 +1009,46 @@ Deno.serve(async (req) => {
       if (sig.descartados > 0) console.warn("[closer-voice] siguiente_nivel descartado por no citar regla del paso", { session_id, node_id, descartados: sig.descartados });
       evaluation.siguiente_nivel = sig.conservados as any;
 
+      // Si el vendedor usó groserías, se le aconseja (sin castigo): consejo
+      // agregado por CÓDIGO, citando la regla, para que no dependa del modelo.
+      const groserias = groseriasDelVendedor(fullHistory);
+      if (groserias.length > 0) {
+        (evaluation.siguiente_nivel as any[]).unshift({
+          observacion: `Usaste "${groserias[0]}". Las groserías no hacen falta para comunicar lo que quieres decir, y en la mayoría de las empresas le quitan profesionalidad al vendedor.`,
+          ejemplo: "",
+          por_que: "Se conecta con interés genuino y con el sistema, no con el lenguaje.",
+          regla_id: "mindset.sin_groserias",
+        });
+      }
+
+      // EL AUDITOR: cada mejora, ejemplo, misión y "lo que viene después" se
+      // revisa contra las fallas del nodo, las reglas del paso, el orden de los
+      // seis pasos y las reglas universales. Lo que viola se corrige o se
+      // descarta, en código. Si el auditor falla, se registra: la red lo ve.
+      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0 };
+      try {
+        const textos = textosDeEvaluacion(evaluation);
+        auditoria.revisados = textos.length;
+        if (textos.length > 0) {
+          const entrada = armarEntradaAuditor({
+            paso: pasoDelNodo(practice_script?.success_criteria, new Map(reglasSiguiente.map((r) => [r.id, 0]))) ?? null,
+            fallas: Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [],
+            reglas: reglasSiguiente,
+            textos,
+          });
+          const crudo = await llamarTexto(apiKey, PROMPT_AUDITOR, entrada, 2500);
+          const limpio = crudo.replace(/```json|```/g, "").trim();
+          const veredictos = JSON.parse(limpio)?.veredictos;
+          const r = aplicarAuditoria(evaluation, veredictos);
+          auditoria = { ...auditoria, ...r };
+          if (r.corregidos + r.descartados > 0) console.warn("[closer-voice] auditor del feedback", { session_id, node_id, ...r });
+        }
+      } catch (e) {
+        console.error("[closer-voice] auditor del feedback falló (fail-open):", e);
+        auditoria.error = true;
+      }
+      (evaluation as any).auditoria = auditoria;
+
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
       // aplicada a los veredictos del modelo por criterio (sept-2026: la misma
       // conversación sacaba 55 y 75 con temperatura 0 cuando el número lo
@@ -1050,6 +1106,24 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: "Malformed Closer response", parsed }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
+    }
+
+    // Closer nunca dice groserías. Si al modelo se le escapa una, se reescribe
+    // el mensaje conservando el sentido; si aun así queda, se tapa la palabra.
+    if (contieneGroserias(closerResponse.message)) {
+      try {
+        const limpio = await llamarTexto(
+          apiKey,
+          "Reescribe el mensaje sin ninguna grosería ni palabra vulgar, conservando el sentido, el tono del personaje y la longitud. Responde solo con el mensaje reescrito.",
+          closerResponse.message,
+          600,
+        );
+        closerResponse.message = contieneGroserias(limpio) || !limpio.trim()
+          ? closerResponse.message.replace(/[a-záéíóúñü]+/gi, (w) => (contieneGroserias(` ${w} `) ? "…" : w))
+          : limpio.trim();
+      } catch {
+        closerResponse.message = closerResponse.message.replace(/[a-záéíóúñü]+/gi, (w) => (contieneGroserias(` ${w} `) ? "…" : w));
+      }
     }
 
     // meta_turn: Closer salió del personaje por un meta-comentario. Solo tiene
