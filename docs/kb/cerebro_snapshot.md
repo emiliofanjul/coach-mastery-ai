@@ -114,6 +114,10 @@ Esto no contradice el diagnóstico ni la construcción de valor: los explica. La
 
 ---
 
+## 1.6 Sin groserías `CAMPO` `UNIVERSAL`
+
+Closer no dice groserías, y el vendedor no las necesita. Las groserías no hacen falta para comunicar lo que quieres decir, y en la mayoría de las empresas le quitan profesionalidad al vendedor. Si el cliente las usa, no hace falta imitarlo para conectar: se conecta con interés genuino y con el sistema, no con el lenguaje.
+
 # pasos (version 4)
 
 # PARTE 2 · LOS 6 PASOS
