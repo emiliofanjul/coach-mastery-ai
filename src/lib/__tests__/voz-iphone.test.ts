@@ -33,14 +33,39 @@ describe("La guía y el cierre dicen la verdad", () => {
   });
 });
 
-describe("El micrófono no se apaga por errores pasajeros", () => {
-  it("reintenta con espera en vez de apagarse", () => {
-    expect(ui).toMatch(/if \(reintentos < 3\) \{/);
-    expect(ui).toMatch(/esperaReintento = 400 \* reintentos/);
-    expect(ui).toMatch(/setTimeout\(relanzar, ms\)/);
+describe("Un solo dueño del micrófono (sept-2026)", () => {
+  const fnToken = readFileSync(join(process.cwd(), "src/routes/api/stt-token.ts"), "utf8");
+  const guardado = readFileSync(join(process.cwd(), "supabase/functions/save-practice-event/index.ts"), "utf8");
+
+  it("ya no usa el reconocimiento de voz del navegador", () => {
+    expect(ui).not.toMatch(/webkitSpeechRecognition/);
+    expect(ui).toMatch(/iniciarTurnoVoz\(\{/);
   });
-  it("solo un permiso negado apaga el micrófono de inmediato", () => {
-    expect(ui).toMatch(/if \(code === "not-allowed"\) \{/);
+  it("ya no usa la grabadora del navegador: la grabación sale del mismo audio", () => {
+    expect(ui).not.toMatch(/new MediaRecorder\(/);
+    expect(ui).toMatch(/grabacionRef\.current = new GrabacionSesion\(\)/);
+  });
+  it("pedir permiso cierra el micrófono de inmediato", () => {
+    expect(ui).toMatch(/const permiso = await navigator\.mediaDevices\.getUserMedia\(\{ audio: true \}\);\s*permiso\.getTracks\(\)\.forEach\(\(t\) => t\.stop\(\)\);/);
+  });
+  it("mientras hay voz, el turno sigue vivo aunque el texto tarde", () => {
+    expect(ui).toMatch(/if \(n >= UMBRAL_VOZ && ahora - ultimoEmpujon > 250\)/);
+  });
+  it("el primer toque activa también el procesador de audio", () => {
+    expect(ui).toMatch(/desbloquearContextoAudio\(\);/);
+  });
+  it("las barritas de voz se mueven con el nivel", () => {
+    expect(ui).toMatch(/nivelVoz=\{nivelVoz\}/);
+  });
+  it("el evento guardado trae dónde empieza y termina cada turno", () => {
+    expect(ui).toMatch(/audio_turnos: audioTurnosRef\.current/);
+  });
+  it("la llave de transcripción solo se entrega a un usuario con sesión", () => {
+    expect(fnToken).toMatch(/if \(!who\?\.user\?\.id\) return json\(\{ error: "unauthorized" \}, 401\);/);
+    expect(fnToken).toMatch(/single-use-token\/realtime_scribe/);
+  });
+  it("el archivo guardado lleva la extensión de su tipo real", () => {
+    expect(guardado).toMatch(/tipo\.includes\("wav"\) \? "wav"/);
   });
 });
 

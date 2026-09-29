@@ -92,7 +92,10 @@ Deno.serve(async (req) => {
     const audio = form.get("audio");
     let audioUrl: string | null = null;
     if (audio && audio instanceof File && seller.audio_consent === true) {
-      const path = `${seller.id}/${eventId}.webm`;
+      // La extensión sigue al tipo real: la práctica de voz ahora graba WAV.
+      const tipo = String(audio.type || "audio/webm");
+      const ext = tipo.includes("wav") ? "wav" : tipo.includes("mp4") || tipo.includes("m4a") ? "m4a" : "webm";
+      const path = `${seller.id}/${eventId}.${ext}`;
       const bytes = new Uint8Array(await audio.arrayBuffer());
       const { error: upErr } = await admin.storage
         .from("practice-audio")

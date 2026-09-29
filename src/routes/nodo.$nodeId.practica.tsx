@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, type ControlTurno } from "@/lib/voz/turno-voz";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -122,6 +123,8 @@ function PracticaPage() {
   useEffect(() => {
     const SILENCIO = "data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
     const desbloquear = () => {
+      // El procesador de audio del turno de voz también se activa con un toque (iPhone).
+      desbloquearContextoAudio();
       if (reproductorListoRef.current || audioRef.current) return; // ya listo, o Closer está hablando
       const el = reproductorRef.current ?? new Audio();
       reproductorRef.current = el;
@@ -144,9 +147,12 @@ function PracticaPage() {
   const sessionEndedRef = useRef(false);
   const iDoUserTurnsRef = useRef(0);
   // Captura de audio paralela al STT (solo si audio_consent === true)
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const recordedChunksRef = useRef<Blob[]>([]);
+  // Voz: grabación de la sesión (solo turnos del vendedor), número de turno,
+  // marcas de tiempo por turno para el manager, y nivel de voz en vivo.
+  const grabacionRef = useRef<GrabacionSesion | null>(null);
+  const turnoVozRef = useRef(0);
+  const audioTurnosRef = useRef<{ turno: number; inicio_seg: number; fin_seg: number }[]>([]);
+  const [nivelVoz, setNivelVoz] = useState(0);
   const audioUploadedRef = useRef(false);
   // Provenance from closer-voice — updated on every response.
   const promptVersionRef = useRef<string | null>(null);
@@ -216,7 +222,10 @@ function PracticaPage() {
 
   async function requestMic() {
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Solo para pedir el permiso: el micrófono se cierra de inmediato. Un
+      // micrófono abierto pone al iPhone en modo "llamada" y baja el volumen.
+      const permiso = await navigator.mediaDevices.getUserMedia({ audio: true });
+      permiso.getTracks().forEach((t) => t.stop());
       setMicGranted(true);
     } catch {
       setMicGranted(false);
@@ -490,72 +499,29 @@ function PracticaPage() {
     setInterimTranscript("");
   }
 
-  // ── Captura de audio (MediaRecorder) ─────────────────────────────
-  // Solo graba mientras el vendedor está hablando (mic activo). Entre turnos
-  // se pausa para no acumular silencio ni voz del agente TTS. El blob final
-  // concatena únicamente los tramos hablados del vendedor.
-  async function startAudioCapture() {
+  // ── Grabación para el manager ───────────────────────────────────
+  // Los turnos del vendedor en un solo WAV, armado con el MISMO audio que va a
+  // la transcripción, con la marca de tiempo de cada turno. Sin la grabadora
+  // del navegador: funciona igual en iPhone, Android y computadora, y la voz
+  // de Closer nunca entra (solo se graba dentro del turno del vendedor).
+  function startAudioCapture() {
     if (!sellerData?.audio_consent) return;
-    const existing = mediaRecorderRef.current;
-    if (existing) {
-      if (existing.state === "paused") {
-        try { existing.resume(); } catch {}
-      }
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStreamRef.current = stream;
-      recordedChunksRef.current = [];
-      const mime = MediaRecorder.isTypeSupported?.("audio/webm;codecs=opus")
-        ? "audio/webm;codecs=opus"
-        : "audio/webm";
-      const rec = new MediaRecorder(stream, { mimeType: mime });
-      rec.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) recordedChunksRef.current.push(e.data);
-      };
-      rec.start(1000); // chunk cada 1s — robusto frente a cierres abruptos
-      mediaRecorderRef.current = rec;
-    } catch (err) {
-      console.error("[audio-capture] failed to start:", err);
-    }
+    if (!grabacionRef.current) grabacionRef.current = new GrabacionSesion();
   }
 
   function pauseAudioCapture() {
-    const rec = mediaRecorderRef.current;
-    if (rec && rec.state === "recording") {
-      try { rec.pause(); } catch {}
-    }
+    grabacionRef.current?.cerrarTurno();
   }
-
 
   function stopAudioCapture(): Promise<Blob | null> {
-    return new Promise((resolve) => {
-      const rec = mediaRecorderRef.current;
-      const stream = mediaStreamRef.current;
-      mediaRecorderRef.current = null;
-      mediaStreamRef.current = null;
-      if (!rec) {
-        stream?.getTracks().forEach((t) => t.stop());
-        return resolve(null);
-      }
-      const finish = () => {
-        const blob = recordedChunksRef.current.length
-          ? new Blob(recordedChunksRef.current, { type: rec.mimeType || "audio/webm" })
-          : null;
-        recordedChunksRef.current = [];
-        stream?.getTracks().forEach((t) => t.stop());
-        resolve(blob);
-      };
-      try {
-        rec.onstop = finish;
-        if (rec.state !== "inactive") rec.stop();
-        else finish();
-      } catch {
-        finish();
-      }
-    });
+    const g = grabacionRef.current;
+    grabacionRef.current = null;
+    if (!g) return Promise.resolve(null);
+    const blob = g.wav();
+    audioTurnosRef.current = g.turnos.slice();
+    return Promise.resolve(blob);
   }
+
 
 
   async function playTTS(text: string, opts?: { force?: boolean }): Promise<void> {
@@ -640,32 +606,21 @@ function PracticaPage() {
     }
   }
 
+  // El turno de voz del vendedor (sept-2026). Un solo dueño del micrófono: se
+  // abre al empezar el turno y se cierra al terminarlo. El texto en vivo llega
+  // de ElevenLabs; el fin del turno lo decide NUESTRO reloj de silencio, igual
+  // que antes, y la voz del vendedor (el nivel de audio) lo mantiene vivo
+  // mientras habla aunque el texto tarde en llegar.
   function startRecognition() {
-    if (inputModeRef.current === "text") return; // modo texto: sin STT
+    if (inputModeRef.current === "text") return; // modo texto: sin voz
     if (sessionEndedRef.current || cutRef.current) return;
 
-    const SR: any =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      setConnectionError("Tu navegador no soporta reconocimiento de voz.");
-      return;
-    }
-
-    // Estado del TURNO (no de la instancia de reconocimiento). El navegador
-    // cierra su propio reconocimiento tras ~1s de silencio; nosotros lo
-    // relanzamos y solo damos el turno por terminado cuando NUESTRO umbral
-    // de silencio se cumple. Así el vendedor puede pensar a media frase sin
-    // que la app le corte.
     let finalText = "";
     let sendTimer: ReturnType<typeof setTimeout> | null = null;
     let turnClosed = false;
-    let stopped = false; // el usuario tocó el botón o se cortó la sesión
-    // iPhone: justo después de que Closer habla, el teléfono tarda un instante en
-    // pasar el audio de la bocina al micrófono, y el reconocimiento falla con
-    // errores pasajeros ("audio-capture", "network", "service-not-allowed").
-    // Antes cualquiera de esos apagaba el micrófono; ahora se reintenta solo.
-    let reintentos = 0;
-    let esperaReintento = 0;
+    let control: ControlTurno | null = null;
+    let ultimoEmpujon = 0;
+    const numeroTurno = ++turnoVozRef.current;
 
     //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras.
     //  - i_do / otras fases: 2500ms.
@@ -702,126 +657,107 @@ function PracticaPage() {
     function finishTurn() {
       if (turnClosed) return;
       turnClosed = true;
-      stopped = true;
       if (finishVoiceTurnRef.current === finishTurn) finishVoiceTurnRef.current = null;
       if (sendTimer) clearTimeout(sendTimer);
       sendTimer = null;
-      const current = recognitionRef.current;
       recognitionRef.current = null;
-      try { current?.stop(); } catch {}
       setIsUserListening(false);
-
-      setInterimTranscript("");
-      // Pausar la grabación entre turnos: solo capturamos cuando el vendedor habla.
-      pauseAudioCapture();
-      const text = finalText.trim();
-      // Descartar turno del usuario si el Director ya cortó (carrera: user hablando
-      // en paralelo mientras Director decidía cut).
-      if (text && !cutRef.current && !sessionEndedRef.current) {
-        void sendToCloser(text);
-      }
+      setNivelVoz(0);
+      grabacionRef.current?.cerrarTurno();
+      const c = control;
+      control = null;
+      void (async () => {
+        let texto = finalText;
+        try {
+          if (c) texto = (await c.terminar()) || finalText;
+        } catch (err) {
+          console.error("[voz] cierre del turno:", err);
+        }
+        setInterimTranscript("");
+        const text = texto.trim();
+        // Descartar turno del usuario si el Director ya cortó (carrera).
+        if (text && !cutRef.current && !sessionEndedRef.current) void sendToCloser(text);
+      })();
     }
 
     function scheduleFinish(combined: string) {
       if (sendTimer) clearTimeout(sendTimer);
-      const waitMs = looksIncomplete(combined)
-        ? baseSilenceMs + continuationExtraMs
-        : baseSilenceMs;
+      const waitMs = looksIncomplete(combined) ? baseSilenceMs + continuationExtraMs : baseSilenceMs;
       sendTimer = setTimeout(finishTurn, waitMs);
-    }
-
-    function spawn() {
-      const rec = new SR();
-      rec.lang = "es-ES";
-      rec.interimResults = true;
-      // continuous: el navegador no cierra el turno por su cuenta al primer
-      // silencio corto. El corte lo decide NUESTRO temporizador.
-      rec.continuous = true;
-      rec.maxAlternatives = 1;
-
-      rec.onresult = (event: any) => {
-        let interim = "";
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const r = event.results[i];
-          if (r.isFinal) finalText += r[0].transcript;
-          else interim += r[0].transcript;
-        }
-        const combined = finalText + interim;
-        setInterimTranscript(combined);
-        scheduleFinish(combined);
-      };
-
-      rec.onerror = (e: any) => {
-        const code = e?.error ?? e;
-        console.error("[voice] STT error:", code);
-        // "no-speech" / "aborted" son transitorios: el relanzado de onend
-        // mantiene el micrófono vivo hasta que se cumpla el umbral real.
-        if (code === "no-speech" || code === "aborted") return;
-        // Permiso negado: no tiene caso reintentar.
-        if (code === "not-allowed") {
-          stopped = true;
-          setIsUserListening(false);
-          return;
-        }
-        // Cualquier otro error se trata como pasajero: reintento con espera
-        // creciente (0.4 s, 0.8 s, 1.2 s). onend hace el relanzado.
-        if (reintentos < 3) {
-          reintentos += 1;
-          esperaReintento = 400 * reintentos;
-          return;
-        }
-        stopped = true;
-        setIsUserListening(false);
-        setConnectionError("No te estoy escuchando bien. Toca el micrófono y vuelve a hablar.");
-      };
-
-      rec.onend = () => {
-        if (turnClosed || stopped) return;
-        if (sessionEndedRef.current || cutRef.current) {
-          finishTurn();
-          return;
-        }
-        // El navegador cerró solo: relanzamos y seguimos escuchando. Si venimos
-        // de un error pasajero, esperamos antes de relanzar.
-        const relanzar = () => {
-          if (turnClosed || stopped || sessionEndedRef.current || cutRef.current) return;
-          try {
-            spawn();
-          } catch (err) {
-            console.error("[voice] STT respawn failed:", err);
-            finishTurn();
-          }
-        };
-        if (esperaReintento > 0) {
-          const ms = esperaReintento;
-          esperaReintento = 0;
-          setTimeout(relanzar, ms);
-        } else {
-          relanzar();
-        }
-      };
-
-      recognitionRef.current = rec;
-      rec.start();
-      // Si el turno lleva silencio absoluto desde el arranque, igual cerramos.
-      scheduleFinish(finalText);
     }
 
     setInterimTranscript("");
     setIsUserListening(true);
     finishVoiceTurnRef.current = finishTurn;
-    // Arrancar/reanudar la captura de audio: el mic ya está activo para STT,
-    // aprovechamos el mismo momento para grabar solo el turno del vendedor.
-    void startAudioCapture();
-    try {
-      spawn();
-    } catch (err) {
-      console.error("[voice] rec.start failed:", err);
-      stopped = true;
-      finishVoiceTurnRef.current = null;
-      setIsUserListening(false);
-      pauseAudioCapture();
-    }
+    recognitionRef.current = { stop: () => finishTurn() };
+    startAudioCapture();
+    grabacionRef.current?.iniciarTurno(numeroTurno);
+    // Si el turno lleva silencio absoluto desde el arranque, igual cerramos.
+    scheduleFinish("");
+
+    iniciarTurnoVoz({
+      obtenerToken: obtenerTokenStt,
+      idioma: "es",
+      onParcial: (t) => {
+        if (turnClosed) return;
+        finalText = t;
+        setInterimTranscript(t);
+        scheduleFinish(t);
+      },
+      onNivel: (n) => {
+        if (turnClosed) return;
+        setNivelVoz(n);
+        // Mientras hay voz, el turno sigue vivo aunque el texto tarde en llegar.
+        const ahora = Date.now();
+        if (n >= UMBRAL_VOZ && ahora - ultimoEmpujon > 250) {
+          ultimoEmpujon = ahora;
+          scheduleFinish(finalText);
+        }
+      },
+      onPcm: (p) => grabacionRef.current?.agregar(p),
+      onError: (msg) => {
+        console.error("[voz] transcripción:", msg);
+        if (turnClosed) return;
+        if (!finalText) setConnectionError("No te estoy escuchando bien. Toca el micrófono y vuelve a hablar.");
+        finishTurn();
+      },
+    })
+      .then((c) => {
+        if (turnClosed) {
+          c.cancelar();
+          return;
+        }
+        control = c;
+      })
+      .catch((err) => {
+        console.error("[voz] no se pudo iniciar el turno:", err);
+        if (turnClosed) return;
+        turnClosed = true;
+        if (sendTimer) clearTimeout(sendTimer);
+        if (finishVoiceTurnRef.current === finishTurn) finishVoiceTurnRef.current = null;
+        recognitionRef.current = null;
+        setIsUserListening(false);
+        setNivelVoz(0);
+        grabacionRef.current?.cerrarTurno();
+        setConnectionError(
+          (err as any)?.name === "NotAllowedError"
+            ? "Necesito permiso de micrófono para que practiques por voz."
+            : "No pude abrir el micrófono. Toca para reintentar.",
+        );
+      });
+  }
+
+  async function obtenerTokenStt(): Promise<string> {
+    const tok = getStoredSupabaseSession()?.accessToken;
+    if (!tok) throw new Error("sin-sesion");
+    const r = await fetch("/api/stt-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${tok}`, apikey: SUPABASE_ANON },
+    });
+    if (!r.ok) throw new Error(`token de transcripción HTTP ${r.status}`);
+    const j = await r.json();
+    if (typeof j?.token !== "string" || !j.token) throw new Error("token de transcripción vacío");
+    return j.token;
   }
 
 
@@ -1505,6 +1441,9 @@ function PracticaPage() {
                     : [],
                   mision: typeof evaluation?.mision === "string" ? evaluation.mision : null,
                   regresiones_detectadas: currentRegresiones,
+                  // Dónde empieza y termina cada turno del vendedor dentro de la
+                  // grabación: el manager puede saltar directo a cualquiera.
+                  audio_turnos: audioTurnosRef.current,
                 },
                 rachas,
 
@@ -1630,6 +1569,7 @@ function PracticaPage() {
               isUserListening={isUserListening}
               isProcessing={isProcessing}
               interimTranscript={interimTranscript}
+              nivelVoz={nivelVoz}
               connectionError={connectionError}
               onMicClick={() => {
                 if (cutRef.current || sessionEndedRef.current) return;
@@ -2432,6 +2372,7 @@ function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onTo
 
 function VoicePhase({
   closerMsgs,
+  nivelVoz = 0,
   currentPhase,
   iDoPassive,
   isAgentSpeaking,
@@ -2450,6 +2391,8 @@ function VoicePhase({
   onTextSubmit,
   onPlayAgentAudio,
 }: {
+  /** Nivel de la voz del vendedor (0 a 1) mientras habla: mueve las barritas. */
+  nivelVoz?: number;
   closerMsgs: Set<string>;
   currentPhase: TurnPhase;
   iDoPassive: boolean;
@@ -2689,6 +2632,13 @@ function VoicePhase({
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
             {!iDoDemoDone && !iDoPassive && (
               <>
+                {/* Barritas de voz: aparecen al instante, antes que las palabras,
+                    y le confirman al vendedor que el micrófono lo está oyendo. */}
+                <div aria-hidden style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 22, opacity: isUserListening ? 1 : 0, transition: "opacity 150ms" }}>
+                  {[0.55, 0.8, 1, 0.8, 0.55].map((peso, k) => (
+                    <div key={k} style={{ width: 5, borderRadius: 3, background: "#FF6B2B", height: `${Math.max(3, Math.round(22 * Math.min(1, nivelVoz * 1.4 * peso)))}px`, transition: "height 80ms linear" }} />
+                  ))}
+                </div>
                 <button
                   onClick={onMicClick}
                   disabled={micDisabled}
