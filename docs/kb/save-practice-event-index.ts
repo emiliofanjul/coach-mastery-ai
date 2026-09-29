@@ -1,0 +1,192 @@
+// save-practice-event — inserts a seller_event row (service role) and,
+// if audio is included and the seller gave consent, uploads it to the
+// private `practice-audio` bucket at {seller_id}/{event_id}.webm and
+// stores the resulting URL on the event.
+//
+// Request: multipart/form-data
+//   - meta: JSON string with { event_type, node_id?, skill_ids?, payload?, prompt_version?, script_version?, model? }
+//   - audio?: Blob (optional). If omitted or seller has no consent, no upload happens.
+//
+// Auth: requires the caller's Supabase JWT in Authorization. The function
+// resolves the seller from sellers.profile_id = auth.uid().
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { recomputeSellerSkillState } from "../_shared/skill_state.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+
+  try {
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+    const authHeader = req.headers.get("Authorization") ?? "";
+    if (!authHeader) return json({ error: "Missing Authorization" }, 401);
+
+    // Identify the user from their JWT
+    const supabaseUser = createClient(SUPABASE_URL, ANON, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: userData, error: userErr } = await supabaseUser.auth.getUser();
+    if (userErr || !userData?.user) return json({ error: "Unauthorized" }, 401);
+    const userId = userData.user.id;
+
+    // Admin client for privileged writes
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+
+    // Resolve seller for this user
+    const { data: seller, error: sellerErr } = await admin
+      .from("sellers")
+      .select("id, audio_consent, company_id")
+      .eq("profile_id", userId)
+      .maybeSingle();
+    if (sellerErr) return json({ error: "Seller lookup failed", detail: sellerErr.message }, 500);
+    if (!seller) return json({ error: "Seller not found" }, 404);
+
+    // Parse multipart
+    const form = await req.formData();
+    const metaRaw = form.get("meta");
+    if (typeof metaRaw !== "string") return json({ error: "Missing meta" }, 400);
+    let meta: any;
+    try { meta = JSON.parse(metaRaw); } catch { return json({ error: "Invalid meta JSON" }, 400); }
+
+    const eventType: string = meta?.event_type ?? "practice_session";
+    const sessionId: string | null = typeof meta?.session_id === "string" ? meta.session_id : null;
+    const payload = { ...(meta?.payload ?? {}), session_id: sessionId };
+    const insertRow = {
+      seller_id: seller.id,
+      event_type: eventType,
+      node_id: meta?.node_id ?? null,
+      skill_ids: Array.isArray(meta?.skill_ids) ? meta.skill_ids : [],
+      payload,
+      prompt_version: meta?.prompt_version ?? null,
+      script_version: meta?.script_version ?? null,
+      model: meta?.model ?? null,
+    };
+
+    const { data: inserted, error: insErr } = await admin
+      .from("seller_events")
+      .insert(insertRow)
+      .select("id")
+      .single();
+    if (insErr || !inserted) return json({ error: "Insert failed", detail: insErr?.message }, 500);
+
+    const eventId: string = inserted.id;
+
+    // Audio upload (only if consent AND audio provided)
+    const audio = form.get("audio");
+    let audioUrl: string | null = null;
+    if (audio && audio instanceof File && seller.audio_consent === true) {
+      // La extensión sigue al tipo real: la práctica de voz ahora graba WAV.
+      const tipo = String(audio.type || "audio/webm");
+      const ext = tipo.includes("wav") ? "wav" : tipo.includes("mp4") || tipo.includes("m4a") ? "m4a" : "webm";
+      const path = `${seller.id}/${eventId}.${ext}`;
+      const bytes = new Uint8Array(await audio.arrayBuffer());
+      const { error: upErr } = await admin.storage
+        .from("practice-audio")
+        .upload(path, bytes, {
+          contentType: audio.type || "audio/webm",
+          upsert: true,
+        });
+      if (upErr) {
+        console.error("[save-practice-event] upload failed:", upErr);
+      } else {
+        audioUrl = path; // store the storage path; signed URLs generated on read
+        await admin
+          .from("seller_events")
+          .update({ audio_url: audioUrl })
+          .eq("id", eventId);
+      }
+    }
+
+    // Backfill llm_calls: link every model call from this session to the event.
+    let llmCallsBackfilled = 0;
+    if (sessionId) {
+      const { data: backfilled, error: bfErr } = await admin
+        .from("llm_calls")
+        .update({ event_id: eventId })
+        .eq("session_id", sessionId)
+        .is("event_id", null)
+        .select("id");
+      if (bfErr) {
+        console.error("[save-practice-event] llm_calls backfill failed:", bfErr);
+      } else {
+        llmCallsBackfilled = Array.isArray(backfilled) ? backfilled.length : 0;
+      }
+    }
+
+    // Radar de Fundamentos — alerta al manager cuando una regresión llega a la 3ª
+    // sesión consecutiva. Se registra como seller_event separado para que el panel
+    // del manager pueda leerlo sin tener que escanear cada practice_session.
+    const rachas = Array.isArray((meta as any)?.rachas) ? (meta as any).rachas : [];
+    const alerts = rachas.filter(
+      (r: any) => r && typeof r?.skill_id === "string" && typeof r?.streak === "number" && r.streak >= 3,
+    );
+    if (alerts.length > 0) {
+      try {
+        const alertRows = alerts.map((r: any) => ({
+          seller_id: seller.id,
+          event_type: "regression_alert",
+          node_id: meta?.node_id ?? null,
+          skill_ids: [r.skill_id],
+          payload: {
+            skill_id: r.skill_id,
+            streak: r.streak,
+            node_id: meta?.node_id ?? null,
+            session_id: sessionId,
+            evidencia: typeof r.evidencia === "string" ? r.evidencia : null,
+          },
+          prompt_version: meta?.prompt_version ?? null,
+          model: meta?.model ?? null,
+        }));
+        const { error: alertErr } = await admin.from("seller_events").insert(alertRows);
+        if (alertErr) console.error("[save-practice-event] regression_alert insert failed:", alertErr);
+      } catch (e) {
+        console.error("[save-practice-event] regression_alert threw:", e);
+      }
+    }
+
+
+    // Recompute seller_skill_state from all events (idempotente; fórmula v1).
+    // Solo si el evento actual trae bloque `evaluation`; los eventos viejos sin
+    // evaluation se ignoran naturalmente en el recorrido.
+    let skillStateResult: { skills_written: number; events_processed: number } | null = null;
+    let skillStateError: string | null = null;
+    if (payload?.evaluation && seller.company_id) {
+      try {
+        skillStateResult = await recomputeSellerSkillState(admin, seller.id, seller.company_id);
+      } catch (e) {
+        skillStateError = String(e);
+        console.error("[save-practice-event] skill state recompute failed:", e);
+      }
+    }
+
+    return new Response(JSON.stringify({
+      ok: true,
+      event_id: eventId,
+      audio_url: audioUrl,
+      session_id: sessionId,
+      llm_calls_backfilled: llmCallsBackfilled,
+      skill_state: skillStateResult,
+      skill_state_error: skillStateError,
+    }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (err) {
+    console.error("[save-practice-event] error:", err);
+    return json({ error: "Server error", detail: String(err) }, 500);
+  }
+});
