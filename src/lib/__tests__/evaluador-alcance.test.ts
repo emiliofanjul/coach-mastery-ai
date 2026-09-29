@@ -170,3 +170,13 @@ describe("Veredictos siempre", () => {
   });
 });
 
+describe("Escaleras y nombres faltantes", () => {
+  it("en una escalera, no_cumple es solo cuando no hay ninguna observación ni pregunta", () => {
+    expect(fn).toMatch(/En una escalera, "no_cumple" es SOLO cuando no hay ninguna observación ni pregunta/);
+  });
+  it("si falta un nombre, el ejemplo se escribe sin él", () => {
+    expect(fn).toMatch(/escribe el ejemplo SIN nombrarlos/);
+    expect(fn).toMatch(/nunca pongas un nombre entre corchetes/);
+  });
+});
+

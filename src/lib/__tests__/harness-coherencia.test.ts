@@ -231,8 +231,8 @@ describe("Ejecuciones perfectas: auditables contra la doctrina escrita", () => {
     });
     expect(malos).toEqual([]);
   });
-  it("cada una declara el contexto de su empresa", () => {
-    expect(perfectos.filter((c) => !c.company_brain).map((c) => c.id)).toEqual([]);
+  it("cada una declara su empresa y el nombre del vendedor, como en producción", () => {
+    expect(perfectos.filter((c) => !c.company_brain || !c.seller_name).map((c) => c.id)).toEqual([]);
   });
 });
 
@@ -281,8 +281,13 @@ describe("Harness runner: invariantes", () => {
     expect(runner).toMatch(/feedback_must_not_match/);
   });
 
+  it("manda un nombre real de vendedor, nunca 'Vendedor'", () => {
+    expect(runner).toMatch(/sellerName \?\? "Luis"/);
+    expect(runner).not.toMatch(/seller_name: "Vendedor"/);
+  });
+
   it("usa el contexto de empresa de cada caso", () => {
-    expect(runner).toMatch(/companyBrain \?\? "Taller mecánico/);
+    expect(runner).toMatch(/companyBrain \?\? "Lubricantes del Golfo/);
   });
 
   it("solo lo puede correr un manager", () => {

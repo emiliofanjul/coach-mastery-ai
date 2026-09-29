@@ -197,6 +197,9 @@ describe("Identificarse está definido", () => {
       expect(r).not.toMatch(/TU nombre/);
     }
   });
+  it("la estructura no castiga lo comercial (eso es de pitch_prematuro)", () => {
+    expect((porId.get("opening.estructura") as any)?.resumen ?? "").toMatch(/lo castiga pitch_prematuro, no la estructura/);
+  });
   it("la especificidad no mide la ligereza", () => {
     expect((porId.get("opening.especificidad") as any)?.resumen ?? "").toMatch(/NO mide si el comentario es ligero o si suena a inspección/);
   });
