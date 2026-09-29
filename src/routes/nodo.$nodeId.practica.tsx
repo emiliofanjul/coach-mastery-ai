@@ -660,6 +660,12 @@ function PracticaPage() {
     let sendTimer: ReturnType<typeof setTimeout> | null = null;
     let turnClosed = false;
     let stopped = false; // el usuario tocó el botón o se cortó la sesión
+    // iPhone: justo después de que Closer habla, el teléfono tarda un instante en
+    // pasar el audio de la bocina al micrófono, y el reconocimiento falla con
+    // errores pasajeros ("audio-capture", "network", "service-not-allowed").
+    // Antes cualquiera de esos apagaba el micrófono; ahora se reintenta solo.
+    let reintentos = 0;
+    let esperaReintento = 0;
 
     //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras.
     //  - i_do / otras fases: 2500ms.
@@ -750,10 +756,23 @@ function PracticaPage() {
         console.error("[voice] STT error:", code);
         // "no-speech" / "aborted" son transitorios: el relanzado de onend
         // mantiene el micrófono vivo hasta que se cumpla el umbral real.
-        if (code !== "no-speech" && code !== "aborted") {
+        if (code === "no-speech" || code === "aborted") return;
+        // Permiso negado: no tiene caso reintentar.
+        if (code === "not-allowed") {
           stopped = true;
           setIsUserListening(false);
+          return;
         }
+        // Cualquier otro error se trata como pasajero: reintento con espera
+        // creciente (0.4 s, 0.8 s, 1.2 s). onend hace el relanzado.
+        if (reintentos < 3) {
+          reintentos += 1;
+          esperaReintento = 400 * reintentos;
+          return;
+        }
+        stopped = true;
+        setIsUserListening(false);
+        setConnectionError("No te estoy escuchando bien. Toca el micrófono y vuelve a hablar.");
       };
 
       rec.onend = () => {
@@ -762,12 +781,23 @@ function PracticaPage() {
           finishTurn();
           return;
         }
-        // El navegador cerró solo: relanzamos y seguimos escuchando.
-        try {
-          spawn();
-        } catch (err) {
-          console.error("[voice] STT respawn failed:", err);
-          finishTurn();
+        // El navegador cerró solo: relanzamos y seguimos escuchando. Si venimos
+        // de un error pasajero, esperamos antes de relanzar.
+        const relanzar = () => {
+          if (turnClosed || stopped || sessionEndedRef.current || cutRef.current) return;
+          try {
+            spawn();
+          } catch (err) {
+            console.error("[voice] STT respawn failed:", err);
+            finishTurn();
+          }
+        };
+        if (esperaReintento > 0) {
+          const ms = esperaReintento;
+          esperaReintento = 0;
+          setTimeout(relanzar, ms);
+        } else {
+          relanzar();
         }
       };
 

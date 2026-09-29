@@ -241,6 +241,10 @@ function evaluateCase(c: Case, response: any): CaseResult {
     reasons.push("UNIVERSAL: el feedback habla de puntuación — el vendedor habla, no escribe");
   }
   if (!Array.isArray(parsed.observations)) reasons.push("UNIVERSAL: observations no es un arreglo");
+  // "Lo que viene después" debe citar una regla del paso del nodo.
+  for (const x of Array.isArray(parsed.siguiente_nivel) ? parsed.siguiente_nivel : []) {
+    if (!x || typeof x.regla_id !== "string" || !x.regla_id) { reasons.push("UNIVERSAL: 'lo que viene después' sin regla de la doctrina"); break; }
+  }
   // La nota debe salir de la rúbrica. Sin "desglose", el modelo no mandó sus
   // veredictos por criterio y la nota salió del plan B (su número libre).
   if (!parsed.desglose || typeof parsed.desglose !== "object") {

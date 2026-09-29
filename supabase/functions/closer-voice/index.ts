@@ -22,6 +22,7 @@ const plain = (text: string): PromptBlock => ({ type: "text", text });
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntuacion.ts";
+import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -253,6 +254,7 @@ function buildEvaluateBlocks(
   practice_script: any,
   cut_reason?: string | null,
   radarSkills: RadarSkill[] = [],
+  reglasSiguiente: { id: string; resumen: string }[] = [],
 ): PromptBlock[] {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
@@ -269,7 +271,10 @@ ${radarSkills.map((s) => `- ${s.id} — ${s.name} — señales de fallo: ${JSON.
 Revisa el transcript por violaciones FLAGRANTES de estos fundamentos (del calibre de: abrir con disculpa, pitch prematuro, saltarse la identificación). NO señales detalles de estilo ni ejecuciones mejorables — solo violaciones claras que coincidan con las señales de fallo listadas. Repórtalas ÚNICAMENTE en el campo "regresiones_detectadas" — JAMÁS en observations, JAMÁS en el score, JAMÁS en la mision. Si no hay ninguna, array vacío.\n`
     : `\nRADAR DE FUNDAMENTOS: sin skills previos que vigilar en esta sesión. Devuelve "regresiones_detectadas": [].\n`;
 
-  const variable = `CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}
+  const bloqueSiguiente = reglasSiguiente.length > 0
+    ? `\n\nREGLAS PARA "siguiente_nivel" (SOLO estas; cada consejo cita una con su regla_id):\n${reglasSiguiente.map((r) => `- ${r.id}: ${r.resumen}`).join("\n")}`
+    : `\n\nREGLAS PARA "siguiente_nivel": ninguna disponible — devuelve "siguiente_nivel": [].`;
+  const variable = `CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}${bloqueSiguiente}
 
 CRITERIOS DEL NODO:
 success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
@@ -312,15 +317,19 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
     {
       "observacion": "qué viste que puede llevar su ejecución más lejos, más allá de lo que este nodo entrena",
       "ejemplo": "cómo habría sonado, en primera persona del vendedor, con el nombre real del cliente",
-      "por_que": "una línea: qué gana el vendedor con eso"
+      "por_que": "una línea: qué gana el vendedor con eso",
+      "regla_id": "<id de la lista REGLAS PARA siguiente_nivel>"
     }
   ]
 }
 
 SOBRE "siguiente_nivel" (máximo 2, puede ir vacío):
-Es coaching hacia adelante, NO una falta. Aquí va lo que observaste que mejoraría la ejecución pero está FUERA del alcance de los criterios de este nodo — típicamente doctrina de pasos posteriores que el vendedor todavía no entrena aquí.
+Es coaching hacia adelante DENTRO DEL MISMO PASO que entrena este nodo: cómo ejecutar ese paso un nivel mejor. NO es una falta.
+- Cada punto se apoya en UNA regla de la lista "REGLAS PARA siguiente_nivel" y lleva su "regla_id". El ejemplo debe CUMPLIR esa regla al pie de la letra. Si ninguna regla de la lista sostiene lo que quieres decir, no lo digas.
+- PROHIBIDO recomendar el trabajo de un paso posterior: presentar durante el descubrimiento, cerrar sin haber presentado, dar precio antes de tiempo. Hacer el trabajo de otro paso es un error de la doctrina, no un siguiente nivel. En descubrimiento, el siguiente nivel es descubrir mejor.
+- No inventes recursos que la doctrina no enseña (muestras, pruebas gratis, "le dejo para que lo pruebe").
 - JAMÁS afecta el score. JAMÁS va en observations ni en flags_detected ni en la mision.
-- Se escribe en tono de oportunidad, nunca de carencia: "lo que sigue", "cuando llegues a", "aquí también cabía". Prohibido "te faltó", "no hiciste", "debiste".
+- Se escribe en tono de oportunidad, nunca de carencia: "lo que sigue", "aquí también cabía". Prohibido "te faltó", "no hiciste", "debiste".
 - Si no observaste nada de valor fuera de alcance, devuelve [].`;
 
   return [cached(EVALUATE_STATIC_PROMPT), plain(variable)];
@@ -699,10 +708,29 @@ Deno.serve(async (req) => {
       }
     }
 
+    // "Lo que viene después" se amarra a la doctrina del paso del nodo.
+    let reglasSiguiente: { id: string; resumen: string }[] = [];
+    let permitidasSiguiente = new Set<string>();
+    if (phase === "evaluate") {
+      try {
+        const adminReglas = getAdmin();
+        const { data: todas } = adminReglas
+          ? await adminReglas.from("reglas").select("id, paso, resumen")
+          : { data: null as any };
+        const pasoPorRegla = new Map<string, number>((todas ?? []).map((r: any) => [r.id, Number(r.paso)]));
+        const paso = pasoDelNodo(practice_script?.success_criteria, pasoPorRegla);
+        reglasSiguiente = (todas ?? []).filter((r: any) => paso !== null && Number(r.paso) === paso)
+          .map((r: any) => ({ id: String(r.id), resumen: String(r.resumen ?? "").slice(0, 260) }));
+        permitidasSiguiente = new Set(reglasSiguiente.map((r) => r.id));
+      } catch (e) {
+        console.error("[closer-voice] reglas para siguiente_nivel (fail-closed: sin consejos):", e);
+      }
+    }
+
     // El sistema se manda como bloques: lo FIJO primero (cacheado con
     // cache_control), lo variable después.
     const system: PromptBlock[] = phase === "evaluate"
-      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills)
+      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills, reglasSiguiente)
       : phase === "generate_example"
         ? [plain(buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? ""))]
         : phase === "replica"
@@ -959,21 +987,11 @@ Deno.serve(async (req) => {
 
       // Siguiente nivel: coaching fuera de alcance. Se sanea igual que el
       // radar y NUNCA toca el score — el score ya se calculó arriba.
-      const rawSiguiente = (evaluation as any).siguiente_nivel;
-      evaluation.siguiente_nivel = Array.isArray(rawSiguiente)
-        ? rawSiguiente
-            .filter(
-              (x: any) =>
-                x && typeof x === "object" &&
-                typeof x.observacion === "string" && x.observacion.trim().length > 0,
-            )
-            .slice(0, 2)
-            .map((x: any) => ({
-              observacion: String(x.observacion).trim(),
-              ejemplo: typeof x.ejemplo === "string" ? x.ejemplo.trim() : "",
-              por_que: typeof x.por_que === "string" ? x.por_que.trim() : "",
-            }))
-        : [];
+      // El modelo propone; el código valida: sin una regla permitida del paso
+      // del nodo, el consejo no llega al vendedor.
+      const sig = filtrarSiguienteNivel((evaluation as any).siguiente_nivel, permitidasSiguiente);
+      if (sig.descartados > 0) console.warn("[closer-voice] siguiente_nivel descartado por no citar regla del paso", { session_id, node_id, descartados: sig.descartados });
+      evaluation.siguiente_nivel = sig.conservados as any;
 
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
       // aplicada a los veredictos del modelo por criterio (sept-2026: la misma

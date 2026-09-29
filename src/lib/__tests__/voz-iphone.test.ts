@@ -32,3 +32,15 @@ describe("La guía y el cierre dicen la verdad", () => {
     expect(ui).toMatch(/score >= 85 \? "Ejecución limpia" : "Sesión incompleta"/);
   });
 });
+
+describe("El micrófono no se apaga por errores pasajeros", () => {
+  it("reintenta con espera en vez de apagarse", () => {
+    expect(ui).toMatch(/if \(reintentos < 3\) \{/);
+    expect(ui).toMatch(/esperaReintento = 400 \* reintentos/);
+    expect(ui).toMatch(/setTimeout\(relanzar, ms\)/);
+  });
+  it("solo un permiso negado apaga el micrófono de inmediato", () => {
+    expect(ui).toMatch(/if \(code === "not-allowed"\) \{/);
+  });
+});
+

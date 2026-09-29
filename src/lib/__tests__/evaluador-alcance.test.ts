@@ -49,9 +49,8 @@ describe("Canal 'siguiente_nivel': coaching que no castiga", () => {
     expect(fn).toMatch(/JAMÁS va en observations ni en flags_detected ni en la mision/);
   });
 
-  it("se sanea en el servidor y se limita a 2", () => {
-    expect(fn).toMatch(/rawSiguiente/);
-    expect(fn).toMatch(/\.slice\(0, 2\)/);
+  it("se sanea en el servidor y se limita a 2 (función compartida, probada aparte)", () => {
+    expect(fn).toMatch(/filtrarSiguienteNivel\(/);
   });
 
   it("se muestra al vendedor separado de la calificación", () => {
