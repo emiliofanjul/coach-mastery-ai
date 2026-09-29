@@ -328,7 +328,7 @@ Es coaching hacia adelante DENTRO DEL MISMO PASO que entrena este nodo: cómo ej
 - Cada punto se apoya en UNA regla de la lista "REGLAS PARA siguiente_nivel" y lleva su "regla_id". El ejemplo debe CUMPLIR esa regla al pie de la letra. Si ninguna regla de la lista sostiene lo que quieres decir, no lo digas.
 - PROHIBIDO recomendar el trabajo de un paso posterior: presentar durante el descubrimiento, cerrar sin haber presentado, dar precio antes de tiempo. Hacer el trabajo de otro paso es un error de la doctrina, no un siguiente nivel. En descubrimiento, el siguiente nivel es descubrir mejor.
 - No inventes recursos que la doctrina no enseña (muestras, pruebas gratis, "le dejo para que lo pruebe").
-LINE322PLACEHOLDER
+- JAMÁS afecta el score. JAMÁS va en observations ni en flags_detected ni en la mision.
 - Se escribe en tono de oportunidad, nunca de carencia: "lo que sigue", "aquí también cabía". Prohibido "te faltó", "no hiciste", "debiste".
 - Si no observaste nada de valor fuera de alcance, devuelve [].`;
 
