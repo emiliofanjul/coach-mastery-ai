@@ -18,8 +18,14 @@ const corsHeaders = {
 };
 
 // Default Closer voice — Spanish-friendly multilingual voice.
-const DEFAULT_VOICE_ID = "TX3LPaxmHKxFdv7VOQHJ"; // Liam
-const DEFAULT_MODEL_ID = "eleven_multilingual_v2";
+// Sept-2026: Martín Álvarez, voz nativa en español (Liam era una voz en inglés
+// que leía español y no hacía bien los acentos). Eleven v4 Turbo: el modelo
+// de ElevenLabs para conversación en tiempo real (~100 ms de inferencia).
+// Si el modelo nuevo falla con esta voz, se reintenta con el de respaldo:
+// Closer nunca se queda mudo.
+const DEFAULT_VOICE_ID = "Wl3O9lmFSMgGFTTwuS6f"; // Martín Álvarez
+const DEFAULT_MODEL_ID = "eleven_v4_turbo";
+const RESPALDO_MODEL_ID = "eleven_multilingual_v2";
 
 // Precio de referencia ElevenLabs (plan Creator): ~$0.30 USD / 1,000 caracteres.
 const USD_PER_1K_CHARS = 0.30;
@@ -135,7 +141,7 @@ Deno.serve(async (req) => {
 
     // 2) Generación en ElevenLabs
     const started = Date.now();
-    const ttsRes = await fetch(
+    const generar = (modelo: string) => fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
       {
         method: "POST",
@@ -145,10 +151,15 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           text,
-          model_id: modelId,
+          model_id: modelo,
         }),
       },
     );
+    let ttsRes = await generar(modelId);
+    if (!ttsRes.ok && modelId !== RESPALDO_MODEL_ID && ttsRes.status >= 400 && ttsRes.status < 500) {
+      console.error("[closer-tts] el modelo", modelId, "falló con", ttsRes.status, "— reintento con", RESPALDO_MODEL_ID, await ttsRes.text());
+      ttsRes = await generar(RESPALDO_MODEL_ID);
+    }
 
     if (!ttsRes.ok) {
       const errText = await ttsRes.text();
