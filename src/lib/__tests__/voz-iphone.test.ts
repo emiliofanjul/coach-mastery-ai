@@ -86,3 +86,18 @@ describe("Segunda ronda en el iPhone (sept-2026)", () => {
   });
 });
 
+describe("Modo radio (sept-2026, decisión de Emilio)", () => {
+  it("se envía tocando; el reloj es solo una red de seguridad de 25 s", () => {
+    expect(ui).toMatch(/const ESPERA_SEGURIDAD_MS = 25000;/);
+    expect(ui).not.toMatch(/baseSilenceMs|looksIncomplete/);
+  });
+  it("solo el texto NUEVO reinicia el reloj (ElevenLabs repite el mismo texto)", () => {
+    expect(ui).toMatch(/if \(turnClosed \|\| t === finalText\) return;/);
+  });
+  it("el tutorial enseña cómo funciona de verdad", () => {
+    expect(ui).toMatch(/Toca otra vez para enviar/);
+    expect(ui).toMatch(/nada se envía hasta que tocas/);
+    expect(ui).not.toMatch(/pausa de 3 segundos|Closer detecta el silencio|envía por ti/);
+  });
+});
+

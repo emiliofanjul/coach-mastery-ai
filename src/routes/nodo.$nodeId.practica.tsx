@@ -637,37 +637,15 @@ function PracticaPage() {
     let pisoRuido = 0.3; // arranca alto y baja al primer silencio real
     const numeroTurno = ++turnoVozRef.current;
 
-    //  - you_do: 3000ms — el vendedor practica y pausa buscando palabras.
-    //  - i_do / otras fases: 2500ms.
-    const baseSilenceMs = claudePhaseRef.current === "you_do" ? 3000 : 2500;
-    // Ciclo extra si la frase parece incompleta (termina en conector o sin
-    // puntuación de cierre) — cubre el caso "…encontrar—" cortado a media frase.
-    const continuationExtraMs = 1500;
-    const CONTINUATION_WORDS = new Set([
-      "y", "e", "o", "u", "ni", "pero", "mas", "sino", "aunque",
-      "que", "porque", "pues", "como", "cuando", "mientras", "si",
-      "de", "del", "a", "al", "en", "con", "por", "para", "sin",
-      "sobre", "entre", "hacia", "hasta", "desde", "según",
-      "me", "te", "se", "le", "les", "nos", "os", "lo", "la", "los", "las",
-      "mi", "tu", "su", "mis", "tus", "sus",
-      "es", "era", "fue", "ser", "estar", "está", "estoy", "soy",
-      "muy", "más", "menos", "también", "tampoco",
-      "un", "una", "unos", "unas", "el", "los",
-    ]);
-    function looksIncomplete(text: string): boolean {
-      const trimmed = text.trim();
-      if (!trimmed) return false;
-      // Puntuación de cierre natural → turno probablemente terminó.
-      if (/[.!?…]$/.test(trimmed)) return false;
-      // Guion largo / em dash / puntos suspensivos manuales → incompleto.
-      if (/[—–-]$/.test(trimmed)) return true;
-      const lastWord = trimmed
-        .toLowerCase()
-        .replace(/[.,;:!?¿¡"'()—–-]+$/g, "")
-        .split(/\s+/)
-        .pop() ?? "";
-      return CONTINUATION_WORDS.has(lastWord);
-    }
+    // Modo radio (sept-2026, decisión de Emilio): tocas para hablar y tocas
+    // otra vez para enviar; puedes pausar para pensar sin que nada se mande.
+    // El reloj es solo una red de seguridad para que el micrófono no se quede
+    // abierto por olvido: si pasan 25 s sin voz ni palabras nuevas, se envía lo
+    // que llevas. (Antes el reloj de 3 s se reiniciaba con cada texto de
+    // ElevenLabs —que repite el mismo texto mientras el micrófono esté
+    // abierto— y nunca llegaba a cero: la práctica ya funcionaba como radio.)
+    const ESPERA_SEGURIDAD_MS = 25000;
+
 
     function finishTurn() {
       if (turnClosed) return;
@@ -695,10 +673,9 @@ function PracticaPage() {
       })();
     }
 
-    function scheduleFinish(combined: string) {
+    function scheduleFinish() {
       if (sendTimer) clearTimeout(sendTimer);
-      const waitMs = looksIncomplete(combined) ? baseSilenceMs + continuationExtraMs : baseSilenceMs;
-      sendTimer = setTimeout(finishTurn, waitMs);
+      sendTimer = setTimeout(finishTurn, ESPERA_SEGURIDAD_MS);
     }
 
     setInterimTranscript("");
@@ -707,17 +684,16 @@ function PracticaPage() {
     recognitionRef.current = { stop: () => finishTurn() };
     startAudioCapture();
     grabacionRef.current?.iniciarTurno(numeroTurno);
-    // Si el turno lleva silencio absoluto desde el arranque, igual cerramos.
-    scheduleFinish("");
+    scheduleFinish();
 
     iniciarTurnoVoz({
       obtenerToken: obtenerTokenStt,
       idioma: "es",
       onParcial: (t) => {
-        if (turnClosed) return;
+        if (turnClosed || t === finalText) return; // solo cuenta el texto NUEVO
         finalText = t;
         setInterimTranscript(t);
-        scheduleFinish(t);
+        scheduleFinish();
       },
       onNivel: (n) => {
         if (turnClosed) return;
@@ -731,7 +707,7 @@ function PracticaPage() {
         const ahora = Date.now();
         if (esVoz && ahora - ultimoEmpujon > 250) {
           ultimoEmpujon = ahora;
-          scheduleFinish(finalText);
+          scheduleFinish();
         }
       },
       onPcm: (p) => grabacionRef.current?.agregar(p),
@@ -1840,7 +1816,7 @@ function PracticaPage() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Cuando sea tu turno, toca el botón naranja. El botón se pone rojo mientras te escucha.
+                      Toca el botón naranja: se pone rojo, las barritas se mueven con tu voz y tus palabras aparecen en la pantalla.
                     </div>
                   </div>
 
@@ -1864,7 +1840,7 @@ function PracticaPage() {
                         color: "#FF6B2B",
                       }}
                     >
-                      Termina de hablar
+                      Toca otra vez para enviar
                     </div>
                     <div
                       style={{
@@ -1874,7 +1850,7 @@ function PracticaPage() {
                         lineHeight: 1.5,
                       }}
                     >
-                      Cuando termines, toca el botón para enviar. Si te quedas callado unos segundos, Closer entiende que terminaste y envía por ti.
+                      Cuando termines, toca el botón otra vez: así le mandas tu turno al cliente. Puedes pausar para pensar; nada se envía hasta que tocas.
                     </div>
                     <div
                       style={{
@@ -1888,7 +1864,7 @@ function PracticaPage() {
                         lineHeight: 1.45,
                       }}
                     >
-                      Puedes pausar a media frase para pensar: el turno sigue abierto mientras hables.
+                      Si te quedas callado mucho rato, Closer envía lo que llevas.
                     </div>
                   </div>
 
