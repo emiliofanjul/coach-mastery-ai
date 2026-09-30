@@ -9,66 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as RoleRouteImport } from './routes/role'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as RedRouteImport } from './routes/red'
-import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
-import { Route as MiEmpresaRouteImport } from './routes/mi-empresa'
-import { Route as MapaRouteImport } from './routes/mapa'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PitchesIndexRouteImport } from './routes/pitches.index'
-import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
-import { Route as PitchesPitchIdRouteImport } from './routes/pitches.$pitchId'
-import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
-import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
-import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
-import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
-import { Route as EquipoSellerIdRouteImport } from './routes/equipo.$sellerId'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as MapaRouteImport } from './routes/mapa'
+import { Route as MiEmpresaRouteImport } from './routes/mi-empresa'
+import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
+import { Route as RedRouteImport } from './routes/red'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RoleRouteImport } from './routes/role'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ApiSttTokenRouteImport } from './routes/api/stt-token'
-import { Route as NodoNodeIdQuizRouteImport } from './routes/nodo.$nodeId.quiz'
+import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
+import { Route as EquipoSellerIdRouteImport } from './routes/equipo.$sellerId'
+import { Route as NodoNodeIdRouteImport } from './routes/nodo.$nodeId'
+import { Route as OnboardingManagerRouteImport } from './routes/onboarding.manager'
+import { Route as OnboardingMapIntroRouteImport } from './routes/onboarding.map-intro'
+import { Route as OnboardingSellerRouteImport } from './routes/onboarding.seller'
+import { Route as PitchesIndexRouteImport } from './routes/pitches.index'
+import { Route as PitchesPitchIdRouteImport } from './routes/pitches.$pitchId'
 import { Route as NodoNodeIdPracticaRouteImport } from './routes/nodo.$nodeId.practica'
+import { Route as NodoNodeIdQuizRouteImport } from './routes/nodo.$nodeId.quiz'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RoleRoute = RoleRouteImport.update({
-  id: '/role',
-  path: '/role',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RedRoute = RedRouteImport.update({
-  id: '/red',
-  path: '/red',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MiPerfilRoute = MiPerfilRouteImport.update({
-  id: '/mi-perfil',
-  path: '/mi-perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MiEmpresaRoute = MiEmpresaRouteImport.update({
-  id: '/mi-empresa',
-  path: '/mi-empresa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MapaRoute = MapaRouteImport.update({
-  id: '/mapa',
-  path: '/mapa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -76,49 +41,44 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PitchesIndexRoute = PitchesIndexRouteImport.update({
-  id: '/pitches/',
-  path: '/pitches/',
+const MapaRoute = MapaRouteImport.update({
+  id: '/mapa',
+  path: '/mapa',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EquipoIndexRoute = EquipoIndexRouteImport.update({
-  id: '/equipo/',
-  path: '/equipo/',
+const MiEmpresaRoute = MiEmpresaRouteImport.update({
+  id: '/mi-empresa',
+  path: '/mi-empresa',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PitchesPitchIdRoute = PitchesPitchIdRouteImport.update({
-  id: '/pitches/$pitchId',
-  path: '/pitches/$pitchId',
+const MiPerfilRoute = MiPerfilRouteImport.update({
+  id: '/mi-perfil',
+  path: '/mi-perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingSellerRoute = OnboardingSellerRouteImport.update({
-  id: '/onboarding/seller',
-  path: '/onboarding/seller',
+const RedRoute = RedRouteImport.update({
+  id: '/red',
+  path: '/red',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingMapIntroRoute = OnboardingMapIntroRouteImport.update({
-  id: '/onboarding/map-intro',
-  path: '/onboarding/map-intro',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingManagerRoute = OnboardingManagerRouteImport.update({
-  id: '/onboarding/manager',
-  path: '/onboarding/manager',
+const RoleRoute = RoleRouteImport.update({
+  id: '/role',
+  path: '/role',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NodoNodeIdRoute = NodoNodeIdRouteImport.update({
-  id: '/nodo/$nodeId',
-  path: '/nodo/$nodeId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EquipoSellerIdRoute = EquipoSellerIdRouteImport.update({
-  id: '/equipo/$sellerId',
-  path: '/equipo/$sellerId',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSttTokenRoute = ApiSttTokenRouteImport.update({
@@ -126,14 +86,54 @@ const ApiSttTokenRoute = ApiSttTokenRouteImport.update({
   path: '/api/stt-token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NodoNodeIdQuizRoute = NodoNodeIdQuizRouteImport.update({
-  id: '/quiz',
-  path: '/quiz',
-  getParentRoute: () => NodoNodeIdRoute,
+const EquipoIndexRoute = EquipoIndexRouteImport.update({
+  id: '/equipo/',
+  path: '/equipo/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipoSellerIdRoute = EquipoSellerIdRouteImport.update({
+  id: '/equipo/$sellerId',
+  path: '/equipo/$sellerId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NodoNodeIdRoute = NodoNodeIdRouteImport.update({
+  id: '/nodo/$nodeId',
+  path: '/nodo/$nodeId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingManagerRoute = OnboardingManagerRouteImport.update({
+  id: '/onboarding/manager',
+  path: '/onboarding/manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingMapIntroRoute = OnboardingMapIntroRouteImport.update({
+  id: '/onboarding/map-intro',
+  path: '/onboarding/map-intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingSellerRoute = OnboardingSellerRouteImport.update({
+  id: '/onboarding/seller',
+  path: '/onboarding/seller',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PitchesIndexRoute = PitchesIndexRouteImport.update({
+  id: '/pitches/',
+  path: '/pitches/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PitchesPitchIdRoute = PitchesPitchIdRouteImport.update({
+  id: '/pitches/$pitchId',
+  path: '/pitches/$pitchId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NodoNodeIdPracticaRoute = NodoNodeIdPracticaRouteImport.update({
   id: '/practica',
   path: '/practica',
+  getParentRoute: () => NodoNodeIdRoute,
+} as any)
+const NodoNodeIdQuizRoute = NodoNodeIdQuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
   getParentRoute: () => NodoNodeIdRoute,
 } as any)
 
@@ -303,60 +303,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/role': {
-      id: '/role'
-      path: '/role'
-      fullPath: '/role'
-      preLoaderRoute: typeof RoleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/red': {
-      id: '/red'
-      path: '/red'
-      fullPath: '/red'
-      preLoaderRoute: typeof RedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mi-perfil': {
-      id: '/mi-perfil'
-      path: '/mi-perfil'
-      fullPath: '/mi-perfil'
-      preLoaderRoute: typeof MiPerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mi-empresa': {
-      id: '/mi-empresa'
-      path: '/mi-empresa'
-      fullPath: '/mi-empresa'
-      preLoaderRoute: typeof MiEmpresaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mapa': {
-      id: '/mapa'
-      path: '/mapa'
-      fullPath: '/mapa'
-      preLoaderRoute: typeof MapaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -366,67 +317,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pitches/': {
-      id: '/pitches/'
-      path: '/pitches'
-      fullPath: '/pitches/'
-      preLoaderRoute: typeof PitchesIndexRouteImport
+    '/mapa': {
+      id: '/mapa'
+      path: '/mapa'
+      fullPath: '/mapa'
+      preLoaderRoute: typeof MapaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/equipo/': {
-      id: '/equipo/'
-      path: '/equipo'
-      fullPath: '/equipo/'
-      preLoaderRoute: typeof EquipoIndexRouteImport
+    '/mi-empresa': {
+      id: '/mi-empresa'
+      path: '/mi-empresa'
+      fullPath: '/mi-empresa'
+      preLoaderRoute: typeof MiEmpresaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pitches/$pitchId': {
-      id: '/pitches/$pitchId'
-      path: '/pitches/$pitchId'
-      fullPath: '/pitches/$pitchId'
-      preLoaderRoute: typeof PitchesPitchIdRouteImport
+    '/mi-perfil': {
+      id: '/mi-perfil'
+      path: '/mi-perfil'
+      fullPath: '/mi-perfil'
+      preLoaderRoute: typeof MiPerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/onboarding/seller': {
-      id: '/onboarding/seller'
-      path: '/onboarding/seller'
-      fullPath: '/onboarding/seller'
-      preLoaderRoute: typeof OnboardingSellerRouteImport
+    '/red': {
+      id: '/red'
+      path: '/red'
+      fullPath: '/red'
+      preLoaderRoute: typeof RedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/onboarding/map-intro': {
-      id: '/onboarding/map-intro'
-      path: '/onboarding/map-intro'
-      fullPath: '/onboarding/map-intro'
-      preLoaderRoute: typeof OnboardingMapIntroRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/onboarding/manager': {
-      id: '/onboarding/manager'
-      path: '/onboarding/manager'
-      fullPath: '/onboarding/manager'
-      preLoaderRoute: typeof OnboardingManagerRouteImport
+    '/role': {
+      id: '/role'
+      path: '/role'
+      fullPath: '/role'
+      preLoaderRoute: typeof RoleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nodo/$nodeId': {
-      id: '/nodo/$nodeId'
-      path: '/nodo/$nodeId'
-      fullPath: '/nodo/$nodeId'
-      preLoaderRoute: typeof NodoNodeIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/equipo/$sellerId': {
-      id: '/equipo/$sellerId'
-      path: '/equipo/$sellerId'
-      fullPath: '/equipo/$sellerId'
-      preLoaderRoute: typeof EquipoSellerIdRouteImport
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/stt-token': {
@@ -436,18 +380,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSttTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nodo/$nodeId/quiz': {
-      id: '/nodo/$nodeId/quiz'
-      path: '/quiz'
-      fullPath: '/nodo/$nodeId/quiz'
-      preLoaderRoute: typeof NodoNodeIdQuizRouteImport
-      parentRoute: typeof NodoNodeIdRoute
+    '/equipo/': {
+      id: '/equipo/'
+      path: '/equipo'
+      fullPath: '/equipo/'
+      preLoaderRoute: typeof EquipoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipo/$sellerId': {
+      id: '/equipo/$sellerId'
+      path: '/equipo/$sellerId'
+      fullPath: '/equipo/$sellerId'
+      preLoaderRoute: typeof EquipoSellerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nodo/$nodeId': {
+      id: '/nodo/$nodeId'
+      path: '/nodo/$nodeId'
+      fullPath: '/nodo/$nodeId'
+      preLoaderRoute: typeof NodoNodeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/manager': {
+      id: '/onboarding/manager'
+      path: '/onboarding/manager'
+      fullPath: '/onboarding/manager'
+      preLoaderRoute: typeof OnboardingManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/map-intro': {
+      id: '/onboarding/map-intro'
+      path: '/onboarding/map-intro'
+      fullPath: '/onboarding/map-intro'
+      preLoaderRoute: typeof OnboardingMapIntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/seller': {
+      id: '/onboarding/seller'
+      path: '/onboarding/seller'
+      fullPath: '/onboarding/seller'
+      preLoaderRoute: typeof OnboardingSellerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pitches/': {
+      id: '/pitches/'
+      path: '/pitches'
+      fullPath: '/pitches/'
+      preLoaderRoute: typeof PitchesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pitches/$pitchId': {
+      id: '/pitches/$pitchId'
+      path: '/pitches/$pitchId'
+      fullPath: '/pitches/$pitchId'
+      preLoaderRoute: typeof PitchesPitchIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/nodo/$nodeId/practica': {
       id: '/nodo/$nodeId/practica'
       path: '/practica'
       fullPath: '/nodo/$nodeId/practica'
       preLoaderRoute: typeof NodoNodeIdPracticaRouteImport
+      parentRoute: typeof NodoNodeIdRoute
+    }
+    '/nodo/$nodeId/quiz': {
+      id: '/nodo/$nodeId/quiz'
+      path: '/quiz'
+      fullPath: '/nodo/$nodeId/quiz'
+      preLoaderRoute: typeof NodoNodeIdQuizRouteImport
       parentRoute: typeof NodoNodeIdRoute
     }
   }
