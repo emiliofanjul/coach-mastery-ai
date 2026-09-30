@@ -23,8 +23,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
-import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria } from "../_shared/auditar_coaching.ts";
-import { contieneGroserias, groseriasDelVendedor } from "../_shared/lenguaje.ts";
+import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
+import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
