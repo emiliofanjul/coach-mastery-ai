@@ -1,7 +1,3 @@
--- Reparar nodos que se bajaron de "terminado" a "en curso" al repetirlos
--- (sept-2026: al subir el umbral de 1 a 2 estrellas, repetir un nodo de 1
--- estrella lo bajaba y volvía a cerrar el siguiente). Criterio: si el vendedor
--- ya tiene progreso en un nodo POSTERIOR, este nodo ya lo había pasado.
 WITH orden AS (
   SELECT id, world_id, order_index FROM public.nodes
 ),

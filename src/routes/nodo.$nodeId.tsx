@@ -381,9 +381,14 @@ function NodoCardsPage() {
           padding: "0 1.2rem",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          // Antes: centrado y con el desborde cortado — una tarjeta larga se
+          // ocultaba sin poder bajar. Ahora se desplaza, y sigue centrada
+          // cuando cabe (el margen automático del hijo la centra).
+          justifyContent: "flex-start",
           minHeight: 0,
-          overflow: "hidden",
+          overflowY: "auto",
+          overscrollBehavior: "contain",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {visibleCards === null || visibleCards === undefined ? null : visibleCards.length === 0 ? (
@@ -546,7 +551,7 @@ function CardSwiper({
   }
 
   return (
-    <div style={{ position: "relative", width: "100%", minHeight: 360 }}>
+    <div style={{ position: "relative", width: "100%", minHeight: 360, margin: "auto 0", flexShrink: 0, paddingBottom: 16 }}>
       <AnimatePresence mode="wait" custom={direction}>
         <motion.div
           key={card.id}

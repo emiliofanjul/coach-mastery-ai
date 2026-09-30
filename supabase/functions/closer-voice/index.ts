@@ -23,8 +23,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
-import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria } from "../_shared/auditar_coaching.ts";
-import { contieneGroserias, groseriasDelVendedor } from "../_shared/lenguaje.ts";
+import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
+import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -1026,27 +1026,39 @@ Deno.serve(async (req) => {
       // seis pasos y las reglas universales. Lo que viola se corrige o se
       // descarta, en código. Si el auditor falla, se registra: la red lo ve.
       let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0 };
-      try {
-        const textos = textosDeEvaluacion(evaluation);
-        auditoria.revisados = textos.length;
-        if (textos.length > 0) {
-          const entrada = armarEntradaAuditor({
-            paso: pasoDelNodo(practice_script?.success_criteria, new Map(reglasSiguiente.map((r) => [r.id, 0]))) ?? null,
-            fallas: Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [],
-            reglas: reglasSiguiente,
-            textos,
-          });
-          const crudo = await llamarTexto(apiKey, PROMPT_AUDITOR, entrada, 2500);
-          const limpio = crudo.replace(/```json|```/g, "").trim();
-          const veredictos = JSON.parse(limpio)?.veredictos;
-          const r = aplicarAuditoria(evaluation, veredictos);
-          auditoria = { ...auditoria, ...r };
-          if (r.corregidos + r.descartados > 0) console.warn("[closer-voice] auditor del feedback", { session_id, node_id, ...r });
+      const textos = textosDeEvaluacion(evaluation);
+      auditoria.revisados = textos.length;
+      if (textos.length > 0) {
+        const entrada = armarEntradaAuditor({
+          paso: pasoDelNodo(practice_script?.success_criteria, new Map(reglasSiguiente.map((r) => [r.id, 0]))) ?? null,
+          fallas: Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [],
+          reglas: reglasSiguiente,
+          textos,
+          conversacion: fullHistory,
+        });
+        // Hasta tres intentos: la falla típica es pasajera (saturación del
+        // modelo) o una respuesta con texto alrededor del JSON.
+        let hecho = false;
+        for (let intento = 1; intento <= 3 && !hecho; intento++) {
+          try {
+            const crudo = await llamarTexto(apiKey, PROMPT_AUDITOR, entrada, 3000);
+            const r = aplicarAuditoria(evaluation, extraerJson(crudo)?.veredictos);
+            auditoria = { ...auditoria, ...r, intentos: intento };
+            hecho = true;
+            if (r.corregidos + r.descartados > 0) console.warn("[closer-voice] auditor del feedback", { session_id, node_id, ...r });
+          } catch (e) {
+            console.error(`[closer-voice] auditor del feedback, intento ${intento}:`, e);
+            if (intento < 3) await new Promise((res) => setTimeout(res, 600 * intento));
+          }
         }
-      } catch (e) {
-        console.error("[closer-voice] auditor del feedback falló (fail-open):", e);
-        auditoria.error = true;
+        if (!hecho) {
+          // Falla CERRADA: nada sin revisar llega al vendedor.
+          fallaCerrada(evaluation);
+          auditoria.error = true;
+        }
       }
+      // Garantía en código, pase lo que pase con el auditor: sin groserías.
+      auditoria.groserias_quitadas = sanearGroseriasEvaluacion(evaluation, MISION_DE_RESPALDO);
       (evaluation as any).auditoria = auditoria;
 
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija

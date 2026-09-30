@@ -1936,8 +1936,8 @@ function PracticaPage() {
             onContinue={async (stars) => {
               setSaving(true);
 
-              const existingProgress = await restGetMaybeSingle<{ id: string; stars: number | null }>(
-                `node_progress?select=id,stars&seller_id=eq.${sellerData.id}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+              const existingProgress = await restGetMaybeSingle<{ id: string; stars: number | null; status: string | null }>(
+                `node_progress?select=id,stars,status&seller_id=eq.${sellerData.id}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
               );
 
               const previousStars = (existingProgress?.stars as number | null) ?? 0;
@@ -1945,7 +1945,10 @@ function PracticaPage() {
               // Umbral de progresión: se necesitan 2 estrellas (score ≥ 70)
               // para dar el nodo por dominado y abrir el siguiente. Con 1
               // estrella el nodo queda en curso y se puede repetir.
-              const unlocks = bestStars >= 2;
+              // Lo ganado no se pierde: un nodo ya terminado nunca vuelve a "en
+              // curso". (Sept-2026: al subir el umbral de 1 a 2 estrellas, repetir
+              // un nodo de 1 estrella lo bajaba y volvía a cerrar el siguiente.)
+              const unlocks = bestStars >= 2 || existingProgress?.status === "done";
               const progressStatus = unlocks ? "done" : "current";
 
               if (existingProgress?.id) {
