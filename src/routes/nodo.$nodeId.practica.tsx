@@ -103,7 +103,7 @@ function PracticaPage() {
   const [inputMode, setInputMode] = useState<"voice" | "text">("voice");
   // El manager decide si su equipo puede practicar por texto. La voz es la
   // práctica principal; sin permiso, el botón para cambiar a texto no aparece.
-  const [permiteTexto, setPermiteTexto] = useState(true);
+  const [permiteTexto, setPermiteTexto] = useState(false);
   // Nombre de cada criterio del nodo, para los mensajes de "analizando".
   const [nombresCriterio, setNombresCriterio] = useState<Record<string, string>>({});
   const inputModeRef = useRef<"voice" | "text">("voice");
@@ -304,7 +304,8 @@ function PracticaPage() {
         const nombres: Record<string, string> = {};
         for (const r of rows) if (r?.skill?.regla_id && r?.skill?.name) nombres[r.skill.regla_id] = r.skill.name;
         setNombresCriterio(nombres);
-        const permite = (company as any)?.permite_texto !== false;
+        // Apagado por omisión: solo si el manager lo prendió.
+        const permite = (company as any)?.permite_texto === true;
         setPermiteTexto(permite);
         if (!permite) setInputMode("voice");
       }
@@ -1395,7 +1396,9 @@ function PracticaPage() {
       rawEvaluationRef.current = evaluation;
       setFeedbackResult({
         score: Number(evaluation.score),
-        stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : 1,
+        // El cero existe: una sesión sin ejecución real no gana estrella (antes
+        // todo lo que no era 3 ni 2 se volvía 1, y se guardaba 1).
+        stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : evaluation.stars === 1 ? 1 : 0,
         observations: evaluation.observations.slice(0, 3),
         mision: evaluation.mision,
         radarLines,

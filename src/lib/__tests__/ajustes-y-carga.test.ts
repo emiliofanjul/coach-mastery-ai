@@ -53,3 +53,16 @@ describe("la voz", () => {
     expect(tts).toMatch(/ttsRes = await generar\(RESPALDO_MODEL_ID\);/);
   });
 });
+
+describe("sept-2026: texto apagado por omisión, y el cero de estrellas", () => {
+  it("una empresa sin ajuste no muestra el texto", () => {
+    expect(ui).toMatch(/const permite = \(company as any\)\?\.permite_texto === true;/);
+    expect(ui).toMatch(/const \[permiteTexto, setPermiteTexto\] = useState\(false\);/);
+    expect(equipo).toMatch(/setPermiteTexto\(c\?\.permite_texto === true\)/);
+  });
+  it("cero estrellas llega como cero a la pantalla y al guardado", () => {
+    expect(ui).toMatch(/evaluation\.stars === 1 \? 1 : 0,/);
+    expect(ui).not.toMatch(/evaluation\.stars === 2 \? 2 : 1,/);
+  });
+});
+
