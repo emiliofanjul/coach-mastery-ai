@@ -156,7 +156,7 @@ function PracticaPage() {
   // marcas de tiempo por turno para el manager, y nivel de voz en vivo.
   const grabacionRef = useRef<GrabacionSesion | null>(null);
   const turnoVozRef = useRef(0);
-  const audioTurnosRef = useRef<{ turno: number; inicio_seg: number; fin_seg: number }[]>([]);
+  const audioTurnosRef = useRef<{ turno: number; inicio_seg: number; fin_seg: number; texto?: string }[]>([]);
   const [nivelVoz, setNivelVoz] = useState(0);
   const audioUploadedRef = useRef(false);
   // Provenance from closer-voice — updated on every response.
@@ -668,6 +668,7 @@ function PracticaPage() {
         }
         setInterimTranscript("");
         const text = texto.trim();
+        grabacionRef.current?.anotarTexto(numeroTurno, text);
         // Descartar turno del usuario si el Director ya cortó (carrera).
         if (text && !cutRef.current && !sessionEndedRef.current) void sendToCloser(text);
       })();

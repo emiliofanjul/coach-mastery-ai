@@ -88,7 +88,7 @@ export class GrabacionSesion {
   private trozos: Int16Array[] = [];
   private muestras = 0;
   private abierto: { turno: number; inicio: number } | null = null;
-  readonly turnos: { turno: number; inicio_seg: number; fin_seg: number }[] = [];
+  readonly turnos: { turno: number; inicio_seg: number; fin_seg: number; texto?: string }[] = [];
   constructor(private readonly muestreo = MUESTREO_STT, private readonly separacionSeg = 0.4) {}
 
   iniciarTurno(turno: number) {
@@ -112,6 +112,15 @@ export class GrabacionSesion {
       this.turnos.push({ turno: this.abierto.turno, inicio_seg: r(this.abierto.inicio), fin_seg: r(this.muestras) });
     }
     this.abierto = null;
+  }
+  /**
+   * Lo que el vendedor dijo en ese turno (el texto final de la transcripción).
+   * Así el manager ve cada turno con su texto y salta exacto a él, sin depender
+   * de que la cuenta de turnos coincida con la transcripción.
+   */
+  anotarTexto(turno: number, texto: string) {
+    const t = this.turnos.find((x) => x.turno === turno);
+    if (t && texto.trim()) t.texto = texto.trim().slice(0, 500);
   }
   get duracionSeg(): number { return this.muestras / this.muestreo; }
   wav(): Blob | null {
