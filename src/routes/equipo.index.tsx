@@ -4,7 +4,7 @@ import { ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
-import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/equipo/")({
   head: () => ({ meta: [{ title: "Equipo — Closer" }] }),
@@ -58,6 +58,10 @@ function EquipoPage() {
   const [loading, setLoading] = useState(true);
   const [denied, setDenied] = useState(false);
   const [cards, setCards] = useState<Card[]>([]);
+  // Ajuste del equipo: ¿se puede practicar por texto? La voz es la principal.
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [permiteTexto, setPermiteTexto] = useState<boolean | null>(null);
+  const [guardandoTexto, setGuardandoTexto] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,6 +75,12 @@ function EquipoPage() {
         `profiles?select=role,company_id&id=eq.${session.userId}&limit=1`,
       );
 
+      if (profile?.company_id) {
+        setCompanyId(profile.company_id);
+        void restGetMaybeSingle<{ permite_texto: boolean | null }>(
+          `companies?select=permite_texto&id=eq.${profile.company_id}&limit=1`,
+        ).then((c) => setPermiteTexto(c?.permite_texto !== false)).catch(() => setPermiteTexto(true));
+      }
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) {
           setDenied(true);
@@ -202,6 +212,41 @@ function EquipoPage() {
         <p className="text-white/60 font-['DM_Sans'] mb-6">
           Ordenado por atención requerida y última práctica.
         </p>
+
+        {permiteTexto !== null && (
+          <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between gap-4">
+            <div>
+              <div className="font-['Syne'] font-bold">Práctica por texto</div>
+              <div className="text-white/60 font-['DM_Sans'] text-sm">
+                {permiteTexto
+                  ? "Tus vendedores pueden cambiar a texto. La voz sigue siendo la práctica principal."
+                  : "Solo voz: tus vendedores practican hablando, como en una visita real."}
+              </div>
+            </div>
+            <button
+              role="switch"
+              aria-checked={permiteTexto}
+              aria-label="Permitir práctica por texto"
+              disabled={guardandoTexto || !companyId}
+              onClick={async () => {
+                if (!companyId) return;
+                const nuevo = !permiteTexto;
+                setGuardandoTexto(true);
+                try {
+                  await restMutate(`companies?id=eq.${companyId}`, { method: "PATCH", body: { permite_texto: nuevo } });
+                  setPermiteTexto(nuevo);
+                } catch (err) {
+                  console.error("[equipo] no se pudo guardar el ajuste de texto:", err);
+                } finally {
+                  setGuardandoTexto(false);
+                }
+              }}
+              className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${permiteTexto ? "bg-[#FF6B2B]" : "bg-white/15"} ${guardandoTexto ? "opacity-60" : ""}`}
+            >
+              <span className={`absolute top-1 h-5 w-5 rounded-full bg-white transition-all ${permiteTexto ? "left-6" : "left-1"}`} />
+            </button>
+          </div>
+        )}
 
         {cards.length === 0 ? (
           <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-8 text-center text-white/60 font-['DM_Sans']">
