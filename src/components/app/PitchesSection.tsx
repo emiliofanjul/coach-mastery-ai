@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileText, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { generatePitchSection, publishPitch } from "@/lib/pitch-generator.functions";
+import { CLAVE_PAUSA, leerPausa, fueInterrupcion, type PausaPitch } from "@/lib/pitch-reanudar";
 import { PitchViewer } from "@/components/pitch/PitchViewer";
 import {
   CHANNELS,
@@ -42,7 +43,11 @@ export function PitchesSection({
   const [generating, setGenerating] = useState<string | null>(null);
   const [sections, setSections] = useState<Record<string, PitchSection[]>>({});
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [progress, setProgress] = useState<{ done: number; label: string } | null>(null);
+  const [progress, setProgress] = useState<{ done: number; label: string; pausa?: boolean } | null>(null);
+  // ¿Se ocultó la página mientras una sección se generaba? (el manager cambió de app)
+  const seOcultoRef = useRef(false);
+  const generandoRef = useRef(false);
+  const pausaRef = useRef<PausaPitch | null>(null);
   const [regenPitchId, setRegenPitchId] = useState<string | null>(null);
   const [regenStep, setRegenStep] = useState<number | null>(null);
   const [publishWarning, setPublishWarning] = useState<{
@@ -160,13 +165,45 @@ export function PitchesSection({
       )
     )
       return;
-    setGenerating(pitchId);
-    setProgress({ done: 0, label: PITCH_STEPS[0]?.label ?? "" });
+    await generarDesde(pitchId, 1);
+  }
+
+  function guardarPausa(p: PausaPitch | null) {
+    pausaRef.current = p;
     try {
-      for (let i = 0; i < PITCH_STEPS.length; i++) {
+      if (p) window.localStorage.setItem(CLAVE_PAUSA, JSON.stringify(p));
+      else window.localStorage.removeItem(CLAVE_PAUSA);
+    } catch { /* sin almacenamiento: la pausa vive solo en memoria */ }
+  }
+
+  /**
+   * Genera las secciones desde `desde` hasta la última. Si el manager sale de
+   * la app a mitad de una sección, no es un error: se pausa y se retoma sola
+   * al volver, desde esa misma sección. Las ya generadas no se repiten.
+   */
+  async function generarDesde(pitchId: string, desde: number) {
+    if (generandoRef.current) return;
+    generandoRef.current = true;
+    setGenerating(pitchId);
+    guardarPausa(null);
+    let pausado = false;
+    try {
+      for (let i = desde - 1; i < PITCH_STEPS.length; i++) {
         const stepSpec = PITCH_STEPS[i]!;
         setProgress({ done: i, label: stepSpec.label });
-        const res: any = await runGenerateSection({ data: { pitchId, step: i + 1 } });
+        seOcultoRef.current = document.visibilityState === "hidden";
+        let res: any;
+        try {
+          res = await runGenerateSection({ data: { pitchId, step: i + 1 } });
+        } catch (e: any) {
+          if (fueInterrupcion(seOcultoRef.current, document.visibilityState === "hidden")) {
+            guardarPausa({ pitchId, step: i + 1, ts: Date.now() });
+            setProgress({ done: i, label: stepSpec.label, pausa: true });
+            pausado = true;
+            return;
+          }
+          throw e;
+        }
         if (!res?.ok) {
           const detail =
             res?.failed_validations?.join(" · ") ?? res?.detail ?? res?.error ?? "Error desconocido";
@@ -182,10 +219,48 @@ export function PitchesSection({
     } catch (e: any) {
       toast.error(e?.message ?? "No se pudo generar el pitch.");
     } finally {
-      setGenerating(null);
-      setProgress(null);
+      generandoRef.current = false;
+      if (!pausado) {
+        setGenerating(null);
+        setProgress(null);
+      }
     }
   }
+
+  // Si la página se oculta durante una sección, se anota; al volver, se retoma.
+  useEffect(() => {
+    const alCambiar = () => {
+      if (document.visibilityState === "hidden") {
+        seOcultoRef.current = true;
+        return;
+      }
+      const p = pausaRef.current;
+      if (p && !generandoRef.current) {
+        toast.message("Retomo tu pitch donde se quedó.");
+        void generarDesde(p.pitchId, p.step);
+      }
+    };
+    document.addEventListener("visibilitychange", alCambiar);
+    return () => document.removeEventListener("visibilitychange", alCambiar);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId]);
+
+  // Si el iPhone recargó la página completa, la pausa guardada sigue vigente:
+  // se retoma en cuanto terminan de cargar los pitches.
+  useEffect(() => {
+    if (loading) return;
+    let guardado: string | null = null;
+    try { guardado = window.localStorage.getItem(CLAVE_PAUSA); } catch { /* noop */ }
+    const p = leerPausa(guardado, Date.now());
+    if (p && pitches.some((x) => x.id === p.pitchId) && !generandoRef.current) {
+      toast.message("Retomo tu pitch donde se quedó.");
+      void generarDesde(p.pitchId, p.step);
+    } else if (guardado && !p) {
+      guardarPausa(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
 
 
   return (
@@ -313,8 +388,10 @@ export function PitchesSection({
 
                 {pitch && generating === pitch.id && (
                   <div className="mt-3 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3 text-xs text-white/70 font-['DM_Sans']">
-                    Escribiendo la sección «{progress?.label ?? PITCH_STEPS[0]?.label}»…{" "}
-                    ({Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de {PITCH_STEPS.length})
+                    {progress?.pausa
+                      ? <>En pausa en «{progress.label}» porque saliste de la app. Al volver, retomo sola desde ahí; lo ya escrito no se pierde.</>
+                      : <>Escribiendo la sección «{progress?.label ?? PITCH_STEPS[0]?.label}»…{" "}
+                    ({Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de {PITCH_STEPS.length})</>}
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-[99px] bg-white/10">
                       <div
                         className="h-full bg-[#FF6B2B] transition-all"
