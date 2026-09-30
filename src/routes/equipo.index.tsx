@@ -79,7 +79,7 @@ function EquipoPage() {
         setCompanyId(profile.company_id);
         void restGetMaybeSingle<{ permite_texto: boolean | null }>(
           `companies?select=permite_texto&id=eq.${profile.company_id}&limit=1`,
-        ).then((c) => setPermiteTexto(c?.permite_texto !== false)).catch(() => setPermiteTexto(true));
+        ).then((c) => setPermiteTexto(c?.permite_texto === true)).catch(() => setPermiteTexto(false));
       }
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) {
@@ -219,8 +219,8 @@ function EquipoPage() {
               <div className="font-['Syne'] font-bold">Práctica por texto</div>
               <div className="text-white/60 font-['DM_Sans'] text-sm">
                 {permiteTexto
-                  ? "Tus vendedores pueden cambiar a texto. La voz sigue siendo la práctica principal."
-                  : "Solo voz: tus vendedores practican hablando, como en una visita real."}
+                  ? "Encendida: tus vendedores pueden cambiar a texto. La voz sigue siendo la práctica principal."
+                  : "Apagada: tus vendedores practican hablando, como en una visita real. Enciéndela si quieres permitir el texto."}
               </div>
             </div>
             <button
