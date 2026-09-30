@@ -347,6 +347,7 @@ export type Database = {
           logo_url: string | null
           name: string
           onboarding_completed: boolean
+          permite_texto: boolean
           plan: string
           slug: string | null
         }
@@ -361,6 +362,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           onboarding_completed?: boolean
+          permite_texto?: boolean
           plan?: string
           slug?: string | null
         }
@@ -375,6 +377,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           onboarding_completed?: boolean
+          permite_texto?: boolean
           plan?: string
           slug?: string | null
         }
