@@ -181,7 +181,7 @@ describe("Escaleras y nombres faltantes", () => {
 
 describe("Auditor del feedback y lenguaje (sept-2026)", () => {
   it("cada evaluación pasa por el auditor antes de salir", () => {
-    expect(fn).toMatch(/const r = aplicarAuditoria\(evaluation, veredictos\);/);
+    expect(fn).toMatch(/const r = aplicarAuditoria\(evaluation, extraerJson\(crudo\)\?\.veredictos\);/);
     expect(fn).toMatch(/\(evaluation as any\)\.auditoria = auditoria;/);
   });
   it("Closer nunca dice groserías, y si se le escapa una, se reescribe", () => {
@@ -190,6 +190,17 @@ describe("Auditor del feedback y lenguaje (sept-2026)", () => {
   });
   it("si el vendedor las usa, se le aconseja citando la regla", () => {
     expect(fn).toMatch(/regla_id: "mindset\.sin_groserias"/);
+  });
+});
+
+describe("El auditor es confiable (sept-2026)", () => {
+  it("reintenta hasta tres veces y, si no puede, falla cerrado", () => {
+    expect(fn).toMatch(/for \(let intento = 1; intento <= 3 && !hecho; intento\+\+\)/);
+    expect(fn).toMatch(/fallaCerrada\(evaluation\);/);
+  });
+  it("recibe la conversación, y el filtro de groserías corre pase lo que pase", () => {
+    expect(fn).toMatch(/conversacion: fullHistory,/);
+    expect(fn).toMatch(/auditoria\.groserias_quitadas = sanearGroseriasEvaluacion\(evaluation, MISION_DE_RESPALDO\);/);
   });
 });
 

@@ -136,7 +136,10 @@ export function desbloquearContextoAudio(): void {
     const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
     if (!AC) return;
     if (!contextoCompartido || contextoCompartido.state === "closed") contextoCompartido = new AC();
-    if (contextoCompartido!.state === "suspended") void contextoCompartido!.resume();
+    // iPhone deja el procesador en "interrupted" (no solo "suspended") después
+    // de reproducir audio o de cambiar de app: sin reanudarlo, el micrófono se
+    // abre pero no llega nada — "le doy al micrófono y no me escucha".
+    if (contextoCompartido!.state !== "running") void contextoCompartido!.resume();
   } catch { /* se reintenta en el siguiente toque */ }
 }
 
@@ -156,19 +159,32 @@ export interface ControlTurno {
 
 export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> {
   desbloquearContextoAudio();
-  const ctx = contextoCompartido;
+  let ctx = contextoCompartido;
   if (!ctx) throw new Error("sin-audio");
+  if (ctx.state !== "running") {
+    try { await ctx.resume(); } catch { /* abajo se recrea */ }
+    if ((ctx.state as string) !== "running") {
+      // Último recurso: un procesador nuevo. Se crea dentro del mismo toque.
+      try { await ctx.close(); } catch { /* noop */ }
+      contextoCompartido = null;
+      desbloquearContextoAudio();
+      ctx = contextoCompartido as AudioContext | null;
+      if (!ctx) throw new Error("sin-audio");
+      try { await (ctx as AudioContext).resume(); } catch { /* noop */ }
+    }
+  }
 
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
   });
-  const fuente = ctx.createMediaStreamSource(stream);
-  const proc = ctx.createScriptProcessor(4096, 1, 1);
-  const mudo = ctx.createGain();
+  const c = ctx!;
+  const fuente = c.createMediaStreamSource(stream);
+  const proc = c.createScriptProcessor(4096, 1, 1);
+  const mudo = c.createGain();
   mudo.gain.value = 0;
   fuente.connect(proc);
   proc.connect(mudo);
-  mudo.connect(ctx.destination);
+  mudo.connect(c.destination);
 
   let comprometido = "";
   let parcial = "";
@@ -185,7 +201,7 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
     if (cerrado) return;
     const f = e.inputBuffer.getChannelData(0);
     op.onNivel(nivelDeVoz(f));
-    const p = aInt16(reducirMuestreo(f, ctx.sampleRate, MUESTREO_STT));
+    const p = aInt16(reducirMuestreo(f, c.sampleRate, MUESTREO_STT));
     op.onPcm?.(p);
     if (ws && ws.readyState === WebSocket.OPEN) enviar(p);
     else pendiente.push(p);

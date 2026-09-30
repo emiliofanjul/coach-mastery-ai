@@ -70,3 +70,19 @@ describe("Un solo dueño del micrófono (sept-2026)", () => {
   });
 });
 
+describe("Segunda ronda en el iPhone (sept-2026)", () => {
+  const voz = readFileSync(join(process.cwd(), "src/lib/voz/turno-voz.ts"), "utf8");
+  const nodo = readFileSync(join(process.cwd(), "src/routes/nodo.$nodeId.tsx"), "utf8");
+  it("reanuda el procesador de audio aunque iPhone lo deje 'interrupted'", () => {
+    expect(voz).toMatch(/if \(contextoCompartido!\.state !== "running"\) void contextoCompartido!\.resume\(\);/);
+    expect(voz).toMatch(/if \(ctx\.state !== "running"\) \{/);
+  });
+  it("lo ganado no se pierde: un nodo terminado nunca vuelve a 'en curso'", () => {
+    expect(ui).toMatch(/const unlocks = bestStars >= 2 \|\| existingProgress\?\.status === "done";/);
+  });
+  it("las tarjetas largas se pueden bajar", () => {
+    expect(nodo).toMatch(/overflowY: "auto",/);
+    expect(nodo).toMatch(/margin: "auto 0", flexShrink: 0/);
+  });
+});
+

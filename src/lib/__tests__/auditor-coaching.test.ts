@@ -1,7 +1,7 @@
 // El auditor del feedback y la regla de lenguaje, probados ejecutándolos.
 import { describe, it, expect } from "vitest";
-import { aplicarAuditoria, textosDeEvaluacion, MISION_DE_RESPALDO, PROMPT_AUDITOR } from "../../../supabase/functions/_shared/auditar_coaching";
-import { primeraGroseria, contieneGroserias, groseriasDelVendedor } from "../../../supabase/functions/_shared/lenguaje";
+import { aplicarAuditoria, textosDeEvaluacion, MISION_DE_RESPALDO, PROMPT_AUDITOR, extraerJson, fallaCerrada, armarEntradaAuditor } from "../../../supabase/functions/_shared/auditar_coaching";
+import { primeraGroseria, contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../../../supabase/functions/_shared/lenguaje";
 
 const evaluacion = () => ({
   observations: [{ criterio_id: "x", error: "e", mejora: "Pide permiso antes de presentar", ejemplo: "¿Le parece si le presento?" }],
@@ -75,3 +75,41 @@ describe("groserías", () => {
     expect(groseriasDelVendedor(h)).toEqual(["pinche"]);
   });
 });
+
+describe("sept-2026, segunda ronda: lo que se coló en el iPhone", () => {
+  it("'Uf, qué mal pedo' es grosería", () => {
+    expect(contieneGroserias("Uf, qué mal pedo")).toBe(true);
+    expect(contieneGroserias("no hay pedo")).toBe(true);
+  });
+  it("ningún texto de la evaluación sale con groserías; el consejo sobre las del vendedor se conserva", () => {
+    const ev: any = {
+      observations: [{ error: "e", mejora: "m", ejemplo: "Uf, qué mal pedo, don Ramón" }],
+      mision: "Dile qué pedo con su proveedor",
+      siguiente_nivel: [
+        { observacion: "Usaste \"pinche\". Las groserías no hacen falta…", ejemplo: "", por_que: "p", regla_id: "mindset.sin_groserias" },
+        { observacion: "Profundiza", ejemplo: "No mames, ¿y luego?", por_que: "p", regla_id: "discovery.escalera_capas" },
+      ],
+    };
+    sanearGroseriasEvaluacion(ev, MISION_DE_RESPALDO);
+    expect(ev.observations[0].ejemplo).toBe("");
+    expect(ev.mision).toBe(MISION_DE_RESPALDO);
+    expect(ev.siguiente_nivel.map((x: any) => x.regla_id)).toEqual(["mindset.sin_groserias"]);
+  });
+  it("el auditor recibe la conversación para detectar hechos inventados", () => {
+    const e = JSON.parse(armarEntradaAuditor({ paso: 1, fallas: [], reglas: [], textos: [], conversacion: [{ role: "user", content: "Buenos días" }, { role: "assistant", content: "¿Qué se le ofrece?" }] }));
+    expect(e.conversacion).toEqual([{ quien: "vendedor", dijo: "Buenos días" }, { quien: "cliente", dijo: "¿Qué se le ofrece?" }]);
+    expect(PROMPT_AUDITOR).toMatch(/tiene que aparecer en la "conversacion"/);
+  });
+  it("lee el JSON aunque venga con texto o cercas alrededor", () => {
+    expect(extraerJson('Aquí va:\n```json\n{"veredictos":[]}\n```').veredictos).toEqual([]);
+    expect(() => extraerJson("sin nada")).toThrow();
+  });
+  it("si el auditor no pudo correr, nada sin revisar llega al vendedor", () => {
+    const ev: any = { observations: [{ error: "e", mejora: "m", ejemplo: "x" }], mision: "m", siguiente_nivel: [{ regla_id: "discovery.x" }] };
+    fallaCerrada(ev);
+    expect(ev.observations[0].ejemplo).toBe("");
+    expect(ev.mision).toBe(MISION_DE_RESPALDO);
+    expect(ev.siguiente_nivel).toEqual([]);
+  });
+});
+
