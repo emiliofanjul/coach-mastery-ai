@@ -101,6 +101,11 @@ function PracticaPage() {
   const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
   const [prepError, setPrepError] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "text">("voice");
+  // El manager decide si su equipo puede practicar por texto. La voz es la
+  // práctica principal; sin permiso, el botón para cambiar a texto no aparece.
+  const [permiteTexto, setPermiteTexto] = useState(true);
+  // Nombre de cada criterio del nodo, para los mensajes de "analizando".
+  const [nombresCriterio, setNombresCriterio] = useState<Record<string, string>>({});
   const inputModeRef = useRef<"voice" | "text">("voice");
   useEffect(() => { inputModeRef.current = inputMode; }, [inputMode]);
 
@@ -273,10 +278,10 @@ function PracticaPage() {
             `v_nodes_resueltos?select=id,name,description,conversation_scope,node_type,boss_goal,field_mission,world_id,difficulty_level,is_boss,practice_script:practice_script_resuelto&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
           ),
           restGetMaybeSingle<any>(
-            `companies?select=name,company_sales_brain&id=eq.${seller.company_id}&limit=1`,
+            `companies?select=name,company_sales_brain,permite_texto&id=eq.${seller.company_id}&limit=1`,
           ),
           restGet<any>(
-            `node_skills?select=relation,is_primary,weight,skill:skills(id,code,name,category,default_allowed_concepts,default_forbidden_concepts)&node_id=eq.${encodeURIComponent(nodeId)}`,
+            `node_skills?select=relation,is_primary,weight,skill:skills(id,code,name,category,regla_id,default_allowed_concepts,default_forbidden_concepts)&node_id=eq.${encodeURIComponent(nodeId)}`,
           ),
         ]);
       } catch (e: any) {
@@ -295,6 +300,14 @@ function PracticaPage() {
       // Build skillsContext
       const script: any = (node as any)?.practice_script ?? null;
       const rows: any[] = (nodeSkillsRows as any[]) ?? [];
+      {
+        const nombres: Record<string, string> = {};
+        for (const r of rows) if (r?.skill?.regla_id && r?.skill?.name) nombres[r.skill.regla_id] = r.skill.name;
+        setNombresCriterio(nombres);
+        const permite = (company as any)?.permite_texto !== false;
+        setPermiteTexto(permite);
+        if (!permite) setInputMode("voice");
+      }
       const practiceOrAssess = rows.filter(
         (r) => r.relation === "practices" || r.relation === "assesses",
       );
@@ -1557,7 +1570,7 @@ function PracticaPage() {
             onListo={handleListo}
             onExit={() => navigate({ to: "/mapa" })}
             inputMode={inputMode}
-            onToggleMode={() => setInputMode((m) => (m === "voice" ? "text" : "voice"))}
+            onToggleMode={permiteTexto ? () => setInputMode((m) => (m === "voice" ? "text" : "voice")) : undefined}
           />
         )}
 
@@ -1603,7 +1616,7 @@ function PracticaPage() {
               onReplay={handleReplay}
               onExitClick={() => setShowExitDialog(true)}
               inputMode={inputMode}
-              onToggleMode={() => setInputMode((m) => (m === "voice" ? "text" : "voice"))}
+              onToggleMode={permiteTexto ? () => setInputMode((m) => (m === "voice" ? "text" : "voice")) : undefined}
               transcript={transcriptFull.map((t) => ({ role: t.role === "agent" ? "assistant" : "user", content: t.text }))}
               onTextSubmit={(txt: string) => {
                 if (cutRef.current || sessionEndedRef.current) return;
@@ -1918,6 +1931,7 @@ function PracticaPage() {
         )}
         {phase === "feedback" && (
           <FeedbackPhase
+            nombresCriterio={nombresCriterio}
             closerMsgs={closerMsgsRef.current}
             key="feedback"
             evalError={evalError}
@@ -2115,7 +2129,7 @@ function PrepPhase({
   onListo: () => void;
   onExit: () => void;
   inputMode: "voice" | "text";
-  onToggleMode: () => void;
+  onToggleMode?: () => void;
 }) {
 
   const isText = inputMode === "text";
@@ -2154,7 +2168,7 @@ function PrepPhase({
         >
           ✕
         </button>
-        <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />
+        {onToggleMode && <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />}
       </div>
 
       <div
@@ -2416,7 +2430,7 @@ function VoicePhase({
   onExitClick: () => void;
   iDoDemoDone: boolean;
   inputMode: "voice" | "text";
-  onToggleMode: () => void;
+  onToggleMode?: () => void;
   transcript: { role: string; content: string }[];
   onTextSubmit: (txt: string) => void;
   onPlayAgentAudio: (txt: string) => void;
@@ -2484,7 +2498,7 @@ function VoicePhase({
         >
           ✕
         </button>
-        <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />
+        {onToggleMode && <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />}
       </div>
 
       <div
@@ -2786,11 +2800,22 @@ function TransitionPhase({
 
 // ───────────────────────── FEEDBACK ─────────────────────────
 
-const ANALYSIS_MESSAGES = [
-  "Revisando tu apertura...",
-  "Identificando puntos clave...",
-  "Casi listo...",
-];
+/**
+ * Lo que dice la pantalla mientras se califica: los criterios REALES de este
+ * nodo, uno por uno, y al final la revisión del auditor. Nunca nombra algo que
+ * este nodo no mide ("analizando tu presentación" en un nodo de introducción).
+ * No da vueltas: se queda en el último hasta que llega el resultado.
+ */
+export function mensajesDeAnalisis(practiceScript: any, nombres: Record<string, string>): string[] {
+  const out: string[] = ["Leyendo tu conversación…"];
+  for (const c of Array.isArray(practiceScript?.success_criteria) ? practiceScript.success_criteria : []) {
+    if (c?.requires_audio) continue;
+    const nombre = nombres[String(c?.regla_id ?? "")];
+    if (nombre) out.push(`Revisando: ${nombre}…`);
+  }
+  out.push("Calculando tu calificación…", "Revisando tus consejos contra la doctrina…");
+  return out;
+}
 
 type FeedbackStep = "analyzing" | "result" | "victory" | "eval_error" | "transcript_only";
 
@@ -3146,6 +3171,7 @@ function ReplicaChat({
 }
 
 function FeedbackPhase({
+  nombresCriterio,
   closerMsgs,
   onContinue,
   onLeaveWithoutEval,
@@ -3161,6 +3187,7 @@ function FeedbackPhase({
   evalError,
   onRetryEvaluation,
 }: {
+  nombresCriterio?: Record<string, string>;
   closerMsgs: Set<string>;
   onContinue: (stars: 0 | 1 | 2 | 3) => void;
   /** Salir sin evaluación: no guarda estrellas, solo devuelve al mapa. */
@@ -3179,6 +3206,7 @@ function FeedbackPhase({
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
   const [msgIdx, setMsgIdx] = useState(0);
+  const mensajes = mensajesDeAnalisis(practiceScript, nombresCriterio ?? {});
   const [slowNotice, setSlowNotice] = useState(false);
 
   useEffect(() => {
@@ -3211,7 +3239,7 @@ function FeedbackPhase({
   useEffect(() => {
     if (step !== "analyzing") return;
     const i = setInterval(() => {
-      setMsgIdx((p) => (p + 1) % ANALYSIS_MESSAGES.length);
+      setMsgIdx((p) => Math.min(p + 1, mensajes.length - 1));
     }, 2000);
     return () => clearInterval(i);
   }, [step]);
@@ -3764,7 +3792,7 @@ function FeedbackPhase({
         >
           {slowNotice
             ? "Esto está tardando más de lo normal, dame unos segundos más."
-            : ANALYSIS_MESSAGES[msgIdx]}
+            : mensajes[Math.min(msgIdx, mensajes.length - 1)]}
 
         </motion.div>
       </AnimatePresence>
