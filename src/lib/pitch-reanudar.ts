@@ -30,3 +30,24 @@ export function leerPausa(guardado: string | null, ahora: number): PausaPitch | 
 export function fueInterrupcion(seOcultoDuranteLaLlamada: boolean, ocultoAhora: boolean): boolean {
   return seOcultoDuranteLaLlamada || ocultoAhora;
 }
+
+/**
+ * Vigilante: si una sección tarda mucho más de lo normal, se deja de esperar y
+ * se pone en pausa con el botón "Seguir generando". Cuando el teléfono duerme,
+ * la conexión puede quedar congelada sin fallar nunca: sin vigilante, la
+ * pantalla decía "Escribiendo…" para siempre.
+ */
+export const LIMITE_SECCION_MS = 180_000;
+export class SeccionTardada extends Error {
+  constructor() { super("seccion_tardada"); this.name = "SeccionTardada"; }
+}
+export function conLimite<T>(promesa: Promise<T>, ms: number): Promise<T> {
+  let t: ReturnType<typeof setTimeout> | undefined;
+  const limite = new Promise<never>((_, rej) => { t = setTimeout(() => rej(new SeccionTardada()), ms); });
+  return Promise.race([promesa, limite]).finally(() => { if (t) clearTimeout(t); }) as Promise<T>;
+}
+
+/** ¿Teléfono o tableta? Para recomendar generar el pitch desde la computadora. */
+export function esDispositivoMovil(ua: string, puntoGrueso: boolean): boolean {
+  return /iPhone|iPad|iPod|Android|Mobile/i.test(ua) || puntoGrueso;
+}

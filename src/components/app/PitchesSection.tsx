@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { generatePitchSection, publishPitch } from "@/lib/pitch-generator.functions";
-import { CLAVE_PAUSA, leerPausa, fueInterrupcion, type PausaPitch } from "@/lib/pitch-reanudar";
+import { CLAVE_PAUSA, leerPausa, fueInterrupcion, conLimite, LIMITE_SECCION_MS, SeccionTardada, esDispositivoMovil, type PausaPitch } from "@/lib/pitch-reanudar";
 import { PitchViewer } from "@/components/pitch/PitchViewer";
 import {
   CHANNELS,
@@ -48,6 +48,20 @@ export function PitchesSection({
   const seOcultoRef = useRef(false);
   const generandoRef = useRef(false);
   const pausaRef = useRef<PausaPitch | null>(null);
+  const reintentoAutoRef = useRef(false);
+  const [esMovil, setEsMovil] = useState(false);
+  useEffect(() => {
+    try {
+      setEsMovil(esDispositivoMovil(navigator.userAgent, window.matchMedia?.("(pointer: coarse)").matches ?? false));
+    } catch { /* noop */ }
+  }, []);
+
+  /** El botón "Seguir generando": retoma desde la sección en pausa. */
+  function seguirGenerando() {
+    const p = pausaRef.current;
+    if (!p || generandoRef.current) return;
+    void generarDesde(p.pitchId, p.step);
+  }
   const [regenPitchId, setRegenPitchId] = useState<string | null>(null);
   const [regenStep, setRegenStep] = useState<number | null>(null);
   const [publishWarning, setPublishWarning] = useState<{
@@ -194,12 +208,19 @@ export function PitchesSection({
         seOcultoRef.current = document.visibilityState === "hidden";
         let res: any;
         try {
-          res = await runGenerateSection({ data: { pitchId, step: i + 1 } });
+          res = await conLimite(runGenerateSection({ data: { pitchId, step: i + 1 } }), LIMITE_SECCION_MS);
         } catch (e: any) {
-          if (fueInterrupcion(seOcultoRef.current, document.visibilityState === "hidden")) {
+          if (e instanceof SeccionTardada || fueInterrupcion(seOcultoRef.current, document.visibilityState === "hidden")) {
             guardarPausa({ pitchId, step: i + 1, ts: Date.now() });
             setProgress({ done: i, label: stepSpec.label, pausa: true });
             pausado = true;
+            // Al despertar el teléfono, la página avisa "visible" ANTES de que la
+            // conexión congelada falle: ese aviso ya pasó. Si ya estamos
+            // visibles, se retoma solo una vez; si vuelve a fallar, queda el botón.
+            if (document.visibilityState === "visible" && !(e instanceof SeccionTardada) && !reintentoAutoRef.current) {
+              reintentoAutoRef.current = true;
+              setTimeout(() => { if (pausaRef.current) void seguirGenerando(); }, 800);
+            }
             return;
           }
           throw e;
@@ -213,6 +234,7 @@ export function PitchesSection({
         const rows = await fetchPitchSections(pitchId);
         setSections((prev) => ({ ...prev, [pitchId]: rows.filter((x) => x.content) }));
         setProgress({ done: i + 1, label: stepSpec.label });
+        reintentoAutoRef.current = false;
       }
       const fresh = await fetchCompanyPitches(companyId);
       setPitches(fresh);
@@ -269,6 +291,11 @@ export function PitchesSection({
         <FileText className="h-4 w-4 text-[#FF6B2B]" />
         <h2 className="font-['Syne'] font-bold text-white text-lg">Pitches</h2>
       </div>
+      {esMovil && (
+        <div className="mb-3 rounded-[10px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/[0.06] px-3 py-2 text-xs text-white/75 font-['DM_Sans']">
+          Te recomendamos generar los pitches desde una computadora: ahí puedes cambiar de pestaña y Closer sigue escribiendo. En el teléfono, si sales de la app o se bloquea la pantalla, la generación se pausa.
+        </div>
+      )}
       <p className="mb-4 text-xs text-white/50 font-['DM_Sans']">
         Dos ejes que se cruzan: la <strong className="text-white/70">relación</strong> (¿ya te compra?)
         define la estructura; el <strong className="text-white/70">uso</strong> (¿qué hace con el producto?)
@@ -343,16 +370,25 @@ export function PitchesSection({
                         {PITCH_STEPS.length} pasos · v{pitch.version}
                       </span>
                       <Button
-                        onClick={() => handleGenerate(pitch.id)}
-                        disabled={generating !== null || regenStep !== null}
+                        onClick={() => {
+                          if (generating === pitch.id && progress?.pausa) {
+                            reintentoAutoRef.current = false; // un toque tuyo rearma el reintento automático
+                            seguirGenerando();
+                          } else {
+                            void handleGenerate(pitch.id);
+                          }
+                        }}
+                        disabled={(generating !== null && !(generating === pitch.id && progress?.pausa)) || regenStep !== null}
                         className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold disabled:opacity-60"
                       >
-                        {generating === pitch.id ? (
+                        {generating === pitch.id && !progress?.pausa ? (
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         ) : (
                           <Sparkles className="h-4 w-4 mr-2" />
                         )}
-                        {generating === pitch.id
+                        {generating === pitch.id && progress?.pausa
+                          ? `Seguir generando (${Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de ${PITCH_STEPS.length})`
+                          : generating === pitch.id
                           ? `Escribiendo… (${Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de ${PITCH_STEPS.length})`
                           : (sections[pitch.id]?.length ?? 0) > 0
                             ? "Regenerar con Closer"
@@ -389,7 +425,7 @@ export function PitchesSection({
                 {pitch && generating === pitch.id && (
                   <div className="mt-3 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3 text-xs text-white/70 font-['DM_Sans']">
                     {progress?.pausa
-                      ? <>En pausa en «{progress.label}» porque saliste de la app. Al volver, retomo sola desde ahí; lo ya escrito no se pierde.</>
+                      ? <>En pausa en «{progress.label}». Toca «Seguir generando» para continuar desde ahí; lo ya escrito no se pierde.</>
                       : <>Escribiendo la sección «{progress?.label ?? PITCH_STEPS[0]?.label}»…{" "}
                     ({Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de {PITCH_STEPS.length})</>}
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-[99px] bg-white/10">
