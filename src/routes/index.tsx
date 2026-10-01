@@ -5,13 +5,13 @@ import { hasStoredSupabaseSession } from "@/lib/browser-auth-session";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Closer — El vendedor no nace. Se hace." },
+      { title: "Closer — The world’s sales practice ground." },
       {
         name: "description",
         content:
           "El mejor entrenador de ventas del mundo, disponible 24/7. Closer convierte vendedores en cerradores.",
       },
-      { property: "og:title", content: "Closer — El vendedor no nace. Se hace." },
+      { property: "og:title", content: "Closer — The world’s sales practice ground." },
       {
         property: "og:description",
         content: "Entrenamiento de ventas con IA. Diagnostica, practica, cierra.",
@@ -76,7 +76,7 @@ function SplashScreen() {
           opacity: taglineIn ? 1 : 0,
         }}
       >
-        El vendedor no nace. Se hace.
+        The world’s sales practice ground.
       </p>
     </main>
   );

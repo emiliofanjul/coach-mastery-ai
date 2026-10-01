@@ -66,3 +66,11 @@ describe("sept-2026: texto apagado por omisión, y el cero de estrellas", () => 
   });
 });
 
+describe("el slogan de Closer", () => {
+  const portada = readFileSync(join(process.cwd(), "src/routes/index.tsx"), "utf8");
+  it("es 'The world’s sales practice ground.' en la portada y en el título", () => {
+    expect(portada.match(/The world’s sales practice ground\./g)?.length).toBe(3);
+    expect(portada).not.toMatch(/no nace/);
+  });
+});
+
