@@ -1438,5 +1438,15 @@
   "resumen": "Closer no dice groserías y el vendedor no las necesita: no hacen falta para comunicar lo que quiere decir y, en la mayoría de las empresas, le quitan profesionalidad. Si el cliente las usa, no hay que imitarlo para conectar: se conecta con interés genuino y con el sistema, no con el lenguaje.",
   "cita_cerebro": "Las groserías no hacen falta para comunicar lo que quieres decir",
   "severidad_sugerida": "None"
+ },
+ {
+  "id": "objections.regla_de_los_no",
+  "paso": "0",
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "La Regla de los No: tres 'no' CONSECUTIVOS son luz roja (la fuente dice dos; Emilio usa tres, porque hay quien deja ir un sí solo porque el cliente tuvo objeciones). Con la luz roja, el vendedor sale rápido y bien: sin insistir, cuidando la relación y dejando una siguiente cita. Tienen que ser seguidos: si la conversación avanzó entre un no y otro, la racha se rompe. Salir así es la ejecución correcta, no una falta.",
+  "cita_cerebro": "dos no seguidos, luz roja, sigue adelante",
+  "severidad_sugerida": "None"
  }
 ]
