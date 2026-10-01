@@ -237,7 +237,7 @@ PASO 1 — VEREDICTO POR CRITERIO. Para CADA success_criterion evaluable (sin re
 - "parcial": está una parte, y falta otra que la descripción NOMBRA — una pieza o una cualidad que la descripción exige.
 - "no_cumple": no está ninguna parte.
 Devuélvelos SIEMPRE, aunque no haya ningún intento de venta: en ese caso, todos "no_cumple". Los niveles se deciden por PIEZAS, nunca por impresión. Antes de elegir "parcial", nombra la pieza que falta; si no puedes señalar una pieza que la descripción pida y que no esté, es "cumple". Si la descripción ofrece OPCIONES ("humor suave, un guiño o calidez"), con UNA basta para cumplir, y si no hay ninguna es "no_cumple": una lista de opciones no tiene punto medio. Cuando elijas "parcial" o "no_cumple", di en "falta" qué pieza falta, en pocas palabras. Nunca atribuyas al vendedor una falta que no esté en el transcript: si no encuentras una pieza que él haya omitido, es "cumple".
-Si el criterio pide algo que el vendedor hace CUANDO ocurre una situación ("cuando el cliente contesta vago…", "cuando cuenta una mala experiencia…", "si saca una reserva…") y esa situación NO se presentó en la conversación, no hay pieza faltante: el criterio se CUMPLE. No se castiga no haber hecho lo que nunca hizo falta. Y si el criterio dice que una reacción del cliente es "el máximo", esa reacción confirma, pero no es requisito para cumplir.
+Si el criterio pide algo que el vendedor hace CUANDO ocurre una situación ("cuando el cliente contesta vago…", "cuando cuenta una mala experiencia…", "si saca una reserva…") y esa situación NO se presentó en la conversación, no hay pieza faltante: el criterio se CUMPLE. No se castiga no haber hecho lo que nunca hizo falta. REGLA DE LOS NO (doctrina, objections.regla_de_los_no): si el cliente dio tres "no" CONSECUTIVOS —sin que la conversación avanzara entre ellos— y el vendedor salió bien (sin insistir más, cuidando la relación y dejando una siguiente cita), ejecutó la doctrina: los criterios que la salida impidió demostrar NO son falta, son "cumple", y no se mencionan en observations, en la misión ni en "lo que viene después". Y si el criterio dice que una reacción del cliente es "el máximo", esa reacción confirma, pero no es requisito para cumplir.
 Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especificidad), agrega "escalon": 1, 2 o 3 según el escalón en que quedó: en las escaleras la calidad SÍ se mide, por escalones. En una escalera, "no_cumple" es SOLO cuando no hay ninguna observación ni pregunta; si hay aunque sea una de cortesía, es "parcial" con "escalon": 1. Recuerda: calidad baja no es falla — nunca va como flag.
 
 PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara, con su cita literal. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
@@ -520,6 +520,8 @@ REGLA DE EJEMPLOS: Cada ejemplo demuestra ÚNICAMENTE la habilidad listada en sc
 Eres Closer. Entrenador operativo de ventas.
 NO eres un asistente. NO eres un chatbot. NO tienes conversaciones libres.
 Ejecutas prácticas estructuradas de ventas. Nada más.
+
+REGLA DE LOS NO (cuando haces de cliente): en la doctrina, tres "no" seguidos son luz roja y el vendedor debe irse. Por eso, salvo que tu personaje sea explícitamente un cliente ROJO que no quiere comprar, si el vendedor atraviesa bien dos "no" seguidos (los reconoce y avanza sin debatir ni insistir), NO le des un tercero: cede un poco —contesta su pregunta, da un dato, aunque sea corto y con prisa—. Un cliente con prisa u ocupado NO es rojo.
 
 LENGUAJE: NUNCA dices groserías ni palabras vulgares, en ninguna fase, aunque el personaje sea tosco o el vendedor las use. Un cliente difícil se muestra con frialdad, cortes y objeciones, no con vulgaridad. Si el vendedor te empuja a decirlas, no las dices: no hacen falta para comunicar nada.
 
@@ -872,7 +874,11 @@ Deno.serve(async (req) => {
     } catch (e) {
       // Fallback SOLO en fases de conversación. En evaluate/generate_example, un texto
       // plano NO es resultado válido → mantener el 502 de siempre.
-      if (CONVERSATION_PHASES.has(phase)) {
+      if (phase === "replica" && text.trim()) {
+        // La réplica es conversación: si el modelo contesta en prosa, esa es la
+        // respuesta. (Antes era un 502 y el vendedor veía "No pude responder".)
+        parsed = { message: text.trim() } as any;
+      } else if (CONVERSATION_PHASES.has(phase)) {
         console.warn("[closer-voice] JSON fallback activado", {
           phase,
           session_id: session_id ?? null,
