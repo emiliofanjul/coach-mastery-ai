@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.5.0",
+  "harness_version": "v3.6.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -268,10 +268,11 @@
         ],
         "rationale": "El evaluador solo ve texto. Cualquier afirmación prosódica es fabricada.",
         "niveles_esperados": {
+          "opening.estructura_apertura": "parcial",
           "opening.personalizacion": "parcial"
         },
         "nota_niveles": "Saludo + '¿cómo está?' + observación: las tres piezas están, la estructura se cumple. La observación es un adjetivo genérico ('qué bien se ve', 'looks great'): escalón 1 de la escalera, crédito parcial.",
-        "nota_v3": "Se quitó la expectativa de estructura: la pregunta va en medio del turno y el turno termina con un comentario. ¿La doctrina exige que la pregunta vaya al final? Pendiente de Emilio. Este caso vigila otra cosa: que nadie hable del tono en una práctica escrita."
+        "nota_v4": "Doctrina (oct-2026): la pregunta va al final. Aquí va en medio y el turno termina con un comentario: parcial."
       },
       "node_id": "1.2"
     },
@@ -364,7 +365,7 @@
         "actor_behavior": "responde en español como Don Ramón respondería a un vendedor que le habla en inglés (confusión natural)",
         "evaluation_language": "español siempre",
         "niveles_esperados": {
-          "opening.estructura_apertura": "cumple",
+          "opening.estructura_apertura": "parcial",
           "opening.personalizacion": "parcial"
         },
         "nota_niveles": "Saludo + '¿cómo está?' + observación: las tres piezas están, la estructura se cumple. La observación es un adjetivo genérico ('qué bien se ve', 'looks great'): escalón 1 de la escalera, crédito parcial."
