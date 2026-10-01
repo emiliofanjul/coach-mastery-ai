@@ -676,6 +676,66 @@ export type Database = {
         }
         Relationships: []
       }
+      disputas: {
+        Row: {
+          company_id: string | null
+          concede: boolean | null
+          contexto: Json | null
+          created_at: string
+          criterio_id: string | null
+          id: string
+          mensaje_vendedor: string
+          motivo: string | null
+          node_id: string | null
+          nota_original: number | null
+          nota_revision: string | null
+          respuesta_closer: string
+          revisada: boolean
+          revisada_at: string | null
+          seller_id: string | null
+          session_id: string | null
+          turno: number | null
+        }
+        Insert: {
+          company_id?: string | null
+          concede?: boolean | null
+          contexto?: Json | null
+          created_at?: string
+          criterio_id?: string | null
+          id?: string
+          mensaje_vendedor: string
+          motivo?: string | null
+          node_id?: string | null
+          nota_original?: number | null
+          nota_revision?: string | null
+          respuesta_closer: string
+          revisada?: boolean
+          revisada_at?: string | null
+          seller_id?: string | null
+          session_id?: string | null
+          turno?: number | null
+        }
+        Update: {
+          company_id?: string | null
+          concede?: boolean | null
+          contexto?: Json | null
+          created_at?: string
+          criterio_id?: string | null
+          id?: string
+          mensaje_vendedor?: string
+          motivo?: string | null
+          node_id?: string | null
+          nota_original?: number | null
+          nota_revision?: string | null
+          respuesta_closer?: string
+          revisada?: boolean
+          revisada_at?: string | null
+          seller_id?: string | null
+          session_id?: string | null
+          turno?: number | null
+        }
+        Relationships: []
+      }
       doctrina: {
         Row: {
           body: string
@@ -1431,6 +1491,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       practice_sessions: {
         Row: {
