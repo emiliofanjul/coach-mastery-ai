@@ -96,8 +96,8 @@ describe("Nunca inventar hechos del cliente", () => {
     expect(fn).toMatch(/6c\. NUNCA INVENTES HECHOS DEL CLIENTE/);
     expect(fn).toMatch(/Si no está ahí, no existe/);
   });
-  it("sin historia visible, el cliente se trata como nuevo", () => {
-    expect(fn).toMatch(/si la conversación no muestra historia con él, trátalo como cliente nuevo/);
+  it("es recurrente SOLO si la ficha de la práctica lo dice, y solo con sus hechos", () => {
+    expect(fn).toMatch(/lo es SOLO si la sección "CLIENTE DE ESTA PRÁCTICA" lo dice/);
   });
 });
 
