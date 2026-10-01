@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.3.0",
+  "harness_version": "v3.4.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1633,6 +1633,73 @@
           "monologo"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G29_regla_de_los_no",
+      "node_id": "3.10",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos.",
+      "description": "La práctica real de Emilio (sept-2026): cliente con prisa, tres 'no' seguidos, dos atravesados con AIR y salida correcta con cita al tercero. La Regla de los No es doctrina: salir así es la ejecución correcta y lo que la salida impidió demostrar no es falta.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Ramón! Qué movido está el taller hoy, ¿le cayeron todos los clientes juntos o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, sí, joven. Ahorita no tengo tiempo, ando con tres carros."
+        },
+        {
+          "role": "user",
+          "text": "Se ve, y no le quito mucho. Soy Luis, de Lubricantes del Golfo; ando visitando talleres de la zona para conocer cómo trabajan. ¿Qué es lo que más le meten a los carros aquí?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mire, de verdad no tengo tiempo ahorita."
+        },
+        {
+          "role": "user",
+          "text": "Claro, se nota que hoy no para. Nada más una cosa rápida: ¿usted mismo lleva el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Joven, le digo que no tengo tiempo. Otro día."
+        },
+        {
+          "role": "user",
+          "text": "Va, don Ramón, lo dejo trabajar. ¿Le caigo el jueves en la mañana o el viernes en la tarde?"
+        },
+        {
+          "role": "assistant",
+          "text": "El jueves temprano, antes de que lleguen los carros."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, el jueves temprano. Que le vaya bien con esos tres."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          75,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.preguntas_capas": "cumple",
+          "discovery.dolor_real": "cumple",
+          "blocks.air": "cumple"
+        },
+        "observations_must_not_target": [
+          "discovery.preguntas_capas",
+          "discovery.dolor_real",
+          "discovery.escucha_activa"
+        ],
+        "must_not_flag": [
+          "pitch_prematuro",
+          "debate_bloqueo",
+          "ignora_estado"
+        ],
+        "rationale": "Cerebro, La Regla de los No: 'dos no seguidos, luz roja, sigue adelante' — Emilio usa tres. Con el rojo, 'salir rápido y bien es la ejecución correcta'."
       }
     }
   ]

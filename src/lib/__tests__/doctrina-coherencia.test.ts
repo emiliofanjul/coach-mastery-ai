@@ -197,6 +197,9 @@ describe("Identificarse está definido", () => {
       expect(r).not.toMatch(/TU nombre/);
     }
   });
+  it("la Regla de los No está en el registro con su cita", () => {
+    expect(porId.has("objections.regla_de_los_no")).toBe(true);
+  });
   it("la estructura no castiga lo comercial (eso es de pitch_prematuro)", () => {
     expect((porId.get("opening.estructura") as any)?.resumen ?? "").toMatch(/lo castiga pitch_prematuro, no la estructura/);
   });

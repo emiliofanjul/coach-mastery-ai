@@ -281,6 +281,13 @@ describe("Harness runner: invariantes", () => {
     expect(runner).toMatch(/feedback_must_not_match/);
   });
 
+  it("vigila la Regla de los No con la práctica real de Emilio", () => {
+    const red = JSON.parse(readFileSync(join(process.cwd(), "supabase/functions/_shared/eval_harness_v1.json"), "utf8"));
+    const g29 = red.cases.find((c: any) => c.id === "G29_regla_de_los_no");
+    expect(g29?.node_id).toBe("3.10");
+    expect(g29?.expected?.observations_must_not_target).toContain("discovery.preguntas_capas");
+  });
+
   it("exige que el auditor del feedback haya corrido", () => {
     expect(runner).toMatch(/el auditor del feedback no corrió/);
   });
