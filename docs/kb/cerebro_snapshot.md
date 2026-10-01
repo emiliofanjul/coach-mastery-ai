@@ -174,7 +174,7 @@ La observación y la pregunta de la apertura se miden igual: **¿se la harías a
 
 **Una pregunta de cortesía no es una falla: es el primer escalón.** La falla es no preguntar nada: sin ninguna pregunta, el cliente no tiene qué contestar y la conversación se muere ahí.
 
-**Y la pregunta que mejor devuelve la palabra es la que sale de la observación y cierra la apertura:** *"veo que no paran, ¿siempre está así de movido?"*. Un *"¿cómo está?"* dentro del saludo cumple, pero si después sigues hablando, el cliente espera a que termines en vez de contestar. Convertir la observación en la pregunta final es como se sube de escalón.
+**La pregunta va al final: es la que le devuelve la palabra al cliente, con control hacia donde quieres que vaya la conversación.** La que mejor lo hace sale de la observación y cierra la apertura: *"veo que no paran, ¿siempre está así de movido?"*. Un *"¿cómo está?"* dentro del saludo no basta si después sigues hablando: el cliente espera a que termines en vez de contestar, y la palabra se la devolviste con un comentario, no con una pregunta. Convertir la observación en la pregunta final es como se sube de escalón.
 
 ### Especificidad y ligereza son dos cosas distintas `CAMPO` `UNIVERSAL`
 
