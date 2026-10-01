@@ -197,6 +197,12 @@ describe("Identificarse está definido", () => {
       expect(r).not.toMatch(/TU nombre/);
     }
   });
+  it("la pregunta de la apertura va al final (decisión de Emilio, oct-2026)", () => {
+    expect((porId.get("opening.estructura") as any)?.resumen ?? "").toMatch(/una pregunta que CIERRE el turno/);
+    const cerebro = readFileSync(join(process.cwd(), "docs/kb/cerebro_snapshot.md"), "utf8");
+    expect(cerebro).toMatch(/La pregunta va al final: es la que le devuelve la palabra al cliente/);
+    expect(cerebro).not.toMatch(/dentro del saludo cumple, pero/);
+  });
   it("la Regla de los No está en el registro con su cita", () => {
     expect(porId.has("objections.regla_de_los_no")).toBe(true);
   });
