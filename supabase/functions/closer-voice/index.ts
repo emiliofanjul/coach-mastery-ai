@@ -26,6 +26,7 @@ import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.t
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
+import { PROMPT_FICHA, validarFicha, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -81,7 +82,7 @@ async function logLlmCall(row: {
   }
 }
 
-type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example" | "replica";
+type Phase = "i_do" | "you_do" | "boss_sim" | "closing" | "evaluate" | "generate_example" | "replica" | "ficha_cliente";
 type NextPhase = Phase | "end";
 
 interface ReqBody {
@@ -201,7 +202,7 @@ REGLAS DE EVALUACIÓN:
 5. Cantidad de observations: de 0 a 3. Reporta tantas como problemas reales haya DENTRO del alcance de los criterios de este nodo, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Y si el vendedor ejecutó bien todos los criterios, **devuelve observations: []** — una ejecución limpia se reconoce, no se le busca defecto. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también. Cuando observations va vacío, la "mision" no corrige: consolida lo que ya hace bien y lo empuja al siguiente nivel de exigencia.
 6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
 6b. LOS EJEMPLOS VAN COMPLETOS, SIN HUECOS. Todo "ejemplo" —en observations y en siguiente_nivel— se escribe como una línea que el vendedor podría decir tal cual, con el nombre real del cliente y los datos reales de su empresa que aparecen en el contexto. PROHIBIDOS los corchetes de relleno: "[empresa]", "[sector]", "[área relevante]", "[producto]". Las acotaciones entre corchetes, como "[pausa]" o "[el cliente responde]", SÍ están permitidas: no dejan nada incompleto y el vendedor entiende a qué se refieren. Lo prohibido es el hueco de un DATO que el vendedor tendría que inventar. Si en el contexto no está el nombre del vendedor, el de su empresa o el del cliente, escribe el ejemplo SIN nombrarlos ("ando visitando talleres de la zona…", "buenos días, ¿cómo le va?"): nunca pongas un nombre entre corchetes. Un ejemplo con huecos no es un ejemplo: es una plantilla que el vendedor tiene que resolver solo, justo cuando necesita ver cómo se hace. Si no tienes el dato real, redacta el ejemplo de modo que no lo necesite.
-6c. NUNCA INVENTES HECHOS DEL CLIENTE. En ningún ejemplo, observación ni "siguiente_nivel" pongas algo del cliente que no aparezca en el transcript o en el contexto: enfermedades, familia, una visita anterior, una compra pasada, algo "que te contó". Si no está ahí, no existe. Tampoco asumas que el cliente es recurrente: si la conversación no muestra historia con él, trátalo como cliente nuevo. Inventar que recuerdas algo es peor que no recordar nada — y un ejemplo inventado le enseña al vendedor a hacer exactamente eso.
+6c. NUNCA INVENTES HECHOS DEL CLIENTE. En ningún ejemplo, observación ni "siguiente_nivel" pongas algo del cliente que no aparezca en el transcript o en el contexto: enfermedades, familia, una visita anterior, una compra pasada, algo "que te contó". Si no está ahí, no existe. Tampoco asumas que el cliente es recurrente: lo es SOLO si la sección "CLIENTE DE ESTA PRÁCTICA" lo dice, y entonces solo existen los hechos que ahí aparecen. Inventar que recuerdas algo es peor que no recordar nada — y un ejemplo inventado le enseña al vendedor a hacer exactamente eso.
 
 7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
 8. MECÁNICA, NO DIRECCIÓN: evalúas la ejecución de la MECÁNICA que el nodo entrena. Cuando existen múltiples vías comerciales legítimas (por ejemplo, en descubrimiento el dolor puede vivir en el producto que SÍ vende, en el que no vende, o en el que no tiene), NUNCA presentes una dirección específica como LA correcta ni castigues la elección de vía del vendedor. Evalúa cómo ejecutó la mecánica en LA VÍA QUE ÉL ELIGIÓ, y construye los ejemplos de mejora sobre esa misma vía.
@@ -259,6 +260,7 @@ function buildEvaluateBlocks(
   cut_reason?: string | null,
   radarSkills: RadarSkill[] = [],
   reglasSiguiente: { id: string; resumen: string }[] = [],
+  ficha: FichaCliente | null = null,
 ): PromptBlock[] {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
@@ -278,7 +280,7 @@ Revisa el transcript por violaciones FLAGRANTES de estos fundamentos (del calibr
   const bloqueSiguiente = reglasSiguiente.length > 0
     ? `\n\nREGLAS PARA "siguiente_nivel" (SOLO estas; cada consejo cita una con su regla_id):\n${reglasSiguiente.map((r) => `- ${r.id}: ${r.resumen}`).join("\n")}`
     : `\n\nREGLAS PARA "siguiente_nivel": ninguna disponible — devuelve "siguiente_nivel": [].`;
-  const variable = `CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}${bloqueSiguiente}
+  const variable = `CONTEXTO DE CIERRE — POR QUÉ TERMINÓ LA SESIÓN: ${cut_reason ?? "unknown"}\n\n${bloqueEvaluador(ficha)}${bloqueSiguiente}
 
 CRITERIOS DEL NODO:
 success_criteria (evaluables por texto — descarta los que tengan requires_audio=true):
@@ -436,18 +438,18 @@ Responde JSON exacto:
 
 
 /** Llamada corta al modelo: un sistema, un mensaje, texto de vuelta. Para el auditor y la reescritura. */
-async function llamarTexto(apiKey: string, system: string, user: string, maxTokens: number): Promise<string> {
+async function llamarTexto(apiKey: string, system: string, user: string, maxTokens: number, temperatura = 0): Promise<string> {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-    body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: maxTokens, temperature: 0, system, messages: [{ role: "user", content: user }] }),
+    body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: maxTokens, temperature: temperatura, system, messages: [{ role: "user", content: user }] }),
   });
   if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
   const j = await r.json();
   return (j?.content ?? []).filter((b: any) => b?.type === "text").map((b: any) => b.text).join("");
 }
 
-function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = []): string {
+function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
@@ -482,9 +484,7 @@ NO avances a skills o pasos que no estén en skills_in_focus.`;
 En you_do el usuario es el vendedor que practica. Tú reaccionas como cliente real.
 Mantén el rol de cliente durante TODA la conversación, sin importar lo que diga el usuario.
 
-IMPORTANTE: Eres un cliente nuevo que el vendedor acaba de encontrar.
-NO inventes historial de pedidos, productos específicos, ni contexto que el vendedor no haya mencionado.
-Reacciona SOLO a lo que el vendedor diga en esta conversación.
+${bloqueActor(ficha)}
 
 REGLA PEDAGÓGICA — DIFICULTAD LIMITADA A HERRAMIENTAS ENSEÑADAS:
 Skills que el vendedor ya domina o está practicando ahora: ${taughtStr}
@@ -612,6 +612,24 @@ Deno.serve(async (req) => {
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
     const body = (await req.json()) as ReqBody;
+
+    // La ficha del cliente de la práctica: se crea mientras el vendedor ve la
+    // demostración. Con temperatura alta para que cada práctica sea un cliente
+    // distinto. Si algo falla, una ficha de respaldo: la práctica nunca se cae.
+    if ((body as any).phase === "ficha_cliente") {
+      const tipo = (body as any).tipo_cliente === "recurrente" ? "recurrente" : "nuevo";
+      let ficha: FichaCliente = fichaDeRespaldo(tipo);
+      try {
+        const crudo = await llamarTexto(apiKey, PROMPT_FICHA, `Cerebro de la empresa:\n${String((body as any).company_brain ?? "").slice(0, 6000)}\n\nTipo de cliente: ${tipo}`, 400, 0.9);
+        const t = crudo.replace(/```json|```/g, "");
+        const i = t.indexOf("{"), j = t.lastIndexOf("}");
+        if (i >= 0 && j > i) ficha = validarFicha(JSON.parse(t.slice(i, j + 1)), tipo);
+      } catch (e) {
+        console.error("[closer-voice] ficha del cliente (respaldo):", e);
+      }
+      return new Response(JSON.stringify({ ficha }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const { transcript, phase, practice_script: practice_script_body, company_brain, seller_name, conversation_history, card_type, node_name, seller_industry, scope, session_id, taught_skills, card_title, card_body_brief, cut_reason, director_user_turns } = body;
 
     // ── El servidor es la autoridad sobre el practice_script ──────────
@@ -757,12 +775,12 @@ Deno.serve(async (req) => {
     // El sistema se manda como bloques: lo FIJO primero (cacheado con
     // cache_control), lo variable después.
     const system: PromptBlock[] = phase === "evaluate"
-      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills, reglasSiguiente)
+      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills, reglasSiguiente, fichaDePeticion((body as any).ficha_cliente))
       : phase === "generate_example"
         ? [plain(buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? ""))]
         : phase === "replica"
           ? [plain(buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : []))]
-          : [cached(buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? []))];
+          : [cached(buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? [], fichaDePeticion((body as any).ficha_cliente)))];
 
     // Historial acotado SOLO para el Actor: últimos 6 turnos completos + una
     // línea de resumen de lo anterior. El evaluador recibe el transcript entero.
@@ -1050,6 +1068,7 @@ Deno.serve(async (req) => {
           reglas: reglasSiguiente,
           textos,
           conversacion: fullHistory,
+          ficha_cliente: bloqueEvaluador(fichaDePeticion((body as any).ficha_cliente)),
         });
         // Hasta tres intentos: la falla típica es pasajera (saturación del
         // modelo) o una respuesta con texto alrededor del JSON.
@@ -1075,7 +1094,11 @@ Deno.serve(async (req) => {
       // Garantía en código, pase lo que pase con el auditor: sin groserías.
       auditoria.groserias_quitadas = sanearGroseriasEvaluacion(evaluation, MISION_DE_RESPALDO);
       // Y sin recuerdos inventados: hoy toda práctica es una primera visita.
-      auditoria.recuerdos_quitados = sanearRecuerdos(evaluation, MISION_DE_RESPALDO);
+      // Con un cliente recurrente, recordar su ficha es legítimo: el auditor ya
+      // revisó que cada recuerdo esté en ella. Con uno nuevo, nada de recuerdos.
+      if (fichaDePeticion((body as any).ficha_cliente)?.tipo !== "recurrente") {
+        auditoria.recuerdos_quitados = sanearRecuerdos(evaluation, MISION_DE_RESPALDO);
+      }
       (evaluation as any).auditoria = auditoria;
 
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
