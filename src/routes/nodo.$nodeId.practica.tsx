@@ -2919,7 +2919,9 @@ function ReplicaChat({
     setDraft("");
     try {
       const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
+      // Un tropiezo pasajero no debe obligar al vendedor a reescribir su
+      // desacuerdo: se reintenta solo, una vez.
+      const pedir = () => fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -2939,6 +2941,11 @@ function ReplicaChat({
           seller_id: sellerId ?? null,
         }),
       });
+      let res = await pedir();
+      if (!res.ok && res.status >= 500) {
+        await new Promise((r) => setTimeout(r, 1200));
+        res = await pedir();
+      }
       const raw = await res.text();
       if (!res.ok) throw new Error(`replica HTTP ${res.status}: ${raw.slice(0, 200)}`);
       const parsed = JSON.parse(raw) as { message?: string };

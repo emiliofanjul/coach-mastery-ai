@@ -204,3 +204,15 @@ describe("El auditor es confiable (sept-2026)", () => {
   });
 });
 
+describe("La Regla de los No (sept-2026)", () => {
+  it("el evaluador la aplica: salir bien tras tres 'no' seguidos no es falta", () => {
+    expect(fn).toMatch(/REGLA DE LOS NO \(doctrina, objections\.regla_de_los_no\)/);
+  });
+  it("el cliente simulado no da un tercer 'no' salvo que sea rojo por diseño", () => {
+    expect(fn).toMatch(/Un cliente con prisa u ocupado NO es rojo\./);
+  });
+  it("la réplica acepta una respuesta en prosa", () => {
+    expect(fn).toMatch(/if \(phase === "replica" && text\.trim\(\)\) \{/);
+  });
+});
+
