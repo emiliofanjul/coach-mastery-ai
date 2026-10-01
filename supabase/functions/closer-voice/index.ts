@@ -423,7 +423,14 @@ ${JSON.stringify(original_evaluation, null, 2)}
 TRANSCRIPT DE LA SESIÓN:
 ${JSON.stringify(conversation_history ?? [], null, 2)}
 
-Responde JSON exacto: { "message": "..." }`;
+Responde JSON exacto:
+{
+  "message": "lo que le dices al vendedor",
+  "concede": true | false,
+  "criterio_id": "<id del criterio o de la falla que estaba mal, o null>",
+  "motivo": "una línea: qué estuvo mal en la evaluación, o por qué se sostiene"
+}
+"concede" es true SOLO si reconoces que una observación, un veredicto o la nota estuvo mal. Esto lo lee el equipo de Closer para corregir al evaluador: sé exacto.`;
 }
 
 
@@ -1131,6 +1138,35 @@ Deno.serve(async (req) => {
           JSON.stringify({ error: "Malformed replica response", parsed }),
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
+      }
+      // La disputa se guarda en el servidor, con el contexto completo, para que el
+      // equipo de Closer la audite y la convierta en un caso de la red. Si
+      // falla el guardado, el vendedor igual recibe su respuesta.
+      try {
+        const adminDisputa = getAdmin();
+        if (adminDisputa) {
+          const r: any = parsed;
+          const concede = typeof r.concede === "boolean" ? r.concede : null;
+          await adminDisputa.from("disputas").insert({
+            company_id: body.company_id ?? null,
+            seller_id: body.seller_id ?? null,
+            node_id: body.node_id ?? null,
+            session_id: session_id ?? null,
+            turno: Array.isArray(body.replica_thread) ? Math.floor(body.replica_thread.length / 2) + 1 : 1,
+            nota_original: typeof body.original_evaluation?.score === "number" ? body.original_evaluation.score : null,
+            mensaje_vendedor: String(body.user_message ?? "").slice(0, 4000),
+            respuesta_closer: String(rep.message).slice(0, 4000),
+            concede,
+            criterio_id: typeof r.criterio_id === "string" && r.criterio_id ? r.criterio_id.slice(0, 120) : null,
+            motivo: typeof r.motivo === "string" && r.motivo ? r.motivo.slice(0, 600) : null,
+            contexto: {
+              evaluacion: body.original_evaluation ?? null,
+              conversacion: Array.isArray(conversation_history) ? conversation_history.slice(-40) : [],
+            },
+          });
+        }
+      } catch (e) {
+        console.error("[closer-voice] no se pudo guardar la disputa (fail-open):", e);
       }
       return new Response(JSON.stringify({ message: rep.message, ...meta }), {
         status: 200,
