@@ -145,6 +145,14 @@ export function calcularScore(args: {
       sin_veredicto.push(c.id);
     } else {
       nivel = String(v.nivel ?? "no_cumple");
+      // "no_aplica" (sept-2026): la sesión no permitió demostrarlo —la situación
+      // nunca se presentó, o el vendedor salió bien por la Regla de los No—. No
+      // es falta: sale de la cuenta y la nota se calcula con lo que sí se pudo
+      // evaluar. En el desglose se muestra con crédito completo (sin falta).
+      if (nivel === "no_aplica") {
+        desglose.push({ criterio_id: c.id, peso, nivel, credito: 1 });
+        continue;
+      }
       // "no_cumple" vale cero siempre: el escalón solo afina un cumple o un
       // parcial. Si el modelo manda las dos cosas a la vez, gana el no_cumple.
       if (nivel === "no_cumple") {
@@ -163,7 +171,9 @@ export function calcularScore(args: {
     const falta = v && typeof v.falta === "string" && v.falta.trim() && credito < 1 ? v.falta.trim().slice(0, 120) : undefined;
     desglose.push({ criterio_id: c.id, peso, nivel, ...(escalon ? { escalon } : {}), credito: Math.round(credito * 1000) / 1000, ...(falta ? { falta } : {}) });
   }
-  const base = sumaPesos > 0 ? Math.round((100 * sumaCredito) / sumaPesos) : 0;
+  // Si nada se pudo evaluar (todo "no_aplica"), no hay rúbrica: plan B.
+  if (sumaPesos === 0) return vacio;
+  const base = Math.round((100 * sumaCredito) / sumaPesos);
 
   // Restas: cada flag una sola vez; la severidad sale del guion, no del nombre.
   const severidadDe = new Map<string, string>();
