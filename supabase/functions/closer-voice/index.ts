@@ -25,6 +25,7 @@ import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntu
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
+import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -236,8 +237,9 @@ PASO 1 — VEREDICTO POR CRITERIO. Para CADA success_criterion evaluable (sin re
 - "cumple": está TODO lo que la descripción del criterio pide.
 - "parcial": está una parte, y falta otra que la descripción NOMBRA — una pieza o una cualidad que la descripción exige.
 - "no_cumple": no está ninguna parte.
+- "no_aplica": la sesión NO PERMITIÓ demostrarlo, y no por culpa del vendedor. SOLO en dos casos: (a) el criterio depende de una situación que nunca se presentó; (b) el vendedor salió bien por la Regla de los No. En "falta" escribe el motivo. Un "no_aplica" sale de la cuenta: la nota se calcula con lo que sí se pudo evaluar. Nunca lo uses para lo que el vendedor pudo hacer y no hizo.
 Devuélvelos SIEMPRE, aunque no haya ningún intento de venta: en ese caso, todos "no_cumple". Los niveles se deciden por PIEZAS, nunca por impresión. Antes de elegir "parcial", nombra la pieza que falta; si no puedes señalar una pieza que la descripción pida y que no esté, es "cumple". Si la descripción ofrece OPCIONES ("humor suave, un guiño o calidez"), con UNA basta para cumplir, y si no hay ninguna es "no_cumple": una lista de opciones no tiene punto medio. Cuando elijas "parcial" o "no_cumple", di en "falta" qué pieza falta, en pocas palabras. Nunca atribuyas al vendedor una falta que no esté en el transcript: si no encuentras una pieza que él haya omitido, es "cumple".
-Si el criterio pide algo que el vendedor hace CUANDO ocurre una situación ("cuando el cliente contesta vago…", "cuando cuenta una mala experiencia…", "si saca una reserva…") y esa situación NO se presentó en la conversación, no hay pieza faltante: el criterio se CUMPLE. No se castiga no haber hecho lo que nunca hizo falta. REGLA DE LOS NO (doctrina, objections.regla_de_los_no): si el cliente dio tres "no" CONSECUTIVOS —sin que la conversación avanzara entre ellos— y el vendedor salió bien (sin insistir más, cuidando la relación y dejando una siguiente cita), ejecutó la doctrina: los criterios que la salida impidió demostrar NO son falta, son "cumple", y no se mencionan en observations, en la misión ni en "lo que viene después". Y si el criterio dice que una reacción del cliente es "el máximo", esa reacción confirma, pero no es requisito para cumplir.
+Si el criterio pide algo que el vendedor hace CUANDO ocurre una situación ("cuando el cliente contesta vago…", "cuando cuenta una mala experiencia…", "si saca una reserva…") y esa situación NO se presentó en la conversación, no hay pieza faltante: el criterio es "no_aplica". No se castiga no haber hecho lo que nunca hizo falta. REGLA DE LOS NO (doctrina, objections.regla_de_los_no): si el cliente dio tres "no" CONSECUTIVOS —sin que la conversación avanzara entre ellos— y el vendedor salió bien (sin insistir más, cuidando la relación y dejando una siguiente cita), ejecutó la doctrina: los criterios que la salida impidió demostrar NO son falta: son "no_aplica", y no se mencionan en observations, en la misión ni en "lo que viene después". Y si el criterio dice que una reacción del cliente es "el máximo", esa reacción confirma, pero no es requisito para cumplir.
 Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especificidad), agrega "escalon": 1, 2 o 3 según el escalón en que quedó: en las escaleras la calidad SÍ se mide, por escalones. En una escalera, "no_cumple" es SOLO cuando no hay ninguna observación ni pregunta; si hay aunque sea una de cortesía, es "parcial" con "escalon": 1. Recuerda: calidad baja no es falla — nunca va como flag.
 
 PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara, con su cita literal. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
@@ -300,7 +302,7 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
     }
   ],
   "veredictos_criterios": [
-    { "criterio_id": "<id de success_criteria>", "nivel": "cumple | parcial | no_cumple", "escalon": <1|2|3, SOLO si el criterio es una escalera>, "falta": "<SOLO si es parcial o no_cumple: la pieza que falta>" }
+    { "criterio_id": "<id de success_criteria>", "nivel": "cumple | parcial | no_cumple | no_aplica", "escalon": <1|2|3, SOLO si el criterio es una escalera>, "falta": "<SOLO si es parcial o no_cumple: la pieza que falta; si es no_aplica: el motivo>" }
   ],
   "score": <entero 0-100, tu estimado; la nota final la calcula el código>,
   "observations": [
@@ -1065,12 +1067,30 @@ Deno.serve(async (req) => {
       }
       // Garantía en código, pase lo que pase con el auditor: sin groserías.
       auditoria.groserias_quitadas = sanearGroseriasEvaluacion(evaluation, MISION_DE_RESPALDO);
+      // Y sin recuerdos inventados: hoy toda práctica es una primera visita.
+      auditoria.recuerdos_quitados = sanearRecuerdos(evaluation, MISION_DE_RESPALDO);
       (evaluation as any).auditoria = auditoria;
 
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
       // aplicada a los veredictos del modelo por criterio (sept-2026: la misma
       // conversación sacaba 55 y 75 con temperatura 0 cuando el número lo
       // decidía el modelo).
+      // Verificación de hecho: si el vendedor no dijo "soy…", "me llamo…",
+      // "vengo de…", su nombre ni el de su empresa, NO se presentó, diga el
+      // modelo lo que diga. (El modelo a veces confunde el nombre del cliente
+      // con presentarse.)
+      {
+        const turnosVendedor = fullHistory.filter((t: any) => t?.role === "user").map((t: any) => String(t?.content ?? ""));
+        const seP = vendedorSePresento(turnosVendedor, seller_name, empresaDelCerebro(company_brain));
+        const vs = Array.isArray((evaluation as any).veredictos_criterios) ? (evaluation as any).veredictos_criterios : [];
+        for (const v of vs) {
+          if (v?.criterio_id === "opening.curiosidad_abierta" && !seP && v.nivel !== "cumple") {
+            v.nivel = "cumple";
+            delete v.falta;
+            evaluation.observations = (evaluation.observations ?? []).filter((o: any) => o?.criterio_id !== "opening.curiosidad_abierta");
+          }
+        }
+      }
       const rubrica = calcularScore({
         veredictos: (evaluation as any).veredictos_criterios,
         successCriteria: practice_script?.success_criteria,
