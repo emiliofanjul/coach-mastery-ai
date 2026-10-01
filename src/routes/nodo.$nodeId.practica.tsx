@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, type ControlTurno } from "@/lib/voz/turno-voz";
+import { resolverTipoCliente, lineaDelCliente, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -104,6 +105,10 @@ function PracticaPage() {
   // El manager decide si su equipo puede practicar por texto. La voz es la
   // práctica principal; sin permiso, el botón para cambiar a texto no aparece.
   const [permiteTexto, setPermiteTexto] = useState(false);
+  // La ficha del cliente de esta práctica: se pide al cargar, mientras el
+  // vendedor ve la demostración, y viaja en cada turno y en la evaluación.
+  const fichaRef = useRef<any>(null);
+  const [fichaCliente, setFichaCliente] = useState<FichaVisible | null>(null);
   // Nombre de cada criterio del nodo, para los mensajes de "analizando".
   const [nombresCriterio, setNombresCriterio] = useState<Record<string, string>>({});
   const inputModeRef = useRef<"voice" | "text">("voice");
@@ -272,17 +277,19 @@ function PracticaPage() {
       let node: any = null;
       let company: any = null;
       let nodeSkillsRows: any[] = [];
+      let tipoNodo: any = null;
       try {
-        [node, company, nodeSkillsRows] = await Promise.all([
+        [node, company, nodeSkillsRows, tipoNodo] = await Promise.all([
           restGetMaybeSingle<any>(
             `v_nodes_resueltos?select=id,name,description,conversation_scope,node_type,boss_goal,field_mission,world_id,difficulty_level,is_boss,practice_script:practice_script_resuelto&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
           ),
           restGetMaybeSingle<any>(
-            `companies?select=name,company_sales_brain,permite_texto&id=eq.${seller.company_id}&limit=1`,
+            `companies?select=name,company_sales_brain,permite_texto,tipos_cliente&id=eq.${seller.company_id}&limit=1`,
           ),
           restGet<any>(
             `node_skills?select=relation,is_primary,weight,skill:skills(id,code,name,category,regla_id,default_allowed_concepts,default_forbidden_concepts)&node_id=eq.${encodeURIComponent(nodeId)}`,
           ),
+          restGetMaybeSingle<any>(`nodes?select=tipo_cliente&id=eq.${encodeURIComponent(nodeId)}&limit=1`).catch(() => null),
         ]);
       } catch (e: any) {
         console.error("[practica] node/company/skills query failed:", e);
@@ -306,6 +313,21 @@ function PracticaPage() {
         setNombresCriterio(nombres);
         // Apagado por omisión: solo si el manager lo prendió.
         const permite = (company as any)?.permite_texto === true;
+        // Qué cliente toca: el manager manda; si no, el que enseña mejor el nodo.
+        const tipo = resolverTipoCliente(tipoNodo?.tipo_cliente, (company as any)?.tipos_cliente, Math.random());
+        void (async () => {
+          try {
+            const r = await fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+              body: JSON.stringify({ phase: "ficha_cliente", tipo_cliente: tipo, company_brain: JSON.stringify((company as any)?.company_sales_brain ?? {}) }),
+            });
+            const j = await r.json();
+            if (j?.ficha) { fichaRef.current = j.ficha; setFichaCliente(j.ficha); }
+          } catch (err) {
+            console.error("[practica] no se pudo crear la ficha del cliente:", err);
+          }
+        })();
         setPermiteTexto(permite);
         if (!permite) setInputMode("voice");
       }
@@ -964,6 +986,7 @@ function PracticaPage() {
             company_id: sellerData?.company_id ?? null,
             seller_id: sellerData?.id ?? null,
             taught_skills: skillsContextRef.current?.taughtSkills ?? [],
+            ficha_cliente: fichaRef.current,
           }),
           signal: ctrl.signal,
         });
@@ -1286,7 +1309,7 @@ function PracticaPage() {
         company_id: sellerData?.company_id ?? null,
         seller_id: sellerData?.id ?? null,
         taught_skills: skillsContextRef.current?.taughtSkills ?? [],
-
+        ficha_cliente: fichaRef.current,
 
         cut_reason: cutReasonRef.current ?? "unknown",
         director_user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
@@ -1443,6 +1466,8 @@ function PracticaPage() {
                   // Dónde empieza y termina cada turno del vendedor dentro de la
                   // grabación: el manager puede saltar directo a cualquiera.
                   audio_turnos: audioTurnosRef.current,
+                  // Con quién practicó (el manager y las disputas necesitan saberlo).
+                  ficha_cliente: fichaRef.current,
                 },
                 rachas,
 
@@ -1557,6 +1582,7 @@ function PracticaPage() {
         {(phase === "i_do" || phase === "you_do") && (
           <>
             <VoicePhase
+              fichaCliente={currentPhase === "you_do" && !transcriptFull.some((m: any) => m.phase === "you_do" && m.role === "user") ? fichaCliente : null}
               closerMsgs={closerMsgsRef.current}
               key={phase}
               currentPhase={currentPhase}
@@ -2374,6 +2400,7 @@ function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onTo
 }
 
 function VoicePhase({
+  fichaCliente = null,
   closerMsgs,
   nivelVoz = 0,
   currentPhase,
@@ -2394,6 +2421,8 @@ function VoicePhase({
   onTextSubmit,
   onPlayAgentAudio,
 }: {
+  /** La tarjeta "Tu cliente": se muestra al empezar el turno del vendedor y desaparece cuando habla. */
+  fichaCliente?: FichaVisible | null;
   /** Nivel de la voz del vendedor (0 a 1) mientras habla: mueve las barritas. */
   nivelVoz?: number;
   closerMsgs: Set<string>;
@@ -2470,6 +2499,14 @@ function VoicePhase({
         }
       `}</style>
 
+      {fichaCliente && (
+        <div style={{ border: "1px solid rgba(255,107,43,0.35)", background: "rgba(255,107,43,0.07)", borderRadius: 14, padding: "12px 14px", marginBottom: 12 }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#FF6B2B", marginBottom: 4 }}>Tu cliente</div>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, color: "#F0F0F5" }}>{fichaCliente.nombre} · {fichaCliente.negocio}</div>
+          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgba(240,240,245,0.8)", marginTop: 2 }}>{lineaDelCliente(fichaCliente)}</div>
+          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "#F0F0F5", marginTop: 8, fontWeight: 600 }}>{LLAMADO_A_LA_ACCION}</div>
+        </div>
+      )}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <button
           onClick={onExitClick}

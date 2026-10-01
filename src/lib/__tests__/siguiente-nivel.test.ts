@@ -59,7 +59,7 @@ describe("el evaluador usa el filtro y le da la doctrina del paso", () => {
   const fn = readFileSync(join(process.cwd(), "supabase/functions/closer-voice/index.ts"), "utf8");
   it("filtra en código y pasa las reglas del paso al prompt", () => {
     expect(fn).toMatch(/filtrarSiguienteNivel\(\(evaluation as any\)\.siguiente_nivel, permitidasSiguiente\)/);
-    expect(fn).toMatch(/buildEvaluateBlocks\(practice_script, cut_reason, radarSkills, reglasSiguiente\)/);
+    expect(fn).toMatch(/buildEvaluateBlocks\(practice_script, cut_reason, radarSkills, reglasSiguiente, fichaDePeticion/);
   });
   it("el prompt ya no invita a dar doctrina de pasos posteriores", () => {
     expect(fn).not.toMatch(/típicamente doctrina de pasos posteriores/);

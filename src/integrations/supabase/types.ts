@@ -350,6 +350,7 @@ export type Database = {
           permite_texto: boolean
           plan: string
           slug: string | null
+          tipos_cliente: string
         }
         Insert: {
           brain_updated_at?: string | null
@@ -365,6 +366,7 @@ export type Database = {
           permite_texto?: boolean
           plan?: string
           slug?: string | null
+          tipos_cliente?: string
         }
         Update: {
           brain_updated_at?: string | null
@@ -380,6 +382,7 @@ export type Database = {
           permite_texto?: boolean
           plan?: string
           slug?: string | null
+          tipos_cliente?: string
         }
         Relationships: []
       }
@@ -1208,6 +1211,7 @@ export type Database = {
           practice_script: Json | null
           reps_required: number
           technique: string | null
+          tipo_cliente: string
           world_id: number
         }
         Insert: {
@@ -1226,6 +1230,7 @@ export type Database = {
           practice_script?: Json | null
           reps_required?: number
           technique?: string | null
+          tipo_cliente?: string
           world_id: number
         }
         Update: {
@@ -1244,6 +1249,7 @@ export type Database = {
           practice_script?: Json | null
           reps_required?: number
           technique?: string | null
+          tipo_cliente?: string
           world_id?: number
         }
         Relationships: [
