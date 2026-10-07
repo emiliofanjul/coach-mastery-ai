@@ -85,6 +85,12 @@ REGLA ABSOLUTA: los productos que nombres los COPIAS de "Productos activos", con
 Responde SOLO con JSON:
 {"nombre": "Don/Doña + nombre de pila", "negocio": "tipo de negocio, corto, según Cliente típico", "ya_te_compra": "SOLO si es recurrente: una o dos familias copiadas de Productos activos", "ultima_visita": "SOLO si es recurrente: p. ej. hace dos semanas", "le_compra_a_otro": "SOLO si es recurrente: UNA familia distinta, copiada de Productos activos, que le compra a otro proveedor"}`;
 
+// La ficha manda sobre la RELACIÓN con el vendedor, aunque el guion del nodo
+// diga otra cosa (oct-2026: con "solo nuevos", la tarjeta del 3.9 decía
+// "cliente nuevo" y el cliente actuó como recurrente porque su guion dice "le
+// das tu pedido de siempre" y "el guion manda").
+const PRECEDENCIA_FICHA = `ESTA FICHA MANDA SOBRE TU RELACIÓN CON EL VENDEDOR, aunque el guion del nodo diga otra cosa. Si el guion habla de "tu pedido de siempre" o de que "ya le compras", y aquí eres nuevo, haz el equivalente de un cliente nuevo: llegas tú pidiendo algo concreto que necesitas hoy, y lo demás del guion (lo que tienes con otro proveedor, lo que no manejas) sigue igual.`;
+
 /** Lo que recibe el cliente simulado. */
 export function bloqueActor(f: FichaCliente | null): string {
   if (!f) {
@@ -93,17 +99,19 @@ NO inventes historial de pedidos, productos específicos, ni contexto que el ven
 Reacciona SOLO a lo que el vendedor diga en esta conversación.`;
   }
   if (f.tipo === "nuevo") {
-    return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Es la PRIMERA vez que este vendedor te visita: no lo conoces ni a él ni a su empresa.
-NO inventes historial de pedidos ni contexto que el vendedor no haya mencionado. Reacciona SOLO a lo que diga en esta conversación.`;
+    return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Es la PRIMERA vez que este vendedor te visita: no lo conoces ni a él ni a su empresa. Nunca hables de "lo de siempre", de "la vez pasada" ni de una visita anterior.
+NO inventes historial de pedidos ni contexto que el vendedor no haya mencionado. Reacciona SOLO a lo que diga en esta conversación.
+${PRECEDENCIA_FICHA}`;
   }
   return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Eres cliente RECURRENTE de este vendedor: ya le compras ${f.ya_te_compra}; su última visita fue ${f.ultima_visita}. Lo conoces y lo tratas con la confianza de un proveedor que ya te surte.${f.le_compra_a_otro ? `\n${f.le_compra_a_otro} se lo compras a OTRO proveedor. No lo menciones por tu cuenta; si el vendedor pregunta bien, lo cuentas.` : ""}
-Fuera de estos hechos, NO inventes historial: ni pedidos, ni pláticas anteriores, ni problemas pasados.`;
+Fuera de estos hechos, NO inventes historial: ni pedidos, ni pláticas anteriores, ni problemas pasados.
+${PRECEDENCIA_FICHA}`;
 }
 
 /** Lo que recibe el evaluador (y el auditor): los hechos del cliente que SÍ existen. */
 export function bloqueEvaluador(f: FichaCliente | null): string {
   if (!f || f.tipo === "nuevo") {
-    return `CLIENTE DE ESTA PRÁCTICA: nuevo${f ? ` (${f.nombre}, ${f.negocio})` : ""}. Es la primera visita: ningún consejo puede citar una visita anterior.`;
+    return `CLIENTE DE ESTA PRÁCTICA: nuevo${f ? ` (${f.nombre}, ${f.negocio})` : ""}. Es la primera visita: ningún consejo puede citar una visita anterior. Si un criterio habla de "lo que ya le vende" o "su pedido de siempre", léelo como "lo que el cliente ya pidió hoy".`;
   }
   return `CLIENTE DE ESTA PRÁCTICA: RECURRENTE — ${f.nombre}, ${f.negocio}. Hechos que SÍ existen y el vendedor conoce: ya le compra ${f.ya_te_compra}; última visita ${f.ultima_visita}.${f.le_compra_a_otro ? ` (Oculto para el vendedor: ${f.le_compra_a_otro} se lo compra a otro proveedor.)` : ""}
 Recordar un hecho de esta lista es legítimo y es el escalón 3 de la especificidad. Cualquier recuerdo que NO esté en esta lista es inventado.`;
