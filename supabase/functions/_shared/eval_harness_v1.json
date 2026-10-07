@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.8.0",
+  "harness_version": "v3.9.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1760,6 +1760,84 @@
           "discovery.lee_el_lugar"
         ],
         "rationale": "Criterio: 'mapea el catálogo más allá de lo que ya le vende — qué otras familias maneja y de quién'. Lo hizo: dos familias, y de quién. No pide un número. Y el corte fue del Director por objetivo cumplido."
+      }
+    },
+    {
+      "id": "P3_9b_perfecto",
+      "node_id": "3.9b",
+      "tipo": "perfecto",
+      "seller_name": "Carlos",
+      "company_brain": "Papelera del Centro: distribuidora de papelería y artículos de oficina. PRODUCTOS_ACTIVOS: cuadernos; plumas y lápices; papel bond; folders y archivo; material escolar.",
+      "ficha_cliente": {
+        "tipo": "nuevo",
+        "nombre": "Doña Elena",
+        "negocio": "papelería"
+      },
+      "description": "Ejecución perfecta del nodo 3.9b (El Cliente que Llega Pidiendo): cliente nuevo de luz verde que pide solo; el vendedor le toma el pedido y descubre el hueco.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes! Qué bonito tiene acomodado el aparador de mochilas. ¿Ya le empezó la temporada de regreso a clases?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ay, sí, ya empezó. ¿Y usted quién es?"
+        },
+        {
+          "role": "user",
+          "text": "Soy Carlos, de Papelera del Centro. Ando visitando papelerías de la zona para conocer cómo trabajan. ¿Usted es la dueña?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, yo soy. ¿Ustedes traen cuadernos? Porque se me están acabando los profesionales. Tráigame diez cajas."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí, se las anoto: diez cajas de cuadernos profesionales. Oiga, y aparte de los cuadernos, ¿qué otras líneas maneja aquí?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues plumas, folders y papel bond. Las plumas y el papel se los compro a otro proveedor desde hace años."
+        },
+        {
+          "role": "user",
+          "text": "Ah, mire. ¿Y de lo que le llega a pedir la gente, hay algo que no tenga y termine mandando a otro lado?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues me piden mucho material escolar para manualidades, y eso no lo manejo."
+        },
+        {
+          "role": "user",
+          "text": "Varias papelerías como la suya por aquí también nos mueven material escolar en esta temporada. ¿Usted eso lo llega a manejar o lo deja pasar?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues lo he dejado pasar, pero si se mueve tanto, sí me interesa."
+        }
+      ],
+      "traza": {
+        "discovery.hueco": "¿Y de lo que le llega a pedir la gente, hay algo que no tenga y termine mandando a otro lado?",
+        "discovery.lee_el_lugar": "Oiga, y aparte de los cuadernos, ¿qué otras líneas maneja aquí?",
+        "impulse.efecto_jones": "Varias papelerías como la suya por aquí también nos mueven material escolar en esta temporada."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.hueco": "cumple",
+          "discovery.lee_el_lugar": "cumple",
+          "impulse.efecto_jones": "cumple"
+        },
+        "must_not_flag": [
+          "solo_levanta_pedido",
+          "hueco_inventado",
+          "jones_falso",
+          "busca_dolor_donde_no_hay"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
     }
   ]

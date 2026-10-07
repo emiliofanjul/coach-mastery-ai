@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, useNavigate, useParams } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -474,11 +475,18 @@ function NodoCardsPage() {
                       if (previo?.id) {
                         if (previo.status !== "done") await restMutate(`node_progress?id=eq.${previo.id}`, { method: "PATCH", body: { status: "done" } });
                       } else {
-                        await restMutate("node_progress", { method: "POST", body: { seller_id: sellerId, company_id: attributionRef.current?.company_id ?? null, node_id: nodeId, status: "done", stars: null } });
+                        // Sin "stars": la base pone 0 (la columna no acepta vacío; oct-2026,
+                        // con las estrellas en vacío el guardado fallaba y el vendedor se quedaba atorado).
+                        const companyId = attributionRef.current?.company_id;
+                        if (!companyId) throw new Error("vendedor sin empresa");
+                        await restMutate("node_progress", { method: "POST", body: { seller_id: sellerId, company_id: companyId, node_id: nodeId, status: "done" } });
                       }
                     }
                   } catch (err) {
+                    // Nunca en silencio: si no se guardó, el vendedor lo sabe y puede reintentar.
                     console.error("[nodo] no se pudo cerrar el nodo de lectura:", err);
+                    toast.error("No pudimos guardar tu avance. Toca «Terminar» otra vez.");
+                    return;
                   }
                   navigate({ to: "/mapa" });
                 })();

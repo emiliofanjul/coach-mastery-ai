@@ -381,7 +381,7 @@ function MiEmpresaPage() {
           <section className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <h2 className="font-['Syne'] font-bold text-white text-lg">Tus clientes</h2>
             <p className="text-white/60 font-['DM_Sans'] text-sm mb-3">
-              Closer elige en cada práctica el cliente que mejor enseña ese tema. Si tu empresa solo atiende un tipo, todas las prácticas serán con ese.
+              Algunos temas se enseñan con un tipo de cliente específico —como trabajar a un cliente que ya te compra—, y esos se practican siempre así, porque todo cliente nuevo se vuelve recurrente. En los demás, Closer usa el tipo de cliente que tu empresa atiende.
             </p>
             <div className="flex flex-wrap gap-2">
               {([["ambos", "Nuevos y recurrentes"], ["solo_nuevos", "Solo nuevos"], ["solo_recurrentes", "Solo recurrentes"]] as const).map(([valor, texto]) => (
