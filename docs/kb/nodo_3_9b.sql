@@ -4,8 +4,12 @@
 -- Y desde ahora, el tipo de cliente que declara un nodo manda siempre: los
 -- nodos de cliente recurrente son con cliente recurrente para todas las
 -- empresas (todo cliente nuevo se vuelve recurrente en la siguiente visita).
+-- Probado contra el ESQUEMA REAL de la base (docs/kb/esquema_vivo.sql), con el
+-- validador de guiones activo y los datos reales: corre dos veces seguidas y
+-- queda igual. (El SQL anterior falla en ese mismo banco con el mismo error que
+-- dio la base.)
 
--- 0. El hueco tiene su propia regla (Cerebro: "algo que podría comprarte y no te compra"). Antes, en 3.8, 3.9
+-- 1. El hueco tiene su propia regla (Cerebro: "algo que podría comprarte y no te compra"). Antes, en 3.8, 3.9
 --    y 7.3, el criterio del hueco colgaba de la regla de "leer el lugar": dos
 --    conceptos en una regla. Primero la regla, luego los nodos, luego el nuevo.
 INSERT INTO public.reglas (id, paso, tipo, canal, procedencia, resumen, cita_cerebro)
@@ -24,13 +28,21 @@ END $$;
 UPDATE public.nodes SET practice_script = pg_temp.regla_hueco(practice_script) WHERE id IN ('3.8', '3.9', '7.3');
 UPDATE public.skills SET regla_id = 'discovery.hueco' WHERE id = 'discovery.hueco';
 
--- 1. Hacer lugar: todos los nodos después del 3.9 se recorren un lugar.
+-- 2. Sus habilidades, ANTES que el nodo: el validador de guiones exige que cada
+--    criterio tenga su habilidad registrada (node_skills no depende de nodes).
+--    Las mismas del 3.9, como práctica; la primaria sigue en el 3.9.
+INSERT INTO public.node_skills (node_id, skill_id, relation, weight, is_primary)
+SELECT '3.9b', skill_id, relation, weight, false FROM public.node_skills WHERE node_id = '3.9'
+ON CONFLICT (node_id, skill_id) DO NOTHING;
+
+
+-- 3. Hacer lugar: todos los nodos después del 3.9 se recorren un lugar.
 UPDATE public.nodes SET order_index = order_index + 1
 WHERE order_index > (SELECT order_index FROM public.nodes WHERE id = '3.9')
   AND world_id = 3
   AND NOT EXISTS (SELECT 1 FROM public.nodes WHERE id = '3.9b');  -- solo la primera vez
 
--- 2. El nodo: copia todas las columnas del 3.9 y cambia lo que es suyo.
+-- 4. El nodo, con su guion (el validador lo revisa aquí, con todo ya en su lugar): copia todas las columnas del 3.9 y cambia lo que es suyo.
 INSERT INTO public.nodes
 SELECT (jsonb_populate_record(NULL::public.nodes, to_jsonb(n) || jsonb_build_object(
   'id', '3.9b',
@@ -45,12 +57,7 @@ SELECT (jsonb_populate_record(NULL::public.nodes, to_jsonb(n) || jsonb_build_obj
 FROM public.nodes n WHERE n.id = '3.9'
 ON CONFLICT (id) DO NOTHING;
 
--- 3. Sus habilidades: las mismas del 3.9, como práctica (la primaria sigue en el 3.9).
-INSERT INTO public.node_skills (node_id, skill_id, relation, weight, is_primary)
-SELECT '3.9b', skill_id, relation, weight, false FROM public.node_skills WHERE node_id = '3.9'
-ON CONFLICT (node_id, skill_id) DO NOTHING;
-
--- 4. Sus tarjetas.
+-- 5. Sus tarjetas (necesitan que el nodo exista).
 DELETE FROM public.node_cards WHERE node_id = '3.9b';
 INSERT INTO public.node_cards (node_id, card_order, card_type, card_content_type, title, body, flip_back_text, audience) VALUES ('3.9b', 1, 'concept', 'static', 'El cliente que te pide solo', 'Uno de cada diez clientes es luz verde: en cuanto sabe quién eres y qué traes, te pide algo. "¿Ustedes traen esto? Tráigame diez cajas, que ya se me está acabando."
 
@@ -62,9 +69,9 @@ INSERT INTO public.node_cards (node_id, card_order, card_type, card_content_type
 
 Si en la primera visita solo te llevas lo que te pidió, para él serás "el de eso". Si ese día descubres su catálogo, serás su proveedor.', NULL, NULL);
 
--- 5. Quien ya pasó el BOSS del mundo 3 no tiene que regresar: se le da por hecho.
+-- 6. Quien ya pasó el BOSS del mundo 3 no tiene que regresar: se le da por hecho.
 INSERT INTO public.node_progress (seller_id, company_id, node_id, status, stars)
-SELECT p.seller_id, p.company_id, '3.9b', 'done', NULL
+SELECT p.seller_id, p.company_id, '3.9b', 'done', 0
 FROM public.node_progress p
 WHERE p.node_id = '3.10' AND p.status = 'done'
   AND NOT EXISTS (SELECT 1 FROM public.node_progress x WHERE x.seller_id = p.seller_id AND x.node_id = '3.9b');
