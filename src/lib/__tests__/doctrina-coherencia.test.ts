@@ -204,7 +204,7 @@ describe("Identificarse está definido", () => {
     expect(cerebro).not.toMatch(/dentro del saludo cumple, pero/);
   });
   it("el 3.9 no invita a contar familias", () => {
-    const n = nodos.find((x: any) => x.id === "3.9");
+    const n: any = nodos.find((x: any) => x.id === "3.9");
     const ps = typeof n.practice_script === "string" ? JSON.parse(n.practice_script) : n.practice_script;
     const c = ps.success_criteria.find((x: any) => x.id === "discovery.lee_el_lugar");
     expect(c.description).toMatch(/No se exige un número de familias/);
