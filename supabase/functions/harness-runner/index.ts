@@ -50,7 +50,7 @@ function stringifyAll(obj: any): string {
   try { return JSON.stringify(obj).toLowerCase(); } catch { return String(obj).toLowerCase(); }
 }
 
-async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string, sellerName?: string): Promise<any> {
+async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string, sellerName?: string, extra?: { cut_reason?: string; ficha_cliente?: unknown }): Promise<any> {
   const conversation_history = transcript.map((t) => ({
     role: t.role === "assistant" ? "assistant" : "user",
     content: t.text,
@@ -387,7 +387,7 @@ Deno.serve(async (req) => {
       const runResults: any[] = [];
       for (let i = 0; i < runs; i++) {
         try {
-          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain, (c as any).seller_name);
+          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain, (c as any).seller_name, { cut_reason: (c as any).cut_reason, ficha_cliente: (c as any).ficha_cliente });
           runResults.push(resp);
         } catch (e) {
           runResults.push({ status: 0, parsed: null, raw: String(e) });
