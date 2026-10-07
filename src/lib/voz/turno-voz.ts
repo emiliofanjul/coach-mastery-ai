@@ -130,6 +130,83 @@ export class GrabacionSesion {
   }
 }
 
+// ── El vigía del turno (oct-2026) ──────────────────────────────────────
+//
+// "Toco el micrófono, hablo y no pasa nada": el turno podía quedarse sordo sin
+// avisar por tres caminos distintos, y los tres se veían igual en pantalla.
+//   · el procesador de audio del iPhone dice estar activo pero no entrega nada;
+//   · la conexión de transcripción nunca abre, o el servidor la cierra;
+//   · hay voz y hay conexión, pero no vuelve ni una palabra.
+// El vigía vigila los tres y dice CUÁL fue, con un código que el vendedor ve.
+
+export type FallaVoz = "sin_audio" | "sin_conexion" | "conexion_cerrada" | "sin_texto" | "servicio";
+
+export const LIMITE_SIN_AUDIO_MS = 2500;
+export const LIMITE_SIN_CONEXION_MS = 9000;
+export const LIMITE_SIN_TEXTO_MS = 7000;
+/** Nivel a partir del cual el vigía cuenta "aquí hay alguien hablando". */
+export const NIVEL_VOZ_CLARA = 0.22;
+/** Voz clara acumulada antes de exigir texto de vuelta. */
+export const VOZ_MINIMA_MS = 1500;
+
+export class VigiaTurno {
+  private bloques = 0;
+  private abierta: number | null = null;
+  private vozMs = 0;
+  private primeraVoz: number | null = null;
+  private huboTexto = false;
+  constructor(private readonly inicio: number) {}
+
+  /** Llegó un bloque de audio del micrófono, de `duracionMs`, con ese nivel. */
+  audio(nivel: number, duracionMs: number, ahora: number) {
+    this.bloques++;
+    if (this.abierta !== null && nivel >= NIVEL_VOZ_CLARA) {
+      this.vozMs += duracionMs;
+      if (this.primeraVoz === null) this.primeraVoz = ahora;
+    }
+  }
+  conexionAbierta(ahora: number) { this.abierta = ahora; }
+  texto() { this.huboTexto = true; }
+
+  revisar(ahora: number): FallaVoz | null {
+    if (this.bloques === 0) return ahora - this.inicio >= LIMITE_SIN_AUDIO_MS ? "sin_audio" : null;
+    if (this.abierta === null) return ahora - this.inicio >= LIMITE_SIN_CONEXION_MS ? "sin_conexion" : null;
+    if (!this.huboTexto && this.primeraVoz !== null && this.vozMs >= VOZ_MINIMA_MS
+      && ahora - this.primeraVoz >= LIMITE_SIN_TEXTO_MS) return "sin_texto";
+    return null;
+  }
+}
+
+/** Mensajes del servidor de transcripción que NO son un error. */
+const MENSAJES_NORMALES = new Set(["session_started", "partial_transcript", "committed_transcript", "committed_transcript_with_timestamps"]);
+
+/**
+ * ¿Este mensaje del servidor es un error? Antes se buscaban cuatro palabras y
+ * varios errores reales (límite de sesión, cola llena, términos sin aceptar)
+ * pasaban en silencio. Ahora: todo lo que trae `error`, o cuyo tipo suena a
+ * rechazo, es un error.
+ */
+export function esErrorStt(m: { message_type?: unknown; error?: unknown } | null | undefined): boolean {
+  const tipo = String(m?.message_type ?? "");
+  if (MENSAJES_NORMALES.has(tipo)) return false;
+  if (m?.error) return true;
+  return /error|rate_limited|quota|throttled|exceeded|exhausted|overflow|unaccepted|invalid|denied/i.test(tipo);
+}
+
+/** El código corto que ve el vendedor junto al aviso, para saber qué falló. */
+export function codigoDeFalla(falla: FallaVoz, detalle?: string | number): string {
+  const base = { sin_audio: "V1", sin_conexion: "V2", conexion_cerrada: "V3", sin_texto: "V4", servicio: "V5" }[falla];
+  return detalle === undefined || detalle === "" ? base : `${base}-${detalle}`;
+}
+
+/** Error al pedir la llave temporal de transcripción. Lleva el código HTTP. */
+export class ErrorTokenVoz extends Error {
+  constructor(readonly estado: number, readonly estadoProveedor?: number) {
+    super(`token de transcripción HTTP ${estado}`);
+    this.name = "ErrorTokenVoz";
+  }
+}
+
 // ── El turno en vivo (navegador) ───────────────────────────────────────
 
 let contextoCompartido: AudioContext | null = null;
@@ -152,13 +229,25 @@ export function desbloquearContextoAudio(): void {
   } catch { /* se reintenta en el siguiente toque */ }
 }
 
+/**
+ * Tira el procesador de audio para que el siguiente toque cree uno nuevo. En
+ * iPhone un procesador puede decir "running" y no entregar audio (después de
+ * una llamada, de Siri o de cambiar de app): reanudarlo no lo arregla.
+ */
+export function descartarContextoAudio(): void {
+  const viejo = contextoCompartido;
+  contextoCompartido = null;
+  try { void viejo?.close(); } catch { /* noop */ }
+}
+
 export interface OpcionesTurno {
   obtenerToken(): Promise<string>;
   idioma: string;
   onParcial(texto: string): void;
   onNivel(nivel: number): void;
   onPcm?(p: Int16Array): void;
-  onError(mensaje: string): void;
+  /** `falla` dice cuál de los caminos falló; `codigo` es lo que se le muestra al vendedor. */
+  onError(mensaje: string, falla: FallaVoz, codigo: string): void;
 }
 export interface ControlTurno {
   /** Suelta el micrófono de inmediato, cierra el segmento y devuelve el texto final. */
@@ -201,6 +290,22 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
   let pendiente: Int16Array[] = []; // audio capturado antes de que abra la conexión
   let esperandoCommit: ((t: string) => void) | null = null;
   let ws: WebSocket | null = null;
+  let terminando = false;
+  let avisado = false;
+  const vigia = new VigiaTurno(Date.now());
+  const fallar = (falla: FallaVoz, mensaje: string, detalle?: string | number) => {
+    if (cerrado || avisado) return;
+    avisado = true;
+    if (falla === "sin_audio") descartarContextoAudio();
+    op.onError(mensaje, falla, codigoDeFalla(falla, detalle));
+  };
+  const reloj = setInterval(() => {
+    if (cerrado || terminando) return;
+    const f = vigia.revisar(Date.now());
+    if (f === "sin_audio") fallar(f, "El micrófono se abrió pero no llega audio.");
+    else if (f === "sin_conexion") fallar(f, "La conexión de transcripción no abrió.");
+    else if (f === "sin_texto") fallar(f, "Hay voz pero la transcripción no devuelve texto.");
+  }, 500);
   const textoActual = () => `${comprometido} ${parcial}`.replace(/\s+/g, " ").trim();
   const enviar = (p: Int16Array, commit = false) => {
     ws!.send(JSON.stringify({ message_type: "input_audio_chunk", audio_base_64: aBase64(p), commit }));
@@ -209,7 +314,9 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
   proc.onaudioprocess = (e: AudioProcessingEvent) => {
     if (cerrado) return;
     const f = e.inputBuffer.getChannelData(0);
-    op.onNivel(nivelDeVoz(f));
+    const nivel = nivelDeVoz(f);
+    vigia.audio(nivel, (f.length / c.sampleRate) * 1000, Date.now());
+    op.onNivel(nivel);
     const p = aInt16(reducirMuestreo(f, c.sampleRate, MUESTREO_STT));
     op.onPcm?.(p);
     if (ws && ws.readyState === WebSocket.OPEN) enviar(p);
@@ -218,6 +325,7 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
 
   const liberar = () => {
     cerrado = true;
+    clearInterval(reloj);
     proc.onaudioprocess = null;
     try { fuente.disconnect(); } catch { /* noop */ }
     try { proc.disconnect(); } catch { /* noop */ }
@@ -240,6 +348,7 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
     + `&language_code=${encodeURIComponent(op.idioma)}&token=${encodeURIComponent(token)}`;
   ws = new WebSocket(url);
   ws.onopen = () => {
+    vigia.conexionAbierta(Date.now());
     for (const p of pendiente) enviar(p);
     pendiente = [];
   };
@@ -247,6 +356,7 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
     let m: any;
     try { m = JSON.parse(String(ev.data)); } catch { return; }
     const tipo = String(m?.message_type ?? "");
+    if (tipo === "partial_transcript" || tipo.startsWith("committed_transcript")) vigia.texto();
     if (tipo === "partial_transcript") {
       parcial = String(m.text ?? "");
       op.onParcial(textoActual());
@@ -257,15 +367,24 @@ export async function iniciarTurnoVoz(op: OpcionesTurno): Promise<ControlTurno> 
       const r = esperandoCommit;
       esperandoCommit = null;
       r?.(textoActual());
-    } else if (/error|rate_limited|quota|throttled/i.test(tipo)) {
-      op.onError(String(m.error ?? m.message ?? tipo));
+    } else if (esErrorStt(m)) {
+      fallar("servicio", String(m.error ?? m.message ?? tipo), tipo || "error");
     }
   };
-  ws.onerror = () => { if (!cerrado) op.onError("Se perdió la conexión de transcripción."); };
+  ws.onerror = () => fallar("conexion_cerrada", "Se perdió la conexión de transcripción.");
+  // Antes no se escuchaba el cierre: si el servidor colgaba (llave rechazada,
+  // cuota, límite de sesión), el audio se seguía guardando y nadie avisaba.
+  ws.onclose = (ev: CloseEvent) => {
+    const r = esperandoCommit;
+    esperandoCommit = null;
+    r?.(textoActual());
+    if (!terminando) fallar("conexion_cerrada", `El servidor cerró la transcripción (${ev.code} ${ev.reason || ""}).`, ev.code);
+  };
 
   return {
     async terminar() {
       if (cerrado) return textoActual();
+      terminando = true;
       // Soltar el micrófono YA: así Closer vuelve a sonar a volumen completo.
       proc.onaudioprocess = null;
       stream.getTracks().forEach((t) => t.stop());

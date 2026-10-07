@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { AuthCoachBubble } from "@/components/closer/AuthCoachBubble";
 import { getSelectedRole } from "@/lib/closer-auth";
+import { tomarAvisoDeSesionTerminada } from "@/lib/sesion-viva";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -35,6 +36,9 @@ function LoginScreen() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // Si lo sacamos porque su sesión terminó, se le dice por qué está aquí.
+  const [aviso, setAviso] = useState<string | null>(null);
+  useEffect(() => { setAviso(tomarAvisoDeSesionTerminada()); }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -109,6 +113,9 @@ function LoginScreen() {
             }
           />
 
+          {aviso && !error && (
+            <p style={{ margin: 0, fontSize: "0.82rem", color: "#FFFFFF", opacity: 0.85 }}>{aviso}</p>
+          )}
           {error && (
             <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>
           )}
