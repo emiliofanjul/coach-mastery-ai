@@ -281,6 +281,15 @@ describe("Harness runner: invariantes", () => {
     expect(runner).toMatch(/feedback_must_not_match/);
   });
 
+  it("vigila la disputa concedida del 3.9, con su corte y su ficha", () => {
+    const red = JSON.parse(readFileSync(join(process.cwd(), "supabase/functions/_shared/eval_harness_v1.json"), "utf8"));
+    const g30 = red.cases.find((c: any) => c.id === "G30_corte_del_director_no_es_falta");
+    expect(g30?.cut_reason).toBe("scope_covered");
+    expect(g30?.ficha_cliente?.tipo).toBe("recurrente");
+  });
+  it("la red manda el motivo de corte y la ficha de cada caso", () => {
+    expect(runner).toMatch(/ficha_cliente: \(c as any\)\.ficha_cliente/);
+  });
   it("vigila la Regla de los No con la práctica real de Emilio", () => {
     const red = JSON.parse(readFileSync(join(process.cwd(), "supabase/functions/_shared/eval_harness_v1.json"), "utf8"));
     const g29 = red.cases.find((c: any) => c.id === "G29_regla_de_los_no");
