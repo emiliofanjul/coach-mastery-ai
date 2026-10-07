@@ -62,8 +62,6 @@ function EquipoPage() {
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [permiteTexto, setPermiteTexto] = useState<boolean | null>(null);
   const [guardandoTexto, setGuardandoTexto] = useState(false);
-  // Con qué clientes practica el equipo: los que de verdad atiende.
-  const [tiposCliente, setTiposCliente] = useState<"ambos" | "solo_nuevos" | "solo_recurrentes" | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,13 +77,9 @@ function EquipoPage() {
 
       if (profile?.company_id) {
         setCompanyId(profile.company_id);
-        void restGetMaybeSingle<{ permite_texto: boolean | null; tipos_cliente: string | null }>(
-          `companies?select=permite_texto,tipos_cliente&id=eq.${profile.company_id}&limit=1`,
-        ).then((c) => {
-          setPermiteTexto(c?.permite_texto === true);
-          const t = c?.tipos_cliente;
-          setTiposCliente(t === "solo_nuevos" || t === "solo_recurrentes" ? t : "ambos");
-        }).catch(() => { setPermiteTexto(false); setTiposCliente("ambos"); });
+        void restGetMaybeSingle<{ permite_texto: boolean | null }>(
+          `companies?select=permite_texto&id=eq.${profile.company_id}&limit=1`,
+        ).then((c) => setPermiteTexto(c?.permite_texto === true)).catch(() => setPermiteTexto(false));
       }
       if (!profile || profile.role !== "manager" || !profile.company_id) {
         if (!cancelled) {
@@ -218,37 +212,6 @@ function EquipoPage() {
         <p className="text-white/60 font-['DM_Sans'] mb-6">
           Ordenado por atención requerida y última práctica.
         </p>
-
-        {tiposCliente !== null && (
-          <div className="mb-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="font-['Syne'] font-bold">Tus clientes</div>
-            <div className="text-white/60 font-['DM_Sans'] text-sm mb-3">
-              Closer elige en cada práctica el cliente que mejor enseña ese tema. Si tu equipo solo atiende un tipo, todas las prácticas serán con ese.
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {([["ambos", "Nuevos y recurrentes"], ["solo_nuevos", "Solo nuevos"], ["solo_recurrentes", "Solo recurrentes"]] as const).map(([valor, texto]) => (
-                <button
-                  key={valor}
-                  disabled={!companyId}
-                  onClick={async () => {
-                    if (!companyId || valor === tiposCliente) return;
-                    const antes = tiposCliente;
-                    setTiposCliente(valor);
-                    try {
-                      await restMutate(`companies?id=eq.${companyId}`, { method: "PATCH", body: { tipos_cliente: valor } });
-                    } catch (err) {
-                      console.error("[equipo] no se pudo guardar el tipo de clientes:", err);
-                      setTiposCliente(antes);
-                    }
-                  }}
-                  className={`rounded-full px-3 py-1.5 text-sm border ${tiposCliente === valor ? "border-[#FF6B2B] bg-[#FF6B2B]/15" : "border-white/15"}`}
-                >
-                  {texto}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {permiteTexto !== null && (
           <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between gap-4">
