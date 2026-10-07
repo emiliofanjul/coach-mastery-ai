@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, type ControlTurno } from "@/lib/voz/turno-voz";
-import { resolverTipoCliente, lineaDelCliente, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
+import { resolverTipoCliente, lineaDelCliente, fichaRespaldoVisible, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -109,6 +109,9 @@ function PracticaPage() {
   // vendedor ve la demostración, y viaja en cada turno y en la evaluación.
   const fichaRef = useRef<any>(null);
   const [fichaCliente, setFichaCliente] = useState<FichaVisible | null>(null);
+  // La tarjeta "Tu cliente" es una ventana que el vendedor lee y cierra con
+  // "Continuar" antes de poder hablar. Una vez por práctica.
+  const [fichaVista, setFichaVista] = useState(false);
   // Nombre de cada criterio del nodo, para los mensajes de "analizando".
   const [nombresCriterio, setNombresCriterio] = useState<Record<string, string>>({});
   const inputModeRef = useRef<"voice" | "text">("voice");
@@ -316,16 +319,26 @@ function PracticaPage() {
         // Qué cliente toca: el manager manda; si no, el que enseña mejor el nodo.
         const tipo = resolverTipoCliente(tipoNodo?.tipo_cliente, (company as any)?.tipos_cliente, Math.random());
         void (async () => {
+          const ctrlFicha = new AbortController();
+          const limiteFicha = setTimeout(() => ctrlFicha.abort(), 15_000);
           try {
             const r = await fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
+              signal: ctrlFicha.signal,
               method: "POST",
               headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
               body: JSON.stringify({ phase: "ficha_cliente", tipo_cliente: tipo, company_brain: JSON.stringify((company as any)?.company_sales_brain ?? {}) }),
             });
             const j = await r.json();
-            if (j?.ficha) { fichaRef.current = j.ficha; setFichaCliente(j.ficha); }
+            if (!j?.ficha) throw new Error("sin ficha");
+            fichaRef.current = j.ficha;
+            setFichaCliente(j.ficha);
           } catch (err) {
-            console.error("[practica] no se pudo crear la ficha del cliente:", err);
+            console.error("[practica] no se pudo crear la ficha del cliente (respaldo):", err);
+            const respaldo = fichaRespaldoVisible(tipo);
+            fichaRef.current = respaldo;
+            setFichaCliente(respaldo);
+          } finally {
+            clearTimeout(limiteFicha);
           }
         })();
         setPermiteTexto(permite);
@@ -1216,6 +1229,7 @@ function PracticaPage() {
       transcriptFullRef.current = [];
       setTranscriptFull([]);
       claudePhaseRef.current = "you_do";
+      setFichaVista(false);
       setCurrentPhase("you_do");
       currentPhaseRef.current = "you_do";
       // Reset del estado del Director al arrancar you_do.
@@ -1582,7 +1596,6 @@ function PracticaPage() {
         {(phase === "i_do" || phase === "you_do") && (
           <>
             <VoicePhase
-              fichaCliente={currentPhase === "you_do" && !transcriptFull.some((m: any) => m.phase === "you_do" && m.role === "user") ? fichaCliente : null}
               closerMsgs={closerMsgsRef.current}
               key={phase}
               currentPhase={currentPhase}
@@ -1915,6 +1928,39 @@ function PracticaPage() {
                     }}
                   >
                     Entendido, practicar →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {phase === "you_do" && currentPhase === "you_do" && !showVoiceTutorial && !fichaVista && (
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Tu cliente"
+                style={{ position: "fixed", inset: 0, zIndex: 210, background: "rgba(8,8,15,0.82)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "1.2rem" }}
+              >
+                <div style={{ width: "100%", maxWidth: 420, background: "#12121C", border: "1px solid rgba(255,107,43,0.35)", borderRadius: 20, padding: "1.4rem 1.3rem", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}>
+                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "#FF6B2B", marginBottom: 10 }}>Tu cliente</div>
+                  {fichaCliente ? (
+                    <>
+                      <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 22, color: "#F0F0F5", lineHeight: 1.2 }}>{fichaCliente.nombre}</div>
+                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.65)", marginBottom: 12 }}>{fichaCliente.negocio}</div>
+                      <div style={{ display: "inline-block", fontFamily: "DM Sans, sans-serif", fontSize: 12, fontWeight: 700, color: "#08080F", background: fichaCliente.tipo === "nuevo" ? "#7DD3FC" : "#FFD166", borderRadius: 99, padding: "4px 10px", marginBottom: 10 }}>
+                        {fichaCliente.tipo === "nuevo" ? "Cliente nuevo" : "Cliente recurrente"}
+                      </div>
+                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.85)", lineHeight: 1.5 }}>{lineaDelCliente(fichaCliente)}</div>
+                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "#F0F0F5", fontWeight: 600, lineHeight: 1.5, marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.08)" }}>{LLAMADO_A_LA_ACCION}</div>
+                    </>
+                  ) : (
+                    <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.7)", padding: "1rem 0" }}>Preparando a tu cliente…</div>
+                  )}
+                  <button
+                    onClick={() => setFichaVista(true)}
+                    disabled={!fichaCliente}
+                    style={{ width: "100%", marginTop: 18, background: "#FF6B2B", color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, border: "none", borderRadius: 99, padding: "14px 20px", cursor: fichaCliente ? "pointer" : "default", opacity: fichaCliente ? 1 : 0.5 }}
+                  >
+                    Continuar →
                   </button>
                 </div>
               </div>

@@ -28,15 +28,47 @@ export function fichaDeRespaldo(tipo: TipoCliente): FichaCliente {
 }
 
 /** Valida lo que generó el modelo; lo que falte se completa con el respaldo. Nunca devuelve basura. */
-export function validarFicha(raw: unknown, tipo: TipoCliente): FichaCliente {
+/** El catálogo que el manager escribió en "Productos activos" (texto o lista). */
+export function catalogoDelCerebro(cerebro: unknown): string {
+  let b: any = cerebro;
+  if (typeof b === "string") { try { b = JSON.parse(b); } catch { return ""; } }
+  const v = b?.PRODUCTOS_ACTIVOS;
+  return Array.isArray(v) ? v.map(String).join("; ") : typeof v === "string" ? v : "";
+}
+
+const sinAcentos = (x: string) => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const VACIAS = new Set(["para", "como", "todo", "toda", "todos", "todas", "otro", "otra", "otros", "otras", "linea", "lineas", "familia", "familias", "productos", "producto", "marca", "marcas", "tipo", "tipos", "sus", "mas"]);
+
+/**
+ * ¿Todo producto que nombra la frase está en el catálogo? Cada palabra con
+ * contenido (4+ letras) debe aparecer en "Productos activos", admitiendo
+ * plural/singular. Oct-2026: la ficha inventó "filtros" para DALFAN, que no
+ * vende filtros ni los puso en su onboarding.
+ */
+export function respaldadoPorCatalogo(frase: string, catalogo: string): boolean {
+  const cat = sinAcentos(catalogo);
+  if (!cat.trim()) return false;
+  const palabras = sinAcentos(frase).split(/[^a-z0-9ñ]+/).filter((w) => w.length >= 4 && !VACIAS.has(w));
+  if (palabras.length === 0) return false;
+  return palabras.every((w) => {
+    const raiz = w.replace(/(es|s)$/, "");
+    return cat.includes(w) || (raiz.length >= 4 && cat.includes(raiz));
+  });
+}
+
+export function validarFicha(raw: unknown, tipo: TipoCliente, catalogo?: string): FichaCliente {
   const r: any = raw && typeof raw === "object" ? raw : {};
   const base = fichaDeRespaldo(tipo);
   const f: FichaCliente = { tipo, nombre: corto(r.nombre, 40) || base.nombre, negocio: corto(r.negocio, 60) || base.negocio };
   if (tipo === "recurrente") {
-    f.ya_te_compra = corto(r.ya_te_compra, 120) || base.ya_te_compra;
-    f.ultima_visita = corto(r.ultima_visita, 40) || base.ultima_visita;
+    const ya = corto(r.ya_te_compra, 120);
     const otro = corto(r.le_compra_a_otro, 120);
-    if (otro) f.le_compra_a_otro = otro;
+    // Con catálogo, solo pasa lo que está en él. Lo que no, se descarta: mejor
+    // "sus productos de siempre" que un producto que la empresa no vende.
+    const vale = (x: string) => !!x && (catalogo === undefined || respaldadoPorCatalogo(x, catalogo));
+    f.ya_te_compra = vale(ya) ? ya : base.ya_te_compra;
+    f.ultima_visita = corto(r.ultima_visita, 40) || base.ultima_visita;
+    if (vale(otro)) f.le_compra_a_otro = otro;
   }
   return f;
 }
@@ -48,9 +80,10 @@ export function fichaDePeticion(raw: unknown): FichaCliente | null {
   return validarFicha(r, r.tipo);
 }
 
-export const PROMPT_FICHA = `Creas el perfil breve de un cliente para una práctica de ventas de campo. Usa SOLO productos o familias que aparezcan en el cerebro de la empresa; si no hay, usa términos generales de su industria. El cliente es un dueño o encargado de un negocio que le compraría a esta empresa.
+export const PROMPT_FICHA = `Creas el perfil breve de un cliente para una práctica de ventas de campo. El cliente es dueño o encargado de un negocio como el que describe "Cliente típico".
+REGLA ABSOLUTA: los productos que nombres los COPIAS de "Productos activos", con las mismas palabras. No agregues ningún producto, familia ni marca que no esté escrito ahí, aunque sea común en la industria. Si "Productos activos" está vacío, deja vacíos los campos de productos.
 Responde SOLO con JSON:
-{"nombre": "Don/Doña + nombre de pila", "negocio": "tipo de negocio, corto (p. ej. taller mecánico)", "ya_te_compra": "SOLO si es recurrente: una o dos familias que ya le compra al vendedor", "ultima_visita": "SOLO si es recurrente: p. ej. hace dos semanas", "le_compra_a_otro": "SOLO si es recurrente: UNA familia que le compra a otro proveedor y que la empresa también vende"}`;
+{"nombre": "Don/Doña + nombre de pila", "negocio": "tipo de negocio, corto, según Cliente típico", "ya_te_compra": "SOLO si es recurrente: una o dos familias copiadas de Productos activos", "ultima_visita": "SOLO si es recurrente: p. ej. hace dos semanas", "le_compra_a_otro": "SOLO si es recurrente: UNA familia distinta, copiada de Productos activos, que le compra a otro proveedor"}`;
 
 /** Lo que recibe el cliente simulado. */
 export function bloqueActor(f: FichaCliente | null): string {

@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { resolverTipoCliente, lineaDelCliente } from "../cliente-practica";
-import { validarFicha, fichaDePeticion, bloqueActor, bloqueEvaluador } from "../../../supabase/functions/_shared/ficha_cliente";
+import { validarFicha, fichaDePeticion, bloqueActor, bloqueEvaluador, respaldadoPorCatalogo, catalogoDelCerebro } from "../../../supabase/functions/_shared/ficha_cliente";
 
 describe("qué cliente toca", () => {
   it("el manager manda sobre el nodo", () => {
@@ -82,13 +82,44 @@ describe("todo conectado", () => {
     expect(ui).toMatch(/phase: "ficha_cliente", tipo_cliente: tipo/);
     expect(ui.match(/ficha_cliente: fichaRef\.current/g)?.length).toBe(3);
   });
-  it("la tarjeta aparece al empezar el turno y se va cuando el vendedor habla", () => {
-    expect(ui).toMatch(/fichaCliente=\{currentPhase === "you_do" && !transcriptFull\.some/);
+  it("la tarjeta es una ventana que se cierra con Continuar antes de poder hablar", () => {
+    expect(ui).toMatch(/aria-label="Tu cliente"/);
+    expect(ui).toMatch(/!showVoiceTutorial && !fichaVista && \(/);
+    expect(ui).toMatch(/onClick=\{\(\) => setFichaVista\(true\)\}/);
     expect(ui).toMatch(/\{LLAMADO_A_LA_ACCION\}/);
+  });
+  it("si la ficha no llega, hay respaldo: la práctica nunca espera", () => {
+    expect(ui).toMatch(/const respaldo = fichaRespaldoVisible\(tipo\);/);
   });
   it("el manager elige con qué clientes practica su equipo", () => {
     expect(equipo).toMatch(/\["solo_nuevos", "Solo nuevos"\]/);
     expect(equipo).toMatch(/body: \{ tipos_cliente: valor \}/);
+  });
+});
+
+describe("la ficha solo usa productos que la empresa vende (oct-2026)", () => {
+  const dalfan = "Lubricantes Repsol, Bardahl y Mexlub: aceite de motor, aceite de transmisión, grasas, anticongelantes";
+  it("el caso real: DALFAN no vende filtros", () => {
+    expect(respaldadoPorCatalogo("aceite y filtros", dalfan)).toBe(false);
+    expect(respaldadoPorCatalogo("aceite de motor", dalfan)).toBe(true);
+    expect(respaldadoPorCatalogo("grasa", dalfan)).toBe(true);
+    expect(respaldadoPorCatalogo("Anticongelantes", dalfan)).toBe(true);
+  });
+  it("lo inventado se cambia por algo genérico, y el hueco inventado se quita", () => {
+    const f = validarFicha({ nombre: "Don Ramón", negocio: "taller", ya_te_compra: "aceite y filtros", ultima_visita: "hace dos semanas", le_compra_a_otro: "bujías" }, "recurrente", dalfan);
+    expect(f.ya_te_compra).toBe("sus productos de siempre");
+    expect(f.le_compra_a_otro).toBeUndefined();
+  });
+  it("con catálogo vacío no se nombra ningún producto", () => {
+    expect(validarFicha({ ya_te_compra: "aceite" }, "recurrente", "").ya_te_compra).toBe("sus productos de siempre");
+  });
+  it("lee el catálogo del cerebro como texto o lista", () => {
+    expect(catalogoDelCerebro(JSON.stringify({ PRODUCTOS_ACTIVOS: "aceites; grasas" }))).toBe("aceites; grasas");
+    expect(catalogoDelCerebro({ PRODUCTOS_ACTIVOS: ["aceites", "grasas"] })).toBe("aceites; grasas");
+  });
+  it("el servidor manda solo productos y cliente típico, y verifica", () => {
+    const fn = readFileSync(join(process.cwd(), "supabase/functions/closer-voice/index.ts"), "utf8");
+    expect(fn).toMatch(/validarFicha\(JSON\.parse\(t\.slice\(i, j \+ 1\)\), tipo, catalogo\)/);
   });
 });
 

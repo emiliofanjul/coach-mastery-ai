@@ -26,7 +26,7 @@ import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.t
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
-import { PROMPT_FICHA, validarFicha, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
+import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -620,10 +620,16 @@ Deno.serve(async (req) => {
       const tipo = (body as any).tipo_cliente === "recurrente" ? "recurrente" : "nuevo";
       let ficha: FichaCliente = fichaDeRespaldo(tipo);
       try {
-        const crudo = await llamarTexto(apiKey, PROMPT_FICHA, `Cerebro de la empresa:\n${String((body as any).company_brain ?? "").slice(0, 6000)}\n\nTipo de cliente: ${tipo}`, 400, 0.9);
+        // Solo lo que el manager escribió: productos y cliente típico. El código
+        // verifica después que cada producto de la ficha esté en su catálogo.
+        let cerebro: any = (body as any).company_brain;
+        if (typeof cerebro === "string") { try { cerebro = JSON.parse(cerebro); } catch { cerebro = {}; } }
+        const catalogo = catalogoDelCerebro(cerebro);
+        const tipico = String(cerebro?.CLIENTE_TIPICO ?? "").slice(0, 1500);
+        const crudo = await llamarTexto(apiKey, PROMPT_FICHA, `Productos activos:\n${catalogo.slice(0, 3000) || "(vacío)"}\n\nCliente típico:\n${tipico || "(vacío)"}\n\nTipo de cliente: ${tipo}`, 400, 0.9);
         const t = crudo.replace(/```json|```/g, "");
         const i = t.indexOf("{"), j = t.lastIndexOf("}");
-        if (i >= 0 && j > i) ficha = validarFicha(JSON.parse(t.slice(i, j + 1)), tipo);
+        if (i >= 0 && j > i) ficha = validarFicha(JSON.parse(t.slice(i, j + 1)), tipo, catalogo);
       } catch (e) {
         console.error("[closer-voice] ficha del cliente (respaldo):", e);
       }
