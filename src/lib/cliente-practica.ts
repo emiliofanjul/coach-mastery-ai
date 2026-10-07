@@ -26,3 +26,10 @@ export function lineaDelCliente(f: FichaVisible): string {
 }
 
 export const LLAMADO_A_LA_ACCION = "Toca el micrófono y saluda a tu cliente como si estuvieras llegando a visitarlo.";
+
+/** Si la ficha no llega, una de respaldo con la misma forma que la del servidor: la práctica nunca espera. */
+export function fichaRespaldoVisible(tipo: TipoCliente): FichaVisible {
+  return tipo === "recurrente"
+    ? { tipo, nombre: "Don Ramón", negocio: "su negocio", ya_te_compra: "sus productos de siempre", ultima_visita: "hace dos semanas" }
+    : { tipo, nombre: "Don Ramón", negocio: "su negocio" };
+}
