@@ -6,9 +6,13 @@ import { resolverTipoCliente, lineaDelCliente } from "../cliente-practica";
 import { validarFicha, fichaDePeticion, bloqueActor, bloqueEvaluador, respaldadoPorCatalogo, catalogoDelCerebro } from "../../../supabase/functions/_shared/ficha_cliente";
 
 describe("qué cliente toca", () => {
-  it("el manager manda sobre el nodo", () => {
-    expect(resolverTipoCliente("recurrente", "solo_nuevos", 0.9)).toBe("nuevo");
-    expect(resolverTipoCliente("nuevo", "solo_recurrentes", 0.1)).toBe("recurrente");
+  it("el nodo manda: uno de cliente recurrente es recurrente aunque la empresa diga solo nuevos", () => {
+    expect(resolverTipoCliente("recurrente", "solo_nuevos", 0.9)).toBe("recurrente");
+    expect(resolverTipoCliente("nuevo", "solo_recurrentes", 0.1)).toBe("nuevo");
+  });
+  it("la empresa decide en los nodos de cualquiera", () => {
+    expect(resolverTipoCliente("cualquiera", "solo_nuevos", 0.9)).toBe("nuevo");
+    expect(resolverTipoCliente("cualquiera", "solo_recurrentes", 0.1)).toBe("recurrente");
   });
   it("sin restricción, toca el que enseña mejor el nodo", () => {
     expect(resolverTipoCliente("recurrente", "ambos", 0.1)).toBe("recurrente");

@@ -5,14 +5,16 @@ export type TiposEmpresa = "ambos" | "solo_nuevos" | "solo_recurrentes";
 export type TipoCliente = "nuevo" | "recurrente";
 
 /**
- * El manager manda: si su equipo solo tiene clientes nuevos, todas las
- * prácticas son con clientes nuevos (y al revés). Si no hay restricción, toca
- * el que enseña mejor lo de ese nodo; si da igual, se alterna.
+ * Si el nodo declara con qué cliente se enseña (nuevo o recurrente), ese
+ * manda siempre: un nodo de cliente recurrente es con cliente recurrente para
+ * todas las empresas, porque todo cliente nuevo se vuelve recurrente en la
+ * siguiente visita (decisión de Emilio, oct-2026). La empresa decide solo en
+ * los nodos que se enseñan con cualquiera; si no restringe, se alterna.
  */
 export function resolverTipoCliente(nodo: unknown, empresa: unknown, azar: number): TipoCliente {
+  if (nodo === "nuevo" || nodo === "recurrente") return nodo;
   if (empresa === "solo_nuevos") return "nuevo";
   if (empresa === "solo_recurrentes") return "recurrente";
-  if (nodo === "nuevo" || nodo === "recurrente") return nodo;
   return azar < 0.5 ? "nuevo" : "recurrente";
 }
 
