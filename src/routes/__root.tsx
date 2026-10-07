@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 
 import { ConversationProvider } from "@elevenlabs/react";
+import { useEffect } from "react";
+import { mantenerSesionViva, alTerminarSesion, esRutaPublica } from "@/lib/sesion-viva";
 
 import appCss from "../styles.css?url";
 import { DevMenu } from "@/components/dev/DevMenu";
@@ -118,6 +120,22 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  const router = useRouter();
+
+  // La sesión se renueva sola mientras la app esté abierta (ver sesion-viva.ts).
+  useEffect(() => mantenerSesionViva(), []);
+
+  // Y si ya no se puede renovar, se le saca limpio a la entrada, sin errores.
+  useEffect(
+    () =>
+      alTerminarSesion(() => {
+        try { queryClient.clear(); } catch { /* noop */ }
+        if (esRutaPublica(window.location.pathname)) return;
+        void router.navigate({ to: "/login", replace: true });
+      }),
+    [router, queryClient],
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -16,6 +16,17 @@
 // helper so they don't touch the SDK auth lock at all.
 
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
+import { sesionFresca } from "@/lib/sesion-viva";
+
+/**
+ * La llave con la que se hace la llamada, ya renovada si estaba por caducar
+ * (oct-2026). Antes se leía tal cual del navegador: pasada una hora iba
+ * caducada o vacía, y las lecturas y los guardados fallaban sin avisar.
+ */
+async function llaveVigente(accessToken?: string): Promise<string | undefined> {
+  if (accessToken) return accessToken;
+  return (await sesionFresca())?.accessToken ?? undefined;
+}
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env
@@ -74,7 +85,7 @@ export async function createSignedStorageUrl(
       `${SUPABASE_URL}/storage/v1/object/sign/${encodeURIComponent(bucket)}/${cleanPath}`,
       {
         method: "POST",
-        headers: functionAuthHeaders(opts.accessToken, { "Content-Type": "application/json" }),
+        headers: functionAuthHeaders(await llaveVigente(opts.accessToken), { "Content-Type": "application/json" }),
         body: JSON.stringify({ expiresIn: opts.expiresIn ?? 3600 }),
         signal: controller.signal,
       },
@@ -100,7 +111,7 @@ export async function invokeFunctionJson<T = unknown>(
   try {
     const res = await fetch(functionUrl(name), {
       method: "POST",
-      headers: functionAuthHeaders(opts.accessToken, { "Content-Type": "application/json" }),
+      headers: functionAuthHeaders(await llaveVigente(opts.accessToken), { "Content-Type": "application/json" }),
       body: JSON.stringify(body),
       signal: controller.signal,
     });
@@ -136,7 +147,7 @@ export async function restGet<T = unknown>(
 ): Promise<T[]> {
   const res = await doFetch(
     path,
-    { method: "GET", headers: authHeaders(opts.accessToken) },
+    { method: "GET", headers: authHeaders(await llaveVigente(opts.accessToken)) },
     opts.timeoutMs,
   );
   const body = await res.text();
@@ -165,7 +176,7 @@ export async function restMutate<T = unknown>(
   },
 ): Promise<T[]> {
   const headers: Record<string, string> = {
-    ...authHeaders(init.accessToken),
+    ...authHeaders(await llaveVigente(init.accessToken)),
     "Content-Type": "application/json",
   };
   if (init.prefer) headers.Prefer = init.prefer;

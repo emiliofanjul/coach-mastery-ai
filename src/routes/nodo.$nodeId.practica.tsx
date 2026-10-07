@@ -2,8 +2,9 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
-import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
-import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, type ControlTurno } from "@/lib/voz/turno-voz";
+import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, ErrorTokenVoz, type ControlTurno } from "@/lib/voz/turno-voz";
+import { sesionFresca } from "@/lib/sesion-viva";
+import { avisoDeFallaVoz, avisoDeArranque } from "@/lib/voz/avisos-voz";
 import { resolverTipoCliente, lineaDelCliente, fichaRespaldoVisible, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
@@ -251,7 +252,7 @@ function PracticaPage() {
     try {
       // Auth: leemos la sesión del localStorage — el SDK deadlockea aquí
       // (auth.getUser también toma el navigator.lock).
-      const session = getStoredSupabaseSession();
+      const session = await sesionFresca();
       if (!session) {
         setPrepError("Tu sesión expiró. Inicia sesión de nuevo para practicar.");
         return;
@@ -747,10 +748,12 @@ function PracticaPage() {
         }
       },
       onPcm: (p) => grabacionRef.current?.agregar(p),
-      onError: (msg) => {
-        console.error("[voz] transcripción:", msg);
+      onError: (msg, falla, codigo) => {
+        console.error("[voz] transcripción:", codigo, msg);
         if (turnClosed) return;
-        if (!finalText) setConnectionError("No te estoy escuchando bien. Toca el micrófono y vuelve a hablar.");
+        // Si ya había texto, se envía lo que se alcanzó a oír; si no, se avisa
+        // QUÉ falló (con su código) en vez de dejar al vendedor hablando solo.
+        if (!finalText) setConnectionError(avisoDeFallaVoz(falla, codigo));
         finishTurn();
       },
     })
@@ -771,22 +774,29 @@ function PracticaPage() {
         setIsUserListening(false);
         setNivelVoz(0);
         grabacionRef.current?.cerrarTurno();
-        setConnectionError(
-          (err as any)?.name === "NotAllowedError"
-            ? "Necesito permiso de micrófono para que practiques por voz."
-            : "No pude abrir el micrófono. Toca para reintentar.",
-        );
+        setConnectionError(avisoDeArranque(err));
       });
   }
 
   async function obtenerTokenStt(): Promise<string> {
-    const tok = getStoredSupabaseSession()?.accessToken;
-    if (!tok) throw new Error("sin-sesion");
-    const r = await fetch("/api/stt-token", {
+    // La llave de sesión dura una hora: se pide ya renovada. Si aun así el
+    // servidor la rechaza, se renueva a la fuerza y se intenta una vez más.
+    const pedir = (tok: string) => fetch("/api/stt-token", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${tok}`, apikey: SUPABASE_ANON },
     });
-    if (!r.ok) throw new Error(`token de transcripción HTTP ${r.status}`);
+    let tok = (await sesionFresca())?.accessToken;
+    if (!tok) throw new Error("sin-sesion");
+    let r = await pedir(tok);
+    if (r.status === 401) {
+      tok = (await sesionFresca({ forzar: true }))?.accessToken;
+      if (!tok) throw new Error("sin-sesion");
+      r = await pedir(tok);
+    }
+    if (!r.ok) {
+      const cuerpo = await r.json().catch(() => null);
+      throw new ErrorTokenVoz(r.status, typeof cuerpo?.status === "number" ? cuerpo.status : undefined);
+    }
     const j = await r.json();
     if (typeof j?.token !== "string" || !j.token) throw new Error("token de transcripción vacío");
     return j.token;
@@ -1436,7 +1446,7 @@ function PracticaPage() {
         audioUploadedRef.current = true;
         try {
           const audioBlob = await (audioBlobPromiseRef.current ?? Promise.resolve(null));
-          const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
+          const accessToken = (await sesionFresca())?.accessToken ?? "";
           const form = new FormData();
           form.append(
             "meta",
@@ -3001,7 +3011,7 @@ function ReplicaChat({
     setThread(nextThreadOptimistic);
     setDraft("");
     try {
-      const accessToken = getStoredSupabaseSession()?.accessToken ?? "";
+      const accessToken = (await sesionFresca())?.accessToken ?? "";
       // Un tropiezo pasajero no debe obligar al vendedor a reescribir su
       // desacuerdo: se reintenta solo, una vez.
       const pedir = () => fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
