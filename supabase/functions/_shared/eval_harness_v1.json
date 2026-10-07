@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.7.0",
+  "harness_version": "v3.8.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -645,9 +645,11 @@
         "niveles_esperados": {
           "opening.personalizacion": "cumple",
           "opening.ice_breaker": "cumple",
-          "opening.curiosidad_abierta": "cumple"
+          "opening.curiosidad_abierta": "cumple",
+          "opening.estructura_apertura": "parcial"
         },
-        "cuenta": "Todos los criterios cumplidos: 100. El vendedor no dijo su nombre ni el de su empresa: la curiosidad se cumple."
+        "cuenta": "Todos los criterios cumplidos: 100. El vendedor no dijo su nombre ni el de su empresa: la curiosidad se cumple.",
+        "nota_v4": "Doctrina oct-2026: el turno termina con un comentario ('veo que no paran'): la estructura es parcial."
       }
     },
     {
