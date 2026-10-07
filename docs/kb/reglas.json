@@ -1448,5 +1448,15 @@
   "resumen": "La Regla de los No: tres 'no' CONSECUTIVOS son luz roja (la fuente dice dos; Emilio usa tres, porque hay quien deja ir un sí solo porque el cliente tuvo objeciones). Con la luz roja, el vendedor sale rápido y bien: sin insistir, cuidando la relación y dejando una siguiente cita. Tienen que ser seguidos: si la conversación avanzó entre un no y otro, la racha se rompe. Salir así es la ejecución correcta, no una falta.",
   "cita_cerebro": "dos no seguidos, luz roja, sigue adelante",
   "severidad_sugerida": "None"
+ },
+ {
+  "id": "discovery.hueco",
+  "paso": 3,
+  "tipo": "concepto",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, o una que le piden y no maneja. No tiene señal verbal: se ve o se pregunta. Identificarlo es nombrarlo en la conversación, no solo preguntar. Tiene que ser real y verificable.",
+  "cita_cerebro": "algo que podría comprarte y no te compra",
+  "severidad_sugerida": "None"
  }
 ]
