@@ -85,13 +85,13 @@ REGLA ABSOLUTA: los productos que nombres los COPIAS de "Productos activos", con
 Responde SOLO con JSON:
 {"nombre": "Don/Doña + nombre de pila", "negocio": "tipo de negocio, corto, según Cliente típico", "ya_te_compra": "SOLO si es recurrente: una o dos familias copiadas de Productos activos", "ultima_visita": "SOLO si es recurrente: p. ej. hace dos semanas", "le_compra_a_otro": "SOLO si es recurrente: UNA familia distinta, copiada de Productos activos, que le compra a otro proveedor"}`;
 
+/** Lo que recibe el cliente simulado. */
 // La ficha manda sobre la RELACIÓN con el vendedor, aunque el guion del nodo
 // diga otra cosa (oct-2026: con "solo nuevos", la tarjeta del 3.9 decía
 // "cliente nuevo" y el cliente actuó como recurrente porque su guion dice "le
 // das tu pedido de siempre" y "el guion manda").
 const PRECEDENCIA_FICHA = `ESTA FICHA MANDA SOBRE TU RELACIÓN CON EL VENDEDOR, aunque el guion del nodo diga otra cosa. Si el guion habla de "tu pedido de siempre" o de que "ya le compras", y aquí eres nuevo, haz el equivalente de un cliente nuevo: llegas tú pidiendo algo concreto que necesitas hoy, y lo demás del guion (lo que tienes con otro proveedor, lo que no manejas) sigue igual.`;
 
-/** Lo que recibe el cliente simulado. */
 export function bloqueActor(f: FichaCliente | null): string {
   if (!f) {
     return `IMPORTANTE: Eres un cliente nuevo que el vendedor acaba de encontrar.
