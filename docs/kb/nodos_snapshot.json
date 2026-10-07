@@ -1691,7 +1691,7 @@
           "id": "discovery.lee_el_lugar",
           "weight": 0.35,
           "regla_id": "discovery.lee_el_lugar",
-          "description": "Mapea el catalogo del cliente mas alla de lo que ya le vende — que otras familias maneja y de quien. Levantar el pedido y despedirse no cumple, por muy correcta que sea la visita."
+          "description": "Mapea el catálogo del cliente más allá de lo que ya le vende: averigua, de al menos una familia que hoy no le vende, si el cliente la maneja y con quién. No se exige un número de familias. Levantar el pedido y despedirse no cumple, por muy correcta que sea la visita."
         },
         {
           "id": "impulse.efecto_jones",

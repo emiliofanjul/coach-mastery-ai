@@ -231,3 +231,9 @@ describe("Disputa concedida del 3.9 (oct-2026): el corte del Director no es falt
   });
 });
 
+describe("La pregunta que cierra se juzga por función (oct-2026)", () => {
+  it("en voz, sin signos, sigue siendo pregunta", () => {
+    expect(fn).toMatch(/Esto vale también para "la pregunta que CIERRE el turno"/);
+  });
+});
+
