@@ -91,9 +91,11 @@ describe("todo conectado", () => {
   it("si la ficha no llega, hay respaldo: la práctica nunca espera", () => {
     expect(ui).toMatch(/const respaldo = fichaRespaldoVisible\(tipo\);/);
   });
-  it("el manager elige con qué clientes practica su equipo", () => {
-    expect(equipo).toMatch(/\["solo_nuevos", "Solo nuevos"\]/);
-    expect(equipo).toMatch(/body: \{ tipos_cliente: valor \}/);
+  it("el manager elige sus clientes en Mi Empresa, no en Mi Equipo", () => {
+    const empresa = readFileSync(join(process.cwd(), "src/routes/mi-empresa.tsx"), "utf8");
+    expect(empresa).toMatch(/\["solo_nuevos", "Solo nuevos"\]/);
+    expect(empresa).toMatch(/body: \{ tipos_cliente: valor \}/);
+    expect(equipo).not.toMatch(/tipos_cliente/);
   });
 });
 
@@ -120,6 +122,19 @@ describe("la ficha solo usa productos que la empresa vende (oct-2026)", () => {
   it("el servidor manda solo productos y cliente típico, y verifica", () => {
     const fn = readFileSync(join(process.cwd(), "supabase/functions/closer-voice/index.ts"), "utf8");
     expect(fn).toMatch(/validarFicha\(JSON\.parse\(t\.slice\(i, j \+ 1\)\), tipo, catalogo\)/);
+  });
+});
+
+describe("la ficha manda sobre el guion del nodo (oct-2026)", () => {
+  const nuevo = validarFicha({ nombre: "Don Ramón", negocio: "taller" }, "nuevo");
+  it("con tarjeta 'nuevo', el cliente no habla de 'lo de siempre' aunque el guion lo diga", () => {
+    const b = bloqueActor(nuevo);
+    expect(b).toMatch(/ESTA FICHA MANDA SOBRE TU RELACIÓN CON EL VENDEDOR/);
+    expect(b).toMatch(/llegas tú pidiendo algo concreto que necesitas hoy/);
+    expect(b).toMatch(/Nunca hables de "lo de siempre"/);
+  });
+  it("el evaluador lee 'lo que ya le vende' como 'lo que pidió hoy' con un cliente nuevo", () => {
+    expect(bloqueEvaluador(nuevo)).toMatch(/léelo como "lo que el cliente ya pidió hoy"/);
   });
 });
 

@@ -113,6 +113,8 @@ function MiEmpresaPage() {
   const [loading, setLoading] = useState(true);
   const [denied, setDenied] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
+  // Con qué clientes practica el equipo: los que la empresa de verdad atiende.
+  const [tiposCliente, setTiposCliente] = useState<"ambos" | "solo_nuevos" | "solo_recurrentes">("ambos");
   const [userId, setUserId] = useState<string | null>(null);
 
   const [companyName, setCompanyName] = useState<string>("");
@@ -154,7 +156,7 @@ function MiEmpresaPage() {
         brain_updated_at: string | null;
         company_sales_brain: Record<string, unknown> | null;
       }>(
-        `companies?select=id,name,is_personal,industry,logo_url,brain_updated_at,company_sales_brain&id=eq.${profile.company_id}&limit=1`,
+        `companies?select=id,name,is_personal,industry,logo_url,brain_updated_at,company_sales_brain,tipos_cliente&id=eq.${profile.company_id}&limit=1`,
       );
       if (!company) {
         if (!cancelled) {
@@ -181,6 +183,10 @@ function MiEmpresaPage() {
       }
       if (!cancelled) {
         setCompanyId(company.id);
+        {
+          const t = (company as any).tipos_cliente;
+          setTiposCliente(t === "solo_nuevos" || t === "solo_recurrentes" ? t : "ambos");
+        }
         setCompanyName(company.name ?? "");
         setIndustry(company.industry ?? "");
         setLogoUrl(company.logo_url ?? "");
@@ -369,6 +375,38 @@ function MiEmpresaPage() {
             </div>
           </div>
         </section>
+
+        {/* TUS CLIENTES */}
+        {companyId && (
+          <section className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <h2 className="font-['Syne'] font-bold text-white text-lg">Tus clientes</h2>
+            <p className="text-white/60 font-['DM_Sans'] text-sm mb-3">
+              Closer elige en cada práctica el cliente que mejor enseña ese tema. Si tu empresa solo atiende un tipo, todas las prácticas serán con ese.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {([["ambos", "Nuevos y recurrentes"], ["solo_nuevos", "Solo nuevos"], ["solo_recurrentes", "Solo recurrentes"]] as const).map(([valor, texto]) => (
+                <button
+                  key={valor}
+                  onClick={async () => {
+                    if (valor === tiposCliente) return;
+                    const antes = tiposCliente;
+                    setTiposCliente(valor);
+                    try {
+                      await restMutate(`companies?id=eq.${companyId}`, { method: "PATCH", body: { tipos_cliente: valor } });
+                    } catch (err) {
+                      console.error("[mi-empresa] no se pudo guardar el tipo de clientes:", err);
+                      setTiposCliente(antes);
+                      toast.error("No se pudo guardar. Intenta de nuevo.");
+                    }
+                  }}
+                  className={`rounded-full px-3 py-1.5 text-sm border ${tiposCliente === valor ? "border-[#FF6B2B] bg-[#FF6B2B]/15" : "border-white/15"}`}
+                >
+                  {texto}
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* 2. EQUIPO */}
         {!isPersonal && companyId && (
