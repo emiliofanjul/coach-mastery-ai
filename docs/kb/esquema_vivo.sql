@@ -368,4 +368,5 @@ CREATE TRIGGER trg_validar_practice_script BEFORE INSERT OR UPDATE OF practice_s
 -- 3.7 @ order_index 7 (world 3)
 -- 3.8 @ order_index 8 (world 3)
 -- 3.9 @ order_index 9 (world 3)
--- 3.10 @ order_index 10 (world 3)
+-- 3.9b @ order_index 10 (world 3)
+-- 3.10 @ order_index 11 (world 3)
