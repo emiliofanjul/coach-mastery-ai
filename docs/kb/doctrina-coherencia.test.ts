@@ -253,6 +253,16 @@ describe("Ningún nodo repite una descripción", () => {
   });
 });
 
+describe("Las reglas cumplen las restricciones de la base", () => {
+  // Oct-2026: una regla con tipo "concepto" llegó a la base y la rechazó.
+  it("tipo y canal son de los que acepta la tabla reglas", () => {
+    const TIPOS = new Set(["requisito", "error", "herramienta", "principio", "premio", "neutro"]);
+    const CANALES = new Set(["universal", "presencial"]);
+    const mal = [...porId.values()].filter((r: any) => !TIPOS.has(r.tipo) || !CANALES.has(r.canal)).map((r: any) => `${r.id}:${r.tipo}/${r.canal}`);
+    expect(mal).toEqual([]);
+  });
+});
+
 describe("Una regla, un concepto", () => {
   // Sept-2026: tres reglas de la apertura mezclaban dos conceptos, y eso produjo
   // doble castigo y calificaciones que cambiaban entre corridas (92 y 55 para la

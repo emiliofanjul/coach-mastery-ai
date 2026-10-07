@@ -9,7 +9,7 @@
 --    y 7.3, el criterio del hueco colgaba de la regla de "leer el lugar": dos
 --    conceptos en una regla. Primero la regla, luego los nodos, luego el nuevo.
 INSERT INTO public.reglas (id, paso, tipo, canal, procedencia, resumen, cita_cerebro)
-VALUES ('discovery.hueco', 3, 'concepto', 'universal', 'CAMPO', 'El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, o una que le piden y no maneja. No tiene señal verbal: se ve o se pregunta. Identificarlo es nombrarlo en la conversación, no solo preguntar. Tiene que ser real y verificable.', 'algo que podría comprarte y no te compra')
+VALUES ('discovery.hueco', 3, 'requisito', 'universal', 'CAMPO', 'El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, o una que le piden y no maneja. No tiene señal verbal: se ve o se pregunta. Identificarlo es nombrarlo en la conversación, no solo preguntar. Tiene que ser real y verificable.', 'algo que podría comprarte y no te compra')
 ON CONFLICT (id) DO UPDATE SET resumen = EXCLUDED.resumen, cita_cerebro = EXCLUDED.cita_cerebro, updated_at = now();
 
 CREATE OR REPLACE FUNCTION pg_temp.regla_hueco(ps jsonb) RETURNS jsonb LANGUAGE plpgsql AS $$

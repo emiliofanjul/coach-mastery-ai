@@ -1452,7 +1452,7 @@
  {
   "id": "discovery.hueco",
   "paso": 3,
-  "tipo": "concepto",
+  "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
   "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, o una que le piden y no maneja. No tiene señal verbal: se ve o se pregunta. Identificarlo es nombrarlo en la conversación, no solo preguntar. Tiene que ser real y verificable.",
