@@ -216,3 +216,18 @@ describe("La Regla de los No (sept-2026)", () => {
   });
 });
 
+describe("Disputa concedida del 3.9 (oct-2026): el corte del Director no es falta", () => {
+  it("con objetivo cumplido, no se exige 'más de lo mismo'", () => {
+    expect(fn).toMatch(/NADA que el corte le impidió hacer es falta/);
+  });
+  it("lo que el corte impidió es no_aplica", () => {
+    expect(fn).toMatch(/\(c\) el DIRECTOR cortó la sesión antes de que apareciera/);
+  });
+  it("nunca una cantidad que el criterio no pide", () => {
+    expect(fn).toMatch(/NUNCA EXIJAS UNA CANTIDAD QUE EL CRITERIO NO PIDE/);
+  });
+  it("la réplica es coherente: si concede, no defiende el veredicto", () => {
+    expect(fn).toMatch(/no lo defiendas en la misma respuesta/);
+  });
+});
+

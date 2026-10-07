@@ -50,7 +50,7 @@ function stringifyAll(obj: any): string {
   try { return JSON.stringify(obj).toLowerCase(); } catch { return String(obj).toLowerCase(); }
 }
 
-async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string, sellerName?: string): Promise<any> {
+async function callEvaluate(transcript: { role: string; text: string }[], practice_script: any, nodeId: string, supabaseUrl: string, anonKey: string, companyBrain?: string, sellerName?: string, extra?: { cut_reason?: string; ficha_cliente?: unknown }): Promise<any> {
   const conversation_history = transcript.map((t) => ({
     role: t.role === "assistant" ? "assistant" : "user",
     content: t.text,
@@ -72,6 +72,9 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
       // Un nombre real, como en producción: con "Vendedor" el evaluador escribía "[tu nombre]".
       seller_name: sellerName ?? "Luis",
       session_id: `harness-${crypto.randomUUID()}`,
+      // Cómo terminó la sesión y con qué cliente: como en producción.
+      ...(extra?.cut_reason ? { cut_reason: extra.cut_reason } : {}),
+      ...(extra?.ficha_cliente ? { ficha_cliente: extra.ficha_cliente } : {}),
     }),
   });
   const text = await res.text();
@@ -387,7 +390,7 @@ Deno.serve(async (req) => {
       const runResults: any[] = [];
       for (let i = 0; i < runs; i++) {
         try {
-          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain, (c as any).seller_name);
+          const resp = await callEvaluate(transcript, casePs, caseNode, supabaseUrl, anonKey, (c as any).company_brain, (c as any).seller_name, { cut_reason: (c as any).cut_reason, ficha_cliente: (c as any).ficha_cliente });
           runResults.push(resp);
         } catch (e) {
           runResults.push({ status: 0, parsed: null, raw: String(e) });

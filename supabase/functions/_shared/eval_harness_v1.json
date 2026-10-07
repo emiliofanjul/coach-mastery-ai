@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.6.0",
+  "harness_version": "v3.7.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1701,6 +1701,63 @@
           "ignora_estado"
         ],
         "rationale": "Cerebro, La Regla de los No: 'dos no seguidos, luz roja, sigue adelante' — Emilio usa tres. Con el rojo, 'salir rápido y bien es la ejecución correcta'."
+      }
+    },
+    {
+      "id": "G30_corte_del_director_no_es_falta",
+      "node_id": "3.9",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub. PRODUCTOS_ACTIVOS: aceite de motor 20W50; aceite para moto; anticongelante; grasas.",
+      "cut_reason": "scope_covered",
+      "ficha_cliente": {
+        "tipo": "recurrente",
+        "nombre": "Don Ramón",
+        "negocio": "taller mecánico",
+        "ya_te_compra": "aceite de motor 20W50",
+        "ultima_visita": "hace dos semanas",
+        "le_compra_a_otro": "anticongelante"
+      },
+      "description": "Disputa concedida (oct-2026, real): el vendedor levantó el pedido, abrió dos familias con efecto Jones y descubrió el hueco (anticongelante con otro proveedor; aceite para moto no lo maneja). El Director cortó ahí por objetivo cumplido. El evaluador marcó lee_el_lugar 'parcial' por 'mapear solo dos familias': exigió una cantidad que el criterio no pide y algo que el corte impidió.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, don Ramón, ¿cómo está? Híjole, hoy se ve que está tremendo el movimiento. ¿Siempre es así los miércoles?"
+        },
+        {
+          "role": "assistant",
+          "text": "Qué tal, compa. Sí, los miércoles siempre se pone así: la gente trae camionetas para servicio. Ando hasta el copete ahorita."
+        },
+        {
+          "role": "user",
+          "text": "Me imagino. Está cañón, pero eso es bueno: significa que hay trabajo. Oiga, pasé a visitarlo y a ver cómo le ha ido con lo que le vendí la última vez."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues bien, todo bien. De hecho ya se me está acabando. Anótame lo mismo que la otra vez: cuatro de aceite 20W50."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, le anoto lo de siempre. Y oiga, por su zona se está vendiendo muy bien el aceite para moto y el anticongelante. ¿Ese usted no lo maneja todavía?"
+        },
+        {
+          "role": "assistant",
+          "text": "Anticongelante sí manejo, pero lo compro con otro compa que me surte de hace años. Aceite para moto no, ese no lo traigo."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "discovery.hueco": "cumple",
+          "discovery.lee_el_lugar": "cumple",
+          "impulse.efecto_jones": "cumple"
+        },
+        "observations_must_not_target": [
+          "discovery.lee_el_lugar"
+        ],
+        "rationale": "Criterio: 'mapea el catálogo más allá de lo que ya le vende — qué otras familias maneja y de quién'. Lo hizo: dos familias, y de quién. No pide un número. Y el corte fue del Director por objetivo cumplido."
       }
     }
   ]
