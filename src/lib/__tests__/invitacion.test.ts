@@ -9,6 +9,8 @@ import {
   ligaCorreo,
   codigoDeLiga,
   ASUNTO_CORREO,
+  LARGO_MAXIMO_CODIGO,
+  resultadoDeValidacion,
 } from "../invitacion";
 
 describe("la liga y el mensaje", () => {
@@ -55,5 +57,39 @@ describe("las pantallas", () => {
   it("la liga deja el código puesto al crear la cuenta", () => {
     expect(leer("src/routes/unirme.tsx")).toContain("setPendingInviteCode(c)");
     expect(leer("src/routes/signup.tsx")).toContain("getPendingInviteCode()");
+  });
+});
+
+describe("validar el código antes de tener cuenta (oct-2026)", () => {
+  it("el código más largo que genera la base cabe en la casilla", () => {
+    // prefijo de la empresa (hasta 8) + guion + 6 caracteres = 15
+    expect(LARGO_MAXIMO_CODIGO).toBeGreaterThanOrEqual(8 + 1 + 6);
+    expect(codigoDeLiga("EMPRESAP-AB2CDE")).toBe("EMPRESAP-AB2CDE");
+  });
+  it("un error de la base dice qué pasó, no un mensaje genérico", () => {
+    const r = resultadoDeValidacion(null, { code: "42501", message: "permission denied" });
+    expect(r.status).toBe("invalid");
+    expect(r.status !== "valid" && r.message).toContain("42501");
+  });
+  it("cada respuesta de la base tiene su mensaje", () => {
+    expect(resultadoDeValidacion({ valid: true, company_name: "DALFAN" }, null)).toEqual({
+      status: "valid",
+      companyName: "DALFAN",
+    });
+    const msg = (reason: string) => {
+      const r = resultadoDeValidacion({ valid: false, reason }, null);
+      return r.status === "valid" ? "" : r.message;
+    };
+    expect(msg("not_found")).toMatch(/No encontramos/);
+    expect(msg("revoked")).toMatch(/ya no está activo/);
+    expect(msg("expired")).toMatch(/venció/);
+    expect(msg("rate_limited")).toMatch(/Demasiados intentos/);
+  });
+  it("el registro usa ese mensaje, el largo correcto y ya no llama una función que no puede ejecutar", () => {
+    const s = readFileSync("src/routes/signup.tsx", "utf8");
+    expect(s).toContain("resultadoDeValidacion(");
+    expect(s).toContain("maxLength={LARGO_MAXIMO_CODIGO}");
+    expect(s).not.toContain("maxLength={12}");
+    expect(s).not.toContain("register_invite_failed_attempt");
   });
 });
