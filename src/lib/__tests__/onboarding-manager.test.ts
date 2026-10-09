@@ -217,6 +217,10 @@ describe("el ajuste del manager", () => {
 
 describe("el código de invitación", () => {
   const src = readFileSync("src/routes/onboarding.manager.tsx", "utf8");
+  it("se pide siempre con duración: sin datos la base no sabe cuál de sus dos versiones usar", () => {
+    expect(src).toMatch(/rpc\("generate_company_invite", \{ _hours: 168 \}\)/);
+    expect(src).not.toMatch(/rpc\("generate_company_invite"\)/);
+  });
   it("si no se genera, la pantalla dice qué pasó", () => {
     expect(src).toContain("No pudimos generar el código");
   });

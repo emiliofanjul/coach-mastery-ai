@@ -8,6 +8,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
+import { CompartirInvitacion } from "@/components/app/CompartirInvitacion";
 import {
   generateCompanyBrain,
   proponerDelCampo,
@@ -343,7 +344,9 @@ function ManagerOnboarding() {
             }}
           />
         )}
-        {step === TEAM_STEP && <TeamStep onFinish={() => navigate({ to: "/" })} />}
+        {step === TEAM_STEP && (
+          <TeamStep empresa={companyName} onFinish={() => navigate({ to: "/" })} />
+        )}
       </div>
     </main>
   );
@@ -1226,7 +1229,7 @@ function RadiografiaStep({
 // Antes, si el código no se generaba, la pantalla se quedaba en "•••• ••••" sin
 // decir nada, ni con "Generar nuevo". Ahora dice qué pasó. La invitación por
 // correo se quitó: era un botón que no enviaba nada.
-function TeamStep({ onFinish }: { onFinish: () => void }) {
+function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void }) {
   const [code, setCode] = useState<string | null>(null);
   const [expires, setExpires] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -1236,7 +1239,10 @@ function TeamStep({ onFinish }: { onFinish: () => void }) {
   const regenerate = async () => {
     setGenerating(true);
     setError(null);
-    const { data, error: err } = await supabase.rpc("generate_company_invite");
+    // Siempre con duración: existen dos versiones de la función (sin datos y con
+    // _hours) y llamarla sin datos es ambiguo — la base la rechaza sin generar
+    // nada. Mi Empresa ya la llama así. 168 h = los 7 días que dice la pantalla.
+    const { data, error: err } = await supabase.rpc("generate_company_invite", { _hours: 168 });
     setGenerating(false);
     if (err || !data) {
       console.error("[onboarding] generate_company_invite:", err);
@@ -1289,7 +1295,7 @@ function TeamStep({ onFinish }: { onFinish: () => void }) {
         Agrega tu equipo
       </h2>
       <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: 8, marginBottom: 20 }}>
-        Comparte este código con tus vendedores. Lo escriben al crear su cuenta y quedan en tu
+        Mándales la invitación por WhatsApp o por correo. Con la liga crean su cuenta y quedan en tu
         equipo.
       </p>
 
@@ -1341,9 +1347,11 @@ function TeamStep({ onFinish }: { onFinish: () => void }) {
             {error}
           </p>
         )}
-        <p style={{ fontSize: "0.76rem", color: "#5A5A8A", marginTop: 10 }}>
-          Compártelo por WhatsApp. Expira en 7 días.
-        </p>
+        {code && (
+          <div style={{ marginTop: 14 }}>
+            <CompartirInvitacion codigo={code} empresa={empresa} vence={expires} />
+          </div>
+        )}
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
           <button
             onClick={copy}

@@ -1,12 +1,25 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { CompartirInvitacion } from "@/components/app/CompartirInvitacion";
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Save, AlertTriangle, Copy, RefreshCw, XCircle, ChevronDown, ChevronUp, Users, Brain, Building2 } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Save,
+  AlertTriangle,
+  Copy,
+  RefreshCw,
+  XCircle,
+  ChevronDown,
+  ChevronUp,
+  Users,
+  Brain,
+  Building2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/app/AppShell";
 import { ImageUploader } from "@/components/app/ImageUploader";
 import { PitchesSection } from "@/components/app/PitchesSection";
-
 
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
@@ -100,7 +113,10 @@ function splitList(v: unknown): string[] {
 }
 
 function joinList(items: string[]): string {
-  return items.map((s) => s.trim()).filter(Boolean).join("; ");
+  return items
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .join("; ");
 }
 
 type BrainDraft = {
@@ -114,7 +130,9 @@ function MiEmpresaPage() {
   const [denied, setDenied] = useState(false);
   const [companyId, setCompanyId] = useState<string | null>(null);
   // Con qué clientes practica el equipo: los que la empresa de verdad atiende.
-  const [tiposCliente, setTiposCliente] = useState<"ambos" | "solo_nuevos" | "solo_recurrentes">("ambos");
+  const [tiposCliente, setTiposCliente] = useState<"ambos" | "solo_nuevos" | "solo_recurrentes">(
+    "ambos",
+  );
   const [userId, setUserId] = useState<string | null>(null);
 
   const [companyName, setCompanyName] = useState<string>("");
@@ -283,7 +301,9 @@ function MiEmpresaPage() {
       const updated = Array.isArray(res) ? res[0] : res;
       if (updated?.updated_at) setBrainUpdatedAt(updated.updated_at);
       else setBrainUpdatedAt(new Date().toISOString());
-      toast.success("Guardado. Estos cambios afectan las prácticas de todo tu equipo a partir de ahora.");
+      toast.success(
+        "Guardado. Estos cambios afectan las prácticas de todo tu equipo a partir de ahora.",
+      );
     } catch (e: any) {
       console.error("save brain error", e);
       toast.error(e?.message ?? "No se pudo guardar. Intenta de nuevo.");
@@ -305,7 +325,8 @@ function MiEmpresaPage() {
       <div className="min-h-screen bg-[#08080F] text-white flex flex-col items-center justify-center px-6 gap-4 text-center">
         <div className="font-['Syne'] text-2xl font-bold">Solo para managers</div>
         <div className="text-white/60 font-['DM_Sans'] max-w-sm">
-          Esta sección edita el conocimiento de tu empresa que alimenta a Closer. Requiere rol de manager.
+          Esta sección edita el conocimiento de tu empresa que alimenta a Closer. Requiere rol de
+          manager.
         </div>
         <Button
           onClick={() => navigate({ to: "/mapa" })}
@@ -381,10 +402,18 @@ function MiEmpresaPage() {
           <section className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <h2 className="font-['Syne'] font-bold text-white text-lg">Tus clientes</h2>
             <p className="text-white/60 font-['DM_Sans'] text-sm mb-3">
-              Algunos temas se enseñan con un tipo de cliente específico —como trabajar a un cliente que ya te compra—, y esos se practican siempre así, porque todo cliente nuevo se vuelve recurrente. En los demás, Closer usa el tipo de cliente que tu empresa atiende.
+              Algunos temas se enseñan con un tipo de cliente específico —como trabajar a un cliente
+              que ya te compra—, y esos se practican siempre así, porque todo cliente nuevo se
+              vuelve recurrente. En los demás, Closer usa el tipo de cliente que tu empresa atiende.
             </p>
             <div className="flex flex-wrap gap-2">
-              {([["ambos", "Nuevos y recurrentes"], ["solo_nuevos", "Solo nuevos"], ["solo_recurrentes", "Solo recurrentes"]] as const).map(([valor, texto]) => (
+              {(
+                [
+                  ["ambos", "Nuevos y recurrentes"],
+                  ["solo_nuevos", "Solo nuevos"],
+                  ["solo_recurrentes", "Solo recurrentes"],
+                ] as const
+              ).map(([valor, texto]) => (
                 <button
                   key={valor}
                   onClick={async () => {
@@ -392,7 +421,10 @@ function MiEmpresaPage() {
                     const antes = tiposCliente;
                     setTiposCliente(valor);
                     try {
-                      await restMutate(`companies?id=eq.${companyId}`, { method: "PATCH", body: { tipos_cliente: valor } });
+                      await restMutate(`companies?id=eq.${companyId}`, {
+                        method: "PATCH",
+                        body: { tipos_cliente: valor },
+                      });
                     } catch (err) {
                       console.error("[mi-empresa] no se pudo guardar el tipo de clientes:", err);
                       setTiposCliente(antes);
@@ -415,7 +447,7 @@ function MiEmpresaPage() {
               <Users className="h-4 w-4 text-[#FF6B2B]" />
               <h2 className="font-['Syne'] font-bold text-white text-lg">Equipo</h2>
             </div>
-            <InviteCard companyId={companyId} />
+            <InviteCard companyId={companyId} empresa={companyName} />
             <MembersList companyId={companyId} />
           </section>
         )}
@@ -430,10 +462,15 @@ function MiEmpresaPage() {
             <div className="flex-1 min-w-0">
               <div className="font-['Syne'] font-bold text-white text-lg">Cerebro de ventas</div>
               <div className="text-xs text-white/50 font-['DM_Sans'] mt-0.5">
-                La información que Closer usa para entrenar a tu equipo. Última actualización: {brainUpdatedLabel}
+                La información que Closer usa para entrenar a tu equipo. Última actualización:{" "}
+                {brainUpdatedLabel}
               </div>
             </div>
-            {brainOpen ? <ChevronUp className="h-4 w-4 text-white/60" /> : <ChevronDown className="h-4 w-4 text-white/60" />}
+            {brainOpen ? (
+              <ChevronUp className="h-4 w-4 text-white/60" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-white/60" />
+            )}
           </button>
 
           {brainOpen && (
@@ -462,7 +499,10 @@ function MiEmpresaPage() {
                   </div>
                   <div className="space-y-3">
                     {draft.extras.map((e, i) => (
-                      <div key={i} className="rounded-[10px] border border-white/10 bg-white/[0.02] p-3">
+                      <div
+                        key={i}
+                        className="rounded-[10px] border border-white/10 bg-white/[0.02] p-3"
+                      >
                         <div className="mb-2 flex items-center gap-2">
                           <input
                             value={e.key}
@@ -508,10 +548,11 @@ function MiEmpresaPage() {
 
         {/* 5. Futuras secciones */}
         <section className="mb-6 rounded-[14px] border border-dashed border-white/10 bg-white/[0.02] p-5 text-center">
-          <div className="text-xs uppercase tracking-wide text-white/40 font-['DM_Sans']">Próximamente</div>
+          <div className="text-xs uppercase tracking-wide text-white/40 font-['DM_Sans']">
+            Próximamente
+          </div>
           <div className="mt-1 text-sm text-white/60 font-['DM_Sans']">Consumo y plan</div>
         </section>
-
 
         {brainOpen && (
           <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-[#08080F]/95 backdrop-blur px-5 py-3">
@@ -626,7 +667,7 @@ function ListEditor({
 
 type ActiveInvite = { code: string; expires_at: string; duration_hours: number };
 
-function InviteCard({ companyId: _companyId }: { companyId: string }) {
+function InviteCard({ companyId: _companyId, empresa }: { companyId: string; empresa: string }) {
   const [active, setActive] = useState<ActiveInvite | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -704,7 +745,8 @@ function InviteCard({ companyId: _companyId }: { companyId: string }) {
     <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 mb-4">
       <div className="font-['Syne'] font-bold text-white text-lg">Invitar vendedores</div>
       <p className="mt-1 text-sm text-white/60 font-['DM_Sans']">
-        Genera un código temporal y compártelo con tu equipo. Solo puede haber uno activo a la vez.
+        Genera un código temporal y mándale la invitación a tu equipo por WhatsApp o por correo.
+        Solo puede haber uno activo a la vez.
       </p>
 
       {loading ? (
@@ -713,8 +755,12 @@ function InviteCard({ companyId: _companyId }: { companyId: string }) {
         <div className="mt-4">
           <div className="rounded-[10px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 p-3 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <div className="font-mono text-lg tracking-wider text-[#FF6B2B] truncate">{active.code}</div>
-              <div className="mt-0.5 text-[11px] text-white/60 font-['DM_Sans']">{expiresLabel}</div>
+              <div className="font-mono text-lg tracking-wider text-[#FF6B2B] truncate">
+                {active.code}
+              </div>
+              <div className="mt-0.5 text-[11px] text-white/60 font-['DM_Sans']">
+                {expiresLabel}
+              </div>
             </div>
             <button
               onClick={copy}
@@ -723,6 +769,9 @@ function InviteCard({ companyId: _companyId }: { companyId: string }) {
               <Copy className="h-3.5 w-3.5" />
               {copied ? "Copiado" : "Copiar"}
             </button>
+          </div>
+          <div className="mt-3">
+            <CompartirInvitacion codigo={active.code} empresa={empresa} vence={active.expires_at} />
           </div>
           <div className="mt-3 flex gap-2">
             <Button
@@ -836,7 +885,9 @@ function MembersList({ companyId }: { companyId: string }) {
       });
     } catch (e: any) {
       toast.error("No pudimos actualizar. Revierte y reintenta.");
-      setMembers((prev) => prev?.map((x) => (x.id === m.id ? { ...x, is_active: m.is_active } : x)) ?? null);
+      setMembers(
+        (prev) => prev?.map((x) => (x.id === m.id ? { ...x, is_active: m.is_active } : x)) ?? null,
+      );
     }
   };
 
@@ -858,12 +909,16 @@ function MembersList({ companyId }: { companyId: string }) {
 
   return (
     <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
-      <div className="font-['Syne'] font-bold text-white text-lg mb-3">Se unieron con este código</div>
+      <div className="font-['Syne'] font-bold text-white text-lg mb-3">
+        Se unieron con este código
+      </div>
       <ul className="divide-y divide-white/5">
         {members.map((m) => (
           <li key={m.id} className="py-3 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <div className="font-['DM_Sans'] text-white truncate">{m.full_name ?? "Sin nombre"}</div>
+              <div className="font-['DM_Sans'] text-white truncate">
+                {m.full_name ?? "Sin nombre"}
+              </div>
               <div className="text-[11px] text-white/50 truncate">{emails[m.profile_id] ?? ""}</div>
             </div>
             <label className="inline-flex items-center gap-2 text-xs text-white/70 font-['DM_Sans'] cursor-pointer">
@@ -881,4 +936,3 @@ function MembersList({ companyId }: { companyId: string }) {
     </div>
   );
 }
-
