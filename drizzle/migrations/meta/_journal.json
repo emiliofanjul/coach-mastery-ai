@@ -15,6 +15,13 @@
       "when": 1791575198352,
       "tag": "0001_drop_generate_company_invite_sin_datos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791576713511,
+      "tag": "0002_migracion_codigo_invitacion",
+      "breakpoints": true
     }
   ]
 }
