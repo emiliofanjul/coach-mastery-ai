@@ -1,24 +1,43 @@
+// Onboarding del manager (oct-2026, rediseñado con Emilio).
+//
+// 9 preguntas en 4 bloques, casi todas de tocar, cada una con su texto libre
+// opcional y su "¿Para qué lo usa Closer?". El manager no le enseña ventas a
+// Closer: le dice cómo es su negocio. Las preguntas y por qué existe cada una
+// viven en src/lib/onboarding-questions.ts.
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
-import { generateCompanyBrain } from "@/utils/onboarding.functions";
 import {
-  QUESTIONS,
-  FRECUENCIA_OPTIONS,
-  INTERACCION_OPTIONS,
-  DURACION_OPTIONS,
-  RELACION_OPTIONS,
-  EXT_SECTIONS,
-  type ExtSection,
-  type ExtQuestion,
+  generateCompanyBrain,
+  proponerDelCampo,
+  ajustarRadiografia,
+} from "@/utils/onboarding.functions";
+import {
+  PREGUNTAS,
+  TOTAL_PREGUNTAS,
+  BLOQUES,
+  FRASE_DE_ENTRADA,
+  NEGATIVOS_DE_RESPALDO,
+  RESTRICCIONES_DE_RESPALDO,
+  campoVisible,
+  preguntaCompleta,
+  respuestasEnTexto,
+  cerebroDirecto,
+  libreDe,
+  detalleDe,
+  type Pregunta,
+  type Campo,
+  type CampoOpciones,
+  type Respuestas,
+  type SeccionRadiografia,
 } from "@/lib/onboarding-questions";
 
 export const Route = createFileRoute("/onboarding/manager")({
   head: () => ({
     meta: [
       { title: "Configura tu empresa — Closer" },
-      { name: "description", content: "Construye el cerebro comercial de tu empresa." },
+      { name: "description", content: "Cuéntale a Closer cómo es tu empresa." },
     ],
   }),
   component: ManagerOnboarding,
@@ -26,95 +45,78 @@ export const Route = createFileRoute("/onboarding/manager")({
 
 const BG = "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
 
-interface Answers {
-  q1: string;
-  q2: string;
-  q3: string;
-  ticket: string;
-  frecuencia: string;
-  interaccion: string[];
-  duracion: string;
-  relacion: string;
-  q8: string;
-  q9: string;
-}
-
-const EMPTY: Answers = {
-  q1: "", q2: "", q3: "",
-  ticket: "", frecuencia: "",
-  interaccion: [], duracion: "", relacion: "",
-  q8: "", q9: "",
-};
-
 type Brain = Record<string, string>;
+type Propuestas = { negativos: string[]; restricciones: string[] };
 
-/** Respuestas de los bloques 4-6 (catálogo, cartera, campo). */
-type ExtAnswers = Record<string, string | string[]>;
-
-// Mapa de pasos. Los bloques 1-3 ocupan 1..6; los bloques 4-6 (una pantalla
-// por sección) arrancan en 7; después van calibración, cerebro y equipo.
-const EXT_START = 7;
-const CALIB_STEP = EXT_START + EXT_SECTIONS.length;
-const BRAIN_STEP = CALIB_STEP + 1;
-const TEAM_STEP = CALIB_STEP + 2;
+// Pasos: 0 bienvenida · 1..9 preguntas · la radiografía · el equipo.
+const PRIMERA_PREGUNTA = 1;
+const CALIB_STEP = PRIMERA_PREGUNTA + TOTAL_PREGUNTAS; // la radiografía
+const TEAM_STEP = CALIB_STEP + 1;
 const PROGRESS_TOTAL = TEAM_STEP;
+const PRIMERA_PROPUESTA = PREGUNTAS.findIndex((p) => p.propuestaPorCloser) + PRIMERA_PREGUNTA;
 
-const draftKey = (companyId: string | null) => `closer_onboarding_draft_${companyId ?? "anon"}`;
-
-function extAnswerText(v: string | string[] | undefined): string {
-  if (Array.isArray(v)) return v.join(", ");
-  return (v ?? "").trim();
-}
-
-/** Una sección está completa cuando toda pregunta no opcional tiene respuesta suficiente. */
-function sectionComplete(section: ExtSection, ext: ExtAnswers): boolean {
-  return section.questions.every((q) => {
-    if (q.optional) return true;
-    const txt = extAnswerText(ext[q.id]);
-    if (!txt) return false;
-    return txt.length >= (q.min ?? 1);
-  });
-}
+// v2: el borrador del onboarding anterior tiene otra forma y no se reutiliza.
+const draftKey = (companyId: string | null) => `closer_onboarding_v2_${companyId ?? "anon"}`;
 
 // Llaves que jamás deben persistirse en companies.company_sales_brain.
-// `__preview_response` es la respuesta efímera del cliente para el preview del
-// onboarding. `DON_RAMON_RESPUESTA` es una llave legacy que se solía persistir
-// por error — se limpia defensivamente aquí también.
-const EPHEMERAL_KEYS = new Set(["__preview_response", "DON_RAMON_RESPUESTA"]);
-function stripEphemeral(b: Brain): Brain {
+const EPHEMERAL_KEYS = new Set([
+  "__preview_response",
+  "__preview_responses",
+  "DON_RAMON_RESPUESTA",
+]);
+function stripEphemeral(b: Record<string, unknown>): Brain {
   const out: Brain = {};
   for (const [k, v] of Object.entries(b)) {
-    if (EPHEMERAL_KEYS.has(k)) continue;
+    if (EPHEMERAL_KEYS.has(k) || typeof v !== "string") continue;
     out[k] = v;
   }
   return out;
 }
 
+const mensajeDeError = (err: unknown) => {
+  const m = (err as Error | null)?.message;
+  return m === "rate_limit"
+    ? "Closer está saturado, intenta en un momento."
+    : m === "payment_required"
+      ? "Se acabaron los créditos de IA. Avisa al administrador."
+      : "Closer no pudo terminar. Intenta de nuevo.";
+};
+
 function ManagerOnboarding() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0); // 0 = welcome
-  const [a, setA] = useState<Answers>(EMPTY);
-  const [ext, setExt] = useState<ExtAnswers>({});
+  const [step, setStep] = useState(0);
+  const [r, setR] = useState<Respuestas>({});
+  const [propuestas, setPropuestas] = useState<Propuestas | null>(null);
+  const [proponiendo, setProponiendo] = useState(false);
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [brain, setBrain] = useState<Brain | null>(null);
+  const [radiografia, setRadiografia] = useState<SeccionRadiografia[] | null>(null);
+  // Con qué respuestas se armó el cerebro: si el manager regresa y cambia
+  // algo, la radiografía se vuelve a armar.
+  const [brainDe, setBrainDe] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
 
-  // Cargar perfil del manager
+  // Perfil del manager
   useEffect(() => {
     let active = true;
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
         navigate({ to: "/login" });
         return;
       }
       const { data: profile } = await supabase
-        .from("profiles").select("full_name, company_id, role").eq("id", session.user.id).single();
+        .from("profiles")
+        .select("full_name, company_id, role")
+        .eq("id", session.user.id)
+        .single();
       if (!active) return;
       if (!profile || profile.role !== "manager") {
         navigate({ to: "/" });
@@ -124,7 +126,10 @@ function ManagerOnboarding() {
       setCompanyId(profile.company_id ?? null);
       if (profile.company_id) {
         const { data: comp } = await supabase
-          .from("companies").select("name, onboarding_completed").eq("id", profile.company_id).single();
+          .from("companies")
+          .select("name, onboarding_completed")
+          .eq("id", profile.company_id)
+          .single();
         if (comp) {
           setCompanyName(comp.name);
           if (comp.onboarding_completed) {
@@ -135,253 +140,354 @@ function ManagerOnboarding() {
       }
       setAuthReady(true);
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
-  // Borrador local: el cuestionario es largo a propósito, así que el manager
-  // puede salir y volver sin perder nada.
+  // Borrador local: el manager puede salir y volver sin perder nada.
   useEffect(() => {
     if (!authReady || draftLoaded) return;
     try {
       const raw = localStorage.getItem(draftKey(companyId));
       if (raw) {
-        const d = JSON.parse(raw) as { step?: number; a?: Answers; ext?: ExtAnswers };
-        if (d.a) setA({ ...EMPTY, ...d.a });
-        if (d.ext) setExt(d.ext);
+        const d = JSON.parse(raw) as { step?: number; r?: Respuestas; propuestas?: Propuestas };
+        if (d.r) setR(d.r);
+        if (d.propuestas) setPropuestas(d.propuestas);
         if (typeof d.step === "number" && d.step > 0 && d.step < CALIB_STEP) setStep(d.step);
       }
-    } catch { /* borrador corrupto: se ignora */ }
+    } catch {
+      /* borrador corrupto: se ignora */
+    }
     setDraftLoaded(true);
   }, [authReady, draftLoaded, companyId]);
 
   useEffect(() => {
     if (!draftLoaded) return;
     try {
-      localStorage.setItem(draftKey(companyId), JSON.stringify({ step, a, ext }));
-    } catch { /* sin espacio: no bloquea */ }
-  }, [draftLoaded, step, a, ext, companyId]);
+      localStorage.setItem(draftKey(companyId), JSON.stringify({ step, r, propuestas }));
+    } catch {
+      /* sin espacio: no bloquea */
+    }
+  }, [draftLoaded, step, r, propuestas, companyId]);
 
   const goNext = () => setStep((s) => s + 1);
   const goBack = () => setStep((s) => Math.max(0, s - 1));
 
-  // Generar Brain al entrar al paso de calibración
+  // Closer propone (bloque 4) al llegar a la primera pregunta de propuestas.
+  // Lo propuesto entra ya marcado: el manager desmarca lo que no aplica.
   useEffect(() => {
-    if (step !== CALIB_STEP || brain || generating) return;
+    if (step !== PRIMERA_PROPUESTA || propuestas || proponiendo) return;
+    setProponiendo(true);
+    const aplicar = (p: Propuestas) => {
+      setPropuestas(p);
+      setR((prev) => ({
+        ...prev,
+        p8_negativos:
+          Array.isArray(prev.p8_negativos) && prev.p8_negativos.length
+            ? prev.p8_negativos
+            : p.negativos,
+        p9_restricciones:
+          Array.isArray(prev.p9_restricciones) && prev.p9_restricciones.length
+            ? prev.p9_restricciones
+            : p.restricciones,
+      }));
+    };
+    proponerDelCampo({
+      data: {
+        respuestas: respuestasEnTexto(r)
+          .slice(0, PRIMERA_PROPUESTA - 1)
+          .map(({ pregunta, respuesta }) => ({ pregunta, respuesta })),
+        companyName: companyName || "la empresa",
+        companyId,
+      },
+    })
+      .then((p) =>
+        aplicar({
+          negativos: p.negativos.length ? p.negativos : NEGATIVOS_DE_RESPALDO,
+          restricciones: p.restricciones.length ? p.restricciones : RESTRICCIONES_DE_RESPALDO,
+        }),
+      )
+      .catch((err) => {
+        console.error("[onboarding] propuesta:", err);
+        aplicar({ negativos: NEGATIVOS_DE_RESPALDO, restricciones: RESTRICCIONES_DE_RESPALDO });
+      })
+      .finally(() => setProponiendo(false));
+  }, [step, propuestas, proponiendo, r, companyName, companyId]);
+
+  // Cerebro de la empresa + su radiografía, al terminar las preguntas.
+  useEffect(() => {
+    const firma = JSON.stringify(r);
+    if (step !== CALIB_STEP || generating || (brain && brainDe === firma)) return;
     setGenerating(true);
     setGenError(null);
-    const baseAnswers = [
-      { id: "q1_que_vendes", block: 1, question: QUESTIONS.q1_que_vendes.text, answer: a.q1 },
-      { id: "q2_a_quien", block: 1, question: QUESTIONS.q2_a_quien.text, answer: a.q2 },
-      { id: "q3_como_gana", block: 1, question: QUESTIONS.q3_como_gana.text, answer: a.q3 },
-      { id: "q4_ticket", block: 1, question: "Ticket promedio", answer: a.ticket },
-      { id: "q4_frecuencia", block: 1, question: "Frecuencia de compra", answer: a.frecuencia },
-      { id: "q5_interaccion", block: 2, question: QUESTIONS.q5_interaccion.text, answer: a.interaccion.join(", ") },
-      { id: "q6_duracion", block: 2, question: QUESTIONS.q6_duracion.text, answer: a.duracion },
-      { id: "q7_relacion", block: 2, question: QUESTIONS.q7_relacion.text, answer: a.relacion },
-      { id: "q8_diferenciador", block: 3, question: QUESTIONS.q8_diferenciador.text, answer: a.q8 },
-      { id: "q9_restricciones", block: 3, question: QUESTIONS.q9_restricciones.text, answer: a.q9 },
-    ];
-    const extAnswers = EXT_SECTIONS.flatMap((s) =>
-      s.questions.map((q) => ({
-        id: q.id,
-        block: s.block,
-        // La llave del brain viaja con la pregunta para que el modelo no
-        // tenga que adivinar dónde va cada respuesta.
-        question: `[${q.brainKey}] ${q.text}${q.usageNote ? ` — ${q.usageNote}` : ""}`,
-        answer: extAnswerText(ext[q.id]),
-      })),
-    );
-    const answers = [...baseAnswers, ...extAnswers];
+    setRadiografia(null);
+    const lineas = respuestasEnTexto(r);
     generateCompanyBrain({
       data: {
-        answers: answers.map(({ question, answer }) => ({ question, answer })),
+        respuestas: lineas.map(({ pregunta, respuesta }) => ({ pregunta, respuesta })),
+        directo: cerebroDirecto(r),
         companyName: companyName || "tu empresa",
         companyId,
-        openerLine: "Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?",
       },
     })
       .then(async (result) => {
-        setBrain(result);
-        // Guardar respuestas + brain en BD
+        const b = stripEphemeral(result.brain);
+        setBrain(b);
+        setBrainDe(firma);
+        setRadiografia(result.radiografia);
         await Promise.all(
-          answers.map((ans) =>
+          lineas.map((l) =>
             supabase.rpc("save_onboarding_answer", {
-              _block_number: ans.block,
-              _question_id: ans.id,
-              _question_text: ans.question,
-              _answer: ans.answer,
+              _block_number: l.bloque,
+              _question_id: l.id,
+              _question_text: l.pregunta,
+              _answer: l.respuesta,
             }),
           ),
         );
-        await supabase.rpc("update_company_brain", { _brain: stripEphemeral(result) });
-        try { localStorage.removeItem(draftKey(companyId)); } catch { /* noop */ }
+        const { error } = await supabase.rpc("update_company_brain", { _brain: b });
+        if (error) throw error;
+        try {
+          localStorage.removeItem(draftKey(companyId));
+        } catch {
+          /* noop */
+        }
       })
       .catch((err) => {
-        console.error(err);
-        setGenError(err.message === "rate_limit" ? "Closer está saturado, intenta en un momento." : err.message === "payment_required" ? "Se acabaron los créditos de IA. Avisa al admin." : "No pudimos generar el cerebro. Intenta de nuevo.");
+        console.error("[onboarding] cerebro:", err);
+        setGenError(mensajeDeError(err));
       })
       .finally(() => setGenerating(false));
-  }, [step, brain, generating, a, ext, companyName, companyId]);
+  }, [step, brain, brainDe, generating, r, companyName, companyId]);
+
+  // El manager corrige o agrega algo a su radiografía.
+  const ajustar = async (ajuste: string) => {
+    if (!brain) return;
+    const res = await ajustarRadiografia({
+      data: { brain, ajuste, companyName: companyName || "tu empresa", companyId },
+    });
+    const b = stripEphemeral(res.brain);
+    const { error } = await supabase.rpc("update_company_brain", { _brain: b });
+    if (error) throw error;
+    await supabase.rpc("save_onboarding_answer", {
+      _block_number: 4,
+      _question_id: `ajuste_radiografia_${Date.now()}`,
+      _question_text: "Ajuste a la radiografía",
+      _answer: ajuste,
+    });
+    setBrain(b);
+    if (res.radiografia.length) setRadiografia(res.radiografia);
+  };
 
   if (!authReady) {
     return <main style={{ minHeight: "100dvh", background: BG }} />;
   }
 
-  // === RENDER POR STEP ===
+  const pregunta =
+    step >= PRIMERA_PREGUNTA && step < CALIB_STEP ? PREGUNTAS[step - PRIMERA_PREGUNTA] : null;
+
   return (
-    <main style={{ minHeight: "100dvh", background: BG, color: "#F0F0F5", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
+    <main
+      style={{
+        minHeight: "100dvh",
+        background: BG,
+        color: "#F0F0F5",
+        fontFamily: "'DM Sans', sans-serif",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {step > 0 && step <= PROGRESS_TOTAL && <ProgressBar step={step} total={PROGRESS_TOTAL} />}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", maxWidth: 560, width: "100%", margin: "0 auto", padding: "1.5rem 1.2rem 2rem" }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: 560,
+          width: "100%",
+          margin: "0 auto",
+          padding: "1.5rem 1.2rem 2rem",
+        }}
+      >
         {step === 0 && <Welcome name={name} onNext={goNext} />}
-        {step === 1 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 1 de 20">
-            <Question text={QUESTIONS.q1_que_vendes.text} subtext={QUESTIONS.q1_que_vendes.subtext} />
-            <TextArea value={a.q1} onChange={(v) => setA({ ...a, q1: v })} placeholder="Ej: Lubricantes y aceites de motor Bardahl y Repsol para refaccionarias y talleres mecánicos" min={20} max={300} />
-            <NavButtons onBack={goBack} onNext={goNext} disabled={a.q1.trim().length < 20} />
-          </Block>
+        {pregunta && (
+          <QuestionStep
+            key={pregunta.id}
+            pregunta={pregunta}
+            r={r}
+            setR={setR}
+            opcionesPropuestas={
+              pregunta.propuestaPorCloser
+                ? (propuestas?.[pregunta.propuestaPorCloser] ?? null)
+                : undefined
+            }
+            onBack={goBack}
+            onNext={goNext}
+            onSaveExit={() => navigate({ to: "/" })}
+          />
         )}
-        {step === 2 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 2 de 20">
-            <Question text={QUESTIONS.q2_a_quien.text} subtext={QUESTIONS.q2_a_quien.subtext} />
-            <TextArea value={a.q2} onChange={(v) => setA({ ...a, q2: v })} placeholder="Ej: Dueños de refaccionarias y talleres mecánicos independientes. El dueño generalmente decide." min={20} max={300} />
-            <NavButtons onBack={goBack} onNext={goNext} disabled={a.q2.trim().length < 20} />
-          </Block>
-        )}
-        {step === 3 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 3 de 20">
-            <Question text={QUESTIONS.q3_como_gana.text} subtext={QUESTIONS.q3_como_gana.subtext} />
-            <TextArea value={a.q3} onChange={(v) => setA({ ...a, q3: v })} placeholder="Ej: Mejor margen de ganancia en cada cambio de aceite y clientes que regresan por la calidad." min={20} max={300} />
-            <NavButtons onBack={goBack} onNext={goNext} disabled={a.q3.trim().length < 20} />
-          </Block>
-        )}
-        {step === 4 && (
-          <Block label="Bloque 1 de 6 — Tu negocio" qNumber="Pregunta 4 de 20">
-            <Question text="¿Cuál es el ticket promedio y con qué frecuencia compra?" subtext="Aproximado está bien." />
-            <FieldLabel>Ticket promedio por visita</FieldLabel>
-            <TextInput value={a.ticket} onChange={(v) => setA({ ...a, ticket: v })} placeholder="Ej: $1,500 pesos" />
-            <FieldLabel style={{ marginTop: 18 }}>Frecuencia de compra</FieldLabel>
-            <Pills options={FRECUENCIA_OPTIONS} value={a.frecuencia} onChange={(v) => setA({ ...a, frecuencia: v })} />
-            <NavButtons onBack={goBack} onNext={goNext} disabled={!a.ticket.trim() || !a.frecuencia} />
-          </Block>
-        )}
-        {step === 5 && (
-          <Block label="Bloque 2 de 6 — Tu proceso" qNumber="Preguntas 5–7 de 20">
-            <Question text={QUESTIONS.q5_interaccion.text} subtext={QUESTIONS.q5_interaccion.subtext} />
-            <CheckCardList
-              options={INTERACCION_OPTIONS}
-              values={a.interaccion}
-              onToggle={(id) => setA({ ...a, interaccion: a.interaccion.includes(id) ? a.interaccion.filter((x) => x !== id) : [...a.interaccion, id] })}
-            />
-            <Question text={QUESTIONS.q6_duracion.text} style={{ marginTop: 28 }} />
-            <Pills options={DURACION_OPTIONS} value={a.duracion} onChange={(v) => setA({ ...a, duracion: v })} />
-            <Question text={QUESTIONS.q7_relacion.text} style={{ marginTop: 28 }} />
-            <RelationCards value={a.relacion} onChange={(v) => setA({ ...a, relacion: v })} />
-            <NavButtons onBack={goBack} onNext={goNext} disabled={a.interaccion.length === 0 || !a.duracion || !a.relacion} />
-          </Block>
-        )}
-        {step === 6 && (
-          <Block label="Bloque 3 de 6 — Solo tú sabes esto" qNumber="Preguntas 8–9 de 20">
-            <ImportantNote>
-              Estas dos preguntas son las más importantes. Lo que escribas aquí es lo que hace que el entrenamiento sea específico para tu empresa y no genérico.
-            </ImportantNote>
-            <Question text={QUESTIONS.q8_diferenciador.text} subtext={QUESTIONS.q8_diferenciador.subtext} style={{ marginTop: 18 }} />
-            <TextArea value={a.q8} onChange={(v) => setA({ ...a, q8: v })} placeholder="Ej: Porque llevamos años en la zona, el vendedor conoce a los dueños personalmente y cuando hay problema lo resolvemos ese mismo día." min={30} max={400} />
-            <Question text={QUESTIONS.q9_restricciones.text} subtext={QUESTIONS.q9_restricciones.subtext} style={{ marginTop: 24 }} />
-            <TextArea value={a.q9} onChange={(v) => setA({ ...a, q9: v })} placeholder="Ej: Nunca prometer entrega el mismo día si no está confirmado. Nunca hablar mal de la competencia por nombre." min={20} max={400} />
-            <NavButtons onBack={goBack} onNext={goNext} disabled={a.q8.trim().length < 30 || a.q9.trim().length < 20} />
-          </Block>
-        )}
-        {step >= EXT_START && step < CALIB_STEP && (() => {
-          const section = EXT_SECTIONS[step - EXT_START]!;
-          return (
-            <ExtSectionStep
-              section={section}
-              ext={ext}
-              setExt={setExt}
-              onBack={goBack}
-              onNext={goNext}
-              onSaveExit={() => navigate({ to: "/" })}
-            />
-          );
-        })()}
         {step === CALIB_STEP && (
-          <CalibrationStep brain={brain} loading={generating} error={genError} onBack={goBack} onNext={goNext} onRetry={() => { setBrain(null); setGenError(null); }} />
+          <RadiografiaStep
+            companyName={companyName}
+            radiografia={radiografia}
+            loading={generating}
+            error={genError}
+            onAjustar={ajustar}
+            onBack={goBack}
+            onNext={goNext}
+            onRetry={() => {
+              setBrain(null);
+              setBrainDe(null);
+              setGenError(null);
+            }}
+          />
         )}
-        {step === BRAIN_STEP && (
-          <BrainStep companyName={companyName} brain={brain} onBack={goBack} onNext={goNext} />
-        )}
-        {step === TEAM_STEP && (
-          <TeamStep onFinish={() => navigate({ to: "/" })} />
-        )}
+        {step === TEAM_STEP && <TeamStep onFinish={() => navigate({ to: "/" })} />}
       </div>
     </main>
   );
 }
 
-/* ── BLOQUES 4-6: secciones declarativas ── */
-function ExtSectionStep({
-  section, ext, setExt, onBack, onNext, onSaveExit,
+/* ── Una pregunta ── */
+function QuestionStep({
+  pregunta,
+  r,
+  setR,
+  opcionesPropuestas,
+  onBack,
+  onNext,
+  onSaveExit,
 }: {
-  section: ExtSection;
-  ext: ExtAnswers;
-  setExt: React.Dispatch<React.SetStateAction<ExtAnswers>>;
+  pregunta: Pregunta;
+  r: Respuestas;
+  setR: React.Dispatch<React.SetStateAction<Respuestas>>;
+  /** undefined = la pregunta no es propuesta; null = Closer la está preparando. */
+  opcionesPropuestas?: string[] | null;
   onBack: () => void;
   onNext: () => void;
   onSaveExit: () => void;
 }) {
-  const set = (id: string, v: string | string[]) => setExt((prev) => ({ ...prev, [id]: v }));
-  const complete = sectionComplete(section, ext);
+  const [verPorQue, setVerPorQue] = useState(false);
+  const libreId = libreDe(pregunta.id);
+  const [verLibre, setVerLibre] = useState(
+    typeof r[libreId] === "string" && (r[libreId] as string).length > 0,
+  );
+  const set = (id: string, v: string | string[]) => setR((prev) => ({ ...prev, [id]: v }));
+  const cargando = opcionesPropuestas === null;
+
   return (
-    <Block label={section.label} qNumber={`${section.questions.length} preguntas`}>
-      {section.intro && <ImportantNote>{section.intro}</ImportantNote>}
-      {section.questions.map((q: ExtQuestion, i: number) => {
-        const val = ext[q.id];
-        return (
-          <div key={q.id} style={{ marginTop: i === 0 && !section.intro ? 0 : 26 }}>
-            <Question text={q.text} subtext={q.subtext} />
-            {q.kind === "textarea" && (
-              <TextArea
-                value={typeof val === "string" ? val : ""}
-                onChange={(v) => set(q.id, v)}
-                placeholder={q.placeholder ?? ""}
-                min={q.min ?? 0}
-                max={q.max ?? 2000}
+    <Block
+      label={`Bloque ${pregunta.bloque} de 4 — ${BLOQUES[pregunta.bloque]}`}
+      qNumber={`Pregunta ${pregunta.numero} de ${TOTAL_PREGUNTAS}`}
+    >
+      <Question text={pregunta.texto} subtext={pregunta.subtexto} />
+
+      <button
+        type="button"
+        onClick={() => setVerPorQue((v) => !v)}
+        style={{
+          background: "transparent",
+          border: "none",
+          color: "#FF6B2B",
+          fontFamily: "DM Sans",
+          fontSize: "0.8rem",
+          fontWeight: 600,
+          cursor: "pointer",
+          padding: 0,
+          marginBottom: verPorQue ? 10 : 18,
+        }}
+      >
+        {verPorQue ? "▾" : "▸"} ¿Para qué lo usa Closer?
+      </button>
+      {verPorQue && (
+        <div style={{ marginBottom: 18 }}>
+          <ImportantNote>{pregunta.porQue}</ImportantNote>
+        </div>
+      )}
+
+      {cargando ? (
+        <div
+          style={{
+            padding: "1.2rem 0",
+            textAlign: "center",
+            color: "#5A5A8A",
+            fontSize: "0.84rem",
+          }}
+        >
+          Closer está preparando las de tu giro…
+        </div>
+      ) : (
+        pregunta.campos.map((c, i) =>
+          campoVisible(c, r) ? (
+            <div key={c.id} style={{ marginTop: i === 0 ? 0 : 22 }}>
+              <CampoInput
+                campo={c}
+                r={r}
+                set={set}
+                opciones={
+                  c.tipo === "opciones" && opcionesPropuestas ? opcionesPropuestas : undefined
+                }
               />
-            )}
-            {q.kind === "text" && (
-              <TextInput
-                value={typeof val === "string" ? val : ""}
-                onChange={(v) => set(q.id, v)}
-                placeholder={q.placeholder ?? ""}
-              />
-            )}
-            {q.kind === "pills" && (
-              <Pills
-                options={q.options ?? []}
-                value={typeof val === "string" ? val : ""}
-                onChange={(v) => set(q.id, v)}
-              />
-            )}
-            {q.kind === "checks" && (
-              <CheckCardList
-                options={(q.options ?? []).map((o) => ({ id: o, label: o, icon: "•" }))}
-                values={Array.isArray(val) ? val : []}
-                onToggle={(id) => {
-                  const cur = Array.isArray(val) ? val : [];
-                  set(q.id, cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]);
-                }}
-              />
-            )}
-          </div>
-        );
-      })}
-      <NavButtons onBack={onBack} onNext={onNext} disabled={!complete} />
+            </div>
+          ) : null,
+        )
+      )}
+
+      <div style={{ marginTop: 22 }}>
+        {verLibre ? (
+          <>
+            <FieldLabel>
+              {pregunta.propuestaPorCloser
+                ? "Agrega lo que falte, con tus palabras"
+                : "¿Algo más que Closer deba saber?"}
+            </FieldLabel>
+            <TextArea
+              value={typeof r[libreId] === "string" ? (r[libreId] as string) : ""}
+              onChange={(v) => set(libreId, v)}
+              placeholder="Escríbelo como se lo dirías a un vendedor nuevo."
+              min={0}
+              max={800}
+            />
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setVerLibre(true)}
+            style={{
+              background: "transparent",
+              border: "1px dashed #252535",
+              color: "#A0A0C0",
+              borderRadius: 12,
+              width: "100%",
+              padding: "0.7rem",
+              fontFamily: "DM Sans",
+              fontSize: "0.8rem",
+              cursor: "pointer",
+            }}
+          >
+            + Agregar algo con tus palabras
+          </button>
+        )}
+      </div>
+
+      <NavButtons
+        onBack={onBack}
+        onNext={onNext}
+        disabled={cargando || !preguntaCompleta(pregunta, r)}
+      />
       <button
         type="button"
         onClick={onSaveExit}
         style={{
-          width: "100%", marginTop: 10, background: "transparent", border: "none",
-          color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.78rem", cursor: "pointer",
+          width: "100%",
+          marginTop: 10,
+          background: "transparent",
+          border: "none",
+          color: "#5A5A8A",
+          fontFamily: "DM Sans",
+          fontSize: "0.78rem",
+          cursor: "pointer",
         }}
       >
         Guardar y continuar después
@@ -390,35 +496,212 @@ function ExtSectionStep({
   );
 }
 
-/* ── PANTALLA 5 ── */
+function CampoInput({
+  campo,
+  r,
+  set,
+  opciones,
+}: {
+  campo: Campo;
+  r: Respuestas;
+  set: (id: string, v: string | string[]) => void;
+  opciones?: string[];
+}) {
+  if (campo.tipo === "texto") {
+    const val = typeof r[campo.id] === "string" ? (r[campo.id] as string) : "";
+    return (
+      <>
+        {campo.etiqueta && (
+          <FieldLabel>
+            {campo.etiqueta}
+            {campo.opcional ? " (opcional)" : ""}
+          </FieldLabel>
+        )}
+        <TextInput value={val} onChange={(v) => set(campo.id, v)} placeholder={campo.placeholder} />
+      </>
+    );
+  }
+  return <OpcionesInput campo={campo} opciones={opciones ?? campo.opciones} r={r} set={set} />;
+}
+
+function OpcionesInput({
+  campo,
+  opciones,
+  r,
+  set,
+}: {
+  campo: CampoOpciones;
+  opciones: string[];
+  r: Respuestas;
+  set: (id: string, v: string | string[]) => void;
+}) {
+  const actual = r[campo.id];
+  const elegidas = Array.isArray(actual)
+    ? actual
+    : typeof actual === "string" && actual
+      ? [actual]
+      : [];
+  const tocar = (o: string) => {
+    if (!campo.multiple) return set(campo.id, [o]);
+    if (elegidas.includes(o))
+      return set(
+        campo.id,
+        elegidas.filter((x) => x !== o),
+      );
+    if (campo.max && elegidas.length >= campo.max) return;
+    set(campo.id, [...elegidas, o]);
+  };
+  const conDetalle = elegidas.filter((o) => campo.detalle?.[o]);
+  return (
+    <>
+      {campo.etiqueta && (
+        <FieldLabel>
+          {campo.etiqueta}
+          {campo.multiple ? " · todas las que apliquen" : ""}
+        </FieldLabel>
+      )}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        {opciones.map((o) => {
+          const sel = elegidas.includes(o);
+          return (
+            <button
+              key={o}
+              type="button"
+              onClick={() => tocar(o)}
+              style={{
+                padding: "0.5rem 0.95rem",
+                borderRadius: 99,
+                textAlign: "left",
+                background: sel ? "#FF6B2B" : "transparent",
+                color: sel ? "#08080F" : "#F0F0F5",
+                border: `1px solid ${sel ? "#FF6B2B" : "#252535"}`,
+                fontFamily: "DM Sans",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 150ms ease",
+              }}
+            >
+              {campo.multiple && (sel ? "✓ " : "")}
+              {o}
+            </button>
+          );
+        })}
+      </div>
+      {conDetalle.map((o) => (
+        <div key={o} style={{ marginTop: 10 }}>
+          <FieldLabel>
+            {o}: {campo.detalle![o]}
+          </FieldLabel>
+          <TextInput
+            value={
+              typeof r[detalleDe(campo.id, o)] === "string"
+                ? (r[detalleDe(campo.id, o)] as string)
+                : ""
+            }
+            onChange={(v) => set(detalleDe(campo.id, o), v)}
+            placeholder={campo.detalle![o]}
+          />
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* ── Bienvenida ── */
 function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", animation: "fade-up 400ms ease both" }}>
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        animation: "fade-up 400ms ease both",
+      }}
+    >
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
         <CloserCharacter state="normal" size={120} />
       </div>
-      <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.6rem", color: "#F0F0F5", margin: 0, textAlign: "center", letterSpacing: "-0.02em" }}>
+      <h1
+        style={{
+          fontFamily: "Syne, sans-serif",
+          fontWeight: 800,
+          fontSize: "1.6rem",
+          color: "#F0F0F5",
+          margin: 0,
+          textAlign: "center",
+          letterSpacing: "-0.02em",
+        }}
+      >
         Hola {name}.
       </h1>
-      <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.92rem", color: "#5A5A8A", marginTop: 12, marginBottom: 24, textAlign: "center" }}>
-        En los próximos 5 minutos vamos a construir el cerebro comercial de tu empresa.
+      <p
+        style={{
+          fontFamily: "DM Sans, sans-serif",
+          fontSize: "0.95rem",
+          color: "#F0F0F5",
+          marginTop: 14,
+          marginBottom: 8,
+          textAlign: "center",
+          lineHeight: 1.45,
+        }}
+      >
+        {FRASE_DE_ENTRADA}
       </p>
-      <div style={{ background: "#111118", border: "1px solid #252535", borderRadius: 14, padding: "1.25rem" }}>
+      <p
+        style={{
+          fontFamily: "DM Sans, sans-serif",
+          fontSize: "0.84rem",
+          color: "#5A5A8A",
+          marginTop: 4,
+          marginBottom: 24,
+          textAlign: "center",
+        }}
+      >
+        Son {TOTAL_PREGUNTAS} preguntas, casi todas de tocar. Unos 5 minutos.
+      </p>
+      <div
+        style={{
+          background: "#111118",
+          border: "1px solid #252535",
+          borderRadius: 14,
+          padding: "1.25rem",
+        }}
+      >
         {[
-          { icon: "🎯", text: "Lo que vendes y a quién" },
-          { icon: "🧠", text: "Cómo piensa tu cliente típico" },
-          { icon: "⚡", text: "Qué hace diferente a tu equipo" },
+          { icon: "🎯", text: "Qué ofreces y a quién" },
+          { icon: "🗺️", text: "Cómo trabaja tu equipo" },
+          { icon: "💰", text: "Lo que ofreces y cómo manejas el precio" },
+          { icon: "✅", text: "Closer propone lo de tu giro, tú confirmas" },
         ].map((it, i, arr) => (
-          <div key={it.icon} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i < arr.length - 1 ? "1px solid rgba(255,107,43,0.25)" : "none" }}>
+          <div
+            key={it.text}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "10px 0",
+              borderBottom: i < arr.length - 1 ? "1px solid rgba(255,107,43,0.25)" : "none",
+            }}
+          >
             <span style={{ fontSize: "1.25rem" }}>{it.icon}</span>
-            <span style={{ fontFamily: "DM Sans", fontWeight: 500, fontSize: "0.84rem", color: "#F0F0F5" }}>{it.text}</span>
+            <span
+              style={{
+                fontFamily: "DM Sans",
+                fontWeight: 500,
+                fontSize: "0.84rem",
+                color: "#F0F0F5",
+              }}
+            >
+              {it.text}
+            </span>
           </div>
         ))}
       </div>
-      <p style={{ fontSize: "0.8rem", color: "#5A5A8A", textAlign: "center", marginTop: 16 }}>
-        Con eso Closer calibra clientes IA con diferentes perfiles para que sean los clientes exactos que enfrentan tus vendedores.
-      </p>
-      <PrimaryButton onClick={onNext} style={{ marginTop: 28 }}>Empezar configuración →</PrimaryButton>
+      <PrimaryButton onClick={onNext} style={{ marginTop: 28 }}>
+        Empezar →
+      </PrimaryButton>
     </div>
   );
 }
@@ -429,37 +712,123 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
   return (
     <div style={{ padding: "1rem 1.2rem 0" }}>
       <div style={{ height: 3, background: "#252535", borderRadius: 99, overflow: "hidden" }}>
-        <div style={{ width: `${pct}%`, height: "100%", background: "#FF6B2B", transition: "width 350ms ease" }} />
+        <div
+          style={{
+            width: `${pct}%`,
+            height: "100%",
+            background: "#FF6B2B",
+            transition: "width 350ms ease",
+          }}
+        />
       </div>
     </div>
   );
 }
 
-function Block({ label, qNumber, children }: { label: string; qNumber: string; children: ReactNode }) {
+function Block({
+  label,
+  qNumber,
+  children,
+}: {
+  label: string;
+  qNumber: string;
+  children: ReactNode;
+}) {
   return (
     <div style={{ animation: "fade-up 350ms ease both" }}>
-      <p style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: "0.6rem", color: "#FF6B2B", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>{label}</p>
-      <p style={{ fontFamily: "DM Sans", fontSize: "0.76rem", color: "#5A5A8A", marginTop: 4, marginBottom: 18 }}>{qNumber}</p>
+      <p
+        style={{
+          fontFamily: "DM Sans",
+          fontWeight: 700,
+          fontSize: "0.6rem",
+          color: "#FF6B2B",
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          margin: 0,
+        }}
+      >
+        {label}
+      </p>
+      <p
+        style={{
+          fontFamily: "DM Sans",
+          fontSize: "0.76rem",
+          color: "#5A5A8A",
+          marginTop: 4,
+          marginBottom: 18,
+        }}
+      >
+        {qNumber}
+      </p>
       {children}
     </div>
   );
 }
 
-function Question({ text, subtext, style }: { text: string; subtext?: string; style?: React.CSSProperties }) {
+function Question({
+  text,
+  subtext,
+  style,
+}: {
+  text: string;
+  subtext?: string;
+  style?: React.CSSProperties;
+}) {
   return (
     <div style={style}>
-      <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.3rem", color: "#F0F0F5", margin: 0, letterSpacing: "-0.02em", lineHeight: 1.25 }}>{text}</h2>
-      {subtext && <p style={{ fontSize: "0.8rem", color: "#5A5A8A", marginTop: 8, marginBottom: 16 }}>{subtext}</p>}
+      <h2
+        style={{
+          fontFamily: "Syne, sans-serif",
+          fontWeight: 800,
+          fontSize: "1.3rem",
+          color: "#F0F0F5",
+          margin: 0,
+          letterSpacing: "-0.02em",
+          lineHeight: 1.25,
+        }}
+      >
+        {text}
+      </h2>
+      {subtext && (
+        <p style={{ fontSize: "0.8rem", color: "#5A5A8A", marginTop: 8, marginBottom: 16 }}>
+          {subtext}
+        </p>
+      )}
       {!subtext && <div style={{ height: 12 }} />}
     </div>
   );
 }
 
 function FieldLabel({ children, style }: { children: ReactNode; style?: React.CSSProperties }) {
-  return <p style={{ fontFamily: "DM Sans", fontSize: "0.76rem", color: "#5A5A8A", margin: 0, marginBottom: 6, ...style }}>{children}</p>;
+  return (
+    <p
+      style={{
+        fontFamily: "DM Sans",
+        fontSize: "0.76rem",
+        color: "#5A5A8A",
+        margin: 0,
+        marginBottom: 6,
+        ...style,
+      }}
+    >
+      {children}
+    </p>
+  );
 }
 
-function TextArea({ value, onChange, placeholder, min, max }: { value: string; onChange: (v: string) => void; placeholder: string; min: number; max: number }) {
+function TextArea({
+  value,
+  onChange,
+  placeholder,
+  min,
+  max,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  min: number;
+  max: number;
+}) {
   const len = value.length;
   return (
     <div>
@@ -469,29 +838,61 @@ function TextArea({ value, onChange, placeholder, min, max }: { value: string; o
         placeholder={placeholder}
         rows={4}
         style={{
-          width: "100%", background: "#111118", color: "#F0F0F5",
+          width: "100%",
+          background: "#111118",
+          color: "#F0F0F5",
           border: `1px solid ${len > 0 ? "#FF6B2B" : "#252535"}`,
-          borderRadius: 14, padding: "0.85rem 1rem", fontFamily: "DM Sans, sans-serif",
-          fontSize: "0.9rem", resize: "vertical", outline: "none", transition: "border-color 180ms",
+          borderRadius: 14,
+          padding: "0.85rem 1rem",
+          fontFamily: "DM Sans, sans-serif",
+          fontSize: "0.9rem",
+          resize: "vertical",
+          outline: "none",
+          transition: "border-color 180ms",
         }}
         onFocus={(e) => (e.currentTarget.style.borderColor = "#FF6B2B")}
         onBlur={(e) => (e.currentTarget.style.borderColor = len > 0 ? "#FF6B2B" : "#252535")}
       />
-      <p style={{ fontSize: "0.7rem", color: len < min ? "#5A5A8A" : "#06D6A0", marginTop: 6, textAlign: "right" }}>
+      <p
+        style={{
+          fontSize: "0.7rem",
+          color: len < min ? "#5A5A8A" : "#06D6A0",
+          marginTop: 6,
+          textAlign: "right",
+        }}
+      >
         {len}/{max} {len < min && `· mínimo ${min}`}
       </p>
     </div>
   );
 }
 
-function TextInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+function TextInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+}) {
   return (
     <input
-      type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
       style={{
-        width: "100%", height: 48, background: "#111118", color: "#F0F0F5",
-        border: "1px solid #252535", borderRadius: 14, padding: "0 1rem",
-        fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", outline: "none",
+        width: "100%",
+        height: 48,
+        background: "#111118",
+        color: "#F0F0F5",
+        border: "1px solid #252535",
+        borderRadius: 14,
+        padding: "0 1rem",
+        fontFamily: "DM Sans, sans-serif",
+        fontSize: "0.9rem",
+        outline: "none",
       }}
       onFocus={(e) => (e.currentTarget.style.borderColor = "#FF6B2B")}
       onBlur={(e) => (e.currentTarget.style.borderColor = "#252535")}
@@ -499,294 +900,360 @@ function TextInput({ value, onChange, placeholder }: { value: string; onChange: 
   );
 }
 
-function Pills({ options, value, onChange }: { options: string[]; value: string; onChange: (v: string) => void }) {
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      {options.map((opt) => {
-        const sel = opt === value;
-        return (
-          <button key={opt} type="button" onClick={() => onChange(opt)}
-            style={{
-              padding: "0.5rem 0.95rem", borderRadius: 99,
-              background: sel ? "#FF6B2B" : "transparent",
-              color: sel ? "#08080F" : "#F0F0F5",
-              border: `1px solid ${sel ? "#FF6B2B" : "#252535"}`,
-              fontFamily: "DM Sans", fontSize: "0.8rem", fontWeight: 500,
-              cursor: "pointer", transition: "all 150ms ease",
-            }}>
-            {opt}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function CheckCardList({ options, values, onToggle }: { options: { id: string; label: string; icon: string }[]; values: string[]; onToggle: (id: string) => void }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      {options.map((opt) => {
-        const sel = values.includes(opt.id);
-        return (
-          <button key={opt.id} type="button" onClick={() => onToggle(opt.id)}
-            style={{
-              display: "flex", alignItems: "center", gap: 12, textAlign: "left",
-              background: sel ? "rgba(255,107,43,0.1)" : "#111118",
-              border: `1px solid ${sel ? "#FF6B2B" : "#252535"}`,
-              borderRadius: 14, padding: "0.85rem 1rem", cursor: "pointer",
-              color: "#F0F0F5", fontFamily: "DM Sans", fontSize: "0.84rem",
-              transition: "all 150ms ease",
-            }}>
-            <span style={{
-              width: 20, height: 20, borderRadius: 6,
-              border: `2px solid ${sel ? "#FF6B2B" : "#252535"}`,
-              background: sel ? "#FF6B2B" : "transparent",
-              color: "#08080F", display: "grid", placeItems: "center",
-              fontSize: "0.7rem", fontWeight: 800, flexShrink: 0,
-            }}>{sel && "✓"}</span>
-            <span style={{ fontSize: "1rem" }}>{opt.icon}</span>
-            <span style={{ flex: 1 }}>{opt.label}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function RelationCards({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      {RELACION_OPTIONS.map((opt) => {
-        const sel = value === opt.id;
-        return (
-          <button key={opt.id} type="button" onClick={() => onChange(opt.id)}
-            style={{
-              display: "flex", alignItems: "center", gap: 14, textAlign: "left",
-              background: sel ? "rgba(255,107,43,0.06)" : "#111118",
-              border: sel ? "2px solid #FF6B2B" : "1px solid #252535",
-              padding: sel ? "calc(1rem - 1px)" : "1rem",
-              borderRadius: 14, cursor: "pointer", color: "#F0F0F5",
-              fontFamily: "DM Sans", transition: "all 150ms",
-            }}>
-            <span style={{ fontSize: "1.6rem" }}>{opt.icon}</span>
-            <span style={{ flex: 1 }}>
-              <span style={{ display: "block", fontFamily: "Syne", fontWeight: 700, fontSize: "0.95rem" }}>{opt.title}</span>
-              <span style={{ display: "block", fontSize: "0.78rem", color: "#5A5A8A", marginTop: 4 }}>{opt.desc}</span>
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function ImportantNote({ children }: { children: ReactNode }) {
   return (
-    <div style={{
-      background: "#111118", borderLeft: "3px solid #FF6B2B",
-      borderTop: "1px solid #252535", borderRight: "1px solid #252535", borderBottom: "1px solid #252535",
-      borderRadius: "8px", padding: "0.95rem 1rem",
-      fontFamily: "DM Sans", fontSize: "0.84rem", color: "#F0F0F5", lineHeight: 1.45,
-    }}>{children}</div>
+    <div
+      style={{
+        background: "#111118",
+        borderLeft: "3px solid #FF6B2B",
+        borderTop: "1px solid #252535",
+        borderRight: "1px solid #252535",
+        borderBottom: "1px solid #252535",
+        borderRadius: "8px",
+        padding: "0.95rem 1rem",
+        fontFamily: "DM Sans",
+        fontSize: "0.84rem",
+        color: "#F0F0F5",
+        lineHeight: 1.45,
+      }}
+    >
+      {children}
+    </div>
   );
 }
 
-function PrimaryButton({ children, onClick, disabled, style }: { children: ReactNode; onClick: () => void; disabled?: boolean; style?: React.CSSProperties }) {
+function PrimaryButton({
+  children,
+  onClick,
+  disabled,
+  style,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled}
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
       style={{
-        width: "100%", height: 52, borderRadius: 99, border: "none",
-        background: "#FF6B2B", color: "#08080F",
-        fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "0.95rem",
+        width: "100%",
+        height: 52,
+        borderRadius: 99,
+        border: "none",
+        background: "#FF6B2B",
+        color: "#08080F",
+        fontFamily: "Syne, sans-serif",
+        fontWeight: 700,
+        fontSize: "0.95rem",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.4 : 1,
         boxShadow: disabled ? "none" : "0 8px 24px rgba(255,107,43,0.3)",
         transition: "opacity 200ms",
         ...style,
-      }}>
+      }}
+    >
       {children}
     </button>
   );
 }
 
-function GhostButton({ children, onClick, style }: { children: ReactNode; onClick: () => void; style?: React.CSSProperties }) {
-  return (
-    <button type="button" onClick={onClick}
-      style={{
-        width: "100%", height: 44, borderRadius: 99, border: "1px solid #252535",
-        background: "transparent", color: "#F0F0F5",
-        fontFamily: "DM Sans", fontWeight: 500, fontSize: "0.85rem", cursor: "pointer",
-        ...style,
-      }}>
-      {children}
-    </button>
-  );
-}
-
-function NavButtons({ onBack, onNext, disabled }: { onBack: () => void; onNext: () => void; disabled: boolean }) {
+function NavButtons({
+  onBack,
+  onNext,
+  disabled,
+}: {
+  onBack: () => void;
+  onNext: () => void;
+  disabled: boolean;
+}) {
   return (
     <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
-      <PrimaryButton onClick={onNext} disabled={disabled}>Continuar →</PrimaryButton>
-      <button type="button" onClick={onBack}
-        style={{ background: "transparent", border: "none", color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.8rem", cursor: "pointer", padding: 8 }}>
+      <PrimaryButton onClick={onNext} disabled={disabled}>
+        Continuar →
+      </PrimaryButton>
+      <button
+        type="button"
+        onClick={onBack}
+        style={{
+          background: "transparent",
+          border: "none",
+          color: "#5A5A8A",
+          fontFamily: "DM Sans",
+          fontSize: "0.8rem",
+          cursor: "pointer",
+          padding: 8,
+        }}
+      >
         ← Atrás
       </button>
     </div>
   );
 }
 
-/* ── PANTALLA 10 — Calibración ── */
-function CalibrationStep({ brain, loading, error, onBack, onNext, onRetry }: { brain: Brain | null; loading: boolean; error: string | null; onBack: () => void; onNext: () => void; onRetry: () => void }) {
+/* ── La radiografía ── */
+// En vez de mostrar cómo va a actuar el cliente IA, Closer le describe al
+// manager su empresa con lo que le acaba de contar (pedido de Emilio, oct-2026).
+// Si algo no es así, lo corrige o lo completa ahí mismo, con sus palabras.
+function RadiografiaStep({
+  companyName,
+  radiografia,
+  loading,
+  error,
+  onAjustar,
+  onBack,
+  onNext,
+  onRetry,
+}: {
+  companyName: string;
+  radiografia: SeccionRadiografia[] | null;
+  loading: boolean;
+  error: string | null;
+  onAjustar: (ajuste: string) => Promise<void>;
+  onBack: () => void;
+  onNext: () => void;
+  onRetry: () => void;
+}) {
+  const [ajuste, setAjuste] = useState("");
+  const [ajustando, setAjustando] = useState(false);
+  const [aviso, setAviso] = useState<{ ok: boolean; texto: string } | null>(null);
+  const listo = !!radiografia && radiografia.length > 0 && !loading && !error;
+
+  const enviar = async () => {
+    const texto = ajuste.trim();
+    if (!texto) return;
+    setAjustando(true);
+    setAviso(null);
+    try {
+      await onAjustar(texto);
+      setAjuste("");
+      setAviso({ ok: true, texto: "Listo, Closer ya lo ajustó." });
+    } catch (err) {
+      console.error("[onboarding] ajuste:", err);
+      setAviso({ ok: false, texto: mensajeDeError(err) });
+    } finally {
+      setAjustando(false);
+    }
+  };
+
   return (
     <div style={{ animation: "fade-up 400ms ease both" }}>
-      <h2 style={{ fontFamily: "Syne", fontWeight: 800, fontSize: "1.4rem", color: "#F0F0F5", margin: 0 }}>Así va a hablar tu cliente IA</h2>
-      <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: 8, marginBottom: 20 }}>
-        Closer analizó lo que nos compartiste y calibró a tu cliente IA. Verifica que suene como tus clientes reales.
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+        <CloserCharacter state={listo ? "celebration" : "normal"} size={90} />
+      </div>
+      <h2
+        style={{
+          fontFamily: "Syne",
+          fontWeight: 800,
+          fontSize: "1.35rem",
+          color: "#F0F0F5",
+          margin: 0,
+          textAlign: "center",
+          lineHeight: 1.25,
+        }}
+      >
+        La radiografía de {companyName || "tu empresa"}
+      </h2>
+      <p
+        style={{
+          fontSize: "0.84rem",
+          color: "#5A5A8A",
+          marginTop: 8,
+          marginBottom: 20,
+          textAlign: "center",
+        }}
+      >
+        Closer va a usar esta información para que las prácticas de tu equipo sean lo más cercanas a
+        la realidad de tu empresa: el sistema de ventas de Closer, aplicado a tu industria y a tu
+        negocio. Si algo no es así, corrígelo aquí.
       </p>
 
-      <div style={{ background: "#111118", border: "1px solid #252535", borderRadius: 14, padding: "1rem" }}>
-        <p style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: "0.7rem", color: "#5A5A8A", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0, marginBottom: 14 }}>Vista previa</p>
-        {loading && <PreviewSkeleton />}
-        {error && (
-          <div style={{ padding: "1rem 0", textAlign: "center" }}>
-            <p style={{ color: "#EF476F", fontSize: "0.84rem", margin: 0 }}>{error}</p>
-            <button onClick={onRetry} style={{ marginTop: 12, background: "transparent", border: "1px solid #252535", color: "#FF6B2B", padding: "8px 16px", borderRadius: 99, cursor: "pointer", fontFamily: "DM Sans" }}>Reintentar</button>
-          </div>
-        )}
-        {brain && !loading && !error && (
-          <>
-            <Bubble side="right">Buenos días, soy Carlos. ¿Cómo están manejando los productos que vendemos ahorita?</Bubble>
-            <Bubble side="left">{brain.__preview_response || brain.DON_RAMON_RESPUESTA || "Pues a ver, cuénteme rápido."}</Bubble>
-            <Bubble side="right">Le traigo algo que les puede ayudar con eso. ¿Tiene 3 minutos?</Bubble>
-            <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>
-              Tu cliente IA responde según el perfil de tu cliente típico
-            </p>
-          </>
-        )}
-      </div>
-
-      {brain && (
-        <div style={{ marginTop: 20 }}>
-          <p style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: "0.6rem", color: "#5A5A8A", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Tono detectado</p>
-          <span style={{ display: "inline-block", marginTop: 8, background: "rgba(255,107,43,0.15)", color: "#FF6B2B", border: "1px solid rgba(255,107,43,0.3)", borderRadius: 99, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 500 }}>
-            {brain.TONO_DETECTADO || "Profesional"}
-          </span>
+      {loading && (
+        <div
+          style={{
+            padding: "1.6rem 0",
+            textAlign: "center",
+            color: "#5A5A8A",
+            fontSize: "0.84rem",
+          }}
+        >
+          Closer está armando la radiografía de tu empresa…
+        </div>
+      )}
+      {error && !loading && (
+        <div style={{ padding: "1rem 0", textAlign: "center" }}>
+          <p style={{ color: "#EF476F", fontSize: "0.84rem", margin: 0 }}>{error}</p>
+          <button
+            onClick={onRetry}
+            style={{
+              marginTop: 12,
+              background: "transparent",
+              border: "1px solid #252535",
+              color: "#FF6B2B",
+              padding: "8px 16px",
+              borderRadius: 99,
+              cursor: "pointer",
+              fontFamily: "DM Sans",
+            }}
+          >
+            Reintentar
+          </button>
         </div>
       )}
 
-      <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
-        <PrimaryButton onClick={onNext} disabled={!brain || loading}>Se ve bien, continuar →</PrimaryButton>
-        <button type="button" onClick={onBack} style={{ background: "transparent", border: "none", color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.8rem", cursor: "pointer", padding: 8 }}>← Ajustar respuestas</button>
-      </div>
-    </div>
-  );
-}
-
-function PreviewSkeleton() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      {[0, 1, 2].map((i) => (
-        <div key={i} style={{ alignSelf: i % 2 === 0 ? "flex-end" : "flex-start", width: "70%", height: 38, borderRadius: 14, background: "linear-gradient(90deg, #1A1A26 0%, #252535 50%, #1A1A26 100%)", backgroundSize: "200% 100%", animation: "pulse-orange 1.4s ease-in-out infinite" }} />
-      ))}
-      <p style={{ fontSize: "0.76rem", color: "#5A5A8A", textAlign: "center", marginTop: 8 }}>Closer está calibrando a tu cliente IA…</p>
-    </div>
-  );
-}
-
-function Bubble({ side, children }: { side: "left" | "right"; children: ReactNode }) {
-  const isRight = side === "right";
-  return (
-    <div style={{ display: "flex", justifyContent: isRight ? "flex-end" : "flex-start", marginBottom: 8 }}>
-      <div style={{
-        maxWidth: "82%", padding: "0.65rem 0.9rem", borderRadius: 14,
-        background: isRight ? "#FF6B2B" : "#1A1A26",
-        color: isRight ? "#08080F" : "#F0F0F5",
-        fontFamily: "DM Sans", fontSize: "0.84rem", lineHeight: 1.4,
-      }}>{children}</div>
-    </div>
-  );
-}
-
-/* ── PANTALLA 11 — Brain ── */
-function BrainStep({ companyName, brain, onBack, onNext }: { companyName: string; brain: Brain | null; onBack: () => void; onNext: () => void }) {
-  const cards = useMemo(() => ([
-    { label: "Productos activos", key: "PRODUCTOS_ACTIVOS" },
-    { label: "Cliente típico", key: "CLIENTE_TIPICO" },
-    { label: "Argumentos de valor", key: "ARGUMENTOS_DE_VALOR" },
-    { label: "Objeciones frecuentes", key: "OBJECIONES_REALES" },
-    { label: "Contexto de venta", key: "CONTEXTO_DE_VENTA" },
-    { label: "Restricciones", key: "RESTRICCIONES" },
-  ]), []);
-
-  return (
-    <div style={{ animation: "fade-up 400ms ease both" }}>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-        <CloserCharacter state="celebration" size={100} />
-      </div>
-      <h2 style={{ fontFamily: "Syne", fontWeight: 800, fontSize: "1.3rem", color: "#F0F0F5", margin: 0, textAlign: "center", lineHeight: 1.25 }}>
-        El cerebro comercial de {companyName || "tu empresa"} está listo.
-      </h2>
-      <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: 10, marginBottom: 22, textAlign: "center" }}>
-        Esto es lo que Closer aprendió de tu empresa.
-      </p>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {cards.map((c) => (
-          <BrainCard key={c.key} label={c.label} value={brain?.[c.key] ?? ""} onSave={async (newVal) => {
-            if (!brain) return;
-            const updated = { ...brain, [c.key]: newVal };
-            await supabase.rpc("update_company_brain", { _brain: stripEphemeral(updated) });
-          }} />
-        ))}
-      </div>
-
-      <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
-        <PrimaryButton onClick={onNext}>Listo, agregar mi equipo →</PrimaryButton>
-        <button type="button" onClick={onBack} style={{ background: "transparent", border: "none", color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.8rem", cursor: "pointer", padding: 8 }}>← Volver</button>
-      </div>
-    </div>
-  );
-}
-
-function BrainCard({ label, value, onSave }: { label: string; value: string; onSave: (v: string) => Promise<void> }) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
-  useEffect(() => setDraft(value), [value]);
-  return (
-    <div style={{ background: "#111118", border: "1px solid #252535", borderRadius: 14, padding: "1rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-        <p style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: "0.6rem", color: "#FF6B2B", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>{label}</p>
-        {!editing && (
-          <button onClick={() => setEditing(true)} style={{ background: "transparent", border: "none", color: "#5A5A8A", fontSize: "0.72rem", cursor: "pointer", fontFamily: "DM Sans" }}>Editar</button>
-        )}
-      </div>
-      {editing ? (
+      {listo && (
         <>
-          <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={3}
-            style={{ width: "100%", marginTop: 8, background: "#08080F", color: "#F0F0F5", border: "1px solid #FF6B2B", borderRadius: 8, padding: "0.6rem", fontFamily: "DM Sans", fontSize: "0.84rem", resize: "vertical", outline: "none" }} />
-          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-            <button onClick={async () => { await onSave(draft); setEditing(false); }} style={{ background: "#FF6B2B", color: "#08080F", border: "none", padding: "6px 14px", borderRadius: 99, fontFamily: "DM Sans", fontWeight: 600, fontSize: "0.76rem", cursor: "pointer" }}>Guardar</button>
-            <button onClick={() => { setDraft(value); setEditing(false); }} style={{ background: "transparent", color: "#5A5A8A", border: "1px solid #252535", padding: "6px 14px", borderRadius: 99, fontFamily: "DM Sans", fontSize: "0.76rem", cursor: "pointer" }}>Cancelar</button>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              opacity: ajustando ? 0.5 : 1,
+              transition: "opacity 200ms",
+            }}
+          >
+            {radiografia!.map((s) => (
+              <div
+                key={s.titulo}
+                style={{
+                  background: "#111118",
+                  border: "1px solid #252535",
+                  borderRadius: 14,
+                  padding: "1rem",
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: "DM Sans",
+                    fontWeight: 700,
+                    fontSize: "0.62rem",
+                    color: "#FF6B2B",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    margin: 0,
+                  }}
+                >
+                  {s.titulo}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "DM Sans",
+                    fontSize: "0.88rem",
+                    color: "#F0F0F5",
+                    margin: 0,
+                    marginTop: 8,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {s.texto}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 22 }}>
+            <FieldLabel>¿Algo que corregir o agregar?</FieldLabel>
+            <TextArea
+              value={ajuste}
+              onChange={setAjuste}
+              placeholder="Ej: también les vendemos a gasolineras, y a los clientes nuevos no les damos crédito."
+              min={0}
+              max={800}
+            />
+            <button
+              type="button"
+              onClick={enviar}
+              disabled={ajustando || !ajuste.trim()}
+              style={{
+                width: "100%",
+                height: 44,
+                borderRadius: 99,
+                border: "1px solid #FF6B2B",
+                background: "transparent",
+                color: "#FF6B2B",
+                fontFamily: "DM Sans",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+                cursor: ajustando || !ajuste.trim() ? "not-allowed" : "pointer",
+                opacity: ajustando || !ajuste.trim() ? 0.5 : 1,
+              }}
+            >
+              {ajustando ? "Closer está ajustando…" : "Ajustar la radiografía"}
+            </button>
+            {aviso && (
+              <p
+                style={{
+                  fontSize: "0.78rem",
+                  color: aviso.ok ? "#06D6A0" : "#EF476F",
+                  marginTop: 8,
+                  textAlign: "center",
+                }}
+              >
+                {aviso.texto}
+              </p>
+            )}
           </div>
         </>
-      ) : (
-        <p style={{ fontFamily: "DM Sans", fontSize: "0.84rem", color: "#F0F0F5", margin: 0, marginTop: 8, lineHeight: 1.5 }}>{value || "—"}</p>
       )}
+
+      <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 10 }}>
+        <PrimaryButton onClick={onNext} disabled={!listo || ajustando}>
+          Todo está bien, continuar →
+        </PrimaryButton>
+        <button
+          type="button"
+          onClick={onBack}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "#5A5A8A",
+            fontFamily: "DM Sans",
+            fontSize: "0.8rem",
+            cursor: "pointer",
+            padding: 8,
+          }}
+        >
+          ← Cambiar mis respuestas
+        </button>
+      </div>
     </div>
   );
 }
 
-/* ── PANTALLA 12 — Equipo ── */
+/* ── Equipo ── */
+// Antes, si el código no se generaba, la pantalla se quedaba en "•••• ••••" sin
+// decir nada, ni con "Generar nuevo". Ahora dice qué pasó. La invitación por
+// correo se quitó: era un botón que no enviaba nada.
 function TeamStep({ onFinish }: { onFinish: () => void }) {
   const [code, setCode] = useState<string | null>(null);
   const [expires, setExpires] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const regenerate = async () => {
+    setGenerating(true);
+    setError(null);
+    const { data, error: err } = await supabase.rpc("generate_company_invite");
+    setGenerating(false);
+    if (err || !data) {
+      console.error("[onboarding] generate_company_invite:", err);
+      setError(
+        `No pudimos generar el código${err?.message ? ` (${err.message})` : ""}. Toca «Generar código» otra vez.`,
+      );
+      return;
+    }
+    const d = data as { code: string; expires_at: string };
+    setCode(d.code);
+    setExpires(d.expires_at);
+  };
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.rpc("get_active_company_invite");
+      const { data, error: err } = await supabase.rpc("get_active_company_invite");
+      if (err) console.error("[onboarding] get_active_company_invite:", err);
       if (data) {
         const d = data as { code: string; expires_at: string };
         setCode(d.code);
@@ -795,18 +1262,7 @@ function TeamStep({ onFinish }: { onFinish: () => void }) {
         await regenerate();
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const regenerate = async () => {
-    setGenerating(true);
-    const { data, error } = await supabase.rpc("generate_company_invite");
-    setGenerating(false);
-    if (!error && data) {
-      const d = data as { code: string; expires_at: string };
-      setCode(d.code); setExpires(d.expires_at);
-    }
-  };
 
   const copy = async () => {
     if (!code) return;
@@ -814,50 +1270,142 @@ function TeamStep({ onFinish }: { onFinish: () => void }) {
       await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch { /* noop */ }
+    } catch {
+      /* noop */
+    }
   };
 
   return (
     <div style={{ animation: "fade-up 400ms ease both" }}>
-      <h2 style={{ fontFamily: "Syne", fontWeight: 800, fontSize: "1.4rem", color: "#F0F0F5", margin: 0 }}>Agrega tu equipo</h2>
+      <h2
+        style={{
+          fontFamily: "Syne",
+          fontWeight: 800,
+          fontSize: "1.4rem",
+          color: "#F0F0F5",
+          margin: 0,
+        }}
+      >
+        Agrega tu equipo
+      </h2>
       <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: 8, marginBottom: 20 }}>
-        Dos formas de invitar a tus vendedores
+        Comparte este código con tus vendedores. Lo escriben al crear su cuenta y quedan en tu
+        equipo.
       </p>
 
-      <div style={{ background: "#111118", border: "1px solid #252535", borderRadius: 14, padding: "1.25rem" }}>
-        <p style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: "0.6rem", color: "#FF6B2B", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Código de empresa</p>
-        <div style={{ marginTop: 14, background: "#08080F", borderRadius: 8, padding: "0.85rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "Syne", fontWeight: 800, fontSize: "1.8rem", color: "#F0F0F5", margin: 0, letterSpacing: "0.08em" }}>{code ?? "•••• ••••"}</p>
+      <div
+        style={{
+          background: "#111118",
+          border: "1px solid #252535",
+          borderRadius: 14,
+          padding: "1.25rem",
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "DM Sans",
+            fontWeight: 700,
+            fontSize: "0.6rem",
+            color: "#FF6B2B",
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            margin: 0,
+          }}
+        >
+          Código de empresa
+        </p>
+        <div
+          style={{
+            marginTop: 14,
+            background: "#08080F",
+            borderRadius: 8,
+            padding: "0.85rem",
+            textAlign: "center",
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "Syne",
+              fontWeight: 800,
+              fontSize: "1.8rem",
+              color: "#F0F0F5",
+              margin: 0,
+              letterSpacing: "0.08em",
+            }}
+          >
+            {code ?? (generating ? "Generando…" : "—")}
+          </p>
         </div>
+        {error && (
+          <p style={{ fontSize: "0.78rem", color: "#EF476F", marginTop: 10, textAlign: "center" }}>
+            {error}
+          </p>
+        )}
         <p style={{ fontSize: "0.76rem", color: "#5A5A8A", marginTop: 10 }}>
-          Comparte este código por WhatsApp. Expira en 7 días.
+          Compártelo por WhatsApp. Expira en 7 días.
         </p>
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-          <button onClick={copy} disabled={!code} style={{ flex: 1, background: "transparent", border: "1px solid #252535", color: copied ? "#06D6A0" : "#F0F0F5", padding: "0.55rem", borderRadius: 99, fontFamily: "DM Sans", fontSize: "0.78rem", cursor: code ? "pointer" : "not-allowed", fontWeight: 500 }}>
+          <button
+            onClick={copy}
+            disabled={!code}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "1px solid #252535",
+              color: copied ? "#06D6A0" : "#F0F0F5",
+              padding: "0.55rem",
+              borderRadius: 99,
+              fontFamily: "DM Sans",
+              fontSize: "0.78rem",
+              cursor: code ? "pointer" : "not-allowed",
+              fontWeight: 500,
+            }}
+          >
             {copied ? "✓ Copiado" : "📋 Copiar código"}
           </button>
-          <button onClick={regenerate} disabled={generating} style={{ flex: 1, background: "transparent", border: "1px solid #252535", color: "#F0F0F5", padding: "0.55rem", borderRadius: 99, fontFamily: "DM Sans", fontSize: "0.78rem", cursor: "pointer", fontWeight: 500 }}>
-            {generating ? "..." : "🔄 Generar nuevo"}
+          <button
+            onClick={regenerate}
+            disabled={generating}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "1px solid #252535",
+              color: "#F0F0F5",
+              padding: "0.55rem",
+              borderRadius: 99,
+              fontFamily: "DM Sans",
+              fontSize: "0.78rem",
+              cursor: "pointer",
+              fontWeight: 500,
+            }}
+          >
+            {generating ? "..." : code ? "🔄 Generar nuevo" : "Generar código"}
           </button>
         </div>
-        {expires && <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>Expira: {new Date(expires).toLocaleDateString("es-MX")}</p>}
+        {expires && (
+          <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>
+            Expira: {new Date(expires).toLocaleDateString("es-MX")}
+          </p>
+        )}
       </div>
 
-      <div style={{ background: "#111118", border: "1px solid #252535", borderRadius: 14, padding: "1.25rem", marginTop: 14 }}>
-        <p style={{ fontFamily: "DM Sans", fontWeight: 700, fontSize: "0.6rem", color: "#5A5A8A", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Invitación por correo</p>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="correo@vendedor.com"
-          style={{ width: "100%", marginTop: 12, height: 44, background: "#08080F", color: "#F0F0F5", border: "1px solid #252535", borderRadius: 14, padding: "0 1rem", fontFamily: "DM Sans", fontSize: "0.86rem", outline: "none" }} />
-        <GhostButton onClick={() => { /* TODO: enviar por correo en una iteración futura */ alert("La invitación por correo llegará en una próxima versión. Por ahora comparte el código."); }} style={{ marginTop: 10 }}>Enviar invitación →</GhostButton>
-        <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8 }}>El vendedor recibirá un correo con instrucciones.</p>
-      </div>
-
-      <div style={{ marginTop: 18, padding: "1rem", textAlign: "center", color: "#5A5A8A", fontSize: "0.8rem", fontFamily: "DM Sans" }}>
-        Aún no has invitado a nadie
-      </div>
-
-      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 10 }}>
         <PrimaryButton onClick={onFinish}>Ir a mi dashboard →</PrimaryButton>
-        <button type="button" onClick={onFinish} style={{ background: "transparent", border: "none", color: "#5A5A8A", fontFamily: "DM Sans", fontSize: "0.8rem", cursor: "pointer", padding: 8 }}>Invitar después</button>
+        <button
+          type="button"
+          onClick={onFinish}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "#5A5A8A",
+            fontFamily: "DM Sans",
+            fontSize: "0.8rem",
+            cursor: "pointer",
+            padding: 8,
+          }}
+        >
+          Invitar después
+        </button>
       </div>
     </div>
   );

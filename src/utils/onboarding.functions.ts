@@ -1,174 +1,253 @@
 /**
- * Server function: genera el Company Sales Brain + una respuesta de preview.
+ * Server functions del onboarding del manager (oct-2026).
  *
- * Modelo: claude-sonnet-4-5 (Anthropic directo, igual que el Actor, el
- * Evaluador, el Director y el generador de pitch). El onboarding es la ENTRADA
- * de todo el sistema: un brain corto contamina entrenamiento, pitches y coach.
- * Cuesta centavos por empresa y se corre una vez — no es lugar para ahorrar.
+ * 1. proponerDelCampo: con lo que ya contestó el manager, Closer propone las
+ *    objeciones típicas de su giro y las reglas operativas de una empresa como
+ *    la suya. El manager palomea, corrige y agrega. Si falla, la pantalla usa
+ *    una lista de respaldo: el onboarding nunca se bloquea.
+ * 2. generateCompanyBrain: arma el cerebro de la empresa y su radiografía. Los
+ *    datos comerciales (líneas, lo que ofrece, condiciones, objeciones, reglas)
+ *    NO pasan por el modelo: llegan ya armados desde las respuestas
+ *    (cerebroDirecto), así nada se reescribe ni se inventa. El modelo solo
+ *    redacta el cliente típico, el tono y la radiografía.
+ * 3. ajustarRadiografia: el manager corrige o agrega algo con sus palabras.
  *
- * IMPORTANTE: el brain persistible SOLO contiene las llaves canónicas
- * (BRAIN_KEYS). La respuesta de preview del cliente típico se devuelve como
- * `__preview_response` y NUNCA debe escribirse dentro de
- * companies.company_sales_brain.
+ * Modelo: claude-sonnet-4-5 (Anthropic directo, como el resto de Closer).
  */
 import { createServerFn } from "@tanstack/react-start";
+import {
+  CLAVES_CEREBRO as BRAIN_KEYS,
+  SECCIONES_RADIOGRAFIA,
+  aplicarAjuste,
+  type SeccionRadiografia,
+} from "@/lib/onboarding-questions";
 
-type AnswerInput = { question: string; answer: string };
+const MODEL = "claude-sonnet-4-5";
+const PROMPT_VERSION = "onboarding-company-v3";
 
-interface BrainPayload {
-  answers: AnswerInput[];
+type Linea = { pregunta: string; respuesta: string };
+
+interface PropuestaPayload {
+  respuestas: Linea[];
   companyName: string;
-  openerLine: string;
+  companyId?: string | null;
+}
+interface BrainPayload {
+  respuestas: Linea[];
+  directo: Record<string, string>;
+  companyName: string;
   companyId?: string | null;
 }
 
-const MODEL = "claude-sonnet-4-5";
-const PROMPT_VERSION = "onboarding-company-v2-sonnet";
+const enTexto = (rs: Linea[]) =>
+  rs
+    .filter((r) => (r.respuesta ?? "").trim())
+    .map((r) => `P: ${r.pregunta}\nR: ${r.respuesta}`)
+    .join("\n\n");
 
-const BRAIN_KEYS = [
-  // Núcleo original
-  "PRODUCTOS_ACTIVOS",
-  "CLIENTE_TIPICO",
-  "ARGUMENTOS_DE_VALOR",
-  "OBJECIONES_REALES",
-  "CONTEXTO_DE_VENTA",
-  "RESTRICCIONES",
-  "TONO_DETECTADO",
-  // Catálogo con números (bloque 4)
-  "PRESENTACIONES_Y_PRECIOS",
-  "CANTIDADES_TIPICAS",
-  "PROMOCIONES_Y_CONDICIONES",
-  "PRODUCTOS_QUE_SE_COMPRAN_JUNTOS",
-  // Cartera y territorio (bloque 5)
-  "TIPOS_DE_CLIENTE_QUE_ATIENDE",
-  "FRECUENCIA_DE_VISITA",
-  "FAMILIAS_QUE_SE_PIERDEN_CON_LA_COMPETENCIA",
-  "PERFILES_DE_CLIENTE_Y_QUE_MUEVE_CADA_UNO",
-  // Campo (bloque 6)
-  "NEGATIVOS_COMUNES_DEL_TERRITORIO",
-  "COMPETENCIA_DIRECTA",
-] as const;
-
-const SYSTEM_PROMPT = `Eres el sistema de inteligencia comercial de Closer.
-
-Con base en las respuestas del onboarding del manager, devuelves un objeto JSON con EXACTAMENTE estas claves:
-
-{
-  "PRODUCTOS_ACTIVOS": "string corto, lista de productos/marcas",
-  "CLIENTE_TIPICO": "string, perfil del cliente, cómo piensa, qué le importa",
-  "ARGUMENTOS_DE_VALOR": "string con 3-5 argumentos separados por punto y coma",
-  "OBJECIONES_REALES": "string con 3-5 objeciones probables separadas por punto y coma",
-  "CONTEXTO_DE_VENTA": "string, escenario típico (tipo de interacción, duración, ambiente)",
-  "RESTRICCIONES": "string, lo que nunca debe decir/hacer el equipo",
-  "TONO_DETECTADO": "string corto (Ej: 'Informal — trato de confianza')",
-  "PRESENTACIONES_Y_PRECIOS": "string, SKU/producto + presentación + precio de lista, uno por línea. COPIA los datos tal como los dio el manager: cifras exactas, sin redondear, sin inventar SKUs ni precios que no estén en sus respuestas",
-  "CANTIDADES_TIPICAS": "string, qué y cuánto pide un cliente promedio por visita, por familia de producto",
-  "PROMOCIONES_Y_CONDICIONES": "string, promociones vigentes, condiciones de crédito y mínimos de pedido. Solo lo declarado",
-  "PRODUCTOS_QUE_SE_COMPRAN_JUNTOS": "string, familias que suelen ir en el mismo pedido, en pares o tríos concretos",
-  "TIPOS_DE_CLIENTE_QUE_ATIENDE": "string, tipos de cliente + proporción aproximada declarada",
-  "FRECUENCIA_DE_VISITA": "string corto, cada cuánto pasa el vendedor por el mismo cliente",
-  "FAMILIAS_QUE_SE_PIERDEN_CON_LA_COMPETENCIA": "string, familias que el cliente compra a otro proveedor y por qué",
-  "PERFILES_DE_CLIENTE_Y_QUE_MUEVE_CADA_UNO": "string, por perfil: qué compra y qué le importa. Formato 'Perfil: qué rota — qué le mueve', uno por línea",
-  "NEGATIVOS_COMUNES_DEL_TERRITORIO": "string, los negativos con las palabras textuales del cliente, separados por punto y coma",
-  "COMPETENCIA_DIRECTA": "string, contra quién compite el equipo y con qué llega cada competidor",
-  "PREVIEW_RESPUESTA_CLIENTE": "string de 1 a 2 líneas. Una respuesta REALISTA del cliente típico a la frase del vendedor del preview. Como hablaría un dueño de negocio mexicano real. Sirve SOLO para mostrar el preview en el onboarding — no forma parte del brain persistente."
+async function llamarClaude(
+  system: string,
+  user: string,
+  maxTokens: number,
+  phase: string,
+  companyId?: string | null,
+) {
+  const apiKey = process.env["ANTHROPIC_API_KEY"];
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+  const started = Date.now();
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: maxTokens,
+      temperature: 0.3,
+      system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+      messages: [
+        { role: "user", content: user },
+        { role: "assistant", content: "{" },
+      ],
+    }),
+  });
+  if (res.status === 429) throw new Error("rate_limit");
+  if (res.status === 402) throw new Error("payment_required");
+  if (!res.ok) {
+    console.error("[onboarding] Anthropic", res.status, (await res.text()).slice(0, 300));
+    throw new Error("ai_error");
+  }
+  const json = await res.json();
+  const { logAnthropicCall } = await import("@/lib/llm-usage.server");
+  await logAnthropicCall({
+    phase,
+    model: MODEL,
+    promptVersion: PROMPT_VERSION,
+    usage: json?.usage ?? null,
+    latencyMs: Date.now() - started,
+    companyId: companyId ?? null,
+  });
+  const text: string = json?.content?.[0]?.text ?? "";
+  try {
+    return JSON.parse(`{${text}`) as Record<string, unknown>;
+  } catch {
+    const m = `{${text}`.match(/\{[\s\S]*\}/);
+    try {
+      return m ? (JSON.parse(m[0]) as Record<string, unknown>) : {};
+    } catch {
+      return {};
+    }
+  }
 }
 
-REGLAS DURAS:
-1. NO INVENTES HECHOS COMERCIALES. Precios, presentaciones, promociones, mínimos, cantidades y nombres de competidores solo pueden salir de lo que el manager escribió. Si un dato no está, deja la llave con lo que sí haya o con string vacío. Un dato inventado se convierte en una promesa falsa en boca de un vendedor real.
-2. COMPETENCIA_DIRECTA es SOLO defensiva: sirve para que el vendedor sepa contra qué compite. Jamás la redactes como ataque, descalificación o comparación de superioridad.
-3. Conserva el lenguaje del territorio: si el manager escribió "cubeta", no escribas "contenedor de 19 litros".
-4. Sé exhaustivo con los datos duros: no resumas ni recortes listas de precios o presentaciones.
+const listaDeTextos = (v: unknown, max: number): string[] =>
+  Array.isArray(v)
+    ? [
+        ...new Set(
+          v
+            .map((x) => (typeof x === "string" ? x.replace(/\s+/g, " ").trim() : ""))
+            .filter((x) => x.length > 2 && x.length <= 120),
+        ),
+      ].slice(0, max)
+    : [];
 
-Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
+const PROMPT_PROPUESTA = `Eres el sistema de Closer, una app de entrenamiento de ventas de campo B2B en Latinoamérica.
+Un manager acaba de describir su empresa. Propón dos listas que él va a confirmar o corregir.
 
-export const generateCompanyBrain = createServerFn({ method: "POST" })
-  .inputValidator((data: BrainPayload) => {
-    if (!data || !Array.isArray(data.answers) || data.answers.length === 0) {
-      throw new Error("Missing answers");
-    }
+1. "negativos": las 6 cosas que los clientes de ESTE giro le dicen más seguido a un vendedor para no comprarle o para posponer. Con las palabras textuales de un cliente mexicano de ese giro, entre comillas no. Cortas (máximo 8 palabras), como se dicen en la calle. Mezcla las universales ("ya tengo proveedor") con las propias del giro. Sin explicar nada.
+2. "restricciones": 4 o 5 reglas operativas que una empresa como esta suele imponer a sus vendedores, redactadas como lo que NO se debe hacer, empezando con verbo en infinitivo (ej. "Prometer fechas de entrega sin confirmarlas"). Solo reglas de operación de la empresa. NO incluyas lo que ya es ética universal (mentir, hablar mal de la competencia, garantizar resultados): eso Closer ya lo aplica siempre.
+
+REGLAS: no inventes datos comerciales de la empresa (precios, marcas, plazos, nombres de competidores). Si mencionas una línea, que sea una de las que escribió el manager.
+
+Responde SOLO con JSON: {"negativos": ["..."], "restricciones": ["..."]}`;
+
+export const proponerDelCampo = createServerFn({ method: "POST" })
+  .inputValidator((data: PropuestaPayload) => {
+    if (!data || !Array.isArray(data.respuestas)) throw new Error("Missing answers");
     return data;
   })
   .handler(async ({ data }) => {
-    const apiKey = process.env['ANTHROPIC_API_KEY'];
-    if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+    const raw = await llamarClaude(
+      PROMPT_PROPUESTA,
+      `Empresa: ${data.companyName}\n\n${enTexto(data.respuestas)}`,
+      800,
+      "onboarding_propuesta",
+      data.companyId,
+    );
+    return {
+      negativos: listaDeTextos(raw.negativos, 8),
+      restricciones: listaDeTextos(raw.restricciones, 6),
+    };
+  });
 
-    const userPrompt =
-      `Empresa: ${data.companyName}\n\n` +
-      data.answers
-        .filter((a) => (a.answer ?? "").trim().length > 0)
-        .map((a) => `P: ${a.question}\nR: ${a.answer}`)
-        .join("\n\n") +
-      `\n\nFrase del vendedor para el preview: "${data.openerLine}"`;
+// La radiografía: ver SECCIONES_RADIOGRAFIA en onboarding-questions.ts.
 
-    const started = Date.now();
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 8000,
-        system: [
-          // El system prompt es idéntico en todos los onboardings → se cachea.
-          { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
-        ],
-        messages: [
-          { role: "user", content: userPrompt },
-          { role: "assistant", content: "{" },
-        ],
-      }),
-    });
+const FORMATO_RADIOGRAFIA = `"RADIOGRAFIA": {
+    "empresa": "qué vende la empresa (sus líneas) y si son productos o servicios",
+    "clientes": "a qué giros les vende, qué hacen esos clientes con lo que compran y de qué tamaño son",
+    "equipo": "su cartera (clientes que ya compran o nuevos), cada cuánto visitan, por qué canal y con qué trato",
+    "oferta": "lo que ofrece en producto, servicio y precio, y cómo maneja descuentos y cobro",
+    "calle": "algunas de las cosas que sus vendedores escuchan hoy (presentadas como ejemplos, no como lista cerrada), a quién le compran hoy sus clientes y lo que su equipo nunca debe hacer",
+    "cliente_tipico": "2 o 3 frases sobre LOS CLIENTES (en plural) con los que van a practicar: nombra las combinaciones que aplican a esta empresa según sus respuestas —clientes que ya le compran y clientes nuevos, los que revenden, los que lo consumen en su operación o los que distribuyen, chicos y grandes— y qué cambia en la visita con cada uno. Deja claro que su mercado tiene muchos perfiles distintos, no uno solo, y que Closer los entrena todos con el mismo sistema"
+  }`;
 
-    if (res.status === 429) throw new Error("rate_limit");
-    if (res.status === 402) throw new Error("payment_required");
-    if (!res.ok) {
-      const t = await res.text();
-      console.error("Anthropic error", res.status, t);
-      throw new Error("ai_error");
-    }
+const REGLAS_RADIOGRAFIA = `LA RADIOGRAFÍA: Closer le habla al manager, de tú, con seguridad y en pocas palabras, como quien acaba de entender su negocio. Cada sección: 1 a 3 frases. Empieza la de "empresa" con el nombre de la empresa (ej. "DALFAN vende..."). SOLO repite lo que está en las respuestas, con las palabras del manager: no agregues ni un dato, no lo adornes, no opines si algo es bueno o malo, no prometas resultados. Si una sección no tiene datos, escribe una frase corta diciendo que no lo especificó.`;
 
-    const json = await res.json();
-    const { logAnthropicCall } = await import("@/lib/llm-usage.server");
-    await logAnthropicCall({
-      phase: "onboarding_company",
-      model: MODEL,
-      promptVersion: PROMPT_VERSION,
-      usage: json?.usage ?? null,
-      latencyMs: Date.now() - started,
-      companyId: data.companyId ?? null,
-    });
+const PROMPT_CEREBRO = `Eres el sistema de Closer, una app de entrenamiento de ventas de campo B2B en Latinoamérica.
+Con las respuestas del onboarding de un manager, devuelves un JSON con EXACTAMENTE estas claves:
 
-    const text: string = json?.content?.[0]?.text ?? "";
-    let raw: Record<string, unknown>;
-    try {
-      // Se prellenó "{" en el turno del asistente para forzar JSON puro.
-      raw = JSON.parse(`{${text}`);
-    } catch {
-      try {
-        const m = text.match(/\{[\s\S]*\}/);
-        raw = m ? JSON.parse(m[0]) : {};
-      } catch {
-        raw = {};
-      }
-    }
+{
+  "CLIENTE_TIPICO": "los distintos perfiles de cliente de esta empresa, uno por línea: giro, tamaño, si ya le compra o es nuevo, qué hace con lo que compra, cómo habla y qué le importa. Tantos perfiles como combinaciones reales salgan de las respuestas; nunca uno solo si el manager marcó varios giros, usos o tamaños.",
+  "TONO_DETECTADO": "string corto, ej. 'De usted — trato cordial de confianza'",
+  ${FORMATO_RADIOGRAFIA}
+}
 
-    // Brain persistible: solo llaves canónicas, valores string.
+${REGLAS_RADIOGRAFIA}
+
+REGLAS DURAS:
+1. NO INVENTES HECHOS COMERCIALES de la empresa: precios, marcas, promociones, plazos o competidores que el manager no escribió.
+2. Conserva el lenguaje del territorio: si el manager escribió "cubeta", no escribas "contenedor de 19 litros".
+
+Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
+
+function radiografiaDe(raw: Record<string, unknown>): SeccionRadiografia[] {
+  const r = (raw["RADIOGRAFIA"] ?? {}) as Record<string, unknown>;
+  return SECCIONES_RADIOGRAFIA.map((s) => ({
+    titulo: s.titulo,
+    texto: typeof r[s.id] === "string" ? (r[s.id] as string).trim() : "",
+  })).filter((s) => s.texto);
+}
+
+export const generateCompanyBrain = createServerFn({ method: "POST" })
+  .inputValidator((data: BrainPayload) => {
+    if (!data || !Array.isArray(data.respuestas) || !data.directo)
+      throw new Error("Missing answers");
+    return data;
+  })
+  .handler(async ({ data }) => {
+    const raw = await llamarClaude(
+      PROMPT_CEREBRO,
+      `Empresa: ${data.companyName}\n\n${enTexto(data.respuestas)}`,
+      2000,
+      "onboarding_company",
+      data.companyId,
+    );
+    const texto = (k: string) => (typeof raw[k] === "string" ? (raw[k] as string).trim() : "");
+
+    // Cerebro persistible: solo llaves canónicas. Lo comercial viene directo
+    // de las respuestas; el modelo solo aporta el cliente típico y el tono.
     const brain: Record<string, string> = {};
-    for (const k of BRAIN_KEYS) {
-      brain[k] = typeof raw[k] === "string" ? (raw[k] as string) : "";
-    }
-    if (!brain['TONO_DETECTADO']) brain['TONO_DETECTADO'] = "Profesional";
+    for (const k of BRAIN_KEYS)
+      brain[k] = typeof data.directo[k] === "string" ? data.directo[k] : "";
+    brain["CLIENTE_TIPICO"] = texto("CLIENTE_TIPICO");
+    brain["TONO_DETECTADO"] = texto("TONO_DETECTADO") || "Profesional";
 
-    // Respuesta de preview: efímera, se devuelve aparte con prefijo `__`
-    // para que sea imposible confundirla con una llave real del brain.
-    const previewResponse =
-      typeof raw['PREVIEW_RESPUESTA_CLIENTE'] === "string"
-        ? (raw['PREVIEW_RESPUESTA_CLIENTE'] as string)
-        : "Pues a ver, cuénteme qué trae.";
+    return { brain, radiografia: radiografiaDe(raw) };
+  });
 
-    return { ...brain, __preview_response: previewResponse };
+// El manager corrige o agrega algo a su radiografía. Aquí el modelo SÍ toca
+// datos comerciales, pero solo los que el manager corrigió con sus palabras:
+// él es la fuente. Cada ajuste queda también, tal cual, en AJUSTES_DEL_MANAGER,
+// que el cliente de práctica y el evaluador leen con el resto del cerebro.
+const PROMPT_AJUSTE = `Eres el sistema de Closer. Un manager revisó la radiografía de su empresa y te dice qué corregir o agregar.
+
+Recibes el cerebro actual de la empresa (JSON) y el ajuste del manager. Devuelves un JSON con:
+{
+  "CAMBIOS": { "LLAVE": "nuevo valor completo de esa llave" },
+  ${FORMATO_RADIOGRAFIA}
+}
+
+En "CAMBIOS" van SOLO las llaves del cerebro que el ajuste modifica, con su valor completo ya corregido (no solo la parte nueva). Aplica el ajuste con fidelidad y con las palabras del manager. No cambies nada que el ajuste no toque. No agregues ningún dato que no esté en el cerebro o en el ajuste. Si el ajuste no corresponde a ninguna llave, deja "CAMBIOS" vacío.
+
+La radiografía se vuelve a escribir completa, ya con el ajuste.
+${REGLAS_RADIOGRAFIA}
+
+Devuelve SOLO el objeto JSON. Sin markdown. Sin texto adicional.`;
+
+interface AjustePayload {
+  brain: Record<string, string>;
+  ajuste: string;
+  companyName: string;
+  companyId?: string | null;
+}
+
+export const ajustarRadiografia = createServerFn({ method: "POST" })
+  .inputValidator((data: AjustePayload) => {
+    if (!data || !data.brain || typeof data.ajuste !== "string" || !data.ajuste.trim())
+      throw new Error("Missing adjustment");
+    return data;
+  })
+  .handler(async ({ data }) => {
+    const raw = await llamarClaude(
+      PROMPT_AJUSTE,
+      `Empresa: ${data.companyName}\n\nCEREBRO ACTUAL:\n${JSON.stringify(data.brain, null, 2)}\n\nAJUSTE DEL MANAGER:\n${data.ajuste.trim()}`,
+      2500,
+      "onboarding_ajuste",
+      data.companyId,
+    );
+    const cambios = (raw["CAMBIOS"] ?? {}) as Record<string, unknown>;
+    const brain = aplicarAjuste(data.brain, cambios, data.ajuste);
+    return { brain, radiografia: radiografiaDe(raw) };
   });
