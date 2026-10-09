@@ -1,18 +1,3 @@
--- MENSAJE 72 — Código de invitación: que el vendedor lo pueda validar antes de
--- tener cuenta, sin abrir la puerta a adivinar códigos (oct-2026).
---
--- Causa: validate_invite_code solo la podía ejecutar "authenticated", pero el
--- registro la llama ANTES de crear la cuenta (como anon). Resultado: "No
--- pudimos validar el código" para todo vendedor nuevo.
---
--- 1. anon puede validar, con un tope GLOBAL de intentos fallidos sin sesión
---    (300 por hora), revisado ANTES de buscar el código: así nadie puede
---    probar códigos al azar. Con sesión sigue el tope de 10 por hora por persona.
--- 2. Los códigos nuevos llevan 6 caracteres después del guion (antes 4): de
---    ~900 mil combinaciones por empresa a ~887 millones. Los códigos que ya
---    existen siguen sirviendo.
--- Idempotente: se puede correr dos veces.
-
 CREATE OR REPLACE FUNCTION public.validate_invite_code(_code text)
  RETURNS jsonb
  LANGUAGE plpgsql

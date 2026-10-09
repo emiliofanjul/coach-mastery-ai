@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { resultadoDeValidacion, LARGO_MAXIMO_CODIGO } from "@/lib/invitacion";
 import { useEffect, useState, type FormEvent } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,25 +85,8 @@ function SignupScreen() {
     setInviteState({ status: "checking" });
     const handle = setTimeout(async () => {
       const { data, error } = await supabase.rpc("validate_invite_code", { _code: code });
-      if (error) {
-        setInviteState({ status: "invalid", message: "No pudimos validar el código." });
-        return;
-      }
-      const d = data as { valid: boolean; reason?: string; company_name?: string };
-      if (d.valid) {
-        setInviteState({ status: "valid", companyName: d.company_name });
-      } else if (d.reason === "locked") {
-        setInviteState({
-          status: "locked",
-          message: "Este código está bloqueado temporalmente. Pídele a tu manager uno nuevo.",
-        });
-      } else if (d.reason === "expired") {
-        setInviteState({ status: "invalid", message: "Este código expiró." });
-      } else if (d.reason === "used") {
-        setInviteState({ status: "invalid", message: "Este código ya fue usado." });
-      } else {
-        setInviteState({ status: "invalid", message: "Código no válido." });
-      }
+      if (error) console.error("[signup] validate_invite_code:", error);
+      setInviteState(resultadoDeValidacion(data as never, error));
     }, 400);
     return () => clearTimeout(handle);
   }, [inviteCode, isVendedor]);
@@ -162,7 +146,6 @@ function SignupScreen() {
         _code: inviteCode.trim(),
       });
       if (applyErr || !(applyData as { ok: boolean })?.ok) {
-        await supabase.rpc("register_invite_failed_attempt", { _code: inviteCode.trim() });
         setLoading(false);
         setError("No pudimos vincular tu código. Inténtalo de nuevo.");
         return;
@@ -282,9 +265,9 @@ function SignupScreen() {
               label="Código de empresa"
               value={inviteCode}
               onChange={(v) => setInviteCode(v.toUpperCase())}
-              placeholder="Ej: X7K2-MP9Q"
+              placeholder="Ej: DALFAN-X7K2MP"
               inputMode="text"
-              maxLength={12}
+              maxLength={LARGO_MAXIMO_CODIGO}
               invalid={inviteState.status === "invalid" || inviteState.status === "locked"}
               helper={
                 inviteState.status === "valid"
