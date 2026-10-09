@@ -1,295 +1,570 @@
 /**
- * Definición declarativa de las 9 preguntas del onboarding del manager.
- * Cada pregunta vive en un bloque (1-3) y un step (0-8) del flujo.
+ * El onboarding del manager (oct-2026, diseñado con Emilio).
  *
- * Step 0 = Welcome (sin pregunta)
- * Step 1-3 = Bloque 1 (Negocio): Q1, Q2, Q3
- * Step 4 = Bloque 1 cont: Q4 (ticket + frecuencia, dos campos)
- * Step 5 = Bloque 2 (Proceso): Q5 + Q6 + Q7
- * Step 6 = Bloque 3 (Solo tú sabes): Q8 + Q9
- * Step 7 = Calibración / preview Don Ramón
- * Step 8 = Company Sales Brain
- * Step 9 = Agregar vendedores
+ * Principio: "Closer ya sabe vender. Cuéntanos de tu empresa para que tus
+ * vendedores practiquen con clientes iguales a los tuyos." El manager no le
+ * enseña ventas a Closer: solo le dice cómo es su negocio y cómo opera.
+ *
+ * Cada pregunta existe porque una herramienta de la doctrina necesita un dato
+ * que solo la empresa tiene (ver la tabla en la conversación del 9-oct):
+ *   · los dos ejes del cliente (Cerebro 4.0b) → P2 y P4
+ *   · territorio producto y hueco → P1 (líneas, no SKU ni precios)
+ *   · la formalidad según el tamaño del cliente (doctrina de campo) → P3
+ *   · modificadores de canal (Parte 5) y estilo (Nivel 4) → P5
+ *   · Teoría de las Balas → P6 (lo que OFRECEN; si es bala lo decide Closer)
+ *   · Triple desglose y la regla de no inventar impulso → P7
+ *   · Ataque preventivo → P8
+ *   · Restricciones de la empresa → P9
+ * Lo que la doctrina resuelve sola (los dolores, el vocabulario por tipo de
+ * cliente, con quién habla el vendedor) NO se pregunta.
+ *
+ * Todo aquí es puro: lo usan la pantalla y las pruebas.
  */
 
-export type QuestionId =
-  | "q1_que_vendes"
-  | "q2_a_quien"
-  | "q3_como_gana"
-  | "q4_ticket"
-  | "q4_frecuencia"
-  | "q5_interaccion"
-  | "q6_duracion"
-  | "q7_relacion"
-  | "q8_diferenciador"
-  | "q9_restricciones";
+export type Respuesta = string | string[];
+export type Respuestas = Record<string, Respuesta>;
 
-export interface QuestionDef {
-  id: QuestionId;
-  block: 1 | 2 | 3;
-  text: string;
-  subtext?: string;
+export interface CampoOpciones {
+  tipo: "opciones";
+  id: string;
+  etiqueta?: string;
+  opciones: string[];
+  multiple: boolean;
+  /** Máximo de opciones (solo si multiple). */
+  max?: number;
+  /** Opciones que piden un dato corto al marcarlas: opción → placeholder. */
+  detalle?: Record<string, string>;
+  /** Solo se muestra (y se exige) si otro campo tiene este valor. */
+  siCampo?: { id: string; valor: string };
+  opcional?: boolean;
+}
+export interface CampoTexto {
+  tipo: "texto";
+  id: string;
+  etiqueta?: string;
+  placeholder: string;
+  /** Mínimo de caracteres si es requerido. */
+  min?: number;
+  opcional?: boolean;
+}
+export type Campo = CampoOpciones | CampoTexto;
+
+export interface Pregunta {
+  id: string;
+  numero: number;
+  bloque: 1 | 2 | 3 | 4;
+  texto: string;
+  subtexto?: string;
+  /** "¿Para qué lo usa Closer?" — se despliega al tocarlo. */
+  porQue: string;
+  campos: Campo[];
+  /** Las del bloque 4 las propone Closer y el manager confirma. */
+  propuestaPorCloser?: "negativos" | "restricciones";
 }
 
-export const QUESTIONS: Record<QuestionId, QuestionDef> = {
-  q1_que_vendes: {
-    id: "q1_que_vendes",
-    block: 1,
-    text: "¿Qué vendes exactamente?",
-    subtext: "Productos, marcas, líneas principales. Sé específico.",
-  },
-  q2_a_quien: {
-    id: "q2_a_quien",
-    block: 1,
-    text: "¿A quién le vendes?",
-    subtext: "Tipo de negocio, quién decide la compra.",
-  },
-  q3_como_gana: {
-    id: "q3_como_gana",
-    block: 1,
-    text: "¿Cómo gana tu cliente con lo que vendes?",
-    subtext: "Qué beneficio real obtiene cuando compra tu producto.",
-  },
-  q4_ticket: {
-    id: "q4_ticket",
-    block: 1,
-    text: "Ticket promedio por visita",
-  },
-  q4_frecuencia: {
-    id: "q4_frecuencia",
-    block: 1,
-    text: "Frecuencia de compra",
-  },
-  q5_interaccion: {
-    id: "q5_interaccion",
-    block: 2,
-    text: "¿Qué tipo de interacción hace tu equipo?",
-    subtext: "Selecciona todas las que apliquen",
-  },
-  q6_duracion: {
-    id: "q6_duracion",
-    block: 2,
-    text: "¿Cuánto dura normalmente una interacción de venta?",
-  },
-  q7_relacion: {
-    id: "q7_relacion",
-    block: 2,
-    text: "¿El cliente normalmente ya te conoce o es completamente nuevo?",
-  },
-  q8_diferenciador: {
-    id: "q8_diferenciador",
-    block: 3,
-    text: "¿Por qué un cliente les compra a ustedes y no a la competencia?",
-    subtext: "Sé honesto. No lo que debería ser. Lo que realmente pasa.",
-  },
-  q9_restricciones: {
-    id: "q9_restricciones",
-    block: 3,
-    text: "¿Qué nunca debe decir o hacer tu equipo en una venta?",
-    subtext: "Errores que has visto, promesas que no se pueden cumplir, temas a evitar.",
-  },
+export const BLOQUES: Record<1 | 2 | 3 | 4, string> = {
+  1: "Qué ofreces y a quién",
+  2: "Cómo trabaja tu equipo",
+  3: "Lo que ofreces y cómo manejas el precio",
+  4: "Closer propone, tú confirmas",
 };
 
-export const FRECUENCIA_OPTIONS = ["Semanal", "Cada 2 semanas", "Mensual", "Variable"];
-export const INTERACCION_OPTIONS = [
-  { id: "frio", label: "Visitas en frío a negocios", icon: "🚪" },
-  { id: "recurrente", label: "Visitas a clientes recurrentes", icon: "🔄" },
-  { id: "telefono", label: "Llamadas telefónicas", icon: "📞" },
-  { id: "whatsapp", label: "WhatsApp o mensajes", icon: "💬" },
-  { id: "mostrador", label: "Clientes que llegan al negocio", icon: "🏪" },
-  { id: "citas", label: "Citas programadas", icon: "🤝" },
+export const FRASE_DE_ENTRADA =
+  "Closer ya sabe vender. Cuéntanos de tu empresa para que tus vendedores practiquen con clientes iguales a los tuyos.";
+
+export const NOTA_LO_QUE_OFRECES =
+  "Marca todo lo que ofreces, aunque tu competencia también lo tenga. Closer decide en cada práctica cuándo es una ventaja con ese cliente.";
+
+export const PREGUNTAS: Pregunta[] = [
+  {
+    id: "p1_que_venden",
+    numero: 1,
+    bloque: 1,
+    texto: "¿Qué venden?",
+    subtexto: "Tus líneas principales. No hace falta el catálogo completo ni los precios.",
+    porQue:
+      "Closer arma a cada cliente de práctica con tus líneas: lo que ya te compra, lo que le compra a otro y lo que podrías ofrecerle. Solo usa las líneas que escribas aquí; nunca inventa un producto o servicio que no manejas. Los precios y presentaciones cambian, por eso no se piden aquí: los pones al momento en el Pitch Builder.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p1_tipo",
+        opciones: ["Productos", "Servicios", "Los dos"],
+        multiple: false,
+      },
+      {
+        tipo: "texto",
+        id: "p1_lineas",
+        etiqueta: "Tus líneas principales",
+        placeholder: "Ej: aceites para motor, grasas, anticongelantes, aditivos, líquido de frenos",
+        min: 10,
+      },
+    ],
+  },
+  {
+    id: "p2_clientes",
+    numero: 2,
+    bloque: 1,
+    texto: "¿Qué hacen tus clientes con lo que les vendes?",
+    subtexto: "Marca todo lo que aplique.",
+    porQue:
+      "La doctrina de Closer distingue a los clientes por lo que hacen con lo que les vendes. Al que revende se le pregunta qué maneja y qué le piden; al que lo consume, qué usa y cada cuánto repone; al que distribuye, sus líneas y a cuántos surte. Con tus giros, el cliente de práctica tiene el negocio, el vocabulario y los problemas de tus clientes reales.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p2_uso",
+        opciones: ["Lo revenden", "Lo consumen en su operación", "Lo distribuyen"],
+        multiple: true,
+      },
+      {
+        tipo: "texto",
+        id: "p2_giros",
+        etiqueta: "¿Qué tipo de negocios son?",
+        placeholder: "Ej: refaccionarias, talleres mecánicos, flotillas, constructoras",
+        min: 3,
+      },
+    ],
+  },
+  {
+    id: "p3_monto",
+    numero: 3,
+    bloque: 1,
+    texto: "¿Cuánto te compra un cliente al mes?",
+    subtexto: "Marca todos los rangos que tengas en tu cartera.",
+    porQue:
+      "El sistema de venta es el mismo con un cliente chico y con uno grande, pero la formalidad cambia: una compra grande lleva más preguntas, más datos y más tiempo para decidir; una chica se decide en la visita. Closer arma clientes de los tamaños que marques, para que tus vendedores practiquen los dos ritmos.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p3_rangos",
+        opciones: ["Menos de $5,000", "$5,000 a $50,000", "$50,000 a $500,000", "Más de $500,000"],
+        multiple: true,
+      },
+    ],
+  },
+  {
+    id: "p4_cartera",
+    numero: 4,
+    bloque: 2,
+    texto: "¿Tus vendedores visitan más clientes que ya les compran o nuevos?",
+    porQue:
+      "Conseguir un cliente nuevo y hacer crecer uno que ya te compra son dos juegos distintos. Con el nuevo te presentas y buscas un dolor; con el que ya te compra no te presentas y buscas lo que todavía no te compra. Closer reparte las prácticas según tu cartera, y con la frecuencia de visita el cliente de práctica sabe cuándo lo visitaste por última vez.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p4_cartera",
+        opciones: [
+          "Mayormente clientes que ya nos compran",
+          "Mayormente clientes nuevos",
+          "Mitad y mitad",
+        ],
+        multiple: false,
+      },
+      {
+        tipo: "opciones",
+        id: "p4_frecuencia",
+        etiqueta: "¿Cada cuánto visitan al mismo cliente?",
+        opciones: ["Cada semana", "Cada 2 semanas", "Cada mes", "Depende del cliente"],
+        multiple: false,
+      },
+    ],
+  },
+  {
+    id: "p5_canal",
+    numero: 5,
+    bloque: 2,
+    texto: "¿Cómo venden?",
+    subtexto: "Marca todo lo que aplique.",
+    porQue:
+      "La estructura de la venta no cambia por el canal, pero la ejecución sí: en persona cuenta lo que ves y el lenguaje corporal; por teléfono, el tono y las pausas; por mensaje, que cada idea vaya corta. Y el trato de tú o de usted hace que el cliente de práctica hable como los tuyos.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p5_canal",
+        opciones: ["En persona", "Por teléfono", "Por WhatsApp", "Por videollamada"],
+        multiple: true,
+      },
+      {
+        tipo: "opciones",
+        id: "p5_trato",
+        etiqueta: "¿A tus clientes les hablan de tú o de usted?",
+        opciones: ["De usted", "De tú", "Depende del cliente"],
+        multiple: false,
+      },
+    ],
+  },
+  {
+    id: "p6_ofrecen",
+    numero: 6,
+    bloque: 3,
+    texto: "¿Qué ofreces?",
+    subtexto: NOTA_LO_QUE_OFRECES,
+    porQue:
+      "Closer enseña a usar balas: hechos concretos que el vendedor puede sostener sobre su empresa, su producto y su precio. Una bala sirve con un cliente y no con otro: el crédito pesa con el que paga de contado; la entrega inmediata, con el que se queda sin producto. Con lo que marques, tus vendedores practican con las balas que de verdad tienen, y Closer marca como error cualquier ventaja que no ofreces.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p6_producto",
+        etiqueta: "Producto",
+        multiple: true,
+        opcional: true,
+        opciones: [
+          "Marcas reconocidas",
+          "Marca propia o exclusiva en la zona",
+          "Surtido completo de la línea",
+          "Calidad o certificaciones",
+          "Garantía",
+          "Asesoría técnica",
+          "Presentaciones para cada tamaño de cliente",
+        ],
+        detalle: { "Marcas reconocidas": "¿cuáles?", Garantía: "¿de qué tipo?" },
+      },
+      {
+        tipo: "opciones",
+        id: "p6_servicio",
+        etiqueta: "Servicio",
+        multiple: true,
+        opcional: true,
+        opciones: [
+          "Entrega en la visita",
+          "Entrega el mismo día o al día siguiente",
+          "Entrega programada",
+          "Visita con frecuencia fija",
+          "Pedidos completos, sin faltantes",
+          "Cambios y devoluciones",
+          "Pedidos por WhatsApp o teléfono",
+          "Años de experiencia en la zona",
+        ],
+        detalle: {
+          "Entrega programada": "¿cada cuánto?",
+          "Años de experiencia en la zona": "¿cuántos?",
+        },
+      },
+      {
+        tipo: "opciones",
+        id: "p6_precio",
+        etiqueta: "Precio",
+        multiple: true,
+        opcional: true,
+        opciones: [
+          "Precio competitivo en algunas líneas",
+          "Crédito",
+          "Sin mínimo de compra",
+          "Avisamos antes de los aumentos",
+          "Precio por volumen",
+        ],
+        detalle: {
+          "Precio competitivo en algunas líneas": "¿en cuáles?",
+          Crédito: "¿a cuántos días?",
+        },
+      },
+    ],
+  },
+  {
+    id: "p7_precio",
+    numero: 7,
+    bloque: 3,
+    texto: "¿Cómo manejan el precio?",
+    porQue:
+      "Closer enseña a presentar el precio en escalera, y cada escalón necesita un motivo real. Con tus condiciones, el vendedor practica solo con los descuentos y plazos que de verdad puede dar, y el evaluador marca como error una condición inventada.",
+    campos: [
+      {
+        tipo: "opciones",
+        id: "p7_modo",
+        opciones: ["Precio fijo, sin descuentos", "Manejamos descuentos"],
+        multiple: false,
+      },
+      {
+        tipo: "opciones",
+        id: "p7_descuentos",
+        etiqueta: "¿Cuáles descuentos?",
+        multiple: true,
+        siCampo: { id: "p7_modo", valor: "Manejamos descuentos" },
+        opciones: [
+          "Por primer pedido",
+          "Por volumen",
+          "Por pago de contado",
+          "Por pronto pago",
+          "Promoción del mes o de temporada",
+        ],
+        detalle: { "Por volumen": "¿desde cuánto?", "Por pronto pago": "¿en cuántos días?" },
+      },
+      {
+        tipo: "opciones",
+        id: "p7_cobro",
+        etiqueta: "¿Cómo se cobra?",
+        opciones: ["Contado", "Crédito", "Los dos"],
+        multiple: false,
+        detalle: { Crédito: "¿a cuántos días?", "Los dos": "crédito ¿a cuántos días?" },
+      },
+    ],
+  },
+  {
+    id: "p8_negativos",
+    numero: 8,
+    bloque: 4,
+    texto: "¿Esto es lo que más escuchan tus vendedores?",
+    subtexto:
+      "Closer lo propuso para tu giro. Deja marcado lo que sí escuchan y agrega lo que falte, con las palabras de tus clientes.",
+    porQue:
+      "Una de las técnicas de Closer es el ataque preventivo: decir el negativo antes que el cliente. Para practicarlo, el cliente de práctica usa las objeciones que tus vendedores escuchan de verdad, con las palabras de tus clientes. Saber a quién le compran hoy sirve para que el vendedor no se sorprenda; nunca para hablar mal de nadie: Closer jamás ataca a la competencia.",
+    propuestaPorCloser: "negativos",
+    campos: [
+      { tipo: "opciones", id: "p8_negativos", opciones: [], multiple: true },
+      {
+        tipo: "texto",
+        id: "p8_competencia",
+        etiqueta: "¿A quién le compran hoy tus clientes?",
+        placeholder: "Ej: distribuidores locales, otras marcas, directo de fábrica…",
+        opcional: true,
+      },
+    ],
+  },
+  {
+    id: "p9_restricciones",
+    numero: 9,
+    bloque: 4,
+    texto: "¿Qué nunca debe hacer tu equipo?",
+    subtexto:
+      "Closer ya prohíbe mentir, garantizar lo que no controlas y atacar a la competencia. Aquí van las reglas de tu empresa.",
+    porQue:
+      "Las reglas de la doctrina Closer las aplica siempre. Aquí agregas las de tu empresa, para que Closer las respete en las prácticas y marque como error cuando un vendedor las rompe.",
+    propuestaPorCloser: "restricciones",
+    campos: [
+      { tipo: "opciones", id: "p9_restricciones", opciones: [], multiple: true, opcional: true },
+    ],
+  },
 ];
-export const DURACION_OPTIONS = [
-  "Menos de 5 minutos",
-  "5 a 15 minutos",
-  "15 a 30 minutos",
-  "Más de 30 minutos",
+
+export const TOTAL_PREGUNTAS = PREGUNTAS.length;
+
+/** Texto libre de cada pregunta: "¿Algo más que Closer deba saber?" */
+export const libreDe = (preguntaId: string) => `${preguntaId}__libre`;
+/** Dato corto de una opción marcada (ej. "Crédito" → "30 días"). */
+export const detalleDe = (campoId: string, opcion: string) => `${campoId}::${opcion}`;
+
+/** Lo que Closer propone si no se pudo generar (nunca se bloquea el onboarding). */
+export const NEGATIVOS_DE_RESPALDO = [
+  "Ya tengo proveedor",
+  "Todavía tengo, pásate la otra semana",
+  "Está caro",
+  "Ahorita no tengo dinero",
+  "Déjame lo pienso",
+  "Con el que tengo me va bien",
 ];
-export const RELACION_OPTIONS = [
-  { id: "recurrentes", icon: "🔥", title: "Mayormente clientes recurrentes", desc: "Ya conocen a mis vendedores y la marca" },
-  { id: "nuevos", icon: "❄️", title: "Mayormente clientes nuevos", desc: "Mis vendedores prospectan constantemente" },
-  { id: "mitad", icon: "⚡", title: "Mitad y mitad", desc: "Mezcla de ambos tipos" },
+export const RESTRICCIONES_DE_RESPALDO = [
+  "Prometer fechas de entrega sin confirmarlas",
+  "Dar precios o descuentos no autorizados",
+  "Ofrecer crédito sin aprobación",
+  "Comprometer productos que no hay en existencia",
 ];
 
-export const TOTAL_STEPS = 8; // pasos visibles para la barra (welcome no cuenta)
+// ── Lectura de respuestas ──────────────────────────────────────────────
 
-/* ───────────────────────────────────────────────────────────────
-   BLOQUE 4-6 — Catálogo comercial y territorio.
-   El cuestionario es largo A PROPÓSITO: de aquí se alimenta todo
-   Closer. Cada dato que no se pida es un dato que el sistema tiene
-   que inventar. Se responde por secciones, con progreso guardado:
-   el manager puede salir y volver sin perder nada.
-   ─────────────────────────────────────────────────────────────── */
+const comoLista = (v: Respuesta | undefined): string[] =>
+  Array.isArray(v)
+    ? v.filter((x) => typeof x === "string" && x.trim())
+    : typeof v === "string" && v.trim()
+      ? [v]
+      : [];
+const comoTexto = (v: Respuesta | undefined): string => (typeof v === "string" ? v.trim() : "");
 
-export type ExtQuestionKind = "textarea" | "text" | "pills" | "checks";
-
-export interface ExtQuestion {
-  /** Se mapea 1:1 a una llave del Company Sales Brain. */
-  id: string;
-  brainKey: string;
-  text: string;
-  subtext?: string;
-  placeholder?: string;
-  kind: ExtQuestionKind;
-  min?: number;
-  max?: number;
-  options?: string[];
-  /** Nota de uso que viaja al modelo junto con la respuesta. */
-  usageNote?: string;
-  optional?: boolean;
+/** ¿Se muestra este campo con las respuestas actuales? */
+export function campoVisible(c: Campo, r: Respuestas): boolean {
+  if (c.tipo !== "opciones" || !c.siCampo) return true;
+  return comoLista(r[c.siCampo.id]).includes(c.siCampo.valor);
 }
 
-export interface ExtSection {
-  id: string;
-  block: number;
-  label: string;
-  intro?: string;
-  questions: ExtQuestion[];
+/** ¿La pregunta tiene lo mínimo para avanzar? */
+export function preguntaCompleta(p: Pregunta, r: Respuestas): boolean {
+  if (p.id === "p6_ofrecen") {
+    // Basta con marcar algo en cualquiera de las tres secciones, o escribirlo.
+    const algo = p.campos.some((c) => comoLista(r[c.id]).length > 0);
+    return algo || comoTexto(r[libreDe(p.id)]).length > 0;
+  }
+  if (p.id === "p8_negativos") {
+    return comoLista(r.p8_negativos).length > 0 || comoTexto(r[libreDe(p.id)]).length > 0;
+  }
+  return p.campos.every((c) => {
+    if (c.opcional || !campoVisible(c, r)) return true;
+    if (c.tipo === "texto") return comoTexto(r[c.id]).length >= (c.min ?? 1);
+    return comoLista(r[c.id]).length > 0;
+  });
 }
 
-export const EXT_SECTIONS: ExtSection[] = [
-  {
-    id: "catalogo",
-    block: 4,
-    label: "Bloque 4 — Tu catálogo con números",
-    intro:
-      "Aquí es donde Closer deja de hablar en genérico. Con presentaciones, precios y cantidades reales, el entrenamiento y los pitches usan tus productos, no ejemplos inventados.",
-    questions: [
-      {
-        id: "presentaciones_y_precios",
-        brainKey: "PRESENTACIONES_Y_PRECIOS",
-        text: "Presentaciones y precios de lista",
-        subtext:
-          "SKU o nombre + presentación + precio de lista. Una por línea. Entre más completo, menos tiene que inventar Closer.",
-        placeholder:
-          "Ej:\nBardahl 20W-50 · caja 12/1L · $1,140\nBardahl 20W-50 · cubeta 19L · $1,690\nRepsol Elite 5W-30 · caja 12/1L · $1,980",
-        kind: "textarea",
-        min: 40,
-        max: 4000,
-      },
-      {
-        id: "cantidades_tipicas",
-        brainKey: "CANTIDADES_TIPICAS",
-        text: "¿Qué pide un cliente promedio por visita?",
-        subtext: "Cantidades reales por familia de producto. Es lo que hace creíble una sugerencia de incremento.",
-        placeholder: "Ej: 2 cajas de 20W-50, 1 cubeta de multigrado, 1 caja de aditivos. Un taller chico: media caja.",
-        kind: "textarea",
-        min: 25,
-        max: 1200,
-      },
-      {
-        id: "promociones_y_condiciones",
-        brainKey: "PROMOCIONES_Y_CONDICIONES",
-        text: "Promociones vigentes, crédito y mínimos",
-        subtext: "Lo que el vendedor SÍ puede ofrecer hoy. Si no está aquí, Closer no lo va a usar.",
-        placeholder:
-          "Ej: 10+1 en caja de 20W-50 hasta fin de mes. Crédito a 15 días con cliente de 3 meses. Pedido mínimo $2,000 para entrega sin costo.",
-        kind: "textarea",
-        min: 25,
-        max: 1500,
-      },
-      {
-        id: "productos_que_se_compran_juntos",
-        brainKey: "PRODUCTOS_QUE_SE_COMPRAN_JUNTOS",
-        text: "¿Qué familias suelen ir en el mismo pedido?",
-        subtext:
-          "Permite que el descubrimiento lateral apunte a lo probable en vez de barrer todo el catálogo.",
-        placeholder: "Ej: quien lleva aceite de motor casi siempre lleva filtro y limpiador de inyectores; anticongelante va con líquido de frenos.",
-        kind: "textarea",
-        min: 25,
-        max: 1200,
-      },
-    ],
-  },
-  {
-    id: "cartera",
-    block: 5,
-    label: "Bloque 5 — Tu cartera y tu territorio",
-    intro:
-      "Esto define a quién enfrenta el vendedor y qué doctrina aplica Closer. Hoy el sistema lo está adivinando.",
-    questions: [
-      {
-        id: "tipos_de_cliente_que_atiende",
-        brainKey: "TIPOS_DE_CLIENTE_QUE_ATIENDE",
-        text: "¿Qué tipos de cliente atiende tu equipo?",
-        subtext: "Marca todos los que apliquen. En la siguiente línea nos dices la proporción aproximada.",
-        kind: "checks",
-        options: ["Cliente nuevo", "Cliente recurrente", "Autoconsumo", "Distribuidor"],
-      },
-      {
-        id: "proporcion_tipos_cliente",
-        brainKey: "TIPOS_DE_CLIENTE_QUE_ATIENDE_PROPORCION",
-        text: "Proporción aproximada",
-        subtext: "Aproximado está bien. Define qué pitch y qué doctrina pesa más.",
-        placeholder: "Ej: 70% recurrente, 20% nuevo, 10% distribuidor.",
-        kind: "text",
-      },
-      {
-        id: "frecuencia_de_visita",
-        brainKey: "FRECUENCIA_DE_VISITA",
-        text: "¿Cada cuánto pasa un vendedor por el mismo cliente?",
-        subtext: "Aparece directo en el pitch de cliente recurrente.",
-        kind: "pills",
-        options: ["Semanal", "Cada 2 semanas", "Mensual", "Variable / por ruta"],
-      },
-      {
-        id: "familias_que_se_pierden",
-        brainKey: "FAMILIAS_QUE_SE_PIERDEN_CON_LA_COMPETENCIA",
-        text: "¿Qué familias te compra el cliente a otro proveedor?",
-        subtext: "El hueco más grande de tu cartera. El pitch de recurrente lo prioriza.",
-        placeholder: "Ej: filtros casi siempre los compran con el distribuidor local; en anticongelante nos ganan por precio.",
-        kind: "textarea",
-        min: 25,
-        max: 1200,
-      },
-      {
-        id: "perfiles_de_cliente",
-        brainKey: "PERFILES_DE_CLIENTE_Y_QUE_MUEVE_CADA_UNO",
-        text: "¿Qué compra típicamente cada perfil de cliente?",
-        subtext:
-          "Refaccionaria vs taller vs flotilla vs autoservicio. Sin esto el anclaje del Efecto Jones se queda genérico, y solo funciona si es específico y verdadero.",
-        placeholder:
-          "Ej: Refaccionaria: rota multigrado barato y filtros, le importa el margen. Taller: 20W-50 en cubeta, le importa que no le falte. Flotilla: volumen y factura.",
-        kind: "textarea",
-        min: 40,
-        max: 2000,
-      },
-    ],
-  },
-  {
-    id: "campo",
-    block: 6,
-    label: "Bloque 6 — Lo que se escucha en la calle",
-    intro:
-      "Materia prima directa del entrenamiento: los negativos reales de tu territorio y contra quién compite tu equipo.",
-    questions: [
-      {
-        id: "negativos_comunes",
-        brainKey: "NEGATIVOS_COMUNES_DEL_TERRITORIO",
-        text: "¿Qué escuchan tus vendedores una y otra vez?",
-        subtext:
-          "Los negativos reales, con las palabras del cliente. Es de donde sale el Ataque Preventivo, que hoy no tiene de dónde salir.",
-        placeholder:
-          "Ej: \"ya tengo proveedor\", \"está muy caro el litro\", \"la marca no me la piden\", \"ahorita no tengo con qué\", \"déjame lo pienso\".",
-        kind: "textarea",
-        min: 30,
-        max: 2000,
-      },
-      {
-        id: "competencia_directa",
-        brainKey: "COMPETENCIA_DIRECTA",
-        text: "¿Contra quién compite tu equipo?",
-        subtext:
-          "Marcas y distribuidores que el cliente ya tiene o que pasan por el mismo territorio, y con qué llegan.",
-        placeholder: "Ej: Roshfrans por precio, Mobil por marca, y un distribuidor local que da 30 días de crédito.",
-        kind: "textarea",
-        min: 25,
-        max: 1500,
-        usageNote:
-          "USO ESTRICTO: este dato existe SOLO para que el vendedor sepa contra qué compite y no lo tomen por sorpresa. NUNCA para atacar al competidor, descalificarlo ni para afirmar ventajas comparativas. Eso es Nivel 1 de la doctrina.",
-      },
-    ],
-  },
-];
+/** Una opción con su dato corto, si lo tiene: "Crédito (30 días)". */
+function conDetalle(campo: CampoOpciones, opcion: string, r: Respuestas): string {
+  const d = comoTexto(r[detalleDe(campo.id, opcion)]);
+  return d ? `${opcion} (${d})` : opcion;
+}
 
-export const EXT_TOTAL_QUESTIONS = EXT_SECTIONS.reduce((n, s) => n + s.questions.length, 0);
+/** Lo marcado en un campo de opciones, con sus detalles. */
+export function marcado(campo: CampoOpciones, r: Respuestas): string[] {
+  if (!campoVisible(campo, r)) return [];
+  return comoLista(r[campo.id]).map((o) => conDetalle(campo, o, r));
+}
+
+const campo = (id: string): Campo => {
+  for (const p of PREGUNTAS) for (const c of p.campos) if (c.id === id) return c;
+  throw new Error(`campo desconocido: ${id}`);
+};
+const op = (id: string) => campo(id) as CampoOpciones;
+
+/**
+ * Cada pregunta en una línea legible: lo que se guarda en
+ * company_onboarding_answers y lo que lee el modelo.
+ */
+export function respuestasEnTexto(
+  r: Respuestas,
+): { id: string; bloque: number; pregunta: string; respuesta: string }[] {
+  return PREGUNTAS.map((p) => {
+    const partes: string[] = [];
+    for (const c of p.campos) {
+      if (!campoVisible(c, r)) continue;
+      const valor = c.tipo === "texto" ? comoTexto(r[c.id]) : marcado(c, r).join(", ");
+      if (valor) partes.push(c.etiqueta ? `${c.etiqueta}: ${valor}` : valor);
+    }
+    const libre = comoTexto(r[libreDe(p.id)]);
+    if (libre) partes.push(`Además: ${libre}`);
+    return { id: p.id, bloque: p.bloque, pregunta: p.texto, respuesta: partes.join(" · ") };
+  });
+}
+
+/**
+ * La parte del cerebro de la empresa que sale DIRECTO de lo que escribió el
+ * manager, sin pasar por el modelo: así ningún dato comercial (líneas,
+ * condiciones, lo que ofrece) puede reescribirse ni inventarse. El modelo solo
+ * redacta CLIENTE_TIPICO y el tono, y genera la vista previa.
+ */
+export function cerebroDirecto(r: Respuestas): Record<string, string> {
+  const libre = (id: string) => comoTexto(r[libreDe(id)]);
+  const junta = (...xs: string[]) => xs.filter(Boolean).join(". ");
+
+  const lineas = comoTexto(r.p1_lineas);
+  const tipo = comoLista(r.p1_tipo)[0] ?? "";
+  const uso = marcado(op("p2_uso"), r);
+  const giros = comoTexto(r.p2_giros);
+  const rangos = marcado(op("p3_rangos"), r);
+  const cartera = comoLista(r.p4_cartera)[0] ?? "";
+  const frecuencia = comoLista(r.p4_frecuencia)[0] ?? "";
+  const canal = marcado(op("p5_canal"), r);
+  const trato = comoLista(r.p5_trato)[0] ?? "";
+
+  const producto = marcado(op("p6_producto"), r);
+  const servicio = marcado(op("p6_servicio"), r);
+  const precio = marcado(op("p6_precio"), r);
+  const modo = comoLista(r.p7_modo)[0] ?? "";
+  const descuentos = marcado(op("p7_descuentos"), r);
+  const cobro = marcado(op("p7_cobro"), r)[0] ?? "";
+  const negativos = comoLista(r.p8_negativos);
+  const competencia = comoTexto(r.p8_competencia);
+  const restricciones = comoLista(r.p9_restricciones);
+
+  const lista = (xs: string[]) => xs.join("; ");
+
+  return {
+    PRODUCTOS_ACTIVOS: junta(
+      tipo && tipo !== "Productos" ? `${tipo}: ${lineas}` : lineas,
+      libre("p1_que_venden"),
+    ),
+    TIPOS_DE_CLIENTE_QUE_ATIENDE: junta(
+      giros && `Giros: ${giros}`,
+      uso.length ? `Qué hacen con lo que les vendemos: ${uso.join(", ")}` : "",
+      cartera && `Cartera: ${cartera}`,
+      libre("p2_clientes"),
+    ),
+    FRECUENCIA_DE_VISITA: frecuencia,
+    CONTEXTO_DE_VENTA: junta(
+      canal.length ? `Canal: ${canal.join(", ")}` : "",
+      trato && `Trato: ${trato}`,
+      rangos.length ? `Compra mensual de sus clientes: ${rangos.join(", ")}` : "",
+      cartera && `Cartera: ${cartera}`,
+      frecuencia && `Visitas: ${frecuencia}`,
+      libre("p3_monto"),
+      libre("p4_cartera"),
+      libre("p5_canal"),
+    ),
+    ARGUMENTOS_DE_VALOR: lista([
+      ...producto.map((x) => `Producto: ${x}`),
+      ...servicio.map((x) => `Servicio: ${x}`),
+      ...precio.map((x) => `Precio: ${x}`),
+      ...(libre("p6_ofrecen") ? [libre("p6_ofrecen")] : []),
+    ]),
+    PROMOCIONES_Y_CONDICIONES: junta(
+      modo === "Precio fijo, sin descuentos"
+        ? "Precio fijo, sin descuentos"
+        : descuentos.length
+          ? `Descuentos: ${descuentos.join(", ")}`
+          : "",
+      cobro && `Cobro: ${cobro}`,
+      libre("p7_precio"),
+    ),
+    NEGATIVOS_COMUNES_DEL_TERRITORIO: lista([
+      ...negativos,
+      ...(libre("p8_negativos") ? [libre("p8_negativos")] : []),
+    ]),
+    OBJECIONES_REALES: lista(negativos),
+    COMPETENCIA_DIRECTA: competencia,
+    RESTRICCIONES: lista([
+      ...restricciones,
+      ...(libre("p9_restricciones") ? [libre("p9_restricciones")] : []),
+    ]),
+  };
+}
+
+/** Las llaves del cerebro de la empresa que consume el resto de Closer. */
+export const CLAVES_CEREBRO = [
+  "PRODUCTOS_ACTIVOS",
+  "CLIENTE_TIPICO",
+  "ARGUMENTOS_DE_VALOR",
+  "OBJECIONES_REALES",
+  "CONTEXTO_DE_VENTA",
+  "RESTRICCIONES",
+  "TONO_DETECTADO",
+  "PRESENTACIONES_Y_PRECIOS",
+  "CANTIDADES_TIPICAS",
+  "PROMOCIONES_Y_CONDICIONES",
+  "PRODUCTOS_QUE_SE_COMPRAN_JUNTOS",
+  "TIPOS_DE_CLIENTE_QUE_ATIENDE",
+  "FRECUENCIA_DE_VISITA",
+  "FAMILIAS_QUE_SE_PIERDEN_CON_LA_COMPETENCIA",
+  "PERFILES_DE_CLIENTE_Y_QUE_MUEVE_CADA_UNO",
+  "NEGATIVOS_COMUNES_DEL_TERRITORIO",
+  "COMPETENCIA_DIRECTA",
+] as const;
+
+/**
+ * La radiografía (oct-2026, pedido de Emilio): al terminar, Closer le describe
+ * al manager su empresa con lo que le acaba de contar, para que la confirme o
+ * la corrija ahí mismo. Seis secciones fijas; el modelo solo redacta lo que
+ * está en las respuestas.
+ */
+export const SECCIONES_RADIOGRAFIA = [
+  { id: "empresa", titulo: "Tu empresa" },
+  { id: "clientes", titulo: "Tus clientes" },
+  { id: "equipo", titulo: "Cómo trabaja tu equipo" },
+  { id: "oferta", titulo: "Lo que ofreces y tu precio" },
+  { id: "calle", titulo: "Algunas cosas que se escuchan hoy en la calle" },
+  { id: "cliente_tipico", titulo: "Los clientes con los que van a practicar" },
+] as const;
+export type SeccionRadiografia = { titulo: string; texto: string };
+
+/**
+ * Aplica la corrección del manager: el modelo propone el nuevo valor de las
+ * llaves que tocó el ajuste, pero solo se aceptan llaves canónicas con texto.
+ * El ajuste, tal cual lo escribió el manager, se acumula en
+ * AJUSTES_DEL_MANAGER, que el cliente de práctica lee con el resto del cerebro.
+ */
+export function aplicarAjuste(
+  brain: Record<string, string>,
+  cambios: Record<string, unknown>,
+  ajuste: string,
+): Record<string, string> {
+  const out = { ...brain };
+  const validas = new Set<string>(CLAVES_CEREBRO);
+  for (const [k, v] of Object.entries(cambios ?? {})) {
+    if (validas.has(k) && typeof v === "string" && v.trim()) out[k] = v.trim();
+  }
+  const previo = (out["AJUSTES_DEL_MANAGER"] ?? "").trim();
+  out["AJUSTES_DEL_MANAGER"] = [previo, ajuste.trim()].filter(Boolean).join("\n");
+  return out;
+}
