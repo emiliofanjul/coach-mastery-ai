@@ -9,6 +9,7 @@ import {
   passwordStrength,
   setPendingCompanyName,
   setPendingInviteCode,
+  getPendingInviteCode,
 } from "@/lib/closer-auth";
 import {
   Topbar,
@@ -54,6 +55,11 @@ function SignupScreen() {
   const [password, setPassword] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
+  // Si llegó por la liga de invitación (/unirme), el código ya viene puesto.
+  useEffect(() => {
+    const pendiente = getPendingInviteCode();
+    if (pendiente) setInviteCode((actual) => actual || pendiente);
+  }, []);
   const [inviteState, setInviteState] = useState<{
     status: "idle" | "checking" | "valid" | "invalid" | "locked";
     companyName?: string;
@@ -86,7 +92,10 @@ function SignupScreen() {
       if (d.valid) {
         setInviteState({ status: "valid", companyName: d.company_name });
       } else if (d.reason === "locked") {
-        setInviteState({ status: "locked", message: "Este código está bloqueado temporalmente. Pídele a tu manager uno nuevo." });
+        setInviteState({
+          status: "locked",
+          message: "Este código está bloqueado temporalmente. Pídele a tu manager uno nuevo.",
+        });
       } else if (d.reason === "expired") {
         setInviteState({ status: "invalid", message: "Este código expiró." });
       } else if (d.reason === "used") {
@@ -140,14 +149,18 @@ function SignupScreen() {
         return;
       }
     } else if (isManager) {
-      const { error: rpcErr } = await supabase.rpc("create_team_company", { _name: companyName.trim() });
+      const { error: rpcErr } = await supabase.rpc("create_team_company", {
+        _name: companyName.trim(),
+      });
       if (rpcErr) {
         setLoading(false);
         setError("Cuenta creada pero no pudimos crear tu empresa. Intenta iniciar sesión.");
         return;
       }
     } else if (isVendedor) {
-      const { data: applyData, error: applyErr } = await supabase.rpc("apply_invite_code", { _code: inviteCode.trim() });
+      const { data: applyData, error: applyErr } = await supabase.rpc("apply_invite_code", {
+        _code: inviteCode.trim(),
+      });
       if (applyErr || !(applyData as { ok: boolean })?.ok) {
         await supabase.rpc("register_invite_failed_attempt", { _code: inviteCode.trim() });
         setLoading(false);
@@ -165,15 +178,30 @@ function SignupScreen() {
     setError(null);
     if (isManager) setPendingCompanyName(companyName.trim());
     if (isVendedor && inviteState.status === "valid") setPendingInviteCode(inviteCode.trim());
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
     if (result.error) setError("No pudimos continuar con Google.");
   };
 
   const roleLabel = isIndividual ? "🚀 Individual" : isManager ? "💼 Manager" : "🎯 Vendedor";
-  const titleText = isIndividual ? "Empieza a entrenar" : isManager ? "Crea tu cuenta" : "Únete a tu equipo";
+  const titleText = isIndividual
+    ? "Empieza a entrenar"
+    : isManager
+      ? "Crea tu cuenta"
+      : "Únete a tu equipo";
 
   return (
-    <main style={{ minHeight: "100dvh", background: BG, color: "#F0F0F5", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
+    <main
+      style={{
+        minHeight: "100dvh",
+        background: BG,
+        color: "#F0F0F5",
+        fontFamily: "'DM Sans', sans-serif",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Topbar />
 
       <section style={containerStyle}>
@@ -197,14 +225,35 @@ function SignupScreen() {
           >
             {roleLabel}
           </span>
-          <Link to="/role" style={{ fontSize: "0.72rem", color: "#5A5A8A", textDecoration: "underline" }}>
+          <Link
+            to="/role"
+            style={{ fontSize: "0.72rem", color: "#5A5A8A", textDecoration: "underline" }}
+          >
             cambiar
           </Link>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-          <Field label="Nombre completo" value={fullName} onChange={setFullName} placeholder="Juan García" autoComplete="name" maxLength={100} />
-          <Field label="Correo electrónico" value={email} onChange={setEmail} type="email" placeholder="tu@correo.com" autoComplete="email" maxLength={255} />
+        <form
+          onSubmit={handleSubmit}
+          style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          <Field
+            label="Nombre completo"
+            value={fullName}
+            onChange={setFullName}
+            placeholder="Juan García"
+            autoComplete="name"
+            maxLength={100}
+          />
+          <Field
+            label="Correo electrónico"
+            value={email}
+            onChange={setEmail}
+            type="email"
+            placeholder="tu@correo.com"
+            autoComplete="email"
+            maxLength={255}
+          />
           <div>
             <Field
               label="Contraseña"
@@ -219,7 +268,13 @@ function SignupScreen() {
           </div>
 
           {isManager && (
-            <Field label="Nombre de tu empresa" value={companyName} onChange={setCompanyName} placeholder="Ej: Dalfan" maxLength={120} />
+            <Field
+              label="Nombre de tu empresa"
+              value={companyName}
+              onChange={setCompanyName}
+              placeholder="Ej: Dalfan"
+              maxLength={120}
+            />
           )}
 
           {isVendedor && (
@@ -235,22 +290,31 @@ function SignupScreen() {
                 inviteState.status === "valid"
                   ? `✓ ${inviteState.companyName}`
                   : inviteState.status === "checking"
-                  ? "Validando..."
-                  : inviteState.status === "invalid" || inviteState.status === "locked"
-                  ? inviteState.message
-                  : "Tu manager te compartió este código"
+                    ? "Validando..."
+                    : inviteState.status === "invalid" || inviteState.status === "locked"
+                      ? inviteState.message
+                      : "Tu manager te compartió este código"
               }
               helperColor={
                 inviteState.status === "valid"
                   ? "#06D6A0"
                   : inviteState.status === "invalid" || inviteState.status === "locked"
-                  ? "#EF476F"
-                  : "#5A5A8A"
+                    ? "#EF476F"
+                    : "#5A5A8A"
               }
             />
           )}
 
-          <label style={{ display: "flex", alignItems: "flex-start", gap: "10px", fontSize: "0.8rem", color: "#5A5A8A", cursor: "pointer" }}>
+          <label
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "10px",
+              fontSize: "0.8rem",
+              color: "#5A5A8A",
+              cursor: "pointer",
+            }}
+          >
             <input
               type="checkbox"
               checked={accepted}
@@ -264,7 +328,11 @@ function SignupScreen() {
 
           {error && <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>}
 
-          <button type="submit" disabled={!formValid || loading} style={primaryBtn(loading, !formValid)}>
+          <button
+            type="submit"
+            disabled={!formValid || loading}
+            style={primaryBtn(loading, !formValid)}
+          >
             {loading ? "Creando cuenta..." : "Crear mi cuenta"}
           </button>
         </form>

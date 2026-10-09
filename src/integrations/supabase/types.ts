@@ -2439,9 +2439,7 @@ export type Database = {
       create_team_company: { Args: { _name: string }; Returns: Json }
       current_company_id: { Args: never; Returns: string }
       current_role: { Args: never; Returns: string }
-      generate_company_invite:
-        | { Args: never; Returns: Json }
-        | { Args: { _hours?: number }; Returns: Json }
+      generate_company_invite: { Args: { _hours?: number }; Returns: Json }
       get_active_company_invite: { Args: never; Returns: Json }
       get_current_mastery: {
         Args: { _last_practiced_at: string; _mastery_score: number }
