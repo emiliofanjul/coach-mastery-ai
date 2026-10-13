@@ -26,6 +26,7 @@ import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.t
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
+import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
@@ -612,7 +613,16 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
 
+    // Solo usuarios con sesión (o la red de seguridad, con la llave de
+    // servicio). La empresa y el vendedor del consumo salen de la base.
+    const quien = await quienLlama(req);
+    if (!quien) return respuestaNoAutorizado(corsHeaders);
+
     const body = (await req.json()) as ReqBody;
+    if (quien.tipo === "usuario") {
+      body.company_id = quien.companyId;
+      body.seller_id = quien.sellerId;
+    }
 
     // La ficha del cliente de la práctica: se crea mientras el vendedor ve la
     // demostración. Con temperatura alta para que cada práctica sea un cliente

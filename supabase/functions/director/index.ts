@@ -21,6 +21,7 @@
 // el clasificador — las reglas duras no consumen LLM).
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 
 const DIRECTOR_VERSION = "v2.2.0-sonnet";
 const DIRECTOR_MODEL = "claude-sonnet-4-5";
@@ -243,7 +244,16 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Solo usuarios con sesión (oct-2026): antes era pública.
+    const quien = await quienLlama(req);
+    if (!quien) return respuestaNoAutorizado(corsHeaders);
+
     const body = (await req.json()) as ReqBody;
+    // El consumo queda a nombre de quien de verdad llama, no de lo que diga el cuerpo.
+    if (quien.tipo === "usuario") {
+      body.company_id = quien.companyId;
+      body.seller_id = quien.sellerId;
+    }
     const { practice_script, conversation_history, elapsed_seconds, session_id, node_id } = body;
 
     if (!practice_script || !Array.isArray(conversation_history)) {
