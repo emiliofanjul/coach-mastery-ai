@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.10.1",
+  "harness_version": "v3.10.2",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -804,7 +804,6 @@
           "story.relevancia_cliente": "cumple"
         },
         "must_not_flag": [
-          "turno_sin_pregunta",
           "rafaga_de_preguntas",
           "solo_cerradas",
           "pitch_prematuro"
@@ -2035,7 +2034,7 @@
       "node_id": "2.2",
       "seller_name": "Emilio",
       "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
-      "description": "Disputa real (oct-2026), sostenida bien. 'Quería ver si le interesa comprarnos' es un pensamiento en voz alta y un motivo de venta, no una pregunta que le devuelve la palabra, aunque el cliente conteste (decisión de Emilio). Ningún turno cierra preguntando.",
+      "description": "Disputa real (oct-2026), sostenida bien. 'Quería ver si le interesa comprarnos' es un pensamiento en voz alta y un motivo de venta, no una pregunta que le devuelve la palabra, aunque el cliente conteste (decisión de Emilio). Ningún turno cierra preguntando. (oct-2026: la falla turno_sin_pregunta se quitó del 2.2 porque medía lo mismo que el criterio relevancia_cliente y el evaluador a veces la marcaba y a veces no; decisión de Emilio.)",
       "transcript": [
         {
           "role": "user",
@@ -2068,7 +2067,6 @@
           30
         ],
         "must_flag": [
-          "turno_sin_pregunta",
           "pitch_prematuro"
         ],
         "fallas_con_cita": [
