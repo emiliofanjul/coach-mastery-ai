@@ -235,7 +235,7 @@ function NodoCardsPage() {
                 company_id: attributionRef.current.company_id,
                 seller_id: attributionRef.current.seller_id,
               },
-              { accessToken: getStoredSupabaseSession()?.accessToken, timeoutMs: 20_000 },
+              { timeoutMs: 20_000 },
             );
             if (!data || typeof data.body !== "string") {
               return [c.id, { loading: false, body: c.body, flip_back: c.flip_back_text ?? "", error: "generation_failed" }] as const;

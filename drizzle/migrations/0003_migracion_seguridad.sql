@@ -1,17 +1,6 @@
 -- MENSAJE 73 — Revisión de seguridad antes de lanzar (oct-2026).
 -- Idempotente: se puede correr dos veces.
 
--- ─────────────────────────────────────────────────────────────────────────
--- 1. Nadie se puede cambiar solo de empresa ni de rol.
---    Las reglas de la base dejaban que cada usuario actualizara SU perfil
---    completo: un vendedor podía ponerse role='manager' (y ver grabaciones,
---    prácticas y el cerebro de su empresa) o cambiarse a otra empresa. Igual
---    con su fila de vendedor (empresa, créditos usados, activo) y un manager
---    con el plan y los créditos de su empresa.
---    Las funciones de la base que SÍ deben cambiarlos (unirse con código,
---    crear empresa, activar vendedor...) corren como dueño de la base, no como
---    el usuario, así que siguen funcionando.
--- ─────────────────────────────────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION public.proteger_campos_sensibles()
  RETURNS trigger
  LANGUAGE plpgsql
@@ -35,8 +24,6 @@ BEGIN
     END IF;
 
   ELSIF TG_TABLE_NAME = 'sellers' THEN
-    -- Un vendedor solo nace dentro de las funciones de la base (código de
-    -- invitación, cuenta individual, empresa nueva). Desde la app, nunca.
     IF TG_OP = 'INSERT' THEN
       RAISE EXCEPTION 'No permitido: los vendedores se crean con un código de invitación' USING ERRCODE = '42501';
     END IF;
@@ -74,20 +61,6 @@ DROP TRIGGER IF EXISTS proteger_campos_sensibles ON public.companies;
 CREATE TRIGGER proteger_campos_sensibles BEFORE UPDATE ON public.companies
   FOR EACH ROW EXECUTE FUNCTION public.proteger_campos_sensibles();
 
--- ─────────────────────────────────────────────────────────────────────────
--- 2. La doctrina no se le entrega a cualquiera.
---    "reglas" la podía leer cualquiera sin cuenta, y "doctrina" (el Cerebro
---    completo) cualquiera con una cuenta, incluida una cuenta individual
---    recién creada. La app no las lee desde el navegador: las funciones del
---    servidor las leen con la llave de servicio. Ahora solo el equipo de
---    Closer (platform_admins) las ve desde la app, y solo él edita el Cerebro.
--- ─────────────────────────────────────────────────────────────────────────
--- OJO: la vista v_nodes_resueltos (la lee la pantalla de práctica) arma cada
--- criterio con su regla usando resolver_practice_script, que hasta hoy leía
--- "reglas" con los permisos de quien consulta. Si solo se cerrara la tabla,
--- la práctica recibiría los criterios sin su definición, sin avisar. Por eso
--- la función pasa a leer con los permisos del dueño de la base: la vista sigue
--- igual para todos y la tabla completa ya no se puede leer desde la app.
 ALTER FUNCTION public.resolver_practice_script(jsonb) SECURITY DEFINER;
 ALTER FUNCTION public.resolver_practice_script(jsonb) SET search_path TO 'public';
 
@@ -105,26 +78,14 @@ CREATE POLICY doctrina_admin ON public.doctrina AS PERMISSIVE FOR ALL TO authent
   USING (EXISTS (SELECT 1 FROM public.platform_admins pa WHERE pa.user_id = auth.uid()))
   WITH CHECK (EXISTS (SELECT 1 FROM public.platform_admins pa WHERE pa.user_id = auth.uid()));
 
--- ─────────────────────────────────────────────────────────────────────────
--- 3. Permisos de tabla que nadie de la app necesita.
---    anon y authenticated tenían TRUNCATE (vaciar una tabla completa),
---    REFERENCES y TRIGGER en todas las tablas. Las reglas por fila (RLS) no
---    detienen un TRUNCATE. Se quitan, también para las tablas futuras.
--- ─────────────────────────────────────────────────────────────────────────
 REVOKE TRUNCATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE TRUNCATE, REFERENCES, TRIGGER ON TABLES FROM anon, authenticated;
 DO $$
 BEGIN
-  -- MAINTAIN existe desde Postgres 17.
   EXECUTE 'REVOKE MAINTAIN ON ALL TABLES IN SCHEMA public FROM anon, authenticated';
 EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
 
--- ─────────────────────────────────────────────────────────────────────────
--- 4. Quien no ha entrado solo puede ejecutar lo que de verdad necesita:
---    validar su código de invitación. (Todas estas ya rechazaban a quien no
---    tiene sesión por dentro; esto lo cierra desde la puerta.)
--- ─────────────────────────────────────────────────────────────────────────
 DO $$
 DECLARE f text;
 BEGIN
@@ -147,7 +108,6 @@ BEGIN
     END;
   END LOOP;
 END $$;
--- update_company_identity tiene más parámetros: se revoca por nombre.
 DO $$
 DECLARE r record;
 BEGIN

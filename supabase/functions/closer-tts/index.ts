@@ -10,6 +10,7 @@
 //     latencia, costo estimado y si fue cache_hit, atribuida a empresa/vendedor.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -97,7 +98,16 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("ELEVENLABS_API_KEY");
     if (!apiKey) throw new Error("ELEVENLABS_API_KEY not configured");
 
+    // Solo usuarios con sesión: antes cualquiera podía generar audio con
+    // nuestra cuenta de ElevenLabs. El consumo va a nombre de su empresa.
+    const quien = await quienLlama(req);
+    if (!quien) return respuestaNoAutorizado(corsHeaders);
+
     const body = await req.json();
+    if (quien.tipo === "usuario") {
+      body.company_id = quien.companyId;
+      body.seller_id = quien.sellerId;
+    }
     const text: string = body?.text ?? "";
     const voiceId: string = body?.voice_id ?? DEFAULT_VOICE_ID;
     const modelId: string = body?.model_id ?? DEFAULT_MODEL_ID;

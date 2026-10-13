@@ -57,7 +57,8 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
   }));
   const res = await fetch(`${supabaseUrl}/functions/v1/closer-voice`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "apikey": anonKey, "Authorization": `Bearer ${anonKey}` },
+    // El evaluador ya no acepta la llave pública: la red entra con la de servicio.
+    headers: { "Content-Type": "application/json", "apikey": anonKey, "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""}` },
     body: JSON.stringify({
       phase: "evaluate",
       // Obligatorio: closer-voice resuelve el guion por node_id y rechaza
@@ -280,16 +281,18 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
     const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 
-    // Solo un manager puede correrlo: cada corrida llama al modelo ~24 veces.
+    // Solo el equipo de Closer (platform_admins) puede correrlo: cada corrida llama al modelo ~24 veces.
     // Antes era público, y el repo es público: cualquiera podía gastar créditos.
     const jwt = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
     const { data: who } = jwt ? await admin.auth.getUser(jwt) : { data: null as any };
     const uid = who?.user?.id ?? null;
-    const { data: prof } = uid
-      ? await admin.from("profiles").select("role").eq("id", uid).maybeSingle()
+    // Solo el equipo de Closer (platform_admins). Antes bastaba ser manager de
+    // cualquier empresa, y cualquiera puede crear una cuenta de manager.
+    const { data: esAdmin } = uid
+      ? await admin.from("platform_admins").select("user_id").eq("user_id", uid).maybeSingle()
       : { data: null as any };
-    if (!prof || prof.role !== "manager") {
-      return new Response(JSON.stringify({ error: "forbidden", detail: "solo managers pueden correr el harness" }), {
+    if (!esAdmin) {
+      return new Response(JSON.stringify({ error: "forbidden", detail: "solo el equipo de Closer puede correr la red de seguridad" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

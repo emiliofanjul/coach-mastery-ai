@@ -12,9 +12,13 @@
  *    redacta el cliente típico, el tono y la radiografía.
  * 3. ajustarRadiografia: el manager corrige o agrega algo con sus palabras.
  *
+ * Las tres exigen sesión (requireSupabaseAuth): sin ella cualquiera podría
+ * llamarlas y gastar créditos de Claude.
+ *
  * Modelo: claude-sonnet-4-5 (Anthropic directo, como el resto de Closer).
  */
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   CLAVES_CEREBRO as BRAIN_KEYS,
   SECCIONES_RADIOGRAFIA,
@@ -124,6 +128,7 @@ REGLAS: no inventes datos comerciales de la empresa (precios, marcas, plazos, no
 Responde SOLO con JSON: {"negativos": ["..."], "restricciones": ["..."]}`;
 
 export const proponerDelCampo = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: PropuestaPayload) => {
     if (!data || !Array.isArray(data.respuestas)) throw new Error("Missing answers");
     return data;
@@ -181,6 +186,7 @@ function radiografiaDe(raw: Record<string, unknown>): SeccionRadiografia[] {
 }
 
 export const generateCompanyBrain = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: BrainPayload) => {
     if (!data || !Array.isArray(data.respuestas) || !data.directo)
       throw new Error("Missing answers");
@@ -234,6 +240,7 @@ interface AjustePayload {
 }
 
 export const ajustarRadiografia = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: AjustePayload) => {
     if (!data || !data.brain || typeof data.ajuste !== "string" || !data.ajuste.trim())
       throw new Error("Missing adjustment");
