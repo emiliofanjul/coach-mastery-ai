@@ -136,6 +136,11 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
 
 describe("Harness: hay un caso por cada error encontrado practicando", () => {
   const ids = new Set(casos.map((c) => c.id));
+  it("disputas del 13-oct-2026: falla crítica explicada, mapeo con pregunta abierta, intención en voz alta", () => {
+    for (const id of ["G31_falla_critica_se_explica", "G32_mapeo_con_pregunta_abierta", "G33_intencion_en_voz_alta_no_es_pregunta"]) {
+      expect(ids.has(id), id).toBe(true);
+    }
+  });
   it("ejecución limpia sin observaciones (502 silencioso)", () => {
     expect(ids.has("G21_ejecucion_limpia_sin_observaciones")).toBe(true);
   });

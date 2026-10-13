@@ -29,6 +29,19 @@ function veredictos(ev: any): string {
   return vs.map((v: any) => `${String(v?.criterio_id ?? "").split(".").pop()}:${v?.nivel ?? "?"}${v?.falta ? `(falta: ${String(v.falta).slice(0, 80)})` : ""}`).join(" ");
 }
 
+const CORTE: Record<string, string> = {
+  max_duration: "se acabó el tiempo", max_turns: "se acabaron los turnos",
+  scope_covered: "objetivo cumplido", evidence_sufficient: "evidencia suficiente",
+};
+
+/** Qué le bajó la nota (oct-2026): sin esto, una nota de 30 por falla crítica no se explicaba. */
+function fallas(ev: any): string {
+  const fs = Array.isArray(ev?.fallas) ? ev.fallas : [];
+  if (fs.length) return fs.map((f: any) => `${f?.id}(${f?.severidad})${f?.cita ? `: "${String(f.cita).slice(0, 120)}"` : ""}`).join(" · ");
+  const flags = Array.isArray(ev?.flags_detected) ? ev.flags_detected : [];
+  return flags.join(", ");
+}
+
 export function armarReporteDisputas(lista: Disputa[]): string {
   const lineas: string[] = [`DISPUTAS · ${lista.length} · concedidas: ${lista.filter((d) => d.concede === true).length}`];
   for (const d of lista) {
@@ -39,10 +52,12 @@ export function armarReporteDisputas(lista: Disputa[]): string {
     lineas.push(`   closer: ${d.respuesta_closer}`);
     const ev = d.contexto?.evaluacion;
     if (ev) lineas.push(`   decidió: ${veredictos(ev)}`);
+    if (ev && fallas(ev)) lineas.push(`   fallas: ${fallas(ev)}`);
+    if (ev?.cut_reason) lineas.push(`   terminó: ${CORTE[ev.cut_reason] ?? ev.cut_reason}`);
     const conv = d.contexto?.conversacion ?? [];
     if (conv.length) {
       lineas.push("   conversación:");
-      for (const t of conv) lineas.push(`     ${t.role === "user" ? "V" : "C"}: ${String(t.content ?? "").replace(/\s+/g, " ").slice(0, 300)}`);
+      for (const t of conv) lineas.push(`     ${t.role === "user" ? "V" : "C"}: ${String(t.content ?? "").replace(/\s+/g, " ").slice(0, 600)}`);
     }
     if (d.nota_revision) lineas.push(`   nota de revisión: ${d.nota_revision}`);
   }

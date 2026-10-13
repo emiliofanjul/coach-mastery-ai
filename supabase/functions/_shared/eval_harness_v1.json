@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.9.0",
+  "harness_version": "v3.10.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1838,6 +1838,241 @@
           "busca_dolor_donde_no_hay"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G31_falla_critica_se_explica",
+      "node_id": "3.10",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "cut_reason": "max_duration",
+      "description": "Disputa real (oct-2026). Excavación por capas impecable, pero a media exploración el vendedor ofreció precio ('soy distribuidor oficial de Bardahl, le puedo dar mejor precio') sin saber a cuánto compra el cliente: pitch_prematuro, crítica en el jefe del Mundo 3 (decisión de Emilio). La nota quedó en 30 y la pantalla nunca dijo por qué. Esta red exige que la falla salga con su cita.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, don Ricardo, buenos días. Vengo porque estaba pasando por talleres aquí de la zona y quería visitarlo para saludar. ¿Qué tal todo? Veo que tiene mucha chamba. ¿Qué anda regalando o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "Buenos días. Sí, ando algo ajetreado, la verdad. Tengo dos unidades que debo entregar hoy y traigo un par de pendientes más. ¿En qué le puedo servir?"
+        },
+        {
+          "role": "user",
+          "text": "Ah, muy bien, muy bien. Qué bueno. Eso es bueno, que haya mucha chamba. Oiga, pues yo soy Emilio, vengo de DALFAN, ando visitando talleres de la zona."
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, dígame."
+        },
+        {
+          "role": "user",
+          "text": "Ah, lubricantes. ¿Qué es lo que está utilizando actualmente? Grasas, aditivos, lubricantes. ¿Qué marcas maneja?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues mire, tengo mi proveedor de siempre para lubricantes, traigo algo de Bardahl y Castrol según lo que pida el cliente. En grasas uso lo que me llega, normalmente genérica o Bardahl también. ¿Usted qué maneja?"
+        },
+        {
+          "role": "user",
+          "text": "Justo, de hecho, yo soy distribuidor oficial de Bardahl, entonces probablemente le puedo dar mejor precio. Pero en cuanto a productos, ¿cuáles está utilizando?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mire, la verdad ando corto de tiempo. Ya tengo con quién trabajo esto."
+        },
+        {
+          "role": "user",
+          "text": "Claro, claro, me imagino. Se ve que hay muchísima chamba. ¿Con quién lo está trabajando ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de la zona. Mire, de verdad traigo prisa. ¿Qué necesita saber exactamente?"
+        },
+        {
+          "role": "user",
+          "text": "Ah, perfecto. Oiga, ¿y cada cuánto le surte?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cada quincena, más o menos. Aunque la verdad es que no siempre llega cuando debería."
+        },
+        {
+          "role": "user",
+          "text": "Oiga, y cuando no llega, ¿cómo soluciona ese problema? ¿Queda mal con sus clientes? ¿Cómo le hace?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues mire, ahí sí me pega. A veces tengo que buscar con otro proveedor de emergencia, pero me cobran más caro y se me va el margen. Y cuando es algo específico que me pidieron, le tengo que decir al cliente que no lo tengo y se va con la competencia."
+        },
+        {
+          "role": "user",
+          "text": "No me diga. Híjole, claro, ese problema hace que usted pierda venta. ¿Qué productos son los que principalmente ha negado?"
+        },
+        {
+          "role": "assistant",
+          "text": "Principalmente anticongelantes y algunas grasas especiales. El anticongelante porque se mueve bastante y las grasas porque me las piden talleres que trabajan equipo pesado. Ahí es donde más me duele cuando no tengo."
+        },
+        {
+          "role": "user",
+          "text": "Okey. Y en esas grasas, ¿qué tipo de grasa es? ¿Grasa de chasis, grasa bentona? ¿Qué tipo?"
+        },
+        {
+          "role": "assistant",
+          "text": "Principalmente grasa de litio para rodamientos y grasa de chasis. La bentónica casi no me la piden."
+        },
+        {
+          "role": "user",
+          "text": "Okey. Y en los anticongelantes, ¿qué concentración es la que más ha negado o la que más se le mueve?"
+        },
+        {
+          "role": "assistant",
+          "text": "El concentrado es el que más se me mueve. Lo compran tanto talleres como algunos transportistas que manejan sus propias unidades. El diluido se vende, pero menos."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto. Oiga, ¿y en cuanto a precio, a cuánto le están vendiendo el anticongelante?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues mire, ahorita lo traigo como en 85 el litro del concentrado. Pero a veces varía según con quién lo agarre."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          0,
+          30
+        ],
+        "must_flag": [
+          "pitch_prematuro"
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "niveles_esperados": {
+          "discovery.preguntas_capas": "cumple",
+          "discovery.dolor_real": "cumple"
+        }
+      }
+    },
+    {
+      "id": "G32_mapeo_con_pregunta_abierta",
+      "node_id": "3.9b",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "cut_reason": "max_duration",
+      "ficha_cliente": {
+        "tipo": "nuevo",
+        "nombre": "Don Roberto",
+        "negocio": "refaccionaria"
+      },
+      "description": "Disputa real (oct-2026), sostenida por error. El cliente pidió aceite 15W40; el vendedor preguntó '¿qué otros productos maneja de alta rotación?' y salió sabiendo que el anticongelante y las grasas los compra con otro proveedor. Eso es mapear una familia distinta a la del pedido. El evaluador exigió 'familias que el cliente no mencionó', algo que el criterio no pide.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¿Cómo está? Buenos días. Oiga, quería pasar a visitarlo desde hace rato, pero por fin pude. Veo que hay mucho movimiento. ¿Siempre es así o solo los miércoles?"
+        },
+        {
+          "role": "assistant",
+          "text": "Buenos días, pues sí, ahorita andamos movidos. ¿Y usted quién es o qué maneja?"
+        },
+        {
+          "role": "user",
+          "text": "Pues fíjese, yo soy Emilio, de Bardahl, Repsol y Mexlub. Paso por la zona porque tengo aquí varios clientes y quería ver si lo podíamos ayudar de cualquier manera. ¿Usted qué productos está manejando actualmente en lubricantes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, mire qué bien. Sí, necesito aceite 15W40, justo ya se me está acabando. ¿Usted trae de eso? Tráigame diez litros."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí. Le anoto los diez litros sin problema. Los quiere en Bardahl, ¿verdad? Y además del aceite 15W40, ¿qué otros productos está manejando de alta rotación?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, Bardahl está bien. Pues mire, anticongelante muevo bastante, ese lo traigo con otro proveedor. Grasas también, de esas sí vendo seguido. Y aceite para transmisión me piden de repente."
+        },
+        {
+          "role": "user",
+          "text": "Muy bien. Anticongelante y aceite para transmisión. Pues fíjese que justo esos también los estoy vendiendo muy bien aquí en su zona, con otras refaccionarias. ¿Qué marcas está manejando ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues el anticongelante lo traigo con un proveedor que ya tengo desde hace rato, y las grasas igual. ¿Ustedes qué tienen de eso?"
+        },
+        {
+          "role": "user",
+          "text": "Nosotros manejamos todo eso que me está comentando. Para poderle ofrecer algo bueno, ¿qué tipo de cliente atiende usted? ¿Motos, automóviles nuevos, viejos? ¿Cuál es su cliente final?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues aquí llega de todo, la verdad. Carros particulares, camionetas, talleres que vienen a surtirse. De lo que más me piden es aceite multigrado y anticongelante, eso se mueve diario."
+        },
+        {
+          "role": "user",
+          "text": "Muy bien. Y en anticongelante, ¿en qué especificación está comprando? ¿Qué porcentaje?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues el que traigo es concentrado, lo venden así o ya diluido según lo que pidan. ¿Por qué, ustedes qué tienen?"
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "discovery.lee_el_lugar": "cumple",
+          "discovery.hueco": "cumple"
+        },
+        "observations_must_not_target": [
+          "discovery.lee_el_lugar"
+        ]
+      }
+    },
+    {
+      "id": "G33_intencion_en_voz_alta_no_es_pregunta",
+      "node_id": "2.2",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "description": "Disputa real (oct-2026), sostenida bien. 'Quería ver si le interesa comprarnos' es un pensamiento en voz alta y un motivo de venta, no una pregunta que le devuelve la palabra, aunque el cliente conteste (decisión de Emilio). Ningún turno cierra preguntando.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, don Carlos. ¿Cómo está? Oiga, estaba pasando por aquí y quería ver cómo le iba."
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, aquí en el jale."
+        },
+        {
+          "role": "user",
+          "text": "Ah, qué bueno. Muy bien, muy bien. Oiga, pues vengo con Repsol y Mexlub y Bardahl."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, órale."
+        },
+        {
+          "role": "user",
+          "text": "Ah, pues quería ver si le interesa comprarnos."
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita tengo proveedor. Gracias."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          0,
+          30
+        ],
+        "must_flag": [
+          "turno_sin_pregunta",
+          "pitch_prematuro"
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "niveles_esperados": {
+          "story.relevancia_cliente": "no_cumple"
+        }
       }
     }
   ]
