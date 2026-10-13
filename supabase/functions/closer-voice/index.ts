@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.5.0";
+const PROMPT_VERSION = "v2.5.1";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 // Bloque de prompt con caché de Anthropic. Todo lo FIJO va primero y marcado;
@@ -202,7 +202,7 @@ REGLAS DE EVALUACIÓN:
 3. Cada observación DEBE llevar "criterio_id" tomado literal de la lista de IDs válidos. Sin criterio_id la observación es inválida.
 4. "flags_detected" solo contiene IDs literales de failure_criteria detectados en el transcript. Si no detectas ninguno, array vacío [].
 5. Cantidad de observations: de 0 a 3. Reporta tantas como problemas reales haya DENTRO del alcance de los criterios de este nodo, ni más ni menos. Si hay una sola mejora real, reporta una; si hay tres, reporta tres. Y si el vendedor ejecutó bien todos los criterios, **devuelve observations: []** — una ejecución limpia se reconoce, no se le busca defecto. Fabricar crítica para llenar cuota destruye la confianza — omitir crítica real también. Cuando observations va vacío, la "mision" no corrige: consolida lo que ya hace bien y lo empuja al siguiente nivel de exigencia.
-6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí — aunque también tenga observación de mejora. Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
+6. "criterios_cumplidos": TODO criterio de success_criteria que el vendedor ejecutó correctamente va aquí. Un criterio "cumple" NO lleva observación: lo que se pueda pulir de algo bien hecho va a "siguiente_nivel". Con score ≥ 85, este array NO PUEDE estar vacío. Es la mitad positiva del historial de dominio: sin esto, la memoria futura solo tendría evidencia negativa.
 6b. LOS EJEMPLOS VAN COMPLETOS, SIN HUECOS. Todo "ejemplo" —en observations y en siguiente_nivel— se escribe como una línea que el vendedor podría decir tal cual, con el nombre real del cliente y los datos reales de su empresa que aparecen en el contexto. PROHIBIDOS los corchetes de relleno: "[empresa]", "[sector]", "[área relevante]", "[producto]". Las acotaciones entre corchetes, como "[pausa]" o "[el cliente responde]", SÍ están permitidas: no dejan nada incompleto y el vendedor entiende a qué se refieren. Lo prohibido es el hueco de un DATO que el vendedor tendría que inventar. Si en el contexto no está el nombre del vendedor, el de su empresa o el del cliente, escribe el ejemplo SIN nombrarlos ("ando visitando talleres de la zona…", "buenos días, ¿cómo le va?"): nunca pongas un nombre entre corchetes. Un ejemplo con huecos no es un ejemplo: es una plantilla que el vendedor tiene que resolver solo, justo cuando necesita ver cómo se hace. Si no tienes el dato real, redacta el ejemplo de modo que no lo necesite.
 6c. NUNCA INVENTES HECHOS DEL CLIENTE. En ningún ejemplo, observación ni "siguiente_nivel" pongas algo del cliente que no aparezca en el transcript o en el contexto: enfermedades, familia, una visita anterior, una compra pasada, algo "que te contó". Si no está ahí, no existe. Tampoco asumas que el cliente es recurrente: lo es SOLO si la sección "CLIENTE DE ESTA PRÁCTICA" lo dice, y entonces solo existen los hechos que ahí aparecen. Inventar que recuerdas algo es peor que no recordar nada — y un ejemplo inventado le enseña al vendedor a hacer exactamente eso.
 
@@ -1191,6 +1191,16 @@ Deno.serve(async (req) => {
         const tope = aplicarTopeCritico(evaluation.score, evaluation.flags_detected, practice_script?.failure_criteria);
         evaluation.score = tope.score;
         console.warn("[closer-voice] sin veredictos por criterio: plan B con el score del modelo", { session_id, node_id, score: tope.score, topado: tope.topado });
+      }
+      // Un criterio que salió "cumple" (o "no aplica") no puede aparecer como
+      // error en la pantalla: el vendedor lo hizo bien (red G31, oct-2026).
+      if (rubrica.valido) {
+        const completos = new Set(rubrica.desglose.filter((d) => d.credito >= 1).map((d) => d.criterio_id));
+        const antes = (evaluation.observations ?? []).length;
+        evaluation.observations = (evaluation.observations ?? []).filter((o: any) => !completos.has(o?.criterio_id));
+        if (evaluation.observations.length < antes) {
+          console.warn("[closer-voice] observaciones sobre criterios cumplidos descartadas", { session_id, node_id, descartadas: antes - evaluation.observations.length });
+        }
       }
       // Cada falla detectada, con lo que dijo el vendedor y cuánto costó: la
       // pantalla de resultados la muestra primero (disputa 3.10: la falla

@@ -3,6 +3,7 @@
 // Body opcional: { node_id?: string, case_ids?: string[] }
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import harness from "../_shared/eval_harness_v1.json" with { type: "json" };
+import { encabezadosDeServicio } from "../_shared/quien_llama.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -57,8 +58,9 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
   }));
   const res = await fetch(`${supabaseUrl}/functions/v1/closer-voice`, {
     method: "POST",
-    // El evaluador ya no acepta la llave pública: la red entra con la de servicio.
-    headers: { "Content-Type": "application/json", "apikey": anonKey, "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""}` },
+    // El evaluador ya no acepta la llave pública: la red entra con la de servicio,
+    // en el encabezado que el portero de la plataforma acepta para su formato.
+    headers: { "Content-Type": "application/json", ...encabezadosDeServicio(Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "", anonKey) },
     body: JSON.stringify({
       phase: "evaluate",
       // Obligatorio: closer-voice resuelve el guion por node_id y rechaza
@@ -92,6 +94,13 @@ function evaluateCase(c: Case, response: any): CaseResult {
   if (!parsed || typeof parsed !== "object") {
     reasons.push(`response is not valid JSON (status ${response.status})`);
     return { id: c.id, status: "fail", reasons, raw: response };
+  }
+  // Un rechazo antes de llegar al evaluador (portero de la plataforma, 401,
+  // 5xx) se reporta con su status y su cuerpo. Antes salía como "missing
+  // required field: score" y no decía qué pasó (oct-2026).
+  if (response.status >= 400 && !parsed.error) {
+    reasons.push(`closer-voice respondió ${response.status}: ${JSON.stringify(parsed).slice(0, 400)}`);
+    return { id: c.id, status: "fail", reasons };
   }
   if (parsed.error) {
     if (parsed.parsed && typeof parsed.parsed === "object") {
@@ -266,6 +275,10 @@ function evaluateCase(c: Case, response: any): CaseResult {
   for (const f of Array.isArray(parsed.flags_detected) ? parsed.flags_detected : []) {
     const x = fallasResp.find((y: any) => y?.id === f);
     if (!x || typeof x.error !== "string" || !x.error.trim()) { reasons.push(`UNIVERSAL: la falla ${f} no le explica nada al vendedor`); break; }
+  }
+  // Un criterio que salió "cumple" no puede aparecer como error (G31, oct-2026).
+  for (const o of Array.isArray(parsed.observations) ? parsed.observations : []) {
+    if (nivelPorCriterio.get(String(o?.criterio_id)) === "cumple") { reasons.push(`UNIVERSAL: observación sobre ${o.criterio_id}, que salió "cumple"`); break; }
   }
   // El estimado del modelo no es la nota: no sale de la función.
   if ("score_del_modelo" in parsed) reasons.push("UNIVERSAL: la respuesta trae score_del_modelo (no debe llegar al vendedor)");

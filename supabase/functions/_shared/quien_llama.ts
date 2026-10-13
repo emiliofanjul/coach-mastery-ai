@@ -23,13 +23,29 @@ export function tokenDe(req: Request): string {
   return (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
 }
 
+/**
+ * Encabezados para que una función del servidor llame a otra con la llave de
+ * servicio. Las llaves nuevas ("sb_secret_…") no son JWT: el portero de la
+ * plataforma solo las acepta en "apikey" y rechaza la petición ("Conflicting
+ * API keys") si además van en Authorization con otra llave en apikey. Eso
+ * rompió la red de seguridad en oct-2026. Las llaves viejas (JWT) siguen
+ * yendo como antes.
+ */
+export function encabezadosDeServicio(servicio: string, publica: string): Record<string, string> {
+  return servicio.startsWith("sb_")
+    ? { apikey: servicio }
+    : { apikey: publica, Authorization: `Bearer ${servicio}` };
+}
+
 export async function quienLlama(req: Request): Promise<Llamante | null> {
-  const token = tokenDe(req);
-  if (!token) return null;
   const url = Deno.env.get("SUPABASE_URL");
   const servicio = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!url || !servicio) return null;
-  if (token === servicio) return { tipo: "servicio" };
+  const token = tokenDe(req);
+  // La llave de servicio llega en Authorization (formato JWT) o en apikey
+  // (formato nuevo sb_secret_). En los dos casos se compara completa.
+  if (token === servicio || (req.headers.get("apikey") ?? "").trim() === servicio) return { tipo: "servicio" };
+  if (!token) return null;
 
   const enCache = cache.get(token);
   if (enCache && enCache.hasta > Date.now()) return enCache.quien;

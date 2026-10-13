@@ -77,6 +77,19 @@ describe("3.10 — la falla que topó la nota se le muestra al vendedor", () => 
   });
 });
 
+describe("G31 — un criterio cumplido no aparece como error", () => {
+  it("el prompt ya no permite observación sobre un criterio cumplido", () => {
+    expect(voz).not.toContain("aunque también tenga observación de mejora");
+    expect(voz).toContain('Un criterio "cumple" NO lleva observación');
+  });
+  it("el código descarta la observación si el criterio salió completo", () => {
+    expect(voz).toContain("evaluation.observations = (evaluation.observations ?? []).filter((o: any) => !completos.has(o?.criterio_id));");
+  });
+  it("la red lo vigila en todos los casos", () => {
+    expect(leer("supabase/functions/harness-runner/index.ts")).toContain('UNIVERSAL: observación sobre ${o.criterio_id}, que salió "cumple"');
+  });
+});
+
 describe("La réplica explica la nota solo con el cálculo real", () => {
   it("recibe el cálculo escrito por el código y nunca el estimado del modelo", () => {
     expect(voz).toContain("const explicacion = explicarNota(evaluacion);");
