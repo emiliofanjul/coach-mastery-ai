@@ -25,6 +25,28 @@ const RED = "#EF476F";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+// Las funciones del servidor que gastan IA (cliente, evaluador, voz, Director)
+// exigen la sesión del vendedor (oct-2026): antes aceptaban la llave pública y
+// cualquiera en internet podía usarlas y gastar los créditos. Con la sesión,
+// además, el consumo queda a nombre de la empresa correcta.
+async function llaveUsuario(): Promise<string> {
+  return (await sesionFresca())?.accessToken ?? SUPABASE_ANON;
+}
+// Llama a una función del servidor con la sesión del vendedor. Si el servidor
+// la rechaza (401) aunque parecía vigente, se renueva una vez y se reintenta:
+// así un token que caducó a media práctica no corta la conversación.
+async function fetchFuncion(url: string, init: RequestInit): Promise<Response> {
+  const conLlave = (tok: string): RequestInit => {
+    const h = new Headers(init.headers);
+    h.set("Authorization", `Bearer ${tok}`);
+    return { ...init, headers: h };
+  };
+  const res = await fetch(url, conLlave(await llaveUsuario()));
+  if (res.status !== 401) return res;
+  const nueva = (await sesionFresca({ forzar: true }))?.accessToken;
+  if (!nueva) return res;
+  return fetch(url, conLlave(nueva));
+}
 const TTS_URL = `${SUPABASE_URL}/functions/v1/closer-tts`;
 const VOICE_URL = `${SUPABASE_URL}/functions/v1/closer-voice`;
 const DIRECTOR_URL = `${SUPABASE_URL}/functions/v1/director`;
@@ -323,10 +345,10 @@ function PracticaPage() {
           const ctrlFicha = new AbortController();
           const limiteFicha = setTimeout(() => ctrlFicha.abort(), 15_000);
           try {
-            const r = await fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
+            const r = await fetchFuncion(`${SUPABASE_URL}/functions/v1/closer-voice`, {
               signal: ctrlFicha.signal,
               method: "POST",
-              headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+              headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON, Authorization: `Bearer ${await llaveUsuario()}` },
               body: JSON.stringify({ phase: "ficha_cliente", tipo_cliente: tipo, company_brain: JSON.stringify((company as any)?.company_sales_brain ?? {}) }),
             });
             const j = await r.json();
@@ -587,12 +609,12 @@ function PracticaPage() {
     const ctrl = new AbortController();
     ttsFetchAbortRef.current = ctrl;
     try {
-      const res = await fetch(TTS_URL, {
+      const res = await fetchFuncion(TTS_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${SUPABASE_ANON}`,
+          Authorization: `Bearer ${await llaveUsuario()}`,
         },
         // Atribución de costo de voz (tts_calls) + caché de audio por hash.
         body: JSON.stringify({
@@ -815,12 +837,12 @@ function PracticaPage() {
         youDoStartTimeRef.current = Date.now();
       }
       const elapsed_seconds = Math.floor((Date.now() - (youDoStartTimeRef.current ?? Date.now())) / 1000);
-      const res = await fetch(DIRECTOR_URL, {
+      const res = await fetchFuncion(DIRECTOR_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${SUPABASE_ANON}`,
+          Authorization: `Bearer ${await llaveUsuario()}`,
         },
         body: JSON.stringify({
           practice_script: nodeDataRef.current?.practice_script ?? null,
@@ -990,12 +1012,12 @@ function PracticaPage() {
     async function attemptFetch(): Promise<Response> {
       const started = performance.now();
       try {
-        const res = await fetch(VOICE_URL, {
+        const res = await fetchFuncion(VOICE_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             apikey: SUPABASE_ANON,
-            Authorization: `Bearer ${SUPABASE_ANON}`,
+            Authorization: `Bearer ${await llaveUsuario()}`,
           },
           body: JSON.stringify({
             transcript: userText,
@@ -1339,12 +1361,12 @@ function PracticaPage() {
         director_user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
-      const evaluateRes = await fetch(VOICE_URL, {
+      const evaluateRes = await fetchFuncion(VOICE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${SUPABASE_ANON}`,
+          Authorization: `Bearer ${await llaveUsuario()}`,
         },
         body: JSON.stringify(evaluatePayload),
         signal: ctrl.signal,
@@ -1505,7 +1527,7 @@ function PracticaPage() {
             method: "POST",
             headers: {
               apikey: SUPABASE_ANON,
-              Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+              Authorization: `Bearer ${accessToken || (await llaveUsuario())}`,
             },
             body: form,
           });
@@ -3011,15 +3033,15 @@ function ReplicaChat({
     setThread(nextThreadOptimistic);
     setDraft("");
     try {
-      const accessToken = (await sesionFresca())?.accessToken ?? "";
+      const accessToken = await llaveUsuario();
       // Un tropiezo pasajero no debe obligar al vendedor a reescribir su
       // desacuerdo: se reintenta solo, una vez.
-      const pedir = () => fetch(`${SUPABASE_URL}/functions/v1/closer-voice`, {
+      const pedir = () => fetchFuncion(`${SUPABASE_URL}/functions/v1/closer-voice`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           phase: "replica",
@@ -3069,7 +3091,7 @@ function ReplicaChat({
           method: "POST",
           headers: {
             apikey: SUPABASE_ANON,
-            Authorization: `Bearer ${accessToken || SUPABASE_ANON}`,
+            Authorization: `Bearer ${accessToken || (await llaveUsuario())}`,
           },
           body: form,
         });

@@ -3,6 +3,7 @@
  * + su primera misión, usando Lovable AI Gateway (Gemini 2.5 Pro).
  */
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 interface SellerWelcomePayload {
   name: string;
@@ -26,7 +27,9 @@ const CHALLENGE_LABELS: Record<string, string> = {
   retencion: "Retener clientes actuales",
 };
 
+// Sesión obligatoria (oct-2026): antes cualquiera podía llamarla y gastar créditos.
 export const generateSellerWelcome = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: SellerWelcomePayload) => {
     if (!data?.name || !data?.experience || !data?.challenge) {
       throw new Error("missing_fields");
@@ -107,7 +110,8 @@ Responde SOLO con JSON válido, sin markdown:
     } catch {
       parsed = {
         mensaje: `${data.name}, tu reto es real y no se resuelve con un truco aislado. Se resuelve dominando el sistema completo de ventas paso a paso, en el orden correcto. Cuando completes el camino, lo que hoy te cuesta se va a convertir en tu mayor fortaleza.`,
-        expectativa: "El mapa que vas a ver no es una lista de tips: es el sistema completo que convierte tu mayor reto en tu mayor fortaleza.",
+        expectativa:
+          "El mapa que vas a ver no es una lista de tips: es el sistema completo que convierte tu mayor reto en tu mayor fortaleza.",
       };
     }
     return parsed;

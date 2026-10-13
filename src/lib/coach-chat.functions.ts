@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -124,21 +125,32 @@ Skills con evidencia (código y mastery 0-100): ${skills}`;
   return { brainBlock, progresoBlock, companyId: seller.company_id };
 }
 
+// Sesión obligatoria (oct-2026): antes cualquiera podía llamar al coach y gastar
+// créditos, y con el id de otro vendedor leer el contexto de otra empresa.
+// Ahora el coach siempre usa al vendedor de la sesión.
 export const coachChat = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: ChatPayload) => {
     if (!data || !Array.isArray(data.messages) || data.messages.length === 0) {
       throw new Error("Missing messages");
     }
     return data;
   })
-  .handler(async ({ data }) => {
-    const apiKey = process.env['ANTHROPIC_API_KEY'];
+  .handler(async ({ data, context }) => {
+    const apiKey = process.env["ANTHROPIC_API_KEY"];
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
+
+    const { supabaseAdmin: adminSesion } = await import("@/integrations/supabase/client.server");
+    const { data: propio } = await adminSesion
+      .from("sellers")
+      .select("id")
+      .eq("profile_id", context.userId)
+      .maybeSingle();
 
     const { getCerebro } = await import("@/lib/doctrina.server");
     const [cerebro, ctx] = await Promise.all([
       getCerebro(),
-      loadCoachContext(data.sellerId),
+      loadCoachContext(propio?.id ?? undefined),
     ]);
 
     // Bloque FIJO (idéntico para todos los vendedores) → cacheado.
@@ -199,7 +211,7 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
         cached_tokens: json?.usage?.cache_read_input_tokens ?? null,
         cache_creation_tokens: json?.usage?.cache_creation_input_tokens ?? null,
         latency_ms: Date.now() - started,
-        seller_id: data.sellerId ?? null,
+        seller_id: propio?.id ?? null,
         company_id: ctx.companyId,
       });
     } catch (e) {

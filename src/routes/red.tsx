@@ -51,8 +51,9 @@ function RedPage() {
     (async () => {
       const session = getStoredSupabaseSession();
       if (!session) { navigate({ to: "/login" }); return; }
-      const perfil = await restGetMaybeSingle<{ role: string }>(`profiles?select=role&id=eq.${session.userId}&limit=1`);
-      if (!perfil || perfil.role !== "manager") { setEstado("denegado"); return; }
+      // Solo el equipo de Closer: la red de seguridad gasta IA en cada corrida.
+      const admin = await restGetMaybeSingle<{ user_id: string }>(`platform_admins?select=user_id&user_id=eq.${session.userId}&limit=1`).catch(() => null);
+      if (!admin) { setEstado("denegado"); return; }
       setToken(session.accessToken);
       try {
         const lista = await llamar(session.accessToken, { listar: true });

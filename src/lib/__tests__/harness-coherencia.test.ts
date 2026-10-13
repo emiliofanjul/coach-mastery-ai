@@ -310,7 +310,7 @@ describe("Harness runner: invariantes", () => {
     expect(runner).toMatch(/companyBrain \?\? "Lubricantes del Golfo/);
   });
 
-  it("solo lo puede correr un manager", () => {
-    expect(runner).toMatch(/prof\.role !== "manager"/);
+  it("solo lo puede correr el equipo de Closer (oct-2026: antes cualquier manager)", () => {
+    expect(runner).toContain('.from("platform_admins")');
   });
 });
