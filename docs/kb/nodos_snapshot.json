@@ -491,15 +491,9 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como llevas la conversacion. Vamos al desglose."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
-        {
-          "id": "turno_sin_pregunta",
-          "regla_id": "close.devuelve_el_volante",
-          "severity": "major",
-          "description": "Un turno del vendedor NO termina en pregunta: cierra con una afirmacion, un comentario o un agradecimiento. Verifica leyendo la ULTIMA frase literal de ese turno. Si termina en signo de interrogacion o es una pregunta implicita, este fallo NO aplica, sin importar cuantas afirmaciones haya dicho antes."
-        },
         {
           "id": "rafaga_de_preguntas",
           "regla_id": "discovery.interrogatorio",
