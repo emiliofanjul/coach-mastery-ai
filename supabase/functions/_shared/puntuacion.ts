@@ -194,3 +194,118 @@ export function calcularScore(args: {
   const cumplidos = desglose.filter((d) => d.credito >= 1).map((d) => d.criterio_id);
   return { valido: true, score: tope.score, base, desglose, restas, topado: tope.topado, criticos: tope.criticos, cumplidos, sin_veredicto };
 }
+
+// ─────────────────────────────────────────────────────────────────────
+// Las fallas, a la vista (oct-2026).
+//
+// Disputa real (3.10): el evaluador marcó pitch_prematuro (critical), la nota
+// quedó en 30, y la pantalla de resultados solo mostró una observación sobre
+// la historia breve. El vendedor nunca supo qué le bajó la nota, y la réplica
+// se inventó una explicación ("88 de calidad, 30 del sistema de progresión").
+// Ahora cada falla detectada sale con lo que dijo el vendedor y cuánto costó,
+// y la explicación de la nota la escribe el código, no el modelo.
+// ─────────────────────────────────────────────────────────────────────
+
+export interface Falla {
+  id: string;
+  severidad: Severidad;
+  /** Lo que cuesta, en palabras del vendedor. */
+  efecto: string;
+  /** Qué hizo, en una frase. */
+  error: string;
+  /** Lo que dijo, literal. */
+  cita?: string;
+  mejora?: string;
+  ejemplo?: string;
+}
+
+const ORDEN_SEVERIDAD: Record<string, number> = { critical: 0, major: 1, minor: 2 };
+
+export function efectoDe(sev: Severidad): string {
+  if (sev === "critical") return `Falla crítica: deja tu nota en máximo ${TOPE_CRITICO}.`;
+  if (sev === "major") return `Resta ${RESTA_MAJOR} puntos.`;
+  return `Resta ${RESTA_MINOR} puntos.`;
+}
+
+const texto = (x: unknown, max = 400): string | undefined =>
+  typeof x === "string" && x.trim() ? x.trim().slice(0, max) : undefined;
+
+/**
+ * Una falla por cada flag que existe en el guion, la más grave primero. El
+ * modelo aporta la cita y la frase para el vendedor; si no las mandó, la falla
+ * sale igual, con la primera frase de su descripción.
+ */
+export function fallasDe(flags: unknown, failureCriteria: unknown, evidencias: unknown): Falla[] {
+  const porId = new Map<string, any>();
+  for (const f of Array.isArray(failureCriteria) ? failureCriteria : []) {
+    if (f && typeof (f as any).id === "string") porId.set((f as any).id, f);
+  }
+  const ev = new Map<string, any>();
+  for (const e of Array.isArray(evidencias) ? evidencias : []) {
+    if (e && typeof (e as any).id === "string" && !ev.has((e as any).id)) ev.set((e as any).id, e);
+  }
+  const ids = [...new Set((Array.isArray(flags) ? flags : []).filter((x): x is string => typeof x === "string"))];
+  const fallas: Falla[] = [];
+  for (const id of ids) {
+    const f = porId.get(id);
+    if (!f) continue;
+    const sev = String(f.severity ?? "");
+    if (sev !== "critical" && sev !== "major" && sev !== "minor") continue;
+    const e = ev.get(id) ?? {};
+    const primeraFrase = String(f.description ?? "").split(/(?<=[.!?])\s/)[0].trim();
+    fallas.push({
+      id,
+      severidad: sev,
+      efecto: efectoDe(sev),
+      error: texto(e.error, 300) ?? primeraFrase,
+      ...(texto(e.cita) ? { cita: texto(e.cita) } : {}),
+      ...(texto(e.mejora) ? { mejora: texto(e.mejora) } : {}),
+      ...(texto(e.ejemplo) ? { ejemplo: texto(e.ejemplo) } : {}),
+    });
+  }
+  return fallas.sort((a, b) => ORDEN_SEVERIDAD[a.severidad] - ORDEN_SEVERIDAD[b.severidad]);
+}
+
+const NIVEL_EN_PALABRAS: Record<string, string> = {
+  cumple: "cumple", parcial: "a medias", no_cumple: "no cumple", no_aplica: "no aplicó (no cuenta)",
+};
+
+/**
+ * Cómo se calculó la nota, paso por paso, con los números reales. Es la ÚNICA
+ * explicación de la nota que la réplica puede dar.
+ */
+export function explicarNota(ev: {
+  score?: unknown;
+  desglose?: { base?: unknown; criterios?: unknown; restas?: unknown; topado?: unknown; criticos?: unknown } | null;
+  fallas?: unknown;
+}): string | null {
+  const d = ev?.desglose;
+  if (!d || typeof d !== "object" || typeof d.base !== "number" || typeof ev.score !== "number") return null;
+  const criterios = Array.isArray(d.criterios) ? (d.criterios as LineaDesglose[]) : [];
+  const restas = Array.isArray(d.restas) ? (d.restas as Resta[]) : [];
+  const fallas = Array.isArray(ev.fallas) ? (ev.fallas as Falla[]) : [];
+  const criticos = Array.isArray(d.criticos)
+    ? (d.criticos as string[])
+    : fallas.filter((f) => f.severidad === "critical").map((f) => f.id);
+  const pesoTotal = criterios.filter((c) => c.nivel !== "no_aplica").reduce((a, c) => a + (c.peso || 0), 0) || 1;
+  const lineas: string[] = [];
+  lineas.push(`Nota final: ${ev.score}. No existe otra nota ni otra escala.`);
+  lineas.push(`1) Criterios del nodo → base ${d.base} de 100:`);
+  for (const c of criterios) {
+    const pct = c.nivel === "no_aplica" ? "" : ` (vale ${Math.round((100 * (c.peso || 0)) / pesoTotal)}% de la base)`;
+    lineas.push(`   · ${c.criterio_id}: ${NIVEL_EN_PALABRAS[c.nivel] ?? c.nivel}${pct}${c.falta ? ` — falta: ${c.falta}` : ""}`);
+  }
+  if (restas.length === 0) lineas.push("2) Restas: ninguna.");
+  else {
+    lineas.push("2) Restas:");
+    for (const r of restas) lineas.push(`   · ${r.flag} (${r.severidad}): −${r.puntos}`);
+  }
+  if (d.topado === true && criticos.length > 0) {
+    lineas.push(`3) Tope: hubo una falla crítica (${criticos.join(", ")}). Una falla crítica deja la nota en máximo ${TOPE_CRITICO}, por eso quedó en ${ev.score}.`);
+  } else if (criticos.length > 0) {
+    lineas.push(`3) Tope: hubo una falla crítica (${criticos.join(", ")}), que limita la nota a máximo ${TOPE_CRITICO}; la nota ya estaba en ese rango.`);
+  } else {
+    lineas.push("3) Tope: no hubo falla crítica.");
+  }
+  return lineas.join("\n");
+}
