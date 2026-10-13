@@ -1644,7 +1644,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que se quedo sobre la mesa en esa visita."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1691,7 +1691,7 @@
           "id": "discovery.lee_el_lugar",
           "weight": 0.35,
           "regla_id": "discovery.lee_el_lugar",
-          "description": "Mapea el catálogo del cliente más allá de lo que ya le vende: averigua, de al menos una familia que hoy no le vende, si el cliente la maneja y con quién. No se exige un número de familias. Levantar el pedido y despedirse no cumple, por muy correcta que sea la visita."
+          "description": "Mapea el catálogo del cliente más allá de lo que ya le vende: averigua, de al menos una familia distinta a lo que hoy le vende, si el cliente la maneja y con quién. Cuenta aunque esa familia la nombre el propio cliente al contestar una pregunta abierta del vendedor (por ejemplo, '¿qué otras líneas maneja?'): lo que se mide es que el vendedor la sacó a la conversación, no que la haya nombrado él. No se exige un número de familias. Levantar el pedido y despedirse no cumple, por muy correcta que sea la visita."
         },
         {
           "id": "impulse.efecto_jones",
@@ -1736,7 +1736,7 @@
           "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo qué se quedó sobre la mesa en esa primera visita."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1783,7 +1783,7 @@
           "id": "discovery.lee_el_lugar",
           "weight": 0.35,
           "regla_id": "discovery.lee_el_lugar",
-          "description": "Mapea el catálogo del cliente más allá de lo que le pidió: averigua, de al menos una familia que no le pidió, si el cliente la maneja y con quién. No se exige un número de familias. Tomar el pedido y despedirse no cumple, por muy correcta que sea la visita."
+          "description": "Mapea el catálogo del cliente más allá de lo que le pidió: averigua, de al menos una familia distinta a la del pedido, si el cliente la maneja y con quién. Cuenta aunque esa familia la nombre el propio cliente al contestar una pregunta abierta del vendedor (por ejemplo, '¿qué otras líneas maneja?'): lo que se mide es que el vendedor la sacó a la conversación, no que la haya nombrado él. No se exige un número de familias. Tomar el pedido y despedirse no cumple, por muy correcta que sea la visita."
         },
         {
           "id": "impulse.efecto_jones",
