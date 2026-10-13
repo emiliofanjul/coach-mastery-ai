@@ -149,6 +149,13 @@ function evaluateCase(c: Case, response: any): CaseResult {
     if (!dump.includes(String(s).toLowerCase())) reasons.push(`missing negative citation: ${s}`);
   }
 
+  // fallas_con_cita: la falla sale con lo que dijo el vendedor, literal.
+  for (const id of (Array.isArray(exp.fallas_con_cita) ? exp.fallas_con_cita : [])) {
+    const f = (Array.isArray(parsed.fallas) ? parsed.fallas : []).find((x: any) => x?.id === id);
+    if (!f) reasons.push(`la falla ${id} no salió en "fallas"`);
+    else if (typeof f.cita !== "string" || !f.cita.trim()) reasons.push(`la falla ${id} salió sin la cita de lo que dijo el vendedor`);
+  }
+
   // observations_must_not_target: ninguna observación puede criticar estos
   // criterios. Verifica la DECISIÓN del evaluador (qué criticó), no su
   // redacción: perseguir negaciones con patrones ("no te presentaste", "ni te
@@ -253,6 +260,16 @@ function evaluateCase(c: Case, response: any): CaseResult {
   for (const x of Array.isArray(parsed.siguiente_nivel) ? parsed.siguiente_nivel : []) {
     if (!x || typeof x.regla_id !== "string" || !x.regla_id) { reasons.push("UNIVERSAL: 'lo que viene después' sin regla de la doctrina"); break; }
   }
+  // Cada falla detectada sale con su explicación para el vendedor (oct-2026,
+  // disputa 3.10: una falla crítica topó la nota y la pantalla no la decía).
+  const fallasResp: any[] = Array.isArray(parsed.fallas) ? parsed.fallas : [];
+  for (const f of Array.isArray(parsed.flags_detected) ? parsed.flags_detected : []) {
+    const x = fallasResp.find((y: any) => y?.id === f);
+    if (!x || typeof x.error !== "string" || !x.error.trim()) { reasons.push(`UNIVERSAL: la falla ${f} no le explica nada al vendedor`); break; }
+  }
+  // El estimado del modelo no es la nota: no sale de la función.
+  if ("score_del_modelo" in parsed) reasons.push("UNIVERSAL: la respuesta trae score_del_modelo (no debe llegar al vendedor)");
+
   // La nota debe salir de la rúbrica. Sin "desglose", el modelo no mandó sus
   // veredictos por criterio y la nota salió del plan B (su número libre).
   if (!parsed.desglose || typeof parsed.desglose !== "object") {

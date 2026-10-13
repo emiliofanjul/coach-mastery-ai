@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.4.0";
+const PROMPT_VERSION = "v2.5.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 // Bloque de prompt con caché de Anthropic. Todo lo FIJO va primero y marcado;
@@ -21,7 +21,7 @@ const plain = (text: string): PromptBlock => ({ type: "text", text });
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
-import { aplicarTopeCritico, calcularScore, estrellasDe } from "../_shared/puntuacion.ts";
+import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
@@ -187,6 +187,7 @@ Evalúas ÚNICAMENTE el transcript de texto. Tienes PROHIBIDO afirmar cualquier 
 LA PUNTUACIÓN NO ES EVIDENCIA. El vendedor HABLA; el texto que lees viene de una transcripción automática que no pone signos de interrogación ni comas. Una pregunta dicha en voz alta llega al transcript como si fuera una afirmación. Por eso:
 · NUNCA decidas si algo fue pregunta por la presencia o ausencia de "¿" o "?".
 · Juzga por FUNCIÓN, no por forma. Esto vale también para "la pregunta que CIERRE el turno": si la última frase invita a responder —aunque no tenga signos, como pasa en voz: "así ha estado toda la semana"— o el cliente la contestó con contenido, el turno SÍ termina en pregunta. Una frase es pregunta si lleva palabra interrogativa (cómo, qué, cuál, cuándo, dónde, quién, cuánto), si su estructura invita respuesta ("así ha estado toda la semana", "usted maneja Bardahl"), o —la evidencia más fuerte— si EL CLIENTE LA CONTESTÓ. Si el cliente respondió con contenido, el turno le devolvió la palabra: el criterio se cumplió. Y si el cliente NO contesta —porque es un rojo o viene de mal humor—, eso no convierte la pregunta en afirmación: la respuesta confirma, su ausencia no condena.
+· Lo que NO es pregunta aunque el cliente conteste (doctrina, oct-2026): anunciar tu intención en voz alta —"quería ver si le interesa…", "vengo a ver si…", "nomás pasaba a ver si…"—. Es un pensamiento dicho en voz alta, no una pregunta directa que le devuelve la palabra; el cliente puede contestarla, pero eso no la convierte en pregunta.
 · PROHIBIDO escribir observaciones o misiones sobre puntuación ("que termine en signo de interrogación", "escríbelo con signos"). El vendedor habla, no escribe. Una misión así le enseña a cuidar algo que no existe en su trabajo.
 
 CÓMO LEER EL CONTEXTO DE CIERRE (el valor concreto viene más abajo):
@@ -245,7 +246,8 @@ Devuélvelos SIEMPRE, aunque no haya ningún intento de venta: en ese caso, todo
 Si el criterio pide algo que el vendedor hace CUANDO ocurre una situación ("cuando el cliente contesta vago…", "cuando cuenta una mala experiencia…", "si saca una reserva…") y esa situación NO se presentó en la conversación, no hay pieza faltante: el criterio es "no_aplica". No se castiga no haber hecho lo que nunca hizo falta. REGLA DE LOS NO (doctrina, objections.regla_de_los_no): si el cliente dio tres "no" CONSECUTIVOS —sin que la conversación avanzara entre ellos— y el vendedor salió bien (sin insistir más, cuidando la relación y dejando una siguiente cita), ejecutó la doctrina: los criterios que la salida impidió demostrar NO son falta: son "no_aplica", y no se mencionan en observations, en la misión ni en "lo que viene después". Y si el criterio dice que una reacción del cliente es "el máximo", esa reacción confirma, pero no es requisito para cumplir.
 Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especificidad), agrega "escalon": 1, 2 o 3 según el escalón en que quedó: en las escaleras la calidad SÍ se mide, por escalones. En una escalera, "no_cumple" es SOLO cuando no hay ninguna observación ni pregunta; si hay aunque sea una de cortesía, es "parcial" con "escalon": 1. Recuerda: calidad baja no es falla — nunca va como flag.
 
-PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara, con su cita literal. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
+PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
+Por CADA flag que pongas, agrega su entrada en "evidencia_flags", sin excepción: es lo primero que el vendedor ve, porque es lo que más le bajó la nota. Si el vendedor no ve qué hizo, no puede corregirlo. "cita" es lo que dijo, copiado literal del transcript; "error" es una frase corta, dirigida a él, de qué hizo y por qué cuesta en este momento de la visita; "mejora" y "ejemplo" siguen las mismas reglas que en observations. Si no puedes citar la frase literal que dispara el flag, el flag no va.
 
 La rúbrica que aplica el código, para que sepas qué pesan tus decisiones: cumple vale el peso completo del criterio; parcial, la mitad; en escaleras, el escalón 1 vale un tercio y el 2 o el 3 el peso completo. Cada flag major resta 30, cada minor resta 15, y un critical deja el score en máximo 30. Devuelve también "score" con tu estimado: se guarda para comparar, pero la nota final la calcula el código.
 
@@ -318,6 +320,9 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
     }
   ],
   "flags_detected": ["<solo IDs de failure_criteria detectados>"],
+  "evidencia_flags": [
+    { "id": "<el mismo id de flags_detected>", "cita": "<lo que dijo el vendedor, literal>", "error": "<frase corta para el vendedor: qué hizo y por qué cuesta>", "mejora": "<qué hacer en su lugar>", "ejemplo": "<cómo habría sonado, en primera persona del vendedor, con el nombre real del cliente>" }
+  ],
   "criterios_cumplidos": ["<IDs de success_criteria que ejecutó bien>"],
   "mision": "UNA acción concreta y accionable para practicar antes de la próxima sesión, ligada a los criterios del nodo",
   "regresiones_detectadas": [{"skill_id": "<id de la lista del radar>", "evidencia": "cita corta del transcript"}],
@@ -404,6 +409,17 @@ function buildReplicaSystemPrompt(
 ): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
+  // Lo que el modelo estimó no es la nota: no se le enseña a la réplica.
+  const evaluacion = { ...(original_evaluation ?? {}) };
+  delete (evaluacion as any).score_del_modelo;
+  const explicacion = explicarNota(evaluacion);
+  const corte = String(evaluacion.cut_reason ?? "unknown");
+  const comoTermino: Record<string, string> = {
+    max_duration: "se acabó el tiempo de la práctica",
+    max_turns: "se acabaron los turnos de la práctica",
+    scope_covered: "Closer cortó porque el vendedor ya había cumplido el objetivo",
+    evidence_sufficient: "Closer cortó porque ya tenía suficiente para evaluar",
+  };
   return `Eres Closer explicando una evaluación a un vendedor que no está de acuerdo.
 
 REGLAS ABSOLUTAS:
@@ -413,7 +429,16 @@ REGLAS ABSOLUTAS:
 - Si el vendedor expone una estrategia legítima distinta, reconócela con respeto y explica la diferencia entre su estrategia y la MECÁNICA específica que este nodo mide. Cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
 - Mantén lenguaje de aprendizaje siempre (sin regañar, sin condescender, sin capitular).
 - Prohibido evaluar prosodia o audio. Prohibido inventar criterios que no estén en el practice_script.
-- Máximo 5 frases por respuesta.
+- Máximo 5 frases por respuesta. Frases cortas y palabras de vendedor, sin tecnicismos.
+- LA NOTA SE EXPLICA SOLO CON EL CÁLCULO DE ABAJO ("CÓMO SE CALCULÓ LA NOTA"). No existe otra nota, otra escala, "nota de calidad", "sistema de progresión" ni nada parecido: PROHIBIDO mencionarlos. Si hubo una falla crítica, eso es lo primero que explicas cuando pregunten por la nota: qué dijo (cítalo) y que una falla crítica deja la nota en máximo 30. Si pregunta "cuánto habría sacado", responde solo con la aritmética de ese cálculo; mientras la falla crítica siga ahí, la nota no pasa de 30.
+- SOLO PUEDES CONCEDER SOBRE LO QUE LA EVALUACIÓN DIJO (sus observaciones, veredictos o fallas). Si el vendedor reclama algo que la evaluación no le calificó, dile con claridad que eso no se le calificó, y no lo concedas.
+- ANTES DE SOSTENER un veredicto, ubica la frase de la descripción del criterio que pide justo lo que faltó. Si en la descripción no hay una frase que lo pida, el evaluador exigió de más: concede.
+- NO INVENTES CAUSAS TÉCNICAS. No sabes si un turno lo envió el vendedor o se cortó solo, ni nada del micrófono o la conexión. Si el vendedor dice que un turno se le cortó sin enviarlo, reconócelo como posible, no lo desmientas ni lo afirmes como hecho, y registra su punto.
+
+CÓMO TERMINÓ LA SESIÓN: ${comoTermino[corte] ?? "no quedó registrado"}.
+
+CÓMO SE CALCULÓ LA NOTA (escrito por el código, es exacto):
+${explicacion ?? "No hay desglose de esta evaluación. Si pregunta por la nota, explícala solo con los veredictos y las fallas de la evaluación, sin números que no estén ahí."}
 
 CRITERIOS DEL NODO (success):
 ${JSON.stringify(successCriteria, null, 2)}
@@ -422,7 +447,7 @@ CRITERIOS DE FALLO:
 ${JSON.stringify(failureCriteria, null, 2)}
 
 EVALUACIÓN ORIGINAL (inmutable):
-${JSON.stringify(original_evaluation, null, 2)}
+${JSON.stringify(evaluacion, null, 2)}
 
 TRANSCRIPT DE LA SESIÓN:
 ${JSON.stringify(conversation_history ?? [], null, 2)}
@@ -562,9 +587,11 @@ Empresa: ${company_brain}
 Vendedor: ${seller_name}
 Practice script: ${JSON.stringify(practice_script ?? {}, null, 2)}
 
-CUÁNDO TERMINAR (general):
+${phase === "you_do"
+  ? `CUÁNDO TERMINAR: nunca. En esta fase la sesión la termina el Director, no tú: responde siempre end_session: false y next_phase: "you_do".`
+  : `CUÁNDO TERMINAR (general):
 Cuando el vendedor haya demostrado suficiente evidencia — buena o mala — responde con end_session: true.
-No prolongues innecesariamente.
+No prolongues innecesariamente.`}
 
 RESPONDE SIEMPRE JSON VÁLIDO:
 {"message": "texto corto natural", "next_phase": "you_do|closing|end", "end_session": false, "meta_turn": false}
@@ -1144,13 +1171,16 @@ Deno.serve(async (req) => {
         flags: evaluation.flags_detected,
         failureCriteria: practice_script?.failure_criteria,
       });
-      (evaluation as any).score_del_modelo = evaluation.score;
+      // El estimado del modelo se queda en los registros: nunca llega al vendedor
+      // ni a la réplica. Disputa 3.10: la réplica lo vio (88) junto a la nota
+      // real (30) y se inventó "dos escalas" para explicarlo.
+      const scoreDelModelo = evaluation.score;
       if (rubrica.valido) {
         evaluation.score = rubrica.score;
         evaluation.criterios_cumplidos = rubrica.cumplidos;
         (evaluation as any).desglose = {
           base: rubrica.base, criterios: rubrica.desglose, restas: rubrica.restas,
-          topado: rubrica.topado, sin_veredicto: rubrica.sin_veredicto,
+          topado: rubrica.topado, criticos: rubrica.criticos, sin_veredicto: rubrica.sin_veredicto,
         };
         if (rubrica.sin_veredicto.length > 0) {
           console.warn("[closer-voice] criterios sin veredicto (contados como no cumplidos)", { session_id, node_id, sin_veredicto: rubrica.sin_veredicto });
@@ -1162,10 +1192,15 @@ Deno.serve(async (req) => {
         evaluation.score = tope.score;
         console.warn("[closer-voice] sin veredictos por criterio: plan B con el score del modelo", { session_id, node_id, score: tope.score, topado: tope.topado });
       }
+      // Cada falla detectada, con lo que dijo el vendedor y cuánto costó: la
+      // pantalla de resultados la muestra primero (disputa 3.10: la falla
+      // crítica topó la nota en 30 y el vendedor nunca supo cuál fue).
+      (evaluation as any).fallas = fallasDe(evaluation.flags_detected, practice_script?.failure_criteria, (evaluation as any).evidencia_flags);
+      console.log("[closer-voice] nota", { session_id, node_id, score: evaluation.score, score_del_modelo: scoreDelModelo, fallas: (evaluation as any).fallas.map((f: any) => f.id) });
 
       // Estrellas a partir del score YA topado.
       const stars = estrellasDe(evaluation.score);
-      return new Response(JSON.stringify({ ...evaluation, stars, end_session: true, ...meta }), {
+      return new Response(JSON.stringify({ ...evaluation, stars, cut_reason: cut_reason ?? "unknown", end_session: true, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -1220,6 +1255,15 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: "Malformed Closer response", parsed }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
+    }
+    // En you_do el cliente nunca termina la sesión: la termina el Director.
+    // Disputa 2.2 (oct-2026): el prompt general le decía al cliente "termina
+    // cuando haya suficiente evidencia", el cliente cerró al tercer turno y la
+    // práctica se evaluó sin decisión del Director y sin mensaje de cierre.
+    if (phase === "you_do" && (closerResponse.end_session || closerResponse.next_phase !== "you_do")) {
+      console.warn("[closer-voice] el cliente quiso terminar la sesión en you_do: se ignora", { session_id, node_id: body.node_id ?? null, end_session: closerResponse.end_session, next_phase: closerResponse.next_phase });
+      closerResponse.end_session = false;
+      closerResponse.next_phase = "you_do";
     }
 
     // Closer nunca dice groserías. Si al modelo se le escapa una, se reescribe
