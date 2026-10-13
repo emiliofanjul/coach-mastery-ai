@@ -40,6 +40,11 @@ export function textosDeEvaluacion(ev: any): TextoAuditable[] {
     if (typeof o?.mejora === "string" && o.mejora.trim()) out.push({ id: `obs${i}.mejora`, tipo: "mejora", texto: o.mejora, contexto: o.error });
     if (typeof o?.ejemplo === "string" && o.ejemplo.trim()) out.push({ id: `obs${i}.ejemplo`, tipo: "ejemplo", texto: o.ejemplo, contexto: o.error });
   });
+  // Lo que el vendedor ve de cada falla también se revisa (oct-2026).
+  (Array.isArray(ev?.evidencia_flags) ? ev.evidencia_flags : []).forEach((f: any, i: number) => {
+    if (typeof f?.mejora === "string" && f.mejora.trim()) out.push({ id: `fal${i}.mejora`, tipo: "mejora", texto: f.mejora, contexto: f.error });
+    if (typeof f?.ejemplo === "string" && f.ejemplo.trim()) out.push({ id: `fal${i}.ejemplo`, tipo: "ejemplo", texto: f.ejemplo, contexto: f.error });
+  });
   if (typeof ev?.mision === "string" && ev.mision.trim()) out.push({ id: "mision", tipo: "mision", texto: ev.mision });
   (Array.isArray(ev?.siguiente_nivel) ? ev.siguiente_nivel : []).forEach((s: any, i: number) => {
     if (typeof s?.observacion === "string" && s.observacion.trim()) out.push({ id: `sig${i}.observacion`, tipo: "observacion_siguiente", texto: s.observacion, contexto: s.regla_id });
@@ -65,6 +70,11 @@ export function aplicarAuditoria(ev: any, veredictos: unknown): { corregidos: nu
   (Array.isArray(ev?.observations) ? ev.observations : []).forEach((o: any, i: number) => {
     const m = arreglo(`obs${i}.mejora`, o.mejora); o.mejora = m ?? "";
     const e = arreglo(`obs${i}.ejemplo`, o.ejemplo); o.ejemplo = e ?? "";
+  });
+  (Array.isArray(ev?.evidencia_flags) ? ev.evidencia_flags : []).forEach((f: any, i: number) => {
+    if (!f || typeof f !== "object") return;
+    if (typeof f.mejora === "string") f.mejora = arreglo(`fal${i}.mejora`, f.mejora) ?? "";
+    if (typeof f.ejemplo === "string") f.ejemplo = arreglo(`fal${i}.ejemplo`, f.ejemplo) ?? "";
   });
   if (typeof ev?.mision === "string") {
     const m = arreglo("mision", ev.mision);
@@ -97,6 +107,7 @@ export function extraerJson(crudo: string): any {
  */
 export function fallaCerrada(ev: any): void {
   for (const o of Array.isArray(ev?.observations) ? ev.observations : []) o.ejemplo = "";
+  for (const f of Array.isArray(ev?.evidencia_flags) ? ev.evidencia_flags : []) if (f && typeof f === "object") f.ejemplo = "";
   if (typeof ev?.mision === "string") ev.mision = MISION_DE_RESPALDO;
   if (Array.isArray(ev?.siguiente_nivel)) ev.siguiente_nivel = ev.siguiente_nivel.filter((x: any) => x?.regla_id === "mindset.sin_groserias");
 }
