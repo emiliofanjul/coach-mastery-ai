@@ -81,8 +81,21 @@ interface ObservationItem {
   ejemplo: string;
 }
 
+/** Una falla detectada: lo que más le bajó la nota (oct-2026). */
+interface FallaItem {
+  id: string;
+  severidad: "critical" | "major" | "minor";
+  efecto: string;
+  error: string;
+  cita?: string;
+  mejora?: string;
+  ejemplo?: string;
+}
+
 interface FeedbackResult {
   score: number;
+  /** Las fallas que restaron o toparon la nota, la más grave primero. */
+  fallas: FallaItem[];
   stars: 0 | 1 | 2 | 3;
   observations: ObservationItem[];
   mision: string;
@@ -204,6 +217,9 @@ function PracticaPage() {
   // El Director corre después de cada turno del Actor en you_do; sus decisiones
   // se acumulan aquí y se guardan en el payload del seller_event al cierre.
   const directorDecisionsRef = useRef<DirectorDecision[]>([]);
+  // Fallas de la transcripción durante la práctica (oct-2026): quedan en el
+  // evento para poder revisar una disputa sin adivinar qué pasó.
+  const incidentesVozRef = useRef<{ turno: number; falla: string; codigo: string; accion: string; con_texto: boolean; at: string }[]>([]);
   const youDoStartTimeRef = useRef<number | null>(null);
   // Cut lock: se activa cuando el Director decide `cut`. Terminal e inmediato.
   // Todo lo posterior (STT, mic, sendToCloser, playTTS del Actor) queda bloqueado.
@@ -720,11 +736,12 @@ function PracticaPage() {
       void (async () => {
         let texto = finalText;
         try {
-          if (c) texto = (await c.terminar()) || finalText;
+          if (c) texto = juntar(prefijo, await c.terminar()) || finalText;
         } catch (err) {
           console.error("[voz] cierre del turno:", err);
         }
         setInterimTranscript("");
+        if (prefijo) setConnectionError(null);
         const text = texto.trim();
         grabacionRef.current?.anotarTexto(numeroTurno, text);
         // Descartar turno del usuario si el Director ya cortó (carrera).
@@ -745,13 +762,37 @@ function PracticaPage() {
     grabacionRef.current?.iniciarTurno(numeroTurno);
     scheduleFinish();
 
+    // Si la transcripción se cae A MEDIO TURNO, lo dicho NO se envía solo
+    // (oct-2026, disputa 3.10: la historia breve se fue cortada en "Vengo..."
+    // sin que el vendedor tocara enviar). Se reconecta y se sigue sumando; si
+    // no se puede, lo dicho se queda y el vendedor decide cuándo enviarlo.
+    let prefijo = ""; // lo que se transcribió en conexiones anteriores de este turno
+    let reconexiones = 0;
+    const MAX_RECONEXIONES = 2;
+    const juntar = (a: string, b: string) => `${a} ${b}`.replace(/\s+/g, " ").trim();
+    const anotarIncidente = (falla: string, codigo: string, accion: string) => {
+      incidentesVozRef.current.push({
+        turno: numeroTurno, falla, codigo, accion,
+        con_texto: !!finalText, at: new Date().toISOString(),
+      });
+    };
+    const esperarEnvio = () => {
+      // Sin reloj: nada se manda sin que el vendedor toque el micrófono.
+      if (sendTimer) clearTimeout(sendTimer);
+      sendTimer = null;
+      setNivelVoz(0);
+      setConnectionError("Se fue la señal un momento. Toca el micrófono para enviar lo que llevas.");
+    };
+
+    const abrir = () => {
     iniciarTurnoVoz({
       obtenerToken: obtenerTokenStt,
       idioma: "es",
       onParcial: (t) => {
-        if (turnClosed || t === finalText) return; // solo cuenta el texto NUEVO
-        finalText = t;
-        setInterimTranscript(t);
+        const total = juntar(prefijo, t);
+        if (turnClosed || total === finalText) return; // solo cuenta el texto NUEVO
+        finalText = total;
+        setInterimTranscript(total);
         scheduleFinish();
       },
       onNivel: (n) => {
@@ -773,9 +814,27 @@ function PracticaPage() {
       onError: (msg, falla, codigo) => {
         console.error("[voz] transcripción:", codigo, msg);
         if (turnClosed) return;
-        // Si ya había texto, se envía lo que se alcanzó a oír; si no, se avisa
-        // QUÉ falló (con su código) en vez de dejar al vendedor hablando solo.
-        if (!finalText) setConnectionError(avisoDeFallaVoz(falla, codigo));
+        if (finalText) {
+          // Ya había texto: jamás se envía por una falla. Se suelta la conexión
+          // caída y se abre otra; lo nuevo se suma a lo que ya llevaba.
+          const caida = control;
+          control = null;
+          try { caida?.cancelar(); } catch { /* noop */ }
+          prefijo = finalText;
+          if (reconexiones < MAX_RECONEXIONES) {
+            reconexiones++;
+            anotarIncidente(falla, codigo, "reconecta");
+            abrir();
+          } else {
+            anotarIncidente(falla, codigo, "espera_envio");
+            esperarEnvio();
+          }
+          return;
+        }
+        // Sin texto todavía: se avisa QUÉ falló (con su código) en vez de dejar
+        // al vendedor hablando solo.
+        anotarIncidente(falla, codigo, "cierra_sin_texto");
+        setConnectionError(avisoDeFallaVoz(falla, codigo));
         finishTurn();
       },
     })
@@ -789,6 +848,12 @@ function PracticaPage() {
       .catch((err) => {
         console.error("[voz] no se pudo iniciar el turno:", err);
         if (turnClosed) return;
+        if (prefijo) {
+          // Falló la reconexión: lo dicho se queda; el vendedor lo envía.
+          anotarIncidente("reconexion", String((err as any)?.message ?? err).slice(0, 60), "espera_envio");
+          esperarEnvio();
+          return;
+        }
         turnClosed = true;
         if (sendTimer) clearTimeout(sendTimer);
         if (finishVoiceTurnRef.current === finishTurn) finishVoiceTurnRef.current = null;
@@ -798,6 +863,8 @@ function PracticaPage() {
         grabacionRef.current?.cerrarTurno();
         setConnectionError(avisoDeArranque(err));
       });
+    };
+    abrir();
   }
 
   async function obtenerTokenStt(): Promise<string> {
@@ -853,13 +920,27 @@ function PracticaPage() {
           seller_id: sellerData?.id ?? null,
           node_id: nodeId,
         }),
+      }).catch((e) => {
+        console.warn("[director] sin red:", e);
+        return null;
       });
-      if (!res.ok) {
-        console.warn("[director] HTTP", res.status, "— fail-open, sesión continúa");
+      // Si el Director no responde, la app aplica ella misma los límites del
+      // nodo: desde oct-2026 el cliente ya no puede terminar la práctica, así
+      // que sin esto una falla del Director la dejaría sin fin.
+      const limites = nodeDataRef.current?.practice_script?.limits ?? {};
+      const turnosVendedor = conversationHistoryRef.current.filter((m) => m.role === "user").length;
+      const corteLocal: string | null =
+        typeof limites.max_turns === "number" && turnosVendedor >= limites.max_turns ? "max_turns"
+        : typeof limites.max_duration_seconds === "number" && elapsed_seconds >= limites.max_duration_seconds ? "max_duration"
+        : null;
+      if (!res || !res.ok) {
+        console.warn("[director] HTTP", res?.status ?? "sin_red", corteLocal ? `— corte local por ${corteLocal}` : "— fail-open, sesión continúa");
+      }
+      if ((!res || !res.ok) && !corteLocal) {
         directorDecisionsRef.current.push({
           turn: conversationHistoryRef.current.filter((m) => m.role === "user").length,
           decision: "continue",
-          reason: `http_${res.status}`,
+          reason: `http_${res?.status ?? "sin_red"}`,
           classifier_ran: false,
           classifier_result: null,
           latency_ms: 0,
@@ -869,7 +950,7 @@ function PracticaPage() {
         });
         return false;
       }
-      const data = await res.json();
+      const data = res && res.ok ? await res.json() : { decision: "cut", reason: corteLocal, local: true };
       const decision: "continue" | "cut" = data?.decision === "cut" ? "cut" : "continue";
       const reason: string = typeof data?.reason === "string" ? data.reason : "unknown";
       directorDecisionsRef.current.push({
@@ -1145,10 +1226,13 @@ function PracticaPage() {
       }
 
       // you_do / boss_sim / closing
-      if (nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
+      // En you_do la sesión solo la termina el Director: si el cliente pide
+      // terminar o cambiar de fase, se ignora (disputa 2.2, oct-2026).
+      const enYouDo = claudePhaseRef.current === "you_do";
+      if (!enYouDo && nextPhase && nextPhase !== "end" && nextPhase !== claudePhaseRef.current) {
         claudePhaseRef.current = nextPhase as any;
       }
-      if (endSession || nextPhase === "end") {
+      if (!enYouDo && (endSession || nextPhase === "end")) {
         await handleSessionEnd();
         return;
       }
@@ -1266,6 +1350,7 @@ function PracticaPage() {
       currentPhaseRef.current = "you_do";
       // Reset del estado del Director al arrancar you_do.
       directorDecisionsRef.current = [];
+      incidentesVozRef.current = [];
       youDoStartTimeRef.current = Date.now();
 
       // El vendedor (usuario) abre. Mic 100% manual: el usuario toca el botón cuando quiera hablar.
@@ -1446,6 +1531,9 @@ function PracticaPage() {
         // todo lo que no era 3 ni 2 se volvía 1, y se guardaba 1).
         stars: evaluation.stars === 3 ? 3 : evaluation.stars === 2 ? 2 : evaluation.stars === 1 ? 1 : 0,
         observations: evaluation.observations.slice(0, 3),
+        fallas: Array.isArray(evaluation?.fallas)
+          ? evaluation.fallas.filter((f: any) => f && typeof f.error === "string" && typeof f.efecto === "string")
+          : [],
         mision: evaluation.mision,
         radarLines,
         siguiente_nivel: Array.isArray((evaluation as any).siguiente_nivel)
@@ -1492,6 +1580,8 @@ function PracticaPage() {
                 stars: evaluation?.stars ?? null,
                 transcript: transcriptFullRef.current,
                 director_decisions: directorDecisionsRef.current,
+                cut_reason: cutReasonRef.current ?? "unknown",
+                incidentes_voz: incidentesVozRef.current,
                 // Full evaluator output — every field needed to rebuild skill_state
                 // lives in the event itself. Regla arquitectónica: si el evaluador
                 // lo produjo, el evento lo guarda.
@@ -1508,6 +1598,10 @@ function PracticaPage() {
                     ? evaluation.flags_detected
                     : [],
                   mision: typeof evaluation?.mision === "string" ? evaluation.mision : null,
+                  // Qué le bajó la nota y cómo se calculó: para el vendedor, el
+                  // manager y la revisión de disputas (oct-2026).
+                  fallas: Array.isArray(evaluation?.fallas) ? evaluation.fallas : [],
+                  desglose: evaluation?.desglose ?? null,
                   regresiones_detectadas: currentRegresiones,
                   // Dónde empieza y termina cada turno del vendedor dentro de la
                   // grabación: el manager puede saltar directo a cualquiera.
@@ -2914,6 +3008,19 @@ export function mensajesDeAnalisis(practiceScript: any, nombres: Record<string, 
 
 type FeedbackStep = "analyzing" | "result" | "victory" | "eval_error" | "transcript_only";
 
+function FallaCard({ falla }: { falla: FallaItem }) {
+  const texto = { fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5 } as const;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={{ ...texto, color: "#fff", fontWeight: 600 }}>{falla.error}</div>
+      {falla.cita && <div style={{ ...texto, color: "rgba(255,255,255,0.7)" }}>Dijiste: "{falla.cita}"</div>}
+      <div style={{ ...texto, fontSize: 13, color: RED, fontWeight: 600 }}>{falla.efecto}</div>
+      {falla.mejora && <div style={{ ...texto, color: ORANGE, fontWeight: 600 }}>{falla.mejora}</div>}
+      {falla.ejemplo && <div style={{ ...texto, color: "rgba(255,255,255,0.6)", fontStyle: "italic" }}>"{falla.ejemplo}"</div>}
+    </div>
+  );
+}
+
 function ObservationCard({ obs }: { obs: ObservationItem }) {
   const [open, setOpen] = useState(false);
   return (
@@ -3350,6 +3457,7 @@ function FeedbackPhase({
   const score = feedback?.score ?? 0;
   const stars: 0 | 1 | 2 | 3 = feedback?.stars ?? 0;
   const observations = feedback?.observations ?? [];
+  const fallas = feedback?.fallas ?? [];
 
   if (step === "victory") {
     // Sin estrella no hay festejo: una pantalla neutra, sin confeti. La
@@ -3461,7 +3569,32 @@ function FeedbackPhase({
             </div>
           </div>
 
+          {/* Lo que te bajó la nota: va primero. Disputa 3.10 (oct-2026): una
+              falla crítica dejó la nota en 30 y la pantalla no la mencionaba. */}
+          {fallas.length > 0 && (
+            <div
+              style={{
+                width: "100%",
+                padding: 16,
+                borderRadius: 14,
+                background: "rgba(239,71,111,0.08)",
+                border: "1px solid rgba(239,71,111,0.35)",
+                display: "flex",
+                flexDirection: "column",
+                gap: 12,
+              }}
+            >
+              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, color: "#fff" }}>
+                Lo que te bajó la nota
+              </div>
+              {fallas.map((f, i) => (
+                <FallaCard key={i} falla={f} />
+              ))}
+            </div>
+          )}
+
           {/* Observaciones */}
+          {(observations.length > 0 || fallas.length === 0) && (
           <div
             style={{
               width: "100%",
@@ -3505,6 +3638,7 @@ function FeedbackPhase({
               ))
             )}
           </div>
+          )}
 
           {Array.isArray((feedback as any)?.siguiente_nivel) &&
             (feedback as any).siguiente_nivel.length > 0 && (

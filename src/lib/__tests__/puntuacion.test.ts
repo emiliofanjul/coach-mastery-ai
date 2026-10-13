@@ -50,7 +50,7 @@ describe("estrellas salen del score YA topado", () => {
 describe("closer-voice usa esta función", () => {
   const fn = readFileSync(join(process.cwd(), "supabase/functions/closer-voice/index.ts"), "utf8");
   it("calcula la nota con la rúbrica, y las estrellas después", () => {
-    expect(fn).toMatch(/import \{ aplicarTopeCritico, calcularScore, estrellasDe \} from "\.\.\/_shared\/puntuacion\.ts"/);
+    expect(fn).toMatch(/import \{ aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota \} from "\.\.\/_shared\/puntuacion\.ts"/);
     const iRubrica = fn.indexOf("calcularScore({");
     const iEstrellas = fn.indexOf("estrellasDe(evaluation.score)");
     expect(iRubrica).toBeGreaterThan(0);

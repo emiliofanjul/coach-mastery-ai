@@ -92,7 +92,7 @@ describe("Modo radio (sept-2026, decisión de Emilio)", () => {
     expect(ui).not.toMatch(/baseSilenceMs|looksIncomplete/);
   });
   it("solo el texto NUEVO reinicia el reloj (ElevenLabs repite el mismo texto)", () => {
-    expect(ui).toMatch(/if \(turnClosed \|\| t === finalText\) return;/);
+    expect(ui).toMatch(/if \(turnClosed \|\| total === finalText\) return;/);
   });
   it("el tutorial enseña cómo funciona de verdad", () => {
     expect(ui).toMatch(/Toca otra vez para enviar/);
