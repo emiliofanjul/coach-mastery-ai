@@ -1071,6 +1071,13 @@ function NodeSheet({
   );
 }
 
+/** "BOSS DE LA PRESENTACIÓN", "BOSS DEL DESCUBRIMIENTO" (de + el = del). */
+function etiquetaBoss(worldName: string | null): string {
+  if (!worldName) return "BOSS LEVEL";
+  const n = worldName.trim();
+  return /^el\s/i.test(n) ? `BOSS DEL ${n.slice(3).toUpperCase()}` : `BOSS DE ${n.toUpperCase()}`;
+}
+
 function NodeSheetBody({
   node,
   worldName,
@@ -1117,6 +1124,11 @@ function NodeSheetBody({
   if (node.status === "completed") {
     return (
       <div style={{ padding: "1rem 0.5rem", textAlign: "center" }}>
+        {node.is_boss && (
+          <div style={{ fontFamily: "Syne, sans-serif", color: "#FFD166", fontWeight: 800, fontSize: "0.75rem", letterSpacing: "0.15em", marginBottom: 8 }}>
+            {etiquetaBoss(worldName)}
+          </div>
+        )}
         <SheetHeader>
           <SheetTitle
             style={{
@@ -1202,7 +1214,7 @@ function NodeSheetBody({
           }}
         >
           {/* El paso al que pertenece el boss (oct-2026): "BOSS DE LA PRESENTACIÓN". */}
-          {worldName ? `BOSS DE ${worldName.toUpperCase()}` : "BOSS LEVEL"}
+          {etiquetaBoss(worldName)}
         </div>
       )}
       <SheetHeader>

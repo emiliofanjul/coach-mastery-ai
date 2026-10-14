@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Copiar los dos archivos de etiquetas boss tras verificar af0aca0 y comprobar identidad byte por byte.
+- [ ] Verificar las pruebas y las hojas de El Diagnóstico y de un boss completado en el mapa.
+
 - [x] Fix typecheck build errors (SectionChat.tsx was corrupt; restored previous working version).
 - [ ] Identify the affected `nuevo` pitch, client type, and recorded prompt version.
 - [ ] Prove why V20/V21 were bypassed or failed.
