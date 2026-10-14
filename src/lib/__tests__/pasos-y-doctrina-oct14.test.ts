@@ -55,7 +55,16 @@ describe("el paso de la visita en cada cosa que se marca", () => {
 
 describe("los boss dicen de qué paso son", () => {
   it("el mapa pone 'BOSS DE <paso>' y los nombres ya no repiten 'BOSS:'", () => {
-    expect(leer("src/routes/mapa.tsx")).toContain("`BOSS DE ${worldName.toUpperCase()}`");
+    const mapa = leer("src/routes/mapa.tsx");
+    // "de" + "el" = "del": "BOSS DEL DESCUBRIMIENTO", nunca "BOSS DE EL…".
+    const cuerpo = mapa.slice(mapa.indexOf("function etiquetaBoss"), mapa.indexOf("function NodeSheetBody"));
+    const etiquetaBoss = new Function("worldName", cuerpo.slice(cuerpo.indexOf("{") + 1, cuerpo.lastIndexOf("}")).replace(/: string \| null/g, "")) as (w: string | null) => string;
+    expect(etiquetaBoss("El Descubrimiento")).toBe("BOSS DEL DESCUBRIMIENTO");
+    expect(etiquetaBoss("El Cierre")).toBe("BOSS DEL CIERRE");
+    expect(etiquetaBoss("La Presentación")).toBe("BOSS DE LA PRESENTACIÓN");
+    expect(etiquetaBoss("Certificación")).toBe("BOSS DE CERTIFICACIÓN");
+    // También en un boss ya completado.
+    expect(mapa.match(/\{etiquetaBoss\(worldName\)\}/g)?.length).toBe(2);
     const malos = nodos.filter((n) => n.node_type === "boss" && /^BOSS:/i.test(n.name)).map((n) => n.id);
     expect(malos).toEqual([]);
   });
