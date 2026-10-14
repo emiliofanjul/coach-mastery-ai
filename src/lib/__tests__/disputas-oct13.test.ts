@@ -146,11 +146,11 @@ describe("3.10 — un turno de voz nunca se envía solo por una falla de conexi�
 });
 
 describe("2.2 — un turno sin pregunta no se castiga dos veces", () => {
-  it("el nodo ya no tiene la falla espejo de su criterio (decisión de Emilio)", () => {
+  it("la falla regresa como espejo de su criterio: se muestra, no resta aparte", () => {
     const nodos: any[] = JSON.parse(leer("docs/kb/nodos_snapshot.json"));
     const ps = nodos.find((n) => n.id === "2.2").practice_script;
-    expect(ps.failure_criteria.map((f: any) => f.id)).not.toContain("turno_sin_pregunta");
-    expect(ps.success_criteria.map((c: any) => c.id)).toEqual(["story.relevancia_cliente"]);
+    const f = ps.failure_criteria.find((x: any) => x.id === "turno_sin_pregunta");
+    expect(f.espejo_de).toBe("story.relevancia_cliente");
   });
 });
 

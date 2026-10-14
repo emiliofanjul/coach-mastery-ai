@@ -78,6 +78,12 @@ export function estrellasDe(score: number): 0 | 1 | 2 | 3 {
 // ─────────────────────────────────────────────────────────────────────
 
 export const RESTA_MAJOR = 30;
+
+/** Falla que es el espejo de un criterio del mismo nodo: no resta aparte. Nunca una critical. */
+export function esEspejo(f: unknown): boolean {
+  const x = f as any;
+  return !!x && typeof x.espejo_de === "string" && x.espejo_de.trim() !== "" && x.severity !== "critical";
+}
 export const RESTA_MINOR = 15;
 export const CREDITO: Record<string, number> = { cumple: 1, parcial: 0.5, no_cumple: 0 };
 export const CREDITO_ESCALON: Record<number, number> = { 1: 1 / 3, 2: 1, 3: 1 };
@@ -176,14 +182,22 @@ export function calcularScore(args: {
   const base = Math.round((100 * sumaCredito) / sumaPesos);
 
   // Restas: cada flag una sola vez; la severidad sale del guion, no del nombre.
+  // Una falla "espejo" de un criterio (oct-2026, decisión de Emilio) no resta:
+  // es no cumplir ese criterio, y el criterio ya lo cobró. Se sigue detectando
+  // y mostrando. Una critical nunca es espejo: siempre topa.
   const severidadDe = new Map<string, string>();
+  const espejos = new Set<string>();
   for (const f of Array.isArray(args.failureCriteria) ? args.failureCriteria : []) {
-    if (f && typeof (f as any).id === "string") severidadDe.set((f as any).id, String((f as any).severity ?? ""));
+    if (f && typeof (f as any).id === "string") {
+      severidadDe.set((f as any).id, String((f as any).severity ?? ""));
+      if (esEspejo(f)) espejos.add((f as any).id);
+    }
   }
   const flags = [...new Set((Array.isArray(args.flags) ? args.flags : []).filter((x): x is string => typeof x === "string"))];
   const restas: Resta[] = [];
   for (const f of flags) {
     const sev = severidadDe.get(f);
+    if (espejos.has(f)) continue;
     if (sev === "major") restas.push({ flag: f, severidad: sev, puntos: RESTA_MAJOR });
     else if (sev === "minor") restas.push({ flag: f, severidad: sev, puntos: RESTA_MINOR });
   }
@@ -209,6 +223,8 @@ export function calcularScore(args: {
 export interface Falla {
   id: string;
   severidad: Severidad;
+  /** Si es espejo de un criterio: cuál. No restó aparte. */
+  espejo_de?: string;
   /** Lo que cuesta, en palabras del vendedor. */
   efecto: string;
   /** Qué hizo, en una frase. */
@@ -256,7 +272,8 @@ export function fallasDe(flags: unknown, failureCriteria: unknown, evidencias: u
     fallas.push({
       id,
       severidad: sev,
-      efecto: efectoDe(sev),
+      efecto: esEspejo(f) ? "Por esto no cumpliste lo que mide este nodo (no resta aparte)." : efectoDe(sev),
+      ...(esEspejo(f) ? { espejo_de: String(f.espejo_de) } : {}),
       error: texto(e.error, 300) ?? primeraFrase,
       ...(texto(e.cita) ? { cita: texto(e.cita) } : {}),
       ...(texto(e.mejora) ? { mejora: texto(e.mejora) } : {}),
@@ -299,6 +316,10 @@ export function explicarNota(ev: {
   else {
     lineas.push("2) Restas:");
     for (const r of restas) lineas.push(`   · ${r.flag} (${r.severidad}): −${r.puntos}`);
+  }
+  const espejos = fallas.filter((f) => f.espejo_de);
+  if (espejos.length > 0) {
+    lineas.push(`   (No restaron aparte, porque ya contaron en su criterio: ${espejos.map((f) => `${f.id} → ${f.espejo_de}`).join(", ")}.)`);
   }
   if (d.topado === true && criticos.length > 0) {
     lineas.push(`3) Tope: hubo una falla crítica (${criticos.join(", ")}). Una falla crítica deja la nota en máximo ${TOPE_CRITICO}, por eso quedó en ${ev.score}.`);
