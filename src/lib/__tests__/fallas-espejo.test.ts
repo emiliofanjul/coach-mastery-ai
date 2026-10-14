@@ -84,16 +84,16 @@ describe("los guiones", () => {
     }
     expect(malos).toEqual([]);
   });
-  it("son los 14 pares acordados (13 de nodos normales + el 2.2), y ningún jefe todavía", () => {
+  it("son los 20 pares acordados: 13 de nodos normales, el 2.2, los dos del 2.8 nuevo y 5 de los boss (oct-2026)", () => {
     const pares = nodos.flatMap((n) => (n.practice_script?.failure_criteria ?? [])
       .filter((f: any) => f.espejo_de).map((f: any) => `${n.id}/${f.id}`));
     expect(pares.sort()).toEqual([
-      "1.4/se_encoge", "2.2/turno_sin_pregunta", "2.8/no_se_adelanta", "3.1/ignora_estado",
+      "1.4/se_encoge", "2.2/turno_sin_pregunta", "3.1/ignora_estado",
       "3.2/ignora_pistas", "3.2/pregunta_generica_en_capa2", "3.3/conversacion_desconectada",
       "4.10/se_derrumba", "4.12/cierra_con_afirmacion", "4.3/explica_sin_pintar", "4.3/imagen_generica",
       "4.3/presentacion_generica", "5.6/no_repite", "6.2/proximos_pasos_vagos",
+      "2.8/la_trata_como_bloqueo", "2.8/se_defiende",
+      "1.6/se_encoge", "3.10/ignora_pistas", "3.10/ignora_estado", "4.16/explica_sin_pintar", "5.15/traga_la_minimizacion",
     ].sort());
-    const jefes = new Set(nodos.filter((n) => n.node_type === "boss").map((n) => n.id));
-    expect(pares.filter((p) => jefes.has(p.split("/")[0]))).toEqual([]);
   });
 });

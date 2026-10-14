@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.11.0",
+  "harness_version": "v3.12.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -917,29 +917,28 @@
       "node_id": "2.8",
       "tipo": "perfecto",
       "seller_name": "Carlos",
-      "company_brain": "Papelera del Centro: Distribuidora de papelería y consumibles de oficina para papelerías y negocios.",
-      "description": "Ejecución perfecta del nodo 2.8 (El Ataque Preventivo), construida criterio por criterio desde la doctrina escrita.",
+      "company_brain": "Papelera del Centro: Distribuidora de papelería y consumibles de oficina para papelerías y negocios. Desde marzo surte esta zona desde una bodega nueva en Iztapalapa, con entrega fija cada martes; varios clientes que se habían ido por las entregas ya regresaron, entre ellos Papelería Lupita, a la vuelta.",
+      "description": "Ejecución perfecta del nodo 2.8 (La Mala Experiencia al Llegar), construida criterio por criterio desde la doctrina escrita: la acepta en serio, da un motivo real que el contexto de la empresa sostiene, y regresa al diagnóstico con una pregunta.",
       "transcript": [
         {
           "role": "user",
-          "text": "¡Buenos días, Don Memo! Me llamo Carlos, vengo de Papelera del Centro. Seguro le llegan vendedores cada semana que se presentan y luego ya no regresan; yo paso por esta calle cada quince días, así que me va a ver seguido. ¿Cuántos años lleva con la papelería?"
+          "text": "¡Buenos días, Don Memo! Me llamo Carlos, vengo de Papelera del Centro. ¿Cómo va la temporada de regreso a clases?"
         },
         {
           "role": "assistant",
-          "text": "Uy, sí, vienen muchos y luego ni vuelven. Ya van a ser quince años, pero ahorita la verdad no necesito nada."
+          "text": "Ah, ustedes... La vez pasada me dejaron tres semanas sin hojas en plena temporada. La verdad ya no les creo."
         },
         {
           "role": "user",
-          "text": "Claro, lo entiendo perfecto. Quince años es mucho aguante; ¿cómo le hizo cuando abrieron las tiendas grandes en la plaza?"
+          "text": "Entiendo perfecto lo que me dice, Don Memo; tres semanas sin hojas en temporada es para enojarse. De hecho, justo por eso me mandaron con usted: desde marzo surtimos esta zona desde la bodega nueva de Iztapalapa, con entrega fija cada martes, y Papelería Lupita, aquí a la vuelta, ya regresó con nosotros. Pero primero tengo que ver si lo podemos atender. ¿Con quién está trabajando ahorita?"
         },
         {
           "role": "assistant",
-          "text": "Pues me enfoqué en los estudiantes, con copias e impresiones. Eso las tiendas grandes no lo hacen bien."
+          "text": "Pues con Distribuidora Central, aunque también se me atrasan a veces."
         }
       ],
       "traza": {
-        "blocks.pre_emptive_strike": "Seguro le llegan vendedores cada semana que se presentan y luego ya no regresan",
-        "blocks.air": "Claro, lo entiendo perfecto. Quince años es mucho aguante"
+        "blocks.mala_experiencia": "Entiendo perfecto lo que me dice, Don Memo; tres semanas sin hojas en temporada es para enojarse. De hecho, justo por eso me mandaron con usted"
       },
       "expected": {
         "score_range": [
@@ -947,13 +946,13 @@
           100
         ],
         "niveles_esperados": {
-          "blocks.pre_emptive_strike": "cumple",
-          "blocks.air": "cumple"
+          "blocks.mala_experiencia": "cumple"
         },
         "must_not_flag": [
-          "no_se_adelanta",
-          "tono_de_disculpa",
-          "negativo_inventado",
+          "la_trata_como_bloqueo",
+          "se_defiende",
+          "promesa_en_disculpa",
+          "cambio_inventado",
           "pitch_prematuro"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
@@ -1068,7 +1067,8 @@
         "story.historia_breve": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste, en Veracruz; ando conociendo las farmacias independientes de la zona",
         "story.brevedad": "Me llamo Sofía, vengo de Distribuidora Médica del Sureste",
         "relationship.cpr": "Pues ya tiene quién la siga. Oiga, y en veinte años, ¿cómo ha cambiado la farmacia?",
-        "flow.close_with_action": "Entiendo, y está bien. ¿Y cómo le hace para atender sola entre semana?"
+        "flow.close_with_action": "Entiendo, y está bien. ¿Y cómo le hace para atender sola entre semana?",
+        "story.relevancia_cliente": "¿Cuánto tiempo lleva con la farmacia?"
       },
       "expected": {
         "score_range": [
@@ -1080,7 +1080,8 @@
           "story.historia_breve": "cumple",
           "story.brevedad": "cumple",
           "relationship.cpr": "cumple",
-          "flow.close_with_action": "cumple"
+          "flow.close_with_action": "cumple",
+          "story.relevancia_cliente": "cumple"
         },
         "must_not_flag": [
           "discute_el_bloqueo",
