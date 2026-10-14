@@ -27,6 +27,7 @@ import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditor
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
+import { etiquetarPasos } from "../_shared/pasos.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
@@ -1210,6 +1211,23 @@ Deno.serve(async (req) => {
       // crítica topó la nota en 30 y el vendedor nunca supo cuál fue).
       (evaluation as any).fallas = fallasDe(evaluation.flags_detected, practice_script?.failure_criteria, (evaluation as any).evidencia_flags);
       console.log("[closer-voice] nota", { session_id, node_id, score: evaluation.score, score_del_modelo: scoreDelModelo, fallas: (evaluation as any).fallas.map((f: any) => f.id) });
+      // El paso de la visita de cada observación y cada falla (oct-2026). Si
+      // falla la lectura, la evaluación sale igual, solo sin etiquetas.
+      try {
+        const adminPasos = getAdmin();
+        if (adminPasos) {
+          const [sk, rg, mu] = await Promise.all([
+            adminPasos.from("skills").select("id, name, world_id_introduced, regla_id"),
+            adminPasos.from("reglas").select("id, paso"),
+            adminPasos.from("worlds").select("id, name"),
+          ]);
+          etiquetarPasos(evaluation, practice_script, node_id, {
+            skills: (sk.data ?? []) as any[], reglas: (rg.data ?? []) as any[], mundos: (mu.data ?? []) as any[],
+          });
+        }
+      } catch (e) {
+        console.warn("[closer-voice] sin etiquetas de paso (fail-open):", e);
+      }
 
       // Estrellas a partir del score YA topado.
       const stars = estrellasDe(evaluation.score);
