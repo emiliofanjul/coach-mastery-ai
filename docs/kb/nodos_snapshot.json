@@ -257,7 +257,7 @@
   {
     "id": "1.6",
     "world_id": 1,
-    "name": "BOSS: La Primera Impresion",
+    "name": "La Primera Impresión",
     "node_type": "boss",
     "practice_script": {
       "notes": "v2.0.0 BOSS del Mundo 1. Sin pista garantizada y sin ayudas (R9): el gimnasio garantiza la oportunidad, el examen no. La senal de exito es que el cliente pregunte quien es el vendedor, que es la puerta natural al Mundo 2.",
@@ -885,7 +885,7 @@
   {
     "id": "2.10",
     "world_id": 2,
-    "name": "BOSS: La Puerta Fria",
+    "name": "La Puerta Fría",
     "node_type": "boss",
     "practice_script": {
       "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento.",
@@ -1804,7 +1804,7 @@
   {
     "id": "3.10",
     "world_id": 3,
-    "name": "BOSS: El Diagnóstico",
+    "name": "El Diagnóstico",
     "node_type": "boss",
     "practice_script": {
       "notes": "BOSS del Mundo 3 — el más completo hasta ahora: integra M0 (apertura), M1 (temple ante sequedad analítica), M2 (historia + AIR) y M3 entero (RRR + capas + escucha + dolor). El Actor combina 4 mecánicas: estado de prisa, un bloqueo espejo, dolor por capas y datos laterales. pitch_prematuro es critical — la línea entre diagnóstico y receta es la frontera del mundo. 16 turnos y 6 mínimos: es una conversación larga de verdad.",
@@ -2882,7 +2882,7 @@
   {
     "id": "4.16",
     "world_id": 4,
-    "name": "BOSS: Construye el Valor",
+    "name": "Construye el Valor",
     "node_type": "boss",
     "practice_script": {
       "notes": "BOSS del Mundo 4 — el ciclo diagnóstico→presentación completo ante el arquetipo desconfiado d4. Integra M3 (capas, escucha) y M4 entero. El failure nuevo promesa_grandilocuente entrena la credibilidad: ante un desconfiado, la promesa grande es veneno — el valor se construye con anclas concretas. 18 turnos: la sesión más larga del mapa hasta ahora.",
@@ -3816,7 +3816,7 @@
   {
     "id": "5.15",
     "world_id": 5,
-    "name": "BOSS: Extrae la Decision",
+    "name": "Extrae la Decisión",
     "node_type": "boss",
     "practice_script": {
       "notes": "BOSS del Mundo 7 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega.",
@@ -4150,7 +4150,7 @@
   {
     "id": "6.4",
     "world_id": 6,
-    "name": "BOSS: De Cliente a Aliado",
+    "name": "De Cliente a Aliado",
     "node_type": "boss",
     "practice_script": {
       "notes": "BOSS del Mundo 8 contra el arquetipo corporativo_formal d4 — el primer boss donde el boss_goal NO incluye vender: la venta ya ocurrió y agregarle es critical. Tres pruebas del perfil: precisión (el formal castiga la vaguedad), la cicatriz del proveedor anterior (remordimiento anticipado — se sana con concreto, se reabre con no se preocupe), y el registro relacional (formal ≠ frío; confianzudo = retroceso). La rendición a su manera: repite los términos de memoria y le habla de ti al negocio de su hermano.",
@@ -4265,7 +4265,7 @@
   {
     "id": "7.0",
     "world_id": 7,
-    "name": "La Conversacion Completa",
+    "name": "Examen: La Conversación Completa",
     "node_type": "boss",
     "practice_script": {
       "notes": "EXAMEN 1 de la Certificación. Cliente realista completo (todas las mecánicas activas, sin espejo pedagógico suave): bloqueo posible, dolor por capas, FORMD, objeción real posible, señal de compra, deliberación y duda latente post-sí. Los 6 pasos pesan en el score. Sin i_do — el mundo 9 no enseña: examina.",
@@ -4295,7 +4295,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4351,8 +4351,12 @@
         {
           "id": "presentacion_generica",
           "regla_id": "present.dos_mitades",
-          "severity": "major",
-          "description": "Presenta catálogo sin conectar con el dolor excavado."
+          "severity": "critical",
+          "description": "Presenta catálogo sin conectar con el dolor excavado.",
+          "severity_override": {
+            "default": "major",
+            "razon": "Certificación: presentar sin conectar con el dolor no puede aprobar un examen (decisión de Emilio, oct-2026)"
+          }
         },
         {
           "id": "monologo",
@@ -4404,7 +4408,7 @@
   {
     "id": "7.1",
     "world_id": 7,
-    "name": "El Examen de la Luz Roja",
+    "name": "Examen: La Luz Roja",
     "node_type": "boss",
     "practice_script": {
       "notes": "EXAMEN 2 — el conceptualmente más difícil: vender es FALLAR. El boss_goal es detectar la luz roja y salir con calidad. El Actor es genuinamente encantador y genuinamente no comprable — su razón sale por preguntas decentes en la primera o segunda capa. Los failures critical son persigue_luz_roja (seguir vendiendo tras conocer la razón) y no_califica (nunca preguntar). Sin i_do.",
@@ -4498,7 +4502,7 @@
   {
     "id": "7.2",
     "world_id": 7,
-    "name": "El Examen del Indiferente",
+    "name": "Examen: El Indiferente",
     "node_type": "boss",
     "practice_script": {
       "notes": "EXAMEN 3 contra el arquetipo cicatriz_emocional d5. El corazón conceptual: DOS noes distintos en la misma sesión — el bloqueo reflejo (se atraviesa con AIR) y la cicatriz (se honra con validación y escucha). Confundirlos es el fallo critical distintivo (air_a_la_cicatriz). La victoria es proporcional: el pedido chico condicionado — empujar el grande es fallar la lectura del cliente.",
@@ -4528,7 +4532,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4579,8 +4583,12 @@
         {
           "id": "presentacion_generica",
           "regla_id": "present.dos_mitades",
-          "severity": "major",
-          "description": "Presenta sin dolor excavado ni blindaje contra la cicatriz."
+          "severity": "critical",
+          "description": "Presenta sin dolor excavado ni blindaje contra la cicatriz.",
+          "severity_override": {
+            "default": "major",
+            "razon": "Certificación: presentar sin conectar con el dolor no puede aprobar un examen (decisión de Emilio, oct-2026)"
+          }
         },
         {
           "id": "monologo",
@@ -4768,7 +4776,7 @@
   {
     "id": "7.4",
     "world_id": 7,
-    "name": "BOSS FINAL: El Certificado",
+    "name": "Boss Final: El Certificado",
     "node_type": "boss",
     "practice_script": {
       "notes": "BOSS FINAL — arquetipo agresivo/hostil d5, sin restricciones: bloqueo doble + objeciones encadenadas + regateo + silencio, la conversación más larga y dura del mapa (22 turnos). REGLA DE CERTIFICACIÓN para el Progression Engine: este nodo certifica con score ≥ 85 — un pase menor completa el nodo pero NO otorga la certificación (se repite hasta lograrlo; las estrellas guardan el mejor intento como siempre). Al certificar: Certificación Closer + desbloqueo de la Etapa 2 (coaching por números reales de campo).",

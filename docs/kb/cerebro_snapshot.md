@@ -55,8 +55,9 @@ La imagen: vas dibujando la línea hacia la derecha y de pronto llega una objeci
 |---|---|
 | Los 6 pasos | La línea misma |
 | CPR / FORMS | Salida **deliberada** — sales tú, y regresas |
-| Bloqueos → AIR, Ataque Preventivo | Salida **impuesta** al inicio |
+| Bloqueos → AIR | Salida **impuesta** al inicio |
 | Objeciones → RRR, FFF | Salida **impuesta** después de entender |
+| Ataque Preventivo | Te adelantas tú a una objeción que ya sabes que viene |
 | Close With Action | Lo que te devuelve y te mueve al siguiente tramo |
 | Los 3 No seguidos | La señal de que ya no hay línea que recorrer |
 
@@ -282,15 +283,24 @@ Aquí sí hubo pensamiento.
 
 > **El tercer movimiento es el que falla.** Casi todos aceptan bien y casi todos logran no discutir — y después se quedan parados esperando, o peor, vuelven a pedir permiso. Ahí se pierde todo lo ganado.
 
-### Ataque Preventivo `FUENTE` `UNIVERSAL`
-**Cuándo:** intro o historia breve, si hay negativos comunes del territorio.
-**Cómo:** *"si das la negativa antes de que el cliente lo haga, ya no es una negativa."*
+### Ataque Preventivo `FUENTE + CAMPO` `UNIVERSAL`
+**Qué es:** decir tú el negativo antes de que lo diga el cliente. *"si das la negativa antes de que el cliente lo haga, ya no es una negativa."*
 
 **El mecanismo:** le quitas el argumento de las manos, y además te vuelves creíble — **quien reconoce lo malo se gana el derecho a que le crean lo bueno.**
 
-**Dos formas de arruinarlo:**
+**Cuándo sí:**
+1. **En la presentación**, con los negativos conocidos de tu oferta: los que salen con muchos clientes del territorio (precio, mínimos, días de entrega). Lo dices justo antes de que salga, cuando ya hay dolor y valor sobre la mesa.
+2. **Al regresar con un cliente que en la visita pasada te dio una objeción**, sobre todo si por ella fue luz roja. Esa objeción es la razón de la nueva visita, y abres con ella: *"Lo vuelvo a visitar porque la vez pasada me comentó que [X], y desde entonces cambiamos [Y]."* Solo si el cambio es real.
+3. **Con un cliente que te saca la misma objeción en cada visita:** en la siguiente, adelántasela tú, en la presentación.
+
+**Cuándo no:** al llegar con un cliente nuevo. No abres con negativos que el cliente no ha dicho: le plantas una preocupación que no tenía y hablas de tu oferta antes de diagnosticar.
+
+**Si el cliente saca una mala experiencia al llegar** (*"ya me han fallado"*, *"todos prometen y nadie cumple"*), no es un bloqueo para atravesar con AIR: es una preocupación real y se maneja como objeción, con Feel–Felt–Found, regresando al diagnóstico con una pregunta: *"Entiendo perfecto lo que me dice. De hecho, justo por eso me mandaron a visitarlo: desde hace unos meses solucionamos [X], y varios negocios como el suyo que tenían el mismo problema ya regresaron y están notando el cambio. Pero primero tengo que ver si lo podemos atender o no. ¿Con quién está trabajando ahorita?"* El cambio y los negocios que regresaron tienen que ser reales y comprobables.
+
+**Tres formas de arruinarlo:**
 - **En tono de disculpa** → deja de ser adelantarse y se vuelve defenderse de algo que nadie reclamó
 - **Con un negativo inventado** → no desactivas nada, plantas una preocupación nueva
+- **Con un cambio que no es real** → el cliente lo comprueba en la siguiente entrega y pierdes lo poco que te quedaba de credibilidad
 
 ### Close With Action `FUENTE (dentro de FFF) + CAMPO (generalizado)` `UNIVERSAL`
 **Es el Poder de Sugestión en ejecución.**
@@ -649,7 +659,7 @@ También llamadas **STOP signs**. En cuanto reconoces una, **DETIENES la present
 | Técnica | Cuándo | Cómo |
 |---|---|---|
 | **AIR** — Agree, Ignore, Resume | Bloqueos en la introducción | Reconoce, ignora, continúa |
-| **Ataque Preventivo** | Intro o historia breve, negativos conocidos del territorio | Da el negativo antes que el cliente |
+| **Ataque Preventivo** | En la presentación, con los negativos conocidos de tu oferta; o al regresar con un cliente que ya te dio esa objeción | Da el negativo antes que el cliente |
 | **RRR** — Repeat, Reassure, Resume | Objeciones menores y comunes | Repite, responde, **continúa sin pausa** |
 | **FFF** — Feel, Felt, Found | Preocupación seria o personal | Nunca discutas |
 

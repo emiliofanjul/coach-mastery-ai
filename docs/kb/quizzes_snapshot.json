@@ -531,5 +531,70 @@
     "explanation_correct": "Exacto. Sin consolidación, el sí es una promesa a merced del remordimiento nocturno. Con ella, es una decisión blindada — y además sembraste la siguiente: el cliente que se queda tranquilo es el que te recomienda y te recompra.",
     "explanation_wrong": "No es papeleo ni precio — es blindaje y siembra. El sí recién nacido es frágil: el Paso 6 lo protege con comprensión total, y de pasada construye lo que vale más que esta venta: la relación que trae la siguiente.",
     "regla_id": "consolidation.arrepentimiento"
+  },
+  {
+    "node_id": "4.7",
+    "question_order": 1,
+    "question_text": "Los seis factores de impulso (FUJPIG) sirven para lo mismo. ¿Para qué?",
+    "option_a": "Para que el cliente quiera comprar ahora: suben su emoción.",
+    "option_b": "Para bajar el precio sin perder margen.",
+    "option_c": "Para conseguir la cita con el dueño.",
+    "option_d": null,
+    "correct_option": "A",
+    "explanation_correct": "Exacto. El impulso es otra palabra para la emoción, y los seis factores son las seis maneras de subirlo.",
+    "explanation_wrong": "No. Los factores no tocan el precio ni la cita: son las seis maneras de subir el impulso, que es otra palabra para la emoción del cliente.",
+    "regla_id": "impulse.curva"
+  },
+  {
+    "node_id": "4.7",
+    "question_order": 2,
+    "question_text": "\"Varios talleres de esta misma calle ya lo manejan, y le puedo decir cuáles.\" ¿Qué factor está usando?",
+    "option_a": "Urgencia",
+    "option_b": "Efecto Jones",
+    "option_c": "Avaricia",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Eso es Efecto Jones: la gente deja que otros negocios como el suyo validen el producto. Y funciona porque se puede comprobar.",
+    "explanation_wrong": "Es Efecto Jones: otros negocios como el suyo ya lo hacen. La clave es que sea real y comprobable: si el cliente pregunta \"¿como quiénes?\", tienes nombres.",
+    "regla_id": "impulse.efecto_jones"
+  },
+  {
+    "node_id": "4.7",
+    "question_order": 3,
+    "question_text": "\"Si lo deja pasar, el mes que entra le vuelve a faltar el anticongelante en plena temporada.\" ¿Qué factor es?",
+    "option_a": "Miedo a la pérdida",
+    "option_b": "Indiferencia",
+    "option_c": "Poder de asumir",
+    "option_d": null,
+    "correct_option": "A",
+    "explanation_correct": "Miedo a la pérdida: lo que el cliente pierde por no decidir. Pesa más que la promesa de ganar.",
+    "explanation_wrong": "Es miedo a la pérdida: le muestras lo que se le va si no decide, con algo concreto de su negocio.",
+    "regla_id": "impulse.miedo_perdida"
+  },
+  {
+    "node_id": "4.7",
+    "question_order": 4,
+    "question_text": "\"Normalmente la caja sale en $1,200; con su volumen le queda en $1,050.\" ¿Qué factor es?",
+    "option_a": "Urgencia",
+    "option_b": "Avaricia",
+    "option_c": "Efecto Jones",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Avaricia: el contraste entre lo que costaba y lo que cuesta. La sensación legítima de obtener más por menos.",
+    "explanation_wrong": "Es avaricia: el contraste entre lo que normalmente cuesta y lo que le queda a él.",
+    "regla_id": "impulse.avaricia"
+  },
+  {
+    "node_id": "4.7",
+    "question_order": 5,
+    "question_text": "¿Cuál de estas frases NUNCA se vale, aunque suba el impulso?",
+    "option_a": "\"Esta promoción termina el viernes\", si de verdad termina el viernes.",
+    "option_b": "\"Solo me quedan tres cajas\", cuando en la bodega hay cien.",
+    "option_c": "\"Otros negocios como el suyo ya lo venden\", si es verdad.",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Correcto. El impulso se construye con verdad: una escasez inventada se derrumba en cuanto el cliente la descubre, y se lleva la venta y tu credibilidad.",
+    "explanation_wrong": "La que nunca se vale es la escasez inventada. Las otras dos son buenas si son verdad: el impulso se construye con verdad.",
+    "regla_id": "impulse.escasez_inventada"
   }
 ]
