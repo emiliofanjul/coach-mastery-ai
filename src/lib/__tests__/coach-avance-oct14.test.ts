@@ -4,7 +4,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { armarAvance } from "../avance-coach";
+import { armarAvance, armarTecnicas } from "../avance-coach";
 
 const leer = (p: string) => readFileSync(join(process.cwd(), p), "utf8");
 const coach = leer("src/lib/coach-chat.functions.ts");
@@ -47,11 +47,32 @@ describe("el coach usa ese mapa y sabe qué hacer con él", () => {
     expect(coach).toContain('.from("node_progress").select("node_id, status, stars").eq("seller_id", seller.id)');
     expect(coach).toContain("armarAvance(");
   });
-  it("si no lo ha visto: breve y en qué mundo lo aprende; si ya lo vio: refresca y manda a repetir el nodo", () => {
-    expect(coach).toContain("TÚ SABES LO QUE YA LE ENSEÑASTE");
-    expect(coach).toContain("SI TODAVÍA NO LO VE (○)");
-    expect(coach).toContain("Sigue avanzando: cuando llegues, todo va a tener sentido.");
+  it("ubica el tema; si no lo ve: máximo 4 frases y el mundo; si ya lo vio: refresca y manda a repetir el nodo", () => {
+    expect(coach).toContain("UBICA EL TEMA DE LA PREGUNTA");
+    expect(coach).toContain("se enseña en el\n   mundo de El Cierre, aunque su causa venga de un paso anterior");
+    expect(coach).toContain("SOLO EXPLICAS TÉCNICAS QUE YA LE ENSEÑASTE O QUE ESTÁ APRENDIENDO AHORA");
+    expect(coach).toContain("MÁXIMO 4 FRASES");
     expect(coach).toContain("SI YA SE LO ENSEÑASTE (✓)");
     expect(coach).toContain("recomiéndale repetir ese nodo");
+    expect(coach).toContain("armarTecnicas(");
+  });
+});
+
+describe("técnicas por mundo, marcadas contra su avance", () => {
+  const MUNDOS = [{ id: 3, name: "El Descubrimiento" }, { id: 4, name: "La Presentación" }, { id: 5, name: "El Cierre" }];
+  const T = [
+    { name: "Preguntas por capas", world_id_introduced: 3, status: "active" },
+    { name: "Triple Desglose de Precios", world_id_introduced: 4, status: "active" },
+    { name: "FFF — Feel, Felt, Found", world_id_introduced: 5, status: "active" },
+    { name: "FFF — Feel, Felt, Found", world_id_introduced: 5, status: "active" },
+  ];
+  it("vendedor en el mundo 3: lo del 4 y el 5 sale como no enseñado, sin repetidos", () => {
+    const t = armarTecnicas(MUNDOS, T, 3);
+    expect(t).toContain("Mundo 3 — El Descubrimiento [las está aprendiendo ahora]: Preguntas por capas");
+    expect(t).toContain("Mundo 4 — La Presentación [TODAVÍA NO SE LAS ENSEÑAS: no las expliques]: Triple Desglose de Precios");
+    expect(t.match(/FFF — Feel, Felt, Found/g)?.length).toBe(1);
+  });
+  it("vendedor en el mundo 5: lo anterior ya se lo enseñaste", () => {
+    expect(armarTecnicas(MUNDOS, T, 5)).toContain("Mundo 4 — La Presentación [ya se las enseñaste]");
   });
 });

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { armarAvance } from "@/lib/avance-coach";
+import { armarAvance, armarTecnicas } from "@/lib/avance-coach";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -11,7 +11,7 @@ interface ChatPayload {
 }
 
 export const COACH_MODEL = "claude-sonnet-4-5";
-export const COACH_PROMPT_VERSION = "coach-v2.1.0-avance";
+export const COACH_PROMPT_VERSION = "coach-v2.2.0-avance";
 
 const REGLAS = `═══ CÓMO RESPONDES ═══
 
@@ -27,24 +27,38 @@ buscar, y refuerza el mapa en vez de sustituirlo. Solo cita mundos y nodos
 que existan en el mapa que recibiste; si no sabes el número, di el nombre del
 paso sin inventar numeración.
 
-TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento: en "SU MAPA"
-(abajo) está exactamente qué nodos ya le enseñaste (✓), cuál le toca (▶) y
-cuáles todavía no ve (○). Antes de responder, ubica en qué mundo y en qué nodo
-del mapa se enseña lo que pregunta (por el Cerebro y por el nombre de los
-nodos). Luego:
- · SI TODAVÍA NO LO VE (○): contéstale breve, solo lo esencial para salir del
-   paso hoy (2 o 3 frases), y dile en qué mundo lo va a aprender completo, con
-   número y nombre: "Eso lo vas a trabajar a fondo en el Mundo 5, El Cierre.
-   Sigue avanzando: cuando llegues, todo va a tener sentido." No le enseñes la
-   técnica completa ni le mandes a practicar nodos que todavía no puede abrir.
- · SI YA SE LO ENSEÑASTE (✓): dile que ya lo vio y dónde ("eso lo viste en el
-   5.8, FFF en Vivo"), refréscale la técnica con más detalle (los pasos y un
+TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento. Abajo tienes
+"SU MAPA" (qué nodos ya le enseñaste ✓, cuál le toca ▶ y cuáles todavía no ve
+○) y "TÉCNICAS POR MUNDO" (dónde se enseña cada técnica). Antes de contestar:
+
+1. UBICA EL TEMA DE LA PREGUNTA: ¿en qué mundo se enseña lo que pregunta? Usa
+   TÉCNICAS POR MUNDO. Una objeción del cliente ("está caro", "ya tengo
+   proveedor", "déjeme pensarlo", "no me interesa comprarle") se enseña en el
+   mundo de El Cierre, aunque su causa venga de un paso anterior.
+
+2. SOLO EXPLICAS TÉCNICAS QUE YA LE ENSEÑASTE O QUE ESTÁ APRENDIENDO AHORA. Las
+   de un mundo marcado "TODAVÍA NO SE LAS ENSEÑAS" no las explicas, no las
+   nombras como técnica y no le preguntas si las hizo (nada de "¿usaste el
+   triple desglose?" si ese mundo está cerrado). Solo le dices en qué mundo las
+   va a aprender.
+
+3. SI EL TEMA ES DE UN MUNDO QUE TODAVÍA NO VE: MÁXIMO 4 FRASES. Un consejo
+   práctico para hoy que solo use lo que ya sabe, y luego, con número y nombre
+   del mundo: "Eso lo vas a trabajar a fondo en el Mundo 5, El Cierre. Sigue
+   avanzando: cuando llegues, todo va a tener sentido." Si conecta, puedes
+   decirle que el nodo que le toca (▶) le ayuda a llegar mejor. No lo mandes a
+   nodos que todavía no puede abrir.
+
+4. SI YA SE LO ENSEÑASTE (✓): dile que ya lo vio y dónde ("eso lo viste en el
+   1.5, El Ice Breaker"), refréscale la técnica con más detalle (los pasos y un
    ejemplo, con su producto si está en el contexto de su empresa) y
    recomiéndale repetir ese nodo, o el boss de ese mundo, por su número y
    nombre. Si lo pasó con 1 estrella o sus skills de eso están bajos, dile que
    lo practique varias veces.
- · SI ES LO QUE LE TOCA (▶): dile que justo eso es lo que sigue y que lo
+
+5. SI ES LO QUE LE TOCA (▶): dile que justo eso es lo que sigue y que lo
    practique ahora.
+
 Solo nombra nodos que aparezcan en su mapa, con su número y nombre exactos.
 Nunca le digas que algo "lo verá más adelante" si ya lo tiene con ✓.
 
@@ -94,7 +108,7 @@ async function loadCoachContext(sellerId?: string): Promise<{
     };
   }
 
-  const [{ data: company }, { data: worlds }, { data: skillState }, { data: nodes }, { data: progress }] = await Promise.all([
+  const [{ data: company }, { data: worlds }, { data: skillState }, { data: nodes }, { data: progress }, { data: tecnicas }] = await Promise.all([
     supabaseAdmin
       .from("companies")
       .select("name, industry, company_sales_brain")
@@ -109,6 +123,7 @@ async function loadCoachContext(sellerId?: string): Promise<{
       .limit(60),
     supabaseAdmin.from("nodes").select("id, world_id, name, order_index, is_boss"),
     supabaseAdmin.from("node_progress").select("node_id, status, stars").eq("seller_id", seller.id),
+    supabaseAdmin.from("skills").select("name, world_id_introduced, status"),
   ]);
 
   const brainRaw = company?.company_sales_brain;
@@ -128,6 +143,8 @@ async function loadCoachContext(sellerId?: string): Promise<{
     certificado: !!seller.certified_at,
   });
   const progresoBlock = `${avance.texto}
+
+${armarTecnicas((worlds ?? []) as any[], (tecnicas ?? []) as any[], avance.mundoActual)}
 
 Skills con evidencia (código y mastery 0-100): ${skills}`;
 
