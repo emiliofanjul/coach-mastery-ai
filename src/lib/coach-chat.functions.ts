@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { armarAvance, armarTecnicas } from "@/lib/avance-coach";
+import { extraerTema, revisarRespuesta, promptReescritura, recorteSeguro } from "@/lib/coach-guardia";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -11,7 +12,7 @@ interface ChatPayload {
 }
 
 export const COACH_MODEL = "claude-sonnet-4-5";
-export const COACH_PROMPT_VERSION = "coach-v2.2.0-avance";
+export const COACH_PROMPT_VERSION = "coach-v2.3.0-guardia";
 
 const REGLAS = `═══ CÓMO RESPONDES ═══
 
@@ -32,9 +33,16 @@ TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento. Abajo tienes
 ○) y "TÉCNICAS POR MUNDO" (dónde se enseña cada técnica). Antes de contestar:
 
 1. UBICA EL TEMA DE LA PREGUNTA: ¿en qué mundo se enseña lo que pregunta? Usa
-   TÉCNICAS POR MUNDO. Una objeción del cliente ("está caro", "ya tengo
-   proveedor", "déjeme pensarlo", "no me interesa comprarle") se enseña en el
-   mundo de El Cierre, aunque su causa venga de un paso anterior.
+   TÉCNICAS POR MUNDO y el Cerebro. Ojo con "Bloqueo vs Objeción": la misma
+   frase se maneja distinto según cuándo llegó. Si el cliente la soltó ANTES
+   de entender (en la puerta, "no me quiso escuchar", "ni me dejó hablar"), es
+   un BLOQUEO: se atraviesa con AIR y eso es del mundo de La Historia Breve.
+   Si llegó DESPUÉS de que le presentaste ("está caro" tras darle el precio,
+   "déjeme pensarlo"), es una OBJECIÓN y se enseña en el mundo de El Cierre,
+   aunque su causa venga de un paso anterior.
+   EMPIEZA SIEMPRE tu respuesta con una línea exacta "[TEMA: Mundo N]", con el
+   número del mundo donde se enseña el tema (o "[TEMA: general]" si es de
+   mentalidad o no es de un mundo). Esa línea no la ve el vendedor.
 
 2. SOLO EXPLICAS TÉCNICAS QUE YA LE ENSEÑASTE O QUE ESTÁ APRENDIENDO AHORA. Las
    de un mundo marcado "TODAVÍA NO SE LAS ENSEÑAS" no las explicas, no las
@@ -42,8 +50,9 @@ TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento. Abajo tienes
    triple desglose?" si ese mundo está cerrado). Solo le dices en qué mundo las
    va a aprender.
 
-3. SI EL TEMA ES DE UN MUNDO QUE TODAVÍA NO VE: MÁXIMO 4 FRASES. Un consejo
-   práctico para hoy que solo use lo que ya sabe, y luego, con número y nombre
+3. SI EL TEMA ES DE UN MUNDO QUE TODAVÍA NO VE: MÁXIMO 4 FRASES, en prosa,
+   sin listas. Un consejo práctico para hoy que solo use lo que ya sabe, y
+   luego, con número y nombre
    del mundo: "Eso lo vas a trabajar a fondo en el Mundo 5, El Cierre. Sigue
    avanzando: cuando llegues, todo va a tener sentido." Si conecta, puedes
    decirle que el nodo que le toca (▶) le ayuda a llegar mejor. No lo mandes a
@@ -84,6 +93,9 @@ async function loadCoachContext(sellerId?: string): Promise<{
   brainBlock: string;
   progresoBlock: string;
   companyId: string | null;
+  mundoActual?: number | null;
+  nombresMundo?: Map<number, string>;
+  cerradasPorMundo?: Map<number, string[]>;
 }> {
   if (!sellerId) {
     return {
@@ -148,7 +160,19 @@ ${armarTecnicas((worlds ?? []) as any[], (tecnicas ?? []) as any[], avance.mundo
 
 Skills con evidencia (código y mastery 0-100): ${skills}`;
 
-  return { brainBlock, progresoBlock, companyId: seller.company_id };
+  // Para la guardia: el mundo donde va y los nombres de técnicas que todavía no ve.
+  const mundoActual = avance.mundoActual;
+  const nombresMundo = new Map(((worlds ?? []) as any[]).map((w) => [Number(w.id), String(w.name ?? "")]));
+  const cerradasPorMundo = new Map<number, string[]>();
+  for (const t of (tecnicas ?? []) as any[]) {
+    if (t?.status && t.status !== "active") continue;
+    const w = Number(t?.world_id_introduced);
+    if (mundoActual === null || !(w > mundoActual)) continue;
+    const l = cerradasPorMundo.get(w) ?? [];
+    if (!l.includes(t.name)) l.push(String(t.name));
+    cerradasPorMundo.set(w, l);
+  }
+  return { brainBlock, progresoBlock, companyId: seller.company_id, mundoActual, nombresMundo, cerradasPorMundo };
 }
 
 // Sesión obligatoria (oct-2026): antes cualquiera podía llamar al coach y gastar
@@ -220,11 +244,51 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
     }
 
     const json: any = await res.json();
-    const reply: string = (json?.content ?? [])
+    const borrador: string = (json?.content ?? [])
       .filter((b: any) => b?.type === "text")
       .map((b: any) => b.text)
       .join("")
       .trim();
+
+    // Guardia: si el tema es de un mundo que todavía no ve, la respuesta tiene
+    // que ser breve, no nombrar técnicas de ese mundo y decir dónde lo aprende.
+    // Si no cumple, se reescribe una vez y se vuelve a revisar; si la
+    // reescritura falla o tampoco cumple, se recorta en código.
+    const tema = extraerTema(borrador);
+    let reply = tema.texto;
+    let guardia: any = null;
+    const cerradas = [...(ctx.cerradasPorMundo?.values() ?? [])].flat();
+    const revision = revisarRespuesta({ mundoTema: tema.mundo, mundoActual: ctx.mundoActual ?? null, texto: reply, nombresCerrados: cerradas });
+    if (revision.reescribir && tema.mundo !== null) {
+      const opcionesTema = { mundoTema: tema.mundo, nombreMundo: ctx.nombresMundo?.get(tema.mundo) ?? "", nombresCerrados: cerradas };
+      let reescrita = "";
+      const t0 = Date.now();
+      try {
+        const ultima = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "";
+        const r2 = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: COACH_MODEL,
+            max_tokens: 400,
+            system: promptReescritura(opcionesTema),
+            messages: [{ role: "user", content: `PREGUNTA DEL VENDEDOR:\n${ultima}\n\nBORRADOR:\n${reply}` }],
+          }),
+        });
+        if (r2.ok) {
+          const j2: any = await r2.json();
+          reescrita = extraerTema(((j2?.content ?? []).filter((b: any) => b?.type === "text").map((b: any) => b.text).join("")).trim()).texto;
+          guardia = { j2, latency_ms: Date.now() - t0 };
+        }
+      } catch (e) {
+        console.error("[coach-chat] la reescritura falló", e);
+      }
+      const segunda = reescrita
+        ? revisarRespuesta({ mundoTema: tema.mundo, mundoActual: ctx.mundoActual ?? null, texto: reescrita, nombresCerrados: cerradas })
+        : { reescribir: true, motivos: ["sin reescritura"] };
+      reply = segunda.reescribir ? recorteSeguro(reescrita || reply, opcionesTema) : reescrita;
+      console.warn("[coach-chat] respuesta recortada por la guardia", { motivos: revision.motivos, segunda: segunda.motivos });
+    }
 
     try {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -242,6 +306,23 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
       });
     } catch (e) {
       console.error("[coach-chat] llm_calls insert failed", e);
+    }
+    if (guardia) {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        await supabaseAdmin.from("llm_calls").insert({
+          phase: "coach_chat_guardia",
+          prompt_version: COACH_PROMPT_VERSION,
+          model: COACH_MODEL,
+          input_tokens: guardia.j2?.usage?.input_tokens ?? null,
+          output_tokens: guardia.j2?.usage?.output_tokens ?? null,
+          latency_ms: guardia.latency_ms,
+          seller_id: propio?.id ?? null,
+          company_id: ctx.companyId,
+        });
+      } catch (e) {
+        console.error("[coach-chat] llm_calls (guardia) insert failed", e);
+      }
     }
 
     return { reply };

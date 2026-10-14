@@ -49,7 +49,7 @@ describe("el coach usa ese mapa y sabe qué hacer con él", () => {
   });
   it("ubica el tema; si no lo ve: máximo 4 frases y el mundo; si ya lo vio: refresca y manda a repetir el nodo", () => {
     expect(coach).toContain("UBICA EL TEMA DE LA PREGUNTA");
-    expect(coach).toContain("se enseña en el\n   mundo de El Cierre, aunque su causa venga de un paso anterior");
+    expect(coach).toContain("es una OBJECIÓN y se enseña en el mundo de El Cierre");
     expect(coach).toContain("SOLO EXPLICAS TÉCNICAS QUE YA LE ENSEÑASTE O QUE ESTÁ APRENDIENDO AHORA");
     expect(coach).toContain("MÁXIMO 4 FRASES");
     expect(coach).toContain("SI YA SE LO ENSEÑASTE (✓)");
