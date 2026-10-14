@@ -79,6 +79,9 @@ interface ObservationItem {
   error: string;
   mejora: string;
   ejemplo: string;
+  /** El paso de la visita y el nombre de la habilidad (oct-2026). */
+  paso?: string;
+  habilidad?: string;
 }
 
 /** Una falla detectada: lo que más le bajó la nota (oct-2026). */
@@ -87,6 +90,8 @@ interface FallaItem {
   severidad: "critical" | "major" | "minor";
   efecto: string;
   error: string;
+  /** El paso de la visita al que pertenece (oct-2026). */
+  paso?: string;
   cita?: string;
   mejora?: string;
   ejemplo?: string;
@@ -3012,11 +3017,22 @@ function FallaCard({ falla }: { falla: FallaItem }) {
   const texto = { fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5 } as const;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      {falla.paso && <EtiquetaPaso paso={falla.paso} />}
       <div style={{ ...texto, color: "#fff", fontWeight: 600 }}>{falla.error}</div>
       {falla.cita && <div style={{ ...texto, color: "rgba(255,255,255,0.7)" }}>Dijiste: "{falla.cita}"</div>}
       <div style={{ ...texto, fontSize: 13, color: RED, fontWeight: 600 }}>{falla.efecto}</div>
       {falla.mejora && <div style={{ ...texto, color: ORANGE, fontWeight: 600 }}>{falla.mejora}</div>}
       {falla.ejemplo && <div style={{ ...texto, color: "rgba(255,255,255,0.6)", fontStyle: "italic" }}>"{falla.ejemplo}"</div>}
+    </div>
+  );
+}
+
+// En qué paso de la visita está lo que se marca (oct-2026): en un boss se
+// califican habilidades de varios pasos y así el vendedor se ubica.
+function EtiquetaPaso({ paso, habilidad }: { paso: string; habilidad?: string }) {
+  return (
+    <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>
+      {habilidad ? `${paso} · ${habilidad}` : paso}
     </div>
   );
 }
@@ -3054,8 +3070,12 @@ function ObservationCard({ obs }: { obs: ObservationItem }) {
             lineHeight: 1.4,
             color: "#fff",
             fontWeight: 500,
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
           }}
         >
+          {obs.paso && <EtiquetaPaso paso={obs.paso} habilidad={obs.habilidad} />}
           {obs.error}
         </span>
         <span
