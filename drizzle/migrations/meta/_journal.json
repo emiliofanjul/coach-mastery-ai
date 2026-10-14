@@ -29,6 +29,13 @@
       "when": 1791902822664,
       "tag": "0003_migracion_seguridad",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792013801715,
+      "tag": "0004_avance_real_vendedor",
+      "breakpoints": true
     }
   ]
 }
