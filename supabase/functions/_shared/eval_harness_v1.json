@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.12.0",
+  "harness_version": "v3.13.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -2077,6 +2077,47 @@
         "niveles_esperados": {
           "story.relevancia_cliente": "no_cumple"
         }
+      }
+    },
+    {
+      "id": "G34_identificarse_no_es_pitch",
+      "node_id": "1.5",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias.",
+      "description": "Disputa real (14-oct-2026). Ice breaker ligero y verdadero; el cliente (rompiendo su regla número cero) preguntó qué se le ofrecía y el vendedor solo dijo de qué empresa venía. Se le cobró pitch_prematuro y la nota quedó en 30. Decir de qué empresa vienes no es pitch, y menos si el cliente lo preguntó: el ice breaker cumple y no hay falla.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, don Ricardo. Buenos días. Oiga, veo que está muy movido hoy. ¿Que así es todos los jueves o hoy anda regalando algo?"
+        },
+        {
+          "role": "assistant",
+          "text": "Jaja, ojalá anduviera regalando. No, los jueves así se pone siempre, llegan todos a recoger antes del fin de semana. ¿Qué se le ofrece?"
+        },
+        {
+          "role": "user",
+          "text": "Ah, muy bien, muy bien. Este, pues venía a visitarlo, vengo por parte de Dalfan."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, Dalfan. Okay. Mira, ahorita ando con esto."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "opening.ice_breaker": "cumple",
+          "opening.personalizacion": "cumple"
+        },
+        "must_not_flag": [
+          "pitch_prematuro",
+          "halago_falso",
+          "familiaridad_excesiva"
+        ],
+        "rationale": "La regla opening.pitch_prematuro: 'NO es esto decir quién eres o por qué pasaste'. Y Emilio: nunca se castiga por algo que el nodo no enseña."
       }
     }
   ]
