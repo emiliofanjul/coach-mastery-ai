@@ -7,11 +7,14 @@
 //   1) Reglas duras deterministas (sin LLM):
 //      - user_turns >= limits.max_turns  → cut(max_turns)
 //      - elapsed_seconds >= limits.max_duration_seconds → cut(max_duration)
-//      - user_turns  < limits.min_turns_before_evaluation → continue
-//   2) Clasificador binario (haiku, muy barato):
-//      - {scope_covered: true|false} contra phases.you_do.objective
-//      - true  → cut(scope_covered)
-//      - false → continue
+//      - user_turns  < limits.min_turns_before_evaluation → solo se revisa
+//        si hubo una falla critical (abajo); si no, continue
+//   2) Clasificador (sonnet):
+//      - falla_critica: el vendedor ya cometió una falla critical del nodo
+//        → cut(critical_failure), en cualquier turno (v2.3.0). Con una falla
+//        critical la nota ya no pasa de 30: más turnos no cambian nada.
+//      - scope_covered / evidence_sufficient → cut (solo pasado el mínimo)
+//      - si no → continue
 //
 // El frontend maneja el "turno de gracia": el Actor responde el turno en curso
 // ANTES de que el Director corte — porque el Director corre DESPUÉS de la
@@ -23,7 +26,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 
-const DIRECTOR_VERSION = "v2.2.0-sonnet";
+const DIRECTOR_VERSION = "v2.3.0-sonnet";
 const DIRECTOR_MODEL = "claude-sonnet-4-5";
 
 const corsHeaders = {
@@ -125,7 +128,8 @@ type Reason =
   | "evidence_sufficient"
   | "scope_not_covered"
   | "no_objective"
-  | "classifier_error";
+  | "classifier_error"
+  | "critical_failure";
 
 interface DirectorResult {
   decision: Decision;
@@ -150,7 +154,7 @@ function extractJson<T>(text: string): T | null {
 }
 
 // Reglas del clasificador: idénticas byte por byte en cada turno → bloque cacheable.
-const CLASSIFIER_RULES = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false}. Sin texto fuera del JSON. Sin markdown.
+const CLASSIFIER_RULES = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false, "falla_critica": true|false}. Sin texto fuera del JSON. Sin markdown.
 
 REGLAS:
 - LOS CRITERIOS MANDAN. El objetivo en prosa da contexto, pero lo que define la cobertura son los CRITERIOS DE ÉXITO del nodo: son exactamente lo que el evaluador va a calificar. Si el objetivo pide algo que ningún criterio mide, ESO NO CUENTA para scope_covered — el vendedor no puede ser cortado ni retenido por una meta que nadie va a calificar.
@@ -159,11 +163,13 @@ REGLAS:
 - No exijas un ORDEN que los criterios no nombren. Hay varias rutas válidas para llegar a lo mismo.
 - evidence_sufficient = true si el transcript ya contiene material SUFICIENTE para EVALUAR el desempeño del vendedor en ese objetivo, LO HAYA LOGRADO O NO — sus intentos, su approach y su nivel ya son visibles y más turnos no agregarían información nueva.
 - Prefiere evidence_sufficient=true cuando el vendedor ya intentó su approach 2-3 veces sin cambiar de estrategia: ya sabes cómo lo hace.
-- Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).`;
+- Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).
+- falla_critica = true SOLO si el vendedor (user) ya dijo algo que encaja SIN DUDA con una de las FALLAS CRÍTICAS DEL NODO: tiene que existir una frase literal suya que lo muestre. Lo que dice el cliente nunca cuenta. Ante la duda, false. Si el nodo no tiene fallas críticas, false.`;
 
 async function runClassifier(
   objective: string,
   criterios: string,
+  criticas: string,
   conversation_history: { role: string; content: string }[],
   apiKey: string,
   session_id: string | null,
@@ -171,13 +177,14 @@ async function runClassifier(
 ): Promise<{
   scope_covered: boolean | null;
   evidence_sufficient: boolean | null;
+  falla_critica: boolean | null;
   latency_ms: number;
   error?: string;
 }> {
   // Fijo primero (cacheado), variable después.
   const system = [
     { type: "text", text: CLASSIFIER_RULES, cache_control: { type: "ephemeral" } },
-    { type: "text", text: `CRITERIOS DE ÉXITO DEL NODO (lo que el evaluador va a calificar — mandan sobre el objetivo):\n${criterios}\n\nOBJETIVO DE LA PRÁCTICA (contexto, no rúbrica):\n${objective}` },
+    { type: "text", text: `CRITERIOS DE ÉXITO DEL NODO (lo que el evaluador va a calificar — mandan sobre el objetivo):\n${criterios}\n\nFALLAS CRÍTICAS DEL NODO:\n${criticas}\n\nOBJETIVO DE LA PRÁCTICA (contexto, no rúbrica):\n${objective}` },
   ];
 
   const user = `TRANSCRIPT:
@@ -206,7 +213,7 @@ Responde solo el JSON.`;
       const errText = await res.text();
       console.error("[director] haiku error:", res.status, errText);
       logLlmCall({ input_tokens: null, output_tokens: null, latency_ms, session_id, ...ids });
-      return { scope_covered: null, evidence_sufficient: null, latency_ms, error: `haiku ${res.status}` };
+      return { scope_covered: null, evidence_sufficient: null, falla_critica: null, latency_ms, error: `haiku ${res.status}` };
     }
     const j = await res.json();
     const text: string = j?.content?.[0]?.text ?? "";
@@ -221,16 +228,16 @@ Responde solo el JSON.`;
       session_id,
       ...ids,
     });
-    const parsed = extractJson<{ scope_covered?: unknown; evidence_sufficient?: unknown }>(text);
+    const parsed = extractJson<{ scope_covered?: unknown; evidence_sufficient?: unknown; falla_critica?: unknown }>(text);
     if (!parsed || typeof parsed.scope_covered !== "boolean") {
-      return { scope_covered: null, evidence_sufficient: null, latency_ms, error: "unparseable classifier output" };
+      return { scope_covered: null, evidence_sufficient: null, falla_critica: null, latency_ms, error: "unparseable classifier output" };
     }
     const ev = typeof parsed.evidence_sufficient === "boolean" ? parsed.evidence_sufficient : false;
-    return { scope_covered: parsed.scope_covered, evidence_sufficient: ev, latency_ms };
+    return { scope_covered: parsed.scope_covered, evidence_sufficient: ev, falla_critica: parsed.falla_critica === true, latency_ms };
   } catch (e) {
     const latency_ms = Date.now() - start;
     console.error("[director] haiku exception:", e);
-    return { scope_covered: null, evidence_sufficient: null, latency_ms, error: e instanceof Error ? e.message : String(e) };
+    return { scope_covered: null, evidence_sufficient: null, falla_critica: null, latency_ms, error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -311,20 +318,32 @@ Deno.serve(async (req) => {
       return respond({ ...base, decision: "cut", reason: "max_duration" });
     }
 
-    // Regla dura 3: gate mínimo antes de considerar scope
-    if (user_turns < min_turns_gate) {
+    // Las fallas critical del nodo. Una falla critical deja la nota en 30 sin
+    // importar lo demás: en cuanto aparece, ya hay evidencia suficiente, aunque
+    // no se haya llegado al mínimo de turnos (disputa 1.5, 14-oct-2026: el
+    // vendedor soltó producto y la práctica siguió).
+    const failureCriteria = Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [];
+    const criticasLista = failureCriteria.filter((f: any) => f?.severity === "critical");
+    const criticas = criticasLista.length > 0
+      ? criticasLista.map((f: any) => `- ${f?.id ?? "?"}: ${f?.description ?? ""}`).join("\n")
+      : "(este nodo no tiene fallas críticas)";
+    const antesDelMinimo = user_turns < min_turns_gate;
+
+    // Regla dura 3: gate mínimo antes de considerar scope (si el nodo no
+    // tiene fallas critical, ni siquiera corre el clasificador).
+    if (antesDelMinimo && criticasLista.length === 0) {
       return respond({ ...base, decision: "continue", reason: "min_turns_gate" });
     }
 
     // Clasificador
     const objective: string | undefined = practice_script?.phases?.you_do?.objective;
     if (!objective || typeof objective !== "string" || objective.trim().length === 0) {
-      return respond({ ...base, decision: "continue", reason: "no_objective" });
+      return respond({ ...base, decision: "continue", reason: antesDelMinimo ? "min_turns_gate" : "no_objective" });
     }
 
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) {
-      return respond({ ...base, decision: "continue", reason: "classifier_error" });
+      return respond({ ...base, decision: "continue", reason: antesDelMinimo ? "min_turns_gate" : "classifier_error" });
     }
 
     // Los criterios que el evaluador va a calificar. Sin ellos el Director
@@ -338,7 +357,7 @@ Deno.serve(async (req) => {
           .join("\n")
       : "(este nodo no declara criterios de éxito; usa solo el objetivo)";
 
-    const cls = await runClassifier(objective, criterios, conversation_history, apiKey, session_id ?? null, {
+    const cls = await runClassifier(objective, criterios, criticas, conversation_history, apiKey, session_id ?? null, {
       company_id: body.company_id ?? null,
       seller_id: body.seller_id ?? null,
     });
@@ -350,8 +369,24 @@ Deno.serve(async (req) => {
         classifier_ran: true,
         latency_ms: cls.latency_ms,
         decision: "continue",
-        reason: "classifier_error",
+        reason: antesDelMinimo ? "min_turns_gate" : "classifier_error",
       });
+    }
+
+    if (cls.falla_critica === true) {
+      return respond({
+        ...base,
+        classifier_ran: true,
+        classifier_result: cls.scope_covered,
+        scope_covered: cls.scope_covered,
+        evidence_sufficient: true,
+        latency_ms: cls.latency_ms,
+        decision: "cut",
+        reason: "critical_failure",
+      });
+    }
+    if (antesDelMinimo) {
+      return respond({ ...base, classifier_ran: true, latency_ms: cls.latency_ms, decision: "continue", reason: "min_turns_gate" });
     }
 
     // v2.1.0: corta por scope_covered O por evidence_sufficient.

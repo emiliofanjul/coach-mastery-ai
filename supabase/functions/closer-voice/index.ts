@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.6.0";
+const PROMPT_VERSION = "v2.6.1";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 // Bloque de prompt con caché de Anthropic. Todo lo FIJO va primero y marcado;
@@ -19,6 +19,7 @@ const cached = (text: string): PromptBlock => ({
 });
 const plain = (text: string): PromptBlock => ({ type: "text", text });
 
+import { tieneReglaCero, quitarPreguntasProhibidas } from "../_shared/regla_cero.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
@@ -423,6 +424,7 @@ function buildReplicaSystemPrompt(
     max_turns: "se acabaron los turnos de la práctica",
     scope_covered: "Closer cortó porque el vendedor ya había cumplido el objetivo",
     evidence_sufficient: "Closer cortó porque ya tenía suficiente para evaluar",
+    critical_failure: "Closer cortó porque el vendedor cometió una falla crítica del nodo; con eso ya no hacía falta seguir",
   };
   return `Eres Closer explicando una evaluación a un vendedor que no está de acuerdo.
 
@@ -437,6 +439,7 @@ REGLAS ABSOLUTAS:
 - LA NOTA SE EXPLICA SOLO CON EL CÁLCULO DE ABAJO ("CÓMO SE CALCULÓ LA NOTA"). No existe otra nota, otra escala, "nota de calidad", "sistema de progresión" ni nada parecido: PROHIBIDO mencionarlos. Si hubo una falla crítica, eso es lo primero que explicas cuando pregunten por la nota: qué dijo (cítalo) y que una falla crítica deja la nota en máximo 30. Si pregunta "cuánto habría sacado", responde solo con la aritmética de ese cálculo; mientras la falla crítica siga ahí, la nota no pasa de 30.
 - SOLO PUEDES CONCEDER SOBRE LO QUE LA EVALUACIÓN DIJO (sus observaciones, veredictos o fallas). Si el vendedor reclama algo que la evaluación no le calificó, dile con claridad que eso no se le calificó, y no lo concedas.
 - ANTES DE SOSTENER un veredicto, ubica la frase de la descripción del criterio que pide justo lo que faltó. Si en la descripción no hay una frase que lo pida, el evaluador exigió de más: concede.
+- LAS FALLAS DE ESTE NODO SON PARTE DE LO QUE MIDE, igual que sus criterios: están en "CRITERIOS DE FALLO" y el vendedor las tiene que conocer. NO SABES qué tarjetas, lecciones o nodos vio el vendedor antes, así que JAMÁS concedas ni digas que algo "no se enseñó", "no estaba en lo que te enseñé" o que "la sesión estuvo mal armada". Si el vendedor reclama que no le enseñaron una falla que sí está en CRITERIOS DE FALLO: explícale cuál es la falla, cita lo que dijo y por qué encaja, sostén la nota (concede false) y cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
 - NO INVENTES CAUSAS TÉCNICAS. No sabes si un turno lo envió el vendedor o se cortó solo, ni nada del micrófono o la conexión. Si el vendedor dice que un turno se le cortó sin enviarlo, reconócelo como posible, no lo desmientas ni lo afirmes como hecho, y registra su punto.
 
 CÓMO TERMINÓ LA SESIÓN: ${comoTermino[corte] ?? "no quedó registrado"}.
@@ -1295,6 +1298,16 @@ Deno.serve(async (req) => {
       console.warn("[closer-voice] el cliente quiso terminar la sesión en you_do: se ignora", { session_id, node_id: body.node_id ?? null, end_session: closerResponse.end_session, next_phase: closerResponse.next_phase });
       closerResponse.end_session = false;
       closerResponse.next_phase = "you_do";
+    }
+
+    // Regla número cero (mundo 1): el cliente nunca pregunta qué vende ni a
+    // qué viene el vendedor. El prompt lo prohíbe; aquí se garantiza.
+    if ((phase === "you_do" || phase === "boss_sim") && tieneReglaCero(practice_script?.phases?.you_do?.prompt)) {
+      const r = quitarPreguntasProhibidas(closerResponse.message);
+      if (r.quitadas.length > 0) {
+        console.warn("[closer-voice] regla cero: se quitó del cliente", { node_id: body.node_id ?? null, quitadas: r.quitadas });
+        closerResponse.message = r.texto;
+      }
     }
 
     // Closer nunca dice groserías. Si al modelo se le escapa una, se reescribe

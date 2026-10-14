@@ -31,7 +31,7 @@ function veredictos(ev: any): string {
 
 const CORTE: Record<string, string> = {
   max_duration: "se acabó el tiempo", max_turns: "se acabaron los turnos",
-  scope_covered: "objetivo cumplido", evidence_sufficient: "evidencia suficiente",
+  scope_covered: "objetivo cumplido", evidence_sufficient: "evidencia suficiente", critical_failure: "falla crítica",
 };
 
 /** Qué le bajó la nota (oct-2026): sin esto, una nota de 30 por falla crítica no se explicaba. */
