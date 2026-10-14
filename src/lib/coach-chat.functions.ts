@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { armarAvance } from "@/lib/avance-coach";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -10,7 +11,7 @@ interface ChatPayload {
 }
 
 export const COACH_MODEL = "claude-sonnet-4-5";
-export const COACH_PROMPT_VERSION = "coach-v2.0.0-cerebro";
+export const COACH_PROMPT_VERSION = "coach-v2.1.0-avance";
 
 const REGLAS = `═══ CÓMO RESPONDES ═══
 
@@ -26,9 +27,26 @@ buscar, y refuerza el mapa en vez de sustituirlo. Solo cita mundos y nodos
 que existan en el mapa que recibiste; si no sabes el número, di el nombre del
 paso sin inventar numeración.
 
-RESPETA SU AVANCE. Si pregunta algo de un mundo que todavía no ve, respóndele
-lo esencial y dile dónde lo va a trabajar completo. No le adelantes el sistema
-entero.
+TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento: en "SU MAPA"
+(abajo) está exactamente qué nodos ya le enseñaste (✓), cuál le toca (▶) y
+cuáles todavía no ve (○). Antes de responder, ubica en qué mundo y en qué nodo
+del mapa se enseña lo que pregunta (por el Cerebro y por el nombre de los
+nodos). Luego:
+ · SI TODAVÍA NO LO VE (○): contéstale breve, solo lo esencial para salir del
+   paso hoy (2 o 3 frases), y dile en qué mundo lo va a aprender completo, con
+   número y nombre: "Eso lo vas a trabajar a fondo en el Mundo 5, El Cierre.
+   Sigue avanzando: cuando llegues, todo va a tener sentido." No le enseñes la
+   técnica completa ni le mandes a practicar nodos que todavía no puede abrir.
+ · SI YA SE LO ENSEÑASTE (✓): dile que ya lo vio y dónde ("eso lo viste en el
+   5.8, FFF en Vivo"), refréscale la técnica con más detalle (los pasos y un
+   ejemplo, con su producto si está en el contexto de su empresa) y
+   recomiéndale repetir ese nodo, o el boss de ese mundo, por su número y
+   nombre. Si lo pasó con 1 estrella o sus skills de eso están bajos, dile que
+   lo practique varias veces.
+ · SI ES LO QUE LE TOCA (▶): dile que justo eso es lo que sigue y que lo
+   practique ahora.
+Solo nombra nodos que aparezcan en su mapa, con su número y nombre exactos.
+Nunca le digas que algo "lo verá más adelante" si ya lo tiene con ✓.
 
 DIAGNOSTICA ANTES DE RECETAR. Si la pregunta es vaga ("no estoy vendiendo"),
 pregunta UNA cosa concreta antes de responder. Es la misma doctrina que le
@@ -64,7 +82,7 @@ async function loadCoachContext(sellerId?: string): Promise<{
 
   const { data: seller } = await supabaseAdmin
     .from("sellers")
-    .select("id, company_id, full_name, current_world, current_node, certified_at")
+    .select("id, company_id, full_name, certified_at")
     .eq("id", sellerId)
     .maybeSingle();
 
@@ -76,7 +94,7 @@ async function loadCoachContext(sellerId?: string): Promise<{
     };
   }
 
-  const [{ data: company }, { data: worlds }, { data: skillState }] = await Promise.all([
+  const [{ data: company }, { data: worlds }, { data: skillState }, { data: nodes }, { data: progress }] = await Promise.all([
     supabaseAdmin
       .from("companies")
       .select("name, industry, company_sales_brain")
@@ -89,6 +107,8 @@ async function loadCoachContext(sellerId?: string): Promise<{
       .eq("seller_id", seller.id)
       .order("mastery_score", { ascending: false })
       .limit(60),
+    supabaseAdmin.from("nodes").select("id, world_id, name, order_index, is_boss"),
+    supabaseAdmin.from("node_progress").select("node_id, status, stars").eq("seller_id", seller.id),
   ]);
 
   const brainRaw = company?.company_sales_brain;
@@ -96,29 +116,18 @@ async function loadCoachContext(sellerId?: string): Promise<{
     ? `Empresa: ${company?.name ?? "—"}${company?.industry ? ` (${company.industry})` : ""}\n\n${JSON.stringify(brainRaw, null, 2).slice(0, 12000)}`
     : `Empresa: ${company?.name ?? "—"}. Todavía no tiene cargado su cerebro de ventas: no inventes productos, precios ni ventajas.`;
 
-  const mapa = (worlds ?? [])
-    .map((w: any) => {
-      const estado =
-        w.id < seller.current_world
-          ? "ya lo pasó"
-          : w.id === seller.current_world
-            ? "AQUÍ VA HOY"
-            : "todavía no lo ve";
-      return `· Mundo ${w.id} — ${w.name} [${estado}]`;
-    })
-    .join("\n");
-
   const skills = (skillState ?? []).length
     ? (skillState as any[])
         .map((s) => `${s.skill_id} (${Math.round(Number(s.mastery_score) || 0)})`)
         .join(", ")
     : "todavía sin evidencia de práctica";
 
-  const progresoBlock = `Vendedor: ${seller.full_name ?? "—"}
-Va en el Mundo ${seller.current_world}, nodo ${seller.current_node}.${seller.certified_at ? " Está certificado." : ""}
-
-Mapa:
-${mapa}
+  // El avance sale de su mapa real (node_progress), igual que lo ve él.
+  const avance = armarAvance((worlds ?? []) as any[], (nodes ?? []) as any[], (progress ?? []) as any[], {
+    nombre: seller.full_name,
+    certificado: !!seller.certified_at,
+  });
+  const progresoBlock = `${avance.texto}
 
 Skills con evidencia (código y mastery 0-100): ${skills}`;
 
