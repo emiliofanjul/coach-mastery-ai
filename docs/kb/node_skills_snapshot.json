@@ -259,20 +259,6 @@
   "is_primary": true
  },
  {
-  "node_id": "2.8",
-  "skill_id": "blocks.air",
-  "relation": "practices",
-  "weight": 1.0,
-  "is_primary": false
- },
- {
-  "node_id": "2.8",
-  "skill_id": "blocks.pre_emptive_strike",
-  "relation": "practices",
-  "weight": 1.0,
-  "is_primary": true
- },
- {
   "node_id": "2.9",
   "skill_id": "blocks.air",
   "relation": "practices",
@@ -624,13 +610,6 @@
  },
  {
   "node_id": "4.16",
-  "skill_id": "discovery.dolor_real",
-  "relation": "assesses",
-  "weight": 1.0,
-  "is_primary": false
- },
- {
-  "node_id": "4.16",
   "skill_id": "presentation.conectar_dolor",
   "relation": "assesses",
   "weight": 1.0,
@@ -646,13 +625,6 @@
  {
   "node_id": "4.16",
   "skill_id": "presentation.tren_si_si",
-  "relation": "assesses",
-  "weight": 1.0,
-  "is_primary": false
- },
- {
-  "node_id": "4.16",
-  "skill_id": "presentation.valor_personalizado",
   "relation": "assesses",
   "weight": 1.0,
   "is_primary": false
@@ -813,13 +785,6 @@
  },
  {
   "node_id": "5.12",
-  "skill_id": "objections.no_defensivo",
-  "relation": "assesses",
-  "weight": 1.0,
-  "is_primary": false
- },
- {
-  "node_id": "5.12",
   "skill_id": "objections.reframe",
   "relation": "assesses",
   "weight": 1.0,
@@ -884,13 +849,6 @@
  {
   "node_id": "5.15",
   "skill_id": "objections.bullet_theory",
-  "relation": "assesses",
-  "weight": 1.0,
-  "is_primary": false
- },
- {
-  "node_id": "5.15",
-  "skill_id": "objections.no_defensivo",
   "relation": "assesses",
   "weight": 1.0,
   "is_primary": false
@@ -1321,5 +1279,75 @@
   "relation": "practices",
   "weight": 1.0,
   "is_primary": false
+ },
+ {
+  "node_id": "2.10",
+  "skill_id": "story.relevancia_cliente",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "4.16",
+  "skill_id": "presentation.beneficio_no_caracteristica",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "4.16",
+  "skill_id": "impulse.factores_impulso",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "4.16",
+  "skill_id": "presentation.price_breakdown",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "5.12",
+  "skill_id": "objections.circulo_cierre",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "5.15",
+  "skill_id": "objections.rrr_objeciones",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "5.15",
+  "skill_id": "objections.circulo_cierre",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "7.0",
+  "skill_id": "blocks.air",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "7.0",
+  "skill_id": "flow.close_with_action",
+  "relation": "assesses",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
+  "node_id": "2.8",
+  "skill_id": "blocks.mala_experiencia",
+  "relation": "introduces",
+  "weight": 1.0,
+  "is_primary": true
  }
 ]

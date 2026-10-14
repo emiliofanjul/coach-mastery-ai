@@ -499,24 +499,24 @@
   "node_id": "2.8",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Hay negativos que ya sabes que van a llegar",
-  "body": "Si llevas tiempo en tu zona, ya los conoces de memoria. Ya me han fallado antes. Todos prometen y nadie cumple. Por aqui pasan muchos como usted.\n\nNo son sorpresas. Son los mismos, casi siempre.\n\nY todo lo que es predecible se puede desactivar antes de que pase.",
+  "title": "No siempre llegas en blanco",
+  "body": "A veces el cliente ya trae una historia. Ya me fallaron con las entregas. Me cambiaron el precio. El vendedor dejó de venir.\n\nEso no es un bloqueo. Un bloqueo es un no reflejo, sin razón, y se atraviesa con AIR. Esto tiene razón. Si lo ignoras, le confirmas que la tenía.",
   "flip_back_text": null
  },
  {
   "node_id": "2.8",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Si tu lo dices primero, deja de ser un arma",
-  "body": "La doctrina lo dice asi: si das la negativa antes de que el cliente lo haga, ya no es una negativa.\n\nYa se que por aqui pasan muchos como yo y que casi todos prometen lo mismo.\n\nFijate en lo que acaba de pasar. Le quitaste el argumento de las manos. Y ademas te volviste creible, porque alguien que reconoce lo malo se gana el derecho a que le crean lo bueno.",
+  "title": "Escúchalo, da el motivo y pregunta",
+  "body": "Tres piezas:\n\n1. Lo aceptas en serio. Sin pelearlo y sin minimizarlo.\n2. Le das el motivo real de tu visita: qué cambió, o por qué te mandaron con él.\n3. Regresas a preguntar por su negocio.\n\nEntiendo perfecto lo que me dice. De hecho, justo por eso me mandaron con usted: desde hace unos meses cambiamos cómo surtimos esta zona, y varios negocios que tenían el mismo problema ya regresaron. Pero primero tengo que ver si lo podemos atender. ¿Con quién está trabajando ahorita?",
   "flip_back_text": null
  },
  {
   "node_id": "2.8",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "Dos maneras de arruinarlo",
-  "body": "EN TONO DE DISCULPA. Perdon si le han fallado, pero yo si soy diferente. Eso ya no es adelantarse: es defenderse de algo que nadie te ha reclamado. Suena a excusa y no desarma nada.\n\nCON UN NEGATIVO INVENTADO. Si mencionas un problema que ese cliente no tenia, no desactivaste nada: le plantaste una preocupacion nueva. Ahora esta pensando en algo que ni le inquietaba.\n\nLa tecnica sirve para desarmar lo que ya existe. Nunca para crear.",
+  "title": "Tres maneras de arruinarlo",
+  "body": "IGNORARLA. Seguir como si nada es tratar una preocupación real como un no reflejo: le confirmas que tenía razón.\n\nDEFENDERTE. Eso no fue culpa nuestra. Ganas la discusión y pierdes al cliente.\n\nPROMETER EN EL AIRE. Perdón, pero yo sí soy diferente. Suena a excusa. Y si mencionas un cambio, tiene que ser real: si te pregunta ¿cómo qué?, tienes que poder contestar.",
   "flip_back_text": null
  },
  {

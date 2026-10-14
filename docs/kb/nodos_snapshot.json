@@ -291,7 +291,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -322,7 +322,8 @@
           "id": "se_encoge",
           "regla_id": "opening.energia_verbal",
           "severity": "major",
-          "description": "Ante la sequedad del cliente baja la energia o empieza a retirarse."
+          "description": "Ante la sequedad del cliente baja la energia o empieza a retirarse.",
+          "espejo_de": "mindset.regla_10_por_ciento"
         }
       ],
       "success_criteria": [
@@ -722,14 +723,13 @@
   {
     "id": "2.8",
     "world_id": 2,
-    "name": "El Ataque Preventivo",
+    "name": "La Mala Experiencia al Llegar",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. El espejo tiene cuatro estados: no adelantarse endurece, adelantarse bien desarma, adelantarse con disculpa no sirve, e inventar un negativo empeora. El cuarto estado protege la linea etica: la tecnica desarma, nunca planta.",
+      "notes": "v3.0.0 (oct-2026, doctrina de Emilio): la mala experiencia al llegar. Antes este nodo enseñaba a adelantar negativos al llegar; la doctrina cambió: con un cliente nuevo no se abre con negativos, y si el cliente saca una mala experiencia es una preocupación real, no un bloqueo. El espejo tiene cinco estados: recibirla en serio con motivo real y pregunta abre; ignorarla confirma; defenderse atrinchera; prometer en el aire no convence; inventar un cambio rompe la confianza.",
       "scope": {
         "skills_in_focus": [
-          "blocks.pre_emptive_strike",
-          "blocks.air"
+          "blocks.mala_experiencia"
         ],
         "out_of_scope_behavior": "redirect"
       },
@@ -740,59 +740,68 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Hay negativos que salen siempre, que ya sabes que van a llegar.\n\nMira lo que hago: lo digo yo primero, con naturalidad, sin dramatizarlo.\n\nFijate en el efecto: cuando yo lo digo, deja de ser un arma del cliente y se vuelve parte de la conversacion. Ya no tiene con que sorprenderme.",
-          "first_message": "Le voy a ser franco antes de que me lo pregunte: ya se que por aqui pasan muchos como yo y que casi todos prometen lo mismo. Por eso hoy no vengo a prometerle nada, vengo a conocer su negocio.\n\nCuenteme, como le ha ido con eso?"
+          "briefing": "A veces no llegas en blanco: el cliente ya trae una mala experiencia, con tu empresa o con vendedores como tú.\n\nEso no es un bloqueo. Un bloqueo es un no reflejo, sin razón. Esto tiene razón, y si lo ignoras, le confirmas que la tenía.\n\nMira lo que hago: lo acepto en serio, le doy el motivo real por el que vengo, y regreso a preguntar.",
+          "first_message": "Él: ya me han fallado antes con las entregas, la verdad ya no les creo.\n\nEntiendo perfecto lo que me dice. De hecho, justo por eso me mandaron con usted: desde hace unos meses cambiamos cómo surtimos esta zona, y varios negocios que tenían el mismo problema ya regresaron. Pero primero tengo que ver si lo podemos atender. ¿Con quién está trabajando ahorita?"
         },
         "you_do": {
-          "prompt": "REGLA NUMERO CERO, POR ENCIMA DE TODO LO DEMAS: en esta conversacion NO EXISTE el tema de que vende este senor, que trae, a que viene, ni en que te puede servir. Jamas preguntas eso. Ni con esas palabras ni con ninguna otra. Prohibidas de forma absoluta las frases: que se le ofrece, que necesita, que anda buscando, a que viene, que trae, de que se trata, en que le puedo servir, y cualquier variante. Tu no sabes que es vendedor y no te interesa averiguarlo. Si el menciona por su cuenta un producto o una marca, contestas ah orale y sigues con lo tuyo sin preguntar nada. Si te quedas sin saber que decir, hablas de tu propio negocio o del dia, nunca de el.\n\nEres el encargado de un negocio y traes UNA reserva concreta con los vendedores, que vas a soltar si te dan la oportunidad. Elige una al azar: ya me han fallado antes / todos prometen y nadie cumple / por aqui pasan muchos como usted / la ultima vez me salio mas caro de lo que me dijeron. REACCIONAS ASI: si el vendedor NO se adelanta, en tu segunda o tercera respuesta sacas tu reserva con firmeza, y a partir de ahi te mantienes escéptico y cuesta arriba el resto de la sesion. Si el vendedor SE ADELANTA y menciona el mismo negativo antes que tu, con naturalidad y sin dramatizarlo, te desarma: te ries o asientes, bajas la guardia notablemente, y le contestas con mas apertura que antes — porque alguien que reconoce lo malo se vuelve creible. Si el vendedor se adelanta pero lo hace en tono de DISCULPA o de justificacion (perdon si le han fallado, no todos somos iguales, yo si soy diferente), no funciona: te suena a excusa, no bajas la guardia y sacas tu reserva igual. Si inventa un negativo que no aplica o que tu no tenias, te confunde y te pone en alerta: ahora si dudas de algo que ni te preocupaba. Responde en 1 o 2 frases.",
-          "objective": "El vendedor menciona el negativo conocido antes que el cliente, con naturalidad y sin tono de disculpa, desactivandolo. El scope se cubre cuando el cliente baja la guardia y responde con mas apertura de la que tenia."
+          "prompt": "Eres el encargado de un negocio. Ya trabajaste antes con la empresa del vendedor, o con un proveedor como el suyo, y te fue mal. Elige UNA mala experiencia al azar: te dejaron sin producto varias veces / te cambiaron el precio sin avisar / el vendedor dejó de venir y nadie te avisó / te llegó producto en mal estado y nadie respondió. La sacas en tu PRIMERA o SEGUNDA respuesta, en cuanto sepas a qué viene, con molestia contenida, por ejemplo: \"Ah, ustedes... la vez pasada me dejaron sin producto tres semanas. La verdad ya no les creo.\" Es una preocupación REAL, no un no reflejo.\n\nREACCIONAS ASÍ:\n- Si el vendedor la acepta en serio (sin pelearla ni minimizarla), te da un motivo concreto y creíble de por qué viene ahora, y te devuelve la palabra con una pregunta sobre tu negocio: bajas la guardia un poco y contestas con un dato real. No te vuelves su amigo: sigues cauto.\n- Si la ignora y sigue como si nada (cambia de tema, sigue con lo suyo): te enfrías. \"¿Ve? Igualito que la otra vez.\" Y contestas cortante.\n- Si se defiende o discute (\"eso no fue culpa nuestra\", \"nosotros no somos así\"): te atrincheras y ya no quieres hablar del tema.\n- Si se disculpa de más o promete que él sí es diferente (\"perdón, pero yo sí soy diferente, se lo prometo\"): no te convence. \"Eso mismo me dijo el otro.\"\n- Si menciona un cambio o negocios que regresaron con detalles concretos, le das el beneficio de la duda; si es vago (\"ya mejoramos mucho\"), preguntas \"¿cómo qué?\".\n\nDespués de sacar tu queja, nunca preguntas tú qué vende ni a qué viene: la conversación la lleva él. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa y responde siempre de forma coherente con ese tipo. Responde en 1 o 2 frases.",
+          "objective": "El vendedor recibe la mala experiencia del cliente como una preocupación real: la acepta sin pelearla ni minimizarla, da un motivo concreto de su visita, y le devuelve la palabra con una pregunta que regresa al diagnóstico. El scope se cubre cuando el cliente baja la guardia y contesta la pregunta con un dato de su negocio."
         },
         "closing": {
-          "message": "Eso es un ataque preventivo. Dijiste tu lo que el iba a usar, y al decirlo tu dejo de ser un arma. Ojo con la regla: solo funciona con negativos REALES y conocidos, y solo si lo dices sin disculparte. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo si el negativo alcanzo a desactivarse."
+          "message": "Eso es tratar una mala experiencia como lo que es: una preocupación de verdad. No la peleaste, no la ignoraste, le diste un motivo real y regresaste a preguntar. En El Cierre vas a aprender el FFF completo; hoy diste el primer paso. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo recibiste su mala experiencia."
         }
       },
-      "version": "2.0.1",
+      "version": "3.0.0",
       "i_do_type": "demo",
+      "success_criteria": [
+        {
+          "id": "blocks.mala_experiencia",
+          "weight": 1.0,
+          "regla_id": "blocks.mala_experiencia_al_llegar",
+          "description": "Recibe la mala experiencia como preocupación real, con sus tres piezas: (1) la acepta en serio, sin pelearla, minimizarla ni ignorarla; (2) da un motivo concreto y creíble de por qué viene ahora (qué cambió, o por qué lo mandaron con él); (3) regresa al diagnóstico con una pregunta sobre el negocio del cliente. Si el motivo es vago (\"ya mejoramos mucho\"), la pieza 2 queda a medias."
+        }
+      ],
       "failure_criteria": [
         {
-          "id": "no_se_adelanta",
-          "regla_id": "blocks.ataque_preventivo",
+          "id": "la_trata_como_bloqueo",
+          "regla_id": "objection.air_a_objecion",
           "severity": "major",
-          "description": "Deja que el cliente saque el negativo primero. Ahora tiene que atravesar cuesta arriba algo que pudo haber desactivado gratis.",
-          "espejo_de": "blocks.pre_emptive_strike"
+          "severity_override": {
+            "default": "critical",
+            "razon": "nodo de aprendizaje de La Historia Breve: el FFF completo llega en El Cierre"
+          },
+          "espejo_de": "blocks.mala_experiencia",
+          "description": "La ignora y sigue como si nada: cambia de tema o sigue con lo suyo, como si fuera un no reflejo. Le confirma al cliente que tenía razón."
         },
         {
-          "id": "tono_de_disculpa",
+          "id": "se_defiende",
+          "regla_id": "objection.discutir",
+          "severity": "major",
+          "severity_override": {
+            "default": "critical",
+            "razon": "nodo de aprendizaje de La Historia Breve: el FFF completo llega en El Cierre"
+          },
+          "espejo_de": "blocks.mala_experiencia",
+          "description": "Discute o justifica: \"eso no fue culpa nuestra\", \"nosotros no somos así\". Gana la discusión y pierde al cliente."
+        },
+        {
+          "id": "promesa_en_disculpa",
           "regla_id": "blocks.ataque_en_disculpa",
           "severity": "major",
-          "description": "Se adelanta pero en tono de excusa: perdon si le han fallado, no todos somos iguales, yo si soy diferente. Suena a defensa y no desarma nada."
+          "description": "Se disculpa de más o promete que él sí es diferente (\"perdón, pero yo sí soy diferente\"): suena a excusa y no desarma nada."
         },
         {
-          "id": "negativo_inventado",
-          "regla_id": "blocks.negativo_inventado",
-          "severity": "major",
-          "description": "Menciona un negativo que el cliente no tenia. En lugar de desactivar, planta una duda nueva. La tecnica sirve para desarmar lo que ya existe, nunca para crear preocupaciones."
+          "id": "cambio_inventado",
+          "regla_id": "impulse.jones_vago",
+          "severity": "critical",
+          "description": "Menciona un cambio o negocios que regresaron que no puede sostener: cuando el cliente pregunta \"¿cómo qué?\", no tiene nada concreto."
         },
         {
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promocion o motivo de venta."
-        }
-      ],
-      "success_criteria": [
-        {
-          "id": "blocks.pre_emptive_strike",
-          "weight": 0.7,
-          "regla_id": "blocks.ataque_preventivo",
-          "description": "Menciona un negativo real y conocido ANTES de que el cliente lo saque, con naturalidad y sin dramatizarlo. El tono importa: decirlo como dato desarma, decirlo como disculpa o justificacion no funciona y suena a excusa. Inventar un negativo que el cliente no tenia es peor que no hacerlo."
-        },
-        {
-          "id": "blocks.air",
-          "weight": 0.3,
-          "regla_id": "blocks.air",
-          "description": "Si el cliente alcanza a sacar su reserva, la acepta sin pelearla y retoma. No se defiende ni intenta convencerlo de lo contrario."
+          "description": "Mete producto, promoción o motivo de venta."
         }
       ]
     }
@@ -895,7 +904,8 @@
           "story.historia_breve",
           "story.brevedad",
           "relationship.cpr",
-          "flow.close_with_action"
+          "flow.close_with_action",
+          "story.relevancia_cliente"
         ],
         "out_of_scope_behavior": "redirect"
       },
@@ -918,7 +928,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.0.0",
+      "version": "2.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -985,13 +995,13 @@
         },
         {
           "id": "story.historia_breve",
-          "weight": 0.2,
+          "weight": 0.15,
           "regla_id": "story.quien_eres_por_que",
           "description": "Dice quien es y por que esta ahi: nombre, procedencia y motivo humano de la visita."
         },
         {
           "id": "story.brevedad",
-          "weight": 0.15,
+          "weight": 0.1,
           "regla_id": "story.kiss",
           "description": "Dos o tres frases. Sin trayectoria de empresa, sin lista de productos, sin cifras."
         },
@@ -1003,9 +1013,15 @@
         },
         {
           "id": "flow.close_with_action",
-          "weight": 0.2,
+          "weight": 0.15,
           "regla_id": "close_with_action",
           "description": "Despues de cada freno avanza por su cuenta, sin quedarse esperando ni pedir autorizacion. Sostiene el control de la conversacion toda la sesion."
+        },
+        {
+          "id": "story.relevancia_cliente",
+          "weight": 0.15,
+          "regla_id": "story.pregunta_despues",
+          "description": "Sus turnos terminan devolviéndole la palabra al cliente con una pregunta: no deja afirmaciones sueltas en el aire."
         }
       ]
     }
@@ -1834,7 +1850,7 @@
           "message_incomplete": "Hasta aqui la sesion — un diagnostico de verdad no siempre se termina, pero siempre ensena. Vamos al desglose y te digo exactamente donde quedo la excavacion."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1851,7 +1867,8 @@
           "id": "ignora_pistas",
           "regla_id": "discovery.escalera_capas",
           "severity": "major",
-          "description": "Deja pasar la pista del dolor (el aunque) o los datos laterales de forma sistemática."
+          "description": "Deja pasar la pista del dolor (el aunque) o los datos laterales de forma sistemática.",
+          "espejo_de": "discovery.preguntas_capas"
         },
         {
           "id": "debate_bloqueo",
@@ -1864,7 +1881,8 @@
           "id": "ignora_estado",
           "regla_id": "discovery.rrr",
           "severity": "major",
-          "description": "El cliente muestra prisa clara y el vendedor avanza a su ritmo propio sin reconocerla ni ajustar."
+          "description": "El cliente muestra prisa clara y el vendedor avanza a su ritmo propio sin reconocerla ni ajustar.",
+          "espejo_de": "mindset.rrr"
         },
         {
           "id": "interrogatorio",
@@ -2885,14 +2903,15 @@
     "name": "Construye el Valor",
     "node_type": "boss",
     "practice_script": {
-      "notes": "BOSS del Mundo 4 — el ciclo diagnóstico→presentación completo ante el arquetipo desconfiado d4. Integra M3 (capas, escucha) y M4 entero. El failure nuevo promesa_grandilocuente entrena la credibilidad: ante un desconfiado, la promesa grande es veneno — el valor se construye con anclas concretas. 18 turnos: la sesión más larga del mapa hasta ahora.",
+      "notes": "BOSS del Mundo 4 — el ciclo diagnóstico→presentación completo ante el arquetipo desconfiado d4. Integra M3 (capas, escucha) y M4 entero. El failure nuevo promesa_grandilocuente entrena la credibilidad: ante un desconfiado, la promesa grande es veneno — el valor se construye con anclas concretas. 18 turnos: la sesión más larga del mapa hasta ahora. v1.1.0 (oct-2026, Emilio): el boss de La Presentación califica también los factores de impulso, el triple desglose y beneficio-no-característica; valor personalizado entra en conectar con el dolor y el dolor real se queda en El Descubrimiento.",
       "scope": {
         "skills_in_focus": [
-          "discovery.dolor_real",
           "presentation.conectar_dolor",
+          "presentation.beneficio_no_caracteristica",
           "presentation.pintar_imagenes",
           "presentation.tren_si_si",
-          "presentation.valor_personalizado",
+          "impulse.factores_impulso",
+          "presentation.price_breakdown",
           "relationship.cpr"
         ],
         "out_of_scope_behavior": "redirect"
@@ -2904,15 +2923,15 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO: varios vendedores te han prometido de más y cumplido de menos, así que recibes con escepticismo cordial — escuchas, pero no crees fácil. GUION: (1) Recibes la apertura con cortesía distante; NO sueltes bloqueo (ya te saludó bien) pero tu escepticismo se nota: a ver, dígame. (2) Tienes un DOLOR REAL (elige al azar: proveedor que te deja plantado quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — lo revelas por capas SOLO si te excavan la pista del aunque. (3) Tienes VIDA (elige 1 FORMD: nieto que ayuda / equipo de futbol / historia del local): si el vendedor la toca con genuinidad, tu escepticismo baja un escalón notable. (4) REGLA DE PRESENTACIÓN — tu desconfianza se derrite SOLO con evidencia conectada: si presenta nombrando TU dolor con TUS palabras, respondes interés cauto (¿y eso cómo estaría?); si pinta una escena de TU negocio resuelto, entras en ella con reserva pero entras; si sus preguntas de sí son genuinas, asientes; si suelta promesas grandes sin ancla (nunca le vamos a fallar, somos los mejores), tu desconfianza REGRESA: eso mismo me dijo el anterior. (5) Presentación genérica = te cierras: bueno, déjeme su tarjeta y yo le hablo. Tu techo: interesado-cauto que pide detalles concretos del siguiente paso — nunca eufórico. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor completa el ciclo con un cliente desconfiado: excava el dolor real por capas hasta la revelación y confirmación, construye conexión personal genuina en el camino (al menos un tema FORMD), y presenta CONECTADO: abre desde el dolor con las palabras del cliente, pinta al menos una escena de su negocio resuelto, siembra al menos dos síes genuinos, y traduce a beneficios concretos sin promesas grandilocuentes. El scope se cubre cuando el desconfiado muestra interés real: pregunta por detalles concretos del siguiente paso (cómo surtirían, cada cuánto, qué necesita hacer)."
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO: varios vendedores te han prometido de más y cumplido de menos, así que recibes con escepticismo cordial — escuchas, pero no crees fácil. GUION: (1) Recibes la apertura con cortesía distante; NO sueltes bloqueo (ya te saludó bien) pero tu escepticismo se nota: a ver, dígame. (2) Tienes un DOLOR REAL (elige al azar: proveedor que te deja plantado quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — lo revelas por capas SOLO si te excavan la pista del aunque. (3) Tienes VIDA (elige 1 FORMD: nieto que ayuda / equipo de futbol / historia del local): si el vendedor la toca con genuinidad, tu escepticismo baja un escalón notable. (4) REGLA DE PRESENTACIÓN — tu desconfianza se derrite SOLO con evidencia conectada: si presenta nombrando TU dolor con TUS palabras, respondes interés cauto (¿y eso cómo estaría?); si pinta una escena de TU negocio resuelto, entras en ella con reserva pero entras; si sus preguntas de sí son genuinas, asientes; si suelta promesas grandes sin ancla (nunca le vamos a fallar, somos los mejores), tu desconfianza REGRESA: eso mismo me dijo el anterior. (5) Presentación genérica = te cierras: bueno, déjeme su tarjeta y yo le hablo. (6) PRECIO: cuando la presentación ya te interesó, preguntas el precio: ¿y a cómo me lo dejaría? Si te lo presenta con lo que normalmente cuesta, el descuento real y por qué, y lo que te ahorras, lo tomas en serio; si suelta un número seco, te parece caro. (7) IMPULSO: si te muestra lo que pierdes por esperar, negocios como el tuyo que ya lo manejan (con nombre), o la ventaja en números de tu negocio, te mueve; si suena vago o inventado (todos lo están comprando, solo por hoy), tu desconfianza regresa: eso mismo me dijo el anterior. Tu techo: interesado-cauto que pide detalles concretos del siguiente paso — nunca eufórico. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor completa el ciclo con un cliente desconfiado: excava el dolor real por capas hasta la revelación y confirmación, construye conexión personal genuina en el camino (al menos un tema FORMD), y presenta CONECTADO: abre desde el dolor con las palabras del cliente, pinta al menos una escena de su negocio resuelto, siembra al menos dos síes genuinos, traduce a beneficios concretos sin promesas grandilocuentes, sube el impulso con al menos dos factores reales, y presenta el precio con el triple desglose cuando la empresa tiene descuentos reales. El scope se cubre cuando el desconfiado muestra interés real: pregunta por detalles concretos del siguiente paso (cómo surtirían, cada cuánto, qué necesita hacer)."
         },
         "closing": {
           "message": "Un desconfiado pidiéndote los detalles del siguiente paso — eso no se compra con promesas: se construye con valor. Acabas de recorrer el camino completo del diagnóstico a la presentación. El cierre te espera en el siguiente mundo. Vamos al desglose.",
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "1.0.0",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2954,45 +2973,58 @@
           "regla_id": "present.pintar_imagenes",
           "severity": "major",
           "description": "Presentación de puros datos sin una sola escena.",
-          "severity_fix": "minor->major (BOSS no baja errores de su paso)"
+          "severity_fix": "minor->major (BOSS no baja errores de su paso)",
+          "espejo_de": "presentation.pintar_imagenes"
         },
         {
           "id": "monologo",
           "regla_id": "monologo",
           "severity": "minor",
           "description": "Bloques largos que atropellan al desconfiado."
+        },
+        {
+          "id": "impulso_falso",
+          "regla_id": "impulse.escasez_inventada",
+          "severity": "critical",
+          "description": "Inventa urgencia, escasez, clientes que ya compran o un descuento que la empresa no tiene. El impulso se construye con verdad."
         }
       ],
       "success_criteria": [
         {
-          "id": "discovery.dolor_real",
-          "weight": 0.2,
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
-          "description": "Excava el dolor por capas hasta la revelación completa y lo confirma verbalmente antes de presentar — la presentación no arranca sin diagnóstico terminado."
+          "id": "presentation.conectar_dolor",
+          "weight": 0.15,
+          "regla_id": "present.dos_mitades",
+          "description": "La presentación abre nombrando el dolor confirmado con las palabras del cliente, y toda la oferta se articula como solución de ESE problema, personalizada a su negocio: cero frases de catálogo."
         },
         {
-          "id": "presentation.conectar_dolor",
-          "weight": 0.2,
-          "regla_id": "present.dos_mitades",
-          "description": "La presentación abre nombrando el dolor confirmado con las palabras del cliente y toda la oferta se articula como solución de ESE problema."
+          "id": "presentation.beneficio_no_caracteristica",
+          "weight": 0.1,
+          "regla_id": "present.beneficio_no_caracteristica",
+          "description": "Traduce cada característica a lo que el cliente gana en su negocio: resultados, no especificaciones."
         },
         {
           "id": "presentation.pintar_imagenes",
-          "weight": 0.15,
+          "weight": 0.1,
           "regla_id": "present.pintar_imagenes",
           "description": "Al menos una escena concreta del negocio del cliente con el problema resuelto, que el cliente recibe entrando en ella."
         },
         {
           "id": "presentation.tren_si_si",
-          "weight": 0.15,
+          "weight": 0.1,
           "regla_id": "impulse.tren_del_si",
           "description": "Al menos dos preguntas de sí genuino ancladas en lo declarado, respondidas afirmativamente con comodidad."
         },
         {
-          "id": "presentation.valor_personalizado",
+          "id": "impulse.factores_impulso",
+          "weight": 0.25,
+          "regla_id": "impulse.factores",
+          "description": "Sube el impulso con al menos DOS factores de FUJPIG distintos (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), anclados en el negocio del cliente y comprobables. Con uno solo es parcial. Un factor inventado no cuenta y se marca impulso_falso."
+        },
+        {
+          "id": "presentation.price_breakdown",
           "weight": 0.15,
-          "regla_id": "present.beneficio_no_caracteristica",
-          "description": "Cero frases de catálogo genérico y cero promesas grandilocuentes sin ancla — todo el valor está personalizado y es creíble para un desconfiado."
+          "regla_id": "present.triple_desglose",
+          "description": "Cuando el cliente pregunta el precio, lo presenta con el triple desglose: lo que normalmente cuesta, lo que queda con cada descuento real y por qué, y el ahorro visible. Si el contexto de la empresa no tiene descuentos reales, este criterio es no_aplica: nunca se inventa un descuento."
         },
         {
           "id": "relationship.cpr",
@@ -3347,7 +3379,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3395,7 +3427,7 @@
         {
           "id": "objections.reframe",
           "weight": 0.4,
-          "regla_id": "objection.rrr",
+          "regla_id": "objection.fff",
           "description": "Ejecuta la secuencia completa: recibe con validación genuina, entiende el motivo (pregunta aclaratoria si aplica — ¿caro comparado con qué?), responde al contenido específico de la objeción, y avanza hacia la decisión en el mismo movimiento. Los cuatro pasos visibles."
         },
         {
@@ -3526,8 +3558,8 @@
         "skills_in_focus": [
           "objections.reframe",
           "objections.bullet_theory",
-          "objections.no_defensivo",
-          "impulse.indiferencia"
+          "impulse.indiferencia",
+          "objections.circulo_cierre"
         ],
         "out_of_scope_behavior": "redirect"
       },
@@ -3550,7 +3582,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito. Vamos al desglose y te digo como quedo tu municion."
         }
       },
-      "version": "1.0.0",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3610,8 +3642,8 @@
         {
           "id": "objections.reframe",
           "weight": 0.3,
-          "regla_id": "objection.rrr",
-          "description": "Cada objeción de la cadena recibe su reencuadre completo: recibida, entendida, respondida al contenido específico, y avanzada — ninguna queda a medias ni se resuelve con la inercia de la anterior."
+          "regla_id": "objection.fff",
+          "description": "Cada objeción de la cadena recibe su FFF completo: la entiende sin discutir (cómo se siente, otros sintieron lo mismo, lo que encontraron), responde al contenido específico con una bala nueva, y avanza. Ninguna queda a medias."
         },
         {
           "id": "objections.bullet_theory",
@@ -3620,16 +3652,16 @@
           "description": "Dosificación bajo presión: UNA bala distinta y ajustada por objeción — sin repetir munición para la segunda, sin apilar cargador, con las balas aguantando el ¿a poco?"
         },
         {
-          "id": "objections.no_defensivo",
-          "weight": 0.2,
-          "regla_id": "objection.discutir",
-          "description": "Cero defensa y cero evasión a lo largo de toda la cadena — la segunda objeción no lo pone a la defensiva aunque llegue justo tras resolver la primera."
-        },
-        {
           "id": "impulse.indiferencia",
           "weight": 0.2,
           "regla_id": "impulse.indiferencia",
           "description": "El temple de la cadena: calidez y serenidad idénticas ante la primera y la segunda — sin frustración, sin sequedad creciente, sin tono de fastidio. SW3 sostenido cuando el sí se aleja un turno más."
+        },
+        {
+          "id": "objections.circulo_cierre",
+          "weight": 0.2,
+          "regla_id": "objection.circulo_de_cierre",
+          "description": "Después de atravesar cada objeción, re-impulsa con una bala NUEVA y vuelve a pedir la decisión con acción."
         }
       ]
     }
@@ -3819,13 +3851,14 @@
     "name": "Extrae la Decisión",
     "node_type": "boss",
     "practice_script": {
-      "notes": "BOSS del Mundo 7 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega.",
+      "notes": "BOSS del Mundo 7 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega. v1.1.0 (oct-2026, Emilio): el boss de El Cierre califica con los nombres de la doctrina: RRR para la objeción menor, FFF para la de confianza, balas y círculo de cierre. \"Sin defensa\" sale de los criterios porque ya es falla crítica.",
       "scope": {
         "skills_in_focus": [
+          "blocks.air",
+          "objections.rrr_objeciones",
           "objections.reframe",
           "objections.bullet_theory",
-          "objections.no_defensivo",
-          "blocks.air",
+          "objections.circulo_cierre",
           "discovery.dolor_real",
           "closing.cierre_asumido"
         ],
@@ -3838,7 +3871,7 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual) — el vendedor debe validar que NO es normal y cuantificarlo para que lo tomes en serio. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia verificable, referencia de la zona con nombre). Segunda al azar: está caro / déjeme pensarlo con calma que ya me han agarrado de bajada. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual) — el vendedor debe validar que NO es normal y cuantificarlo para que lo tomes en serio. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia verificable, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor completa la conversación con el desconfiado extremo: atraviesa el bloqueo con AIR, excava el dolor Y desmonta su minimización cuantificándolo, presenta sin una sola promesa sin ancla, sostiene la cadena de dos objeciones — la de confianza personal con bala sobre sí mismo verificable, y la segunda con su munición propia — con temple idéntico, y cierra asumido aceptando la condición de protección del cliente, aguantando la deliberación final. El scope se cubre con el trato de prueba cerrado."
         },
         "closing": {
@@ -3846,7 +3879,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3885,7 +3918,8 @@
           "id": "traga_la_minimizacion",
           "regla_id": "discovery.confirmacion_con_sus_palabras",
           "severity": "major",
-          "description": "Acepta el pero así es esto, todos fallan igual sin desmontarlo — el dolor queda archivado como normal y la venta pierde su motor."
+          "description": "Acepta el pero así es esto, todos fallan igual sin desmontarlo — el dolor queda archivado como normal y la venta pierde su motor.",
+          "espejo_de": "discovery.dolor_real"
         },
         {
           "id": "pelea_la_condicion",
@@ -3912,32 +3946,38 @@
       ],
       "success_criteria": [
         {
-          "id": "objections.reframe",
-          "weight": 0.25,
-          "regla_id": "objection.rrr",
-          "description": "La cadena completa reencuadrada: la objeción de confianza personal recibida sin herida y respondida al contenido, y la segunda con su proceso completo — ambas avanzadas."
-        },
-        {
-          "id": "objections.bullet_theory",
-          "weight": 0.2,
-          "regla_id": "present.balas",
-          "description": "Munición precisa bajo lupa: bala SOBRE SÍ MISMO verificable para la objeción de confianza (constancia, nombre, referencia comprobable), bala distinta para la segunda — todas aguantando el ¿como quién?"
-        },
-        {
-          "id": "objections.no_defensivo",
-          "weight": 0.15,
-          "regla_id": "objection.discutir",
-          "description": "La objeción más personal del mapa (¿por qué le voy a creer a USTED?) recibida sin defensa, sin herida y sin justificación atropellada."
-        },
-        {
           "id": "blocks.air",
           "weight": 0.15,
           "regla_id": "blocks.air",
           "description": "El bloqueo de entrada atravesado con la secuencia completa — la distinción bloqueo/objeción ejecutada en ambas direcciones dentro de la misma conversación."
         },
         {
-          "id": "discovery.dolor_real",
+          "id": "objections.rrr_objeciones",
           "weight": 0.15,
+          "regla_id": "objection.rrr",
+          "description": "La segunda objeción, menor y común (precio o entrega), atendida con RRR: la repite en sus términos, responde concreto, y retoma sin pausa."
+        },
+        {
+          "id": "objections.reframe",
+          "weight": 0.2,
+          "regla_id": "objection.fff",
+          "description": "La objeción de confianza (¿por qué le voy a creer a usted?) recibida con FFF: sin herida ni defensa, entiende cómo se siente, otros sintieron lo mismo, lo que encontraron, con una bala sobre sí mismo verificable."
+        },
+        {
+          "id": "objections.bullet_theory",
+          "weight": 0.15,
+          "regla_id": "present.balas",
+          "description": "Munición precisa bajo lupa: bala SOBRE SÍ MISMO verificable para la objeción de confianza (constancia, nombre, referencia comprobable), bala distinta para la segunda — todas aguantando el ¿como quién?"
+        },
+        {
+          "id": "objections.circulo_cierre",
+          "weight": 0.15,
+          "regla_id": "objection.circulo_de_cierre",
+          "description": "Después de atravesar cada objeción, re-impulsa con una bala NUEVA y vuelve a pedir la decisión con acción."
+        },
+        {
+          "id": "discovery.dolor_real",
+          "weight": 0.1,
           "regla_id": "discovery.confirmacion_con_sus_palabras",
           "description": "El dolor excavado por capas Y su minimización desmontada: valida que no es normal y lo cuantifica con los números del cliente hasta que lo tome en serio."
         },
@@ -4273,6 +4313,8 @@
         "skills_in_focus": [
           "opening.estructura_apertura",
           "story.historia_breve",
+          "blocks.air",
+          "flow.close_with_action",
           "discovery.dolor_real",
           "presentation.conectar_dolor",
           "closing.cierre_asumido",
@@ -4295,7 +4337,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4368,25 +4410,37 @@
       "success_criteria": [
         {
           "id": "opening.estructura_apertura",
-          "weight": 0.15,
+          "weight": 0.1,
           "regla_id": "opening.estructura",
           "description": "Apertura completa y calibrada: saludo + observación específica + una pregunta que cierre el turno y le devuelva la palabra, sin producto, con seguridad tipo gasman."
         },
         {
           "id": "story.historia_breve",
-          "weight": 0.15,
+          "weight": 0.1,
           "regla_id": "story.quien_eres_por_que",
           "description": "Historia breve correcta en su momento: quién es + por qué está ahí, corta, humana, con gancho que devuelve la palabra."
         },
         {
+          "id": "blocks.air",
+          "weight": 0.1,
+          "regla_id": "blocks.air",
+          "description": "Si aparece un bloqueo reflejo, lo atraviesa con AIR: lo acepta, no lo pelea, y retoma. Si en la conversación no hay bloqueo, este criterio es no_aplica."
+        },
+        {
+          "id": "flow.close_with_action",
+          "weight": 0.1,
+          "regla_id": "close_with_action",
+          "description": "Mantiene viva la conversación: sus turnos devuelven la palabra con una pregunta, y después de cada freno avanza por su cuenta sin esperar permiso."
+        },
+        {
           "id": "discovery.dolor_real",
-          "weight": 0.2,
+          "weight": 0.15,
           "regla_id": "discovery.confirmacion_con_sus_palabras",
           "description": "Descubrimiento por capas hasta el dolor completo, revelado por el cliente y confirmado verbalmente antes de presentar."
         },
         {
           "id": "presentation.conectar_dolor",
-          "weight": 0.2,
+          "weight": 0.15,
           "regla_id": "present.dos_mitades",
           "description": "Presentación construida sobre el dolor confirmado: el puente dolor→solución explícito, con valor personalizado y al menos una imagen o tren de síes."
         },
@@ -4532,7 +4586,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4601,7 +4655,7 @@
         {
           "id": "objections.reframe",
           "weight": 0.2,
-          "regla_id": "objection.rrr",
+          "regla_id": "objection.fff",
           "description": "Distingue y honra la cicatriz: cuando el cliente cuenta su mala experiencia, la valida en serio y escucha (no la esquiva con AIR — eso es para el bloqueo reflejo del inicio). El manejo diferenciado de los dos noes es el primer producto del examen."
         },
         {
@@ -4808,7 +4862,7 @@
           "message_incomplete": "Hasta aqui el examen final. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4900,7 +4954,7 @@
         {
           "id": "objections.reframe",
           "weight": 0.15,
-          "regla_id": "objection.rrr",
+          "regla_id": "objection.fff",
           "description": "Las objeciones encadenadas se honran una por una: validación + evidencia concreta + avance — sin defensividad, sin contradecir, sin ceder por cansancio."
         },
         {

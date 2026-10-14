@@ -1458,5 +1458,25 @@
   "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, o una que le piden y no maneja. No tiene señal verbal: se ve o se pregunta. Identificarlo es nombrarlo en la conversación, no solo preguntar. Tiene que ser real y verificable.",
   "cita_cerebro": "algo que podría comprarte y no te compra",
   "severidad_sugerida": "None"
+ },
+ {
+  "id": "blocks.mala_experiencia_al_llegar",
+  "paso": 2,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Si el cliente saca una mala experiencia al llegar, no es un bloqueo: se acepta en serio, se da el motivo real de la visita y se regresa al diagnóstico con una pregunta.",
+  "cita_cerebro": "no es un bloqueo para atravesar con AIR: es una preocupación real y se maneja como objeción",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "impulse.factores",
+  "paso": 4,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Sube el impulso con los factores de FUJPIG (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), siempre reales y comprobables.",
+  "cita_cerebro": "El impulso es otra palabra para la emoción",
+  "severidad_sugerida": null
  }
 ]

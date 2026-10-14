@@ -25,9 +25,9 @@
   "id": "blocks.pre_emptive_strike",
   "code": "S-056",
   "name": "Ataque Preventivo",
-  "short_description": "Desactiva un negativo conocido diciendolo tu antes que el cliente. Si das la negativa antes de que el la de, deja de ser negativa.",
+  "short_description": "En la presentación, di tú el negativo conocido de la oferta antes que el cliente. Si das la negativa antes de que él la dé, deja de ser negativa. Nunca al llegar con un cliente nuevo.",
   "category": "blocks",
-  "world_id_introduced": 2,
+  "world_id_introduced": 4,
   "skill_type": "tecnica",
   "status": "active",
   "regla_id": "blocks.ataque_preventivo"
@@ -475,13 +475,13 @@
  {
   "id": "objections.reframe",
   "code": "S-026",
-  "name": "Reencuadre de objeción real",
-  "short_description": "Convierte la objeción razonada en oportunidad",
+  "name": "FFF — Feel, Felt, Found",
+  "short_description": "Para preocupaciones serias o personales: entiendo cómo se siente, otros sintieron lo mismo, esto encontraron. Sin discutir, con balas nuevas, y cierra con acción.",
   "category": "objections",
   "world_id_introduced": 5,
   "skill_type": "tecnica",
   "status": "active",
-  "regla_id": "objection.rrr"
+  "regla_id": "objection.fff"
  },
  {
   "id": "objections.regla_no",
@@ -757,5 +757,27 @@
   "skill_type": "tecnica",
   "status": "active",
   "regla_id": "story.pregunta_despues"
+ },
+ {
+  "id": "blocks.mala_experiencia",
+  "code": "S-070",
+  "name": "La Mala Experiencia al Llegar",
+  "short_description": "Cuando el cliente ya trae una mala experiencia, no es un bloqueo: la escuchas en serio, das el motivo real de tu visita y regresas a preguntar.",
+  "category": "blocks",
+  "world_id_introduced": 2,
+  "skill_type": "tecnica",
+  "status": "active",
+  "regla_id": "blocks.mala_experiencia_al_llegar"
+ },
+ {
+  "id": "impulse.factores_impulso",
+  "code": "S-071",
+  "name": "Factores de Impulso (FUJPIG)",
+  "short_description": "Sube el impulso con al menos dos factores de FUJPIG, reales y anclados en el negocio del cliente.",
+  "category": "impulse",
+  "world_id_introduced": 4,
+  "skill_type": "tecnica",
+  "status": "active",
+  "regla_id": "impulse.factores"
  }
 ]
