@@ -59,3 +59,32 @@ export function armarAvance(
   }
   return { actual, mundoActual, texto: lineas.join("\n") };
 }
+
+export interface TecnicaAvance { name: string; world_id_introduced: number; status?: string | null }
+
+/**
+ * Qué técnica se enseña en qué mundo, marcado contra el avance del vendedor.
+ * El coach lo usa para ubicar el tema de una pregunta antes de contestar
+ * (oct-2026: ante "está muy caro" el coach explicó triple desglose y balas,
+ * del Mundo 4, a un vendedor que todavía no lo abría).
+ */
+export function armarTecnicas(mundos: MundoAvance[], tecnicas: TecnicaAvance[], mundoActual: number | null): string {
+  const nombreMundo = new Map(mundos.map((m) => [m.id, m.name]));
+  const porMundo = new Map<number, string[]>();
+  for (const t of tecnicas) {
+    if (t.status && t.status !== "active") continue;
+    const l = porMundo.get(t.world_id_introduced) ?? [];
+    if (!l.includes(t.name)) l.push(t.name);
+    porMundo.set(t.world_id_introduced, l);
+  }
+  const lineas = ["TÉCNICAS POR MUNDO (dónde se enseña cada una):"];
+  for (const w of [...porMundo.keys()].sort((a, b) => a - b)) {
+    const estado = mundoActual === null || w < mundoActual
+      ? "ya se las enseñaste"
+      : w === mundoActual
+        ? "las está aprendiendo ahora"
+        : "TODAVÍA NO SE LAS ENSEÑAS: no las expliques"
+    lineas.push(`Mundo ${w} — ${nombreMundo.get(w) ?? "—"} [${estado}]: ${porMundo.get(w)!.join("; ")}`);
+  }
+  return lineas.join("\n");
+}
