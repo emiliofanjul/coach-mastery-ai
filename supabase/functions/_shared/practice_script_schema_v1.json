@@ -282,6 +282,10 @@
           "severity_fix": {
             "type": "string",
             "description": "Rastro de una corrección aplicada por migración (ej. 'major->critical'). Informativo."
+          },
+          "espejo_de": {
+            "type": "string",
+            "description": "Id del criterio de éxito del mismo nodo del que esta falla es el espejo (la falla es no cumplir ese criterio). Se detecta y se muestra al vendedor, pero NO resta aparte: el criterio ya lo cobra. No aplica a fallas critical, que siempre topan la nota (oct-2026, decisión de Emilio)."
           }
         }
       }
