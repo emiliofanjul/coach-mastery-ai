@@ -19,7 +19,7 @@
     "name": "Tu Primera Frase",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Mundo 1 reconstruido. R11 aplicada: la identificacion no se requiere ni se espera aqui. El espejo es la mecanica central: la respuesta del cliente es directamente proporcional a la especificidad de la observacion.",
+      "notes": "v2.0.0 Mundo 1 reconstruido. R11 aplicada: la identificacion no se requiere ni se espera aqui. El espejo es la mecanica central: la respuesta del cliente es directamente proporcional a la especificidad de la observacion. v2.0.1 (oct-2026, Emilio): el Director puede cortar desde el primer turno; la apertura se demuestra en una frase y el vendedor no tiene que seguir improvisando lo que todavía no aprende. Decir quién eres o de qué empresa vienes no es pitch prematuro.",
       "scope": {
         "skills_in_focus": [
           "opening.estructura_apertura",
@@ -31,7 +31,7 @@
       "limits": {
         "max_turns": 5,
         "max_duration_seconds": 150,
-        "min_turns_before_evaluation": 2
+        "min_turns_before_evaluation": 1
       },
       "phases": {
         "i_do": {
@@ -47,7 +47,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como abres. Vamos al desglose y te digo cual era la siguiente pieza."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -60,7 +60,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Menciona producto, promocion o motivo de venta en la apertura."
+          "description": "En la apertura, ofrece producto o promoción, o pregunta por su operación comercial (proveedor, precios, marcas, volúmenes, cada cuánto le surten). Decir tu nombre o de qué empresa vienes NO es pitch prematuro, y menos si el cliente te lo preguntó: eso es la historia breve y en este nodo no se califica."
         },
         {
           "id": "sin_pregunta",
@@ -104,7 +104,7 @@
     "name": "Entrar Sin Disculpa",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 El espejo castiga la disculpa con la consecuencia real de campo: el cliente toma el control y despacha. No hay regano, hay consecuencia.",
+      "notes": "v2.0.0 El espejo castiga la disculpa con la consecuencia real de campo: el cliente toma el control y despacha. No hay regano, hay consecuencia. v2.0.2 (oct-2026, Emilio): decir quién eres o de qué empresa vienes no es pitch prematuro. El Director puede cortar desde el primer turno: la introducción no obliga a un segundo turno.",
       "scope": {
         "skills_in_focus": [
           "opening.arranque_sin_disculpa",
@@ -116,7 +116,7 @@
       "limits": {
         "max_turns": 5,
         "max_duration_seconds": 180,
-        "min_turns_before_evaluation": 2
+        "min_turns_before_evaluation": 1
       },
       "phases": {
         "i_do": {
@@ -132,7 +132,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi con que postura entras. Vamos al desglose."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -158,7 +158,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Menciona producto, promocion o motivo de venta."
+          "description": "Ofrece producto o promoción, o pregunta por su operación comercial (proveedor, precios, marcas, volúmenes, cada cuánto le surten). Decir tu nombre o de qué empresa vienes NO es pitch prematuro, y menos si el cliente te lo preguntó: eso es la historia breve y en este nodo no se califica."
         }
       ],
       "success_criteria": [
@@ -189,7 +189,7 @@
     "name": "El Ice Breaker",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. El espejo tiene TRES estados y esa es la ensenanza: plano no abre, genuino abre, falso cierra mas que al inicio. Doctrina universal: el ice breaker puede ser sobre la persona, el entorno o algo en comun. No esta atado a ningun tipo de negocio.",
+      "notes": "v2.0.0 Nodo nuevo. El espejo tiene TRES estados y esa es la ensenanza: plano no abre, genuino abre, falso cierra mas que al inicio. Doctrina universal: el ice breaker puede ser sobre la persona, el entorno o algo en comun. No esta atado a ningun tipo de negocio. v2.0.1 (oct-2026, Emilio): el Director puede cortar desde el primer turno; la apertura se demuestra en una frase y el vendedor no tiene que seguir improvisando lo que todavía no aprende. Decir quién eres o de qué empresa vienes no es pitch prematuro.",
       "scope": {
         "skills_in_focus": [
           "opening.ice_breaker",
@@ -200,7 +200,7 @@
       "limits": {
         "max_turns": 5,
         "max_duration_seconds": 150,
-        "min_turns_before_evaluation": 2
+        "min_turns_before_evaluation": 1
       },
       "phases": {
         "i_do": {
@@ -216,7 +216,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como entras. Vamos al desglose y te digo que le faltaba."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -235,7 +235,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Menciona producto, promocion o motivo de venta."
+          "description": "Ofrece producto o promoción, o pregunta por su operación comercial (proveedor, precios, marcas, volúmenes, cada cuánto le surten). Decir tu nombre o de qué empresa vienes NO es pitch prematuro, y menos si el cliente te lo preguntó: eso es la historia breve y en este nodo no se califica."
         }
       ],
       "success_criteria": [
@@ -260,7 +260,7 @@
     "name": "La Primera Impresión",
     "node_type": "boss",
     "practice_script": {
-      "notes": "v2.0.0 BOSS del Mundo 1. Sin pista garantizada y sin ayudas (R9): el gimnasio garantiza la oportunidad, el examen no. La senal de exito es que el cliente pregunte quien es el vendedor, que es la puerta natural al Mundo 2.",
+      "notes": "v2.0.0 BOSS del Mundo 1. Sin pista garantizada y sin ayudas (R9): el gimnasio garantiza la oportunidad, el examen no. La senal de exito es que el cliente pregunte quien es el vendedor, que es la puerta natural al Mundo 2. v2.0.2 (oct-2026, Emilio): decir quién eres o de qué empresa vienes no es pitch prematuro. El Director puede cortar desde el primer turno: la introducción no obliga a un segundo turno.",
       "scope": {
         "skills_in_focus": [
           "opening.estructura_apertura",
@@ -275,7 +275,7 @@
       "limits": {
         "max_turns": 8,
         "max_duration_seconds": 240,
-        "min_turns_before_evaluation": 3
+        "min_turns_before_evaluation": 1
       },
       "phases": {
         "i_do": {
@@ -291,7 +291,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -310,7 +310,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Menciona producto, promocion o motivo de venta."
+          "description": "Ofrece producto o promoción, o pregunta por su operación comercial (proveedor, precios, marcas, volúmenes, cada cuánto le surten). Decir tu nombre o de qué empresa vienes NO es pitch prematuro, y menos si el cliente te lo preguntó: eso es la historia breve y en este nodo no se califica."
         },
         {
           "id": "pregunta_cerrada",
