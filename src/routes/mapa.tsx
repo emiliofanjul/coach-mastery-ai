@@ -616,6 +616,7 @@ function MapaPage() {
 
       <NodeSheet
         node={selectedNode}
+        worldName={worlds.find((w) => w.id === selectedNode?.world_id)?.name ?? null}
         onOpenChange={(o) => !o && setSelectedNode(null)}
       />
 
@@ -1042,9 +1043,11 @@ function MapNode({
 
 function NodeSheet({
   node,
+  worldName,
   onOpenChange,
 }: {
   node: DisplayNode | null;
+  worldName: string | null;
   onOpenChange: (o: boolean) => void;
 }) {
   const open = !!node;
@@ -1062,7 +1065,7 @@ function NodeSheet({
           maxHeight: "85vh",
         }}
       >
-        {node && <NodeSheetBody node={node} onClose={() => onOpenChange(false)} />}
+        {node && <NodeSheetBody node={node} worldName={worldName} onClose={() => onOpenChange(false)} />}
       </SheetContent>
     </Sheet>
   );
@@ -1070,9 +1073,11 @@ function NodeSheet({
 
 function NodeSheetBody({
   node,
+  worldName,
   onClose,
 }: {
   node: DisplayNode;
+  worldName: string | null;
   onClose: () => void;
 }) {
   const navigate = useNavigate();
@@ -1196,7 +1201,8 @@ function NodeSheetBody({
             marginBottom: 8,
           }}
         >
-          BOSS LEVEL
+          {/* El paso al que pertenece el boss (oct-2026): "BOSS DE LA PRESENTACIÓN". */}
+          {worldName ? `BOSS DE ${worldName.toUpperCase()}` : "BOSS LEVEL"}
         </div>
       )}
       <SheetHeader>
