@@ -132,7 +132,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi con que postura entras. Vamos al desglose."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -151,7 +151,8 @@
           "id": "se_encoge",
           "regla_id": "opening.energia_verbal",
           "severity": "major",
-          "description": "Ante la primera senal de que el cliente esta ocupado, baja la energia, se acorta o empieza a despedirse. Se rindio antes de que lo corrieran."
+          "description": "Ante la primera senal de que el cliente esta ocupado, baja la energia, se acorta o empieza a despedirse. Se rindio antes de que lo corrieran.",
+          "espejo_de": "mindset.regla_10_por_ciento"
         },
         {
           "id": "pitch_prematuro",
@@ -491,9 +492,16 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como llevas la conversacion. Vamos al desglose."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
+        {
+          "id": "turno_sin_pregunta",
+          "regla_id": "close.devuelve_el_volante",
+          "severity": "major",
+          "description": "Un turno del vendedor NO termina en pregunta: cierra con una afirmacion, un comentario o un agradecimiento. Verifica leyendo la ULTIMA frase literal de ese turno. Si termina en signo de interrogacion o es una pregunta implicita, este fallo NO aplica, sin importar cuantas afirmaciones haya dicho antes.",
+          "espejo_de": "story.relevancia_cliente"
+        },
         {
           "id": "rafaga_de_preguntas",
           "regla_id": "discovery.interrogatorio",
@@ -744,14 +752,15 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo si el negativo alcanzo a desactivarse."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "no_se_adelanta",
           "regla_id": "blocks.ataque_preventivo",
           "severity": "major",
-          "description": "Deja que el cliente saque el negativo primero. Ahora tiene que atravesar cuesta arriba algo que pudo haber desactivado gratis."
+          "description": "Deja que el cliente saque el negativo primero. Ahora tiene que atravesar cuesta arriba algo que pudo haber desactivado gratis.",
+          "espejo_de": "blocks.pre_emptive_strike"
         },
         {
           "id": "tono_de_disculpa",
@@ -1041,14 +1050,15 @@
           "message_incomplete": "Ahi lo dejamos — ya vi como lees y como ajustas. Vamos al desglose y te digo cual era la siguiente jugada."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "ignora_estado",
           "regla_id": "discovery.rrr",
           "severity": "major",
-          "description": "El cliente muestra un estado claro (prisa, plática, preocupación) y el vendedor sigue con su agenda como si nada — mismo ritmo, mismas preguntas, cero reconocimiento del momento del cliente."
+          "description": "El cliente muestra un estado claro (prisa, plática, preocupación) y el vendedor sigue con su agenda como si nada — mismo ritmo, mismas preguntas, cero reconocimiento del momento del cliente.",
+          "espejo_de": "mindset.rrr"
         },
         {
           "id": "lectura_falsa",
@@ -1124,20 +1134,22 @@
           "message_incomplete": "Ahi paramos la excavacion — ya vi como preguntas y con eso trabajo. Vamos al desglose y te digo cual era la siguiente jugada."
         }
       },
-      "version": "1.3.0",
+      "version": "1.3.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "ignora_pistas",
           "regla_id": "discovery.escalera_capas",
           "severity": "major",
-          "description": "El cliente deja caer la pista del dolor (aunque a veces..., lo unico es que...) y el vendedor la pasa de largo — cambia de tema o dispara la siguiente pregunta de su lista."
+          "description": "El cliente deja caer la pista del dolor (aunque a veces..., lo unico es que...) y el vendedor la pasa de largo — cambia de tema o dispara la siguiente pregunta de su lista.",
+          "espejo_de": "discovery.preguntas_capas"
         },
         {
           "id": "pregunta_generica_en_capa2",
           "regla_id": "discovery.pregunta_especifica",
           "severity": "minor",
-          "description": "Sube de capa con preguntas genericas de opinion (que tal le va, todo bien por aca) que producen un bien reflejo, y al recibirlo se conforma y sigue de largo en lugar de reformular preguntando por algo concreto."
+          "description": "Sube de capa con preguntas genericas de opinion (que tal le va, todo bien por aca) que producen un bien reflejo, y al recibirlo se conforma y sigue de largo en lugar de reformular preguntando por algo concreto.",
+          "espejo_de": "discovery.pregunta_especifica"
         },
         {
           "id": "insiste_dolor_negado",
@@ -1243,7 +1255,7 @@
           "message_incomplete": "Ahi lo dejamos — ya vi como escuchas. Vamos al desglose y te enseno que regalos quedaron en la mesa."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1282,7 +1294,8 @@
           "id": "conversacion_desconectada",
           "regla_id": "discovery.escalera_capas",
           "severity": "major",
-          "description": "NINGUNA de las preguntas del vendedor conecta con lo que el cliente acaba de decir: dispara una lista propia mientras el cliente habla de otra cosa. Se penaliza la desconexion total, no el hecho de no recoger algun dato en particular."
+          "description": "NINGUNA de las preguntas del vendedor conecta con lo que el cliente acaba de decir: dispara una lista propia mientras el cliente habla de otra cosa. Se penaliza la desconexion total, no el hecho de no recoger algun dato en particular.",
+          "espejo_de": "discovery.escucha_activa"
         }
       ],
       "success_criteria": [
@@ -2122,26 +2135,29 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como pintas la imagen. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "explica_sin_pintar",
           "regla_id": "present.pintar_imagenes",
           "severity": "major",
-          "description": "Presenta solo con datos y adjetivos (calidad, margen, rentable, confiable) sin construir una sola escena visualizable — el cliente permanece fuera, escuchando información."
+          "description": "Presenta solo con datos y adjetivos (calidad, margen, rentable, confiable) sin construir una sola escena visualizable — el cliente permanece fuera, escuchando información.",
+          "espejo_de": "presentation.pintar_imagenes"
         },
         {
           "id": "imagen_generica",
           "regla_id": "present.pintar_imagenes",
           "severity": "major",
-          "description": "Sus escenas no usan el dolor ni el contexto del cliente — son postales genéricas de éxito que servirían para cualquiera (le va a ir muy bien, va a vender mucho)."
+          "description": "Sus escenas no usan el dolor ni el contexto del cliente — son postales genéricas de éxito que servirían para cualquiera (le va a ir muy bien, va a vender mucho).",
+          "espejo_de": "presentation.pintar_imagenes"
         },
         {
           "id": "presentacion_generica",
           "regla_id": "present.dos_mitades",
           "severity": "major",
-          "description": "Ignora el dolor declarado y presenta catálogo."
+          "description": "Ignora el dolor declarado y presenta catálogo.",
+          "espejo_de": "presentation.conectar_dolor"
         },
         {
           "id": "monologo",
@@ -2456,7 +2472,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi tu postura. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2475,7 +2491,8 @@
           "id": "se_derrumba",
           "regla_id": "impulse.indiferencia",
           "severity": "major",
-          "description": "Se ofende, se pica o pierde la calidez ante las jugadas del difícil."
+          "description": "Se ofende, se pica o pierde la calidez ante las jugadas del difícil.",
+          "espejo_de": "impulse.indiferencia"
         },
         {
           "id": "presion_directa",
@@ -2624,7 +2641,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como encadenas los acuerdos. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2647,7 +2664,8 @@
           "id": "cierra_con_afirmacion",
           "regla_id": "impulse.tren_del_si",
           "severity": "minor",
-          "description": "Presenta todo en afirmaciones sin sembrar un solo sí — el cliente escucha pasivo y responde tibio."
+          "description": "Presenta todo en afirmaciones sin sembrar un solo sí — el cliente escucha pasivo y responde tibio.",
+          "espejo_de": "presentation.tren_si_si"
         },
         {
           "id": "presentacion_generica",
@@ -3231,7 +3249,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esas dudas."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3258,7 +3276,8 @@
           "id": "no_repite",
           "regla_id": "objection.rrr",
           "severity": "minor",
-          "description": "Contesta directo sin repetir la objecion. Correcto pero frio: el cliente no siente que lo escucharon."
+          "description": "Contesta directo sin repetir la objecion. Correcto pero frio: el cliente no siente que lo escucharon.",
+          "espejo_de": "objections.rrr_objeciones"
         },
         {
           "id": "pide_aprobacion",
@@ -3978,7 +3997,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese cierre."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4001,7 +4020,8 @@
           "id": "proximos_pasos_vagos",
           "regla_id": "consolidation.siguientes_pasos",
           "severity": "major",
-          "description": "Su sellado es impreciso: fechas sin hora ni día concreto, montos sin número, ahí luego vemos cómo se paga — las grietas quedan abiertas con apariencia de selladas."
+          "description": "Su sellado es impreciso: fechas sin hora ni día concreto, montos sin número, ahí luego vemos cómo se paga — las grietas quedan abiertas con apariencia de selladas.",
+          "espejo_de": "consolidation.proteger_venta"
         },
         {
           "id": "sobre_celebra",
