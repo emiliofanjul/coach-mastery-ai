@@ -5,19 +5,23 @@
 // seis pasos y las reglas universales, ANTES de llegar al vendedor. Lo que
 // viola algo se corrige o se descarta, en código. Es la misma pieza que hizo
 // confiable al Pitch Builder: el modelo propone, el auditor revisa, el código
-// aplica. Sin imports (Deno y Node).
+// aplica. Solo importa el lenguaje de Closer, que tampoco tiene imports
+// (funciona en Deno y en Node).
+import { LENGUAJE_CLOSER } from "./lenguaje_closer.ts";
 
 export interface TextoAuditable { id: string; tipo: "mejora" | "ejemplo" | "mision" | "observacion_siguiente" | "ejemplo_siguiente"; texto: string; contexto?: string }
 export interface VeredictoAuditor { id: string; ok: boolean; viola?: string[]; corregido?: string | null }
 
-export const PROMPT_AUDITOR = `Eres el auditor de doctrina de Closer. Recibes textos que un coach va a mostrarle a un vendedor —cómo decir algo, una misión, consejos— y tu ÚNICO trabajo es verificar que cada texto cumpla la doctrina. No opinas de estilo.
+export const PROMPT_AUDITOR = `Eres el auditor de doctrina de Closer. Recibes textos que un coach va a mostrarle a un vendedor —cómo decir algo, una misión, consejos— y tu trabajo es verificar que cada texto cumpla la doctrina y que se entienda en una sola pasada.
 Aplicas TODAS estas reglas:
 1. ORDEN DE LOS PASOS: 1 Introducción (saludo + ice breaker; NO se dice quién eres ni a qué vienes), 2 Historia breve (quién eres y por qué estás ahí, en 2-3 frases, sin producto ni precio), 3 Descubrimiento (preguntas por capas; no se presenta), 4 Presentación, 5 Cierre, 6 Consolidación. Un texto que haga el trabajo de un paso POSTERIOR al del nodo, o que ponga un paso antes que otro ("di quién eres en las primeras dos frases" en la introducción), viola la doctrina.
 2. FALLAS DEL NODO: un ejemplo NO puede disparar ninguna de las fallas listadas.
 3. REGLAS DEL PASO: el texto no puede contradecir ninguna regla listada.
 4. HECHOS DEL CLIENTE: todo dato del cliente que use un texto (un dolor, una visita anterior, una marca, una cifra) tiene que aparecer en la "conversacion" o en la "ficha_cliente". Si no aparece en ninguna, es inventado: viola "dato_inventado".
 5. UNIVERSALES: nunca pedir permiso ni consentimiento ("¿me permite?", "¿le parece si…?", "¿está abierto a…?", "¿verdad?" buscando que confirme, "pausa para que confirme"); nunca ofrecer muestras, pruebas gratis ni "le dejo para que lo pruebe"; nunca groserías; nunca inventar hechos del cliente; nunca huecos de dato como "[empresa]"; un cierre siempre da alternativa ("¿el martes o el jueves?"), nunca pregunta abierta ("¿a qué hora le caigo?").
-Para cada texto: "ok" true o false. Si false: "viola" con los ids que viola (una falla, una regla, o "orden" / "permiso" / "muestra" / "groseria" / "dato_inventado"), y "corregido": una versión que cumpla TODO lo anterior conservando la intención del coach — o null si no se puede sin cambiar la intención.
+6. LENGUAJE: el texto tiene que cumplir el lenguaje de Closer de abajo. Si tiene una frase de más de 25 palabras, palabras de sistema o de escuela, una sigla sin su significado en español, un id interno, o hay que leerlo dos veces para entenderlo, viola "lenguaje". Al corregir por lenguaje no cambias la intención ni la doctrina: solo lo dices más simple.
+${LENGUAJE_CLOSER}
+Para cada texto: "ok" true o false. Si false: "viola" con los ids que viola (una falla, una regla, o "orden" / "permiso" / "muestra" / "groseria" / "dato_inventado" / "lenguaje"), y "corregido": una versión que cumpla TODO lo anterior conservando la intención del coach — o null si no se puede sin cambiar la intención.
 Responde SOLO con JSON: {"veredictos":[{"id":"…","ok":true,"viola":[],"corregido":null}]}`;
 
 export function armarEntradaAuditor(args: { paso: number | null; fallas: { id: string; description?: string; severity?: string }[]; reglas: { id: string; resumen: string }[]; textos: TextoAuditable[]; conversacion?: { role: string; content: string }[]; ficha_cliente?: string }): string {

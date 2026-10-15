@@ -48,6 +48,10 @@ describe("la revisión", () => {
     const p = promptReescritura({ mundoTema: 5, nombreMundo: "El Cierre", nombresCerrados: CERRADAS });
     expect(p).toContain("NO nombres ni expliques ninguna de estas técnicas: FFF — Feel, Felt, Found");
     expect(p).toContain('"Eso lo vas a trabajar a fondo en el Mundo 5, El Cierre. Sigue avanzando: cuando llegues, todo va a tener sentido."');
+    expect(p).toContain('No uses el vocabulario de esas técnicas que todavía no conoce (por ejemplo "bala", "desglose")');
+    // Si las balas ya se las enseñaste, "bala" no sale como ejemplo prohibido.
+    const p4 = promptReescritura({ mundoTema: 5, nombreMundo: "El Cierre", nombresCerrados: ["FFF — Feel, Felt, Found"] });
+    expect(p4).not.toContain('"bala"');
   });
 });
 
@@ -68,5 +72,7 @@ describe("el coach", () => {
     expect(coach).toContain("let reply = tema.texto;");
     expect(coach).toContain("reply = segunda.reescribir ? recorteSeguro(reescrita || reply, opcionesTema) : reescrita;");
     expect(coach).toContain('phase: "coach_chat_guardia"');
+    expect(coach).toContain('"[coach-chat] guardia: se reescribió"');
+    expect(coach).not.toContain("respuesta recortada por la guardia");
   });
 });
