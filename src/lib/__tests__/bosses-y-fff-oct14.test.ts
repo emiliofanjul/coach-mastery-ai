@@ -94,6 +94,7 @@ describe("2.8 — La Mala Experiencia al Llegar", () => {
   });
   it("las tres tarjetas cuentan la doctrina nueva", () => {
     const t = cards.filter((c) => c.node_id === "2.8").sort((a, b) => a.card_order - b.card_order).map((c) => c.title);
-    expect(t).toEqual(["No siempre llegas en blanco", "Escúchalo, da el motivo y pregunta", "Tres maneras de arruinarlo"]);
+    // Títulos en lenguaje Closer desde el mensaje 89 (15-oct-2026).
+    expect(t).toEqual(["Cuando el cliente ya trae una mala experiencia", "Escúchalo, dile a qué vienes y pregunta", "Tres errores que debes evitar"]);
   });
 });
