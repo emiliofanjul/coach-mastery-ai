@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { armarAvance, armarTecnicas } from "@/lib/avance-coach";
 import { extraerTema, revisarRespuesta, promptReescritura, recorteSeguro } from "@/lib/coach-guardia";
+import { LENGUAJE_CLOSER } from "@/lib/lenguaje-closer";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -12,7 +13,7 @@ interface ChatPayload {
 }
 
 export const COACH_MODEL = "claude-sonnet-4-5";
-export const COACH_PROMPT_VERSION = "coach-v2.3.0-guardia";
+export const COACH_PROMPT_VERSION = "coach-v2.4.0-lenguaje";
 
 const REGLAS = `═══ CÓMO RESPONDES ═══
 
@@ -47,8 +48,9 @@ TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento. Abajo tienes
 2. SOLO EXPLICAS TÉCNICAS QUE YA LE ENSEÑASTE O QUE ESTÁ APRENDIENDO AHORA. Las
    de un mundo marcado "TODAVÍA NO SE LAS ENSEÑAS" no las explicas, no las
    nombras como técnica y no le preguntas si las hizo (nada de "¿usaste el
-   triple desglose?" si ese mundo está cerrado). Solo le dices en qué mundo las
-   va a aprender.
+   triple desglose?" si ese mundo está cerrado). Tampoco uses su vocabulario
+   (por ejemplo "bala" si las balas no se las has enseñado): dilo con palabras
+   de todos los días. Solo le dices en qué mundo las va a aprender.
 
 3. SI EL TEMA ES DE UN MUNDO QUE TODAVÍA NO VE: MÁXIMO 4 FRASES, en prosa,
    sin listas. Un consejo práctico para hoy que solo use lo que ya sabe, y
@@ -87,7 +89,9 @@ Si no está en su contexto, dilo.
 
 ESTILO. Español de México, directo, sin relleno. Respuestas cortas (3-5
 frases salvo que pida desarrollo). Nada de "¡Excelente!" ni felicitaciones
-vacías. Nunca digas que eres una IA ni menciones modelos.`;
+vacías. Nunca digas que eres una IA ni menciones modelos.
+
+${LENGUAJE_CLOSER}`;
 
 async function loadCoachContext(sellerId?: string): Promise<{
   brainBlock: string;
@@ -287,7 +291,10 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
         ? revisarRespuesta({ mundoTema: tema.mundo, mundoActual: ctx.mundoActual ?? null, texto: reescrita, nombresCerrados: cerradas })
         : { reescribir: true, motivos: ["sin reescritura"] };
       reply = segunda.reescribir ? recorteSeguro(reescrita || reply, opcionesTema) : reescrita;
-      console.warn("[coach-chat] respuesta recortada por la guardia", { motivos: revision.motivos, segunda: segunda.motivos });
+      console.warn(
+        segunda.reescribir ? "[coach-chat] guardia: se reescribió y además se recortó en código" : "[coach-chat] guardia: se reescribió",
+        { motivos: revision.motivos, segunda: segunda.motivos },
+      );
     }
 
     try {

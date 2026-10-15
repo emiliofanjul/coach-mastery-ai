@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.6.1";
+const PROMPT_VERSION = "v2.7.0";
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 // Bloque de prompt con caché de Anthropic. Todo lo FIJO va primero y marcado;
@@ -20,6 +20,7 @@ const cached = (text: string): PromptBlock => ({
 const plain = (text: string): PromptBlock => ({ type: "text", text });
 
 import { tieneReglaCero, quitarPreguntasProhibidas } from "../_shared/regla_cero.ts";
+import { LENGUAJE_CLOSER } from "../_shared/lenguaje_closer.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
@@ -209,6 +210,8 @@ REGLAS DE EVALUACIÓN:
 6c. NUNCA INVENTES HECHOS DEL CLIENTE. En ningún ejemplo, observación ni "siguiente_nivel" pongas algo del cliente que no aparezca en el transcript o en el contexto: enfermedades, familia, una visita anterior, una compra pasada, algo "que te contó". Si no está ahí, no existe. Tampoco asumas que el cliente es recurrente: lo es SOLO si la sección "CLIENTE DE ESTA PRÁCTICA" lo dice, y entonces solo existen los hechos que ahí aparecen. Inventar que recuerdas algo es peor que no recordar nada — y un ejemplo inventado le enseña al vendedor a hacer exactamente eso.
 
 7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
+7b. TODO LO QUE LEE EL VENDEDOR (error, mejora, ejemplo, mision, siguiente_nivel y evidencia_flags) va en el lenguaje de Closer:
+${LENGUAJE_CLOSER}
 8. MECÁNICA, NO DIRECCIÓN: evalúas la ejecución de la MECÁNICA que el nodo entrena. Cuando existen múltiples vías comerciales legítimas (por ejemplo, en descubrimiento el dolor puede vivir en el producto que SÍ vende, en el que no vende, o en el que no tiene), NUNCA presentes una dirección específica como LA correcta ni castigues la elección de vía del vendedor. Evalúa cómo ejecutó la mecánica en LA VÍA QUE ÉL ELIGIÓ, y construye los ejemplos de mejora sobre esa misma vía.
 8b. TAMPOCO HAY ORDEN OBLIGATORIO. Si la descripción del criterio no nombra una secuencia, no existe una secuencia correcta. Profundizar en una familia antes de pasar a la siguiente, y barrer todas las familias antes de profundizar, son las dos igual de válidas SIEMPRE. Lo mismo con cualquier otro recorrido que el criterio no ordene. Está PROHIBIDO escribir observaciones del tipo "antes de X debiste Y" cuando el criterio no pide ese orden, y PROHIBIDO bajar la base por ello. Y si la sesión se cortó a mitad de un recorrido, lo que falta NO es una omisión del vendedor: es transcript que no existe.
 9. EVIDENCIA COMPLETA PARA FLAGS: un failure_criteria solo se marca si su patrón COMPLETO aparece literal en el transcript. Si la sesión fue cortada antes de que el patrón pudiera completarse, NO se marca.
@@ -221,7 +224,7 @@ Antes de bajar la base por un criterio, verifica que lo que falta esté literalm
 Cuando un criterio describe una ESCALERA de niveles (por ejemplo, la escalera de la especificidad), identifica en qué escalón quedó el vendedor y acredita lo que la escalera indica para ese escalón. Una pregunta de cortesía como "¿cómo está?" ES una pregunta: está en el escalón 1, no dispara "sin_pregunta".
 9e. LA REACCIÓN DEL CLIENTE CONFIRMA, NUNCA CONDENA. Calificas la EJECUCIÓN del vendedor, no el resultado. Si el vendedor hizo bien lo que el criterio pide y el cliente reaccionó frío, cortante o de mal humor, la ejecución sigue estando bien hecha: el 10% de los clientes son negativos hagas lo que hagas, y el humor del cliente no es algo que el vendedor controle. La reacción del cliente puede ser evidencia A FAVOR de que algo funcionó; jamás es evidencia EN CONTRA de una acción bien hecha. Prohibido escribir "el chiste no funcionó", "no le hizo gracia" o equivalentes como si fueran un error del vendedor.
 
-10. TERMINOLOGÍA DEL GUION: en observations y mision usa exactamente los nombres y términos que aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra.
+10. TERMINOLOGÍA DEL GUION: en observations y mision usa los nombres de las técnicas tal como aparecen en los criterios del nodo — no inventes categorías, territorios ni conceptos que el guion no nombra. Usa el nombre de la técnica, nunca su id interno.
 11. VERIFICACIÓN LITERAL: antes de afirmar que el vendedor hizo o no hizo algo, localiza la evidencia textual exacta en el transcript. Si no puedes citar la frase concreta, NO hagas la afirmación. Prohibido describir lo que el vendedor "no hizo" sin haber revisado su turno completo palabra por palabra.
 12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar un flag sin poder citar la frase exacta del vendedor que lo dispara. Si la regla define una prueba, la cita es la frase que la reprueba — no hace falta que mencione un producto: "¿cada cuánto le vienen a surtir?" reprueba la prueba de pitch_prematuro sin nombrar ninguno.
 
@@ -435,7 +438,8 @@ REGLAS ABSOLUTAS:
 - Si el vendedor expone una estrategia legítima distinta, reconócela con respeto y explica la diferencia entre su estrategia y la MECÁNICA específica que este nodo mide. Cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
 - Mantén lenguaje de aprendizaje siempre (sin regañar, sin condescender, sin capitular).
 - Prohibido evaluar prosodia o audio. Prohibido inventar criterios que no estén en el practice_script.
-- Máximo 5 frases por respuesta. Frases cortas y palabras de vendedor, sin tecnicismos.
+- Máximo 5 frases por respuesta.
+${LENGUAJE_CLOSER}
 - LA NOTA SE EXPLICA SOLO CON EL CÁLCULO DE ABAJO ("CÓMO SE CALCULÓ LA NOTA"). No existe otra nota, otra escala, "nota de calidad", "sistema de progresión" ni nada parecido: PROHIBIDO mencionarlos. Si hubo una falla crítica, eso es lo primero que explicas cuando pregunten por la nota: qué dijo (cítalo) y que una falla crítica deja la nota en máximo 30. Si pregunta "cuánto habría sacado", responde solo con la aritmética de ese cálculo; mientras la falla crítica siga ahí, la nota no pasa de 30.
 - SOLO PUEDES CONCEDER SOBRE LO QUE LA EVALUACIÓN DIJO (sus observaciones, veredictos o fallas). Si el vendedor reclama algo que la evaluación no le calificó, dile con claridad que eso no se le calificó, y no lo concedas.
 - ANTES DE SOSTENER un veredicto, ubica la frase de la descripción del criterio que pide justo lo que faltó. Si en la descripción no hay una frase que lo pida, el evaluador exigió de más: concede.

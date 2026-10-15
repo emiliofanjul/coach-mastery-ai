@@ -62,12 +62,27 @@ export function revisarRespuesta(opts: {
   return { reescribir: motivos.length > 0, motivos };
 }
 
+// Palabras sueltas que son vocabulario de una técnica: solo se dan como
+// ejemplo si esa técnica está cerrada para este vendedor.
+const JERGA: Array<[string, string]> = [
+  ["teoria de las balas", "bala"],
+  ["el circulo de cierre", "círculo"],
+  ["la curva de impulso", "impulso"],
+  ["triple desglose de precios", "desglose"],
+];
+function jerga(nombresCerrados: string[]): string {
+  const cerradas = new Set(nombresCerrados.map(normalizar));
+  const ej = JERGA.filter(([t]) => cerradas.has(t)).map(([, w]) => `"${w}"`);
+  return ej.length ? ` (por ejemplo ${ej.join(", ")})` : "";
+}
+
 export function promptReescritura(opts: { mundoTema: number; nombreMundo: string; nombresCerrados: string[] }): string {
   return `Eres Closer, el entrenador de ventas. Te paso la pregunta de un vendedor y un borrador de respuesta. El tema es del Mundo ${opts.mundoTema}, ${opts.nombreMundo}, que este vendedor TODAVÍA NO VE.
 
 Reescribe la respuesta así:
 - Máximo 3 frases de consejo, en prosa, sin listas ni títulos, y después el cierre de abajo.
 - Un consejo práctico para hoy, usando solo lo que ya sabe (lo de los mundos anteriores que aparezca en el borrador).
+- Con palabras comunes de vendedor. No uses el vocabulario de esas técnicas que todavía no conoce${jerga(opts.nombresCerrados)}: dilo con palabras de todos los días ("dale una razón concreta", "vuelve a preguntarle").
 - NO nombres ni expliques ninguna de estas técnicas: ${opts.nombresCerrados.join("; ")}.
 - Termina exactamente con: "Eso lo vas a trabajar a fondo en el Mundo ${opts.mundoTema}, ${opts.nombreMundo}. Sigue avanzando: cuando llegues, todo va a tener sentido."
 - Español de México, directo, sin felicitaciones.
