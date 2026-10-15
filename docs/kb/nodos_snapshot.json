@@ -674,7 +674,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese bloqueo."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -687,7 +687,7 @@
           "id": "se_disculpa_o_se_va",
           "regla_id": "discovery.suelta_amarrado",
           "severity": "critical",
-          "description": "Se disculpa, se despide o promete volver despues. Se rindio ante un reflejo que no significaba nada.",
+          "description": "Ante el bloqueo, se disculpa, se despide o promete volver despues. Se rindio ante un reflejo que no significaba nada. Si el cliente REPITE el bloqueo justo despues del AIR (dos no seguidos), quedar de regresar en otro momento es lo correcto y no es esta falla.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -928,7 +928,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.1.0",
+      "version": "2.1.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -941,7 +941,7 @@
           "id": "se_disculpa_o_se_va",
           "regla_id": "discovery.suelta_amarrado",
           "severity": "critical",
-          "description": "Se disculpa, se despide o promete volver despues.",
+          "description": "Ante el bloqueo, se disculpa, se despide o promete volver despues. Si el cliente REPITE el bloqueo justo despues del AIR (dos no seguidos), quedar de regresar en otro momento es lo correcto y no es esta falla.",
           "severity_override": {
             "razon": "boss: escalada",
             "default": "major"

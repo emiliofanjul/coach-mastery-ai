@@ -243,40 +243,40 @@
   "node_id": "2.0",
   "card_order": 1,
   "card_type": "concept",
-  "title": "El momento exacto de la historia breve",
-  "body": "Tu apertura funciono: el cliente te esta poniendo atencion. Y ahora su cabeza tiene dos preguntas gritando.\n\nQuien es este? Y que quiere?\n\nSi no las contestas rapido, se las contesta el solo. Y la respuesta que se inventa casi nunca te favorece: otro vendedor que me va a quitar el tiempo.",
+  "title": "Ahora sí: quién eres",
+  "body": "Tu introducción funcionó: el cliente ya te está poniendo atención.\n\nEn ese momento se está preguntando dos cosas: ¿quién es? y ¿a qué viene?\n\nLa historia breve le contesta las dos, rápido. Así deja de preguntárselo y te escucha con más atención.",
   "flip_back_text": null
  },
  {
   "node_id": "2.0",
   "card_order": 2,
   "card_type": "concept",
-  "title": "KISS, no KILL",
-  "body": "KISS — Keep It Short and Simple. Corta y simple.\nKILL — Keep It Long and Lengthy. Larga y pesada.\n\nLa historia breve contesta quien eres y por que estas ahi en dos o tres frases. No es tu curriculum. No son los veinticinco anos de tu empresa. No es el catalogo.\n\nEs el puente mas corto entre no te conozco y a ver, cuenteme.",
+  "title": "KISS: mantenlo breve y simple",
+  "body": "KISS viene del inglés: Keep It Short and Simple. Quiere decir: mantenlo breve y simple.\n\nLo contrario es KILL: Keep It Long and Lengthy. Mantenlo largo y pesado.\n\nTu historia breve dice quién eres y a qué vienes en dos o tres frases. No es la historia de tu empresa ni la lista de lo que vendes.\n\nSiempre recuerda KISS: mantenlo breve y simple. Hablar de más hace que el cliente pierda el interés o se distraiga.",
   "flip_back_text": null
  },
  {
   "node_id": "2.0",
   "card_order": 3,
   "card_type": "concept",
-  "title": "Las dos piezas y el gancho",
-  "body": "PIEZA 1 — Quien soy. Nombre y de donde vienes, humano y simple.\n\nPIEZA 2 — Por que estoy aqui. La razon de tu visita, en terminos de personas, no de producto.\n\nEL GANCHO — cierras con una pregunta que le devuelve la palabra. Sin el gancho, terminas de hablar y se hace un silencio donde el cliente decide si sigue o no. Con el gancho, no hay silencio: hay una pregunta que contestar.",
+  "title": "Las tres partes de tu historia breve",
+  "body": "1. Quién eres: tu nombre y de dónde vienes.\n2. A qué vienes: el motivo de tu visita, sin hablar de producto.\n3. Una pregunta: para que el cliente te platique.\n\nLa pregunta es importante. Le pasa la palabra al cliente y la plática sigue.",
   "flip_back_text": null
  },
  {
   "node_id": "2.0",
   "card_order": 4,
   "card_type": "why_it_works",
-  "title": "Por que corta funciona mejor que impresionante",
-  "body": "La tentacion es enorme: ya que tienes su atencion, quieres aprovecharla toda. Contarle la trayectoria, los premios, todo lo que manejas.\n\nY es justo al reves. Cada frase de mas gasta la atencion que acabas de ganar. Lo que suena impresionante en tu cabeza suena a discurso en la de el.\n\nCorto no es un atajo ni una version reducida. Es la version que si funciona.",
+  "title": "Breve funciona mejor",
+  "body": "Cuando por fin tienes la atención del cliente, dan ganas de contarle todo: los años de la empresa, los clientes que tienen, todo lo que manejas.\n\nPero cada frase de más le quita atención. Lo que a ti te suena impresionante, a él le suena a discurso.\n\nBreve no es la versión incompleta. Es la que funciona.",
   "flip_back_text": null
  },
  {
   "node_id": "2.0",
   "card_order": 5,
   "card_type": "concept",
-  "title": "Y despues de la historia, preguntas",
-  "body": "Un error comun es creer que despues de presentarte toca explicar mas.\n\nNo. Despues de presentarte toca PREGUNTAR. La doctrina es clara en esto: es mucho mas efectivo pasar directo a las preguntas que dar una explicacion larga.\n\nTu historia breve no existe para que el cliente te entienda a ti. Existe para ganarte el derecho de preguntarle a el.",
+  "title": "Después de tu historia, preguntas",
+  "body": "Terminas de decir quién eres. ¿Ahora qué?\n\nNo toca explicar más. Toca preguntar.\n\nTu historia breve sirve para que el cliente esté listo para contestar tus preguntas. Así empiezas a conocer su negocio.",
   "flip_back_text": null
  },
  {
@@ -284,7 +284,7 @@
   "card_order": 1,
   "card_type": "concept",
   "title": "Ahora con tus palabras",
-  "body": "Te van a preguntar quien eres. Tienes quince segundos.\n\nQuien soy — nombre y de donde vienes.\nPor que estoy aqui — el motivo, en terminos humanos.\nEl gancho — una pregunta que le devuelve la palabra.\n\nTres frases. Ni una mas.",
+  "body": "El cliente te va a preguntar quién eres. Tienes unos quince segundos.\n\n1. Quién eres: tu nombre y de dónde vienes.\n2. A qué vienes: el motivo de tu visita.\n3. Una pregunta: para que te platique.\n\nTres frases bastan.",
   "flip_back_text": null
  },
  {
@@ -292,199 +292,223 @@
   "card_order": 2,
   "card_type": "bad_example",
   "title": null,
-  "body": "Buenos dias, mi nombre es Emilio y represento a una empresa con mas de veinticinco anos en el mercado, lideres en la region, manejamos una linea completa con certificaciones internacionales y trabajamos con los principales negocios del estado...",
-  "flip_back_text": "Todo es cierto y nada sirve. Se le acabo la atencion en la segunda frase y ni siquiera dijo por que esta ahi. El cliente no escucho una presentacion: escucho un discurso. Y de los discursos uno se defiende."
+  "body": "Buenos días, mi nombre es Carlos y represento a una empresa con más de veinticinco años en el mercado, líderes en la región. Manejamos una línea completa con certificaciones internacionales y trabajamos con los principales negocios del estado…",
+  "flip_back_text": "Todo es cierto, pero no sirve. En la segunda frase el cliente ya dejó de escuchar, y Carlos todavía no dice a qué viene.\n\nEl cliente no escuchó una presentación: escuchó un discurso."
  },
  {
   "node_id": "2.1",
   "card_order": 3,
   "card_type": "good_example",
   "title": null,
-  "body": "Soy Emilio, ando trabajando con los negocios de esta zona. Me tocaba pasar por aqui y quise conocer el suyo. Cuenteme, cuanto tiempo lleva con el?",
-  "flip_back_text": "Tres frases, quince segundos. Dice quien es, por que esta ahi en terminos humanos (quise conocer su negocio, no vengo a venderle), y termina devolviendo la palabra. El cliente ya sabe con quien habla y tiene algo que contestar."
+  "body": "Soy Carlos, de Distribuidora del Norte. Andamos visitando los negocios de esta zona y quise conocer el suyo. Cuénteme, ¿cuánto tiempo lleva con él?",
+  "flip_back_text": "Tres frases. Dice quién es, a qué viene sin hablar de producto, y termina con una pregunta sobre el negocio del cliente.\n\nEl cliente ya sabe con quién habla, y tiene algo que contestar."
  },
  {
   "node_id": "2.10",
   "card_order": 1,
   "card_type": "concept",
-  "title": "La puerta fria",
-  "body": "Este cliente te bloquea en la primera frase. No es grosero: es lo que hace todos los dias con todos los que llegan.\n\nTodo el mundo junto: atraviesa el bloqueo sin pelearlo, di quien eres en quince segundos, conecta con el como persona y regresa, y no sueltes el control de la conversacion en ningun momento.\n\nCuando te pregunte en que te puede servir, ganaste. Esa pregunta es la puerta al siguiente paso.",
+  "title": "El reto: todo junto",
+  "body": "Este cliente te pone un bloqueo en la primera frase. No es grosero: se lo dice a todos los que llegan.\n\nUsa todo lo que aprendiste en este mundo: pasa el bloqueo con AIR, di quién eres en tres frases, platica de algo personal y regresa al negocio, y no sueltes la plática.\n\nSi te pregunta \"¿en qué le puedo ayudar?\", lo lograste. Esa pregunta es la entrada al siguiente paso.",
   "flip_back_text": null
  },
  {
   "node_id": "2.2",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Las afirmaciones se ignoran",
-  "body": "Se ve que le va muy bien aqui.\n\nQue puede contestar el cliente a eso? Gracias. Y ya. La conversacion se queda ahi parada esperando que tu digas otra cosa.\n\nUna afirmacion se puede ignorar sin que pase nada. Y el cliente que no sabe que hacer contigo, la ignora.",
+  "title": "Un comentario se queda ahí",
+  "body": "\"Se ve que le va muy bien aquí.\"\n\n¿Qué te puede contestar el cliente? \"Gracias.\" Y ya.\n\nLa plática se detiene y se queda esperando a que tú digas otra cosa.",
   "flip_back_text": null
  },
  {
   "node_id": "2.2",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Las preguntas se contestan",
-  "body": "Se ve que le va bien aqui. Cuanto tiempo lleva con el negocio?\n\nEs la misma observacion, con cuatro palabras mas. Pero ahora el cliente tiene algo que hacer.\n\nEl silencio despues de una pregunta se siente raro, y la gente lo llena. Por eso una pregunta mueve la conversacion y una afirmacion la detiene.",
+  "title": "Una pregunta mueve la plática",
+  "body": "\"Se ve que le va muy bien aquí. ¿Cuánto tiempo lleva con el negocio?\"\n\nEs el mismo comentario, con una pregunta al final. Ahora el cliente tiene algo que contestar, y te platica.\n\nPor eso cada vez que hablas, terminas con una pregunta.",
   "flip_back_text": null
  },
  {
   "node_id": "2.2",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "La conversacion la sostienes tu",
-  "body": "Aqui va algo que hay que aceptar de entrada: el cliente no tiene ninguna obligacion de sostener esta conversacion. No te invito, no te esperaba, y tiene cosas que hacer.\n\nSi tu no la mueves, se muere. Y no porque el sea grosero: porque no es su trabajo.\n\nEse es todo el ejercicio. Cada cosa que digas, termina devolviendo la palabra.",
+  "title": "Tú llevas la plática",
+  "body": "El cliente está en lo suyo: atendiendo, acomodando, haciendo cuentas. Él no va a mover la plática.\n\nLa mueves tú. Y la forma de moverla es terminar con una pregunta: así le pasas la palabra, y tú decides hacia dónde va la plática.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.2",
+  "card_order": 4,
+  "card_type": "concept",
+  "title": "Una pregunta a la vez",
+  "body": "Haz una pregunta y escucha la respuesta. La siguiente pregunta sale de lo que te contestó.\n\nSi haces tres preguntas seguidas, se siente como interrogatorio.\n\nY busca preguntas que lo pongan a platicar. \"¿Le va bien?\" se contesta con un \"sí\". \"¿Cómo le ha ido este año?\" lo pone a contarte.",
   "flip_back_text": null
  },
  {
   "node_id": "2.3",
   "card_order": 1,
   "card_type": "concept",
-  "title": "A quien le compra la gente",
-  "body": "Dos vendedores, mismo producto, mismo precio, mismas condiciones. Uno cae bien. El otro no.\n\nNo hace falta que adivines cual vende.\n\nY no es injusto ni irracional. Cuando dos opciones son iguales, lo unico que queda para decidir es con quien prefieres tratar.",
+  "title": "A quién le compra la gente",
+  "body": "Dos vendedores ofrecen lo mismo, al mismo precio. Uno le cae bien al cliente y el otro no.\n\n¿A cuál le compra?\n\nCuando dos opciones se parecen, el cliente decide por la persona.",
   "flip_back_text": null
  },
  {
   "node_id": "2.3",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Eres tanto o mas el producto que lo que vendes",
-  "body": "Esa frase esta en la doctrina y hay que tomarla literal.\n\nEl cliente no puede evaluar tu producto todavia: no lo ha probado, no conoce tu empresa, no sabe si le van a cumplir. Lo unico que si puede evaluar, desde el primer segundo, eres tu.\n\nAsi que mientras el decide si le crees o no a tu producto, ya decidio si te cree a ti.",
+  "title": "Tú eres parte de lo que vendes",
+  "body": "Al principio, el cliente no puede saber si tu producto es bueno. No lo ha probado, no conoce tu empresa y no sabe si le van a cumplir.\n\nLo que sí puede ver desde el primer momento eres tú.\n\nPor eso tú eres tanto o más el producto que lo que vendes.",
   "flip_back_text": null
  },
  {
   "node_id": "2.3",
   "card_order": 3,
   "card_type": "concept",
-  "title": "CPR: Crear Relaciones Personales",
-  "body": "C — Create / Crear\nP — Personal / Personales\nR — Relations / Relaciones\n\nCrear relaciones personales. Y ojo con esto, porque es lo que lo hace distinto de todo lo demas que has aprendido: CPR no es un paso.\n\nNo va en un lugar del mapa. Se hace durante TODA la conversacion, desde el primer segundo hasta el ultimo.",
+  "title": "CPR: crear relaciones personales",
+  "body": "CPR viene del inglés: Create Personal Relations. Quiere decir: crear relaciones personales.\n\nEl CPR no es un paso. No tiene un lugar en el mapa.\n\nLo haces durante toda la plática, desde que llegas hasta que te vas.",
   "flip_back_text": null
  },
  {
   "node_id": "2.3",
   "card_order": 4,
   "card_type": "why_it_works",
-  "title": "Sin relacion, no te contestan",
-  "body": "En el siguiente mundo vas a aprender a hacer preguntas sobre el negocio del cliente: que le funciona, que le falla, que le duele.\n\nY aqui esta el problema: esas preguntas solo funcionan si te las contestan de verdad. A un desconocido nadie le cuenta sus problemas. A alguien que le cae bien, si.\n\nPor eso el CPR no es un adorno ni una cortesia. Es la condicion para que lo que viene despues funcione.",
+  "title": "Con confianza, te cuentan",
+  "body": "En el siguiente mundo vas a aprender a hacer preguntas sobre el negocio del cliente: qué le funciona y qué le falla.\n\nEsas preguntas funcionan cuando el cliente te tiene confianza. A un desconocido nadie le cuenta sus problemas. A alguien que le cae bien, sí.\n\nPor eso el CPR es tan importante: hace que el cliente te conteste de verdad.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.3",
+  "card_order": 5,
+  "card_type": "concept",
+  "title": "Con confianza, te creen",
+  "body": "Imagina que un amigo te dice: \"Ese taller es bueno, llévale tu carro\". Le crees.\n\nAhora imagina que te lo dice el dueño del taller. Ya no le crees igual, porque él gana si vas.\n\nEs la misma frase, y no pesa lo mismo. Mientras más confianza te tiene el cliente, más te cree lo que le dices.",
   "flip_back_text": null
  },
  {
   "node_id": "2.4",
   "card_order": 1,
   "card_type": "concept",
-  "title": "De que le hablo?",
-  "body": "Aqui es donde se traba todo el mundo. Ya entendiste que hay que crear relacion, estas convencido, quieres hacerlo.\n\nY llega el momento y no sabes de que hablar. Se te ocurre el clima, y el clima ya lo usaste.\n\nLa doctrina resuelve eso con cinco temas. Se llaman FORMS.",
+  "title": "¿De qué le hablo?",
+  "body": "Ya sabes que tienes que crear relación con el cliente. Llega el momento y no sabes de qué hablarle.\n\nSe te ocurre el clima… y ya no sabes qué más.\n\nPara eso existen cinco temas. Se llaman FORMS.",
   "flip_back_text": null
  },
  {
   "node_id": "2.4",
   "card_order": 2,
   "card_type": "concept",
-  "title": "FORMS: los cinco caminos a la persona",
-  "body": "F — FAMILY / Familia\nO — OCCUPATION / Ocupacion\nR — RECREATION / Recreacion\nM — MOTIVATION / Motivacion\nS — SPORTS / Deportes\n\nCinco puertas. Siempre hay al menos una abierta, con cualquier persona, en cualquier lugar del mundo.\n\nVamos una por una.",
+  "title": "FORMS: los cinco temas",
+  "body": "FORMS viene del inglés, una letra por tema:\n\nF: Family (familia)\nO: Occupation (ocupación)\nR: Recreation (diversión, lo que hace en su tiempo libre)\nM: Motivation (motivación)\nS: Sports (deportes)\n\nCon cualquier persona, siempre hay al menos uno de los cinco del que pueden platicar.",
   "flip_back_text": null
  },
  {
   "node_id": "2.4",
   "card_order": 3,
   "card_type": "concept",
-  "title": "Los cinco, uno por uno",
-  "body": "FAMILIA — la foto en el mostrador, el hijo que ayuda los fines, el hermano socio.\n\nOCUPACION — cuanto lleva, como empezo, a que se dedicaba antes.\n\nRECREACION — que hace cuando no esta trabajando, alguna aficion.\n\nMOTIVACION — por que puso el negocio, para quien trabaja, que quiere lograr.\n\nDEPORTES — su equipo, el partido, lo que se este jugando.\n\nNo necesitas los cinco. Con uno bien trabajado basta.",
+  "title": "Los cinco, con ejemplos",
+  "body": "Familia: la foto en el mostrador, el hijo que le ayuda en el negocio.\n\nOcupación: cuánto tiempo lleva, cómo empezó, a qué se dedicaba antes.\n\nDiversión: qué hace cuando no está trabajando.\n\nMotivación: por qué puso el negocio, qué quiere lograr.\n\nDeportes: su equipo, el partido del fin de semana.\n\nNo necesitas los cinco. Con uno bien platicado basta.",
   "flip_back_text": null
  },
  {
   "node_id": "2.4",
   "card_order": 4,
   "card_type": "concept",
-  "title": "La palabra que lo decide todo: genuino",
-  "body": "La doctrina dice que el CPR se hace con cumplidos genuinos y chistes sencillos. La palabra importante ahi es genuinos.\n\nUn interes fingido se nota siempre. Y cuesta mas que no haber preguntado nada, porque ahora el cliente sabe que le estas aplicando una tecnica.\n\nLa regla es simple: si de verdad no te interesa, no preguntes. Busca otra puerta que si te interese de verdad.",
+  "title": "Interésate en lo que le gusta",
+  "body": "Interés genuino quiere decir interés de verdad. Un interés fingido se nota.\n\nPero no necesitas que te guste lo mismo que al cliente. Siempre te puedes interesar en lo que a él le emociona.\n\nPor ejemplo: \"Yo nunca le he entendido al ballet. Cuénteme, ¿qué es lo que le gusta?\".\n\nNo le mientes, y lo pones a platicar de algo que le gusta.",
   "flip_back_text": null
  },
  {
   "node_id": "2.4",
   "card_order": 5,
   "card_type": "why_it_works",
-  "title": "A la gente le encanta hablar de si misma",
-  "body": "No es un defecto de nadie. Es como estamos hechos.\n\nPreguntale a alguien por su negocio, por sus hijos o por su equipo, y va a hablar con gusto. Y mientras habla pasan dos cosas al mismo tiempo: se relaja contigo, y te va conociendo.\n\nTu trabajo mientras tanto es escuchar de verdad. Pero sin soltar el rumbo, y eso es exactamente lo que practicas en el siguiente nodo.",
+  "title": "Busca dónde se juntan sus intereses y los tuyos",
+  "body": "Piensa en tu pareja. Si a ella le gusta el arte, la escuchas platicar de arte porque a ella le interesa. Y con el tiempo, a ti también te interesa más.\n\nCon el cliente es igual. No siempre van a tener cosas en común, y está bien.\n\nBusca el punto donde sus intereses y los tuyos se juntan. Eso es lo que hace que tu interés sea de verdad.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.4",
+  "card_order": 6,
+  "card_type": "concept",
+  "title": "No tienes que ser platicador",
+  "body": "No necesitas una personalidad especial para crear relación con el cliente. Se aprende.\n\nPregúntale por lo que le gusta y escucha de verdad lo que te cuenta.\n\nY no olvides a qué vienes: en el siguiente nodo practicas cómo regresar al negocio.",
   "flip_back_text": null
  },
  {
   "node_id": "2.5",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Sales de la linea a proposito",
-  "body": "Te acuerdas de la linea recta? Hay cosas que te sacan de ella.\n\nEl CPR es la unica que sales tu, por voluntad propia, porque te conviene. Dejas de avanzar un momento, te vas a lo personal, y despues vuelves al punto donde ibas.\n\nLa salida es facil. Lo dificil, y lo que vas a practicar aqui, es el regreso.",
+  "title": "Te sales de la línea a propósito",
+  "body": "¿Te acuerdas de la línea recta? Hay cosas que te sacan de ella.\n\nPlaticar de algo personal es una salida que tú decides. Dejas de avanzar un momento, platicas de lo personal y regresas a donde ibas.\n\nSalirte es fácil. Lo que vas a practicar aquí es el regreso.",
   "flip_back_text": null
  },
  {
   "node_id": "2.5",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Uno o dos puntos, y regresas",
-  "body": "La regla es concreta: uno o dos intercambios personales, y vuelves al negocio.\n\nPuedes volver a salir mas adelante, y de hecho conviene. Pero siempre avanzando.\n\nDos errores, y los dos cuestan la venta. Si nunca sales, no hay relacion y no te van a contestar nada. Si sales y no regresas, el cliente se acomoda a platicar, la conversacion se vuelve social y ahi se queda para siempre.",
+  "title": "Uno o dos intercambios, y regresas",
+  "body": "Platicas uno o dos intercambios de lo personal y regresas al negocio.\n\nMás adelante puedes volver a salirte. Pero siempre avanzando.\n\nHay dos errores:\n- No salirte nunca. No hay confianza, y el cliente no te va a contar nada.\n- Salirte y no regresar. La plática se queda en lo personal y no avanza.",
   "flip_back_text": null
  },
  {
   "node_id": "2.5",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "El cliente nunca te va a regresar",
-  "body": "Ojo con esto porque sorprende a todos.\n\nCuando la platica se pone agradable, el cliente esta comodo. Nadie interrumpe una conversacion agradable para hablar de negocios. El no tiene ninguna razon para regresarte a la linea.\n\nEl unico que puede regresar eres tu. Y si no lo haces, se te va la tarde platicando con alguien encantado que no te va a comprar nada.",
+  "title": "El cliente no te va a regresar",
+  "body": "Cuando la plática está agradable, el cliente está a gusto. Nadie corta una plática agradable para hablar de negocios.\n\nÉl no te va a regresar al tema. El que regresa eres tú.\n\nSi no lo haces, se te va la tarde platicando con un cliente muy contento que no te compra nada.",
   "flip_back_text": null
  },
  {
   "node_id": "2.6",
   "card_order": 1,
   "card_type": "concept",
-  "title": "El primer no casi nunca es un no",
-  "body": "Llegas, saludas bien, todo va bien. Y antes de que digas nada te sueltan: ahorita no, gracias.\n\nPregunta seria: a que te esta diciendo que no? Todavia no sabe quien eres ni a que vienes.\n\nNo te esta rechazando a ti ni a tu oferta. Esta cerrando una puerta antes de saber que hay del otro lado, y lo hace en automatico.",
+  "title": "El primer \"no\"",
+  "body": "Llegas, saludas bien, todo va bien. Y antes de que digas a qué vienes, el cliente te dice: \"Ahorita no, gracias\".\n\n¿A qué te dice que no? Todavía no sabe quién eres ni a qué vienes.\n\nNo te está diciendo que no a ti ni a lo que traes. Lo dice por costumbre.",
   "flip_back_text": null
  },
  {
   "node_id": "2.6",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Bloqueo: un reflejo",
-  "body": "Un BLOQUEO llega ANTES de entender.\n\nAhorita ando ocupado. No me interesa. No estoy comprando nada. Ya tengo con quien.\n\nFijate en lo que tienen en comun: ninguna requiere haber pensado. Son la respuesta que ese cliente le da a cualquiera que llega, todos los dias. Es la puerta cerrandose sola, no una decision.",
+  "title": "El bloqueo: un \"no\" por costumbre",
+  "body": "Hay dos tipos de \"no\": el bloqueo y la objeción.\n\nEl bloqueo llega antes de que el cliente sepa a qué vienes:\n\"Ahorita ando ocupado.\"\n\"No me interesa.\"\n\"No estoy comprando nada.\"\n\"Ya tengo con quién.\"\n\nSe lo dice a cualquiera que llega, todos los días. No lo pensó.",
   "flip_back_text": null
  },
  {
   "node_id": "2.6",
   "card_order": 3,
   "card_type": "concept",
-  "title": "Objecion: una preocupacion real",
-  "body": "Una OBJECION llega DESPUES de entender.\n\nEsta caro. Ya tengo proveedor y me cumple. Lo tengo que consultar. No es el momento por el flujo.\n\nAqui si hubo pensamiento. El cliente entendio lo que le ofreces, lo evaluo, y encontro un problema concreto. Eso es completamente distinto, y se maneja distinto. Las herramientas para objeciones las vas a aprender cuando llegues al cierre.",
+  "title": "La objeción: un \"no\" pensado",
+  "body": "La objeción llega después de que el cliente entendió lo que le ofreces:\n\"Está caro.\"\n\"Ya tengo proveedor y me cumple.\"\n\"Lo tengo que consultar.\"\n\nAquí el cliente sí lo pensó. Las objeciones las vas a aprender a manejar en el mundo del cierre.\n\nFíjate: \"ya tengo proveedor\" en la puerta, antes de saber a qué vienes, es un bloqueo. Después de escucharte, es una objeción. Lo que cuenta es cuándo llega.",
   "flip_back_text": null
  },
  {
   "node_id": "2.6",
   "card_order": 4,
   "card_type": "why_it_works",
-  "title": "Por que importa tanto la diferencia",
-  "body": "Porque el mismo tratamiento aplicado al caso equivocado destruye la conversacion.\n\nSi discutes con un reflejo, lo conviertes en una posicion. El cliente dijo no me interesa sin pensarlo, tu lo peleas, y ahora tiene que defenderlo. Le acabas de dar un no de verdad que no tenia.\n\nY al reves: ignorar una preocupacion real ofende a alguien que si te escucho y si penso.\n\nLa misma frase, no me interesa, se maneja de dos maneras opuestas segun cuando llego.",
+  "title": "Por qué importa la diferencia",
+  "body": "Si discutes un bloqueo, el cliente tiene que defenderlo. Y al defenderlo, se lo cree. Lo que era un \"no\" por costumbre se vuelve un \"no\" de verdad.\n\nY si ignoras una objeción, el cliente siente que no lo escuchaste, después de que sí lo pensó.\n\nPor eso a cada uno se le contesta distinto.",
   "flip_back_text": null
  },
  {
   "node_id": "2.6",
   "card_order": 5,
   "card_type": "concept",
-  "title": "AIR: la herramienta del bloqueo",
-  "body": "A — AGREE / Acepta\nI — IGNORE / Ignora\nR — RESUME / Resume\n\nAcepta lo que te dijo con un entiendo o un claro que si. Ignoralo, en el sentido de no discutirlo ni justificarte. Y resume: sigue con lo tuyo, con naturalidad.\n\nSuena demasiado simple para funcionar. Y funciona precisamente por eso: nadie defiende un reflejo si el otro no lo ataca.",
+  "title": "AIR: cómo pasar un bloqueo",
+  "body": "AIR viene del inglés: Agree, Ignore, Resume.\n\nA: Acepta. \"Entiendo\", \"claro que sí\".\nI: Ignora, en el sentido de que no lo discutes ni te justificas.\nR: Retoma. Sigues con lo tuyo, con naturalidad.\n\nFunciona porque nadie defiende un \"no\" que nadie le está peleando.",
   "flip_back_text": null
  },
  {
   "node_id": "2.7",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Los tres movimientos",
-  "body": "ACEPTA — entiendo, claro que si, por supuesto. Sin ironia y sin discutir.\n\nIGNORA — no lo peleas, no te justificas, no intentas convencerlo de que si le interesa.\n\nRESUME — sigues con tu tema, con naturalidad, como si el bloqueo no hubiera pasado.\n\nTres movimientos, dos segundos.",
+  "title": "Los tres pasos de AIR",
+  "body": "Acepta: \"entiendo\", \"claro que sí\", \"por supuesto\". De buena manera.\n\nIgnora: no lo discutes, no te justificas, no tratas de convencerlo.\n\nRetoma: sigues con tu plática, con naturalidad.\n\nLos tres caben en una sola frase.",
   "flip_back_text": null
  },
  {
   "node_id": "2.7",
   "card_order": 2,
   "card_type": "concept",
-  "title": "El tercero es el que falla",
-  "body": "Casi todos aceptan bien. Casi todos logran no discutir.\n\nY despues se quedan parados esperando. O peor: vuelven a pedir permiso. Entiendo, claro... entonces, si me permite un momentito?\n\nAhi se pierde todo lo ganado. Acabas de aceptar el bloqueo para despues entregarle otra vez el control.\n\nAceptar y seguir. En la misma frase.",
+  "title": "Acepta y sigue, en la misma frase",
+  "body": "Casi todos aceptan bien y casi todos logran no discutir.\n\nEl error está en lo tercero: se quedan callados esperando, o vuelven a pedir permiso: \"Entiendo, claro… ¿entonces me permite un momentito?\".\n\nAceptas y sigues, en la misma frase.",
   "flip_back_text": null
  },
  {
@@ -492,63 +516,71 @@
   "card_order": 3,
   "card_type": "bad_example",
   "title": null,
-  "body": "Ah, pero es que solo le voy a quitar dos minutos, y de verdad esto si le va a servir mucho, dejeme le explico rapido...",
-  "flip_back_text": "Peleo el bloqueo. El cliente dijo ando ocupado sin pensarlo, y ahora tiene que sostenerlo, porque nadie se deja convencer de que no esta ocupado. Un reflejo se acaba de convertir en una posicion, y ahora si hay un no de verdad."
+  "body": "Ah, pero es que solo le voy a quitar dos minutos, y de verdad esto sí le va a servir mucho. Déjeme le explico rápido…",
+  "flip_back_text": "Discutió el bloqueo. El cliente dijo \"ando ocupado\" sin pensarlo. Ahora tiene que defenderlo, porque nadie se deja convencer de que no está ocupado.\n\nLo que era un \"no\" por costumbre se volvió un \"no\" de verdad."
  },
  {
   "node_id": "2.7",
   "card_order": 4,
   "card_type": "good_example",
   "title": null,
-  "body": "Claro que si, entiendo. Oiga, y digame una cosa, cuanto tiempo lleva usted aqui?",
-  "flip_back_text": "Los tres movimientos en una sola frase. Acepto lo que dijo sin discutirlo, no lo peleo, y sigo con lo mio de inmediato. Fijate en lo que NO hay: ni un pero, ni una justificacion, ni una pausa esperando permiso. El bloqueo se disolvio porque nunca fue una posicion: era un reflejo."
+  "body": "Claro que sí, entiendo. Oiga, y dígame una cosa, ¿cuánto tiempo lleva usted aquí?",
+  "flip_back_text": "Los tres pasos en una frase: acepta lo que le dijo, no lo discute y sigue con una pregunta.\n\nNo hay \"pero\", no hay excusas y no se queda esperando permiso."
+ },
+ {
+  "node_id": "2.7",
+  "card_order": 5,
+  "card_type": "concept",
+  "title": "Dos \"no\" seguidos",
+  "body": "A veces haces AIR y el cliente te repite el bloqueo: \"De verdad, ahorita no puedo\".\n\nYa son dos \"no\" seguidos. Ahí lo mejor es quedar de regresar en otro momento: \"¿Le queda mejor que pase el jueves o el viernes?\".\n\nSi sigues insistiendo, ya no es seguridad: te vuelves terco.\n\nTienen que ser seguidos. Si el cliente te dice que no, lo pasas con AIR y la plática avanza, ese \"no\" ya quedó atrás.",
+  "flip_back_text": null
  },
  {
   "node_id": "2.8",
   "card_order": 1,
   "card_type": "concept",
-  "title": "No siempre llegas en blanco",
-  "body": "A veces el cliente ya trae una historia. Ya me fallaron con las entregas. Me cambiaron el precio. El vendedor dejó de venir.\n\nEso no es un bloqueo. Un bloqueo es un no reflejo, sin razón, y se atraviesa con AIR. Esto tiene razón. Si lo ignoras, le confirmas que la tenía.",
+  "title": "Cuando el cliente ya trae una mala experiencia",
+  "body": "A veces el cliente ya trae una historia: \"Ya me fallaron con las entregas\". \"Me cambiaron el precio\". \"El vendedor dejó de venir\".\n\nEso no es un bloqueo. El bloqueo se dice por costumbre, y esto tiene una razón.\n\nPor eso no se pasa con AIR: se escucha en serio.",
   "flip_back_text": null
  },
  {
   "node_id": "2.8",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Escúchalo, da el motivo y pregunta",
-  "body": "Tres piezas:\n\n1. Lo aceptas en serio. Sin pelearlo y sin minimizarlo.\n2. Le das el motivo real de tu visita: qué cambió, o por qué te mandaron con él.\n3. Regresas a preguntar por su negocio.\n\nEntiendo perfecto lo que me dice. De hecho, justo por eso me mandaron con usted: desde hace unos meses cambiamos cómo surtimos esta zona, y varios negocios que tenían el mismo problema ya regresaron. Pero primero tengo que ver si lo podemos atender. ¿Con quién está trabajando ahorita?",
+  "title": "Escúchalo, dile a qué vienes y pregunta",
+  "body": "1. Lo aceptas en serio, sin pelearlo y sin hacerlo menos.\n2. Le dices el motivo real de tu visita: qué cambió, o por qué te mandaron con él.\n3. Regresas a preguntar por su negocio.\n\n\"Entiendo perfecto lo que me dice. De hecho, justo por eso me mandaron con usted: desde hace unos meses cambiamos cómo surtimos esta zona, y varios negocios que tenían el mismo problema ya regresaron. Pero primero tengo que ver si lo podemos atender. ¿Con quién está trabajando ahorita?\"",
   "flip_back_text": null
  },
  {
   "node_id": "2.8",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "Tres maneras de arruinarlo",
-  "body": "IGNORARLA. Seguir como si nada es tratar una preocupación real como un no reflejo: le confirmas que tenía razón.\n\nDEFENDERTE. Eso no fue culpa nuestra. Ganas la discusión y pierdes al cliente.\n\nPROMETER EN EL AIRE. Perdón, pero yo sí soy diferente. Suena a excusa. Y si mencionas un cambio, tiene que ser real: si te pregunta ¿cómo qué?, tienes que poder contestar.",
+  "title": "Tres errores que debes evitar",
+  "body": "Ignorarla: si sigues como si nada, el cliente siente que tenía razón.\n\nDefenderte: \"eso no fue culpa nuestra\". Ganas la discusión y pierdes al cliente.\n\nPrometer sin pruebas: \"perdón, pero yo sí soy diferente\" suena a excusa. Y si le dices que algo cambió, tiene que ser cierto: si te pregunta \"¿cómo qué?\", tienes que poder contestarle.",
   "flip_back_text": null
  },
  {
   "node_id": "2.9",
   "card_order": 1,
   "card_type": "concept",
-  "title": "El momento justo despues de resolver",
-  "body": "Atravesaste el bloqueo. Contestaste la duda. Resolviste lo que te frenaba.\n\nY ahora viene el segundo mas importante de toda la conversacion, el que casi nadie ve: que haces despues.\n\nEl vendedor promedio se queda callado. Espera. Como pidiendo permiso con la mirada para continuar.",
+  "title": "Después de resolver, sigue",
+  "body": "El cliente te puso un freno y lo resolviste. ¿Ahora qué?\n\nMuchos vendedores se quedan callados, esperando a que el cliente les dé permiso de seguir.\n\nEse momento es clave: lo que hagas ahí decide si la plática sigue.",
   "flip_back_text": null
  },
  {
   "node_id": "2.9",
   "card_order": 2,
   "card_type": "concept",
-  "title": "En ese silencio, el cliente retoma el control",
-  "body": "Y cuando el cliente retoma el control, hace lo mas comodo: cerrar con amabilidad. Bueno, pues ahi luego me dice. Gracias eh.\n\nNo te esta rechazando. Le devolviste el volante y el tomo la salida mas facil.\n\nLa regla es simple: resuelves y avanzas. En la misma intervencion, sin pausa. La conversacion la mueves tu hasta el final.",
+  "title": "Si te quedas callado, el cliente cierra la plática",
+  "body": "Si te quedas callado, el cliente hace lo más fácil: despedirse con amabilidad. \"Bueno, pues ahí luego me dice. Gracias, eh.\"\n\nNo te está diciendo que no. Le dejaste la plática a él, y tomó la salida más fácil.\n\nPor eso: resuelves y sigues, en la misma frase, sin pausa.",
   "flip_back_text": null
  },
  {
   "node_id": "2.9",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "Nunca esperes a que te den permiso de seguir",
-  "body": "Esta es una de esas ideas que cambian la manera de vender: tu no necesitas autorizacion para continuar una conversacion que ya esta pasando.\n\nPreguntar si puedes seguir es abrir una puerta que nadie te pidio que abrieras. Y siempre hay alguien dispuesto a salir por ella.\n\nSigues avanzando hasta que el cliente te detenga de verdad. Y cuando te detenga, resuelves y sigues otra vez.",
+  "title": "No esperes permiso para seguir",
+  "body": "No necesitas permiso para seguir una plática que ya está pasando.\n\nSi preguntas \"¿puedo seguir?\", le das al cliente la opción de decir que no.\n\nSigue avanzando hasta que el cliente te detenga de verdad. Y cuando te detenga, lo resuelves y sigues otra vez.",
   "flip_back_text": null
  },
  {

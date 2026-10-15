@@ -1,4 +1,4 @@
-# fundamento (version 4)
+# fundamento (version 5)
 
 # EL CEREBRO DE CLOSER
 ## Doctrina canónica del sistema de venta
@@ -59,7 +59,7 @@ La imagen: vas dibujando la línea hacia la derecha y de pronto llega una objeci
 | Objeciones → RRR, FFF | Salida **impuesta** después de entender |
 | Ataque Preventivo | Te adelantas tú a una objeción que ya sabes que viene |
 | Close With Action | Lo que te devuelve y te mueve al siguiente tramo |
-| Los 3 No seguidos | La señal de que ya no hay línea que recorrer |
+| Los 3 No seguidos (en el cierre) | La señal de que ya no hay línea que recorrer |
 
 **Diagnóstico que le da al vendedor:** cuando una visita sale mal, la pregunta no es *"¿qué técnica olvidé?"* sino **"¿dónde salí de la línea y por qué no regresé?"**
 
@@ -119,7 +119,7 @@ Esto no contradice el diagnóstico ni la construcción de valor: los explica. La
 
 Closer no dice groserías, y el vendedor no las necesita. Las groserías no hacen falta para comunicar lo que quieres decir, y en la mayoría de las empresas le quitan profesionalidad al vendedor. Si el cliente las usa, no hace falta imitarlo para conectar: se conecta con interés genuino y con el sistema, no con el lenguaje.
 
-# pasos (version 4)
+# pasos (version 5)
 
 # PARTE 2 · LOS 6 PASOS
 
@@ -245,7 +245,7 @@ Y conecta directo con el Efecto Jones: la gente no confía en un desconocido inc
 
 Los cinco caminos a la persona. Más cumplidos genuinos y chistes sencillos.
 
-> **La palabra que lo decide todo es *genuinos*.** Un interés fingido se nota, y cuesta más que no haber preguntado — porque ahora el cliente sabe que le aplicaste una técnica. Si un tema no te interesa de verdad, busca otro de los cinco.
+> **La palabra que lo decide todo es *genuinos*.** Un interés fingido se nota, y cuesta más que no haber preguntado — porque ahora el cliente sabe que le aplicaste una técnica. Y aunque el tema no sea tuyo, siempre te puedes interesar en lo que a él le emociona: *"yo nunca le he entendido al ballet; cuénteme, ¿qué es lo que le gusta?"*. No es mentir: es buscar el punto donde sus intereses y los tuyos se juntan, como haces con alguien que quieres. `CAMPO`
 
 **No requiere cierta personalidad ni ser naturalmente extrovertido: se aprende.**
 
@@ -282,6 +282,8 @@ Aquí sí hubo pensamiento.
 **Cómo:** reconoce con *"entiendo"* o *"por supuesto"*, no lo discutas, y continúa.
 
 > **El tercer movimiento es el que falla.** Casi todos aceptan bien y casi todos logran no discutir — y después se quedan parados esperando, o peor, vuelven a pedir permiso. Ahí se pierde todo lo ganado.
+
+**Dos no seguidos en la puerta** `CAMPO`: si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos. Ahí lo correcto es quedar de regresar en otro momento, con una alternativa concreta: *"¿le queda mejor que pase el jueves o el viernes?"*. Insistir más ya no es seguridad: es terquedad. Tienen que ser consecutivos: si la conversación avanzó entre uno y otro, el primero ya quedó atrás. En el cierre la regla es otra (ver La Regla de los No).
 
 ### Ataque Preventivo `FUENTE + CAMPO` `UNIVERSAL`
 **Qué es:** decir tú el negativo antes de que lo diga el cliente. *"si das la negativa antes de que el cliente lo haga, ya no es una negativa."*
@@ -704,6 +706,7 @@ En español: **Entiendo · Sintió · Encontramos**
 ### La Regla de los No
 - **Fuente:** *2 no's and a go* — dos no seguidos, luz roja, sigue adelante
 - **Campo `CAMPO`:** Emilio usa **3 no seguidos**, porque hay gente que deja ir un sí solo porque el cliente tuvo preguntas u objeciones
+- **Esta regla es del cierre.** En los bloqueos de la puerta son **dos** no seguidos y quedas de regresar (ver AIR).
 
 > **Tienen que ser CONSECUTIVOS.** Un no, lo atraviesas, la conversación avanza, y más adelante otro no: **eso no es una racha**. Es una conversación normal con dos momentos de fricción. La racha se rompe en cuanto la conversación avanza.
 
@@ -740,7 +743,7 @@ Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero produ
 
 ---
 
-# mentalidad (version 4)
+# mentalidad (version 5)
 
 # PARTE 3 · LA MENTALIDAD
 ### *La segunda fundación*
@@ -836,7 +839,7 @@ Escríbelas, hazlas evaluar por alguien, y recompénsate al lograrlas.
 
 ---
 
-# aplicacion (version 4)
+# aplicacion (version 5)
 
 # PARTE 4 · APLICAR EL SISTEMA A CUALQUIER CLIENTE
 
@@ -1014,7 +1017,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# canales (version 4)
+# canales (version 5)
 
 # PARTE 5 · MODIFICADORES DE CANAL
 
@@ -1031,7 +1034,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# jerarquia (version 4)
+# jerarquia (version 5)
 
 # PARTE 6 · JERARQUÍA DE REGLAS
 
@@ -1075,7 +1078,7 @@ Tono, vocabulario, longitud de frases, formalidad. **El manager conoce el lengua
 
 ---
 
-# razonamiento (version 4)
+# razonamiento (version 5)
 
 # PARTE 7 · CÓMO RAZONAR CON ESTE DOCUMENTO
 
