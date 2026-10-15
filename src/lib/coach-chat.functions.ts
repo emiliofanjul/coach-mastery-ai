@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { armarAvance, armarTecnicas } from "@/lib/avance-coach";
-import { extraerTema, revisarRespuesta, promptReescritura, recorteSeguro } from "@/lib/coach-guardia";
+import { extraerTema, revisarRespuesta, promptReescritura, recorteSeguro, tecnicasNombradas, quitarFrasesConTecnicas, nombresParaFuga } from "@/lib/coach-guardia";
 import { LENGUAJE_CLOSER } from "@/lib/lenguaje-closer";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -13,7 +13,7 @@ interface ChatPayload {
 }
 
 export const COACH_MODEL = "claude-sonnet-4-5";
-export const COACH_PROMPT_VERSION = "coach-v2.4.0-lenguaje";
+export const COACH_PROMPT_VERSION = "coach-v2.5.0-fuga";
 
 const REGLAS = `═══ CÓMO RESPONDES ═══
 
@@ -50,7 +50,9 @@ TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento. Abajo tienes
    nombras como técnica y no le preguntas si las hizo (nada de "¿usaste el
    triple desglose?" si ese mundo está cerrado). Tampoco uses su vocabulario
    (por ejemplo "bala" si las balas no se las has enseñado): dilo con palabras
-   de todos los días. Solo le dices en qué mundo las va a aprender.
+   de todos los días. Tampoco le pidas que haga cosas de un paso que todavía
+   no ve (por ejemplo "preséntale la solución" si no ha llegado a La
+   Presentación). Solo le dices en qué mundo las va a aprender.
 
 3. SI EL TEMA ES DE UN MUNDO QUE TODAVÍA NO VE: MÁXIMO 4 FRASES, en prosa,
    sin listas. Un consejo práctico para hoy que solo use lo que ya sabe, y
@@ -295,6 +297,17 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
         segunda.reescribir ? "[coach-chat] guardia: se reescribió y además se recortó en código" : "[coach-chat] guardia: se reescribió",
         { motivos: revision.motivos, segunda: segunda.motivos },
       );
+    }
+
+    // Fuga: la respuesta no nombra técnicas de mundos cerrados aunque el tema
+    // sea de un mundo que ya ve, o aunque el coach no haya marcado el tema.
+    // Se resuelve en código, sin otra llamada al modelo, para no alargar la
+    // espera: se quita solo la frase que nombra la técnica.
+    const cerradasFuga = nombresParaFuga(cerradas);
+    const fuga = tecnicasNombradas(reply, cerradasFuga);
+    if (fuga.length > 0) {
+      reply = quitarFrasesConTecnicas(reply, cerradasFuga);
+      console.warn("[coach-chat] guardia: se quitaron frases con técnicas de mundos cerrados", { tecnicas: fuga });
     }
 
     try {

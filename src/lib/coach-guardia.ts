@@ -107,3 +107,31 @@ export function recorteSeguro(texto: string, opts: { mundoTema: number; nombreMu
     .slice(0, 3);
   return [...frases, cierre].join(" ");
 }
+
+/**
+ * Fuga: aunque el tema sea de un mundo que ya ve (o el coach no marcó el
+ * tema), la respuesta no puede nombrar técnicas de un mundo cerrado
+ * (15-oct-2026: a una pregunta del Mundo 3 el coach contestó con "el Efecto
+ * Jones", del Mundo 5). Se resuelve en código, sin otra llamada al modelo.
+ */
+/** Se quitan solo las frases que nombran técnicas cerradas; el resto queda igual. */
+export function quitarFrasesConTecnicas(texto: string, nombresCerrados: string[]): string {
+  return texto
+    .split(/\n/)
+    .map((linea) => linea.split(/(?<=[.!?…])\s+/).filter((f) => tecnicasNombradas(f, nombresCerrados).length === 0).join(" "))
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+/**
+ * Para la fuga solo cuentan nombres que no son una palabra común: de dos
+ * palabras o más ("Efecto Jones") o siglas ("FFF"). "Urgencia" o
+ * "Indiferencia" sueltas pueden salir en una respuesta normal.
+ */
+export function nombresParaFuga(nombres: string[]): string[] {
+  return nombres.filter((n) => {
+    const base = n.split(" — ")[0].trim();
+    return base.split(/\s+/).length >= 2 || /\b[A-Z]{3,}\b/.test(n);
+  });
+}
