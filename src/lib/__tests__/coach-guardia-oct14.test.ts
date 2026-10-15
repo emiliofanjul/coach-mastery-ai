@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { extraerTema, contarFrases, tecnicasNombradas, revisarRespuesta, promptReescritura, recorteSeguro } from "../coach-guardia";
+import { extraerTema, contarFrases, tecnicasNombradas, revisarRespuesta, promptReescritura, recorteSeguro, nombresParaFuga, quitarFrasesConTecnicas } from "../coach-guardia";
 
 const coach = readFileSync(join(process.cwd(), "src/lib/coach-chat.functions.ts"), "utf8");
 const CERRADAS = ["FFF — Feel, Felt, Found", "RRR — Repeat, Reassure, Resume", "Triple Desglose de Precios", "Pintar Imágenes", "Teoria de las Balas", "El Cierre Asumido"];
@@ -74,5 +74,31 @@ describe("el coach", () => {
     expect(coach).toContain('phase: "coach_chat_guardia"');
     expect(coach).toContain('"[coach-chat] guardia: se reescribió"');
     expect(coach).not.toContain("respuesta recortada por la guardia");
+  });
+});
+
+describe("fuga: técnicas de mundos cerrados en una respuesta de un tema que sí ve (15-oct-2026)", () => {
+  const CERRADAS_M3 = ["Efecto Jones", "Urgencia", "Indiferencia — SW3", "Teoria de las Balas", "FFF — Feel, Felt, Found", "Siguiente oportunidad"];
+  const RESPUESTA_B = `No le pidas que te los cuente. Nadie reconoce un problema de frente con un vendedor.
+2. Normaliza con otros clientes. Dale permiso usando el Efecto Jones:
+"Varios clientes por acá me comentan que batallan con faltantes, ¿a usted le pasa?"
+Eso lo trabajaste en 3.2 (Preguntas por Capas). Te recomiendo repetir ese nodo.`;
+  it("solo cuentan nombres que no son una palabra común", () => {
+    expect(nombresParaFuga(CERRADAS_M3)).toEqual(["Efecto Jones", "Teoria de las Balas", "FFF — Feel, Felt, Found", "Siguiente oportunidad"]);
+  });
+  it("la respuesta real (b) se detecta por el Efecto Jones", () => {
+    expect(tecnicasNombradas(RESPUESTA_B, nombresParaFuga(CERRADAS_M3))).toEqual(["Efecto Jones"]);
+    expect(tecnicasNombradas("Hay urgencia en ese negocio.", nombresParaFuga(CERRADAS_M3))).toEqual([]);
+  });
+  it("se quita solo la frase que la nombra y se queda el resto, sin otra llamada al modelo", () => {
+    const t = quitarFrasesConTecnicas(RESPUESTA_B, nombresParaFuga(CERRADAS_M3));
+    expect(t).not.toContain("Efecto Jones");
+    expect(t).toContain("Varios clientes por acá me comentan");
+    expect(t).toContain("Te recomiendo repetir ese nodo.");
+  });
+  it("el coach revisa la fuga en toda respuesta y no le pide pasos que no ha visto", () => {
+    expect(coach).toContain("const fuga = tecnicasNombradas(reply, cerradasFuga);");
+    expect(coach).toContain("reply = quitarFrasesConTecnicas(reply, cerradasFuga);");
+    expect(coach).toContain('"preséntale la solución" si no ha llegado a La');
   });
 });
