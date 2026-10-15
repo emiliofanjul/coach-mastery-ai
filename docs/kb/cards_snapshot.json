@@ -3,8 +3,8 @@
   "node_id": "1.0",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Una venta no es una platica. Tiene un orden.",
-  "body": "Dos vendedores tocan la misma puerta el mismo dia.\n\nEl primero entra y suelta lo que vende. El cliente escucha veinte segundos, dice que ahorita no, y se acabo.\n\nEl segundo entra, saluda, comenta algo, pregunta. Cinco minutos despues el cliente le esta contando como va su negocio. Quince minutos despues compra.\n\nMismo producto. Mismo precio. Misma persona atendiendo. Lo unico distinto fue el ORDEN.",
+  "title": "Una plática con orden",
+  "body": "Vender es platicar con el cliente. Pero no es una plática cualquiera: es una plática con orden.\n\nImagina a dos vendedores que llegan al mismo negocio.\n\nEl primero entra y empieza a hablar de lo que vende. El cliente le dice: \"Ahorita no, gracias\".\n\nEl segundo saluda, comenta algo del negocio y hace una pregunta. El cliente le platica cómo le va. Al final, le compra.\n\nLos dos venden lo mismo. La diferencia fue el orden.",
   "flip_back_text": null
  },
  {
@@ -12,119 +12,127 @@
   "card_order": 2,
   "card_type": "concept",
   "title": "Los 6 pasos",
-  "body": "Toda venta recorre los mismos seis pasos, siempre en este orden:\n\n1. INTRODUCCION — te ganas el derecho a seguir hablando\n2. HISTORIA BREVE — quien eres y por que estas ahi\n3. DESCUBRIMIENTO — que necesita de verdad\n4. PRESENTACION — como lo que tienes resuelve eso\n5. CIERRE — le pides la decision\n6. CONSOLIDACION — proteges lo que acabas de lograr\n\nCada uno es un mundo completo de este mapa. Por ahora solo necesitas saber que existen y en que orden van.",
+  "body": "Toda venta pasa por seis pasos, siempre en este orden:\n\n1. Introducción: solo tienes una oportunidad para causar una buena primera impresión.\n2. Historia breve: le dices quién eres y a qué vienes.\n3. Descubrimiento: haces preguntas para descubrir lo que el cliente necesita de verdad.\n4. Presentación: le explicas cómo lo vas a ayudar a resolverlo.\n5. Cierre: la plática llega a una decisión. Tú no se la pides: la das por hecha.\n6. Consolidación: el cliente se va contento con su decisión y sabe qué sigue.\n\nCada paso es un mundo de este mapa, y te lo vamos a enseñar a detalle.",
   "flip_back_text": null
  },
  {
   "node_id": "1.0",
   "card_order": 3,
   "card_type": "concept",
-  "title": "Se avanza en linea recta",
-  "body": "Imagina una linea que se dibuja de izquierda a derecha. Empiezas en el paso 1 y avanzas.\n\nCada paso se apoya en el anterior. No puedes descubrir que necesita alguien que todavia no sabe quien eres. No puedes presentarle algo a alguien cuya necesidad no conoces. No puedes cerrarle a alguien al que no le presentaste nada.\n\nSaltarte un paso es construir sobre nada. Y se cae.",
+  "title": "Un paso a la vez, en orden",
+  "body": "Los seis pasos van uno detrás del otro, en línea recta. Cada paso prepara el que sigue.\n\nMira lo que pasa si te saltas uno:\n\nSi te saltas la historia breve, el cliente no sabe quién eres. No baja la guardia y no te cuenta lo que necesita.\n\nSi te saltas el descubrimiento, no sabes qué necesita. Entonces le ofreces cualquier cosa, y te contesta: \"No quiero nada, gracias\".\n\nPor eso vas paso por paso, en orden.",
   "flip_back_text": null
  },
  {
   "node_id": "1.0",
   "card_order": 4,
   "card_type": "concept",
-  "title": "Nada te regresa",
-  "body": "Vas dibujando la linea hacia la derecha y de pronto algo te detiene.\n\nEn ese momento dejas de avanzar y la linea sube: te saliste. Pero fijate bien en lo que NO pasa — la linea no regresa. Lo que ya recorriste, ya quedo. Nunca vuelves a empezar de cero.\n\nSolo estas en pausa. Y la pausa dura lo que tu decidas que dure.",
+  "title": "Cuando algo interrumpe la plática",
+  "body": "Vas a la mitad de la visita. Le estás preguntando al encargado cómo le va con su proveedor.\n\nDe pronto llega un cliente y se va a atenderlo. O te hace una pregunta que no tiene nada que ver.\n\nEso pasa en casi todas las visitas, y está bien.\n\nCuando regresa contigo, no empiezas desde el saludo. Lo que ya platicaron no se pierde. Retomas la pregunta donde ibas y sigues.",
   "flip_back_text": null
  },
  {
   "node_id": "1.0",
   "card_order": 5,
   "card_type": "concept",
-  "title": "Cuando algo te saca, regresas",
-  "body": "A veces va a ser el cliente el que te detenga. A veces vas a salirte tu, a proposito, porque conviene.\n\nVas a aprender exactamente que son esas cosas y como manejar cada una. Cada mundo te va a dar las herramientas para las que aparecen ahi.\n\nPor ahora quedate con la regla, porque no cambia nunca: sales, resuelves, REGRESAS al punto donde estabas, y sigues avanzando.",
+  "title": "Tú decides cuándo salir y cuándo regresar",
+  "body": "Otras veces eres tú el que cambia de tema, a propósito.\n\nPor ejemplo: el encargado te cuenta que su hijo ya le ayuda en el negocio, y tú le preguntas cómo le va. Platican un poco de eso y te empieza a tener confianza.\n\nTú decides cuándo te sales de la línea recta y cuándo regresas. El cliente no te va a regresar: si la plática está agradable, ahí se queda.\n\nPor eso el control es tuyo: te sales, regresas a donde ibas y sigues avanzando.",
   "flip_back_text": null
  },
  {
   "node_id": "1.0",
   "card_order": 6,
   "card_type": "why_it_works",
-  "title": "Tu pregunta cuando algo salga mal",
-  "body": "Todos los vendedores tienen visitas que se caen. La diferencia esta en que se preguntan despues.\n\nEl vendedor promedio se pregunta que se le olvido decir. Y como no tiene un orden en la cabeza, la respuesta siempre es la misma: no se, supongo que no era mi dia.\n\nTu vas a tener otra pregunta: en que punto de la linea sali, y por que no regrese.\n\nEsa pregunta si tiene respuesta. Y una respuesta se puede corregir manana.",
+  "title": "Con un orden, sabes dónde fallaste",
+  "body": "Hay visitas que no salen como esperabas: el cliente te dice que no quiere comprar nada.\n\nSi no tienes un orden, lo único que te queda es pensar \"no era mi día\".\n\nCon los seis pasos puedes revisar en cuál se atoró la plática. Por ejemplo: \"le presenté antes de saber qué necesitaba\".\n\nEso sí lo puedes corregir en tu siguiente visita.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "1.0",
+  "card_order": 7,
+  "card_type": "concept",
+  "title": "Sirve con cualquier cliente",
+  "body": "Estos seis pasos sirven con cualquier cliente: uno que visitas por primera vez o uno que te compra desde hace años. Y sirven vendas lo que vendas.\n\nLos pasos son siempre los mismos. Lo que cambia es cómo los haces con cada cliente.\n\nPor ejemplo: con un cliente nuevo comentas algo que notaste en su negocio. Con uno de años, le preguntas por algo que te platicó la vez pasada.\n\nLos seis pasos son la base. Encima pones tu forma de ser y lo que sabes de cada cliente.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Ya te juzgaron antes de que hables",
-  "body": "Entras a un lugar. La persona que atiende voltea y te ve.\n\nEn ese instante, antes de que digas una sola palabra, ya decidio algo: si eres cliente, si eres conocido, o si eres alguien que le va a quitar el tiempo.\n\nTodavia no abres la boca y la conversacion ya empezo.",
+  "title": "Lo que el cliente ve cuando llegas",
+  "body": "Cuando entras a un negocio, lo primero que nota el cliente no es lo que dices. Es cómo llegas.\n\nSolo tienes una oportunidad para causar una buena primera impresión.\n\nEn este nodo aprendes tres cosas que te ayudan a lograrla.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Lo primero que todos quieren aprender es a cerrar",
-  "body": "Y es el error mas comun.\n\nCerrar es el paso 5. Si los primeros diez segundos se sienten a vendedor, nunca vas a llegar al paso 5, porque no va a haber conversacion que cerrar.\n\nLos primeros segundos no venden nada. Solo hacen una cosa, y es suficiente: te compran el derecho a seguir hablando.",
+  "title": "Primero, que te ponga atención",
+  "body": "Cuando llegas, el cliente está en lo suyo: atendiendo, acomodando, haciendo cuentas.\n\nLa introducción sirve para que deje eso por un momento y te ponga atención.\n\nTodavía no le vendes nada. Primero, que te escuche.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 3,
   "card_type": "concept",
-  "title": "Los SEE factors — en espanol, SCE",
-  "body": "Tres cosas deciden esos primeros segundos:\n\nS — SMILE / Sonrisa\nE — EYE CONTACT / Contacto visual\nE — ENTHUSIASM / Entusiasmo\n\nEn espanol lo decimos SCE: Sonrisa, Contacto visual, Entusiasmo. Es lo mismo.\n\nTres cosas. Ni una mas. Vamos una por una.",
+  "title": "Las 3 cosas al llegar: SCE",
+  "body": "Al llegar, tres cosas hacen la diferencia:\n\nS: Sonrisa\nC: Contacto visual\nE: Entusiasmo\n\nVamos una por una.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 4,
   "card_type": "concept",
-  "title": "S — Sonrisa",
-  "body": "Es el signo internacional de amistad. Funciona igual en cualquier pais, en cualquier idioma y con cualquier persona.\n\nLo que hace: elimina el miedo. Nadie se pone a la defensiva con alguien que llega sonriendo, porque una sonrisa dice sin palabras que no vienes a pelear.\n\nY tiene que ser genuina. La sonrisa falsa se nota mas que ninguna otra cosa.",
+  "title": "S: Sonrisa",
+  "body": "La sonrisa se entiende en todo el mundo: le dice al cliente que vienes como amigo.\n\nLe quita la desconfianza y le da confianza en ti.\n\nNo es magia: hay clientes que tienen un mal día y no te van a sonreír de vuelta. Pero si llegas sonriendo, es mucho más fácil que la plática empiece bien.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 5,
   "card_type": "concept",
-  "title": "E — Contacto visual",
-  "body": "Mirar a la persona a los ojos. No al piso, no al celular, no a lo que hay alrededor.\n\nLo que hace: genera confianza y te da el control de la conversacion. El que mira a los ojos se ve seguro; el que esquiva la mirada se ve como alguien que esconde algo.\n\nEs la parte mas facil de la doctrina y la que mas se olvida cuando hay nervios.",
+  "title": "C: Contacto visual",
+  "body": "Imagina que un amigo te dice: \"Mañana paso por ti a las 5 para llevarte a tu cita con el doctor\".\n\nSi te lo dice viendo para otro lado, te quedas con la duda. Si te lo dice mirándote a los ojos, le crees.\n\nCon el cliente pasa lo mismo. Mirarlo a los ojos le da confianza en ti, y te ayuda a llevar la plática.\n\nY cuando le prometes algo, o le dices algo que es importante que te crea, míralo a los ojos. Ahí es cuando más cuenta.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 6,
   "card_type": "concept",
-  "title": "E — Entusiasmo",
-  "body": "Energia real de estar ahi.\n\nLo que hace: es contagioso, y funciona por deduccion. Si tu suenas emocionado con lo que traes, la otra persona asume que hablas de algo emocionante. Todavia no sabe que es, y ya le interesa mas.\n\nAl reves tambien funciona: si tu suenas aburrido de tu propio producto, nadie va a estar mas emocionado que tu.",
+  "title": "E: Entusiasmo",
+  "body": "Que se te note el gusto de estar ahí.\n\nSi suenas emocionado con lo que traes, el cliente piensa que es algo bueno y le da curiosidad, aunque todavía no sepa qué es.\n\nY al revés: si tú suenas aburrido de tu producto, nadie se va a emocionar más que tú.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 7,
   "card_type": "why_it_works",
-  "title": "La sonrisa se oye",
-  "body": "Aqui va un secreto de los grandes: el SCE tambien vive en tus PALABRAS.\n\nUna persona que sonrie elige palabras distintas. Prueba a decir buenos dias sonriendo y sin sonreir. Es la misma frase y no suena igual.\n\nEn Closer entrenas ese reflejo verbal: como suena tu energia en lo que dices. Es la parte del SCE que si podemos practicar aqui.",
+  "title": "La regla del 10%",
+  "body": "Fíjate en la energía del cliente y ponte un poquito arriba de él: un 10% más. No el doble.\n\nSi el cliente está tranquilo y tú llegas gritando, lo alejas. Si él está animado y tú llegas apagado, también.\n\nUn poquito arriba de él lo contagia sin incomodarlo.",
   "flip_back_text": null
  },
  {
   "node_id": "1.1",
   "card_order": 8,
   "card_type": "concept",
-  "title": "Esto se practica en persona",
-  "body": "Seamos claros: Closer no puede ver tu sonrisa, no puede saber si miraste a los ojos, y no puede medir tu energia real.\n\nTe lo ensena, te pide que lo hagas, y confia en que lo haces. Nunca te va a calificar por eso, porque calificar lo que no se puede ver seria inventar.\n\nEsa parte la afinas en cada visita real, y tu entrenador te la corrige en persona. Lo que si vamos a entrenar aqui, a fondo, es todo lo que sale por tus palabras.",
+  "title": "Lo que Closer no puede ver",
+  "body": "Closer no puede ver tu sonrisa ni saber si miraste a los ojos. Por eso no te califica eso.\n\nTe lo enseña y confía en que lo haces en cada visita. Tu manager te ayuda con eso en persona.\n\nAquí practicas lo que dices, y la energía que se nota en tus palabras.",
   "flip_back_text": null
  },
  {
   "node_id": "1.2",
   "card_order": 1,
   "card_type": "concept",
-  "title": "La formula: saludo, observacion, pregunta",
-  "body": "El SCE que si podemos entrenar aqui son tus palabras. Y se arma en tres piezas, en este orden:\n\nSALUDO con energia. Que se oiga que te da gusto estar ahi.\n\nOBSERVACION de algo real que ves de esa persona o de su lugar. Es tu contacto visual hecho palabras: le dice te estoy viendo a TI.\n\nPREGUNTA ABIERTA. Una que no se pueda contestar con si o con no, para que la conversacion arranque sola.\n\nDiez segundos. Tres piezas. Puerta abierta.",
+  "title": "Tu primera frase",
+  "body": "Así empieza tu visita:\n\n1. Saludas con tu SCE: sonrisa, mirada y entusiasmo.\n2. Comentas algo que notaste en su negocio, o algo que sabes de él.\n3. Terminas con una pregunta sobre eso.\n\nCon la pregunta, el cliente empieza a platicar y tú guías hacia dónde va la plática.\n\nEn el 1.5 le vas a agregar un toque ligero: el ice breaker (romper el hielo).",
   "flip_back_text": null
  },
  {
   "node_id": "1.2",
   "card_order": 2,
   "card_type": "concept",
-  "title": "La observacion lo decide todo",
-  "body": "Buenos dias, como esta? sirve para cualquier persona en cualquier lugar del mundo. Por eso no abre nada: el cliente contesta bien, gracias y se queda esperando.\n\nSe ve que aqui no para el movimiento desde temprano solo sirve para EL, hoy. Y por eso contesta distinto.\n\nLa prueba es sencilla: si tu observacion se la podrias decir igual al negocio de junto, no es una observacion. Es relleno.",
+  "title": "El comentario tiene que ser de ese negocio",
+  "body": "\"Buenos días, ¿cómo está?\" se lo puedes decir a cualquiera. El cliente contesta \"bien, gracias\" y se queda esperando.\n\n\"Se ve que aquí no para el movimiento desde temprano\" solo se lo puedes decir a él, hoy. Por eso te contesta con más ganas.\n\nY si ya lo conoces, todavía mejor: pregúntale por algo que te platicó la vez pasada.",
   "flip_back_text": null
  },
  {
@@ -132,103 +140,103 @@
   "card_order": 3,
   "card_type": "bad_example",
   "title": null,
-  "body": "Buenos dias, disculpe... tiene un minutito?",
-  "flip_back_text": "Dos errores en seis palabras. Te disculpaste por existir, y despues le hiciste una pregunta que se contesta con no. Le entregaste la salida y la va a tomar. Y fijate en lo peor: no hay ninguna observacion. Nada le dice a ese cliente que lo estas viendo a EL."
+  "body": "Buenos días, disculpe… ¿tiene un minutito?",
+  "flip_back_text": "Aquí el vendedor se hizo menos. Pidió perdón y pidió permiso, como si el cliente le estuviera haciendo un favor al escucharlo.\n\nPero tú traes algo que le puede servir. No tienes por qué llegar disculpándote.\n\nEsa forma de pensar la vas a ver en el siguiente nodo, con la teoría del Gasman."
  },
  {
   "node_id": "1.2",
   "card_order": 4,
   "card_type": "good_example",
   "title": null,
-  "body": "Buenos dias! Oiga, se ve que aqui no para el movimiento desde temprano. Que tal ha estado la semana?",
-  "flip_back_text": "Las tres piezas en once palabras. Saludo con energia. Observacion que solo aplica a EL y a hoy. Y una pregunta abierta que no se puede contestar con si o no, asi que el cliente contesta algo real y ahi arranco la conversacion. Cero disculpas, cero permiso pedido."
+  "body": "¡Buenos días! Oiga, se ve que aquí no para el movimiento desde temprano. ¿Siempre está así de movido?",
+  "flip_back_text": "Saluda con energía, comenta algo que notó en ese negocio y termina con una pregunta sobre eso.\n\nEl cliente empieza a platicar, y el vendedor sabe hacia dónde lleva la plática."
  },
  {
   "node_id": "1.3",
   "card_order": 1,
   "card_type": "concept",
-  "title": "El gasista de Londres",
-  "body": "Un hombre tenia que entrar a cientos de casas al mes a leer el medidor del gas.\n\nNo tocaba pidiendo permiso. No preguntaba si era buen momento. Llegaba, saludaba, decia a que iba, y pasaba.\n\nNadie lo detenia nunca. Y no era porque tuviera un permiso especial ni un uniforme magico. Era porque se comportaba exactamente como alguien que tiene derecho a estar ahi.\n\nA eso le llamamos la teoria del Gasman.",
+  "title": "La teoría del Gasman",
+  "body": "Cuentan que en Londres, hace muchos años, los gasistas (los señores del gas) entraban a las casas sin pedir permiso.\n\nAsí se hacía, y todos lo esperaban. Llegaban, surtían el gas y se iban.\n\nNo se sentían mal por entrar: estaban ayudando a esa familia.\n\nQuizá no fue exactamente así, pero la historia ayuda a entender la idea: cuando sabes que traes algo que le sirve al cliente, llegas seguro.",
   "flip_back_text": null
  },
  {
   "node_id": "1.3",
   "card_order": 2,
   "card_type": "concept",
-  "title": "El permiso que pides es el permiso que te niegan",
-  "body": "Cuando preguntas tiene un minutito?, estas haciendo dos cosas al mismo tiempo.\n\nLe entregas el control de la conversacion. Y le das a elegir entre dos opciones, donde la mas facil, la que no le cuesta nada y lo deja tranquilo, es decir que no.\n\nNadie te esta siendo grosero cuando contesta ahorita no. Le ofreciste esa salida y la tomo. Cualquiera lo haria.",
+  "title": "Por qué no debes pedir permiso",
+  "body": "Cuando preguntas \"¿tiene un minutito?\", el cliente tiene dos opciones: sí o no.\n\nY \"no\" es la más fácil. No le cuesta nada y lo deja tranquilo.\n\nCuando contesta \"ahorita no\", no está siendo grosero. Tú le diste esa opción y la tomó.",
   "flip_back_text": null
  },
  {
   "node_id": "1.3",
   "card_order": 3,
   "card_type": "concept",
-  "title": "La autoridad no se pide. Se asume.",
-  "body": "No se trata de ser prepotente ni de pasarte de listo. Se trata de una decision que tomas antes de entrar: yo pertenezco aqui.\n\nEl que pertenece saluda, no pide permiso. Comenta, no se disculpa. Pregunta, no suplica.\n\nY la diferencia se nota en el primer segundo, aunque las palabras sean casi iguales.",
+  "title": "Llega seguro, sin ser prepotente",
+  "body": "No se trata de ser prepotente ni de pasarte de listo. Se trata de llegar seguro, porque traes algo que le puede servir.\n\nEl que llega seguro saluda, no pide permiso. Comenta, no se disculpa. Pregunta, no suplica.\n\nLa diferencia se nota desde el primer segundo, aunque las palabras sean casi las mismas.",
   "flip_back_text": null
  },
  {
   "node_id": "1.3",
   "card_order": 4,
   "card_type": "why_it_works",
-  "title": "Solo el 10% es lo que dices",
-  "body": "De todo lo que comunicas en esos primeros segundos, apenas una decima parte son tus palabras.\n\nEl resto es como las dices y como te paras: tu postura, tu ritmo, tu volumen, si te ves comodo o incomodo.\n\nPor eso la frase perfecta dicha con inseguridad no funciona, y una frase sencilla dicha con postura si. No estas aprendiendo un guion. Estas aprendiendo a llegar de otra manera.",
+  "title": "Le gusta comprar, no que le vendan",
+  "body": "A la gente le gusta comprar. Lo que no le gusta es sentir que le están vendiendo.\n\nCuando entras pidiendo permiso, el cliente piensa: \"Aquí viene otro vendedor\".\n\nCuando entras seguro y en buen plan, la plática empieza tranquila.",
   "flip_back_text": null
  },
  {
   "node_id": "1.4",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Este cliente esta ocupado. Y no importa.",
-  "body": "Vas a entrar con alguien que trae prisa, que esta atendiendo, que tiene las manos llenas. Te lo va a hacer notar.\n\nLa tentacion va a ser encogerte: bajar la voz, hablar rapido, pedir permiso, prometer que solo sera un segundo.\n\nY eso es exactamente lo que no vas a hacer. Que el cliente este ocupado no cambia que tienes derecho a estar ahi.",
+  "title": "Cuando el cliente está ocupado",
+  "body": "Vas a llegar con clientes que traen prisa, que están atendiendo o que tienen las manos llenas.\n\nVas a sentir ganas de bajar la voz, hablar rápido o pedir permiso.\n\nEs su negocio y lo respetas. Pero que esté ocupado no cambia lo que traes: algo que le puede servir. Mantén tu energía, un poquito arriba de la suya, y sigue con tu primera frase.",
   "flip_back_text": null
  },
  {
   "node_id": "1.4",
   "card_order": 2,
   "card_type": "concept",
-  "title": "Las frases que te matan",
-  "body": "Estas cinco suenan educadas y todas hacen lo mismo: le entregan el control y le abren la puerta de salida.\n\nPerdon que lo moleste\n\nTiene un minutito?\n\nSolo sera un segundo\n\nDisculpe la molestia\n\nNo le quito mucho tiempo\n\nNinguna es grosera. Todas te cuestan la conversacion. Sacalas de tu vocabulario.",
+  "title": "Frases que debes evitar",
+  "body": "Estas cinco suenan educadas, pero todas le dan al cliente una forma fácil de despedirte:\n\n\"Perdón que lo moleste.\"\n\"¿Tiene un minutito?\"\n\"Solo será un segundo.\"\n\"Disculpe la molestia.\"\n\"No le quito mucho tiempo.\"\n\nNinguna es grosera, pero todas te cuestan la plática. Sácalas de tu vocabulario.",
   "flip_back_text": null
  },
  {
   "node_id": "1.4",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "Reconocer no es pedir permiso",
-  "body": "Ojo con la diferencia, porque es fina y lo decide todo.\n\nYa veo que lo agarre en plena carga, que bueno, eso quiere decir que hay trabajo — eso es RECONOCER. Le dices que lo estas viendo y sigues avanzando con tu energia intacta.\n\nPerdon, veo que esta ocupado, quiere que venga despues? — eso es PEDIR PERMISO. Le acabas de dar un menu donde la opcion comoda es que te vayas.\n\nMismo dato, dos posturas, dos resultados.",
+  "title": "Decir que lo ves ocupado no es pedir permiso",
+  "body": "Mira la diferencia:\n\n\"Ya veo que lo agarré en plena carga. Qué bueno, eso quiere decir que hay trabajo.\" Aquí le dices que lo ves ocupado y sigues con la misma energía.\n\n\"Perdón, veo que está ocupado, ¿quiere que venga después?\" Aquí le estás dando la opción de que te vayas. Y la va a tomar.",
   "flip_back_text": null
  },
  {
   "node_id": "1.5",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Plana o rompe el hielo",
-  "body": "Las dos frases dicen lo mismo. Solo una funciona.\n\nVeo que hay mucho movimiento. — Es verdad, es correcta, y no pasa nada. El cliente confirma con un si y la guardia sigue arriba.\n\nYa se le juntaron todos hoy, verdad? — Es la misma observacion con un guino. Y el cliente contesta con humor.\n\nEsa es toda la diferencia entre una observacion y un ice breaker: la ligereza.",
+  "title": "Comentario o ice breaker: la diferencia",
+  "body": "Las dos frases dicen lo mismo:\n\n\"Veo que hay mucho movimiento.\" Es cierto, pero no pasa nada. El cliente dice \"sí\" y sigue igual de serio.\n\n\"Ya se le juntaron todos hoy, ¿verdad?\" Es lo mismo, pero con un toque de humor. Y el cliente te contesta con una sonrisa.\n\nEso es un ice breaker (romper el hielo): un comentario ligero que hace sonreír al cliente.",
   "flip_back_text": null
  },
  {
   "node_id": "1.5",
   "card_order": 2,
   "card_type": "concept",
-  "title": "De que puede ser",
-  "body": "De lo que sea, mientras sea verdadero. No esta atado a ningun tipo de negocio ni a ninguna industria.\n\nDe la PERSONA — algo que notas de ella, como se ve, lo que trae puesto, como trata a su gente.\n\nDel LUGAR o del momento — el movimiento, el clima, la hora, lo que este pasando ahi.\n\nDe algo EN COMUN — el equipo, el barrio, un conocido, cualquier cosa que compartan.\n\nLo unico que no funciona es lo inventado.",
+  "title": "¿De qué puede ser el ice breaker?",
+  "body": "De lo que sea, mientras sea verdad:\n\nDe la persona: algo que notas de ella, como lo que trae puesto o cómo trata a su gente.\n\nDel lugar o del momento: el movimiento, el clima, la hora.\n\nDe algo que tengan en común: el equipo de fútbol, el barrio, un conocido.\n\nLo único que no funciona es lo inventado.",
   "flip_back_text": null
  },
  {
   "node_id": "1.5",
   "card_order": 3,
   "card_type": "why_it_works",
-  "title": "El halago falso cuesta mas de lo que gana",
-  "body": "Aqui va la trampa del principiante: entiende que hay que caer bien y se pasa de la raya. Halagos enormes, chistes que no vienen al caso, confianza que nadie le dio.\n\nY el cliente lo lee al instante. No se queda igual: se cierra MAS que antes de que llegaras, porque ahora ya sabe que le estas trabajando.\n\nUn comentario chiquito y verdadero vale mas que un halago grande e inventado. Siempre.",
+  "title": "No exageres los halagos",
+  "body": "Hay vendedores que quieren caer bien y se pasan: halagos exagerados, chistes que no vienen al caso, confianza que nadie les dio.\n\nEl cliente lo nota de inmediato y se cierra más que antes.\n\nUn comentario pequeño y verdadero vale más que un halago grande e inventado.",
   "flip_back_text": null
  },
  {
   "node_id": "1.6",
   "card_order": 1,
   "card_type": "concept",
-  "title": "Todo junto, y sin ayudas",
-  "body": "Este cliente ya vio pasar a muchos vendedores. No es grosero: simplemente no regala tiempo y no te va a facilitar nada.\n\nContesta en tres palabras. No pregunta. No ofrece. Se queda en lo suyo.\n\nSolo se abre si te lo ganas con las tres cosas juntas: entras con postura y sin pedir permiso, dices algo ligero y verdadero, y cierras con una pregunta abierta.\n\nCuando te pregunte quien eres, ganaste. Esa pregunta es la puerta al siguiente paso.",
+  "title": "El reto: todo junto",
+  "body": "Este cliente ya ha visto pasar a muchos vendedores. No es grosero, pero no regala su tiempo.\n\nContesta en tres palabras. No pregunta. Sigue en lo suyo.\n\nPara que se abra, necesitas las tres cosas juntas: llegas seguro y sin pedir permiso, haces un comentario ligero y verdadero, y terminas con una pregunta que no se conteste con sí o no.\n\nSi te pregunta quién eres, lo lograste. Esa pregunta es la entrada al siguiente paso.",
   "flip_back_text": null
  },
  {
