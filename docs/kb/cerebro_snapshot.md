@@ -1,4 +1,4 @@
-# fundamento (version 5)
+# fundamento (version 4)
 
 # EL CEREBRO DE CLOSER
 ## Doctrina canónica del sistema de venta
@@ -119,7 +119,7 @@ Esto no contradice el diagnóstico ni la construcción de valor: los explica. La
 
 Closer no dice groserías, y el vendedor no las necesita. Las groserías no hacen falta para comunicar lo que quieres decir, y en la mayoría de las empresas le quitan profesionalidad al vendedor. Si el cliente las usa, no hace falta imitarlo para conectar: se conecta con interés genuino y con el sistema, no con el lenguaje.
 
-# pasos (version 5)
+# pasos (version 4)
 
 # PARTE 2 · LOS 6 PASOS
 
@@ -743,7 +743,7 @@ Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero produ
 
 ---
 
-# mentalidad (version 5)
+# mentalidad (version 4)
 
 # PARTE 3 · LA MENTALIDAD
 ### *La segunda fundación*
@@ -839,7 +839,7 @@ Escríbelas, hazlas evaluar por alguien, y recompénsate al lograrlas.
 
 ---
 
-# aplicacion (version 5)
+# aplicacion (version 4)
 
 # PARTE 4 · APLICAR EL SISTEMA A CUALQUIER CLIENTE
 
@@ -1017,7 +1017,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# canales (version 5)
+# canales (version 4)
 
 # PARTE 5 · MODIFICADORES DE CANAL
 
@@ -1034,7 +1034,7 @@ Y eso disciplina: si recomiendas algo que no funciona, **no perdiste una venta �
 
 ---
 
-# jerarquia (version 5)
+# jerarquia (version 4)
 
 # PARTE 6 · JERARQUÍA DE REGLAS
 
@@ -1078,7 +1078,7 @@ Tono, vocabulario, longitud de frases, formalidad. **El manager conoce el lengua
 
 ---
 
-# razonamiento (version 5)
+# razonamiento (version 4)
 
 # PARTE 7 · CÓMO RAZONAR CON ESTE DOCUMENTO
 
