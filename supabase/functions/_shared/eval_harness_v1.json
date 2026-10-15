@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.13.0",
+  "harness_version": "v3.14.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -910,6 +910,151 @@
           "ignora_sin_aceptar"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P2_7c_perfecto",
+      "node_id": "2.7c",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Ferretera del Golfo: Proveedor de ferretería (tornillería, herramienta manual, pinturas) para ferreterías de barrio.",
+      "description": "Ejecución perfecta del nodo 2.7c (Dos No en Vivo), construida criterio por criterio desde la doctrina escrita: AIR al primer bloqueo y, al segundo seguido, queda de regresar con dos opciones de día.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, Don Rafa! Se ve que hoy no le para el mostrador. ¿Así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita ando ocupado, joven."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí, entiendo. Oiga, ¿y esa fila es por la obra de aquí enfrente?"
+        },
+        {
+          "role": "assistant",
+          "text": "De verdad, ahorita no puedo, ando a tope."
+        },
+        {
+          "role": "user",
+          "text": "Claro, se ve que hoy está a tope. ¿Le queda mejor que pase el jueves o el viernes en la mañana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, el jueves está bien, pásele."
+        }
+      ],
+      "traza": {
+        "blocks.air": "Claro que sí, entiendo. Oiga, ¿y esa fila es por la obra de aquí enfrente?",
+        "blocks.dos_no_seguidos": "Claro, se ve que hoy está a tope. ¿Le queda mejor que pase el jueves o el viernes en la mañana?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "blocks.dos_no_seguidos": "cumple"
+        },
+        "must_not_flag": [
+          "insiste_tras_dos",
+          "discute_el_bloqueo",
+          "se_va_al_primero",
+          "pide_permiso_de_nuevo",
+          "se_va_con_disculpa"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G35_insiste_tras_dos_no",
+      "node_id": "2.7c",
+      "seller_name": "Luis",
+      "company_brain": "Ferretera del Golfo: Proveedor de ferretería (tornillería, herramienta manual, pinturas) para ferreterías de barrio.",
+      "description": "Pasa bien el primer bloqueo con AIR, pero después del segundo no seguido sigue insistiendo. Es lo que enseña el nodo (Emilio, 15-oct-2026: dos no seguidos y quedas de regresar; si insistes te vuelves terco).",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, Don Rafa! Se ve que hoy no le para el mostrador. ¿Así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "No me interesa, gracias."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí, entiendo. Oiga, ¿y cuánto tiempo lleva con el negocio?"
+        },
+        {
+          "role": "assistant",
+          "text": "De verdad, ahorita no puedo, ando a tope."
+        },
+        {
+          "role": "user",
+          "text": "Ándele, nomás un minutito. Le prometo que no se va a arrepentir, déjeme le explico rápido."
+        },
+        {
+          "role": "assistant",
+          "text": "Ya le dije que no, joven."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          0,
+          30
+        ],
+        "must_flag": [
+          "insiste_tras_dos"
+        ],
+        "fallas_con_cita": [
+          "insiste_tras_dos"
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "blocks.dos_no_seguidos": "no_cumple"
+        }
+      }
+    },
+    {
+      "id": "G36_se_va_al_primer_no",
+      "node_id": "2.7c",
+      "seller_name": "Luis",
+      "company_brain": "Ferretera del Golfo: Proveedor de ferretería (tornillería, herramienta manual, pinturas) para ferreterías de barrio.",
+      "description": "Se va al primer bloqueo, sin intentar AIR. Quedar de regresar solo es correcto después del segundo no seguido.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, Don Rafa! Se ve que hoy no le para el mostrador. ¿Así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita ando ocupado, joven."
+        },
+        {
+          "role": "user",
+          "text": "Ah, perdón, no le quito su tiempo. Mejor paso otro día."
+        },
+        {
+          "role": "assistant",
+          "text": "Sale, gracias."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          0,
+          30
+        ],
+        "must_flag": [
+          "se_va_al_primero"
+        ],
+        "fallas_con_cita": [
+          "se_va_al_primero"
+        ],
+        "niveles_esperados": {
+          "blocks.air": "no_cumple"
+        }
       }
     },
     {
