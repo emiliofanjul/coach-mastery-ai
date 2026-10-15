@@ -259,6 +259,27 @@
   "is_primary": true
  },
  {
+  "node_id": "2.7b",
+  "skill_id": "blocks.dos_no_seguidos",
+  "relation": "introduces",
+  "weight": 1.0,
+  "is_primary": true
+ },
+ {
+  "node_id": "2.7c",
+  "skill_id": "blocks.dos_no_seguidos",
+  "relation": "practices",
+  "weight": 1.0,
+  "is_primary": true
+ },
+ {
+  "node_id": "2.7c",
+  "skill_id": "blocks.air",
+  "relation": "practices",
+  "weight": 1.0,
+  "is_primary": false
+ },
+ {
   "node_id": "2.9",
   "skill_id": "blocks.air",
   "relation": "practices",

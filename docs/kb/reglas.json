@@ -260,6 +260,26 @@
   "severidad_sugerida": "major"
  },
  {
+  "id": "blocks.dos_no_seguidos",
+  "paso": 0,
+  "tipo": "herramienta",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Si haces AIR y el cliente repite el bloqueo de inmediato, son dos no seguidos: hoy no es el día. Se queda de regresar en otro momento, con una alternativa concreta, o se despide con amabilidad. Tienen que ser consecutivos.",
+  "cita_cerebro": "si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "blocks.insistir_tras_dos_no",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Seguir insistiendo después de dos no seguidos en la puerta: ya no es seguridad, es terquedad.",
+  "cita_cerebro": "Insistir más ya no es seguridad: es terquedad",
+  "severidad_sugerida": "critical"
+ },
+ {
   "id": "blocks.ataque_preventivo",
   "paso": 0,
   "tipo": "herramienta",

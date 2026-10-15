@@ -536,6 +536,62 @@
   "flip_back_text": null
  },
  {
+  "node_id": "2.7b",
+  "card_order": 1,
+  "card_type": "concept",
+  "title": "Cuando el cliente repite el bloqueo",
+  "body": "Llegas y el cliente te dice: \"Ahorita ando ocupado\".\n\nHaces AIR: \"Claro que sí, entiendo. Oiga, ¿y cuánto tiempo lleva con el negocio?\".\n\nY te contesta: \"De verdad, ahorita no puedo\".\n\nEse segundo \"no\" ya no es por costumbre. Hoy de verdad no es buen momento.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.7b",
+  "card_order": 2,
+  "card_type": "concept",
+  "title": "Dos \"no\" seguidos: hoy no es el día",
+  "body": "Al primer \"no\", haces AIR.\n\nSi te dice otro \"no\" justo después, ya no insistes. Con ese cliente, hoy no es el día.\n\nNo es un fracaso: es leer bien el momento.\n\nRecuerda que tienen que ser seguidos. Si entre uno y otro la plática avanzó, el primero ya quedó atrás.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.7b",
+  "card_order": 3,
+  "card_type": "concept",
+  "title": "Quedas de regresar, o te despides bien",
+  "body": "Tienes dos buenas salidas:\n\n1. Quedar de regresar, con dos opciones de día: \"¿Le queda mejor que pase el jueves o el viernes?\".\n2. Despedirte con amabilidad: \"Claro, no le quito más tiempo. Que tenga buen día\".\n\nLas dos dejan la puerta abierta para la siguiente visita.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.7b",
+  "card_order": 4,
+  "card_type": "why_it_works",
+  "title": "Si insistes, te vuelves terco",
+  "body": "Insistir después de dos \"no\" seguidos ya no es seguridad. El cliente siente que no lo escuchas.\n\nY la próxima vez que te vea, te va a recibir cerrado.\n\nSi hoy te vas bien, la puerta queda abierta.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.7c",
+  "card_order": 1,
+  "card_type": "concept",
+  "title": "Lo que vas a practicar",
+  "body": "El cliente te va a poner un bloqueo. Pásalo con AIR.\n\nLuego te va a poner otro, justo después. Ahí ya no insistes: quedas de regresar en otro momento, o te despides con amabilidad.\n\nEsto pasa todos los días en la calle. Aquí lo practicas para que te salga natural.",
+  "flip_back_text": null
+ },
+ {
+  "node_id": "2.7c",
+  "card_order": 2,
+  "card_type": "bad_example",
+  "title": null,
+  "body": "Ándele, nomás un minutito. Le prometo que no se va a arrepentir…",
+  "flip_back_text": "El cliente ya le dijo dos veces que no, seguidas, y el vendedor siguió insistiendo.\n\nYa no es seguridad: es terquedad. El cliente se va a acordar de eso la próxima vez."
+ },
+ {
+  "node_id": "2.7c",
+  "card_order": 3,
+  "card_type": "good_example",
+  "title": null,
+  "body": "Claro, se ve que hoy está a tope. ¿Le queda mejor que pase el jueves o el viernes en la mañana?",
+  "flip_back_text": "Reconoce el momento, no insiste y deja la siguiente visita amarrada con dos opciones de día.\n\nSin pedir perdón y sin pelear."
+ },
+ {
   "node_id": "2.8",
   "card_order": 1,
   "card_type": "concept",

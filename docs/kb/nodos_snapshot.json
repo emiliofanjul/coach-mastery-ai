@@ -721,6 +721,104 @@
     }
   },
   {
+    "id": "2.7b",
+    "world_id": 2,
+    "name": "Dos No Seguidos",
+    "node_type": "knowledge",
+    "practice_script": null
+  },
+  {
+    "id": "2.7c",
+    "world_id": 2,
+    "name": "Dos No en Vivo",
+    "node_type": "skill_drill",
+    "practice_script": {
+      "notes": "v1.0.0 Dos no seguidos en la puerta (Emilio, 15-oct-2026). El primer bloqueo se pasa con AIR; el segundo, seguido, ya es un hoy no: se queda de regresar o se despide con amabilidad. El espejo ensena: si insiste, el cliente se cierra; si se va bien, queda la puerta abierta.",
+      "scope": {
+        "skills_in_focus": [
+          "blocks.air",
+          "blocks.dos_no_seguidos"
+        ],
+        "out_of_scope_behavior": "redirect"
+      },
+      "limits": {
+        "max_turns": 5,
+        "max_duration_seconds": 180,
+        "min_turns_before_evaluation": 3
+      },
+      "phases": {
+        "i_do": {
+          "briefing": "Me van a bloquear dos veces seguidas.\n\nAl primero le hago AIR: lo acepto, no lo discuto y sigo con lo mio.\n\nAl segundo ya no insisto: hoy no es el dia. Quedo de regresar, con dos opciones de dia, o me despido con amabilidad.",
+          "first_message": "Claro, se ve que hoy esta a tope. Le queda mejor que pase el jueves o el viernes en la manana?"
+        },
+        "you_do": {
+          "prompt": "REGLA NUMERO CERO, POR ENCIMA DE TODO LO DEMAS: en esta conversacion NO EXISTE el tema de que vende este senor, que trae, a que viene, ni en que te puede servir. Jamas preguntas eso. Ni con esas palabras ni con ninguna otra. Prohibidas de forma absoluta las frases: que se le ofrece, que necesita, que anda buscando, a que viene, que trae, de que se trata, en que le puedo servir, y cualquier variante. Tu no sabes que es vendedor y no te interesa averiguarlo. Si el menciona por su cuenta un producto o una marca, contestas ah orale y sigues con lo tuyo sin preguntar nada. Si te quedas sin saber que decir, hablas de tu propio negocio o del dia, nunca de el.\n\nEres el encargado de un negocio y hoy de verdad andas a tope. En tu PRIMERA respuesta, sin importar lo que diga el vendedor, sueltas un bloqueo de reflejo, con naturalidad y sin agresion: ahorita ando ocupado / no me interesa, gracias / no estoy comprando nada. DESPUES REACCIONAS ASI: 1) Si el vendedor ACEPTA tu bloqueo sin pelearlo y sigue con su tema (hace AIR), en tu SEGUNDA respuesta repites el bloqueo de inmediato, mas firme pero amable, porque hoy de verdad no puedes: de verdad, ahorita no puedo, ando a tope. 2) Si despues de ese segundo bloqueo el vendedor queda de regresar otro dia o se despide con amabilidad, aceptas con gusto y te despides bien (si, el jueves esta bien, pasele), y ahi termina. 3) Si despues del segundo bloqueo el vendedor SIGUE insistiendo (nomas un minutito, dejeme le explico, vuelve a preguntar de su tema), te molestas: contestas seco y lo despachas. 4) Si el vendedor DISCUTE tu primer bloqueo o intenta convencerte de que si te interesa, te cierras de verdad y lo despachas. 5) Si el vendedor se disculpa o se va con el primer bloqueo, lo dejas ir sin insistir. NUNCA cambias de opinion despues del segundo bloqueo: hoy no puedes. Responde en 1 o 2 frases.",
+          "objective": "El vendedor pasa el primer bloqueo con AIR y, ante el segundo bloqueo seguido, no insiste: queda de regresar en otro momento o se despide con amabilidad. El scope se cubre cuando el vendedor ya respondio al segundo bloqueo."
+        },
+        "closing": {
+          "message": "Eso es leer bien el momento. Pasaste el primer no con AIR, y al segundo no insististe: te fuiste bien y la puerta queda abierta para la siguiente visita. Vamos al detalle.",
+          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esos dos no."
+        }
+      },
+      "version": "1.0.0",
+      "i_do_type": "demo",
+      "failure_criteria": [
+        {
+          "id": "insiste_tras_dos",
+          "regla_id": "blocks.insistir_tras_dos_no",
+          "severity": "critical",
+          "description": "Despues del segundo bloqueo seguido sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo. Ya no es seguridad, es terquedad, y el cliente lo recibe cerrado la proxima vez."
+        },
+        {
+          "id": "discute_el_bloqueo",
+          "regla_id": "blocks.discute_bloqueo",
+          "severity": "critical",
+          "description": "Intenta convencer al cliente de que si le interesa o de que si tiene tiempo. Convierte un reflejo en una posicion, y ahora si tiene un no de verdad enfrente."
+        },
+        {
+          "id": "se_va_al_primero",
+          "regla_id": "discovery.suelta_amarrado",
+          "severity": "critical",
+          "description": "Ante el PRIMER bloqueo se disculpa, se despide o promete volver despues, sin intentar AIR. Se rindio ante un reflejo que no significaba nada. Quedar de regresar es correcto solo despues del segundo bloqueo seguido.",
+          "severity_override": {
+            "razon": "escalada: habilidad espejo del nodo",
+            "default": "major"
+          }
+        },
+        {
+          "id": "pide_permiso_de_nuevo",
+          "regla_id": "blocks.air_sin_resume",
+          "severity": "major",
+          "description": "Acepta el primer bloqueo pero despues pide autorizacion para seguir. Le devuelve el control al cliente justo despues de haberlo recuperado."
+        },
+        {
+          "id": "se_va_con_disculpa",
+          "regla_id": "opening.pide_permiso",
+          "severity": "minor",
+          "description": "Se despide despues del segundo bloqueo, pero pidiendo perdon por haberlo molestado (perdon por quitarle su tiempo, disculpe la molestia). Se hace menos: trae algo que le puede servir y no tiene por que disculparse.",
+          "severity_override": {
+            "razon": "incidental: fuera del foco del nodo",
+            "default": "critical"
+          }
+        }
+      ],
+      "success_criteria": [
+        {
+          "id": "blocks.air",
+          "weight": 0.4,
+          "regla_id": "blocks.air",
+          "description": "Pasa el PRIMER bloqueo con los tres movimientos: lo ACEPTA con un entiendo, claro que si o por supuesto; NO lo discute ni se justifica; y RETOMA su tema con naturalidad, sin pedir permiso otra vez."
+        },
+        {
+          "id": "blocks.dos_no_seguidos",
+          "weight": 0.6,
+          "regla_id": "blocks.dos_no_seguidos",
+          "description": "Ante el SEGUNDO bloqueo seguido, no insiste: queda de regresar en otro momento (mejor con dos opciones de dia, como jueves o viernes) o se despide con amabilidad. Cualquiera de las dos cumple. Si sigue insistiendo, no cumple."
+        }
+      ]
+    }
+  },
+  {
     "id": "2.8",
     "world_id": 2,
     "name": "La Mala Experiencia al Llegar",

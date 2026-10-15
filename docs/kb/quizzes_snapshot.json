@@ -247,6 +247,45 @@
     "regla_id": "blocks.bloqueo_vs_objecion"
   },
   {
+    "node_id": "2.7b",
+    "question_order": 1,
+    "question_text": "Haces AIR y el cliente te dice otra vez: \"De verdad, ahorita no puedo\". ¿Qué haces?",
+    "option_a": "Insisto con otra pregunta: a la tercera me escucha.",
+    "option_b": "Le pido perdón por haberlo molestado y me voy.",
+    "option_c": "Quedo de regresar: \"¿Le queda mejor que pase el jueves o el viernes?\"",
+    "option_d": null,
+    "correct_option": "C",
+    "explanation_correct": "Exacto. Son dos \"no\" seguidos: hoy no es el día. Quedas de regresar y la puerta queda abierta.",
+    "explanation_wrong": "Insistir te vuelve terco, y pedir perdón te hace menos. Son dos \"no\" seguidos: quedas de regresar o te despides con amabilidad.",
+    "regla_id": "blocks.dos_no_seguidos"
+  },
+  {
+    "node_id": "2.7b",
+    "question_order": 2,
+    "question_text": "El cliente te dice \"ahorita ando ocupado\", haces AIR y te platica de su negocio. Más adelante te dice \"no sé, ahorita no\". ¿Son dos \"no\" seguidos?",
+    "option_a": "Sí, ya son dos: me despido.",
+    "option_b": "No: entre uno y otro la plática avanzó.",
+    "option_c": "Sí, porque los dos son bloqueos.",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Así es. La plática avanzó entre uno y otro, así que el primero ya quedó atrás. Sigues con la plática.",
+    "explanation_wrong": "Tienen que ser seguidos. Aquí la plática avanzó entre uno y otro, así que el primero ya quedó atrás.",
+    "regla_id": "blocks.dos_no_seguidos"
+  },
+  {
+    "node_id": "2.7b",
+    "question_order": 3,
+    "question_text": "¿Por qué no conviene insistir después de dos \"no\" seguidos?",
+    "option_a": "Porque te vuelves terco, y la próxima vez el cliente te recibe cerrado.",
+    "option_b": "Porque se te acaba el tiempo de la visita.",
+    "option_c": "Porque nunca se debe insistir con un cliente.",
+    "option_d": null,
+    "correct_option": "A",
+    "explanation_correct": "Exacto. Si hoy te vas bien, la puerta queda abierta para la siguiente visita.",
+    "explanation_wrong": "Al primer \"no\" sí sigues, con AIR. Lo que no conviene es insistir después de dos seguidos: te vuelves terco y la próxima vez te recibe cerrado.",
+    "regla_id": "blocks.insistir_tras_dos_no"
+  },
+  {
     "node_id": "3.0",
     "question_order": 1,
     "question_text": "El cliente le dice al vendedor: \"cuenteme, que me trae?\" El vendedor responde arrancando su presentacion completa de producto. Que hizo mal?",

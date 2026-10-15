@@ -779,5 +779,16 @@
   "skill_type": "tecnica",
   "status": "active",
   "regla_id": "impulse.factores"
+ },
+ {
+  "id": "blocks.dos_no_seguidos",
+  "code": "S-072",
+  "name": "Dos No Seguidos",
+  "short_description": "Si el cliente repite el bloqueo justo después de tu AIR, no insistes: quedas de regresar otro día o te despides con amabilidad.",
+  "category": "blocks",
+  "world_id_introduced": 2,
+  "skill_type": "tecnica",
+  "status": "active",
+  "regla_id": "blocks.dos_no_seguidos"
  }
 ]
