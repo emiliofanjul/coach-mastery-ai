@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { extraerTema, contarFrases, tecnicasNombradas, revisarRespuesta, promptReescritura, recorteSeguro, nombresParaFuga, promptQuitarTecnicas, quitarFrasesConTecnicas } from "../coach-guardia";
+import { extraerTema, contarFrases, tecnicasNombradas, revisarRespuesta, promptReescritura, recorteSeguro, nombresParaFuga, quitarFrasesConTecnicas } from "../coach-guardia";
 
 const coach = readFileSync(join(process.cwd(), "src/lib/coach-chat.functions.ts"), "utf8");
 const CERRADAS = ["FFF — Feel, Felt, Found", "RRR — Repeat, Reassure, Resume", "Triple Desglose de Precios", "Pintar Imágenes", "Teoria de las Balas", "El Cierre Asumido"];
@@ -90,12 +90,7 @@ Eso lo trabajaste en 3.2 (Preguntas por Capas). Te recomiendo repetir ese nodo.`
     expect(tecnicasNombradas(RESPUESTA_B, nombresParaFuga(CERRADAS_M3))).toEqual(["Efecto Jones"]);
     expect(tecnicasNombradas("Hay urgencia en ese negocio.", nombresParaFuga(CERRADAS_M3))).toEqual([]);
   });
-  it("la limpieza no acorta: solo quita la técnica", () => {
-    const p = promptQuitarTecnicas({ nombradas: ["Efecto Jones"] });
-    expect(p).toContain("menciona técnicas que este vendedor TODAVÍA NO VE: Efecto Jones");
-    expect(p).toContain("Todo lo demás se queda igual");
-  });
-  it("sin modelo, se quita solo la frase que la nombra y se queda el resto", () => {
+  it("se quita solo la frase que la nombra y se queda el resto, sin otra llamada al modelo", () => {
     const t = quitarFrasesConTecnicas(RESPUESTA_B, nombresParaFuga(CERRADAS_M3));
     expect(t).not.toContain("Efecto Jones");
     expect(t).toContain("Varios clientes por acá me comentan");
@@ -103,6 +98,7 @@ Eso lo trabajaste en 3.2 (Preguntas por Capas). Te recomiendo repetir ese nodo.`
   });
   it("el coach revisa la fuga en toda respuesta y no le pide pasos que no ha visto", () => {
     expect(coach).toContain("const fuga = tecnicasNombradas(reply, cerradasFuga);");
+    expect(coach).toContain("reply = quitarFrasesConTecnicas(reply, cerradasFuga);");
     expect(coach).toContain('"preséntale la solución" si no ha llegado a La');
   });
 });

@@ -112,20 +112,9 @@ export function recorteSeguro(texto: string, opts: { mundoTema: number; nombreMu
  * Fuga: aunque el tema sea de un mundo que ya ve (o el coach no marcó el
  * tema), la respuesta no puede nombrar técnicas de un mundo cerrado
  * (15-oct-2026: a una pregunta del Mundo 3 el coach contestó con "el Efecto
- * Jones", del Mundo 5). Aquí no se acorta nada: solo se quita la técnica.
+ * Jones", del Mundo 5). Se resuelve en código, sin otra llamada al modelo.
  */
-export function promptQuitarTecnicas(opts: { nombradas: string[] }): string {
-  return `Eres Closer, el entrenador de ventas. Te paso la pregunta de un vendedor y un borrador de respuesta. El borrador está bien, pero menciona técnicas que este vendedor TODAVÍA NO VE: ${opts.nombradas.join("; ")}.
-
-Reescribe la respuesta así:
-- Quita esas técnicas: ni su nombre ni su explicación. Si la idea sirve, dila con palabras de todos los días, sin nombrarla.
-- Todo lo demás se queda igual: mismo contenido, mismo orden, mismo largo, mismos nodos recomendados.
-- No agregues nada nuevo.
-
-Responde solo con la respuesta final, sin comillas ni explicaciones.`;
-}
-
-/** Último recurso de la fuga, sin modelo: se quitan las frases que nombran técnicas cerradas. */
+/** Se quitan solo las frases que nombran técnicas cerradas; el resto queda igual. */
 export function quitarFrasesConTecnicas(texto: string, nombresCerrados: string[]): string {
   return texto
     .split(/\n/)

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { armarAvance, armarTecnicas } from "@/lib/avance-coach";
-import { extraerTema, revisarRespuesta, promptReescritura, recorteSeguro, tecnicasNombradas, promptQuitarTecnicas, quitarFrasesConTecnicas, nombresParaFuga } from "@/lib/coach-guardia";
+import { extraerTema, revisarRespuesta, promptReescritura, recorteSeguro, tecnicasNombradas, quitarFrasesConTecnicas, nombresParaFuga } from "@/lib/coach-guardia";
 import { LENGUAJE_CLOSER } from "@/lib/lenguaje-closer";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -263,7 +263,6 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
     const tema = extraerTema(borrador);
     let reply = tema.texto;
     let guardia: any = null;
-    let guardiaFuga: any = null;
     const cerradas = [...(ctx.cerradasPorMundo?.values() ?? [])].flat();
     const revision = revisarRespuesta({ mundoTema: tema.mundo, mundoActual: ctx.mundoActual ?? null, texto: reply, nombresCerrados: cerradas });
     if (revision.reescribir && tema.mundo !== null) {
@@ -302,37 +301,13 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
 
     // Fuga: la respuesta no nombra técnicas de mundos cerrados aunque el tema
     // sea de un mundo que ya ve, o aunque el coach no haya marcado el tema.
+    // Se resuelve en código, sin otra llamada al modelo, para no alargar la
+    // espera: se quita solo la frase que nombra la técnica.
     const cerradasFuga = nombresParaFuga(cerradas);
     const fuga = tecnicasNombradas(reply, cerradasFuga);
     if (fuga.length > 0) {
-      let limpia = "";
-      const t1 = Date.now();
-      try {
-        const ultima = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "";
-        const r3 = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: COACH_MODEL,
-            max_tokens: 1200,
-            system: promptQuitarTecnicas({ nombradas: fuga }),
-            messages: [{ role: "user", content: `PREGUNTA DEL VENDEDOR:\n${ultima}\n\nBORRADOR:\n${reply}` }],
-          }),
-        });
-        if (r3.ok) {
-          const j3: any = await r3.json();
-          limpia = extraerTema(((j3?.content ?? []).filter((b: any) => b?.type === "text").map((b: any) => b.text).join("")).trim()).texto;
-          guardiaFuga = { j3, latency_ms: Date.now() - t1 };
-        }
-      } catch (e) {
-        console.error("[coach-chat] la limpieza de técnicas falló", e);
-      }
-      const sigue = limpia ? tecnicasNombradas(limpia, cerradasFuga) : fuga;
-      reply = limpia && sigue.length === 0 ? limpia : quitarFrasesConTecnicas(limpia || reply, cerradasFuga);
-      console.warn(
-        limpia && sigue.length === 0 ? "[coach-chat] guardia: se quitaron técnicas de mundos cerrados" : "[coach-chat] guardia: se quitaron técnicas de mundos cerrados en código",
-        { tecnicas: fuga },
-      );
+      reply = quitarFrasesConTecnicas(reply, cerradasFuga);
+      console.warn("[coach-chat] guardia: se quitaron frases con técnicas de mundos cerrados", { tecnicas: fuga });
     }
 
     try {
@@ -351,23 +326,6 @@ ${ctx.progresoBlock}${data.context ? `\n\nEstá en la pantalla: ${data.context}`
       });
     } catch (e) {
       console.error("[coach-chat] llm_calls insert failed", e);
-    }
-    if (guardiaFuga) {
-      try {
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        await supabaseAdmin.from("llm_calls").insert({
-          phase: "coach_chat_guardia",
-          prompt_version: COACH_PROMPT_VERSION,
-          model: COACH_MODEL,
-          input_tokens: guardiaFuga.j3?.usage?.input_tokens ?? null,
-          output_tokens: guardiaFuga.j3?.usage?.output_tokens ?? null,
-          latency_ms: guardiaFuga.latency_ms,
-          seller_id: propio?.id ?? null,
-          company_id: ctx.companyId,
-        });
-      } catch (e) {
-        console.error("[coach-chat] llm_calls (guardia fuga) insert failed", e);
-      }
     }
     if (guardia) {
       try {
