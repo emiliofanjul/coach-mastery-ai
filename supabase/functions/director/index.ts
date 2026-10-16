@@ -27,7 +27,7 @@ import { verificarCritica } from "../_shared/critica.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 
-const DIRECTOR_VERSION = "v2.5.0-sonnet";
+const DIRECTOR_VERSION = "v2.6.0-sonnet";
 const DIRECTOR_MODEL = "claude-sonnet-4-5";
 
 const corsHeaders = {
@@ -339,9 +339,13 @@ Deno.serve(async (req) => {
     }
 
     // Las fallas critical del nodo. Una falla critical deja la nota en 30 sin
-    // importar lo demás: en cuanto aparece, ya hay evidencia suficiente, aunque
-    // no se haya llegado al mínimo de turnos (disputa 1.5, 14-oct-2026: el
-    // vendedor soltó producto y la práctica siguió).
+    // importar lo demás. Pero el Director NO corta antes del mínimo de turnos,
+    // ni por una falla crítica (Emilio, 16-oct-2026): el mínimo de cada nodo es
+    // la evidencia que necesita para mostrar su habilidad, y un corte por un
+    // juicio rápido equivocado arruinaba prácticas bien hechas (2.7c: cortó
+    // antes de que el vendedor contestara el segundo "no"). Si la falla es real,
+    // la práctica sigue un turno o dos y el evaluador pone el tope de 30 igual.
+    // En el Mundo 1 el mínimo es 1 turno: ahí el corte sigue siendo inmediato.
     const failureCriteria = Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [];
     const criticasLista = failureCriteria.filter((f: any) => f?.severity === "critical");
     const criticas = criticasLista.length > 0
@@ -349,9 +353,9 @@ Deno.serve(async (req) => {
       : "(este nodo no tiene fallas críticas)";
     const antesDelMinimo = user_turns < min_turns_gate;
 
-    // Regla dura 3: gate mínimo antes de considerar scope (si el nodo no
-    // tiene fallas critical, ni siquiera corre el clasificador).
-    if (antesDelMinimo && criticasLista.length === 0) {
+    // Regla dura 3: antes del mínimo de turnos no se corta por nada, y el
+    // clasificador ni siquiera corre (ahorra latencia y costo).
+    if (antesDelMinimo) {
       return respond({ ...base, decision: "continue", reason: "min_turns_gate" });
     }
 
@@ -418,9 +422,6 @@ Deno.serve(async (req) => {
         decision: "cut",
         reason: "critical_failure",
       });
-    }
-    if (antesDelMinimo) {
-      return respond({ ...base, classifier_ran: true, latency_ms: cls.latency_ms, decision: "continue", reason: "min_turns_gate" });
     }
 
     // v2.1.0: corta por scope_covered O por evidence_sufficient.
