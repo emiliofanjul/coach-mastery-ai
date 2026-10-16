@@ -19,15 +19,17 @@ describe("El Director corta en cuanto hay una falla crítica", () => {
     expect(dir).toContain('"falla_critica": true|false');
     expect(dir).toContain("Lo que dice el cliente nunca cuenta. Ante la duda, false.");
   });
-  it("corta con critical_failure aunque no se haya llegado al mínimo de turnos", () => {
-    const i = dir.indexOf("if (cls.falla_critica === true && verificacion?.valida)");
-    expect(i).toBeGreaterThan(-1);
-    expect(i).toBeLessThan(dir.indexOf("if (antesDelMinimo) {"));
-    expect(dir).toContain('reason: "critical_failure"');
+  // 16-oct-2026 (Emilio): ya no corta antes del mínimo de turnos, ni por una
+  // falla crítica. El mínimo de cada nodo es la evidencia que necesita; en el
+  // Mundo 1 es 1 turno, así que ahí el corte sigue siendo inmediato.
+  it("antes del mínimo de turnos no corta por nada y el clasificador no corre", () => {
+    expect(dir).toContain('if (antesDelMinimo) {\n      return respond({ ...base, decision: "continue", reason: "min_turns_gate" });');
+    expect(dir.indexOf("if (antesDelMinimo) {")).toBeLessThan(dir.indexOf("const cls = await runClassifier("));
+    expect(dir).not.toContain("antesDelMinimo && criticasLista.length === 0");
   });
-  it("antes del mínimo, sin falla crítica, sigue igual que antes", () => {
-    expect(dir).toContain('if (antesDelMinimo && criticasLista.length === 0)');
-    expect(dir).toContain('return respond({ ...base, classifier_ran: true, latency_ms: cls.latency_ms, decision: "continue", reason: "min_turns_gate" });');
+  it("después del mínimo corta con critical_failure si la falla se demuestra", () => {
+    expect(dir).toContain("if (cls.falla_critica === true && verificacion?.valida) {");
+    expect(dir).toContain('reason: "critical_failure"');
   });
   it("la réplica y el reporte saben nombrar ese corte", () => {
     expect(voz).toContain("critical_failure: \"Closer cortó porque el vendedor cometió una falla crítica");
