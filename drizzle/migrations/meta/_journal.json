@@ -36,6 +36,13 @@
       "when": 1792013801715,
       "tag": "0004_avance_real_vendedor",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792160889026,
+      "tag": "0005_director_falla_critica",
+      "breakpoints": true
     }
   ]
 }

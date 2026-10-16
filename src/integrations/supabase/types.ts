@@ -640,6 +640,9 @@ export type Database = {
           director_version: string | null
           elapsed_seconds: number | null
           evidence_sufficient: boolean | null
+          falla_critica_cita: string | null
+          falla_critica_descartada: boolean | null
+          falla_critica_id: string | null
           id: string
           latency_ms: number | null
           node_id: string | null
@@ -655,6 +658,9 @@ export type Database = {
           director_version?: string | null
           elapsed_seconds?: number | null
           evidence_sufficient?: boolean | null
+          falla_critica_cita?: string | null
+          falla_critica_descartada?: boolean | null
+          falla_critica_id?: string | null
           id?: string
           latency_ms?: number | null
           node_id?: string | null
@@ -670,6 +676,9 @@ export type Database = {
           director_version?: string | null
           elapsed_seconds?: number | null
           evidence_sufficient?: boolean | null
+          falla_critica_cita?: string | null
+          falla_critica_descartada?: boolean | null
+          falla_critica_id?: string | null
           id?: string
           latency_ms?: number | null
           node_id?: string | null
