@@ -23,10 +23,11 @@
 // Toda decisión se loggea en llm_calls con phase='director' (solo cuando corre
 // el clasificador — las reglas duras no consumen LLM).
 
+import { verificarCritica } from "../_shared/critica.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 
-const DIRECTOR_VERSION = "v2.4.0-sonnet";
+const DIRECTOR_VERSION = "v2.5.0-sonnet";
 const DIRECTOR_MODEL = "claude-sonnet-4-5";
 
 const corsHeaders = {
@@ -87,6 +88,9 @@ async function logDirectorDecision(row: {
   scope_covered: boolean | null;
   evidence_sufficient: boolean | null;
   latency_ms: number;
+  falla_critica_id?: string | null;
+  falla_critica_cita?: string | null;
+  falla_critica_descartada?: boolean | null;
 }) {
   try {
     const admin = getAdmin();
@@ -103,6 +107,9 @@ async function logDirectorDecision(row: {
       evidence_sufficient: row.evidence_sufficient,
       latency_ms: row.latency_ms,
       director_version: DIRECTOR_VERSION,
+      falla_critica_id: row.falla_critica_id ?? null,
+      falla_critica_cita: row.falla_critica_cita ?? null,
+      falla_critica_descartada: row.falla_critica_descartada ?? null,
     });
   } catch (e) {
     console.error("[director] director_decisions insert failed:", e);
@@ -154,7 +161,7 @@ function extractJson<T>(text: string): T | null {
 }
 
 // Reglas del clasificador: idénticas byte por byte en cada turno → bloque cacheable.
-const CLASSIFIER_RULES = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false, "falla_critica": true|false}. Sin texto fuera del JSON. Sin markdown.
+const CLASSIFIER_RULES = `Eres un clasificador. Dado el objetivo de una práctica de ventas y el transcript de la conversación entre vendedor (user) y cliente (assistant), responde ÚNICAMENTE un JSON de una sola línea con esta forma exacta: {"scope_covered": true|false, "evidence_sufficient": true|false, "falla_critica": true|false, "falla_critica_id": "<id>"|null, "cita": "<frase>"|null}. Sin texto fuera del JSON. Sin markdown.
 
 REGLAS:
 - LOS CRITERIOS MANDAN. El objetivo en prosa da contexto, pero lo que define la cobertura son los CRITERIOS DE ÉXITO del nodo: son exactamente lo que el evaluador va a calificar. Si el objetivo pide algo que ningún criterio mide, ESO NO CUENTA para scope_covered — el vendedor no puede ser cortado ni retenido por una meta que nadie va a calificar.
@@ -166,7 +173,8 @@ REGLAS:
 - Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).
 - falla_critica = true SOLO si el vendedor (user) ya dijo algo que encaja SIN DUDA con una de las FALLAS CRÍTICAS DEL NODO: tiene que existir una frase literal suya que lo muestre. Lo que dice el cliente nunca cuenta. Ante la duda, false. Si el nodo no tiene fallas críticas, false.
 - EL ORDEN IMPORTA. Si una falla habla de cómo reacciona el vendedor a algo que dijo el cliente (por ejemplo "después del segundo bloqueo", "ante el primer bloqueo", "cuando el cliente pregunta…"), la frase del vendedor tiene que venir DESPUÉS de ese mensaje del cliente en el transcript. Si el último mensaje es del cliente, lo que el vendedor todavía no ha contestado no puede ser falla: false.
-- Una muletilla no es una falla: "de volada", "oiga", "mire", "este", "fíjese" no son pedir permiso ni insistir.`;
+- Cada falla crítica viene con su regla. Si la regla trae "LA PRUEBA", esa prueba ES el alcance de la falla: aplícala a la frase literal del vendedor y marca la falla solo si la frase la reprueba. Los ejemplos de una regla ilustran, no delimitan. No juzgues por palabras sueltas: juzga lo que la frase hace.
+- Si falla_critica es true: "falla_critica_id" es el id EXACTO de esa falla crítica (de la lista) y "cita" es la frase del vendedor que la muestra, copiada LITERAL del transcript, de 3 a 15 palabras. Si no puedes copiar una frase literal del vendedor que la muestre, falla_critica es false. Si falla_critica es false, los dos van null.`;
 
 async function runClassifier(
   objective: string,
@@ -181,6 +189,8 @@ async function runClassifier(
   evidence_sufficient: boolean | null;
   falla_critica: boolean | null;
   latency_ms: number;
+  falla_critica_id?: string | null;
+  cita?: string | null;
   error?: string;
 }> {
   // Fijo primero (cacheado), variable después.
@@ -205,7 +215,7 @@ Responde solo el JSON.`;
       },
       body: JSON.stringify({
         model: DIRECTOR_MODEL,
-        max_tokens: 64,
+        max_tokens: 160,
         system,
         messages: [{ role: "user", content: user }],
       }),
@@ -230,12 +240,16 @@ Responde solo el JSON.`;
       session_id,
       ...ids,
     });
-    const parsed = extractJson<{ scope_covered?: unknown; evidence_sufficient?: unknown; falla_critica?: unknown }>(text);
+    const parsed = extractJson<{ scope_covered?: unknown; evidence_sufficient?: unknown; falla_critica?: unknown; falla_critica_id?: unknown; cita?: unknown }>(text);
     if (!parsed || typeof parsed.scope_covered !== "boolean") {
       return { scope_covered: null, evidence_sufficient: null, falla_critica: null, latency_ms, error: "unparseable classifier output" };
     }
     const ev = typeof parsed.evidence_sufficient === "boolean" ? parsed.evidence_sufficient : false;
-    return { scope_covered: parsed.scope_covered, evidence_sufficient: ev, falla_critica: parsed.falla_critica === true, latency_ms };
+    return {
+      scope_covered: parsed.scope_covered, evidence_sufficient: ev, falla_critica: parsed.falla_critica === true, latency_ms,
+      falla_critica_id: typeof parsed.falla_critica_id === "string" ? parsed.falla_critica_id : null,
+      cita: typeof parsed.cita === "string" ? parsed.cita.slice(0, 300) : null,
+    };
   } catch (e) {
     const latency_ms = Date.now() - start;
     console.error("[director] haiku exception:", e);
@@ -291,8 +305,12 @@ Deno.serve(async (req) => {
       director_version: DIRECTOR_VERSION,
     };
 
+    let critica: { id: string | null; cita: string | null; descartada: boolean | null; motivo: string | null } | null = null;
     const respond = (result: DirectorResult) => {
       logDirectorDecision({
+        falla_critica_id: critica?.id ?? null,
+        falla_critica_cita: critica?.cita ?? null,
+        falla_critica_descartada: critica?.descartada ?? null,
         session_id: session_id ?? null,
         node_id: node_id ?? null,
         decision: result.decision,
@@ -304,7 +322,7 @@ Deno.serve(async (req) => {
         evidence_sufficient: result.evidence_sufficient,
         latency_ms: result.latency_ms,
       });
-      return new Response(JSON.stringify(result), {
+      return new Response(JSON.stringify(critica ? { ...result, falla_critica: critica } : result), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -375,7 +393,21 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (cls.falla_critica === true) {
+    // La falla crítica solo corta si el clasificador dice cuál es y con qué
+    // frase literal del vendedor, y el código lo comprueba (16-oct-2026).
+    const verificacion = cls.falla_critica === true
+      ? verificarCritica({
+          falla_critica_id: cls.falla_critica_id,
+          cita: cls.cita,
+          criticas: criticasLista.map((f: any) => String(f?.id ?? "")),
+          conversacion: conversation_history,
+        })
+      : null;
+    critica = { id: cls.falla_critica_id ?? null, cita: cls.cita ?? null, descartada: verificacion ? !verificacion.valida : null, motivo: verificacion?.motivo ?? null };
+    if (verificacion && !verificacion.valida) {
+      console.warn("[director] falla crítica descartada:", critica);
+    }
+    if (cls.falla_critica === true && verificacion?.valida) {
       return respond({
         ...base,
         classifier_ran: true,
