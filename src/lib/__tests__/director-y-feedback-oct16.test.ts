@@ -17,7 +17,7 @@ const falla = (n: string, f: string) => nodos.find((x) => x.id === n).practice_s
 
 describe("El Director no corta por lo que el vendedor todavía no contesta", () => {
   it("el orden importa y una muletilla no es falla", () => {
-    expect(director).toContain('const DIRECTOR_VERSION = "v2.5.0-sonnet"');
+    expect(director).toMatch(/const DIRECTOR_VERSION = "v2\.\d+\.0-sonnet"/);
     expect(director).toContain("EL ORDEN IMPORTA.");
     expect(director).toContain("Si el último mensaje es del cliente, lo que el vendedor todavía no ha contestado no puede ser falla: false.");
     // Las muletillas ya no van como lista en el Director (eran un parche):

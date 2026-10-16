@@ -60,7 +60,7 @@ describe("El Director aplica la prueba y demuestra la falla", () => {
     expect(verificarCritica({ falla_critica_id: "insiste_tras_dos", cita: "de verdad ahorita no puedo", criticas, conversacion }).motivo).toBe("cita_no_es_del_vendedor");
   });
   it("el Director aplica LA PRUEBA de la regla, no listas de palabras", () => {
-    expect(director).toContain('const DIRECTOR_VERSION = "v2.5.0-sonnet";');
+    expect(director).toContain('const DIRECTOR_VERSION = "v2.6.0-sonnet";');
     expect(director).toContain('Si la regla trae "LA PRUEBA", esa prueba ES el alcance de la falla');
     expect(director).not.toContain('"no, pero", "nada más"');
     expect(director).toContain("if (cls.falla_critica === true && verificacion?.valida) {");
