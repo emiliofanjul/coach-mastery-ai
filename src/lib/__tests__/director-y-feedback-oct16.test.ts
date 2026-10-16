@@ -6,7 +6,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { calcularScore } from "../../../supabase/functions/_shared/puntuacion";
-import { pideTiempoOPermiso, quitarEjemplosQuePidenPermiso, PROMPT_AUDITOR } from "../../../supabase/functions/_shared/auditar_coaching";
+import { pideTiempoOPermiso, quitarEjemplosQuePidenPermiso, PROMPT_AUDITOR, veredictosDeRespuesta, HERRAMIENTA_VEREDICTOS, aplicarAuditoria } from "../../../supabase/functions/_shared/auditar_coaching";
 
 const leer = (p: string) => readFileSync(join(process.cwd(), p), "utf8");
 const director = leer("supabase/functions/director/index.ts");
@@ -63,6 +63,23 @@ describe("Ningún ejemplo pide tiempo ni permiso", () => {
   it("el auditor sabe el paso del nodo aunque sus criterios sean universales", () => {
     expect(voz).toContain("paso: pasoNodo ?? pasoPorMundo(node_id),");
     expect(voz).not.toContain("new Map(reglasSiguiente.map((r) => [r.id, 0]))");
-    expect(voz).toContain('const PROMPT_VERSION = "v2.8.0";');
+    expect(voz).toMatch(/const PROMPT_VERSION = "v2\.8\.\d+";/);
+  });
+});
+
+describe("El auditor contesta con una herramienta, no con texto JSON", () => {
+  it("lee los veredictos de la herramienta aunque el texto corregido traiga comillas", () => {
+    const v = veredictosDeRespuesta({ content: [{ type: "tool_use", name: "veredictos", input: { veredictos: [{ id: "obs0.ejemplo", ok: false, viola: ["permiso"], corregido: 'Claro, "entiendo". ¿Cómo le ha ido?' }] } }] });
+    const ev: any = { observations: [{ mejora: "m", ejemplo: "Quería platicar dos minutos." }], evidencia_flags: [], siguiente_nivel: [], mision: "x" };
+    expect(aplicarAuditoria(ev, v)).toEqual({ corregidos: 1, descartados: 0 });
+    expect(ev.observations[0].ejemplo).toBe('Claro, "entiendo". ¿Cómo le ha ido?');
+  });
+  it("si no vino la herramienta, todavía lee el texto", () => {
+    expect(veredictosDeRespuesta({ content: [{ type: "text", text: '{"veredictos":[{"id":"mision","ok":true}]}' }] })).toEqual([{ id: "mision", ok: true }]);
+  });
+  it("closer-voice obliga la herramienta en la llamada del auditor", () => {
+    expect(HERRAMIENTA_VEREDICTOS.input_schema.required).toEqual(["veredictos"]);
+    expect(voz).toContain('tool_choice: { type: "tool", name: HERRAMIENTA_VEREDICTOS.name },');
+    expect(voz).toContain("const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000);");
   });
 });

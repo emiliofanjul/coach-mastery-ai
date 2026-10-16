@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.8.0";
+const PROMPT_VERSION = "v2.8.1";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -31,7 +31,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
-import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso } from "../_shared/auditar_coaching.ts";
+import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
@@ -491,6 +491,22 @@ async function llamarTexto(apiKey: string, system: string, user: string, maxToke
   if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
   const j = await r.json();
   return (j?.content ?? []).filter((b: any) => b?.type === "text").map((b: any) => b.text).join("");
+}
+
+/** El auditor contesta con una herramienta: la API entrega los veredictos ya armados. */
+async function llamarAuditor(apiKey: string, system: string, user: string, maxTokens: number): Promise<unknown> {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL, max_tokens: maxTokens, temperature: 0, system,
+      messages: [{ role: "user", content: user }],
+      tools: [HERRAMIENTA_VEREDICTOS],
+      tool_choice: { type: "tool", name: HERRAMIENTA_VEREDICTOS.name },
+    }),
+  });
+  if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
+  return veredictosDeRespuesta(await r.json());
 }
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
@@ -1143,8 +1159,9 @@ Deno.serve(async (req) => {
         let hecho = false;
         for (let intento = 1; intento <= 3 && !hecho; intento++) {
           try {
-            const crudo = await llamarTexto(apiKey, PROMPT_AUDITOR, entrada, 3000);
-            const r = aplicarAuditoria(evaluation, extraerJson(crudo)?.veredictos);
+            const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000);
+            if (!Array.isArray(veredictos)) throw new Error("el auditor no entregó veredictos");
+            const r = aplicarAuditoria(evaluation, veredictos);
             auditoria = { ...auditoria, ...r, intentos: intento };
             hecho = true;
             if (r.corregidos + r.descartados > 0) console.warn("[closer-voice] auditor del feedback", { session_id, node_id, ...r });
