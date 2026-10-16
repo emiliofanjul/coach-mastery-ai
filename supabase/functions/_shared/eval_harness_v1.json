@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.15.0",
+  "harness_version": "v3.16.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1103,6 +1103,54 @@
           "insiste_tras_dos",
           "discute_el_bloqueo",
           "se_va_al_primero"
+        ]
+      }
+    },
+    {
+      "id": "G38_no_pero_nada_mas_no_es_discutir",
+      "node_id": "2.7c",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "description": "Práctica real de Emilio (16-oct-2026, 08:00), completada hasta el segundo no. Acepta el bloqueo ('claro, claro, me imagino') y sigue con una pregunta aunque diga 'no, pero nada más, quería preguntarle': eso no es discutir el bloqueo ni pedir permiso. El Director la cortó antes de que contestara el segundo no.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, don Héctor. Buen día. ¿Cómo está? Oiga, veo que tiene muchísima gente hoy, ¿eh? ¿Qué está regalando o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "Qué tal. Mire, ahorita ando muy ocupado, como ve. No me interesa nada, gracias."
+        },
+        {
+          "role": "user",
+          "text": "Claro, claro, claro. Me imagino. Oiga, no, pero nada más, este, eh, quería preguntarle cómo le ha ido en la semana. ¿Cómo le está yendo con todos los productos que está vendiendo?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues bien, pero de verdad ahorita no puedo, ando a tope."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Héctor, se ve que hoy está a tope. ¿Le queda mejor que pase el jueves o el viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "El viernes, pásele."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          70,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.dos_no_seguidos": "cumple"
+        },
+        "must_not_flag": [
+          "discute_el_bloqueo",
+          "insiste_tras_dos",
+          "se_va_al_primero",
+          "pide_permiso_de_nuevo"
         ]
       }
     },

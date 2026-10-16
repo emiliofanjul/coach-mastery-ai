@@ -20,7 +20,7 @@ describe("El Director corta en cuanto hay una falla crítica", () => {
     expect(dir).toContain("Lo que dice el cliente nunca cuenta. Ante la duda, false.");
   });
   it("corta con critical_failure aunque no se haya llegado al mínimo de turnos", () => {
-    const i = dir.indexOf("if (cls.falla_critica === true)");
+    const i = dir.indexOf("if (cls.falla_critica === true && verificacion?.valida)");
     expect(i).toBeGreaterThan(-1);
     expect(i).toBeLessThan(dir.indexOf("if (antesDelMinimo) {"));
     expect(dir).toContain('reason: "critical_failure"');
