@@ -760,7 +760,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esos dos no."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -813,7 +813,7 @@
           "id": "blocks.dos_no_seguidos",
           "weight": 0.6,
           "regla_id": "blocks.dos_no_seguidos",
-          "description": "Ante el SEGUNDO bloqueo seguido, no insiste: queda de regresar en otro momento (mejor con dos opciones de dia, como jueves o viernes) o se despide con amabilidad. Cualquiera de las dos cumple. Si sigue insistiendo, no cumple."
+          "description": "Ante el SEGUNDO bloqueo seguido, no insiste: queda de regresar en otro momento (mejor con dos opciones de dia, como jueves o viernes) o se despide con amabilidad. Cualquiera de las dos cumple. Si sigue insistiendo, no cumple. Si el vendedor se fue con el primer bloqueo, el cliente nunca repitio el bloqueo: este criterio es no_aplica, no cumple."
         }
       ]
     }
