@@ -6,7 +6,13 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.7.0";
+const PROMPT_VERSION = "v2.8.0";
+
+/** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
+function pasoPorMundo(nodeId: string | null): number | null {
+  const m = Number(String(nodeId ?? "").split(".")[0]);
+  return Number.isInteger(m) && m >= 1 && m <= 6 ? m : null;
+}
 const CLAUDE_MODEL = "claude-sonnet-4-5";
 
 // Bloque de prompt con caché de Anthropic. Todo lo FIJO va primero y marcado;
@@ -25,7 +31,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
-import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO } from "../_shared/auditar_coaching.ts";
+import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
@@ -209,7 +215,7 @@ REGLAS DE EVALUACIÓN:
 6b. LOS EJEMPLOS VAN COMPLETOS, SIN HUECOS. Todo "ejemplo" —en observations y en siguiente_nivel— se escribe como una línea que el vendedor podría decir tal cual, con el nombre real del cliente y los datos reales de su empresa que aparecen en el contexto. PROHIBIDOS los corchetes de relleno: "[empresa]", "[sector]", "[área relevante]", "[producto]". Las acotaciones entre corchetes, como "[pausa]" o "[el cliente responde]", SÍ están permitidas: no dejan nada incompleto y el vendedor entiende a qué se refieren. Lo prohibido es el hueco de un DATO que el vendedor tendría que inventar. Si en el contexto no está el nombre del vendedor, el de su empresa o el del cliente, escribe el ejemplo SIN nombrarlos ("ando visitando talleres de la zona…", "buenos días, ¿cómo le va?"): nunca pongas un nombre entre corchetes. Un ejemplo con huecos no es un ejemplo: es una plantilla que el vendedor tiene que resolver solo, justo cuando necesita ver cómo se hace. Si no tienes el dato real, redacta el ejemplo de modo que no lo necesite.
 6c. NUNCA INVENTES HECHOS DEL CLIENTE. En ningún ejemplo, observación ni "siguiente_nivel" pongas algo del cliente que no aparezca en el transcript o en el contexto: enfermedades, familia, una visita anterior, una compra pasada, algo "que te contó". Si no está ahí, no existe. Tampoco asumas que el cliente es recurrente: lo es SOLO si la sección "CLIENTE DE ESTA PRÁCTICA" lo dice, y entonces solo existen los hechos que ahí aparecen. Inventar que recuerdas algo es peor que no recordar nada — y un ejemplo inventado le enseña al vendedor a hacer exactamente eso.
 
-7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
+7. LENGUAJE DE APRENDIZAJE (mision + observations.mejora + observations.ejemplo): usa SIEMPRE lenguaje de aprendizaje — instrucciones en positivo que digan qué HACER, sin imperativos agresivos, sin mayúsculas de grito, sin regañar. Y jamás recomiendes pedir permiso ni esperar autorización del cliente ("¿me permite un momento?", "¿le puedo robar dos minutos?", "si no le molesta…"), ni pedir o anunciar tiempo ("quería platicar con usted dos minutos", "un minutito", "no le quito mucho tiempo") — la doctrina de Closer es la seguridad del que pertenece: el vendedor entra con dignidad, no pide permiso para existir.
 7b. TODO LO QUE LEE EL VENDEDOR (error, mejora, ejemplo, mision, siguiente_nivel y evidencia_flags) va en el lenguaje de Closer:
 ${LENGUAJE_CLOSER}
 8. MECÁNICA, NO DIRECCIÓN: evalúas la ejecución de la MECÁNICA que el nodo entrena. Cuando existen múltiples vías comerciales legítimas (por ejemplo, en descubrimiento el dolor puede vivir en el producto que SÍ vende, en el que no vende, o en el que no tiene), NUNCA presentes una dirección específica como LA correcta ni castigues la elección de vía del vendedor. Evalúa cómo ejecutó la mecánica en LA VÍA QUE ÉL ELIGIÓ, y construye los ejemplos de mejora sobre esa misma vía.
@@ -811,6 +817,12 @@ Deno.serve(async (req) => {
     // "Lo que viene después" se amarra a la doctrina del paso del nodo.
     let reglasSiguiente: { id: string; resumen: string }[] = [];
     let permitidasSiguiente = new Set<string>();
+    // El paso del nodo para el auditor. Si los criterios son de reglas
+    // universales (paso 0, como AIR), el paso es el mundo del nodo: el 2.7c es
+    // de La Historia Breve. Antes el auditor recibía siempre null y no podía
+    // revisar el orden de los pasos (16-oct-2026: un ejemplo del 2.7c habló de
+    // producto y pidió "dos minutos").
+    let pasoNodo: number | null = null;
     if (phase === "evaluate") {
       try {
         const adminReglas = getAdmin();
@@ -819,6 +831,7 @@ Deno.serve(async (req) => {
           : { data: null as any };
         const pasoPorRegla = new Map<string, number>((todas ?? []).map((r: any) => [r.id, Number(r.paso)]));
         const paso = pasoDelNodo(practice_script?.success_criteria, pasoPorRegla);
+        pasoNodo = paso;
         reglasSiguiente = (todas ?? []).filter((r: any) => paso !== null && Number(r.paso) === paso)
           .map((r: any) => ({ id: String(r.id), resumen: String(r.resumen ?? "").slice(0, 260) }));
         permitidasSiguiente = new Set(reglasSiguiente.map((r) => r.id));
@@ -1118,7 +1131,7 @@ Deno.serve(async (req) => {
       auditoria.revisados = textos.length;
       if (textos.length > 0) {
         const entrada = armarEntradaAuditor({
-          paso: pasoDelNodo(practice_script?.success_criteria, new Map(reglasSiguiente.map((r) => [r.id, 0]))) ?? null,
+          paso: pasoNodo ?? pasoPorMundo(node_id),
           fallas: Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [],
           reglas: reglasSiguiente,
           textos,
@@ -1148,6 +1161,8 @@ Deno.serve(async (req) => {
       }
       // Garantía en código, pase lo que pase con el auditor: sin groserías.
       auditoria.groserias_quitadas = sanearGroseriasEvaluacion(evaluation, MISION_DE_RESPALDO);
+      // Y ningún ejemplo pide tiempo ni permiso ("dos minutos", "un momentito").
+      auditoria.ejemplos_con_permiso_quitados = quitarEjemplosQuePidenPermiso(evaluation);
       // Y sin recuerdos inventados: hoy toda práctica es una primera visita.
       // Con un cliente recurrente, recordar su ficha es legítimo: el auditor ya
       // revisó que cada recuerdo esté en ella. Con uno nuevo, nada de recuerdos.

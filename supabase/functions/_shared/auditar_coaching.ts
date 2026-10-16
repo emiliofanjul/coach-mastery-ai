@@ -18,7 +18,7 @@ Aplicas TODAS estas reglas:
 2. FALLAS DEL NODO: un ejemplo NO puede disparar ninguna de las fallas listadas.
 3. REGLAS DEL PASO: el texto no puede contradecir ninguna regla listada.
 4. HECHOS DEL CLIENTE: todo dato del cliente que use un texto (un dolor, una visita anterior, una marca, una cifra) tiene que aparecer en la "conversacion" o en la "ficha_cliente". Si no aparece en ninguna, es inventado: viola "dato_inventado".
-5. UNIVERSALES: nunca pedir permiso ni consentimiento ("¿me permite?", "¿le parece si…?", "¿está abierto a…?", "¿verdad?" buscando que confirme, "pausa para que confirme"); nunca ofrecer muestras, pruebas gratis ni "le dejo para que lo pruebe"; nunca groserías; nunca inventar hechos del cliente; nunca huecos de dato como "[empresa]"; un cierre siempre da alternativa ("¿el martes o el jueves?"), nunca pregunta abierta ("¿a qué hora le caigo?").
+5. UNIVERSALES: nunca pedir permiso ni consentimiento ("¿me permite?", "¿le parece si…?", "¿está abierto a…?", "¿verdad?" buscando que confirme, "pausa para que confirme"); nunca pedir ni anunciar tiempo ("dos minutos", "un minutito", "un momentito", "no le quito mucho tiempo"); nunca ofrecer muestras, pruebas gratis ni "le dejo para que lo pruebe"; nunca groserías; nunca inventar hechos del cliente; nunca huecos de dato como "[empresa]"; un cierre siempre da alternativa ("¿el martes o el jueves?"), nunca pregunta abierta ("¿a qué hora le caigo?").
 6. LENGUAJE: el texto tiene que cumplir el lenguaje de Closer de abajo. Si tiene una frase de más de 25 palabras, palabras de sistema o de escuela, una sigla sin su significado en español, un id interno, o hay que leerlo dos veces para entenderlo, viola "lenguaje". Al corregir por lenguaje no cambias la intención ni la doctrina: solo lo dices más simple.
 ${LENGUAJE_CLOSER}
 Para cada texto: "ok" true o false. Si false: "viola" con los ids que viola (una falla, una regla, o "orden" / "permiso" / "muestra" / "groseria" / "dato_inventado" / "lenguaje"), y "corregido": una versión que cumpla TODO lo anterior conservando la intención del coach — o null si no se puede sin cambiar la intención.
@@ -114,4 +114,25 @@ export function fallaCerrada(ev: any): void {
   for (const f of Array.isArray(ev?.evidencia_flags) ? ev.evidencia_flags : []) if (f && typeof f === "object") f.ejemplo = "";
   if (typeof ev?.mision === "string") ev.mision = MISION_DE_RESPALDO;
   if (Array.isArray(ev?.siguiente_nivel)) ev.siguiente_nivel = ev.siguiente_nivel.filter((x: any) => x?.regla_id === "mindset.sin_groserias");
+}
+
+/**
+ * Red de seguridad en código, después del auditor: un ejemplo que pide o
+ * anuncia tiempo, o pide permiso, no llega al vendedor (16-oct-2026: «quería
+ * platicar con usted dos minutos…» pasó el auditor). Se quita el ejemplo; la
+ * observación y la mejora se quedan.
+ */
+const PIDE_TIEMPO_O_PERMISO = /\b(dos|un par de|unos|cinco|tres)\s+minut|minutito|momentito|\bun momento\b|\bme permite\b|\ble robo\b|si no le molesta|disculpe la molestia|no le quito mucho/i;
+export function pideTiempoOPermiso(texto: string): boolean {
+  return PIDE_TIEMPO_O_PERMISO.test(texto);
+}
+export function quitarEjemplosQuePidenPermiso(ev: any): number {
+  let quitados = 0;
+  const limpiar = (o: any) => {
+    if (o && typeof o.ejemplo === "string" && o.ejemplo && pideTiempoOPermiso(o.ejemplo)) { o.ejemplo = ""; quitados++; }
+  };
+  for (const o of Array.isArray(ev?.observations) ? ev.observations : []) limpiar(o);
+  for (const f of Array.isArray(ev?.evidencia_flags) ? ev.evidencia_flags : []) limpiar(f);
+  for (const x of Array.isArray(ev?.siguiente_nivel) ? ev.siguiente_nivel : []) limpiar(x);
+  return quitados;
 }

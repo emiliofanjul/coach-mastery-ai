@@ -205,7 +205,11 @@ export function calcularScore(args: {
   if (sumaCredito > 0 && score < PISO_INTENTO) score = PISO_INTENTO;
 
   const tope = aplicarTopeCritico(score, flags, args.failureCriteria);
-  const cumplidos = desglose.filter((d) => d.credito >= 1).map((d) => d.criterio_id);
+  // "no_aplica" sale de la cuenta, pero no es "cumplido": el vendedor no lo
+  // mostró. Contarlo como cumplido lo enseñaba así en resultados y le subía el
+  // dominio de ese skill sin evidencia (2.7c, 16-oct-2026: el corte impidió
+  // contestar el segundo "no" y la pantalla dijo "Dos No Seguidos: cumplido").
+  const cumplidos = desglose.filter((d) => d.credito >= 1 && d.nivel !== "no_aplica").map((d) => d.criterio_id);
   return { valido: true, score: tope.score, base, desglose, restas, topado: tope.topado, criticos: tope.criticos, cumplidos, sin_veredicto };
 }
 
