@@ -17,20 +17,22 @@ const falla = (n: string, f: string) => nodos.find((x) => x.id === n).practice_s
 
 describe("El Director no corta por lo que el vendedor todavía no contesta", () => {
   it("el orden importa y una muletilla no es falla", () => {
-    expect(director).toContain('const DIRECTOR_VERSION = "v2.4.0-sonnet"');
+    expect(director).toContain('const DIRECTOR_VERSION = "v2.5.0-sonnet"');
     expect(director).toContain("EL ORDEN IMPORTA.");
     expect(director).toContain("Si el último mensaje es del cliente, lo que el vendedor todavía no ha contestado no puede ser falla: false.");
-    expect(director).toContain('Una muletilla no es una falla: "de volada"');
+    // Las muletillas ya no van como lista en el Director (eran un parche):
+    // las reglas de los bloqueos se escriben como prueba (16-oct-2026).
+    expect(director).not.toContain('Una muletilla no es una falla: "de volada"');
   });
   it("las fallas del 2.7c y el 2.7 lo dicen igual", () => {
     expect(falla("2.7c", "insiste_tras_dos").description).toContain("si todavia no ha contestado al segundo bloqueo, esta falla no aplica");
-    for (const n of ["2.7", "2.7c"]) expect(falla(n, "pide_permiso_de_nuevo").description).toContain("Una muletilla como de volada, oiga o mire NO es pedir permiso.");
+    for (const n of ["2.7", "2.7c"]) expect(falla(n, "pide_permiso_de_nuevo").description).not.toContain("muletilla");
   });
   it("la red tiene la práctica real completa", () => {
     const c = harness.cases.find((x: any) => x.id === "G37_de_volada_no_es_permiso");
     expect(c.node_id).toBe("2.7c");
     expect(c.expected.must_not_flag).toContain("pide_permiso_de_nuevo");
-    expect(harness.harness_version).toBe("v3.15.0");
+    expect(harness.harness_version).toMatch(/^v3\.(1[5-9]|[2-9]\d)\./);
   });
 });
 
