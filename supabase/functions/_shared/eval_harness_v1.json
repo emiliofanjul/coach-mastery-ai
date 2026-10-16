@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.16.0",
+  "harness_version": "v3.17.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1144,13 +1144,47 @@
           100
         ],
         "niveles_esperados": {
-          "blocks.dos_no_seguidos": "cumple"
+          "blocks.dos_no_seguidos": "cumple",
+          "blocks.air": "cumple"
         },
         "must_not_flag": [
           "discute_el_bloqueo",
           "insiste_tras_dos",
           "se_va_al_primero",
           "pide_permiso_de_nuevo"
+        ],
+        "nota_v317": "Mensaje 95: AIR ahora tiene su prueba. Aceptó («claro, claro»), no discutió y siguió con una pregunta: cumple, aunque todavía no haya dicho a qué viene."
+      }
+    },
+    {
+      "id": "G39_de_rapido_no_es_hacerse_menos",
+      "node_id": "1.4",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "description": "Decisión de Emilio (16-oct-2026): «de rápido», «de volada» y «nada más quería…» no son hacerse menos. Le quitan seriedad a la plática y le dicen al cliente que tú también vas rápido. El vendedor llega con energía a un cliente ocupado, va al grano y cierra con preguntas.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Ramón! Oiga, de rápido: se ve que hoy no para el taller. ¿Siempre se le junta así la chamba los viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, aquí andamos. Ahorita estoy algo ocupado."
+        },
+        {
+          "role": "user",
+          "text": "Claro, se nota. Nada más quería preguntarle, ¿y quién le echa la mano cuando se le junta así?"
+        }
+      ],
+      "expected": {
+        "score_range": [
+          70,
+          100
+        ],
+        "must_not_flag": [
+          "se_disculpa",
+          "pide_permiso",
+          "se_encoge"
         ]
       }
     },
