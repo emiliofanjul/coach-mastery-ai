@@ -132,7 +132,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi con que postura entras. Vamos al desglose."
         }
       },
-      "version": "2.0.3",
+      "version": "2.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -151,7 +151,7 @@
           "id": "se_encoge",
           "regla_id": "opening.energia_verbal",
           "severity": "major",
-          "description": "Ante la primera senal de que el cliente esta ocupado, baja la energia, se acorta o empieza a despedirse. Se rindio antes de que lo corrieran.",
+          "description": "Ante la primera senal de que el cliente esta ocupado, baja la energia o empieza a despedirse. Ir rapido y al grano, con energia, no es encogerse. Se rindio antes de que lo corrieran.",
           "espejo_de": "mindset.regla_10_por_ciento"
         },
         {
@@ -166,7 +166,7 @@
           "id": "opening.arranque_sin_disculpa",
           "weight": 0.45,
           "regla_id": "opening.gasman",
-          "description": "Cero disculpas, cero peticiones de permiso, cero minimizarse. Nada de perdon que lo moleste, tiene un minutito, solo sera un segundo, disculpe la molestia, no le quito mucho tiempo. Reconocer que el cliente esta ocupado SI es correcto y suma, siempre que no se convierta en pedir autorizacion para seguir."
+          "description": "Cero disculpas, cero peticiones de permiso, cero minimizarse. Nada de perdon que lo moleste, tiene un minutito, solo sera un segundo, disculpe la molestia, no le quito mucho tiempo. Reconocer que el cliente esta ocupado SI es correcto y suma, siempre que no se convierta en pedir autorizacion para seguir. Ir al grano no es minimizarse: «de rápido», «de volada» o «nada más quería…» le dicen al cliente que tú también vas rápido."
         },
         {
           "id": "mindset.regla_10_por_ciento",
@@ -291,7 +291,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.0.3",
+      "version": "2.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -349,7 +349,7 @@
           "id": "opening.arranque_sin_disculpa",
           "weight": 0.2,
           "regla_id": "opening.gasman",
-          "description": "Cero disculpas, cero peticiones de permiso, cero minimizarse durante TODA la sesion, incluso despues de una respuesta seca."
+          "description": "Cero disculpas, cero peticiones de permiso, cero minimizarse durante TODA la sesion, incluso despues de una respuesta seca. Ir al grano no es minimizarse: «de rápido», «de volada» o «nada más quería…» le dicen al cliente que tú también vas rápido."
         },
         {
           "id": "mindset.regla_10_por_ciento",
@@ -674,7 +674,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese bloqueo."
         }
       },
-      "version": "2.0.3",
+      "version": "2.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -711,7 +711,7 @@
           "id": "blocks.air",
           "weight": 1,
           "regla_id": "blocks.air",
-          "description": "Los tres movimientos: ACEPTA el bloqueo con un entiendo, claro que si o por supuesto. NO lo discute, no lo justifica, no intenta convencer al cliente de lo contrario. RETOMA su tema con naturalidad y sin pedir permiso otra vez. El tercer movimiento es el que mas falla: muchos aceptan y despues se quedan esperando autorizacion."
+          "description": "Los tres movimientos: ACEPTA el bloqueo con un entiendo, claro que si o por supuesto. NO lo discute, no lo justifica, no intenta convencer al cliente de lo contrario. SIGUE con la plática con naturalidad (con otra pregunta o con lo que iba a decir) y sin pedir permiso otra vez. El tercer movimiento es el que mas falla: muchos aceptan y despues se quedan esperando autorizacion."
         }
       ]
     }
@@ -756,7 +756,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esos dos no."
         }
       },
-      "version": "1.0.3",
+      "version": "1.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -799,7 +799,7 @@
           "id": "blocks.air",
           "weight": 0.4,
           "regla_id": "blocks.air",
-          "description": "Pasa el PRIMER bloqueo con los tres movimientos: lo ACEPTA con un entiendo, claro que si o por supuesto; NO lo discute ni se justifica; y RETOMA su tema con naturalidad, sin pedir permiso otra vez."
+          "description": "Pasa el PRIMER bloqueo con los tres movimientos: lo ACEPTA con un entiendo, claro que si o por supuesto; NO lo discute ni se justifica; y SIGUE con la plática con naturalidad (con otra pregunta o con lo que iba a decir), sin pedir permiso otra vez."
         },
         {
           "id": "blocks.dos_no_seguidos",
@@ -1018,7 +1018,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.1.2",
+      "version": "2.1.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1077,7 +1077,7 @@
           "id": "blocks.air",
           "weight": 0.25,
           "regla_id": "blocks.air",
-          "description": "Atraviesa el bloqueo inicial: lo acepta, no lo pelea, y retoma sin pedir permiso."
+          "description": "Atraviesa el bloqueo inicial: lo acepta, no lo pelea, y sigue con la plática sin pedir permiso."
         },
         {
           "id": "story.historia_breve",
@@ -4423,7 +4423,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.1.0",
+      "version": "1.1.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4510,7 +4510,7 @@
           "id": "blocks.air",
           "weight": 0.1,
           "regla_id": "blocks.air",
-          "description": "Si aparece un bloqueo reflejo, lo atraviesa con AIR: lo acepta, no lo pelea, y retoma. Si en la conversación no hay bloqueo, este criterio es no_aplica."
+          "description": "Si aparece un bloqueo reflejo, lo atraviesa con AIR: lo acepta, no lo pelea, y sigue con la plática. Si en la conversación no hay bloqueo, este criterio es no_aplica."
         },
         {
           "id": "flow.close_with_action",

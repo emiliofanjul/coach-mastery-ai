@@ -245,7 +245,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Agree, Ignore, Resume. Para bloqueos al inicio.",
+  "resumen": "Agree, Ignore, Resume: ante un bloqueo al inicio, lo aceptas, no lo discutes y sigues con tu plática. LA PRUEBA: después del bloqueo, ¿el vendedor (1) reconoce lo que dijo el cliente («entiendo», «claro», «por supuesto» o algo que muestre que lo escuchó), (2) no trata de cambiar su no y (3) sigue con la plática —con otra pregunta o con lo que iba a decir— sin pedir permiso? Si hace las tres, cumple, aunque todavía no haya dicho a qué viene. Ir al grano («de volada», «nada más quería…») es seguir, no pedir permiso.",
   "cita_cerebro": "reconoce con «entiendo» o «por supuesto», no lo discutas, y continúa",
   "severidad_sugerida": null
  },
@@ -1455,7 +1455,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Disculparse o hacerse menos: comunica que sabe que estorba, y baja su valor. LA PRUEBA: ¿la frase pide perdón por estar ahí, por hablar o por el tiempo del cliente, o hace chica su presencia? Ejemplos que ilustran —no delimitan—: «perdón que lo moleste», «disculpe la molestia», «solo será un segundo», «no le quito mucho tiempo».",
+  "resumen": "Disculparse o hacerse menos: comunica que sabe que estorba, y baja su valor. LA PRUEBA: ¿la frase pide perdón por estar ahí, por hablar o por el tiempo del cliente, o hace chica su presencia? Ejemplos que ilustran —no delimitan—: «perdón que lo moleste», «disculpe la molestia», «solo será un segundo», «no le quito mucho tiempo». Ir al grano no es hacerse menos: «de rápido», «de volada» o «nada más quería…» le quitan seriedad a la plática y le dicen al cliente que tú también vas rápido. Lo que reprueba es pedir perdón o prometer que no le vas a quitar tiempo.",
   "cita_cerebro": "Disculparte baja tu valor",
   "severidad_sugerida": "critical"
  },
