@@ -65,7 +65,8 @@ describe("Ningún ejemplo pide tiempo ni permiso", () => {
   it("el auditor sabe el paso del nodo aunque sus criterios sean universales", () => {
     expect(voz).toContain("paso: pasoNodo ?? pasoPorMundo(node_id),");
     expect(voz).not.toContain("new Map(reglasSiguiente.map((r) => [r.id, 0]))");
-    expect(voz).toMatch(/const PROMPT_VERSION = "v2\.8\.\d+";/);
+    // v2.9 desde el mensaje 95 (juez de las pruebas).
+    expect(voz).toMatch(/const PROMPT_VERSION = "v2\.(8|9)\.\d+";/);
   });
 });
 
