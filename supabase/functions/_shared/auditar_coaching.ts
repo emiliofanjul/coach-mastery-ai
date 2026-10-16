@@ -22,7 +22,47 @@ Aplicas TODAS estas reglas:
 6. LENGUAJE: el texto tiene que cumplir el lenguaje de Closer de abajo. Si tiene una frase de más de 25 palabras, palabras de sistema o de escuela, una sigla sin su significado en español, un id interno, o hay que leerlo dos veces para entenderlo, viola "lenguaje". Al corregir por lenguaje no cambias la intención ni la doctrina: solo lo dices más simple.
 ${LENGUAJE_CLOSER}
 Para cada texto: "ok" true o false. Si false: "viola" con los ids que viola (una falla, una regla, o "orden" / "permiso" / "muestra" / "groseria" / "dato_inventado" / "lenguaje"), y "corregido": una versión que cumpla TODO lo anterior conservando la intención del coach — o null si no se puede sin cambiar la intención.
-Responde SOLO con JSON: {"veredictos":[{"id":"…","ok":true,"viola":[],"corregido":null}]}`;
+Entrega tus veredictos con la herramienta "veredictos": uno por cada texto, con su "id", "ok", "viola" y "corregido" (si no se puede corregir sin cambiar la intención, deja "corregido" vacío).`;
+
+/**
+ * La respuesta del auditor llega como llamada a una herramienta con este
+ * esquema: la API entrega un objeto ya armado, no texto que haya que
+ * parsear. Antes era texto JSON, y un texto corregido con comillas dentro lo
+ * rompía ("Expected ',' or '}'"): el auditor fallaba y el vendedor se quedaba
+ * sin ejemplos (16-oct-2026, P2_7_perfecto).
+ */
+export const HERRAMIENTA_VEREDICTOS = {
+  name: "veredictos",
+  description: "Entrega el veredicto del auditor para cada texto revisado.",
+  input_schema: {
+    type: "object",
+    properties: {
+      veredictos: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            ok: { type: "boolean" },
+            viola: { type: "array", items: { type: "string" } },
+            corregido: { type: "string" },
+          },
+          required: ["id", "ok"],
+        },
+      },
+    },
+    required: ["veredictos"],
+  },
+} as const;
+
+/** Saca los veredictos de la respuesta de la API: de la herramienta o, si no vino, del texto. */
+export function veredictosDeRespuesta(respuesta: any): unknown {
+  const bloques = Array.isArray(respuesta?.content) ? respuesta.content : [];
+  const uso = bloques.find((b: any) => b?.type === "tool_use" && b?.name === HERRAMIENTA_VEREDICTOS.name);
+  if (uso && Array.isArray(uso.input?.veredictos)) return uso.input.veredictos;
+  const texto = bloques.filter((b: any) => b?.type === "text").map((b: any) => b.text).join("");
+  return extraerJson(texto)?.veredictos;
+}
 
 export function armarEntradaAuditor(args: { paso: number | null; fallas: { id: string; description?: string; severity?: string }[]; reglas: { id: string; resumen: string }[]; textos: TextoAuditable[]; conversacion?: { role: string; content: string }[]; ficha_cliente?: string }): string {
   return JSON.stringify({

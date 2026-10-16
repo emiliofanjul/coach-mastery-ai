@@ -181,7 +181,8 @@ describe("Escaleras y nombres faltantes", () => {
 
 describe("Auditor del feedback y lenguaje (sept-2026)", () => {
   it("cada evaluación pasa por el auditor antes de salir", () => {
-    expect(fn).toMatch(/const r = aplicarAuditoria\(evaluation, extraerJson\(crudo\)\?\.veredictos\);/);
+    // Desde el 16-oct-2026 los veredictos llegan por herramienta (llamarAuditor).
+    expect(fn).toMatch(/const r = aplicarAuditoria\(evaluation, veredictos\);/);
     expect(fn).toMatch(/\(evaluation as any\)\.auditoria = auditoria;/);
   });
   it("Closer nunca dice groserías, y si se le escapa una, se reescribe", () => {
