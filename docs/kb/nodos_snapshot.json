@@ -674,7 +674,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese bloqueo."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -697,7 +697,7 @@
           "id": "pide_permiso_de_nuevo",
           "regla_id": "blocks.air_sin_resume",
           "severity": "major",
-          "description": "Acepta el bloqueo pero despues pide autorizacion para seguir. Le devuelve el control al cliente justo despues de haberlo recuperado."
+          "description": "Acepta el bloqueo pero despues pide autorizacion para seguir. Le devuelve el control al cliente justo despues de haberlo recuperado. Pedir permiso es preguntar si puede seguir (me permite, tiene un minutito, le puedo preguntar algo). Una muletilla como de volada, oiga o mire NO es pedir permiso."
         },
         {
           "id": "ignora_sin_aceptar",
@@ -760,14 +760,14 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esos dos no."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "insiste_tras_dos",
           "regla_id": "blocks.insistir_tras_dos_no",
           "severity": "critical",
-          "description": "Despues del segundo bloqueo seguido sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo. Ya no es seguridad, es terquedad, y el cliente lo recibe cerrado la proxima vez."
+          "description": "Despues del segundo bloqueo seguido sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo. Ya no es seguridad, es terquedad, y el cliente lo recibe cerrado la proxima vez. Solo cuenta lo que el vendedor dice DESPUES del segundo bloqueo: si todavia no ha contestado al segundo bloqueo, esta falla no aplica."
         },
         {
           "id": "discute_el_bloqueo",
@@ -789,7 +789,7 @@
           "id": "pide_permiso_de_nuevo",
           "regla_id": "blocks.air_sin_resume",
           "severity": "major",
-          "description": "Acepta el primer bloqueo pero despues pide autorizacion para seguir. Le devuelve el control al cliente justo despues de haberlo recuperado."
+          "description": "Acepta el primer bloqueo pero despues pide autorizacion para seguir. Le devuelve el control al cliente justo despues de haberlo recuperado. Pedir permiso es preguntar si puede seguir (me permite, tiene un minutito, le puedo preguntar algo). Una muletilla como de volada, oiga o mire NO es pedir permiso."
         },
         {
           "id": "se_va_con_disculpa",
