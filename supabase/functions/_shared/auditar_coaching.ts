@@ -21,7 +21,8 @@ Aplicas TODAS estas reglas:
 5. UNIVERSALES: nunca pedir permiso ni consentimiento ("¿me permite?", "¿le parece si…?", "¿está abierto a…?", "¿verdad?" buscando que confirme, "pausa para que confirme"); nunca pedir ni anunciar tiempo ("dos minutos", "un minutito", "un momentito", "no le quito mucho tiempo"); nunca ofrecer muestras, pruebas gratis ni "le dejo para que lo pruebe"; nunca groserías; nunca inventar hechos del cliente; nunca huecos de dato como "[empresa]"; un cierre siempre da alternativa ("¿el martes o el jueves?"), nunca pregunta abierta ("¿a qué hora le caigo?").
 6. LENGUAJE: el texto tiene que cumplir el lenguaje de Closer de abajo. Si tiene una frase de más de 25 palabras, palabras de sistema o de escuela, una sigla sin su significado en español, un id interno, o hay que leerlo dos veces para entenderlo, viola "lenguaje". Al corregir por lenguaje no cambias la intención ni la doctrina: solo lo dices más simple.
 ${LENGUAJE_CLOSER}
-Para cada texto: "ok" true o false. Si false: "viola" con los ids que viola (una falla, una regla, o "orden" / "permiso" / "muestra" / "groseria" / "dato_inventado" / "lenguaje"), y "corregido": una versión que cumpla TODO lo anterior conservando la intención del coach — o null si no se puede sin cambiar la intención.
+7. ACUSACIONES QUE NO SE SOSTUVIERON: si la entrada trae "acusaciones_descartadas", son cosas de las que el evaluador acusó al vendedor y que un juez revisó con la prueba de su regla: el vendedor NO las hizo. Un texto que lo corrija por alguna de ellas, o que le pida hacer algo que ya hizo bien, es falso: viola "descartada". Corrígelo para que no la mencione, o deja "corregido" vacío.
+Para cada texto: "ok" true o false. Si false: "viola" con los ids que viola (una falla, una regla, o "orden" / "permiso" / "descartada" / "muestra" / "groseria" / "dato_inventado" / "lenguaje"), y "corregido": una versión que cumpla TODO lo anterior conservando la intención del coach — o null si no se puede sin cambiar la intención.
 Entrega tus veredictos con la herramienta "veredictos": uno por cada texto, con su "id", "ok", "viola" y "corregido" (si no se puede corregir sin cambiar la intención, deja "corregido" vacío).`;
 
 /**
@@ -64,9 +65,14 @@ export function veredictosDeRespuesta(respuesta: any): unknown {
   return extraerJson(texto)?.veredictos;
 }
 
-export function armarEntradaAuditor(args: { paso: number | null; fallas: { id: string; description?: string; severity?: string }[]; reglas: { id: string; resumen: string }[]; textos: TextoAuditable[]; conversacion?: { role: string; content: string }[]; ficha_cliente?: string }): string {
+export function armarEntradaAuditor(args: { paso: number | null; fallas: { id: string; description?: string; severity?: string }[]; reglas: { id: string; resumen: string }[]; textos: TextoAuditable[]; conversacion?: { role: string; content: string }[]; ficha_cliente?: string; acusaciones_descartadas?: { id: string; tipo: string; razon?: string }[] }): string {
   return JSON.stringify({
     paso_del_nodo: args.paso,
+    // Lo que el juez de las pruebas quitó (mensaje 95): ningún texto puede
+    // corregir al vendedor por eso.
+    ...(args.acusaciones_descartadas && args.acusaciones_descartadas.length > 0
+      ? { acusaciones_descartadas: args.acusaciones_descartadas.map((a) => ({ id: a.id, tipo: a.tipo, por_que: (a.razon ?? "").slice(0, 200) })) }
+      : {}),
     ficha_cliente: args.ficha_cliente ?? "",
     // Para verificar que un ejemplo no invente hechos del cliente: todo dato del
     // cliente en un ejemplo tiene que estar en esta conversación.

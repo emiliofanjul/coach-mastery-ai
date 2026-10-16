@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.8.1";
+const PROMPT_VERSION = "v2.9.0";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -31,6 +31,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
+import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
@@ -508,6 +509,23 @@ async function llamarAuditor(apiKey: string, system: string, user: string, maxTo
   if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
   return veredictosDeRespuesta(await r.json());
 }
+
+/** El juez de las pruebas contesta con una herramienta: un juicio por acusación. */
+async function llamarJuez(apiKey: string, entrada: string): Promise<Juicio[] | null> {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL, max_tokens: 1500, temperature: 0, system: PROMPT_JUEZ,
+      messages: [{ role: "user", content: entrada }],
+      tools: [HERRAMIENTA_JUICIOS],
+      tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
+    }),
+  });
+  if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
+  return juiciosDeRespuesta(await r.json());
+}
+
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
@@ -1142,7 +1160,44 @@ Deno.serve(async (req) => {
       // revisa contra las fallas del nodo, las reglas del paso, el orden de los
       // seis pasos y las reglas universales. Lo que viola se corrige o se
       // descarta, en código. Si el auditor falla, se registra: la red lo ve.
-      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0 };
+      // EL JUEZ DE LAS PRUEBAS (mensaje 95, 16-oct-2026): cada acusación del
+      // evaluador cuya regla trae «LA PRUEBA» —una falla marcada, o un criterio
+      // en parcial o no_cumple— se juzga aplicando esa prueba a lo que dijo el
+      // vendedor, en orden. La que no se sostiene se quita. Va antes del
+      // auditor, para que ningún consejo corrija al vendedor por algo que no
+      // hizo. Falla ABIERTA: si el juez no contesta, se queda lo del evaluador.
+      // En la evaluación solo van conteos: los ids van al log. (La red busca los
+      // ids de las fallas prohibidas en TODA la respuesta: si fueran aquí, una
+      // falla bien quitada contaría como presente.)
+      const juez: any = { acusaciones: 0, fallas_quitadas: 0, criterios_corregidos: 0 };
+      let quitadasPorJuez: { id: string; tipo: string; razon?: string }[] = [];
+      const acusaciones = acusacionesConPrueba(evaluation, practice_script);
+      juez.acusaciones = acusaciones.length;
+      if (acusaciones.length > 0) {
+        const t0 = Date.now();
+        const entradaJuez = armarEntradaJuez(acusaciones, fullHistory);
+        for (let intento = 1; intento <= 2; intento++) {
+          try {
+            const juicios = await llamarJuez(apiKey, entradaJuez);
+            if (!juicios) throw new Error("el juez no entregó juicios");
+            quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, juicios);
+            juez.fallas_quitadas = quitadasPorJuez.filter((q) => q.tipo === "falla").length;
+            juez.criterios_corregidos = quitadasPorJuez.filter((q) => q.tipo === "criterio").length;
+            juez.juzgadas = juicios.length;
+            juez.intentos = intento;
+            delete juez.error;
+            if (quitadasPorJuez.length > 0) console.warn("[closer-voice] juez de las pruebas: acusaciones que no se sostienen", { session_id, node_id, quitadas: quitadasPorJuez });
+            break;
+          } catch (e) {
+            console.error(`[closer-voice] juez de las pruebas, intento ${intento}:`, e);
+            juez.error = true;
+            if (intento < 2) await new Promise((res) => setTimeout(res, 600));
+          }
+        }
+        juez.latencia_ms = Date.now() - t0;
+      }
+
+      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez };
       const textos = textosDeEvaluacion(evaluation);
       auditoria.revisados = textos.length;
       if (textos.length > 0) {
@@ -1153,6 +1208,7 @@ Deno.serve(async (req) => {
           textos,
           conversacion: fullHistory,
           ficha_cliente: bloqueEvaluador(fichaDePeticion((body as any).ficha_cliente)),
+          acusaciones_descartadas: quitadasPorJuez,
         });
         // Hasta tres intentos: la falla típica es pasajera (saturación del
         // modelo) o una respuesta con texto alrededor del JSON.
