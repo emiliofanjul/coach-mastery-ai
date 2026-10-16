@@ -28,7 +28,7 @@ DO $nod$ BEGIN
 END $nod$;
 
 -- 4. Qué enseña y qué practica cada nodo (el guion del 2.7c lo exige antes de guardarse).
-INSERT INTO public.node_skills (node_id, skill_id, relation, weight, is_primary) VALUES ('2.7b', 'blocks.dos_no_seguidos', 'introduces', 1.0, true) ON CONFLICT (node_id, skill_id) DO NOTHING;
+INSERT INTO public.node_skills (node_id, skill_id, relation, weight, is_primary) VALUES ('2.7b', 'blocks.dos_no_seguidos', 'introduces', 1.0, false) ON CONFLICT (node_id, skill_id) DO NOTHING;
 INSERT INTO public.node_skills (node_id, skill_id, relation, weight, is_primary) VALUES ('2.7c', 'blocks.dos_no_seguidos', 'practices', 1.0, true) ON CONFLICT (node_id, skill_id) DO NOTHING;
 INSERT INTO public.node_skills (node_id, skill_id, relation, weight, is_primary) VALUES ('2.7c', 'blocks.air', 'practices', 1.0, false) ON CONFLICT (node_id, skill_id) DO NOTHING;
 
