@@ -1,0 +1,3 @@
+SELECT id, practice_script->>'version' AS version, md5(practice_script::text) AS huella FROM public.nodes WHERE id IN ('1.4','1.6','2.7','2.7c','2.9','2.10') ORDER BY id;
+SELECT id, md5(concat_ws('|', paso, tipo, canal, procedencia, resumen, cita_cerebro, severidad_default)) AS huella FROM public.reglas WHERE id IN ('opening.pide_permiso','blocks.discute_bloqueo','blocks.air_sin_resume','blocks.insistir_tras_dos_no','blocks.se_rinde_al_bloqueo','blocks.air_sin_aceptar','opening.se_disculpa') ORDER BY id;
+SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'director_decisions' AND column_name LIKE 'falla_critica%' ORDER BY 1;

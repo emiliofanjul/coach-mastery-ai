@@ -65,7 +65,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Pedir autorización para hablar. Entrega el control y ofrece una salida gratis.",
+  "resumen": "Pedir autorización para hablar o para seguir: entrega el control y le ofrece al cliente una salida gratis. LA PRUEBA: ¿la frase le da al cliente la opción de decir que no a seguir la plática? Ejemplos que ilustran —no delimitan—: «¿tiene un minutito?», «¿me permite?», «¿le puedo preguntar algo?», «si no le molesta…». Si la frase no le da esa opción, no es pedir permiso, diga lo que diga.",
   "cita_cerebro": "Cuando preguntas «¿tiene un minutito?» haces dos cosas a la vez — le entregas el control, y le ofreces una salida que no le cuesta nada tomar",
   "severidad_sugerida": "critical"
  },
@@ -235,7 +235,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Discutir un bloqueo lo convierte en posición y le crea al cliente un no que no tenía.",
+  "resumen": "Discutir un bloqueo lo convierte en posición y le crea al cliente un no que no tenía. LA PRUEBA: ¿el vendedor trata de cambiar el no del cliente: convencerlo de que sí le interesa, de que sí tiene tiempo o de que será rápido? Si acepta el no y sigue con su tema, no es discutir, diga lo que diga.",
   "cita_cerebro": "Le acabas de crear un «no» real que no tenía",
   "severidad_sugerida": "critical"
  },
@@ -255,7 +255,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Aceptar e ignorar bien pero no retomar: quedarse esperando o volver a pedir permiso.",
+  "resumen": "Aceptar el bloqueo pero no retomar. LA PRUEBA: después de aceptar, ¿el vendedor se queda callado esperando que el cliente le dé pie, o pide permiso para seguir (con la prueba de pedir permiso: una frase que le da al cliente la opción de decir que no a seguir)? Si sigue con su tema o con una pregunta, sí retomó.",
   "cita_cerebro": "El tercer movimiento es el que falla",
   "severidad_sugerida": "major"
  },
@@ -275,7 +275,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Seguir insistiendo después de dos no seguidos en la puerta: ya no es seguridad, es terquedad.",
+  "resumen": "Seguir insistiendo después de dos no seguidos en la puerta: ya no es seguridad, es terquedad. LA PRUEBA: después del segundo no seguido, ¿el vendedor sigue con su tema (otra pregunta, una explicación, un «nomás un minutito») en vez de quedar de regresar o despedirse? Solo cuenta lo que dice después del segundo no.",
   "cita_cerebro": "Insistir más ya no es seguridad: es terquedad",
   "severidad_sugerida": "critical"
  },
@@ -1450,6 +1450,16 @@
   "severidad_sugerida": null
  },
  {
+  "id": "opening.se_disculpa",
+  "paso": 1,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Disculparse o hacerse menos: comunica que sabe que estorba, y baja su valor. LA PRUEBA: ¿la frase pide perdón por estar ahí, por hablar o por el tiempo del cliente, o hace chica su presencia? Ejemplos que ilustran —no delimitan—: «perdón que lo moleste», «disculpe la molestia», «solo será un segundo», «no le quito mucho tiempo».",
+  "cita_cerebro": "Disculparte baja tu valor",
+  "severidad_sugerida": "critical"
+ },
+ {
   "id": "mindset.sin_groserias",
   "paso": "0",
   "tipo": "principio",
@@ -1488,6 +1498,26 @@
   "resumen": "Si el cliente saca una mala experiencia al llegar, no es un bloqueo: se acepta en serio, se da el motivo real de la visita y se regresa al diagnóstico con una pregunta.",
   "cita_cerebro": "no es un bloqueo para atravesar con AIR: es una preocupación real y se maneja como objeción",
   "severidad_sugerida": null
+ },
+ {
+  "id": "blocks.se_rinde_al_bloqueo",
+  "paso": 2,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "Rendirse ante un no por costumbre: tratar el reflejo del cliente como si fuera un no de verdad. LA PRUEBA: ante el PRIMER bloqueo, ¿el vendedor se va, se disculpa o promete volver antes de intentar AIR? Si acepta el no y sigue con su tema, no se rindió. Después de dos no seguidos, quedar de regresar o despedirse es lo correcto y no es esto.",
+  "cita_cerebro": "No hubo procesamiento. Es la puerta cerrándose sola.",
+  "severidad_sugerida": "critical"
+ },
+ {
+  "id": "blocks.air_sin_aceptar",
+  "paso": 0,
+  "tipo": "error",
+  "canal": "universal",
+  "procedencia": "FUENTE",
+  "resumen": "Seguir de largo sin reconocer lo que el cliente dijo: se siente que no lo escuchó. LA PRUEBA: ¿el vendedor sigue con su tema sin ninguna palabra que reconozca lo que el cliente acaba de decir («entiendo», «claro», «por supuesto», o algo que muestre que lo escuchó)? Si lo reconoce, aunque sea breve, no es esto.",
+  "cita_cerebro": "no lo discutas, y continúa",
+  "severidad_sugerida": "major"
  },
  {
   "id": "impulse.factores",
