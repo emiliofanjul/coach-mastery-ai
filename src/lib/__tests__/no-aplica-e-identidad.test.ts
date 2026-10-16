@@ -22,7 +22,9 @@ describe("'no_aplica': se califica solo lo que se pudo evaluar", () => {
       ],
     });
     expect(r.score).toBe(100);
-    expect(r.cumplidos).toContain("discovery.preguntas_capas");
+    // Sale de la cuenta, pero no se muestra ni se acredita como cumplido (16-oct-2026).
+    expect(r.cumplidos).not.toContain("discovery.preguntas_capas");
+    expect(r.cumplidos).toEqual(["blocks.air", "mindset.rrr", "story.historia_breve"]);
   });
   it("un 'no_aplica' no infla: si lo evaluable salió a medias, la nota lo dice", () => {
     const r = calcularScore({

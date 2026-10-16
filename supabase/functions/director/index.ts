@@ -26,7 +26,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
 
-const DIRECTOR_VERSION = "v2.3.0-sonnet";
+const DIRECTOR_VERSION = "v2.4.0-sonnet";
 const DIRECTOR_MODEL = "claude-sonnet-4-5";
 
 const corsHeaders = {
@@ -164,7 +164,9 @@ REGLAS:
 - evidence_sufficient = true si el transcript ya contiene material SUFICIENTE para EVALUAR el desempeño del vendedor en ese objetivo, LO HAYA LOGRADO O NO — sus intentos, su approach y su nivel ya son visibles y más turnos no agregarían información nueva.
 - Prefiere evidence_sufficient=true cuando el vendedor ya intentó su approach 2-3 veces sin cambiar de estrategia: ya sabes cómo lo hace.
 - Ambos flags son independientes: un vendedor puede fallar el objetivo (scope_covered=false) pero haber mostrado suficiente para ser evaluado (evidence_sufficient=true).
-- falla_critica = true SOLO si el vendedor (user) ya dijo algo que encaja SIN DUDA con una de las FALLAS CRÍTICAS DEL NODO: tiene que existir una frase literal suya que lo muestre. Lo que dice el cliente nunca cuenta. Ante la duda, false. Si el nodo no tiene fallas críticas, false.`;
+- falla_critica = true SOLO si el vendedor (user) ya dijo algo que encaja SIN DUDA con una de las FALLAS CRÍTICAS DEL NODO: tiene que existir una frase literal suya que lo muestre. Lo que dice el cliente nunca cuenta. Ante la duda, false. Si el nodo no tiene fallas críticas, false.
+- EL ORDEN IMPORTA. Si una falla habla de cómo reacciona el vendedor a algo que dijo el cliente (por ejemplo "después del segundo bloqueo", "ante el primer bloqueo", "cuando el cliente pregunta…"), la frase del vendedor tiene que venir DESPUÉS de ese mensaje del cliente en el transcript. Si el último mensaje es del cliente, lo que el vendedor todavía no ha contestado no puede ser falla: false.
+- Una muletilla no es una falla: "de volada", "oiga", "mire", "este", "fíjese" no son pedir permiso ni insistir.`;
 
 async function runClassifier(
   objective: string,

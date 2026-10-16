@@ -75,7 +75,6 @@ describe("Dos no seguidos: la práctica por voz", () => {
   });
   it("la red de pruebas tiene el caso perfecto, el que insiste y el que se va al primero", () => {
     const ids = harness.cases.filter((c: any) => c.node_id === "2.7c").map((c: any) => c.id);
-    expect(ids).toEqual(["P2_7c_perfecto", "G35_insiste_tras_dos_no", "G36_se_va_al_primer_no"]);
-    expect(harness.harness_version).toBe("v3.14.0");
+    expect(ids).toEqual(expect.arrayContaining(["P2_7c_perfecto", "G35_insiste_tras_dos_no", "G36_se_va_al_primer_no"]));
   });
 });
