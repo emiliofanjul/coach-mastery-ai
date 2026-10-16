@@ -526,9 +526,6 @@ async function llamarJuez(apiKey: string, entrada: string): Promise<Juicio[] | n
   return juiciosDeRespuesta(await r.json());
 }
 
-
-
-
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
   const technique = practice_script?.technique ?? practice_script?.skill ?? practice_script?.name ?? "";
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
