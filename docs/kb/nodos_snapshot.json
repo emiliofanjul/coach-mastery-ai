@@ -47,7 +47,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como abres. Vamos al desglose y te digo cual era la siguiente pieza."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -65,8 +65,12 @@
         {
           "id": "sin_pregunta",
           "regla_id": "opening.sin_pregunta",
-          "severity": "major",
-          "description": "Saluda y observa pero no pregunta nada. La conversacion se muere ahi porque el cliente no tiene que contestar."
+          "severity": "critical",
+          "description": "Saluda y observa pero no pregunta nada. La conversacion se muere ahi porque el cliente no tiene que contestar.",
+          "severity_override": {
+            "razon": "en el 1.2 es lo central del nodo: «Tu primera frase… terminas con una pregunta». Sin ninguna pregunta no aprendió el nodo y lo repite (Emilio, 17-oct-2026)",
+            "default": "major"
+          }
         }
       ],
       "success_criteria": [
