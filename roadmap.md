@@ -1,6 +1,7 @@
 # Roadmap
 
-- [ ] Mensaje 97: confirmar huellas y pruebas; actualizar regla; mover archivos exactos; desplegar solo la red; verificar casos y publicar solo si todos pasan.
+- [x] Mensaje 97: confirmar huellas, actualizar regla, mover archivos exactos, desplegar solo la red y ejecutar las 14 corridas; 605/605 pruebas pasan.
+- [ ] Mensaje 97: publicación bloqueada por G40 (4/4 falla: no marca sin_pregunta); esperar el ajuste de Emilio, sin cambiar funciones.
 
 - [x] Copiar los dos archivos de etiquetas boss tras verificar af0aca0 y comprobar identidad byte por byte.
 - [x] Verificar las pruebas y las hojas de El Diagnóstico y de un boss completado en el mapa.
