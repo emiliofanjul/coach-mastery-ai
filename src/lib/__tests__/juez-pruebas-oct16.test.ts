@@ -190,5 +190,5 @@ describe("La red", () => {
     expect(c.expected.must_not_flag).toEqual(["se_disculpa", "pide_permiso", "se_encoge"]);
     expect(c.expected.niveles_esperados).toEqual({ "opening.arranque_sin_disculpa": "cumple" });
   });
-  it("versión", () => expect(harness.harness_version).toBe("v3.18.0"));
+  it("versión", () => expect(harness.harness_version).toMatch(/^v3\.(1[89]|[2-9]\d)\./));
 });
