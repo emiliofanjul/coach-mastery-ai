@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Mensaje 97: confirmar huellas y pruebas; actualizar regla; mover archivos exactos; desplegar solo la red; verificar casos y publicar solo si todos pasan.
+
 - [x] Copiar los dos archivos de etiquetas boss tras verificar af0aca0 y comprobar identidad byte por byte.
 - [x] Verificar las pruebas y las hojas de El Diagnóstico y de un boss completado en el mapa.
 
