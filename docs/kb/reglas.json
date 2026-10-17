@@ -1425,7 +1425,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "No hay ninguna pregunta que le devuelva la palabra al cliente. LA PRUEBA: ¿hay alguna frase que el cliente pueda contestar? Si la hay —aunque sea de cortesía, como \"¿cómo está?\"— esta falla NO aplica: la calidad de la pregunta se mide en la escalera de la especificidad, no aquí.",
+  "resumen": "No hay ninguna pregunta en la apertura: el cliente no tiene qué contestar y la plática se muere ahí. LA PRUEBA: en su apertura —su primer turno, antes de que el cliente le conteste—, ¿le hace al cliente alguna pregunta, aunque sea de cortesía como «¿cómo está?» o dicha sin signos? Si la hay, esta falla NO aplica: la calidad de la pregunta se mide en la escalera de la especificidad, y si va al final, en la estructura de la apertura. Que CADA turno termine con pregunta se enseña en la historia breve (2.2): en la introducción, lo que el vendedor dice después de la apertura no cuenta para esta falla. Si ahí le faltó la pregunta, se le aconseja sin restar.",
   "cita_cerebro": "sin ninguna pregunta, el cliente no tiene qué contestar y la conversación se muere ahí",
   "severidad_sugerida": "major"
  },
