@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.18.0",
+  "harness_version": "v3.19.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -243,9 +243,30 @@
           "pitch_prematuro",
           "sin_pregunta"
         ],
-        "rationale_v3": "'Ando visitando talleres y quise pasar a saludarlo', dicho después de conectar, es presentarse (Paso 2): no es trabajo comercial. Y '¿cómo está?' es pregunta (escalón 1)."
+        "rationale_v3": "'Ando visitando talleres y quise pasar a saludarlo', dicho después de conectar, es presentarse (Paso 2): no es trabajo comercial. Y '¿cómo está?' es pregunta (escalón 1).",
+        "rationale_v4": "Decisión de Emilio (17-oct-2026): cada turno del vendedor termina con pregunta, y «…quise pasar a saludarlo» le deja el control al cliente. Pero eso se enseña en el 2.2 («cada vez que hablas, terminas con una pregunta»), y la historia breve en el Mundo 2: en el 1.2 no se puede calificar lo que no se ha enseñado. Aquí solo cuenta la apertura, que sí trae pregunta («¿Cómo está?»). El tercer turno puede ir como consejo, sin restar."
       },
       "node_id": "1.2"
+    },
+    {
+      "id": "G40_apertura_sin_pregunta",
+      "node_id": "1.2",
+      "description": "Mensaje 97: la otra cara del G09. La apertura saluda y observa pero no le pregunta nada al cliente: aquí sí aplica sin_pregunta, aunque el cliente conteste por educación.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, Don Ramón! Qué movido está hoy el taller, se ve que no paran desde temprano."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, aquí andamos."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "sin_pregunta"
+        ]
+      }
     },
     {
       "id": "G10_energia_texto_no_evaluada",
