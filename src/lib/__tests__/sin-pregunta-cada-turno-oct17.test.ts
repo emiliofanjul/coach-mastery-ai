@@ -46,8 +46,33 @@ describe("La red, en los dos sentidos", () => {
     expect(e.must_not_flag).toEqual(["pitch_prematuro", "sin_pregunta"]);
     expect(e.score_range).toEqual([75, 100]);
   });
-  it("G40: una apertura sin ninguna pregunta sí marca la falla", () => {
+  it("G40: una apertura sin ninguna pregunta sí marca la falla, y la nota queda en máximo 30", () => {
     expect(caso("G40_apertura_sin_pregunta").expected.must_flag).toEqual(["sin_pregunta"]);
-    expect(harness.harness_version).toBe("v3.19.0");
+    expect(caso("G40_apertura_sin_pregunta").expected.score_range).toEqual([0, 30]);
+    expect(harness.harness_version).toMatch(/^v3\.(19|[2-9]\d)\./);
+  });
+});
+
+// Mensaje 98 (17-oct-2026, Emilio): en el 1.2 la lección entera es «Tu primera
+// frase… terminas con una pregunta». Si no pregunta nada, no aprendió el nodo:
+// es falla crítica (tope de 30) y lo repite. No es un cobro doble: las critical
+// son la regla del nodo, igual que meter producto en la misma apertura.
+describe("En el 1.2, una apertura sin ninguna pregunta es crítica", () => {
+  const f = nodos.find((n) => n.id === "1.2").practice_script.failure_criteria.find((x: any) => x.id === "sin_pregunta");
+  it("es critical, declarada con su razón, y la regla sigue siendo major en general", () => {
+    expect(f.severity).toBe("critical");
+    expect(f.severity_override.default).toBe("major");
+    expect(f.severity_override.razon).toContain("Tu primera frase");
+    expect(r.severidad_sugerida).toBe("major");
+  });
+  it("no es espejo: las critical siempre topan", () => {
+    expect(f.espejo_de).toBeUndefined();
+  });
+  it("versión del guion", () => {
+    expect(nodos.find((n) => n.id === "1.2").practice_script.version).toBe("2.0.2");
+  });
+  it("preguntar en medio sigue siendo parcial en la estructura, sin tope (G09)", () => {
+    expect(caso("G09_scope_cubierto_corte_temprano").expected.must_not_flag).toContain("sin_pregunta");
+    expect(caso("G09_scope_cubierto_corte_temprano").expected.score_range).toEqual([75, 100]);
   });
 });

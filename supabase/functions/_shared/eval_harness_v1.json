@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.19.0",
+  "harness_version": "v3.20.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -265,7 +265,12 @@
       "expected": {
         "must_flag": [
           "sin_pregunta"
-        ]
+        ],
+        "score_range": [
+          0,
+          30
+        ],
+        "nota_v320": "Mensaje 98 (Emilio, 17-oct-2026): en el 1.2 una apertura sin ninguna pregunta es falla crítica: la nota queda en máximo 30 y el vendedor repite el nodo. En la v3.19 el evaluador no la marcaba porque la estructura ya había bajado por eso y no se cobra dos veces; las critical se marcan siempre: son la regla del nodo, no un cobro doble."
       }
     },
     {
