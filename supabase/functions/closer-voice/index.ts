@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.9.1";
+const PROMPT_VERSION = "v2.9.2";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -31,6 +31,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
+import { fallasPorHechoDePregunta } from "../_shared/hechos_pregunta.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
@@ -166,6 +167,8 @@ interface TurnAnalysis {
   turno: number;
   texto_literal: string;
   ultima_frase: string;
+  /** El HECHO, no el juicio: si el turno pregunta algo y dónde (mensaje 99). */
+  pregunta?: "al_final" | "en_medio" | "ninguna";
   veredicto: string;
   por_que: string;
 }
@@ -236,7 +239,7 @@ Cuando un criterio describe una ESCALERA de niveles (por ejemplo, la escalera de
 12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar un flag sin poder citar la frase exacta del vendedor que lo dispara. Si la regla define una prueba, la cita es la frase que la reprueba — no hace falta que mencione un producto: "¿cada cuánto le vienen a surtir?" reprueba la prueba de pitch_prematuro sin nombrar ninguno.
 
 PASO 0 — EXTRACCIÓN ANTES DE JUICIO (obligatorio, va PRIMERO en el JSON):
-PRIMERO llena "analisis_turnos" copiando LITERALMENTE cada turno del vendedor. Solo turnos con role "user" — los turnos del cliente (role "assistant") NUNCA se evalúan ni se atribuyen al vendedor. Para cada turno anota su última frase literal y si CUMPLE o NO CUMPLE el criterio principal del nodo, con una línea de por qué.
+PRIMERO llena "analisis_turnos" copiando LITERALMENTE cada turno del vendedor. Solo turnos con role "user" — los turnos del cliente (role "assistant") NUNCA se evalúan ni se atribuyen al vendedor. Para cada turno anota su última frase literal; en "pregunta", si ese turno le hace al cliente alguna pregunta y dónde: "al_final" (la última frase es una pregunta, aunque en voz no lleve signos), "en_medio" (hay pregunta, pero el turno termina en comentario) o "ninguna"; y si CUMPLE o NO CUMPLE el criterio principal del nodo, con una línea de por qué. "pregunta" es un HECHO de lo que dijo, no un juicio: anótalo igual en todos los nodos, califique o no el nodo las preguntas.
 DESPUÉS de tener ese análisis completo, y SOLO basándote en él, calcula el score y escribe las observations.
 - Toda observación debe corresponder a un turno que aparezca en analisis_turnos con veredicto "no cumple".
 - Si un turno quedó como "cumple", está PROHIBIDO escribir una observación negativa sobre él.
@@ -318,6 +321,7 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
       "turno": <entero, 1 = primer turno del vendedor>,
       "texto_literal": "<el turno del VENDEDOR (role user), copiado tal cual, sin resumir>",
       "ultima_frase": "<la última frase de ese turno, literal>",
+      "pregunta": "<al_final | en_medio | ninguna>",
       "veredicto": "<cumple | no cumple>",
       "por_que": "<una línea>"
     }
@@ -1117,6 +1121,14 @@ Deno.serve(async (req) => {
         evaluation.flags_detected = [];
       }
 
+      // El hecho de la pregunta (mensaje 99): el evaluador anota por turno si
+      // hay pregunta y dónde; el código aplica la regla. Va DESPUÉS del
+      // guardarraíl de arriba y ANTES del juez, que revisa la acusación con la
+      // prueba de su regla. Así la falla no depende de que el evaluador decida
+      // marcarla. En la respuesta solo va el conteo (la red busca ids).
+      const fallasPorHecho = fallasPorHechoDePregunta(evaluation, practice_script);
+      if (fallasPorHecho.length > 0) console.warn("[closer-voice] fallas agregadas por el hecho de la pregunta", { session_id, node_id, fallas: fallasPorHecho });
+
       // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
       const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
       const rawRegresiones = (evaluation as any).regresiones_detectadas;
@@ -1229,7 +1241,7 @@ Deno.serve(async (req) => {
         return { ok: false, revisados: textos.length, veredictos: null, intentos: 3 };
       };
 
-      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez };
+      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez, fallas_por_hecho: fallasPorHecho.length };
       const [juicios, primera] = await Promise.all([juzgar(), auditar([])]);
       auditoria.revisados = primera.revisados;
       let auditorOk = primera.ok;
