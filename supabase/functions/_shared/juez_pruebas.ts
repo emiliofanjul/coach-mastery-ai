@@ -27,7 +27,14 @@ export interface Acusacion {
   senalado: string;
 }
 
-export interface Juicio { id: string; tipo: string; se_sostiene: boolean; razon?: string }
+/**
+ * El juez contesta UNA sola pregunta, igual para fallas y criterios: lo que
+ * hizo el vendedor, ¿pasa o reprueba la prueba? El código decide qué hacer.
+ * (Mensaje 96: con «¿se sostiene la acusación?» la polaridad cambiaba entre
+ * fallas y criterios, y en una corrida del G38 aceptó «claro, claro» para una
+ * y lo rechazó para la otra.)
+ */
+export interface Juicio { id: string; tipo: string; conducta: "pasa" | "reprueba"; razon?: string }
 
 const tienePrueba = (s: unknown): s is string => typeof s === "string" && s.includes("LA PRUEBA");
 
@@ -58,19 +65,20 @@ export function acusacionesConPrueba(ev: any, ps: any): Acusacion[] {
 
 export const PROMPT_JUEZ = `Eres el juez de las pruebas de Closer, una app que entrena vendedores de campo. Un evaluador ya calificó una práctica y acusó al vendedor de algo. Cada acusación viene con su regla, y esa regla trae LA PRUEBA: la pregunta que decide si la acusación es cierta.
 
-Tu único trabajo es aplicar LA PRUEBA, tal como está escrita, a lo que el vendedor dijo en la conversación, en orden.
+Tu único trabajo es aplicar LA PRUEBA, tal como está escrita, a lo que el vendedor dijo en la conversación, en orden, y decir si lo que hizo el vendedor PASA o REPRUEBA la prueba.
 1. LA PRUEBA ES EL ALCANCE. Los ejemplos de la regla ilustran, no delimitan. No agregues requisitos que la prueba no escribe, ni quites los que sí escribe.
 2. Juzga lo que la frase HACE en ese momento de la plática, no palabras sueltas. Lee qué dijo el cliente justo antes y qué sigue después.
-3. Una FALLA se sostiene solo si una frase del vendedor reprueba la prueba. Lo que señaló el evaluador es una pista: búscalo en lo que dijo el vendedor. Si no está, o si leído en su lugar no reprueba la prueba, no se sostiene.
-4. Un CRITERIO en parcial o no_cumple se sostiene solo si, con la prueba en la mano, de verdad falta una pieza que la prueba pide. Si lo que hizo el vendedor pasa la prueba, no se sostiene.
-5. "En este nodo" dice cómo se aplica la regla aquí. Si choca con la prueba, manda la prueba.
-6. Solo juzgas las acusaciones que recibes. No buscas otras fallas ni opinas de lo demás.
+3. Si la regla describe un ERROR (una falla), el vendedor REPRUEBA solo si una de sus frases comete ese error. Si ninguna lo comete, PASA.
+4. Si la regla describe lo que hay que HACER (un criterio), el vendedor PASA si hizo todo lo que la prueba pide. REPRUEBA solo si falta una pieza que la prueba pide.
+5. Lo que dijo el evaluador es una pista y puede estar equivocado: compruébalo en la conversación. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
+6. Sé coherente: la misma frase no puede contar como bien hecha para una regla y como mal hecha para otra que pide lo mismo.
+7. Solo juzgas lo que recibes. No buscas otras fallas ni opinas de lo demás.
 
-Para cada acusación: en "respuesta" contesta la pregunta de la prueba con sí o no y la frase del vendedor que lo demuestra; en "se_sostiene", true si la acusación es cierta y false si no. Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
+Para cada acusación: primero "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba y la frase del vendedor que lo demuestra. Después "conducta": "pasa" o "reprueba". Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
 
 export const HERRAMIENTA_JUICIOS = {
   name: "juicios",
-  description: "Entrega el juicio de cada acusación: si se sostiene con la prueba de su regla.",
+  description: "Entrega el juicio de cada acusación: si lo que hizo el vendedor pasa o reprueba la prueba de su regla.",
   input_schema: {
     type: "object",
     properties: {
@@ -82,9 +90,9 @@ export const HERRAMIENTA_JUICIOS = {
             id: { type: "string" },
             tipo: { type: "string", enum: ["falla", "criterio"] },
             respuesta: { type: "string" },
-            se_sostiene: { type: "boolean" },
+            conducta: { type: "string", enum: ["pasa", "reprueba"] },
           },
-          required: ["id", "tipo", "respuesta", "se_sostiene"],
+          required: ["id", "tipo", "respuesta", "conducta"],
         },
       },
     },
@@ -104,7 +112,8 @@ export function armarEntradaJuez(acusaciones: Acusacion[], conversacion: { role?
       tipo: a.tipo,
       regla: a.regla.slice(0, 1200),
       en_este_nodo: a.en_este_nodo.slice(0, 600),
-      [a.tipo === "falla" ? "frase_senalada" : "lo_que_dice_que_falta"]: a.senalado.slice(0, 300),
+      // Lo que dijo el evaluador: una pista, que puede estar equivocada.
+      [a.tipo === "falla" ? "frase_que_cito_el_evaluador" : "lo_que_el_evaluador_dice_que_falta"]: a.senalado.slice(0, 300),
     })),
   });
 }
@@ -115,13 +124,13 @@ export function juiciosDeRespuesta(respuesta: any): Juicio[] | null {
   const uso = bloques.find((b: any) => b?.type === "tool_use" && b?.name === HERRAMIENTA_JUICIOS.name);
   const lista = uso?.input?.juicios;
   if (!Array.isArray(lista)) return null;
-  return lista.filter((j: any) => j && typeof j.id === "string" && typeof j.se_sostiene === "boolean")
-    .map((j: any) => ({ id: j.id, tipo: String(j.tipo ?? ""), se_sostiene: j.se_sostiene, razon: typeof j.respuesta === "string" ? j.respuesta.slice(0, 300) : undefined }));
+  return lista.filter((j: any) => j && typeof j.id === "string" && (j.conducta === "pasa" || j.conducta === "reprueba"))
+    .map((j: any) => ({ id: j.id, tipo: String(j.tipo ?? ""), conducta: j.conducta, razon: typeof j.respuesta === "string" ? j.respuesta.slice(0, 300) : undefined }));
 }
 
 /**
- * Quita de la evaluación las acusaciones que no se sostienen. Solo actúa con
- * un juicio explícito `se_sostiene: false`; sin juicio, la acusación se queda.
+ * Quita de la evaluación las acusaciones que no se sostienen: aquellas donde
+ * lo que hizo el vendedor PASA la prueba. Sin juicio, la acusación se queda.
  * Una falla quitada sale de flags_detected y de evidencia_flags. Un criterio
  * quitado pasa a "cumple" y salen sus observaciones.
  */
@@ -129,7 +138,7 @@ export function aplicarJuicios(ev: any, acusaciones: Acusacion[], juicios: Juici
   const quitadas: { id: string; tipo: string; razon?: string }[] = [];
   for (const a of acusaciones) {
     const j = juicios.find((x) => x.id === a.id && x.tipo === a.tipo);
-    if (!j || j.se_sostiene !== false) continue;
+    if (!j || j.conducta !== "pasa") continue;
     if (a.tipo === "falla") {
       ev.flags_detected = (ev.flags_detected ?? []).filter((f: string) => f !== a.id);
       if (Array.isArray(ev.evidencia_flags)) ev.evidencia_flags = ev.evidencia_flags.filter((e: any) => e?.id !== a.id);

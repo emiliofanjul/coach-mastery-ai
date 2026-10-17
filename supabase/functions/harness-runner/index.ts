@@ -32,6 +32,10 @@ type CaseResult = {
   raw?: any;
   /** Lo que decidió el evaluador por criterio: "criterio:nivel". Para diagnosticar volteos. */
   veredictos?: string[];
+  /** Tiempos y conteos del juez de las pruebas (mensaje 96), para medir lo que cuesta. */
+  ms_total?: number;
+  ms_revision?: number | null;
+  juez?: unknown;
 };
 
 function getCase(id: string): Case | undefined {
@@ -56,6 +60,7 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
     role: t.role === "assistant" ? "assistant" : "user",
     content: t.text,
   }));
+  const t0 = Date.now();
   const res = await fetch(`${supabaseUrl}/functions/v1/closer-voice`, {
     method: "POST",
     // El evaluador ya no acepta la llave pública: la red entra con la de servicio,
@@ -83,7 +88,7 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
   const text = await res.text();
   let parsed: any = null;
   try { parsed = JSON.parse(text); } catch { /* keep raw */ }
-  return { status: res.status, parsed, raw: text };
+  return { status: res.status, parsed, raw: text, ms: Date.now() - t0 };
 }
 
 function evaluateCase(c: Case, response: any): CaseResult {
@@ -294,6 +299,9 @@ function evaluateCase(c: Case, response: any): CaseResult {
     status: reasons.length === 0 ? "pass" : "fail",
     reasons,
     score: typeof parsed.score === "number" ? parsed.score : null,
+    ms_total: typeof response.ms === "number" ? response.ms : undefined,
+    ms_revision: typeof parsed?.auditoria?.latencia_ms === "number" ? parsed.auditoria.latencia_ms : null,
+    juez: parsed?.auditoria?.juez ?? null,
     veredictos: desgloseCrit.map((d: any) => {
       const n = nivelDe(Number(d.credito ?? 0));
       const base = `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;

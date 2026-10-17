@@ -59,47 +59,54 @@ describe("Qué se lleva al juez", () => {
   it("el juez recibe la conversación en orden, con quién dijo qué", () => {
     const e = JSON.parse(armarEntradaJuez(acusacionesConPrueba(evaluacion(), guion()), [{ role: "user", content: "Hola" }, { role: "assistant", content: "No me interesa" }]));
     expect(e.conversacion).toEqual([{ turno: 1, quien: "vendedor", dijo: "Hola" }, { turno: 2, quien: "cliente", dijo: "No me interesa" }]);
-    expect(e.acusaciones[0].frase_senalada).toBe("claro, claro");
-    expect(e.acusaciones[1].lo_que_dice_que_falta).toBe("no retoma");
+    expect(e.acusaciones[0].frase_que_cito_el_evaluador).toBe("claro, claro");
+    expect(e.acusaciones[1].lo_que_el_evaluador_dice_que_falta).toBe("no retoma");
   });
 });
 
 describe("Lo que hace el código con los juicios", () => {
   it("una falla que no se sostiene sale de las fallas y de su evidencia", () => {
     const ev = evaluacion();
-    const q = aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "pide_permiso_de_nuevo", tipo: "falla", se_sostiene: false }]);
+    const q = aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "pide_permiso_de_nuevo", tipo: "falla", conducta: "pasa" }]);
     expect(q.map((x) => x.id)).toEqual(["pide_permiso_de_nuevo"]);
     expect(ev.flags_detected).toEqual(["otra_falla"]);
     expect(ev.evidencia_flags.map((e: any) => e.id)).toEqual(["otra_falla"]);
   });
   it("un criterio que no se sostiene pasa a cumple y salen sus observaciones", () => {
     const ev = evaluacion();
-    aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "blocks.air", tipo: "criterio", se_sostiene: false }]);
+    aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "blocks.air", tipo: "criterio", conducta: "pasa" }]);
     expect(ev.veredictos_criterios[0]).toEqual({ criterio_id: "blocks.air", nivel: "cumple" });
     expect(ev.observations.map((o: any) => o.criterio_id)).toEqual(["sin.prueba"]);
   });
   it("lo que se sostiene, o lo que el juez no contestó, se queda igual", () => {
     const ev = evaluacion();
-    const q = aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "pide_permiso_de_nuevo", tipo: "falla", se_sostiene: true }]);
+    const q = aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "pide_permiso_de_nuevo", tipo: "falla", conducta: "reprueba" }]);
     expect(q).toEqual([]);
     expect(ev).toEqual(evaluacion());
   });
   it("el juez nunca toca lo que no se le preguntó", () => {
     const ev = evaluacion();
-    aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "otra_falla", tipo: "falla", se_sostiene: false }, { id: "sin.prueba", tipo: "criterio", se_sostiene: false }]);
+    aplicarJuicios(ev, acusacionesConPrueba(ev, guion()), [{ id: "otra_falla", tipo: "falla", conducta: "pasa" }, { id: "sin.prueba", tipo: "criterio", conducta: "pasa" }]);
     expect(ev).toEqual(evaluacion());
   });
   it("lee la herramienta y descarta juicios sin decisión", () => {
     const r = { content: [{ type: "tool_use", name: HERRAMIENTA_JUICIOS.name, input: { juicios: [
-      { id: "a", tipo: "falla", respuesta: "No: «claro, claro» acepta el bloqueo.", se_sostiene: false },
+      { id: "a", tipo: "falla", respuesta: "No: «claro, claro» acepta el bloqueo.", conducta: "pasa" },
+      { id: "c", tipo: "criterio", respuesta: "x", conducta: "quizá" },
       { id: "b", tipo: "falla", respuesta: "?" },
     ] } }] };
-    expect(juiciosDeRespuesta(r)).toEqual([{ id: "a", tipo: "falla", se_sostiene: false, razon: "No: «claro, claro» acepta el bloqueo." }]);
+    expect(juiciosDeRespuesta(r)).toEqual([{ id: "a", tipo: "falla", conducta: "pasa", razon: "No: «claro, claro» acepta el bloqueo." }]);
     expect(juiciosDeRespuesta({ content: [{ type: "text", text: "{}" }] })).toBeNull();
   });
   it("el juez aplica la prueba como alcance y no busca fallas nuevas", () => {
     expect(PROMPT_JUEZ).toContain("LA PRUEBA ES EL ALCANCE");
     expect(PROMPT_JUEZ).toContain("No buscas otras fallas");
+  });
+  it("mensaje 96: una sola pregunta para fallas y criterios — lo que hizo el vendedor, ¿pasa o reprueba?", () => {
+    expect(HERRAMIENTA_JUICIOS.input_schema.properties.juicios.items.properties.conducta.enum).toEqual(["pasa", "reprueba"]);
+    expect(JSON.stringify(HERRAMIENTA_JUICIOS)).not.toContain("se_sostiene");
+    expect(PROMPT_JUEZ).toContain("Sé coherente: la misma frase no puede contar como bien hecha para una regla y como mal hecha para otra");
+    expect(PROMPT_JUEZ).toContain("puede estar equivocado");
   });
 });
 
@@ -107,9 +114,21 @@ describe("El juez en el evaluador", () => {
   it("corre antes del auditor y el auditor sabe qué se quitó", () => {
     expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script)")).toBeGreaterThan(0);
     expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script)")).toBeLessThan(voz.indexOf("const textos = textosDeEvaluacion(evaluation)"));
-    expect(voz).toContain("acusaciones_descartadas: quitadasPorJuez");
     expect(voz).toContain("tool_choice: { type: \"tool\", name: HERRAMIENTA_JUICIOS.name }");
-    expect(voz).toContain('const PROMPT_VERSION = "v2.9.0"');
+    expect(voz).toContain('const PROMPT_VERSION = "v2.9.1"');
+  });
+  it("mensaje 96: el juez y el auditor corren al mismo tiempo; si el juez quitó algo, se revisa otra vez", () => {
+    expect(voz).toContain("const [juicios, primera] = await Promise.all([juzgar(), auditar([])]);");
+    expect(voz).toContain("const segunda = await auditar(quitadasPorJuez);");
+    // Lo del juez se aplica después del auditor: los ids del auditor son posiciones.
+    expect(voz.indexOf("aplicarAuditoria(evaluation, primera.veredictos)")).toBeLessThan(voz.indexOf("quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, juicios)"));
+    expect(voz).toContain('console.log("[closer-voice] juez de las pruebas", { session_id, node_id, juicios });');
+    expect(voz).toContain("auditoria.latencia_ms = Date.now() - tRevision;");
+  });
+  it("la red reporta el tiempo de cada caso y lo que hizo el juez", () => {
+    const red = leer("supabase/functions/harness-runner/index.ts");
+    expect(red).toContain("ms_revision: typeof parsed?.auditoria?.latencia_ms");
+    expect(red).toContain("juez: parsed?.auditoria?.juez ?? null,");
   });
   it("en la respuesta van conteos, no ids (la red busca los ids prohibidos en toda la respuesta)", () => {
     expect(voz).toContain("const juez: any = { acusaciones: 0, fallas_quitadas: 0, criterios_corregidos: 0 }");
@@ -147,6 +166,11 @@ describe("Ir al grano no es hacerse menos (Emilio, 16-oct-2026)", () => {
     expect(r).toContain("Lo que reprueba es pedir perdón o prometer que no le vas a quitar tiempo.");
     expect(r).toContain("«no le quito mucho tiempo»");
   });
+  it("mensaje 96: la regla del arranque (opening.gasman) trae su prueba, así el juez la revisa", () => {
+    const r = regla("opening.gasman").resumen;
+    expect(r).toMatch(/^Entrar asumido y confiado, con la autoridad de quien debe estar ahí\. LA PRUEBA:/);
+    expect(r).toContain("Ir al grano («de rápido», «de volada», «nada más quería…») es entrar asumido, no hacerse menos.");
+  });
   it("el 1.4 y el 1.6 lo dicen en su criterio de arranque, y ir rápido no es encogerse", () => {
     for (const id of ["1.4", "1.6"]) expect(crit(id, "opening.arranque_sin_disculpa").description).toContain("Ir al grano no es minimizarse");
     const f = nodo("1.4").practice_script.failure_criteria.find((x: any) => x.id === "se_encoge");
@@ -164,6 +188,7 @@ describe("La red", () => {
     const c = caso("G39_de_rapido_no_es_hacerse_menos");
     expect(c.node_id).toBe("1.4");
     expect(c.expected.must_not_flag).toEqual(["se_disculpa", "pide_permiso", "se_encoge"]);
+    expect(c.expected.niveles_esperados).toEqual({ "opening.arranque_sin_disculpa": "cumple" });
   });
-  it("versión", () => expect(harness.harness_version).toBe("v3.17.0"));
+  it("versión", () => expect(harness.harness_version).toBe("v3.18.0"));
 });

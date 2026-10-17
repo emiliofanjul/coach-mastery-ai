@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.9.0";
+const PROMPT_VERSION = "v2.9.1";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -516,7 +516,7 @@ async function llamarJuez(apiKey: string, entrada: string): Promise<Juicio[] | n
     method: "POST",
     headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: CLAUDE_MODEL, max_tokens: 1500, temperature: 0, system: PROMPT_JUEZ,
+      model: CLAUDE_MODEL, max_tokens: 1000, temperature: 0, system: PROMPT_JUEZ,
       messages: [{ role: "user", content: entrada }],
       tools: [HERRAMIENTA_JUICIOS],
       tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
@@ -1159,47 +1159,54 @@ Deno.serve(async (req) => {
       // revisa contra las fallas del nodo, las reglas del paso, el orden de los
       // seis pasos y las reglas universales. Lo que viola se corrige o se
       // descarta, en código. Si el auditor falla, se registra: la red lo ve.
-      // EL JUEZ DE LAS PRUEBAS (mensaje 95, 16-oct-2026): cada acusación del
-      // evaluador cuya regla trae «LA PRUEBA» —una falla marcada, o un criterio
-      // en parcial o no_cumple— se juzga aplicando esa prueba a lo que dijo el
-      // vendedor, en orden. La que no se sostiene se quita. Va antes del
-      // auditor, para que ningún consejo corrija al vendedor por algo que no
-      // hizo. Falla ABIERTA: si el juez no contesta, se queda lo del evaluador.
-      // En la evaluación solo van conteos: los ids van al log. (La red busca los
-      // ids de las fallas prohibidas en TODA la respuesta: si fueran aquí, una
-      // falla bien quitada contaría como presente.)
+      // EL JUEZ DE LAS PRUEBAS (mensajes 95 y 96, 16-oct-2026): cada acusación
+      // del evaluador cuya regla trae «LA PRUEBA» —una falla marcada, o un
+      // criterio en parcial o no_cumple— se juzga aplicando esa prueba a lo que
+      // dijo el vendedor, en orden. Si lo que hizo el vendedor PASA la prueba,
+      // la acusación se quita. Falla ABIERTA: si el juez no contesta, se queda
+      // lo del evaluador.
+      // El juez y el auditor corren AL MISMO TIEMPO (mensaje 96: en serie la
+      // evaluación subía ~8 s). Si el juez quitó algo, los textos se revisan
+      // otra vez sabiendo qué se quitó, para que ningún consejo corrija al
+      // vendedor por algo que no hizo: esa segunda revisión solo cuesta tiempo
+      // cuando el evaluador se equivocó.
+      // En la evaluación solo van conteos y tiempos: los ids van al log. (La red
+      // busca los ids de las fallas prohibidas en TODA la respuesta: si fueran
+      // aquí, una falla bien quitada contaría como presente.)
+      const tRevision = Date.now();
       const juez: any = { acusaciones: 0, fallas_quitadas: 0, criterios_corregidos: 0 };
       let quitadasPorJuez: { id: string; tipo: string; razon?: string }[] = [];
       const acusaciones = acusacionesConPrueba(evaluation, practice_script);
       juez.acusaciones = acusaciones.length;
-      if (acusaciones.length > 0) {
+      const juzgar = async (): Promise<Juicio[] | null> => {
+        if (acusaciones.length === 0) return null;
         const t0 = Date.now();
         const entradaJuez = armarEntradaJuez(acusaciones, fullHistory);
-        for (let intento = 1; intento <= 2; intento++) {
-          try {
-            const juicios = await llamarJuez(apiKey, entradaJuez);
-            if (!juicios) throw new Error("el juez no entregó juicios");
-            quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, juicios);
-            juez.fallas_quitadas = quitadasPorJuez.filter((q) => q.tipo === "falla").length;
-            juez.criterios_corregidos = quitadasPorJuez.filter((q) => q.tipo === "criterio").length;
-            juez.juzgadas = juicios.length;
-            juez.intentos = intento;
-            delete juez.error;
-            if (quitadasPorJuez.length > 0) console.warn("[closer-voice] juez de las pruebas: acusaciones que no se sostienen", { session_id, node_id, quitadas: quitadasPorJuez });
-            break;
-          } catch (e) {
-            console.error(`[closer-voice] juez de las pruebas, intento ${intento}:`, e);
-            juez.error = true;
-            if (intento < 2) await new Promise((res) => setTimeout(res, 600));
+        try {
+          for (let intento = 1; intento <= 2; intento++) {
+            try {
+              const juicios = await llamarJuez(apiKey, entradaJuez);
+              if (!juicios) throw new Error("el juez no entregó juicios");
+              juez.juzgadas = juicios.length;
+              juez.intentos = intento;
+              return juicios;
+            } catch (e) {
+              console.error(`[closer-voice] juez de las pruebas, intento ${intento}:`, e);
+              if (intento < 2) await new Promise((res) => setTimeout(res, 600));
+            }
           }
+          juez.error = true;
+          return null;
+        } finally {
+          juez.latencia_ms = Date.now() - t0;
         }
-        juez.latencia_ms = Date.now() - t0;
-      }
-
-      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez };
-      const textos = textosDeEvaluacion(evaluation);
-      auditoria.revisados = textos.length;
-      if (textos.length > 0) {
+      };
+      // El auditor, con hasta tres intentos: la falla típica es pasajera
+      // (saturación del modelo). Devuelve los veredictos sin aplicarlos: sus ids
+      // son posiciones en los textos de este momento.
+      const auditar = async (descartadas: { id: string; tipo: string; razon?: string }[]) => {
+        const textos = textosDeEvaluacion(evaluation);
+        if (textos.length === 0) return { ok: true, revisados: 0, veredictos: null as unknown[] | null, intentos: 0 };
         const entrada = armarEntradaAuditor({
           paso: pasoNodo ?? pasoPorMundo(node_id),
           fallas: Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [],
@@ -1207,30 +1214,54 @@ Deno.serve(async (req) => {
           textos,
           conversacion: fullHistory,
           ficha_cliente: bloqueEvaluador(fichaDePeticion((body as any).ficha_cliente)),
-          acusaciones_descartadas: quitadasPorJuez,
+          acusaciones_descartadas: descartadas,
         });
-        // Hasta tres intentos: la falla típica es pasajera (saturación del
-        // modelo) o una respuesta con texto alrededor del JSON.
-        let hecho = false;
-        for (let intento = 1; intento <= 3 && !hecho; intento++) {
+        for (let intento = 1; intento <= 3; intento++) {
           try {
             const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000);
             if (!Array.isArray(veredictos)) throw new Error("el auditor no entregó veredictos");
-            const r = aplicarAuditoria(evaluation, veredictos);
-            auditoria = { ...auditoria, ...r, intentos: intento };
-            hecho = true;
-            if (r.corregidos + r.descartados > 0) console.warn("[closer-voice] auditor del feedback", { session_id, node_id, ...r });
+            return { ok: true, revisados: textos.length, veredictos, intentos: intento };
           } catch (e) {
             console.error(`[closer-voice] auditor del feedback, intento ${intento}:`, e);
             if (intento < 3) await new Promise((res) => setTimeout(res, 600 * intento));
           }
         }
-        if (!hecho) {
-          // Falla CERRADA: nada sin revisar llega al vendedor.
-          fallaCerrada(evaluation);
-          auditoria.error = true;
+        return { ok: false, revisados: textos.length, veredictos: null, intentos: 3 };
+      };
+
+      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez };
+      const [juicios, primera] = await Promise.all([juzgar(), auditar([])]);
+      auditoria.revisados = primera.revisados;
+      let auditorOk = primera.ok;
+      if (primera.veredictos) {
+        const r = aplicarAuditoria(evaluation, primera.veredictos);
+        auditoria = { ...auditoria, ...r, intentos: primera.intentos };
+        if (r.corregidos + r.descartados > 0) console.warn("[closer-voice] auditor del feedback", { session_id, node_id, ...r });
+      }
+      // Lo del juez se aplica DESPUÉS del auditor: los ids del auditor son
+      // posiciones en los textos de antes de quitar nada.
+      if (juicios) {
+        // Todos los juicios al log, con su razón: los que quitan y los que dejan.
+        console.log("[closer-voice] juez de las pruebas", { session_id, node_id, juicios });
+        quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, juicios);
+        juez.fallas_quitadas = quitadasPorJuez.filter((q) => q.tipo === "falla").length;
+        juez.criterios_corregidos = quitadasPorJuez.filter((q) => q.tipo === "criterio").length;
+        if (quitadasPorJuez.length > 0) console.warn("[closer-voice] juez de las pruebas: acusaciones que no se sostienen", { session_id, node_id, quitadas: quitadasPorJuez });
+      }
+      if (auditorOk && quitadasPorJuez.length > 0) {
+        const segunda = await auditar(quitadasPorJuez);
+        auditorOk = segunda.ok;
+        if (segunda.veredictos) {
+          const r2 = aplicarAuditoria(evaluation, segunda.veredictos);
+          auditoria.segunda_revision = { revisados: segunda.revisados, ...r2 };
         }
       }
+      if (!auditorOk) {
+        // Falla CERRADA: nada sin revisar llega al vendedor.
+        fallaCerrada(evaluation);
+        auditoria.error = true;
+      }
+      auditoria.latencia_ms = Date.now() - tRevision;
       // Garantía en código, pase lo que pase con el auditor: sin groserías.
       auditoria.groserias_quitadas = sanearGroseriasEvaluacion(evaluation, MISION_DE_RESPALDO);
       // Y ningún ejemplo pide tiempo ni permiso ("dos minutos", "un momentito").

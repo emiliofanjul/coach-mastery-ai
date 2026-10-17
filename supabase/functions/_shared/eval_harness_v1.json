@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.17.0",
+  "harness_version": "v3.18.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1185,7 +1185,11 @@
           "se_disculpa",
           "pide_permiso",
           "se_encoge"
-        ]
+        ],
+        "niveles_esperados": {
+          "opening.arranque_sin_disculpa": "cumple"
+        },
+        "nota_v318": "Mensaje 96: la regla del arranque (opening.gasman) ya trae su prueba. En el 95 este criterio quedó en parcial 3 de 4 veces y el caso pasaba igual con 77."
       }
     },
     {
