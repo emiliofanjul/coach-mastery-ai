@@ -1671,7 +1671,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que habia en ese mostrador que no alcanzaste a ver."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1718,7 +1718,7 @@
           "id": "discovery.hueco",
           "weight": 0.5,
           "regla_id": "discovery.hueco",
-          "description": "Identifica al menos un hueco concreto y lo nombra: una familia que el cliente compra con otro proveedor, o una que sus clientes le piden y no maneja nadie. Debe quedar claro en la conversacion cual es el espacio disponible, no solo que existe."
+          "description": "Descubre al menos un hueco concreto: una familia que el cliente compra con otro proveedor, o una que sus clientes le piden y no maneja nadie. Debe quedar claro en la plática cuál es el espacio disponible, no solo que existe. No hace falta que el vendedor lo mencione: lo apunta para usarlo en la presentación."
         }
       ]
     }
@@ -1757,7 +1757,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que se quedo sobre la mesa en esa visita."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1798,7 +1798,7 @@
           "id": "discovery.hueco",
           "weight": 0.45,
           "regla_id": "discovery.hueco",
-          "description": "Identifica y nombra al menos un hueco concreto: una familia que el cliente compra con otro proveedor, o una que le piden y no maneja. No basta con preguntar: el hueco debe quedar identificado en la conversacion."
+          "description": "Descubre al menos un hueco concreto: una familia que el cliente compra con otro proveedor, o una que le piden y no maneja. No basta con preguntar: la respuesta tiene que dejar una familia concreta. No hace falta que el vendedor lo mencione: lo apunta para usarlo en la presentación."
         },
         {
           "id": "discovery.lee_el_lugar",
@@ -1849,7 +1849,7 @@
           "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo qué se quedó sobre la mesa en esa primera visita."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1890,7 +1890,7 @@
           "id": "discovery.hueco",
           "weight": 0.45,
           "regla_id": "discovery.hueco",
-          "description": "Identifica y nombra al menos un hueco concreto: una familia que el cliente compra con otro proveedor, o una que le piden y no maneja. No basta con preguntar: el hueco debe quedar identificado en la conversacion."
+          "description": "Descubre al menos un hueco concreto: una familia que el cliente compra con otro proveedor, o una que le piden y no maneja. No basta con preguntar: la respuesta tiene que dejar una familia concreta. No hace falta que el vendedor lo mencione: lo apunta para usarlo en la presentación."
         },
         {
           "id": "discovery.lee_el_lugar",
@@ -4817,7 +4817,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4894,7 +4894,7 @@
           "id": "discovery.hueco",
           "weight": 0.25,
           "regla_id": "discovery.hueco",
-          "description": "Identifica y nombra al menos un hueco concreto. Salir solo con el pedido de siempre no cumple."
+          "description": "Descubre al menos un hueco concreto: una familia con nombre que el cliente compra en otro lado o que le piden y no maneja. Salir solo con el pedido de siempre no cumple."
         },
         {
           "id": "presentation.consolidacion_proveedor",
