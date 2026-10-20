@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Mensaje 102: confirmar paso 0; huellas iniciales y archivos preparados coinciden. La ejecución general descubre las copias de docs/kb y da 640 aprobadas/3 fallidas en 49 archivos; comprobar las 630 pruebas vigentes por separado antes de decidir si se cumple la condición de parada.
+- [ ] Mensaje 102: aplicar SQL protegido, mover tres archivos exactos y desplegar solo harness-runner, condicionado al paso 0.
+- [ ] Mensaje 102: verificar G41/G42 cuatro veces y G32/P3_8/P3_9/P3_9b una vez; probar 1.2, 2.7c y 3.9b en texto; publicar solo si todo pasa.
+
 - [x] Mensaje 101: 622 pruebas vigentes y todas las huellas iniciales confirmadas.
 - [x] Mensaje 101: SQL protegido aplicado, cinco huellas finales y reemplazos exactos verificados; solo harness-runner desplegado; 630/47 pruebas pasan.
 - [x] Mensaje 101: 630/47 pruebas; G32/G41 pasan 4/4; doce casos restantes pasan; sin casos 7.3. Reportadas notas, bases, restas y juez.
