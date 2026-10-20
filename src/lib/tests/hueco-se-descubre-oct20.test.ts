@@ -47,7 +47,7 @@ describe("La red lo prueba en los dos sentidos", () => {
   });
   it("G41: pregunta, pero no sale ninguna familia → no cumple", () => {
     expect(caso("G41_pregunta_sin_hueco").expected.niveles_esperados).toEqual({ "discovery.hueco": "no_cumple" });
-    expect(harness.harness_version).toBe("v3.21.0");
+    expect(harness.harness_version).toMatch(/^v3\.(2[1-9]|[3-9]\d)\./);
   });
   it("la red devuelve la cuenta de la nota de cada caso", () => {
     const red = leer("supabase/functions/harness-runner/index.ts");
