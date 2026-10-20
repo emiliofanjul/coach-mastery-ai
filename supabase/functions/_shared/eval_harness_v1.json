@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.21.0",
+  "harness_version": "v3.22.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -2335,7 +2335,10 @@
         "observations_must_not_target": [
           "discovery.lee_el_lugar"
         ],
-        "nota_v321": "Mensaje 101 (Emilio, 20-oct-2026): el hueco se descubre y se apunta para usarlo en la presentación; al descubrirlo no hace falta mencionarlo. Aquí el cliente dijo que el anticongelante y las grasas los trae con otro proveedor, en respuesta a la pregunta del vendedor: el hueco quedó al descubierto. El evaluador exigía que el vendedor se lo señalara al cliente, que es presentar el hueco (paso 4)."
+        "nota_v321": "Mensaje 101 (Emilio, 20-oct-2026): el hueco se descubre y se apunta para usarlo en la presentación; al descubrirlo no hace falta mencionarlo. Aquí el cliente dijo que el anticongelante y las grasas los trae con otro proveedor, en respuesta a la pregunta del vendedor: el hueco quedó al descubierto. El evaluador exigía que el vendedor se lo señalara al cliente, que es presentar el hueco (paso 4).",
+        "must_not_flag": [
+          "solo_levanta_pedido"
+        ]
       }
     },
     {
@@ -2388,6 +2391,78 @@
           "discovery.hueco": "no_cumple"
         },
         "must_not_flag": [
+          "hueco_inventado"
+        ],
+        "must_flag": [
+          "solo_levanta_pedido"
+        ],
+        "nota_v322": "Mensaje 102 (Emilio, 20-oct-2026): le dieron una respuesta vaga y no siguió descubriendo. Qué hacer con una respuesta vaga se enseña en el 3.2 (dar opciones): una sola pregunta al aire y despedirse es trámite."
+      }
+    },
+    {
+      "id": "G42_intenta_de_verdad_sin_hueco",
+      "node_id": "3.9b",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "ficha_cliente": {
+        "tipo": "nuevo",
+        "nombre": "Don Roberto",
+        "negocio": "refaccionaria"
+      },
+      "description": "Mensaje 102: la otra cara del G41. Ante la respuesta vaga, el vendedor sigue con opciones concretas y con otra herramienta (lo que le piden). Esta vez no hay hueco, pero lo intentó de verdad: no es visita de trámite.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Roberto! Se ve que hoy no para el mostrador. ¿Así está toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido. ¿Usted de dónde viene?"
+        },
+        {
+          "role": "user",
+          "text": "Soy Emilio, de Dalfan. Traemos lubricantes Bardahl, Repsol y Mexlub para las refaccionarias de la zona. ¿Usted cómo le hace con los lubricantes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, qué bien. Mire, necesito aceite 15W40, ya se me está acabando. Tráigame diez litros."
+        },
+        {
+          "role": "user",
+          "text": "Claro, le anoto los diez litros de 15W40. ¿Y qué otras líneas maneja?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues de todo un poco, lo normal de una refaccionaria."
+        },
+        {
+          "role": "user",
+          "text": "¿Como anticongelante, grasas o aditivos? ¿Esos con quién los trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, no, todo eso ya me lo surten ustedes mismos, el compañero que viene los lunes."
+        },
+        {
+          "role": "user",
+          "text": "Ah, muy bien. ¿Y le ha tocado que le pidan algo que no tenga?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, la verdad lo que me piden lo tengo."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Roberto. Le traigo sus diez litros el jueves. ¿Le queda mejor en la mañana o en la tarde?"
+        },
+        {
+          "role": "assistant",
+          "text": "En la mañana está bien."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "solo_levanta_pedido",
           "hueco_inventado"
         ]
       }
