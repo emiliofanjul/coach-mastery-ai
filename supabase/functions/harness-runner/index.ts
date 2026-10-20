@@ -36,6 +36,9 @@ type CaseResult = {
   ms_total?: number;
   ms_revision?: number | null;
   juez?: unknown;
+  /** La cuenta de la nota (mensaje 101): base de los criterios y cada resta. */
+  base?: number | null;
+  restas?: string[];
 };
 
 function getCase(id: string): Case | undefined {
@@ -302,6 +305,8 @@ function evaluateCase(c: Case, response: any): CaseResult {
     ms_total: typeof response.ms === "number" ? response.ms : undefined,
     ms_revision: typeof parsed?.auditoria?.latencia_ms === "number" ? parsed.auditoria.latencia_ms : null,
     juez: parsed?.auditoria?.juez ?? null,
+    base: typeof parsed?.desglose?.base === "number" ? parsed.desglose.base : null,
+    restas: Array.isArray(parsed?.desglose?.restas) ? parsed.desglose.restas.map((r: any) => `${r?.flag} (${r?.severidad}): -${r?.puntos}`) : [],
     veredictos: desgloseCrit.map((d: any) => {
       const n = nivelDe(Number(d.credito ?? 0));
       const base = `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;

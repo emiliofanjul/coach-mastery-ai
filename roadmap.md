@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 101: 622 pruebas vigentes y todas las huellas iniciales confirmadas.
+- [x] Mensaje 101: SQL protegido aplicado, cinco huellas finales y reemplazos exactos verificados; solo harness-runner desplegado; 630/47 pruebas pasan.
+- [ ] Mensaje 101: 630 pruebas, G32/G41 cuatro veces, restantes Mundo 3/boss con hueco, pantalla crítica; publicar solo si cumplen condiciones.
+- [ ] Emilio: completar y reportar todo el paso 4 antes de concluir; G32/G41 ya pasaron 4/4.
+
 - [x] Mensaje 100: 618 pruebas y huellas confirmadas; cinco reemplazos idénticos; desplegada solo closer-voice v2.9.3.
 - [x] Mensaje 100: 622/46 pruebas pasan; G12 cuatro veces con 5; G32 falla tres de cuatro; red completa 52 pasan, 1 falla (G32), 5 omitidos.
 - [ ] Mensaje 100: publicación bloqueada por G32; pantalla con resultado crítico no verificada de extremo a extremo. Esperar ajuste de Emilio.
