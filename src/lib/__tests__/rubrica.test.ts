@@ -127,3 +127,36 @@ describe("El desglose dice qué pieza falta", () => {
   });
 });
 
+
+// Mensaje 100 (20-oct-2026): una falla crítica resta como una major y además
+// topa en 30. Antes solo topaba: con una base baja castigaba MENOS que una major
+// (G12 del 1.2: base 20, con sin_pregunta major quedaba en 5; al volverla
+// critical quedó en 20). Una falla más grave nunca deja mejor nota.
+describe("Una crítica nunca castiga menos que una mayor", () => {
+  const conBase = (nivelEstructura: string) => [v("opening.estructura_apertura", nivelEstructura), v("opening.personalizacion", "cumple", 2), v("opening.curiosidad_abierta", "cumple")];
+  it("base alta: queda en 30, como siempre", () => {
+    const r = calcularScore({ veredictos: todo(), successCriteria: exito12, flags: ["pitch_prematuro"], failureCriteria: fallas12 });
+    expect(r).toMatchObject({ score: 30, topado: true });
+    expect(r.restas).toEqual([{ flag: "pitch_prematuro", severidad: "critical", puntos: RESTA_MAJOR }]);
+  });
+  it("base baja: resta, y queda debajo del tope", () => {
+    const r = calcularScore({ veredictos: conBase("no_cumple"), successCriteria: exito12, flags: ["pitch_prematuro"], failureCriteria: fallas12 });
+    expect(r.base).toBe(60);
+    expect(r.score).toBe(30);
+    const r2 = calcularScore({ veredictos: [v("opening.estructura_apertura", "no_cumple"), v("opening.personalizacion", "no_cumple"), v("opening.curiosidad_abierta", "cumple")], successCriteria: exito12, flags: ["pitch_prematuro"], failureCriteria: fallas12 });
+    expect(r2.base).toBe(20);
+    expect(r2.score).toBe(PISO_INTENTO);
+  });
+  it("con cualquier base, la crítica deja igual o menos que la mayor", () => {
+    for (const niv of ["cumple", "parcial", "no_cumple"]) {
+      const critica = calcularScore({ veredictos: conBase(niv), successCriteria: exito12, flags: ["pitch_prematuro"], failureCriteria: fallas12 }).score;
+      const mayor = calcularScore({ veredictos: conBase(niv), successCriteria: exito12, flags: ["pregunta_cerrada"], failureCriteria: fallas12 }).score;
+      expect(critica).toBeLessThanOrEqual(mayor);
+    }
+  });
+  it("crítica más mayor: restan las dos y luego el tope", () => {
+    const r = calcularScore({ veredictos: todo(), successCriteria: exito12, flags: ["pitch_prematuro", "pregunta_cerrada"], failureCriteria: fallas12 });
+    expect(r.restas).toHaveLength(2);
+    expect(r.score).toBe(30);
+  });
+});

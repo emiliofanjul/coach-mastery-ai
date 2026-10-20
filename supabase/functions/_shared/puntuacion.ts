@@ -198,7 +198,12 @@ export function calcularScore(args: {
   for (const f of flags) {
     const sev = severidadDe.get(f);
     if (espejos.has(f)) continue;
-    if (sev === "major") restas.push({ flag: f, severidad: sev, puntos: RESTA_MAJOR });
+    // Una critical resta como una major y ADEMÁS topa en 30 (mensaje 100,
+    // 20-oct-2026). Antes solo topaba, y con una base baja castigaba MENOS que
+    // una major: base 50 con major → 20; con critical → 30. Una falla más grave
+    // nunca puede dejar mejor nota que una menos grave.
+    if (sev === "critical") restas.push({ flag: f, severidad: sev, puntos: RESTA_MAJOR });
+    else if (sev === "major") restas.push({ flag: f, severidad: sev, puntos: RESTA_MAJOR });
     else if (sev === "minor") restas.push({ flag: f, severidad: sev, puntos: RESTA_MINOR });
   }
   let score = Math.max(0, base - restas.reduce((a, r) => a + r.puntos, 0));
@@ -242,7 +247,7 @@ export interface Falla {
 const ORDEN_SEVERIDAD: Record<string, number> = { critical: 0, major: 1, minor: 2 };
 
 export function efectoDe(sev: Severidad): string {
-  if (sev === "critical") return `Falla crítica: deja tu nota en máximo ${TOPE_CRITICO}.`;
+  if (sev === "critical") return `Falla crítica: resta ${RESTA_MAJOR} puntos y deja tu nota en máximo ${TOPE_CRITICO}.`;
   if (sev === "major") return `Resta ${RESTA_MAJOR} puntos.`;
   return `Resta ${RESTA_MINOR} puntos.`;
 }
@@ -328,7 +333,7 @@ export function explicarNota(ev: {
   if (d.topado === true && criticos.length > 0) {
     lineas.push(`3) Tope: hubo una falla crítica (${criticos.join(", ")}). Una falla crítica deja la nota en máximo ${TOPE_CRITICO}, por eso quedó en ${ev.score}.`);
   } else if (criticos.length > 0) {
-    lineas.push(`3) Tope: hubo una falla crítica (${criticos.join(", ")}), que limita la nota a máximo ${TOPE_CRITICO}; la nota ya estaba en ese rango.`);
+    lineas.push(`3) Tope: hubo una falla crítica (${criticos.join(", ")}), que limita la nota a máximo ${TOPE_CRITICO}; con su resta, la nota ya quedó debajo de ese tope.`);
   } else {
     lineas.push("3) Tope: no hubo falla crítica.");
   }

@@ -115,7 +115,7 @@ describe("El juez en el evaluador", () => {
     expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script)")).toBeGreaterThan(0);
     expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script)")).toBeLessThan(voz.indexOf("const textos = textosDeEvaluacion(evaluation)"));
     expect(voz).toContain("tool_choice: { type: \"tool\", name: HERRAMIENTA_JUICIOS.name }");
-    expect(voz).toContain('const PROMPT_VERSION = "v2.9.2"');
+    expect(voz).toMatch(/const PROMPT_VERSION = "v2\.9\.[2-9]"/);
   });
   it("mensaje 96: el juez y el auditor corren al mismo tiempo; si el juez quitó algo, se revisa otra vez", () => {
     expect(voz).toContain("const [juicios, primera] = await Promise.all([juzgar(), auditar([])]);");

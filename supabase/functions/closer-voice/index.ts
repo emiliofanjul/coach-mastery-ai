@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.9.2";
+const PROMPT_VERSION = "v2.9.3";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -264,10 +264,10 @@ Si el criterio es una ESCALERA (su regla lo dice, como la escalera de la especif
 PASO 2 — FLAGS. Pon en "flags_detected" cada failure_criterion que el transcript dispara. Cada flag UNA sola vez, aunque el desvío ocupe varios turnos. La severidad la toma el código del campo "severity" del guion, no del nombre del flag.
 DOS TIPOS DE FALLA QUE SE MARCAN SIEMPRE que su patrón aparece, aunque el mismo hecho ya te haya bajado un criterio:
 · Las que traen "espejo_de": son el reverso de ese criterio. No restan puntos aparte (el código ya lo sabe y no las cobra dos veces): sirven para decirle al vendedor, con su frase, qué hizo. Si el criterio salió "no_cumple" o "parcial" por ese hecho, la falla va.
-· Las critical: son un candado del nodo (dejan la nota en máximo 30). No es un cobro doble: es la regla de ese nodo.
+· Las critical: son un candado del nodo (restan 30 y dejan la nota en máximo 30). No es un cobro doble: es la regla de ese nodo.
 Por CADA flag que pongas, agrega su entrada en "evidencia_flags", sin excepción: es lo primero que el vendedor ve, porque es lo que más le bajó la nota. Si el vendedor no ve qué hizo, no puede corregirlo. "cita" es lo que dijo, copiado literal del transcript; "error" es una frase corta, dirigida a él, de qué hizo y por qué cuesta en este momento de la visita; "mejora" y "ejemplo" siguen las mismas reglas que en observations. Si no puedes citar la frase literal que dispara el flag, el flag no va.
 
-La rúbrica que aplica el código, para que sepas qué pesan tus decisiones: cumple vale el peso completo del criterio; parcial, la mitad; en escaleras, el escalón 1 vale un tercio y el 2 o el 3 el peso completo. Cada flag major resta 30, cada minor resta 15, y un critical deja el score en máximo 30. Devuelve también "score" con tu estimado: se guarda para comparar, pero la nota final la calcula el código.
+La rúbrica que aplica el código, para que sepas qué pesan tus decisiones: cumple vale el peso completo del criterio; parcial, la mitad; en escaleras, el escalón 1 vale un tercio y el 2 o el 3 el peso completo. Cada flag major resta 30, cada minor resta 15, y un critical resta 30 y además deja el score en máximo 30. Devuelve también "score" con tu estimado: se guarda para comparar, pero la nota final la calcula el código.
 
 REGLAS DURAS DE PUNTUACIÓN:
 - La ausencia de un success_criterion NO es un flag — ya está reflejada en la base. NO la castigues dos veces. (Salvo las fallas con "espejo_de", que se marcan pero no restan, y las critical, que siempre topan.)
@@ -451,7 +451,7 @@ REGLAS ABSOLUTAS:
 - Prohibido evaluar prosodia o audio. Prohibido inventar criterios que no estén en el practice_script.
 - Máximo 5 frases por respuesta.
 ${LENGUAJE_CLOSER}
-- LA NOTA SE EXPLICA SOLO CON EL CÁLCULO DE ABAJO ("CÓMO SE CALCULÓ LA NOTA"). No existe otra nota, otra escala, "nota de calidad", "sistema de progresión" ni nada parecido: PROHIBIDO mencionarlos. Si hubo una falla crítica, eso es lo primero que explicas cuando pregunten por la nota: qué dijo (cítalo) y que una falla crítica deja la nota en máximo 30. Si pregunta "cuánto habría sacado", responde solo con la aritmética de ese cálculo; mientras la falla crítica siga ahí, la nota no pasa de 30.
+- LA NOTA SE EXPLICA SOLO CON EL CÁLCULO DE ABAJO ("CÓMO SE CALCULÓ LA NOTA"). No existe otra nota, otra escala, "nota de calidad", "sistema de progresión" ni nada parecido: PROHIBIDO mencionarlos. Si hubo una falla crítica, eso es lo primero que explicas cuando pregunten por la nota: qué dijo (cítalo) y que una falla crítica resta 30 y deja la nota en máximo 30. Si pregunta "cuánto habría sacado", responde solo con la aritmética de ese cálculo; mientras la falla crítica siga ahí, la nota no pasa de 30.
 - SOLO PUEDES CONCEDER SOBRE LO QUE LA EVALUACIÓN DIJO (sus observaciones, veredictos o fallas). Si el vendedor reclama algo que la evaluación no le calificó, dile con claridad que eso no se le calificó, y no lo concedas.
 - ANTES DE SOSTENER un veredicto, ubica la frase de la descripción del criterio que pide justo lo que faltó. Si en la descripción no hay una frase que lo pida, el evaluador exigió de más: concede.
 - LAS FALLAS DE ESTE NODO SON PARTE DE LO QUE MIDE, igual que sus criterios: están en "CRITERIOS DE FALLO" y el vendedor las tiene que conocer. NO SABES qué tarjetas, lecciones o nodos vio el vendedor antes, así que JAMÁS concedas ni digas que algo "no se enseñó", "no estaba en lo que te enseñé" o que "la sesión estuvo mal armada". Si el vendedor reclama que no le enseñaron una falla que sí está en CRITERIOS DE FALLO: explícale cuál es la falla, cita lo que dijo y por qué encaja, sostén la nota (concede false) y cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
