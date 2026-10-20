@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Mensaje 100: confirmar 618 pruebas y cinco huellas; reemplazar archivos exactos y desplegar solo closer-voice.
+- [ ] Mensaje 100: verificar 622 pruebas, G12/G32 cuatro veces y red completa caso por caso.
+- [ ] Mensaje 100: revisar resultados con falla crítica; publicar 95–100 solo si cumple las condiciones de Emilio.
+
 - [x] Mensaje 97: confirmar huellas, actualizar regla, mover archivos exactos, desplegar solo la red y ejecutar las 14 corridas; 605/605 pruebas pasan.
 - [ ] Mensaje 97: publicación bloqueada por G40 (4/4 falla: no marca sin_pregunta); esperar el ajuste de Emilio, sin cambiar funciones.
 
