@@ -1175,7 +1175,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Levantar el pedido de siempre y despedirse sin explorar nada. Al que solo toma pedidos lo reemplaza un formulario.",
+  "resumen": "Levantar el pedido de siempre y despedirse sin explorar nada. Al que solo toma pedidos lo reemplaza un formulario. LA PRUEBA: ¿el vendedor se fue con el pedido sin haber descubierto algo más y sin haberlo intentado de verdad? Intentarlo es usar al menos una de las herramientas del hueco —mapear qué otras líneas maneja y con quién, preguntar qué le piden que no tenga, o anclar en negocios como el suyo— y, si la respuesta es vaga («de todo un poco», «lo normal»), seguir: con opciones concretas o con otra herramienta. Una sola pregunta al aire y despedirse después de una respuesta vaga es trámite. Si descubrió algo más, o lo intentó así, no es esto.",
   "cita_cerebro": "Al que solo toma pedidos lo reemplaza un formulario",
   "severidad_sugerida": "major"
  },
