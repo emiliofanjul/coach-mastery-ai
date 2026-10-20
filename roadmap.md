@@ -4,7 +4,7 @@
 - [x] Mensaje 101: SQL protegido aplicado, cinco huellas finales y reemplazos exactos verificados; solo harness-runner desplegado; 630/47 pruebas pasan.
 - [x] Mensaje 101: 630/47 pruebas; G32/G41 pasan 4/4; doce casos restantes pasan; sin casos 7.3. Reportadas notas, bases, restas y juez.
 - [x] Emilio: paso 4 completado y reportado; pantalla crítica no alcanzada por permiso solo voz y falta de micrófono en sandbox.
-- [ ] Mensaje 101: publicar 95–101, sin condiciones de bloqueo activadas.
+- [x] Mensaje 101: publicación de 95–101 solicitada para closerapp.ai; despliegue final aún no confirmado.
 - [ ] Emilio: verificar por voz pantalla crítica 1.2 sin preguntas; 2.7c y 3.9b. Bloqueador: requiere micrófono real.
 
 - [x] Mensaje 100: 618 pruebas y huellas confirmadas; cinco reemplazos idénticos; desplegada solo closer-voice v2.9.3.
