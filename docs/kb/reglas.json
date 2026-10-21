@@ -65,7 +65,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Pedir autorización para hablar o para seguir: entrega el control y le ofrece al cliente una salida gratis. LA PRUEBA: ¿la frase le da al cliente la opción de decir que no a seguir la plática? Ejemplos que ilustran —no delimitan—: «¿tiene un minutito?», «¿me permite?», «¿le puedo preguntar algo?», «si no le molesta…». Si la frase no le da esa opción, no es pedir permiso, diga lo que diga.",
+  "resumen": "Pedir autorización para hablar o para seguir: entrega el control y le ofrece al cliente una salida gratis. LA PRUEBA: ¿la frase le da al cliente la opción de decir que no a seguir la plática? Ejemplos que ilustran —no delimitan—: «¿tiene un minutito?», «¿me permite?», «¿le puedo preguntar algo?», «si no le molesta…». Si la frase no le da esa opción, no es pedir permiso, diga lo que diga. Pedir permiso es condicionar el seguir a que el cliente diga que sí: preguntárselo y esperar su respuesta, o ponerlo como condición («si no le molesta…»). Anunciar lo que vas a hacer y hacerlo en el mismo turno, sin condicionarlo —«quería preguntarle…» seguido de la pregunta—, no es pedir permiso: no le ofrece ninguna salida.",
   "cita_cerebro": "Cuando preguntas «¿tiene un minutito?» haces dos cosas a la vez — le entregas el control, y le ofreces una salida que no le cuesta nada tomar",
   "severidad_sugerida": "critical"
  },
@@ -255,7 +255,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Aceptar el bloqueo pero no retomar. LA PRUEBA: después de aceptar, ¿el vendedor se queda callado esperando que el cliente le dé pie, o pide permiso para seguir (con la prueba de pedir permiso: una frase que le da al cliente la opción de decir que no a seguir)? Si sigue con su tema o con una pregunta, sí retomó.",
+  "resumen": "Aceptar el bloqueo pero no retomar. LA PRUEBA: después de aceptar, ¿el vendedor se queda callado esperando que el cliente le dé pie, o pide permiso para seguir (con la prueba de pedir permiso: condicionar el seguir a que el cliente diga que sí)? Si sigue con su tema o con una pregunta, sí retomó. Anunciar lo que va a hacer y hacerlo en el mismo turno («nada más quería preguntarle…» y la pregunta) es retomar, no pedir permiso.",
   "cita_cerebro": "El tercer movimiento es el que falla",
   "severidad_sugerida": "major"
  },
