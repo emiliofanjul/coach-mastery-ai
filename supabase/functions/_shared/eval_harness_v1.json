@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.22.0",
+  "harness_version": "v3.23.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1180,6 +1180,61 @@
           "pide_permiso_de_nuevo"
         ],
         "nota_v317": "Mensaje 95: AIR ahora tiene su prueba. Aceptó («claro, claro»), no discutió y siguió con una pregunta: cumple, aunque todavía no haya dicho a qué viene."
+      }
+    },
+    {
+      "id": "G43_practica_real_2_7c_texto",
+      "node_id": "2.7c",
+      "seller_name": "Emilio Fanjul Pérez",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "cut_reason": "scope_covered",
+      "ficha_cliente": {
+        "tipo": "nuevo",
+        "nombre": "Don Armando",
+        "negocio": "refaccionaria"
+      },
+      "description": "Práctica real en modo texto (20-oct-2026, mensaje 102). El evaluador y el juez leyeron «nada más, quería preguntarle cómo le ha ido» como pedir permiso y la nota quedó en 50. Además, el cierre de Closer entró a la evaluación como si fuera del cliente (se corrige en la pantalla de práctica, mensaje 103). Anunciar lo que vas a hacer y hacerlo en el mismo turno no es pedir permiso.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, don Héctor. Buen día. ¿Cómo está? Oiga, veo que tiene muchísima gente hoy, ¿eh? ¿Qué está regalando o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita ando ocupado, joven."
+        },
+        {
+          "role": "user",
+          "text": "Claro, claro, claro. Me imagino. Oiga, no, pero nada más, quería preguntarle cómo le ha ido en la semana. ¿Cómo le está yendo con todos los productos que está vendiendo?"
+        },
+        {
+          "role": "assistant",
+          "text": "De verdad, ahorita no puedo, ando a tope."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Héctor, se ve que hoy está a tope. ¿Le queda mejor que pase el jueves o el viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, el jueves está bien, pásele."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          80,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "blocks.dos_no_seguidos": "cumple"
+        },
+        "must_not_flag": [
+          "pide_permiso_de_nuevo",
+          "discute_el_bloqueo",
+          "insiste_tras_dos",
+          "se_va_al_primero"
+        ]
       }
     },
     {

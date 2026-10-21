@@ -43,6 +43,6 @@ describe("La red, en los dos sentidos", () => {
   });
   it("G32: exploró y descubrió → no es trámite", () => {
     expect(caso("G32_mapeo_con_pregunta_abierta").expected.must_not_flag).toEqual(["solo_levanta_pedido"]);
-    expect(harness.harness_version).toBe("v3.22.0");
+    expect(harness.harness_version).toMatch(/^v3\.(2[2-9]|[3-9]\d)\./);
   });
 });

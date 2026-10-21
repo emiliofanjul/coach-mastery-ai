@@ -1,3 +1,4 @@
+import { dialogoDeVenta, marcarUltimoDelVendedorFueraDeLaVenta, type TranscriptItem as TranscriptItemVenta, type TurnPhase as TurnPhaseVenta } from "@/lib/dialogo-venta";
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,14 +67,12 @@ interface DirectorDecision {
 }
 
 type Phase = "prep" | "i_do" | "transition" | "you_do" | "feedback";
-type TurnPhase = "i_do" | "you_do";
+type TurnPhase = TurnPhaseVenta;
 const MAX_I_DO_USER_TURNS = 2;
 
-interface TranscriptItem {
-  role: "agent" | "user";
-  text: string;
-  phase: TurnPhase;
-}
+// El tipo vive en src/lib/dialogo-venta.ts (mensaje 103): ahí se define qué es
+// diálogo de venta y qué dijo Closer con su propia voz.
+type TranscriptItem = TranscriptItemVenta;
 
 interface ObservationItem {
   error: string;
@@ -996,6 +995,8 @@ function PracticaPage() {
           role: "agent",
           text: closingMsg,
           phase: currentPhaseRef.current,
+          // El cierre lo dice Closer, no el cliente: no se evalúa (mensaje 103).
+          fuera_de_la_venta: true,
         };
         transcriptFullRef.current = [...transcriptFullRef.current, agentItem];
         setTranscriptFull([...transcriptFullRef.current]);
@@ -1170,6 +1171,8 @@ function PracticaPage() {
           conversationHistoryRef.current = h.slice(0, -1);
         }
         if (message.trim()) closerMsgsRef.current.add(message.trim());
+        // Y tampoco entra a la evaluación ni a las disputas (mensaje 103).
+        transcriptFullRef.current = marcarUltimoDelVendedorFueraDeLaVenta(transcriptFullRef.current);
       }
 
       const inIDo = claudePhaseRef.current === "i_do";
@@ -1207,6 +1210,8 @@ function PracticaPage() {
           role: "agent",
           text: message,
           phase: currentPhaseRef.current,
+          // La respuesta fuera del papel la dice Closer, no el cliente.
+          ...(metaTurn ? { fuera_de_la_venta: true } : {}),
         };
         transcriptFullRef.current = [...transcriptFullRef.current, agentItem];
         setTranscriptFull([...transcriptFullRef.current]);
@@ -1379,10 +1384,8 @@ function PracticaPage() {
     audioBlobPromiseRef.current = stopAudioCapture();
     const youDo = transcriptFullRef.current.filter((m) => m.phase === "you_do");
     setYouDoTranscript(youDo);
-    const youDoConv = youDo.map((m) => ({
-      role: m.role === "agent" ? "assistant" : "user",
-      content: m.text,
-    }));
+    // Las disputas discuten solo el diálogo de venta (mensaje 103).
+    const youDoConv = dialogoDeVenta(transcriptFullRef.current);
     setYouDoHistory(youDoConv);
     // 1) Mostrar pantalla de análisis
     setPhase("feedback");
@@ -1438,9 +1441,8 @@ function PracticaPage() {
         practice_script: nodeDataRef.current?.practice_script ?? null,
         company_brain: JSON.stringify(companyData?.company_sales_brain ?? {}),
         seller_name: sellerData?.full_name ?? "",
-        conversation_history: transcriptFullRef.current
-          .filter((m) => m.phase === "you_do")
-          .map((m) => ({ role: m.role === "agent" ? "assistant" : "user", content: m.text })),
+        // Solo el diálogo de venta: sin el cierre ni los desvíos de Closer (mensaje 103).
+        conversation_history: dialogoDeVenta(transcriptFullRef.current),
         session_id: sessionCorrelationIdRef.current,
         company_id: sellerData?.company_id ?? null,
         seller_id: sellerData?.id ?? null,
