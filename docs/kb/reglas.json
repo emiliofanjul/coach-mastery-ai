@@ -277,7 +277,7 @@
   "procedencia": "CAMPO",
   "resumen": "Seguir insistiendo después de dos no seguidos en la puerta: ya no es seguridad, es terquedad. LA PRUEBA: después del segundo no seguido, ¿el vendedor sigue con su tema (otra pregunta, una explicación, un «nomás un minutito») en vez de quedar de regresar o despedirse? Solo cuenta lo que dice después del segundo no.",
   "cita_cerebro": "Insistir más ya no es seguridad: es terquedad",
-  "severidad_sugerida": "critical"
+  "severidad_sugerida": "major"
  },
  {
   "id": "blocks.ataque_preventivo",
@@ -915,7 +915,7 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Tres no CONSECUTIVOS y sigues adelante. La racha se rompe si la conversación avanza.",
+  "resumen": "Tres no CONSECUTIVOS y sigues adelante. La racha se rompe si la conversación avanza. Solo en el cierre: en cualquier otro momento de la visita son dos (flow.dos_no_seguidos).",
   "cita_cerebro": "Tienen que ser CONSECUTIVOS",
   "severidad_sugerida": null
  },
@@ -1175,7 +1175,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Levantar el pedido de siempre y despedirse sin explorar nada. Al que solo toma pedidos lo reemplaza un formulario. LA PRUEBA: ¿el vendedor se fue con el pedido sin haber descubierto algo más y sin haberlo intentado de verdad? Intentarlo es usar al menos una de las herramientas del hueco —mapear qué otras líneas maneja y con quién, preguntar qué le piden que no tenga, o anclar en negocios como el suyo— y, si la respuesta es vaga («de todo un poco», «lo normal»), seguir: con opciones concretas o con otra herramienta. Una sola pregunta al aire y despedirse después de una respuesta vaga es trámite. Si descubrió algo más, o lo intentó así, no es esto.",
+  "resumen": "Levantar el pedido de siempre y despedirse sin explorar nada. Al que solo toma pedidos lo reemplaza un formulario. LA PRUEBA: ¿el vendedor se fue con el pedido sin haber descubierto algo más y sin haberlo intentado de verdad? Intentarlo es usar al menos una de las herramientas del hueco —mapear qué otras líneas maneja y con quién, preguntar qué le piden que no tenga, o anclar en negocios como el suyo— y, si la respuesta es vaga («de todo un poco», «lo normal»), seguir: con opciones concretas o con otra herramienta. Una sola pregunta al aire y despedirse después de una respuesta vaga es trámite. Si descubrió algo más, o lo intentó así, no es esto. Dejar de buscar después de dos «no» seguidos no es trámite: es lo correcto (flow.dos_no_seguidos).",
   "cita_cerebro": "Al que solo toma pedidos lo reemplaza un formulario",
   "severidad_sugerida": "major"
  },
@@ -1475,7 +1475,7 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La Regla de los No: tres 'no' CONSECUTIVOS son luz roja (la fuente dice dos; Emilio usa tres, porque hay quien deja ir un sí solo porque el cliente tuvo objeciones). Con la luz roja, el vendedor sale rápido y bien: sin insistir, cuidando la relación y dejando una siguiente cita. Tienen que ser seguidos: si la conversación avanzó entre un no y otro, la racha se rompe. Salir así es la ejecución correcta, no una falta.",
+  "resumen": "La Regla de los No: tres 'no' CONSECUTIVOS son luz roja (la fuente dice dos; Emilio usa tres, porque hay quien deja ir un sí solo porque el cliente tuvo objeciones). Con la luz roja, el vendedor sale rápido y bien: sin insistir, cuidando la relación y dejando una siguiente cita. Tienen que ser seguidos: si la conversación avanzó entre un no y otro, la racha se rompe. Salir así es la ejecución correcta, no una falta. Esta regla es del cierre: en cualquier otro momento de la visita son dos no seguidos (flow.dos_no_seguidos).",
   "cita_cerebro": "dos no seguidos, luz roja, sigue adelante",
   "severidad_sugerida": "None"
  },
@@ -1485,7 +1485,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, una que le piden y no maneja, o una que no maneja nadie. No tiene señal verbal: se ve o se pregunta. Tiene que ser real y verificable: lo viste, te lo dijo, o lo sabes por su giro. LA PRUEBA: al terminar la plática, ¿quedó al descubierto al menos un hueco concreto —una familia con nombre— porque el vendedor lo preguntó, lo vio, lo ancló en negocios como el suyo, o el cliente lo dijo? Si sí, cumple, aunque el vendedor no lo mencione: el hueco se descubre y se apunta para usarlo en la presentación. No basta con preguntar si la respuesta no dejó ninguna familia concreta. Ofrecérselo o decirle por qué le conviene no se pide aquí: eso es presentar el hueco (paso 4).",
+  "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, una que le piden y no maneja, o una que no maneja nadie. No tiene señal verbal: se ve o se pregunta. Tiene que ser real y verificable: lo viste, te lo dijo, o lo sabes por su giro. LA PRUEBA: al terminar la plática, ¿quedó al descubierto al menos un hueco concreto —una familia con nombre— porque el vendedor lo preguntó, lo vio, lo ancló en negocios como el suyo, o el cliente lo dijo? Si sí, cumple, aunque el vendedor no lo mencione: el hueco se descubre y se apunta para usarlo en la presentación. No basta con preguntar si la respuesta no dejó ninguna familia concreta. Ofrecérselo o decirle por qué le conviene no se pide aquí: eso es presentar el hueco (paso 4). Si el vendedor lo buscó bien —usó las herramientas y siguió las respuestas vagas— o salió después de dos «no» seguidos, y no apareció ningún hueco, el criterio es no_aplica: hoy no había nada que descubrir.",
   "cita_cerebro": "algo que podría comprarte y no te compra",
   "severidad_sugerida": "None"
  },
@@ -1527,6 +1527,16 @@
   "procedencia": "FUENTE",
   "resumen": "Sube el impulso con los factores de FUJPIG (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), siempre reales y comprobables.",
   "cita_cerebro": "El impulso es otra palabra para la emoción",
+  "severidad_sugerida": null
+ },
+ {
+  "id": "flow.dos_no_seguidos",
+  "paso": 0,
+  "tipo": "principio",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "resumen": "En cualquier momento de la visita, menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día: se deja para otra visita (en la puerta, quedar de regresar con una alternativa concreta; al buscar el hueco, dejar de buscar). En el cierre son tres: la Regla de los No. LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa? Entonces es un «no». Si contesta, aunque sea vago o corto, no es un «no». Si pone una duda, una condición o una objeción, tampoco: es una objeción. Seguidos: entre uno y otro la conversación no avanzó.",
+  "cita_cerebro": "menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día",
   "severidad_sugerida": null
  }
 ]

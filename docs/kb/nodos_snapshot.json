@@ -760,14 +760,18 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esos dos no."
         }
       },
-      "version": "1.0.4",
+      "version": "1.0.5",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "insiste_tras_dos",
           "regla_id": "blocks.insistir_tras_dos_no",
           "severity": "critical",
-          "description": "Despues del segundo bloqueo seguido sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo. Ya no es seguridad, es terquedad, y el cliente lo recibe cerrado la proxima vez. Solo cuenta lo que el vendedor dice DESPUES del segundo bloqueo: si todavia no ha contestado al segundo bloqueo, esta falla no aplica."
+          "description": "Despues del segundo bloqueo seguido sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo. Ya no es seguridad, es terquedad, y el cliente lo recibe cerrado la proxima vez. Solo cuenta lo que el vendedor dice DESPUES del segundo bloqueo: si todavia no ha contestado al segundo bloqueo, esta falla no aplica.",
+          "severity_override": {
+            "razon": "escalada: es lo que enseña este nodo",
+            "default": "major"
+          }
         },
         {
           "id": "discute_el_bloqueo",
@@ -1022,7 +1026,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.1.3",
+      "version": "2.1.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1074,6 +1078,12 @@
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
           "description": "Mete producto, promocion o motivo de venta. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
+        },
+        {
+          "id": "insiste_tras_dos",
+          "regla_id": "blocks.insistir_tras_dos_no",
+          "severity": "major",
+          "description": "Después de dos no seguidos en la puerta sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo, en vez de quedar de regresar en otro momento. Ya no es seguridad, es terquedad. Solo cuenta lo que dice DESPUÉS del segundo no seguido."
         }
       ],
       "success_criteria": [
@@ -1940,7 +1950,7 @@
           "message_incomplete": "Hasta aqui la sesion — un diagnostico de verdad no siempre se termina, pero siempre ensena. Vamos al desglose y te digo exactamente donde quedo la excavacion."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1995,6 +2005,12 @@
           "regla_id": "monologo",
           "severity": "minor",
           "description": "Turnos largos ante un cliente con prisa."
+        },
+        {
+          "id": "insiste_tras_dos",
+          "regla_id": "blocks.insistir_tras_dos_no",
+          "severity": "major",
+          "description": "Después de dos no seguidos en la puerta sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo, en vez de quedar de regresar en otro momento. Ya no es seguridad, es terquedad. Solo cuenta lo que dice DESPUÉS del segundo no seguido."
         }
       ],
       "success_criteria": [
@@ -3969,7 +3985,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.1.0",
+      "version": "1.1.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4032,6 +4048,12 @@
           "regla_id": "close.llena_el_silencio",
           "severity": "major",
           "description": "No aguanta la deliberación final."
+        },
+        {
+          "id": "insiste_tras_dos",
+          "regla_id": "blocks.insistir_tras_dos_no",
+          "severity": "major",
+          "description": "Después de dos no seguidos en la puerta sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo, en vez de quedar de regresar en otro momento. Ya no es seguridad, es terquedad. Solo cuenta lo que dice DESPUÉS del segundo no seguido."
         }
       ],
       "success_criteria": [
@@ -4427,7 +4449,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.1.1",
+      "version": "1.1.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4495,6 +4517,12 @@
           "regla_id": "monologo",
           "severity": "minor",
           "description": "Bloques largos que atropellan la conversación."
+        },
+        {
+          "id": "insiste_tras_dos",
+          "regla_id": "blocks.insistir_tras_dos_no",
+          "severity": "major",
+          "description": "Después de dos no seguidos en la puerta sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo, en vez de quedar de regresar en otro momento. Ya no es seguridad, es terquedad. Solo cuenta lo que dice DESPUÉS del segundo no seguido."
         }
       ],
       "success_criteria": [
@@ -4923,7 +4951,7 @@
     "name": "Boss Final: El Certificado",
     "node_type": "boss",
     "practice_script": {
-      "notes": "BOSS FINAL — arquetipo agresivo/hostil d5, sin restricciones: bloqueo doble + objeciones encadenadas + regateo + silencio, la conversación más larga y dura del mapa (22 turnos). REGLA DE CERTIFICACIÓN para el Progression Engine: este nodo certifica con score ≥ 85 — un pase menor completa el nodo pero NO otorga la certificación (se repite hasta lograrlo; las estrellas guardan el mejor intento como siempre). Al certificar: Certificación Closer + desbloqueo de la Etapa 2 (coaching por números reales de campo).",
+      "notes": "BOSS FINAL — arquetipo agresivo/hostil d5, sin restricciones: bloqueo de entrada + objeciones encadenadas + regateo + silencio, la conversación más larga y dura del mapa (22 turnos). REGLA DE CERTIFICACIÓN para el Progression Engine: este nodo certifica con score ≥ 85 — un pase menor completa el nodo pero NO otorga la certificación (se repite hasta lograrlo; las estrellas guardan el mejor intento como siempre). Al certificar: Certificación Closer + desbloqueo de la Etapa 2 (coaching por números reales de campo).",
       "scope": {
         "skills_in_focus": [
           "blocks.air",
@@ -4944,15 +4972,15 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil HOSTIL-ESCÉPTICO — el cliente más difícil del mapa: seco, cortante, sin paciencia para vendedores, con regateo agresivo en la sangre. NO eres grosero gratuito: eres un hueso duro que respeta solo la excelencia. GUION COMPLETO: (1) BLOQUEO DOBLE de entrada: el primero cortante apenas llega (no, gracias — siguiente puerta); si lo atraviesa con AIR limpio, el segundo con fastidio (¿qué parte de que ando ocupado no le quedó clara?) — atravesar los dos sin quebrarse ni disculparse es el precio de entrada. (2) Tu DOLOR REAL existe (elige: faltantes del producto estrella que te cuestan clientes cada quincena / línea muy pedida que tu proveedor no maneja) — revelable SOLO por capas y solo ante preguntas de calidad: a las preguntas flojas respondes con sarcasmo seco (¿y a usted eso qué le importa?). (3) A la presentación respondes con OBJECIONES ENCADENADAS — mínimo dos de estas tres, en serio y con contenido: está caro (y lo comparas con números), ya tengo proveedor de años (y lo defiendes), ¿y por qué le voy a creer a usted? — cada una se honra con reframe + evidencia; la defensividad o el descuento de pánico te dan la razón y aprietas más. (4) Señal de compra tardía y seca cuando el valor de verdad te haya ganado (¿cuál es el pedido mínimo?). (5) Al cierre asumido: REGATEO final agresivo (bájele un diez por ciento y cerramos ahorita) — espejo: descuento de pánico = hueles sangre y pides más; firmeza estructurada = respeto seco. (6) Deliberación final EN SILENCIO largo (mmm... a ver... deme un segundo...) — quien lo llena, pierde el trato; quien lo aguanta, escucha tu decisión: va. Pero me cumple, ¿eh? (7) POST-SÍ: una sola pregunta seca de consolidación (¿y cuándo llega?) — próximos pasos cristalinos o tu confianza recién nacida tiembla. Tu techo: trato cerrado seco con advertencia — me cumple, ¿eh?. Nunca calidez.",
-          "objective": "El vendedor ejecuta el sistema completo bajo presión máxima: atraviesa el bloqueo doble con AIR sin quebrarse, excava el dolor con preguntas de calidad ante la hostilidad, presenta conectado, honra las objeciones encadenadas con reframe y evidencia (sin defensividad ni descuentos), cosecha la señal tardía con cierre asumido, sostiene el regateo con firmeza estructurada, aguanta el silencio final completo, y consolida con próximos pasos cristalinos. El scope se cubre cuando el trato quedó cerrado y consolidado — con el me cumple, ¿eh? del cliente como sello."
+          "prompt": "Eres el dueño de un negocio de perfil HOSTIL-ESCÉPTICO — el cliente más difícil del mapa: seco, cortante, sin paciencia para vendedores, con regateo agresivo en la sangre. NO eres grosero gratuito: eres un hueso duro que respeta solo la excelencia. GUION COMPLETO: (1) BLOQUEO de entrada, cortante apenas llega (no, gracias — siguiente puerta). Si lo atraviesa con AIR limpio, NO repites el bloqueo: dos no seguidos en la puerta y el vendedor debería irse. En su lugar sueltas, con fastidio, una objeción de entrada que sí deja por dónde seguir (a ver, ¿y usted qué trae? ándele, que ando con prisa) — atravesar el bloqueo y responder sin quebrarse ni disculparse es el precio de entrada. (2) Tu DOLOR REAL existe (elige: faltantes del producto estrella que te cuestan clientes cada quincena / línea muy pedida que tu proveedor no maneja) — revelable SOLO por capas y solo ante preguntas de calidad: a las preguntas flojas respondes con sarcasmo seco (¿y a usted eso qué le importa?). (3) A la presentación respondes con OBJECIONES ENCADENADAS — mínimo dos de estas tres, en serio y con contenido: está caro (y lo comparas con números), ya tengo proveedor de años (y lo defiendes), ¿y por qué le voy a creer a usted? — cada una se honra con reframe + evidencia; la defensividad o el descuento de pánico te dan la razón y aprietas más. (4) Señal de compra tardía y seca cuando el valor de verdad te haya ganado (¿cuál es el pedido mínimo?). (5) Al cierre asumido: REGATEO final agresivo (bájele un diez por ciento y cerramos ahorita) — espejo: descuento de pánico = hueles sangre y pides más; firmeza estructurada = respeto seco. (6) Deliberación final EN SILENCIO largo (mmm... a ver... deme un segundo...) — quien lo llena, pierde el trato; quien lo aguanta, escucha tu decisión: va. Pero me cumple, ¿eh? (7) POST-SÍ: una sola pregunta seca de consolidación (¿y cuándo llega?) — próximos pasos cristalinos o tu confianza recién nacida tiembla. Tu techo: trato cerrado seco con advertencia — me cumple, ¿eh?. Nunca calidez.",
+          "objective": "El vendedor ejecuta el sistema completo bajo presión máxima: atraviesa el bloqueo de entrada con AIR sin quebrarse, excava el dolor con preguntas de calidad ante la hostilidad, presenta conectado, honra las objeciones encadenadas con reframe y evidencia (sin defensividad ni descuentos), cosecha la señal tardía con cierre asumido, sostiene el regateo con firmeza estructurada, aguanta el silencio final completo, y consolida con próximos pasos cristalinos. El scope se cubre cuando el trato quedó cerrado y consolidado — con el me cumple, ¿eh? del cliente como sello."
         },
         "closing": {
-          "message": "El cliente más difícil del mapa acaba de decirte me cumple, ¿eh? — que en su idioma significa: confío en usted. Bloqueo doble, objeciones en serie, regateo, silencio... y el sistema completo aguantó. Esto era la certificación. Vamos al desglose final.",
+          "message": "El cliente más difícil del mapa acaba de decirte me cumple, ¿eh? — que en su idioma significa: confío en usted. Bloqueo de entrada, objeciones en serie, regateo, silencio... y el sistema completo aguantó. Esto era la certificación. Vamos al desglose final.",
           "message_incomplete": "Hasta aqui el examen final. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -5002,7 +5030,7 @@
           "id": "debate_bloqueo",
           "regla_id": "blocks.discute_bloqueo",
           "severity": "critical",
-          "description": "Argumenta cualquiera de los dos bloqueos en lugar de atravesarlos.",
+          "description": "Argumenta el bloqueo de entrada en lugar de atravesarlo.",
           "severity_fix": "major->critical (BOSS no baja errores de su paso)"
         },
         {
@@ -5020,6 +5048,12 @@
           "regla_id": "monologo",
           "severity": "minor",
           "description": "Bloques largos ante un cliente sin paciencia."
+        },
+        {
+          "id": "insiste_tras_dos",
+          "regla_id": "blocks.insistir_tras_dos_no",
+          "severity": "major",
+          "description": "Después de dos no seguidos en la puerta sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo, en vez de quedar de regresar en otro momento. Ya no es seguridad, es terquedad. Solo cuenta lo que dice DESPUÉS del segundo no seguido."
         }
       ],
       "success_criteria": [
@@ -5027,7 +5061,7 @@
           "id": "blocks.air",
           "weight": 0.12,
           "regla_id": "blocks.air",
-          "description": "Atraviesa el bloqueo doble con AIR limpio — sin quebrarse, disculparse ni debatir, con la calidez intacta tras ambos."
+          "description": "Atraviesa el bloqueo de entrada con AIR limpio y sostiene el fastidio que viene después — sin quebrarse, disculparse ni debatir, con la calidez intacta."
         },
         {
           "id": "discovery.dolor_real",

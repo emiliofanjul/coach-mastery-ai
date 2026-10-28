@@ -1,0 +1,3 @@
+SELECT id, practice_script->>'version' AS version, md5(practice_script::text) AS huella FROM public.nodes WHERE id IN ('2.7c','2.10','3.10','5.15','7.0','7.4') ORDER BY id;
+SELECT id, md5(concat_ws('|', paso, tipo, canal, procedencia, resumen, cita_cerebro, severidad_default)) AS huella FROM public.reglas WHERE id IN ('flow.dos_no_seguidos','objection.regla_de_los_no','objections.regla_de_los_no','discovery.hueco','develop.visita_tramite','blocks.insistir_tras_dos_no') ORDER BY id;
+SELECT max(version) AS version_cerebro, count(*) AS secciones, md5(string_agg(body, '#' ORDER BY order_index)) AS huella_cerebro FROM public.doctrina WHERE is_active;

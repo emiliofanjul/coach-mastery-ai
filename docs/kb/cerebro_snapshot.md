@@ -283,7 +283,9 @@ Aquí sí hubo pensamiento.
 
 > **El tercer movimiento es el que falla.** Casi todos aceptan bien y casi todos logran no discutir — y después se quedan parados esperando, o peor, vuelven a pedir permiso. Ahí se pierde todo lo ganado.
 
-**Dos no seguidos en la puerta** `CAMPO`: si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos. Ahí lo correcto es quedar de regresar en otro momento, con una alternativa concreta: *"¿le queda mejor que pase el jueves o el viernes?"*. Insistir más ya no es seguridad: es terquedad. Tienen que ser consecutivos: si la conversación avanzó entre uno y otro, el primero ya quedó atrás. En el cierre la regla es otra (ver La Regla de los No).
+**Dos no seguidos** `CAMPO`: en cualquier momento de la visita, menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día, y lo correcto es dejarlo para otra visita. En la puerta: si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos. Ahí lo correcto es quedar de regresar en otro momento, con una alternativa concreta: *"¿le queda mejor que pase el jueves o el viernes?"*. Insistir más ya no es seguridad: es terquedad. Al buscar el hueco es igual: si dos intentos seguidos se topan con un «no», dejas de buscar y lo retomas en otra visita. Tienen que ser consecutivos: si la conversación avanzó entre uno y otro, el primero ya quedó atrás. En el cierre la regla es otra: son tres (ver La Regla de los No).
+
+**Qué es un «no»** `CAMPO`: una respuesta que rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa. Una respuesta, aunque sea vaga o corta, no es un «no»: no rechazó nada, y lo que toca es seguir. Una duda, una condición o una objeción tampoco es un «no»: es una objeción, y se trabaja con sus herramientas.
 
 ### Ataque Preventivo `FUENTE + CAMPO` `UNIVERSAL`
 **Qué es:** decir tú el negativo antes de que lo diga el cliente. *"si das la negativa antes de que el cliente lo haga, ya no es una negativa."*
@@ -706,7 +708,7 @@ En español: **Entiendo · Sintió · Encontramos**
 ### La Regla de los No
 - **Fuente:** *2 no's and a go* — dos no seguidos, luz roja, sigue adelante
 - **Campo `CAMPO`:** Emilio usa **3 no seguidos**, porque hay gente que deja ir un sí solo porque el cliente tuvo preguntas u objeciones
-- **Esta regla es del cierre.** En los bloqueos de la puerta son **dos** no seguidos y quedas de regresar (ver AIR).
+- **Esta regla es del cierre.** En cualquier otro momento de la visita son **dos** no seguidos: en la puerta quedas de regresar, y al buscar el hueco lo dejas para otra visita (ver Dos no seguidos, en AIR).
 
 > **Tienen que ser CONSECUTIVOS.** Un no, lo atraviesas, la conversación avanza, y más adelante otro no: **eso no es una racha**. Es una conversación normal con dos momentos de fricción. La racha se rompe en cuanto la conversación avanza.
 
@@ -916,6 +918,8 @@ Hay dos diferencias que no son obvias y que sí conviene tener explícitas, porq
 **Adaptación por canal:** presencial observas; a distancia preguntas por el catálogo. **Adaptación por giro:** si el cliente no revende, "lo que ves" no es un mostrador — son sus unidades, su patio, su operación.
 
 > **La línea que no se cruza:** un hueco tiene que ser real y verificable. **Descubrir un hueco es señalar algo que ya existe. Fabricarlo es venderle un problema que no tiene.**
+
+**Si no hay hueco** `CAMPO`: si lo buscaste bien —con las herramientas, y siguiendo las respuestas vagas— y no apareció, o te topaste con dos «no» seguidos, hoy no había nada que descubrir. No es una falla: lo retomas en otra visita.
 
 ### Diferencia 2 — Qué estás cerrando
 
