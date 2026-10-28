@@ -238,13 +238,18 @@ function evaluateCase(c: Case, response: any): CaseResult {
   // que eligió el modelo): 1 → cumple, entre 0 y 1 → parcial, 0 → no_cumple.
   const nivelDe = (credito: number) => (credito >= 1 ? "cumple" : credito > 0 ? "parcial" : "no_cumple");
   const desgloseCrit: any[] = Array.isArray(parsed?.desglose?.criterios) ? parsed.desglose.criterios : [];
+  // "no_aplica" se distingue (mensaje 104): vale crédito completo, pero no es
+  // lo mismo que cumplir. Un caso que espera "cumple" sigue pasando con un
+  // "no_aplica" (así estaban escritos los casos de antes); uno que espera
+  // "no_aplica" solo pasa con "no_aplica".
   const nivelPorCriterio = new Map<string, string>(
-    desgloseCrit.map((d: any) => [String(d.criterio_id), nivelDe(Number(d.credito ?? 0))]),
+    desgloseCrit.map((d: any) => [String(d.criterio_id), d?.nivel === "no_aplica" ? "no_aplica" : nivelDe(Number(d.credito ?? 0))]),
   );
   if (exp.niveles_esperados && typeof exp.niveles_esperados === "object") {
     for (const [id, esperado] of Object.entries(exp.niveles_esperados as Record<string, string>)) {
       const real = nivelPorCriterio.get(id);
-      if (real !== esperado) reasons.push(`nivel de ${id}: esperaba ${esperado}, decidió ${real ?? "sin veredicto"}`);
+      const ok = real === esperado || (esperado === "cumple" && real === "no_aplica");
+      if (!ok) reasons.push(`nivel de ${id}: esperaba ${esperado}, decidió ${real ?? "sin veredicto"}`);
     }
   }
 
@@ -308,7 +313,7 @@ function evaluateCase(c: Case, response: any): CaseResult {
     base: typeof parsed?.desglose?.base === "number" ? parsed.desglose.base : null,
     restas: Array.isArray(parsed?.desglose?.restas) ? parsed.desglose.restas.map((r: any) => `${r?.flag} (${r?.severidad}): -${r?.puntos}`) : [],
     veredictos: desgloseCrit.map((d: any) => {
-      const n = nivelDe(Number(d.credito ?? 0));
+      const n = d?.nivel === "no_aplica" ? "no_aplica" : nivelDe(Number(d.credito ?? 0));
       const base = `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;
       return d.falta ? `${base}(falta: ${String(d.falta).slice(0, 60)})` : base;
     }),

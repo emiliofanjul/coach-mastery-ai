@@ -154,8 +154,10 @@ describe("AIR con su prueba, alineado al Cerebro («no lo discutas, y continúa�
       expect(crit(id, "blocks.air").description).toMatch(/sigue con la plática/i);
     }
   });
-  it("versiones", () => {
-    expect(["1.4", "1.6", "2.7", "2.7c", "2.10", "7.0"].map((id) => nodo(id).practice_script.version)).toEqual(["2.0.4", "2.0.4", "2.0.4", "1.0.4", "2.1.3", "1.1.1"]);
+  it("versiones (las del 95, o posteriores)", () => {
+    const desde = { "1.4": "2.0.4", "1.6": "2.0.4", "2.7": "2.0.4", "2.7c": "1.0.4", "2.10": "2.1.3", "7.0": "1.1.1" } as Record<string, string>;
+    const num = (v: string) => v.split(".").map(Number).reduce((a, x) => a * 1000 + x, 0);
+    for (const [id, v] of Object.entries(desde)) expect(num(nodo(id).practice_script.version)).toBeGreaterThanOrEqual(num(v));
   });
 });
 

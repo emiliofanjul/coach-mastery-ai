@@ -207,9 +207,10 @@ describe("El auditor es confiable (sept-2026)", () => {
   });
 });
 
-describe("La Regla de los No (sept-2026)", () => {
-  it("el evaluador la aplica: salir bien tras tres 'no' seguidos no es falta", () => {
-    expect(fn).toMatch(/REGLA DE LOS NO \(doctrina, objections\.regla_de_los_no\)/);
+describe("Las Reglas de los No (sept-2026; mensaje 104: dos en toda la visita, tres en el cierre)", () => {
+  it("el evaluador las aplica: salir bien al llegar a la racha no es falta", () => {
+    expect(fn).toMatch(/REGLAS DE LOS NO \(doctrina, flow\.dos_no_seguidos y objections\.regla_de_los_no\)/);
+    expect(fn).toContain("en cualquier momento de la visita, menos en el cierre, DOS «no» seguidos son la señal de salir");
   });
   it("el cliente simulado no da un tercer 'no' salvo que sea rojo por diseño", () => {
     expect(fn).toMatch(/Un cliente con prisa u ocupado NO es rojo\./);

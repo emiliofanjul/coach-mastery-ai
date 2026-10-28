@@ -65,6 +65,6 @@ describe("Pedir permiso es condicionar el seguir a un sí", () => {
     const c = harness.cases.find((x: any) => x.id === "G43_practica_real_2_7c_texto");
     expect(c.expected.must_not_flag).toContain("pide_permiso_de_nuevo");
     expect(c.expected.niveles_esperados).toEqual({ "blocks.air": "cumple", "blocks.dos_no_seguidos": "cumple" });
-    expect(harness.harness_version).toBe("v3.23.0");
+    expect(harness.harness_version).toMatch(/^v3\.(2[3-9]|[3-9]\d)\./);
   });
 });
