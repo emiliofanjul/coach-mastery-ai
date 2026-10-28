@@ -112,7 +112,8 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
   });
 
   it("los niveles esperados apuntan a criterios de éxito reales de su nodo", () => {
-    const validos = new Set(["cumple", "parcial", "no_cumple"]);
+    // "no_aplica" se puede pedir desde el mensaje 104: la red ya lo distingue de "cumple".
+    const validos = new Set(["cumple", "parcial", "no_cumple", "no_aplica"]);
     const malos = casos.flatMap((c) =>
       Object.entries(c.expected?.niveles_esperados ?? {}).flatMap(([id, nivel]) => [
         ...(exito(c.node_id).has(id) ? [] : [`${c.id}: '${id}' no es criterio de éxito de ${c.node_id}`]),
@@ -295,11 +296,15 @@ describe("Harness runner: invariantes", () => {
   it("la red manda el motivo de corte y la ficha de cada caso", () => {
     expect(runner).toMatch(/ficha_cliente: \(c as any\)\.ficha_cliente/);
   });
-  it("vigila la Regla de los No con la práctica real de Emilio", () => {
+  it("vigila las reglas de los no con la práctica real de Emilio (mensaje 104: dos fuera del cierre)", () => {
     const red = JSON.parse(readFileSync(join(process.cwd(), "supabase/functions/_shared/eval_harness_v1.json"), "utf8"));
     const g29 = red.cases.find((c: any) => c.id === "G29_regla_de_los_no");
     expect(g29?.node_id).toBe("3.10");
-    expect(g29?.expected?.observations_must_not_target).toContain("discovery.preguntas_capas");
+    // Siguió después del segundo «no»: es insistir.
+    expect(g29?.expected?.must_flag).toEqual(["insiste_tras_dos"]);
+    // Y la salida al segundo «no» protege lo que impidió demostrar.
+    const g44 = red.cases.find((c: any) => c.id === "G44_sale_al_segundo_no");
+    expect(g44?.expected?.observations_must_not_target).toContain("discovery.preguntas_capas");
   });
 
   it("exige que el auditor del feedback haya corrido", () => {

@@ -29,7 +29,9 @@ describe("Mundo 2: interés genuino", () => {
 describe("Mundo 2: dos no seguidos en la puerta", () => {
   it("se enseña en el 2.7 y está en el Cerebro, distinto de los 3 del cierre", () => {
     expect(m2.find((c) => c.node_id === "2.7" && c.card_order === 5)?.title).toBe('Dos "no" seguidos');
-    expect(cerebro).toContain("**Dos no seguidos en la puerta**");
+    // Desde el mensaje 104 es la regla general (en toda la visita, menos en el cierre) y la puerta es su primer caso.
+    expect(cerebro).toContain("**Dos no seguidos** `CAMPO`: en cualquier momento de la visita, menos en el cierre");
+    expect(cerebro).toContain("En la puerta: si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos.");
     expect(cerebro).toContain("**Esta regla es del cierre.**");
   });
   it("quedar de regresar tras dos no seguidos no es la falla se_disculpa_o_se_va", () => {
