@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.9.4";
+const PROMPT_VERSION = "v2.9.5";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -32,6 +32,7 @@ import { validatePracticeScriptFull } from "../_shared/validate_practice_script.
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
 import { fallasPorHechoDePregunta } from "../_shared/hechos_pregunta.ts";
+import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
@@ -169,6 +170,9 @@ interface TurnAnalysis {
   ultima_frase: string;
   /** El HECHO, no el juicio: si el turno pregunta algo y dónde (mensaje 99). */
   pregunta?: "al_final" | "en_medio" | "ninguna";
+  /** HECHOS de los «no» (mensaje 105): la respuesta del cliente justo antes, y si el vendedor se va. */
+  cliente_antes?: "rechaza" | "no_rechaza" | "no_hay";
+  se_va?: "si" | "no";
   veredicto: string;
   por_que: string;
 }
@@ -239,7 +243,7 @@ Cuando un criterio describe una ESCALERA de niveles (por ejemplo, la escalera de
 12. FLAGS CON CITA OBLIGATORIA: un flag solo se marca si puedes citar la frase LITERAL que lo dispara, y esa frase debe aparecer en "analisis_turnos" (en texto_literal de algún turno). Un flag sin cita textual verificable en analisis_turnos es un ERROR GRAVE: no lo marques. Ejemplo de error grave: marcar un flag sin poder citar la frase exacta del vendedor que lo dispara. Si la regla define una prueba, la cita es la frase que la reprueba — no hace falta que mencione un producto: "¿cada cuánto le vienen a surtir?" reprueba la prueba de pitch_prematuro sin nombrar ninguno.
 
 PASO 0 — EXTRACCIÓN ANTES DE JUICIO (obligatorio, va PRIMERO en el JSON):
-PRIMERO llena "analisis_turnos" copiando LITERALMENTE cada turno del vendedor. Solo turnos con role "user" — los turnos del cliente (role "assistant") NUNCA se evalúan ni se atribuyen al vendedor. Para cada turno anota su última frase literal; en "pregunta", si ese turno le hace al cliente alguna pregunta y dónde: "al_final" (la última frase es una pregunta, aunque en voz no lleve signos), "en_medio" (hay pregunta, pero el turno termina en comentario) o "ninguna"; y si CUMPLE o NO CUMPLE el criterio principal del nodo, con una línea de por qué. "pregunta" es un HECHO de lo que dijo, no un juicio: anótalo igual en todos los nodos, califique o no el nodo las preguntas.
+PRIMERO llena "analisis_turnos" copiando LITERALMENTE cada turno del vendedor. Solo turnos con role "user" — los turnos del cliente (role "assistant") NUNCA se evalúan ni se atribuyen al vendedor. Para cada turno anota su última frase literal; en "pregunta", si ese turno le hace al cliente alguna pregunta y dónde: "al_final" (la última frase es una pregunta, aunque en voz no lleve signos), "en_medio" (hay pregunta, pero el turno termina en comentario) o "ninguna"; y si CUMPLE o NO CUMPLE el criterio principal del nodo, con una línea de por qué. "pregunta" es un HECHO de lo que dijo, no un juicio: anótalo igual en todos los nodos, califique o no el nodo las preguntas. En "cliente_antes", qué hizo la respuesta del cliente justo antes de ese turno, con la prueba de un «no» (ver REGLAS DE LOS NO, más abajo): "rechaza" (rechaza lo que el vendedor intentaba en ese momento, aunque traiga excusa), "no_rechaza" (contesta, aunque sea vago o corto, o pone una duda, una condición o una objeción) o "no_hay" (el cliente no habló entre el turno anterior del vendedor y este, como en el primer turno cuando abre el vendedor). En "se_va", "si" si en ese turno el vendedor deja la visita para otro momento o se despide, y "no" si sigue con la plática. "cliente_antes" y "se_va" también son HECHOS: anótalos igual en todos los nodos.
 DESPUÉS de tener ese análisis completo, y SOLO basándote en él, calcula el score y escribe las observations.
 - Toda observación debe corresponder a un turno que aparezca en analisis_turnos con veredicto "no cumple".
 - Si un turno quedó como "cumple", está PROHIBIDO escribir una observación negativa sobre él.
@@ -322,6 +326,8 @@ CONTRATO DE RESPUESTA — JSON EXACTO, sin markdown, sin texto fuera. "analisis_
       "texto_literal": "<el turno del VENDEDOR (role user), copiado tal cual, sin resumir>",
       "ultima_frase": "<la última frase de ese turno, literal>",
       "pregunta": "<al_final | en_medio | ninguna>",
+      "cliente_antes": "<rechaza | no_rechaza | no_hay>",
+      "se_va": "<si | no>",
       "veredicto": "<cumple | no cumple>",
       "por_que": "<una línea>"
     }
@@ -1128,6 +1134,12 @@ Deno.serve(async (req) => {
       // marcarla. En la respuesta solo va el conteo (la red busca ids).
       const fallasPorHecho = fallasPorHechoDePregunta(evaluation, practice_script);
       if (fallasPorHecho.length > 0) console.warn("[closer-voice] fallas agregadas por el hecho de la pregunta", { session_id, node_id, fallas: fallasPorHecho });
+      // El hecho de los «no» (mensaje 105): igual que la pregunta. El evaluador
+      // anota, por turno, si la respuesta del cliente justo antes fue un «no» y
+      // si el vendedor se fue; el código cuenta. Dos «no» seguidos en la puerta
+      // y el vendedor sigue con su tema → insistir. También ANTES del juez.
+      const fallasPorNo = fallasPorHechoDeLosNo(evaluation, practice_script, fullHistory);
+      if (fallasPorNo.length > 0) console.warn("[closer-voice] fallas agregadas por el hecho de los no", { session_id, node_id, fallas: fallasPorNo });
 
       // Radar: normalización estricta. Sin lista de vigilancia → sin regresiones.
       const radarAllowedIds = new Set(radarSkills.map((s) => s.id));
@@ -1241,7 +1253,7 @@ Deno.serve(async (req) => {
         return { ok: false, revisados: textos.length, veredictos: null, intentos: 3 };
       };
 
-      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez, fallas_por_hecho: fallasPorHecho.length };
+      let auditoria: any = { revisados: 0, corregidos: 0, descartados: 0, juez, fallas_por_hecho: fallasPorHecho.length, fallas_por_no: fallasPorNo.length };
       const [juicios, primera] = await Promise.all([juzgar(), auditar([])]);
       auditoria.revisados = primera.revisados;
       let auditorOk = primera.ok;

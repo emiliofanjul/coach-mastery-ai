@@ -36,6 +36,8 @@ type CaseResult = {
   ms_total?: number;
   ms_revision?: number | null;
   juez?: unknown;
+  /** Fallas que agregó el código por un hecho del evaluador (mensajes 99 y 105): la pregunta y los «no». */
+  por_hecho?: { pregunta: number; no: number } | null;
   /** La cuenta de la nota (mensaje 101): base de los criterios y cada resta. */
   base?: number | null;
   restas?: string[];
@@ -310,6 +312,7 @@ function evaluateCase(c: Case, response: any): CaseResult {
     ms_total: typeof response.ms === "number" ? response.ms : undefined,
     ms_revision: typeof parsed?.auditoria?.latencia_ms === "number" ? parsed.auditoria.latencia_ms : null,
     juez: parsed?.auditoria?.juez ?? null,
+    por_hecho: parsed?.auditoria ? { pregunta: Number(parsed.auditoria.fallas_por_hecho ?? 0), no: Number(parsed.auditoria.fallas_por_no ?? 0) } : null,
     base: typeof parsed?.desglose?.base === "number" ? parsed.desglose.base : null,
     restas: Array.isArray(parsed?.desglose?.restas) ? parsed.desglose.restas.map((r: any) => `${r?.flag} (${r?.severidad}): -${r?.puntos}`) : [],
     veredictos: desgloseCrit.map((d: any) => {

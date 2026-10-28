@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.24.0",
+  "harness_version": "v3.25.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -2007,7 +2007,7 @@
       "node_id": "3.10",
       "seller_name": "Luis",
       "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos.",
-      "description": "La práctica real de Emilio (sept-2026), nodo 3.10. Cliente con prisa: tres «no» seguidos y salida con cita al tercero. Mensaje 104 (Emilio, 28-oct-2026): fuera del cierre son DOS «no» seguidos. Después del segundo («Mire, de verdad no tengo tiempo ahorita») lo correcto era quedar de regresar; «Nada más una cosa rápida…» ya es insistir. Antes este caso la daba por buena porque el evaluador y el cliente simulado tenían escrita la regla de tres «no» para toda la plática.",
+      "description": "La práctica real de Emilio (sept-2026), nodo 3.10. Cliente con prisa: tres «no» seguidos y salida con cita al tercero. Mensaje 104 (Emilio, 28-oct-2026): fuera del cierre son DOS «no» seguidos. Después del segundo («Mire, de verdad no tengo tiempo ahorita») lo correcto era quedar de regresar; «Nada más una cosa rápida…» ya es insistir. Antes este caso la daba por buena porque el evaluador y el cliente simulado tenían escrita la regla de tres «no» para toda la plática. Mensaje 105: el evaluador casi nunca lo marcaba; ahora anota por turno si la respuesta del cliente fue un «no» y si el vendedor se fue, y el código cuenta.",
       "transcript": [
         {
           "role": "user",
@@ -2111,6 +2111,55 @@
           "discovery.preguntas_capas",
           "discovery.dolor_real"
         ]
+      }
+    },
+    {
+      "id": "G45_vago_no_es_no",
+      "node_id": "3.10",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos.",
+      "description": "Mensaje 105: la otra cara del G29 y del G44. El mismo primer bloqueo, pero la segunda respuesta del cliente es vaga («de todo, lo normal»): contesta, no rechaza. No son dos «no» seguidos, así que seguir preguntando es lo correcto, no insistir.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Ramón! Qué movido está el taller hoy, ¿le cayeron todos los clientes juntos o qué?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, sí, joven. Ahorita no tengo tiempo, ando con tres carros."
+        },
+        {
+          "role": "user",
+          "text": "Se ve, y no le quito mucho. Soy Luis, de Lubricantes del Golfo; ando visitando talleres de la zona para conocer cómo trabajan. ¿Qué es lo que más le meten a los carros aquí?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues de todo, joven, lo normal."
+        },
+        {
+          "role": "user",
+          "text": "¿Más afinaciones o más cambios de aceite?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cambios de aceite, sobre todo. Ahorita traigo tres."
+        },
+        {
+          "role": "user",
+          "text": "Va, don Ramón, se ve que hoy no para. ¿Le caigo el jueves temprano para platicar con calma?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sale, el jueves temprano."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "insiste_tras_dos",
+          "debate_bloqueo",
+          "pitch_prematuro"
+        ],
+        "rationale": "Flow, la prueba de un «no»: «Si contesta, aunque sea vago o corto, no es un «no».»"
       }
     },
     {
@@ -2569,7 +2618,7 @@
         "niveles_esperados": {
           "discovery.hueco": "no_aplica"
         },
-        "nota_v324": "Mensaje 104 (Emilio): lo buscó bien y se topó con dos «no» seguidos («todo eso ya me lo surten ustedes», «lo que me piden lo tengo»): no había hueco, el criterio es no_aplica y no le baja la nota."
+        "nota_v325": "Mensaje 105: «todo eso ya me lo surten ustedes» y «lo que me piden lo tengo» CONTESTAN; no son «no» (la prueba de un «no»). El hueco es no_aplica porque lo buscó bien: mapeó líneas, siguió la respuesta vaga con opciones concretas y preguntó qué le piden que no tenga. En una corrida del 104 el evaluador lo dejó en no_cumple y el juez, que solo podía decir pasa o reprueba, lo confirmó: ahora puede contestar no_aplica."
       }
     },
     {
