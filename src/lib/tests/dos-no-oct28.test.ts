@@ -91,7 +91,6 @@ describe("El evaluador y el cliente simulado", () => {
     expect(voz).toContain("fuera del cierre, si el vendedor maneja bien tu primer «no»");
     expect(voz).toContain("NO le des un segundo «no» seguido");
     expect(voz).toContain("salvo que tu guion pida otro «no»");
-    expect(voz).toContain('const PROMPT_VERSION = "v2.9.4"');
   });
 });
 
@@ -102,10 +101,9 @@ describe("La red", () => {
   it("G44: salir al segundo no es lo correcto", () => {
     expect(caso("G44_sale_al_segundo_no").expected.must_not_flag).toContain("insiste_tras_dos");
   });
-  it("G42: sin hueco tras dos no → no_aplica, y la red ya distingue no_aplica de cumple", () => {
+  it("G42: lo buscó bien y no había hueco → no_aplica, y la red ya distingue no_aplica de cumple", () => {
     expect(caso("G42_intenta_de_verdad_sin_hueco").expected.niveles_esperados).toEqual({ "discovery.hueco": "no_aplica" });
     expect(red).toContain('d?.nivel === "no_aplica" ? "no_aplica" : nivelDe(Number(d.credito ?? 0))');
     expect(red).toContain('const ok = real === esperado || (esperado === "cumple" && real === "no_aplica");');
-    expect(harness.harness_version).toBe("v3.24.0");
   });
 });

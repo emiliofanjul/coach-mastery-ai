@@ -34,7 +34,7 @@ export interface Acusacion {
  * fallas y criterios, y en una corrida del G38 aceptó «claro, claro» para una
  * y lo rechazó para la otra.)
  */
-export interface Juicio { id: string; tipo: string; conducta: "pasa" | "reprueba"; razon?: string }
+export interface Juicio { id: string; tipo: string; conducta: "pasa" | "reprueba" | "no_aplica"; razon?: string }
 
 const tienePrueba = (s: unknown): s is string => typeof s === "string" && s.includes("LA PRUEBA");
 
@@ -69,12 +69,12 @@ Tu único trabajo es aplicar LA PRUEBA, tal como está escrita, a lo que el vend
 1. LA PRUEBA ES EL ALCANCE. Los ejemplos de la regla ilustran, no delimitan. No agregues requisitos que la prueba no escribe, ni quites los que sí escribe.
 2. Juzga lo que la frase HACE en ese momento de la plática, no palabras sueltas. Lee qué dijo el cliente justo antes y qué sigue después.
 3. Si la regla describe un ERROR (una falla), el vendedor REPRUEBA solo si una de sus frases comete ese error. Si ninguna lo comete, PASA.
-4. Si la regla describe lo que hay que HACER (un criterio), el vendedor PASA si hizo todo lo que la prueba pide. REPRUEBA solo si falta una pieza que la prueba pide.
+4. Si la regla describe lo que hay que HACER (un criterio), el vendedor PASA si hizo todo lo que la prueba pide. REPRUEBA solo si falta una pieza que la prueba pide. Si la regla dice cuándo el criterio es no_aplica, y eso es lo que pasó en la conversación, la conducta es "no_aplica": no pasa ni reprueba, porque hoy no había cómo demostrarlo. "no_aplica" es solo para criterios.
 5. Lo que dijo el evaluador es una pista y puede estar equivocado: compruébalo en la conversación. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
 6. Sé coherente: la misma frase no puede contar como bien hecha para una regla y como mal hecha para otra que pide lo mismo.
 7. Solo juzgas lo que recibes. No buscas otras fallas ni opinas de lo demás.
 
-Para cada acusación: primero "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba y la frase del vendedor que lo demuestra. Después "conducta": "pasa" o "reprueba". Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
+Para cada acusación: primero "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba y la frase del vendedor que lo demuestra. Después "conducta": "pasa", "reprueba" o, solo en un criterio cuya regla lo prevé, "no_aplica". Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
 
 export const HERRAMIENTA_JUICIOS = {
   name: "juicios",
@@ -90,7 +90,7 @@ export const HERRAMIENTA_JUICIOS = {
             id: { type: "string" },
             tipo: { type: "string", enum: ["falla", "criterio"] },
             respuesta: { type: "string" },
-            conducta: { type: "string", enum: ["pasa", "reprueba"] },
+            conducta: { type: "string", enum: ["pasa", "reprueba", "no_aplica"] },
           },
           required: ["id", "tipo", "respuesta", "conducta"],
         },
@@ -124,7 +124,7 @@ export function juiciosDeRespuesta(respuesta: any): Juicio[] | null {
   const uso = bloques.find((b: any) => b?.type === "tool_use" && b?.name === HERRAMIENTA_JUICIOS.name);
   const lista = uso?.input?.juicios;
   if (!Array.isArray(lista)) return null;
-  return lista.filter((j: any) => j && typeof j.id === "string" && (j.conducta === "pasa" || j.conducta === "reprueba"))
+  return lista.filter((j: any) => j && typeof j.id === "string" && (j.conducta === "pasa" || j.conducta === "reprueba" || j.conducta === "no_aplica"))
     .map((j: any) => ({ id: j.id, tipo: String(j.tipo ?? ""), conducta: j.conducta, razon: typeof j.respuesta === "string" ? j.respuesta.slice(0, 300) : undefined }));
 }
 
@@ -133,12 +133,29 @@ export function juiciosDeRespuesta(respuesta: any): Juicio[] | null {
  * lo que hizo el vendedor PASA la prueba. Sin juicio, la acusación se queda.
  * Una falla quitada sale de flags_detected y de evidencia_flags. Un criterio
  * quitado pasa a "cumple" y salen sus observaciones.
+ *
+ * Mensaje 105: un criterio cuya regla dice cuándo es no_aplica («si lo buscó
+ * bien y no apareció ningún hueco, el criterio es no_aplica») no cabía en
+ * pasa/reprueba: sin hueco, la prueba «¿quedó al descubierto un hueco?»
+ * reprueba, y el juez confirmaba el no_cumple que la regla prohíbe. Ahora el
+ * juez puede contestar "no_aplica", y el criterio sale de la cuenta. En una
+ * falla, "no_aplica" no existe: se ignora y la acusación se queda.
  */
 export function aplicarJuicios(ev: any, acusaciones: Acusacion[], juicios: Juicio[]): { id: string; tipo: string; razon?: string }[] {
   const quitadas: { id: string; tipo: string; razon?: string }[] = [];
   for (const a of acusaciones) {
     const j = juicios.find((x) => x.id === a.id && x.tipo === a.tipo);
-    if (!j || j.conducta !== "pasa") continue;
+    if (!j) continue;
+    if (j.conducta === "no_aplica") {
+      if (a.tipo !== "criterio") continue;
+      for (const v of Array.isArray(ev.veredictos_criterios) ? ev.veredictos_criterios : []) {
+        if (v?.criterio_id === a.id) { v.nivel = "no_aplica"; delete v.falta; }
+      }
+      if (Array.isArray(ev.observations)) ev.observations = ev.observations.filter((o: any) => o?.criterio_id !== a.id);
+      quitadas.push({ id: a.id, tipo: a.tipo, razon: j.razon });
+      continue;
+    }
+    if (j.conducta !== "pasa") continue;
     if (a.tipo === "falla") {
       ev.flags_detected = (ev.flags_detected ?? []).filter((f: string) => f !== a.id);
       if (Array.isArray(ev.evidencia_flags)) ev.evidencia_flags = ev.evidencia_flags.filter((e: any) => e?.id !== a.id);

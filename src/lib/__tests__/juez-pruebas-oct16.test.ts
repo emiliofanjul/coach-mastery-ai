@@ -102,8 +102,8 @@ describe("Lo que hace el código con los juicios", () => {
     expect(PROMPT_JUEZ).toContain("LA PRUEBA ES EL ALCANCE");
     expect(PROMPT_JUEZ).toContain("No buscas otras fallas");
   });
-  it("mensaje 96: una sola pregunta para fallas y criterios — lo que hizo el vendedor, ¿pasa o reprueba?", () => {
-    expect(HERRAMIENTA_JUICIOS.input_schema.properties.juicios.items.properties.conducta.enum).toEqual(["pasa", "reprueba"]);
+  it("mensaje 96: una sola pregunta para fallas y criterios — lo que hizo el vendedor, ¿pasa o reprueba? (y, desde el 105, no_aplica solo en criterios)", () => {
+    expect(HERRAMIENTA_JUICIOS.input_schema.properties.juicios.items.properties.conducta.enum).toEqual(["pasa", "reprueba", "no_aplica"]);
     expect(JSON.stringify(HERRAMIENTA_JUICIOS)).not.toContain("se_sostiene");
     expect(PROMPT_JUEZ).toContain("Sé coherente: la misma frase no puede contar como bien hecha para una regla y como mal hecha para otra");
     expect(PROMPT_JUEZ).toContain("puede estar equivocado");
