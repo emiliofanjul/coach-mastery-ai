@@ -17,10 +17,10 @@ const caso = (id: string) => harness.cases.find((c: any) => c.id === id);
 const orden = (id: string) => { const [m, n] = id.split("."); return Number(m) * 100 + parseFloat(n.replace("b", ".5")); };
 
 describe("La visita de trámite es una prueba", () => {
-  it("trae su prueba: irse sin descubrir ni intentarlo de verdad", () => {
-    expect(r.resumen).toContain("LA PRUEBA: ¿el vendedor se fue con el pedido sin haber descubierto algo más y sin haberlo intentado de verdad?");
+  it("trae su prueba: ¿buscó de verdad? (mensaje 106: en positivo, sin doble negación)", () => {
+    expect(r.resumen).toContain("LA PRUEBA: ¿el vendedor buscó de verdad algo más que el pedido?");
     expect(r.resumen).toContain("Una sola pregunta al aire y despedirse después de una respuesta vaga es trámite.");
-    expect(r.resumen).toContain("Si descubrió algo más, o lo intentó así, no es esto.");
+    expect(r.resumen).toContain("Si buscó de verdad, no es esto, aunque no haya aparecido nada y se haya ido solo con el pedido: la falla es no buscar, no que no hubiera. Si descubrió algo más, tampoco.");
   });
   it("lo que pide ya se enseñó antes del primer nodo que la califica", () => {
     const usan = nodos.filter((n) => (n.practice_script?.failure_criteria ?? []).some((f: any) => f.regla_id === "develop.visita_tramite")).map((n) => n.id);

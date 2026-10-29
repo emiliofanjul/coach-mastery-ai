@@ -100,6 +100,14 @@ export const HERRAMIENTA_JUICIOS = {
   },
 } as const;
 
+/**
+ * Cuánto de la regla recibe el juez. Mensaje 106: era 1200 y cortaba en
+ * silencio las reglas largas (opening.especificidad ya pasaba de 1200, y el
+ * hueco, con su prueba en orden, pasa de 1400): el juez juzgaba sin el final
+ * de la prueba. Una prueba verifica que todas las reglas quepan.
+ */
+export const LARGO_REGLA_JUEZ = 2400;
+
 export function armarEntradaJuez(acusaciones: Acusacion[], conversacion: { role?: string; content?: unknown }[]): string {
   return JSON.stringify({
     conversacion: (Array.isArray(conversacion) ? conversacion : []).slice(-40).map((t, i) => ({
@@ -110,7 +118,7 @@ export function armarEntradaJuez(acusaciones: Acusacion[], conversacion: { role?
     acusaciones: acusaciones.map((a) => ({
       id: a.id,
       tipo: a.tipo,
-      regla: a.regla.slice(0, 1200),
+      regla: a.regla.slice(0, LARGO_REGLA_JUEZ),
       en_este_nodo: a.en_este_nodo.slice(0, 600),
       // Lo que dijo el evaluador: una pista, que puede estar equivocada.
       [a.tipo === "falla" ? "frase_que_cito_el_evaluador" : "lo_que_el_evaluador_dice_que_falta"]: a.senalado.slice(0, 300),
