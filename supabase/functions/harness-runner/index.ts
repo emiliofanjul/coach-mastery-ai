@@ -318,7 +318,8 @@ function evaluateCase(c: Case, response: any): CaseResult {
     veredictos: desgloseCrit.map((d: any) => {
       const n = d?.nivel === "no_aplica" ? "no_aplica" : nivelDe(Number(d.credito ?? 0));
       const base = `${String(d.criterio_id).replace(/^[a-z]+\./, "")}:${d.escalon ? `e${d.escalon}` : n}`;
-      return d.falta ? `${base}(falta: ${String(d.falta).slice(0, 60)})` : base;
+      // Mensaje 108: con 60 caracteres no se veía qué pieza decía el evaluador que faltaba.
+      return d.falta ? `${base}(falta: ${String(d.falta).slice(0, 300)})` : base;
     }),
   };
 }

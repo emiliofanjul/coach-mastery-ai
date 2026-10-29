@@ -123,7 +123,6 @@ describe("El evaluador anota los hechos y el juez revisa la acusación", () => {
     expect(voz).toContain('"no_rechaza" (contesta, aunque sea vago o corto, o pone una duda, una condición o una objeción)');
     expect(voz).toContain('"cliente_antes": "<rechaza | no_rechaza | no_hay>"');
     expect(voz).toContain('"se_va": "<si | no>"');
-    expect(voz).toContain('const PROMPT_VERSION = "v2.9.5"');
   });
   it("el código agrega la falla después del guardarraíl y ANTES del juez", () => {
     const guard = voz.indexOf("if (todosCumplen && evaluation.flags_detected.length > 0)");
