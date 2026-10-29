@@ -1,0 +1,151 @@
+// Shared validator for practice_script. Uses Ajv (ESM build from esm.sh).
+// A script that does NOT validate must NEVER be executed — callers should
+// return an explicit error (422) with the list of validation errors.
+//
+// Two layers of checks:
+//   1) JSON Schema (structural) — via Ajv.
+//   2) Semantic checks the schema cannot express:
+//      - Sum of success_criteria weights must equal 1.0 (±0.001).
+//      - Every success_criteria.id and every scope.skills_in_focus id
+//        must exist in public.skills with status='active'.
+//
+// The skills existence check requires a service-role Supabase client
+// (passed in) so this file stays framework-agnostic.
+
+import Ajv from "https://esm.sh/ajv@8.17.1";
+import schema from "./practice_script_schema_v1.json" with { type: "json" };
+
+const ajv = new Ajv({ allErrors: true, strict: false });
+const validateSchema = ajv.compile(schema as Record<string, unknown>);
+
+export interface ValidationError {
+  path: string;
+  message: string;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors: ValidationError[];
+}
+
+export function validatePracticeScriptStructure(script: unknown): ValidationResult {
+  const ok = validateSchema(script);
+  if (ok) return { valid: true, errors: [] };
+  const errors: ValidationError[] = (validateSchema.errors ?? []).map((e) => ({
+    path: e.instancePath || e.schemaPath || "",
+    message: `${e.message ?? "invalid"}${e.params ? ` (${JSON.stringify(e.params)})` : ""}`,
+  }));
+  return { valid: false, errors };
+}
+
+export function validateWeightsSum(script: any): ValidationError | null {
+  const crits = Array.isArray(script?.success_criteria) ? script.success_criteria : [];
+  const sum = crits.reduce((acc: number, c: any) => acc + (Number(c?.weight) || 0), 0);
+  if (Math.abs(sum - 1.0) > 0.001) {
+    return {
+      path: "/success_criteria",
+      message: `sum of weights must be 1.0 (±0.001), got ${sum.toFixed(4)}`,
+    };
+  }
+  return null;
+}
+
+// Verifies each success_criteria.id and scope.skills_in_focus exists
+// in public.skills with status='active'. Returns the list of missing IDs.
+export async function validateSkillsExist(
+  script: any,
+  admin: any,
+): Promise<ValidationError[]> {
+  const ids = new Set<string>();
+  for (const c of script?.success_criteria ?? []) {
+    if (typeof c?.id === "string") ids.add(c.id);
+  }
+  for (const s of script?.scope?.skills_in_focus ?? []) {
+    if (typeof s === "string") ids.add(s);
+  }
+  if (ids.size === 0) return [];
+
+  const idList = Array.from(ids);
+  const { data, error } = await admin
+    .from("skills")
+    .select("id,status")
+    .in("id", idList);
+  if (error) {
+    return [{ path: "/skills", message: `skills lookup failed: ${error.message}` }];
+  }
+  const activeIds = new Set(
+    (data ?? []).filter((r: any) => r.status === "active").map((r: any) => r.id),
+  );
+  const missing = idList.filter((id) => !activeIds.has(id));
+  return missing.map((id) => ({
+    path: "/skills",
+    message: `skill id '${id}' not found or not active in taxonomy`,
+  }));
+}
+
+/**
+ * Límite de skills_in_focus por tipo de nodo.
+ *
+ * 6 en nodos de entrenamiento: más de eso deja de entrenar una técnica y se
+ * vuelve un examen. Hasta 8 en BOSS, que existen justamente para integrar la
+ * conversación completa — el certificado final entrena 8 y eso es correcto.
+ * El schema no puede distinguirlo porque no conoce el node_type.
+ */
+export function validateSkillsInFocusLimit(
+  script: unknown,
+  nodeType?: string | null,
+): ValidationError | null {
+  const foco = (script as any)?.scope?.skills_in_focus;
+  if (!Array.isArray(foco)) return null;
+  const max = nodeType === "boss" ? 8 : 6;
+  if (foco.length > max) {
+    return {
+      path: "/scope/skills_in_focus",
+      message: `${foco.length} skills en foco; el máximo para un nodo ${nodeType === "boss" ? "boss" : "de entrenamiento"} es ${max}`,
+    };
+  }
+  return null;
+}
+
+/**
+ * Límite de failure_criteria por tipo de nodo (mensaje 109).
+ *
+ * 8 en nodos de entrenamiento. Hasta 10 en BOSS: integran la conversación
+ * completa y heredan los errores de todos los pasos que examinan. En el 104 se
+ * agregó «insistir tras dos no» a los bosses con bloqueo de entrada, y tres de
+ * ellos (5.15, 7.0 y 7.4) llegaron a 9: el schema decía 8 y esas prácticas
+ * respondían «error de configuración». Mismo criterio que skills_in_focus.
+ */
+export function validateFailureCriteriaLimit(
+  script: unknown,
+  nodeType?: string | null,
+): ValidationError | null {
+  const fallas = (script as any)?.failure_criteria;
+  if (!Array.isArray(fallas)) return null;
+  const max = nodeType === "boss" ? 10 : 8;
+  if (fallas.length > max) {
+    return {
+      path: "/failure_criteria",
+      message: `${fallas.length} fallas; el máximo para un nodo ${nodeType === "boss" ? "boss" : "que no es boss"} es ${max}`,
+    };
+  }
+  return null;
+}
+
+export async function validatePracticeScriptFull(
+  script: unknown,
+  admin: any,
+  nodeType?: string | null,
+): Promise<ValidationResult> {
+  const structural = validatePracticeScriptStructure(script);
+  if (!structural.valid) return structural;
+  const errors: ValidationError[] = [];
+  const w = validateWeightsSum(script);
+  if (w) errors.push(w);
+  const f = validateSkillsInFocusLimit(script, nodeType);
+  if (f) errors.push(f);
+  const ff = validateFailureCriteriaLimit(script, nodeType);
+  if (ff) errors.push(ff);
+  errors.push(...(await validateSkillsExist(script, admin)));
+  return { valid: errors.length === 0, errors };
+}
