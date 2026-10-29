@@ -199,7 +199,8 @@
     "failure_criteria": {
       "type": "array",
       "minItems": 0,
-      "maxItems": 8,
+      "maxItems": 10,
+      "$comment": "Hasta 10 en BOSS y 8 en los demás nodos: el schema no conoce el node_type, eso lo revisa validateFailureCriteriaLimit (mensaje 109).",
       "items": {
         "type": "object",
         "additionalProperties": false,
