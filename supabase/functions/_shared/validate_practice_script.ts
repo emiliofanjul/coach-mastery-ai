@@ -107,6 +107,31 @@ export function validateSkillsInFocusLimit(
   return null;
 }
 
+/**
+ * Límite de failure_criteria por tipo de nodo (mensaje 109).
+ *
+ * 8 en nodos de entrenamiento. Hasta 10 en BOSS: integran la conversación
+ * completa y heredan los errores de todos los pasos que examinan. En el 104 se
+ * agregó «insistir tras dos no» a los bosses con bloqueo de entrada, y tres de
+ * ellos (5.15, 7.0 y 7.4) llegaron a 9: el schema decía 8 y esas prácticas
+ * respondían «error de configuración». Mismo criterio que skills_in_focus.
+ */
+export function validateFailureCriteriaLimit(
+  script: unknown,
+  nodeType?: string | null,
+): ValidationError | null {
+  const fallas = (script as any)?.failure_criteria;
+  if (!Array.isArray(fallas)) return null;
+  const max = nodeType === "boss" ? 10 : 8;
+  if (fallas.length > max) {
+    return {
+      path: "/failure_criteria",
+      message: `${fallas.length} fallas; el máximo para un nodo ${nodeType === "boss" ? "boss" : "que no es boss"} es ${max}`,
+    };
+  }
+  return null;
+}
+
 export async function validatePracticeScriptFull(
   script: unknown,
   admin: any,
@@ -119,6 +144,8 @@ export async function validatePracticeScriptFull(
   if (w) errors.push(w);
   const f = validateSkillsInFocusLimit(script, nodeType);
   if (f) errors.push(f);
+  const ff = validateFailureCriteriaLimit(script, nodeType);
+  if (ff) errors.push(ff);
   errors.push(...(await validateSkillsExist(script, admin)));
   return { valid: errors.length === 0, errors };
 }
