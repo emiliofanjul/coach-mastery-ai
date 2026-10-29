@@ -18,11 +18,11 @@ const caso = (id: string) => harness.cases.find((c: any) => c.id === id);
 
 describe("La regla del hueco es una prueba: descubrirlo, no presentarlo", () => {
   it("trae su prueba", () => {
-    expect(r.resumen).toContain("LA PRUEBA: al terminar la plática, ¿quedó al descubierto al menos un hueco concreto —una familia con nombre—");
+    expect(r.resumen).toContain("LA PRUEBA, en orden. (1) Al terminar la plática, ¿quedó al descubierto al menos un hueco concreto —una familia con nombre—");
     expect(r.resumen).toContain("Si sí, cumple, aunque el vendedor no lo mencione: el hueco se descubre y se apunta para usarlo en la presentación.");
   });
   it("preguntar sin que salga una familia concreta no basta, y tiene que ser real", () => {
-    expect(r.resumen).toContain("No basta con preguntar si la respuesta no dejó ninguna familia concreta.");
+    expect(r.resumen).toContain("Preguntar no basta si la respuesta no dejó ninguna familia concreta.");
     expect(r.resumen).toContain("Tiene que ser real y verificable");
   });
   it("ofrecerlo es presentar el hueco, que es el paso 4 del Cerebro", () => {
