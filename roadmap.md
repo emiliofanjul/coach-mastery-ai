@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Publicación de mensajes 110 y 111 solicitada para closerapp.ai por autorización de Emilio del 30-oct-2026; despliegue final no confirmado; P2_10 sin cambios y su falla aislada reportada.
+
 - [x] Mensaje 102: paso 0 confirmado con 630/47 pruebas vigentes y huellas exactas; las copias de preparación se excluyeron del baseline.
 - [x] Mensaje 102: SQL protegido aplicado y huella final 23019881cc63ef786045c08cf0a68387; tres archivos movidos con MD5 exactos; desplegado solo harness-runner v3.22.0; 635/48 pruebas pasan y build automático OK.
 - [x] Mensaje 102: G41/G42 pasan cuatro veces cada uno; G32/P3_8/P3_9/P3_9b pasan una vez. Texto 1.2 termina en 30 y muestra critical; 2.7c deja responder ambos bloqueos pero falla con 50 y pide_permiso_de_nuevo; 3.9b termina en 80, descubre hueco y no marca trámite. No publicar; detenido según paso 6, sin modificar evaluador ni Director.
