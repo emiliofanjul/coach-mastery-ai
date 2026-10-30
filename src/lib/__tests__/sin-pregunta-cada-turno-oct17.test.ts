@@ -69,7 +69,8 @@ describe("En el 1.2, una apertura sin ninguna pregunta es crítica", () => {
     expect(f.espejo_de).toBeUndefined();
   });
   it("versión del guion", () => {
-    expect(nodos.find((n) => n.id === "1.2").practice_script.version).toBe("2.0.2");
+    const [a, b, c] = nodos.find((n) => n.id === "1.2").practice_script.version.split(".").map(Number);
+    expect(a * 10000 + b * 100 + c).toBeGreaterThanOrEqual(20002); // al menos 2.0.2: los guiones siguen subiendo
   });
   it("preguntar en medio sigue siendo parcial en la estructura, sin tope (G09)", () => {
     expect(caso("G09_scope_cubierto_corte_temprano").expected.must_not_flag).toContain("sin_pregunta");

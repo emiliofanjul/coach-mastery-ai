@@ -146,7 +146,8 @@ describe("AIR con su prueba, alineado al Cerebro («no lo discutas, y continúa�
   it("la regla de AIR es una prueba de tres movimientos", () => {
     expect(regla("blocks.air").resumen).toContain("LA PRUEBA:");
     expect(regla("blocks.air").resumen).toContain("sigue con la plática —con otra pregunta o con lo que iba a decir— sin pedir permiso");
-    expect(regla("blocks.air").cita_cerebro).toBe("reconoce con «entiendo» o «por supuesto», no lo discutas, y continúa");
+    expect(regla("blocks.air").cita_cerebro).toBe("no lo discutas, y continúa"); // mensaje 112: la cita, letra por letra como en el Cerebro
+    expect(readFileSync(join(process.cwd(), "docs/kb/cerebro_snapshot.md"), "utf8")).toContain(regla("blocks.air").cita_cerebro);
   });
   it("ningún nodo pide «retomar su tema»: se sigue con la plática", () => {
     for (const id of ["2.7", "2.7c", "2.10", "7.0"]) {
