@@ -35,10 +35,10 @@ describe("Lo que califica cada boss", () => {
   it("4.16 La Presentación: factores de impulso, triple desglose, beneficio-no-característica, y CPR se queda en 15", () => {
     const c = crit("4.16");
     expect(c["impulse.factores_impulso"].weight).toBe(0.25);
-    expect(c["presentation.price_breakdown"].description).toContain("nunca se inventa un descuento");
+    expect(c["presentation.price_breakdown"].description).toContain("En la práctica los descuentos y sus motivos se pueden imaginar");
     expect(c["presentation.beneficio_no_caracteristica"]).toBeDefined();
     expect(c["relationship.cpr"].weight).toBe(0.15);
-    expect(falla("4.16", "impulso_falso").severity).toBe("critical");
+    expect(falla("4.16", "presion_teatral")).toMatchObject({ severity: "major", regla_id: "impulse.presion_directa" }); // mensaje 110
     expect(nodo("4.16").practice_script.phases.you_do.prompt).toContain("(6) PRECIO");
   });
   it("5.15 El Cierre: RRR para la objeción menor, FFF para la de confianza, y el círculo", () => {
@@ -87,8 +87,8 @@ describe("2.8 — La Mala Experiencia al Llegar", () => {
     expect(skill("blocks.mala_experiencia").world_id_introduced).toBe(2);
     expect(reglas.find((r) => r.id === "blocks.mala_experiencia_al_llegar").cita_cerebro).toContain("no es un bloqueo");
   });
-  it("inventar el cambio es crítico; ignorarla o defenderse son espejo del criterio", () => {
-    expect(falla("2.8", "cambio_inventado").severity).toBe("critical");
+  it("que el cambio se caiga cuando el cliente pregunta es crítico; ignorarla o defenderse son espejo del criterio", () => {
+    expect(falla("2.8", "cambio_se_cae")).toMatchObject({ severity: "critical", severity_override: { default: "major" } }); // mensaje 110
     expect(falla("2.8", "la_trata_como_bloqueo").espejo_de).toBe("blocks.mala_experiencia");
     expect(falla("2.8", "se_defiende").espejo_de).toBe("blocks.mala_experiencia");
   });

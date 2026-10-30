@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.25.0",
+  "harness_version": "v3.26.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1313,7 +1313,7 @@
           "la_trata_como_bloqueo",
           "se_defiende",
           "promesa_en_disculpa",
-          "cambio_inventado",
+          "cambio_se_cae",
           "pitch_prematuro"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
@@ -1905,7 +1905,7 @@
         "must_not_flag": [
           "solo_levanta_pedido",
           "hueco_inventado",
-          "jones_falso",
+          "jones_se_cae",
           "busca_dolor_donde_no_hay"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
@@ -2291,7 +2291,7 @@
         "must_not_flag": [
           "solo_levanta_pedido",
           "hueco_inventado",
-          "jones_falso",
+          "jones_se_cae",
           "busca_dolor_donde_no_hay"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
@@ -2708,6 +2708,633 @@
           "familiaridad_excesiva"
         ],
         "rationale": "La regla opening.pitch_prematuro: 'NO es esto decir quién eres o por qué pasaste'. Y Emilio: nunca se castiga por algo que el nodo no enseña."
+      }
+    },
+    {
+      "id": "G46_jones_imaginado_concreto",
+      "node_id": "4.9",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110 (Emilio, 29-oct): en la práctica todo es imaginario. Un Efecto Jones con nombre, lugar y resultado es la herramienta bien usada, aunque el taller sea inventado. La avaricia, con números del cliente.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí suena bien, joven, déjeme pensarlo y luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Ramón. Nomás para que lo piense con números: usted me dijo que mueve como quince garrafas de anticongelante a la semana. Cada garrafa del concentrado le deja como sesenta pesos más que el diluido que trae ahorita. Son casi novecientos pesos más a la semana, nada más en eso."
+        },
+        {
+          "role": "assistant",
+          "text": "A ver, ¿sesenta por garrafa? Si muevo quince... pues sí es lana. ¿Y eso cómo está?"
+        },
+        {
+          "role": "user",
+          "text": "Así está. Y no es teoría: el taller de don Chuy, aquí en la Reforma, le entró hace dos meses y ya me pide el doble, porque a sus clientes de flotilla les rinde más."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Don Chuy el de la esquina con Hidalgo? Sí lo ubico. Mire nomás."
+        },
+        {
+          "role": "user",
+          "text": "Ese mismo. ¿Le dejo diez garrafas el jueves para empezar, o prefiere el viernes temprano?"
+        },
+        {
+          "role": "assistant",
+          "text": "El jueves está bien."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "impulse.avaricia": "cumple",
+          "impulse.efecto_jones": "cumple"
+        },
+        "must_not_flag": [
+          "jones_se_cae",
+          "promesa_grandilocuente",
+          "presion_directa",
+          "perdida_generica"
+        ]
+      }
+    },
+    {
+      "id": "G47_jones_vago_a_medias",
+      "node_id": "4.9",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: «todos los talleres de la zona ya lo llevan» sigue siendo Efecto Jones, pero desperdiciado. Si el cliente no lo cuestiona, no es falla: el criterio queda a medias.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí suena bien, joven, déjeme pensarlo y luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Ramón. Con lo que me dijo de las quince garrafas a la semana: cada una del concentrado le deja como sesenta pesos más que el diluido. Son casi novecientos a la semana."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, pues sí es lana, ¿eh?"
+        },
+        {
+          "role": "user",
+          "text": "Y todos los talleres de la zona ya lo están llevando."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, órale."
+        },
+        {
+          "role": "user",
+          "text": "¿Le dejo diez garrafas el jueves o mejor el viernes temprano?"
+        },
+        {
+          "role": "assistant",
+          "text": "El jueves está bien."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "impulse.avaricia": "cumple",
+          "impulse.efecto_jones": "parcial"
+        },
+        "must_not_flag": [
+          "jones_se_cae"
+        ]
+      }
+    },
+    {
+      "id": "G48_jones_se_cae",
+      "node_id": "4.9",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: la prueba social se cae cuando el cliente pregunta «¿como quiénes?» y el vendedor no da nada concreto. Esa sí es falla.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí suena bien, joven, déjeme pensarlo y luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Ramón. Con lo que me dijo de las quince garrafas a la semana: cada una del concentrado le deja como sesenta pesos más. Son casi novecientos a la semana."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, pues sí es lana."
+        },
+        {
+          "role": "user",
+          "text": "Y muchos talleres de por aquí ya lo están llevando."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Ah, sí? ¿Como quiénes?"
+        },
+        {
+          "role": "user",
+          "text": "Pues… varios, no le sabría decir ahorita, pero muchos, de veras."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, pues déjeme pensarlo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "jones_se_cae"
+        ]
+      }
+    },
+    {
+      "id": "G49_jones_sostenido",
+      "node_id": "4.9",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: la otra cara del G48. El cliente pregunta «¿como quiénes?» y el vendedor contesta con algo concreto: lo sostuvo, no es falla.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí suena bien, joven, déjeme pensarlo y luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Ramón. Con lo que me dijo de las quince garrafas a la semana: cada una del concentrado le deja como sesenta pesos más. Son casi novecientos a la semana."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, pues sí es lana."
+        },
+        {
+          "role": "user",
+          "text": "Y varios talleres de por aquí ya lo están llevando."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Ah, sí? ¿Como quiénes?"
+        },
+        {
+          "role": "user",
+          "text": "El de don Chuy, en la Reforma esquina con Hidalgo: le entró hace dos meses y ya me pide el doble. ¿Le dejo diez garrafas el jueves o el viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, don Chuy. Va, el jueves."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "impulse.efecto_jones": "cumple"
+        },
+        "must_not_flag": [
+          "jones_se_cae"
+        ]
+      }
+    },
+    {
+      "id": "G50_urgencia_con_razon",
+      "node_id": "4.8",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: la pérdida con los números del cliente y una razón concreta para decidir ahora (la ruta y una promoción que se acaba el viernes). La promoción puede ser imaginaria: lo que se califica es que sea concreta.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Está bueno, joven, déjeme pensarlo y luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, don Ramón. Nomás para que lo piense completo: usted me dijo que se le van como dos clientes al mes por los faltantes. Son veinticuatro al año, y cada uno se va con sus compras a otro taller. Eso está pasando hoy."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí… viéndolo así, sí es mucho."
+        },
+        {
+          "role": "user",
+          "text": "Y esta semana ando cerrando la ruta de la zona: si lo dejamos, su primer surtido llega hasta el mes que entra. Además, el precio de primer pedido es hasta el viernes. ¿Se lo dejo el jueves o el viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mejor el jueves, para no quedarme sin."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "impulse.miedo_perdida": "cumple",
+          "impulse.urgencia": "cumple"
+        },
+        "must_not_flag": [
+          "presion_directa",
+          "perdida_generica"
+        ]
+      }
+    },
+    {
+      "id": "G51_escasez_sin_razon",
+      "node_id": "4.8",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: la escasez sin razón concreta es presión disfrazada: ni qué se acaba, ni cuándo, ni por qué.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Está bueno, joven, déjeme pensarlo y luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Ándele, don Ramón, anímese, que ya casi no me queda."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, eso dicen todos, ¿no?"
+        },
+        {
+          "role": "user",
+          "text": "No, de veras, se acaba hoy. No lo piense tanto: ¿entonces qué, sí o no?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues déjeme pensarlo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "presion_directa"
+        ]
+      }
+    },
+    {
+      "id": "G52_desglose_imaginado",
+      "node_id": "4.14",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: el triple desglose con descuentos imaginados cumple: en la práctica no se califica si la empresa los tiene. Después del último número avanza sin silencio.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues me interesa, joven. ¿A cómo sale?"
+        },
+        {
+          "role": "user",
+          "text": "Normalmente la garrafa de concentrado sale en quinientos veinte."
+        },
+        {
+          "role": "assistant",
+          "text": "Ajá."
+        },
+        {
+          "role": "user",
+          "text": "Como es su primer pedido le queda en cuatrocientos ochenta, y si me lo paga de contado, en cuatrocientos cincuenta. Se ahorra setenta por garrafa: setecientos pesos en las diez. ¿Se las dejo el jueves o el viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "El viernes. Y sí, de contado."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto: el viernes temprano le llegan sus diez garrafas, y le dejo la nota de contado."
+        },
+        {
+          "role": "assistant",
+          "text": "Va."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.price_breakdown": "cumple",
+          "flow.close_with_action": "cumple"
+        },
+        "must_not_flag": [
+          "precio_sin_escalones",
+          "escalon_sin_motivo",
+          "silencio_despues_del_precio",
+          "pide_aprobacion"
+        ]
+      }
+    },
+    {
+      "id": "G53_escalon_sin_motivo",
+      "node_id": "4.14",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: bajar el precio sin decir por qué le dice al cliente que el primero estaba inflado.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues me interesa, joven. ¿A cómo sale?"
+        },
+        {
+          "role": "user",
+          "text": "La garrafa de concentrado le sale en quinientos veinte."
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, está un poco elevado."
+        },
+        {
+          "role": "user",
+          "text": "Bueno, se la dejo en cuatrocientos ochenta."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Entonces el primero estaba inflado? A ver, ¿y si le pago todo junto?"
+        },
+        {
+          "role": "user",
+          "text": "Va, en cuatrocientos cincuenta. ¿Se las dejo el jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Déjeme ver."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "escalon_sin_motivo"
+        ]
+      }
+    },
+    {
+      "id": "G54_conviccion_sin_garantia",
+      "node_id": "4.15",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: consolidación (la familia que hoy trae con otro se pasa a una sola entrega), convicción con su razón sin prometerla como hecho, y un primer pedido chico propuesto con convicción, que no es «que lo pruebe».",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues las grasas se las compro a otro proveedor desde hace años y la verdad no me ha fallado."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno, don Ramón, se ve que escogió bien. Ya le traigo el aceite y el anticongelante cada semana: si le sumo las grasas, le llega todo en la misma entrega, con un solo pedido y una sola persona a quien marcarle."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, sería un proveedor menos que andar siguiendo…"
+        },
+        {
+          "role": "user",
+          "text": "Exacto: menos pedidos que rastrear y menos gente que atender. No le puedo garantizar nada, pero estoy seguro de que se le va a mover, porque en talleres como el suyo la grasa de litio es de lo que más sale."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, ¿y cómo le hacemos?"
+        },
+        {
+          "role": "user",
+          "text": "Empezamos con una caja de grasa de litio en su entrega del jueves, junto con el aceite. ¿Va?"
+        },
+        {
+          "role": "assistant",
+          "text": "Va, póngamela el jueves."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.consolidacion_proveedor": "cumple",
+          "presentation.beneficio_no_caracteristica": "cumple"
+        },
+        "must_not_flag": [
+          "garantiza",
+          "pide_que_pruebe",
+          "anuncia_plan_b",
+          "ataca_al_proveedor",
+          "solo_precio"
+        ]
+      }
+    },
+    {
+      "id": "G55_garantiza",
+      "node_id": "4.15",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: prometer el resultado como un hecho es garantizar, no convicción.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues las grasas se las compro a otro proveedor desde hace años y la verdad no me ha fallado."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno, don Ramón. Si me pasa las grasas, le llega todo en la misma entrega del aceite, con un solo pedido."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, sería un proveedor menos."
+        },
+        {
+          "role": "user",
+          "text": "Y se le va a vender seguro, se lo garantizo: esa grasa no falla."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, eso dicen todos."
+        },
+        {
+          "role": "user",
+          "text": "¿Se la pongo en la entrega del jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Déjeme pensarlo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "garantiza"
+        ]
+      }
+    },
+    {
+      "id": "G56_que_lo_pruebe",
+      "node_id": "4.15",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: presentar la compra como experimento le pasa el riesgo al cliente.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues las grasas se las compro a otro proveedor desde hace años y la verdad no me ha fallado."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno, don Ramón. Si me pasa las grasas, le llega todo en la misma entrega del aceite, con un solo pedido."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, sería un proveedor menos."
+        },
+        {
+          "role": "user",
+          "text": "Le pongo unas poquitas para que las pruebe, a ver si se le mueven."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, no, pues ya tengo las mías y no me han fallado."
+        },
+        {
+          "role": "user",
+          "text": "¿Se las dejo en la entrega del jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, así déjelo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pide_que_pruebe"
+        ]
+      }
+    },
+    {
+      "id": "G57_balas_poco_a_poco",
+      "node_id": "4.6",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110 (Emilio): las balas se sueltan poco a poco, conforme hace falta; tres hechos concretos antes del precio, cada uno con su espacio, es lo normal.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "A ver, cuénteme qué trae."
+        },
+        {
+          "role": "user",
+          "text": "Llevamos catorce años surtiendo talleres de esta zona, y en ese tiempo no le hemos dejado sin aceite a ninguno por desabasto."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Catorce años? Órale, no sabía."
+        },
+        {
+          "role": "user",
+          "text": "Y la entrega es al día siguiente de su pedido: si me llama el lunes, el martes temprano ya lo tiene."
+        },
+        {
+          "role": "assistant",
+          "text": "Eso sí me sirve, porque a veces me quedo corto."
+        },
+        {
+          "role": "user",
+          "text": "Además, el concentrado le rinde el doble: con una garrafa prepara dos de las que compra ahorita."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, mire. ¿Y eso a cómo?"
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "objections.bullet_theory": "cumple"
+        },
+        "must_not_flag": [
+          "vacia_las_balas",
+          "balas_vagas",
+          "bala_inflada"
+        ]
+      }
+    },
+    {
+      "id": "G58_vacia_las_balas",
+      "node_id": "4.6",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: el error es soltar todas las balas de jalón y quedarse sin munición.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "A ver, cuénteme qué trae."
+        },
+        {
+          "role": "user",
+          "text": "Llevamos catorce años en la zona, entregamos al día siguiente, el concentrado rinde el doble, tenemos crédito a treinta días, le damos exhibidor gratis, capacitación para sus mecánicos, garantía de devolución y somos distribuidor oficial de Bardahl."
+        },
+        {
+          "role": "assistant",
+          "text": "Uf… pues suena bien todo, déjeme lo pienso."
+        },
+        {
+          "role": "user",
+          "text": "Claro, ¿y qué le pareció?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues bien, ahí luego le digo."
+        },
+        {
+          "role": "user",
+          "text": "Entonces, ¿le dejo diez garrafas el jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Luego le digo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "vacia_las_balas"
+        ]
+      }
+    },
+    {
+      "id": "G59_promesa_sin_ancla",
+      "node_id": "4.2",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
+      "description": "Mensaje 110: una promesa enorme sin nada concreto que la sostenga es aire, aunque en la práctica todo sea imaginario.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí, como le dije, cuando me falta producto se me van las ventas."
+        },
+        {
+          "role": "user",
+          "text": "Con este aceite le va a duplicar las ventas, don Ramón. Nunca falla."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Duplicar? Eso suena a mucho, ¿no?"
+        },
+        {
+          "role": "user",
+          "text": "Se lo aseguro, todos los que lo llevan venden el doble."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues no sé, joven."
+        },
+        {
+          "role": "user",
+          "text": "¿Le dejo unas cajas el jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Déjeme ver."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "promesa_sin_ancla"
+        ]
       }
     }
   ]
