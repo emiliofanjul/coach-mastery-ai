@@ -115,8 +115,7 @@ describe("La introducción a FUJPIG lo dice", () => {
 });
 
 describe("La red del mundo 4", () => {
-  it("v3.26.0 con 14 casos nuevos", () => {
-    expect(harness.harness_version).toBe("v3.26.0");
+  it("los 14 casos nuevos (desde la v3.26.0)", () => {
     const nuevos = ["G46_jones_imaginado_concreto", "G47_jones_vago_a_medias", "G48_jones_se_cae", "G49_jones_sostenido", "G50_urgencia_con_razon", "G51_escasez_sin_razon", "G52_desglose_imaginado", "G53_escalon_sin_motivo", "G54_conviccion_sin_garantia", "G55_garantiza", "G56_que_lo_pruebe", "G57_balas_poco_a_poco", "G58_vacia_las_balas", "G59_promesa_sin_ancla"];
     for (const id of nuevos) expect(caso(id)).toBeDefined();
   });

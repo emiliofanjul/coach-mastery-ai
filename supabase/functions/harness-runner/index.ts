@@ -147,10 +147,23 @@ function evaluateCase(c: Case, response: any): CaseResult {
     }
   }
 
-  // must_flag: flag id appears somewhere in the response
+  // must_flag / must_not_flag: se revisan las FALLAS que marcó la evaluación
+  // (flags_detected y fallas), no el texto. Mensaje 111: buscar el id en todo
+  // el texto confundía una falla con una palabra —el G54 citaba «no le puedo
+  // garantizar nada» y la red lo leía como la falla «garantiza»—. Lo que no
+  // debe aparecer en el texto va en must_not_contain o feedback_must_not_contain.
+  const marcadas = new Set<string>([
+    ...(Array.isArray(parsed.flags_detected) ? parsed.flags_detected : []),
+    ...(Array.isArray(parsed.fallas) ? parsed.fallas.map((f: any) => f?.id) : []),
+  ].filter((x: unknown): x is string => typeof x === "string").map((x) => x.toLowerCase()));
   for (const flag of (exp.must_flag ?? [])) {
-    if (!dump.includes(String(flag).toLowerCase())) {
+    if (!marcadas.has(String(flag).toLowerCase())) {
       reasons.push(`missing expected flag: ${flag}`);
+    }
+  }
+  for (const flag of (exp.must_not_flag ?? [])) {
+    if (marcadas.has(String(flag).toLowerCase())) {
+      reasons.push(`forbidden flag present: ${flag}`);
     }
   }
 
@@ -201,8 +214,9 @@ function evaluateCase(c: Case, response: any): CaseResult {
   }
 
 
-  // must_not_flag / must_not_contain / feedback_must_not_contain / must_not_include_in_response
-  const forbidLists = [exp.must_not_flag, exp.must_not_contain, exp.feedback_must_not_contain, exp.must_not_include_in_response];
+  // must_not_contain / feedback_must_not_contain / must_not_include_in_response
+  // (must_not_flag ya se revisó arriba, contra las fallas marcadas).
+  const forbidLists = [exp.must_not_contain, exp.feedback_must_not_contain, exp.must_not_include_in_response];
   for (const list of forbidLists) {
     if (!Array.isArray(list)) continue;
     for (const s of list) {
