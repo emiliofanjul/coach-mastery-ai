@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Publicar mensajes 110 y 111 por autorización de Emilio del 30-oct-2026; no cambiar P2_10, reportar su falla aislada sin detener la publicación.
+- [x] Publicación de mensajes 110 y 111 solicitada para closerapp.ai por autorización de Emilio del 30-oct-2026; despliegue final no confirmado; P2_10 sin cambios y su falla aislada reportada.
 
 - [x] Mensaje 102: paso 0 confirmado con 630/47 pruebas vigentes y huellas exactas; las copias de preparación se excluyeron del baseline.
 - [x] Mensaje 102: SQL protegido aplicado y huella final 23019881cc63ef786045c08cf0a68387; tres archivos movidos con MD5 exactos; desplegado solo harness-runner v3.22.0; 635/48 pruebas pasan y build automático OK.
