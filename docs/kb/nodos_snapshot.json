@@ -47,14 +47,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como abres. Vamos al desglose y te digo cual era la siguiente pieza."
         }
       },
-      "version": "2.0.2",
+      "version": "2.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "pregunta_cerrada",
           "regla_id": "opening.pregunta_cerrada",
           "severity": "major",
-          "description": "Cierra la apertura con una pregunta de si o no (tiene un minuto, puedo pasar, esta ocupado). Le entrega al cliente la respuesta mas facil, que es no."
+          "description": "Cierra la apertura con una pregunta cuyo no le da la salida (tiene un minuto, puedo pasar, esta ocupado, le interesa). Una de si o no sobre el o su negocio que invita a platicar no es esto."
         },
         {
           "id": "pitch_prematuro",
@@ -220,14 +220,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como entras. Vamos al desglose y te digo que le faltaba."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "halago_falso",
           "regla_id": "opening.halago_falso",
           "severity": "major",
-          "description": "Cumplido exagerado, inventado o que suena ensayado. Cuesta mas de lo que gana: el cliente se cierra mas que al inicio."
+          "description": "Cumplido exagerado, ensayado o que contradice lo que el cliente dijo. Cuesta mas de lo que gana: el cliente se cierra mas que al inicio."
         },
         {
           "id": "familiaridad_excesiva",
@@ -253,7 +253,7 @@
           "id": "opening.personalizacion",
           "weight": 0.4,
           "regla_id": "opening.especificidad",
-          "description": "El comentario es sobre algo VERDADERO y especifico. Un halago inventado, exagerado o que el cliente no puede confirmar no cumple, y ademas cuesta: se siente falso."
+          "description": "El comentario es sobre algo especifico de ese cliente o ese momento. Un halago exagerado, ensayado o que contradice lo que el cliente dijo no cumple, y ademas cuesta: se siente falso. En la practica lo que se ve se imagina."
         }
       ]
     }
@@ -295,7 +295,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.0.4",
+      "version": "2.0.5",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -320,7 +320,7 @@
           "id": "pregunta_cerrada",
           "regla_id": "opening.pregunta_cerrada",
           "severity": "major",
-          "description": "Cierra la apertura con una pregunta de si o no."
+          "description": "Cierra la apertura con una pregunta cuyo no le da la salida (tiene un minuto, esta ocupado, le interesa)."
         },
         {
           "id": "se_encoge",
@@ -341,7 +341,7 @@
           "id": "opening.personalizacion",
           "weight": 0.2,
           "regla_id": "opening.especificidad",
-          "description": "La observacion es de ESE cliente y ESE momento, verificable en lo que el cliente dice o hace. Nada generico ni inventado."
+          "description": "La observacion es de ESE cliente y ESE momento, y no contradice lo que el cliente dice o hace. Nada generico."
         },
         {
           "id": "opening.ice_breaker",
@@ -411,14 +411,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como te presentas. Vamos al desglose y te digo que le sobraba o que le faltaba."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "historia_larga",
           "regla_id": "story.kill",
           "severity": "major",
-          "description": "Se extiende mas alla de tres o cuatro frases: cuenta la trayectoria de la empresa, enumera productos, da cifras o certificaciones. El cliente se desconecta."
+          "description": "Mete frases que no contestan quien es, que hace ni por que esta ahi: cuenta la trayectoria de la empresa, enumera productos, da cifras o certificaciones. El cliente se desconecta."
         },
         {
           "id": "curriculum",
@@ -454,7 +454,7 @@
           "id": "story.brevedad",
           "weight": 0.35,
           "regla_id": "story.kiss",
-          "description": "Dos o tres frases. No historia de la empresa, no anos en el mercado, no lista de productos, no certificaciones. Cada frase de mas cuesta atencion."
+          "description": "Corta: quien es, que hace y por que esta ahi, cada pieza una vez. Sin historia de la empresa, anos en el mercado, lista de productos ni certificaciones. Se mide por piezas, no por frases: explicar el porque es parte de esa pieza."
         },
         {
           "id": "story.relevancia_cliente",
@@ -1030,7 +1030,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.1.4",
+      "version": "2.1.5",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1059,7 +1059,7 @@
           "id": "historia_larga",
           "regla_id": "story.kill",
           "severity": "major",
-          "description": "La historia breve se extiende y el cliente se desconecta."
+          "description": "La historia breve mete frases que no contestan quien es, que hace ni por que esta ahi, y el cliente se desconecta."
         },
         {
           "id": "ignora_lo_personal",
@@ -1107,7 +1107,7 @@
           "id": "story.brevedad",
           "weight": 0.1,
           "regla_id": "story.kiss",
-          "description": "Dos o tres frases. Sin trayectoria de empresa, sin lista de productos, sin cifras."
+          "description": "Corta: quien es, que hace y por que esta ahi, cada pieza una vez. Sin trayectoria de empresa, sin lista de productos, sin cifras."
         },
         {
           "id": "relationship.cpr",

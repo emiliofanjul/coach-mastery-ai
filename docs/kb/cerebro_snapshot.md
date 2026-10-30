@@ -145,7 +145,7 @@ Closer enseña **6** `CAMPO`: se separa **Descubrimiento** como paso propio. En 
 
 Se combinan con **lenguaje corporal abierto** y **tono de voz fuerte**.
 
-> ⚠️ **Límite de canal:** SEE es físico. En texto o voz no se puede evaluar. Se enseña, se pide, y se marca como *"esto se practica en persona"*. Lo que sí se evalúa es su equivalente verbal: **la energía que sale por las palabras**.
+> ⚠️ **Límite de canal:** SEE es físico. En texto o voz no se puede evaluar. Se enseña, se pide, y se marca como *"esto se practica en persona"*. Lo que sí se evalúa es su equivalente verbal: **la energía que sale por las palabras**. Encogerse en las palabras se ve así `CAMPO`: frases que se desinflan (*"bueno, pues… no, está bien"*), empezar a despedirse o a disculparse ante la indiferencia, contestar cada vez más corto y sin pregunta. Ir rápido y al grano, con seguridad, no es encogerse.
 
 ### Regla del 10% `FUENTE` `PRESENCIAL`
 Lee el nivel de emoción del cliente y ponte **10% por encima** de él. No al doble: 10%.
@@ -158,6 +158,8 @@ Cumplido genuino, chiste sencillo o comentario ligero.
 Puede ser sobre **la persona**, **el lugar**, o **algo en común**. No está atado a ningún tipo de negocio.
 
 **Qué lo rompe:** el halago exagerado o inventado. El cliente lo lee al instante y se cierra **más** que antes — porque ahora sabe que le están aplicando una técnica.
+
+**En la práctica** `CAMPO`: lo que el vendedor ve se imagina. Lo que no se vale es contradecir lo que el cliente ya dijo: si dijo que hoy está tranquilo, no le digas que no para. Lo relativo no es contradicción —«mucha gente» para uno puede ser poca para otro—. Por eso el halago falso se juzga por exagerado o ensayado, no por inventado.
 
 ### La escalera de la especificidad `CAMPO` `UNIVERSAL`
 
@@ -176,6 +178,8 @@ La observación y la pregunta de la apertura se miden igual: **¿se la harías a
 **Una pregunta de cortesía no es una falla: es el primer escalón.** La falla es no preguntar nada: sin ninguna pregunta, el cliente no tiene qué contestar y la conversación se muere ahí.
 
 **La pregunta va al final: es la que le devuelve la palabra al cliente, con control hacia donde quieres que vaya la conversación.** La que mejor lo hace sale de la observación y cierra la apertura: *"veo que no paran, ¿siempre está así de movido?"*. Un *"¿cómo está?"* dentro del saludo no basta si después sigues hablando: el cliente espera a que termines en vez de contestar, y la palabra se la devolviste con un comentario, no con una pregunta. Convertir la observación en la pregunta final es como se sube de escalón.
+
+**Pregunta cerrada** `CAMPO`: la que falla no es la de sí o no, sino la que con su «no» le da la salida: *"¿tiene tiempo?"*, *"¿puedo pasar?"*, *"¿le interesa?"*. Una de sí o no sobre él o su negocio, que invita a platicar —*"¿así ha estado toda la semana?"*—, sí le devuelve la palabra.
 
 ### Especificidad y ligereza son dos cosas distintas `CAMPO` `UNIVERSAL`
 
@@ -196,6 +200,8 @@ El gasista que viene a leer tu medidor entra con una autoridad que nace de senti
 >
 > **La autoridad no se pide. Se asume.**
 
+**Ir rápido no es hacerse menos** `CAMPO`: *"de volada"*, *"al grano"* o *"nada más quería…"* van rápido sin pedir nada. Lo que hace chica tu presencia es pedir perdón por estar ahí o prometer que no le vas a quitar tiempo (*"no le quito mucho"*): le dices que sabes que estorbas.
+
 ### Regla doctrinal del paso `CAMPO`
 **La identificación (nombre y empresa) es permitida pero nunca requerida aquí.** Su ausencia jamás se penaliza.
 
@@ -214,6 +220,10 @@ Si el cliente pregunta *"¿y usted quién es?"*, **ganaste la introducción** �
 Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible.
 
 > **El mecanismo:** cada frase de más gasta la atención que acabas de ganar. Lo que suena impresionante en tu cabeza suena a discurso en la de él — y de los discursos uno se defiende.
+
+**Cómo se mide** `CAMPO`: por piezas, no por frases. Cada pieza va una vez: quién eres, qué estás haciendo y por qué estás ahí. Una frase que explica el porqué es parte de esa pieza. Frase de más es la que no contesta ninguna de las tres: la trayectoria de la empresa, el catálogo, cifras, credenciales o explicar el producto.
+
+**Monólogo** `CAMPO`: no se mide en palabras. Es el turno que el cliente no puede contestar bien porque le metiste varias ideas o varias preguntas a la vez, o un bloque largo que lo deja fuera.
 
 **Y después de la historia, preguntas.** La fuente es explícita: *"en la mayoría de los casos es más efectivo pasar directamente a las preguntas de calificación que dar una larga explicación."*
 
@@ -252,7 +262,7 @@ Los cinco caminos a la persona. Más cumplidos genuinos y chistes sencillos.
 ### El desvío con regreso `CAMPO` `UNIVERSAL`
 La mecánica que hace que el CPR no mate la venta.
 
-Sales de la línea a propósito, das **uno o dos intercambios personales**, y **regresas**. Puedes volver a salir más adelante, pero siempre avanzando.
+Sales de la línea a propósito, das **uno o dos intercambios personales**, y **regresas**. Puedes volver a salir más adelante, pero siempre avanzando. El interés genuino `CAMPO` se ve en lo que haces con lo que te contó: una pregunta de seguimiento o un comentario sobre eso. Un *"qué bien"* y cambiar de tema es interés de compromiso.
 
 **Dos errores, ambos caros:**
 - **Nunca salir** → no hay relación, y no te van a contestar nada en el Paso 3

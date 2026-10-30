@@ -15,8 +15,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "El equivalente evaluable del SEE: la energía que sale por las palabras.",
-  "cita_cerebro": "Lo que sí se evalúa es su equivalente verbal: la energía que sale por las palabras",
+  "resumen": "El equivalente evaluable del SEE: la energía que sale por las palabras. LA PRUEBA: ante la indiferencia, la sequedad o la prisa del cliente, ¿el vendedor se encoge en lo que dice —frases que se desinflan («bueno, pues… no, está bien»), empieza a despedirse o a disculparse, contesta cada vez más corto y sin pregunta—? Entonces bajó la energía. Ir rápido y al grano, con seguridad, no es encogerse.",
+  "cita_cerebro": "la energía que sale por las palabras",
   "severidad_sugerida": "major"
  },
  {
@@ -35,8 +35,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Cumplido genuino, chiste sencillo o comentario ligero sobre la persona, el lugar o algo en común. Entregarlo como pregunta es la forma que permite al cliente responder y relajarse. La ligereza se juzga en lo que dice el vendedor —humor suave, un guiño o calidez en las palabras—, nunca por la reacción del cliente: un buen chiste que no le hace gracia a un cliente rojo o de mal humor se hizo bien. Especificidad y ligereza son cosas distintas: esta regla mide la ligereza; la especificidad la mide opening.especificidad.",
-  "cita_cerebro": "Cumplido genuino, chiste sencillo o comentario ligero. Puede ser sobre la persona, el lugar, o algo en común",
+  "resumen": "Cumplido genuino, chiste sencillo o comentario ligero sobre la persona, el lugar o algo en común. Entregarlo como pregunta es la forma que permite al cliente responder y relajarse. La ligereza se juzga en lo que dice el vendedor —humor suave, un guiño o calidez en las palabras—, nunca por la reacción del cliente: un buen chiste que no le hace gracia a un cliente rojo o de mal humor se hizo bien. Especificidad y ligereza son cosas distintas: esta regla mide la ligereza; la especificidad la mide opening.especificidad. LA PRUEBA: ¿el comentario tiene ligereza en lo que dice —humor suave, un guiño o calidez—, sobre la persona, el lugar o algo en común? Con una basta; un comentario solo descriptivo no la tiene.",
+  "cita_cerebro": "Cumplido genuino, chiste sencillo o comentario ligero.",
   "severidad_sugerida": null
  },
  {
@@ -45,8 +45,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Halago exagerado o inventado. El cliente lo detecta y se cierra más que antes.",
-  "cita_cerebro": "El halago exagerado o inventado. El cliente lo lee al instante y se cierra más que antes",
+  "resumen": "Halago exagerado o ensayado: el cliente lo lee al instante y se cierra más que antes, porque sabe que le están aplicando una técnica. LA PRUEBA: ¿el cumplido es desmedido para lo que hay («el mejor taller de toda la ciudad»), suena a fórmula, o contradice lo que el cliente ya dijo? Entonces es halago falso. En la práctica lo que el vendedor ve se imagina: no se califica si es real. Lo relativo («mucha gente», «muy movido») no es contradicción.",
+  "cita_cerebro": "halago exagerado o inventado. El cliente lo lee al instante y se cierra",
   "severidad_sugerida": "major"
  },
  {
@@ -66,7 +66,7 @@
   "canal": "universal",
   "procedencia": "FUENTE",
   "resumen": "Pedir autorización para hablar o para seguir: entrega el control y le ofrece al cliente una salida gratis. LA PRUEBA: ¿la frase le da al cliente la opción de decir que no a seguir la plática? Ejemplos que ilustran —no delimitan—: «¿tiene un minutito?», «¿me permite?», «¿le puedo preguntar algo?», «si no le molesta…». Si la frase no le da esa opción, no es pedir permiso, diga lo que diga. Pedir permiso es condicionar el seguir a que el cliente diga que sí: preguntárselo y esperar su respuesta, o ponerlo como condición («si no le molesta…»). Anunciar lo que vas a hacer y hacerlo en el mismo turno, sin condicionarlo —«quería preguntarle…» seguido de la pregunta—, no es pedir permiso: no le ofrece ninguna salida.",
-  "cita_cerebro": "Cuando preguntas «¿tiene un minutito?» haces dos cosas a la vez — le entregas el control, y le ofreces una salida que no le cuesta nada tomar",
+  "cita_cerebro": "le entregas el control, y le ofreces una salida que no le cuesta nada tomar",
   "severidad_sugerida": "critical"
  },
  {
@@ -85,8 +85,8 @@
   "tipo": "premio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Abrir sin identificarse deja al cliente con la pregunta. Que él pregunte quién eres es ganar la introducción: lo confirma, pero no es requisito — si el vendedor no se identificó, cumple. Identificarse es que el vendedor diga EN PRIMERA PERSONA quién es: \"soy…\", \"me llamo…\", \"vengo de…\", o el nombre de la empresa que representa. Usar el nombre DEL CLIENTE, o dirigirse a él con \"don\", \"señor\" o \"sir\", NO es identificarse: es personalización, y es bueno.",
-  "cita_cerebro": "Si el cliente pregunta «¿y usted quién es?», ganaste la introducción — esa pregunta es la puerta natural al Paso 2",
+  "resumen": "Abrir sin identificarse deja al cliente con la pregunta. Que él pregunte quién eres es ganar la introducción: lo confirma, pero no es requisito — si el vendedor no se identificó, cumple. Identificarse es que el vendedor diga EN PRIMERA PERSONA quién es: \"soy…\", \"me llamo…\", \"vengo de…\", o el nombre de la empresa que representa. Usar el nombre DEL CLIENTE, o dirigirse a él con \"don\", \"señor\" o \"sir\", NO es identificarse: es personalización, y es bueno. LA PRUEBA: ¿el vendedor abrió sin decir en primera persona su nombre ni el de su empresa? Si sí, cumple.",
+  "cita_cerebro": "esa pregunta es la puerta natural al Paso 2",
   "severidad_sugerida": null
  },
  {
@@ -106,7 +106,7 @@
   "canal": "universal",
   "procedencia": "FUENTE",
   "resumen": "Hacer trabajo comercial antes de tiempo. LA PRUEBA: ¿esta frase le ofrece algo o le pide información de su operación comercial? Si la respuesta es sí, es pitch prematuro, aunque no nombre ningún producto. Ejemplos que ilustran —no delimitan—: ofrecer producto o promoción; preguntar por su proveedor, sus precios, sus marcas, su inventario, sus volúmenes o cada cuánto le surten. NO es esto decir quién eres o por qué pasaste (\"ando visitando talleres de la zona\"): eso es presentarse, y su momento es el Paso 2. Tampoco una pregunta sobre él o sobre cómo le va.",
-  "cita_cerebro": "Aquí no dices quién eres ni a qué vienes. Eso es el Paso 2. Confundirlos es el error doctrinal más común",
+  "cita_cerebro": "no dices quién eres ni a qué vienes. Eso es el Paso 2.",
   "severidad_sugerida": "critical"
  },
  {
@@ -115,7 +115,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Decir quién eres, qué estás haciendo y por qué necesitas su tiempo.",
+  "resumen": "Decir quién eres, qué estás haciendo y por qué necesitas su tiempo. LA PRUEBA: ¿el vendedor dice quién es —su nombre, y de qué empresa viene— y por qué está ahí, en términos humanos? Si falta una de las dos, está a medias.",
   "cita_cerebro": "Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible",
   "severidad_sugerida": null
  },
@@ -125,7 +125,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Keep It Short and Simple. Lo más conciso posible.",
+  "resumen": "Keep It Short and Simple: quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible. LA PRUEBA: ¿la historia breve trae sus piezas, cada una una vez, y nada que no conteste alguna de ellas? Se mide por piezas, no por frases: una frase que explica el porqué es parte de esa pieza. Si sobra algo —trayectoria, catálogo, cifras, credenciales, explicar el producto—, está a medias.",
   "cita_cerebro": "Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible",
   "severidad_sugerida": null
  },
@@ -135,8 +135,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Alargarse. Cada frase de más gasta la atención recién ganada y suena a discurso.",
-  "cita_cerebro": "Cada frase de más gasta la atención que acabas de ganar. Lo que suena impresionante en tu cabeza suena a discurso en la de él",
+  "resumen": "Alargarse: cada frase de más gasta la atención recién ganada y suena a discurso. LA PRUEBA: ¿la historia breve trae frases que no contestan quién eres, qué estás haciendo ni por qué estás ahí —la trayectoria de la empresa, el catálogo, cifras, credenciales o explicar el producto—? Una frase que explica el porqué es parte de esa pieza: no es de más.",
+  "cita_cerebro": "frase de más gasta la atención que acabas de ganar",
   "severidad_sugerida": "major"
  },
  {
@@ -145,7 +145,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Después de la historia, preguntas. La historia existe para ganarte el derecho de preguntarle a él.",
+  "resumen": "Después de la historia, preguntas: la historia existe para ganarte el derecho de preguntarle a él. LA PRUEBA: ¿cada turno del vendedor termina con una pregunta que le devuelve la palabra al cliente? La pregunta se juzga por función: si invita a responder o el cliente la contestó, es pregunta.",
   "cita_cerebro": "Existe para ganarte el derecho de preguntarle a él",
   "severidad_sugerida": null
  },
@@ -155,7 +155,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Terminar la historia sin pregunta deja al cliente sin qué contestar y le devuelve el control.",
+  "resumen": "Terminar la historia breve sin pregunta deja al cliente sin qué contestar y le devuelve el control. LA PRUEBA: ¿el turno de la historia breve termina en afirmación, sin una pregunta que le devuelva la palabra? La pregunta se juzga por función: si invita a responder o el cliente la contestó, es pregunta.",
   "cita_cerebro": "en la mayoría de los casos es más efectivo pasar directamente a las preguntas de calificación que dar una larga explicación",
   "severidad_sugerida": "major"
  },
@@ -165,8 +165,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Create Personal Relations. Transversal a toda la conversación. Decide si tus argumentos pesan o se descuentan.",
-  "cita_cerebro": "Se aplica durante TODA la conversación, no en un paso",
+  "resumen": "Create Personal Relations, durante toda la conversación: decide si tus argumentos pesan o se descuentan. LA PRUEBA: cuando el cliente deja ver algo personal —familia, trabajo, pasatiempos, motivaciones, deportes—, ¿el vendedor le entra con interés genuino (una pregunta de seguimiento o un comentario sobre eso) y luego regresa al negocio por su cuenta? Cuánto pide cada nodo lo dice el nodo.",
+  "cita_cerebro": "Se aplica durante TODA la conversación",
   "severidad_sugerida": null
  },
  {
@@ -175,7 +175,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Family, Occupation, Recreation, Motivation, Sports. Los cinco caminos a la persona.",
+  "resumen": "FORMS: Family, Occupation, Recreation, Motivation, Sports. Los cinco caminos a la persona. LA PRUEBA: ¿el vendedor toca al menos uno de esos temas con interés genuino y regresa al negocio por su cuenta en uno o dos intercambios?",
   "cita_cerebro": "Los cinco caminos a la persona. Más cumplidos genuinos y chistes sencillos",
   "severidad_sugerida": null
  },
@@ -185,7 +185,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Interés fingido. Cuesta más que no haber preguntado, porque el cliente sabe que le aplicaron una técnica.",
+  "resumen": "Interés fingido: cuesta más que no haber preguntado, porque el cliente sabe que le aplicaron una técnica. LA PRUEBA: ante algo personal que el cliente contó, ¿el vendedor contesta con un «qué bien» o «qué padre» y cambia de tema de inmediato, sin una pregunta de seguimiento ni un comentario sobre eso?",
   "cita_cerebro": "Un interés fingido se nota, y cuesta más que no haber preguntado",
   "severidad_sugerida": "major"
  },
@@ -205,8 +205,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "No salir nunca de la línea: sin relación, el Paso 3 recibe respuestas de cortesía.",
-  "cita_cerebro": "Nunca salir → no hay relación, y no te van a contestar nada en el Paso 3",
+  "resumen": "No salir nunca de la línea: sin relación, el Paso 3 recibe respuestas de cortesía. LA PRUEBA: cuando el cliente deja un dato personal, ¿el vendedor lo pasa de largo para seguir con lo suyo? O, en toda la plática, ¿nunca sale a lo personal aunque tuvo de dónde?",
+  "cita_cerebro": "no hay relación, y no te van a contestar nada en el Paso 3",
   "severidad_sugerida": "minor"
  },
  {
@@ -215,8 +215,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Salir a lo personal y no regresar. La venta se estanca en plática cómoda.",
-  "cita_cerebro": "Salir y no regresar → el cliente se acomoda a platicar y la venta se estanca",
+  "resumen": "Salir a lo personal y no regresar: el cliente se acomoda a platicar y la venta se estanca. LA PRUEBA: después de salir a lo personal, ¿el vendedor deja pasar más de dos intercambios sin regresar al negocio por su cuenta? El cliente nunca te va a regresar a la línea.",
+  "cita_cerebro": "el cliente se acomoda a platicar y la venta se estanca",
   "severidad_sugerida": "major"
  },
  {
@@ -236,7 +236,7 @@
   "canal": "universal",
   "procedencia": "FUENTE",
   "resumen": "Discutir un bloqueo lo convierte en posición y le crea al cliente un no que no tenía. LA PRUEBA: ¿el vendedor trata de cambiar el no del cliente: convencerlo de que sí le interesa, de que sí tiene tiempo o de que será rápido? Si acepta el no y sigue con su tema, no es discutir, diga lo que diga.",
-  "cita_cerebro": "Le acabas de crear un «no» real que no tenía",
+  "cita_cerebro": "Le acabas de crear un \"no\" real que no tenía",
   "severidad_sugerida": "critical"
  },
  {
@@ -246,7 +246,7 @@
   "canal": "universal",
   "procedencia": "FUENTE",
   "resumen": "Agree, Ignore, Resume: ante un bloqueo al inicio, lo aceptas, no lo discutes y sigues con tu plática. LA PRUEBA: después del bloqueo, ¿el vendedor (1) reconoce lo que dijo el cliente («entiendo», «claro», «por supuesto» o algo que muestre que lo escuchó), (2) no trata de cambiar su no y (3) sigue con la plática —con otra pregunta o con lo que iba a decir— sin pedir permiso? Si hace las tres, cumple, aunque todavía no haya dicho a qué viene. Ir al grano («de volada», «nada más quería…») es seguir, no pedir permiso.",
-  "cita_cerebro": "reconoce con «entiendo» o «por supuesto», no lo discutas, y continúa",
+  "cita_cerebro": "no lo discutas, y continúa",
   "severidad_sugerida": null
  },
  {
@@ -265,7 +265,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Si haces AIR y el cliente repite el bloqueo de inmediato, son dos no seguidos: hoy no es el día. Se queda de regresar en otro momento, con una alternativa concreta, o se despide con amabilidad. Tienen que ser consecutivos.",
+  "resumen": "Si haces AIR y el cliente repite el bloqueo de inmediato, son dos no seguidos: hoy no es el día. LA PRUEBA: después del segundo «no» seguido en la puerta, ¿el vendedor queda de regresar —mejor con una alternativa concreta, como jueves o viernes— o se despide con amabilidad, sin seguir con su tema? Cualquiera de las dos cumple; si sigue con su tema, no cumple.",
   "cita_cerebro": "si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos",
   "severidad_sugerida": null
  },
@@ -295,8 +295,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Ataque preventivo en tono de disculpa: se vuelve defenderse de algo que nadie reclamó.",
-  "cita_cerebro": "En tono de disculpa → deja de ser adelantarse y se vuelve defenderse de algo que nadie reclamó",
+  "resumen": "Defenderse en tono de disculpa de algo que nadie reclamó. LA PRUEBA: ¿el vendedor se disculpa por adelantado o promete que él sí es diferente («perdón, pero yo sí soy diferente», «le prometo que con nosotros no pasa») sin dar nada concreto? Reconocer en serio lo que el cliente vivió y darle un motivo concreto no es esto.",
+  "cita_cerebro": "deja de ser adelantarse y se vuelve defenderse de algo que nadie reclamó",
   "severidad_sugerida": "major"
  },
  {
@@ -975,7 +975,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Turnos largos que no dejan entrar al cliente. En cualquier paso.",
+  "resumen": "Turnos largos que no dejan entrar al cliente, en cualquier paso: de los discursos uno se defiende. LA PRUEBA: ¿hay un turno que el cliente no puede contestar bien porque le mete varias ideas o varias preguntas a la vez, o un bloque largo que lo deja fuera? No se mide en palabras, sino en si el cliente puede entrar.",
   "cita_cerebro": "de los discursos uno se defiende",
   "severidad_sugerida": "minor"
  },
@@ -985,7 +985,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Historia breve inflada con credenciales, años, catálogo.",
+  "resumen": "Historia breve inflada con credenciales. LA PRUEBA: ¿el vendedor habla de los años, premios, tamaño o catálogo de su empresa en lugar de quién es él y por qué está ahí?",
   "cita_cerebro": "Lo que suena impresionante en tu cabeza suena a discurso en la de él",
   "severidad_sugerida": "major"
  },
@@ -1235,7 +1235,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Confianza que todavía no se ganó: apodos, tuteo forzado. Se construye en el registro del cliente.",
+  "resumen": "Confianza que todavía no se ganó. Se construye en el registro del cliente. LA PRUEBA: ¿el vendedor usa apodos, tuteo, bromas personales o palmadas verbales («compadre», «mi rey») con un cliente que no le dio pie, en un registro más confianzudo que el del cliente?",
   "cita_cerebro": "Tú te adaptas primero",
   "severidad_sugerida": "minor"
  },
@@ -1415,8 +1415,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Cerrar la apertura con una pregunta de sí o no. Le entrega al cliente la respuesta más fácil, que es no. (No hacer ninguna pregunta es otra falla: opening.sin_pregunta.)",
-  "cita_cerebro": "le ofreces una salida que no le cuesta nada tomar",
+  "resumen": "Cerrar la apertura con una pregunta cuyo «no» le da al cliente la salida. LA PRUEBA: ¿la pregunta permite que el cliente termine la plática con un «no» —«¿tiene tiempo?», «¿puedo pasar?», «¿le interesa?», «¿está ocupado?»—? Una pregunta de sí o no sobre él o su negocio, que invita a platicar («¿así ha estado toda la semana?»), no es esta falla. (No hacer ninguna pregunta es otra falla: opening.sin_pregunta.)",
+  "cita_cerebro": "la que con su «no» le da la salida",
   "severidad_sugerida": "major"
  },
  {
@@ -1435,7 +1435,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir. El escalón 3 exige historia REAL con el cliente: si la conversación no muestra ninguna, no está disponible y no se sugiere — jamás inventando un recuerdo. LA PRUEBA DEL ESCALÓN 2: nombra algo concreto que viste ahí —el movimiento, que está lleno, un cambio, algo nuevo—. Un adjetivo genérico (\"qué bien se ve el local\", \"qué bonito\") se lo dirías a cualquiera: es escalón 1. La especificidad NO mide si el comentario es ligero o si suena a inspección: eso lo mide el ice breaker. Contarle la mercancía (\"cuatro cajas de filtros de una marca y dos de otra\") es muy específico —escalón 2— aunque no rompa el hielo.",
+  "resumen": "La escalera de la especificidad: la observación y la pregunta se miden por qué tan específicas son para ESE cliente en ESE momento — ¿se la harías a cualquiera? Escalón 1, de cortesía (\"¿cómo está?\"): acredita un tercio. Escalón 2, del entorno (\"veo que no paran, ¿siempre está así de movido?\"): acredita completo con cliente nuevo. Escalón 3, de él (\"¿cómo sigue? ¿va mejorando?\"): la meta con un recurrente. Las mismas palabras pueden estar en escalones distintos: lo que sube el escalón es qué tanto sabe de él. Un escalón bajo NO es una falla: se acredita menos y se muestra cómo subir. El escalón 3 exige historia REAL con el cliente: si la conversación no muestra ninguna, no está disponible y no se sugiere — jamás inventando un recuerdo. LA PRUEBA DEL ESCALÓN 2: nombra algo concreto que viste ahí —el movimiento, que está lleno, un cambio, algo nuevo—. Un adjetivo genérico (\"qué bien se ve el local\", \"qué bonito\") se lo dirías a cualquiera: es escalón 1. La especificidad NO mide si el comentario es ligero o si suena a inspección: eso lo mide el ice breaker. Contarle la mercancía (\"cuatro cajas de filtros de una marca y dos de otra\") es muy específico —escalón 2— aunque no rompa el hielo. En la práctica lo que el vendedor ve se imagina: no se califica si es real, solo que no contradiga lo que el cliente ya dijo.",
   "cita_cerebro": "La observación y la pregunta de la apertura se miden igual",
   "severidad_sugerida": null
  },
@@ -1445,7 +1445,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La apertura tiene sus tres piezas: saludo, una observación y una pregunta que CIERRE el turno y le devuelva la palabra al cliente. Si están las tres y el turno termina con la pregunta —aunque sea de cortesía, como \"¿cómo está?\"—, este criterio se CUMPLE. Si la pregunta va en medio y el turno termina con un comentario, es parcial: falta que la pregunta cierre. Aquí solo se mide que las piezas estén; la calidad de cada una se mide en su propio criterio (la especificidad en la escalera, la ligereza en el ice breaker). Medirla también aquí sería castigar dos veces el mismo hecho. Si la pregunta es comercial, la pieza igual cuenta: lo comercial lo castiga pitch_prematuro, no la estructura. Castigarlo en los dos lados sería doble castigo. La pregunta que cierra se juzga por función: si la última frase invita a responder (aunque, en voz, no lleve signos) o el cliente la contestó, el turno termina en pregunta.",
+  "resumen": "La apertura tiene sus tres piezas: saludo, una observación y una pregunta que CIERRE el turno y le devuelva la palabra al cliente. Si están las tres y el turno termina con la pregunta —aunque sea de cortesía, como \"¿cómo está?\"—, este criterio se CUMPLE. Si la pregunta va en medio y el turno termina con un comentario, es parcial: falta que la pregunta cierre. Aquí solo se mide que las piezas estén; la calidad de cada una se mide en su propio criterio (la especificidad en la escalera, la ligereza en el ice breaker). Medirla también aquí sería castigar dos veces el mismo hecho. Si la pregunta es comercial, la pieza igual cuenta: lo comercial lo castiga pitch_prematuro, no la estructura. Castigarlo en los dos lados sería doble castigo. La pregunta que cierra se juzga por función: si la última frase invita a responder (aunque, en voz, no lleve signos) o el cliente la contestó, el turno termina en pregunta. LA PRUEBA: en su primer turno, ¿el vendedor saluda, hace una observación y termina con una pregunta? Si están las tres y la pregunta cierra el turno, cumple.",
   "cita_cerebro": "La pregunta va al final: es la que le devuelve la palabra al cliente",
   "severidad_sugerida": null
  },
@@ -1495,7 +1495,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Si el cliente saca una mala experiencia al llegar, no es un bloqueo: se acepta en serio, se da el motivo real de la visita y se regresa al diagnóstico con una pregunta.",
+  "resumen": "Si el cliente saca una mala experiencia al llegar, no es un bloqueo para atravesar con AIR: es una preocupación real y se maneja como objeción. LA PRUEBA: ¿el vendedor (1) la acepta en serio, sin pelearla, minimizarla ni ignorarla; (2) da un motivo concreto de por qué viene ahora; y (3) regresa al diagnóstico con una pregunta? Si falta una pieza, está a medias. En la práctica todo es imaginario: el motivo se califica por concreto, no por real.",
   "cita_cerebro": "no es un bloqueo para atravesar con AIR: es una preocupación real y se maneja como objeción",
   "severidad_sugerida": null
  },
