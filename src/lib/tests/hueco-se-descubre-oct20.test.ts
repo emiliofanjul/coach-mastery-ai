@@ -36,8 +36,10 @@ describe("La regla del hueco es una prueba: descubrirlo, no presentarlo", () => 
       expect(crit(id).description).toMatch(/^Descubre al menos un hueco concreto/);
     }
   });
-  it("versiones", () => {
-    expect(["3.8", "3.9", "3.9b", "7.3"].map((id) => nodos.find((n) => n.id === id).practice_script.version)).toEqual(["2.0.1", "2.0.2", "1.0.2", "2.0.1"]);
+  it("versiones (desde el mensaje 110, al menos estas: los guiones siguen subiendo)", () => {
+    const alMenos = (v: string, min: string) => { const a = v.split(".").map(Number), b = min.split(".").map(Number); for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) return a[i] > b[i]; } return true; };
+    const minimas = ["2.0.1", "2.0.2", "1.0.2", "2.0.1"];
+    ["3.8", "3.9", "3.9b", "7.3"].forEach((id, i) => expect(alMenos(nodos.find((n) => n.id === id).practice_script.version, minimas[i])).toBe(true));
   });
 });
 

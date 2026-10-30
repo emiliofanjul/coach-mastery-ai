@@ -75,8 +75,10 @@ describe("El 7.4 ya no premia atravesar un segundo bloqueo", () => {
     expect(ps.phases.you_do.prompt).toContain("NO repites el bloqueo: dos no seguidos en la puerta y el vendedor debería irse.");
     expect(JSON.stringify(ps)).not.toMatch(/bloqueo doble|BLOQUEO DOBLE|dos bloqueos/);
   });
-  it("versiones", () => {
-    expect(["2.7c", "2.10", "3.10", "5.15", "7.0", "7.4"].map((id) => nodo(id).practice_script.version)).toEqual(["1.0.5", "2.1.4", "1.0.2", "1.1.1", "1.1.2", "1.0.2"]);
+  it("versiones (desde el mensaje 110, al menos estas: los guiones siguen subiendo)", () => {
+    const alMenos = (v: string, min: string) => { const a = v.split(".").map(Number), b = min.split(".").map(Number); for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) return a[i] > b[i]; } return true; };
+    const minimas = ["1.0.5", "2.1.4", "1.0.2", "1.1.1", "1.1.2", "1.0.2"];
+    ["2.7c", "2.10", "3.10", "5.15", "7.0", "7.4"].forEach((id, i) => expect(alMenos(nodo(id).practice_script.version, minimas[i])).toBe(true));
   });
 });
 

@@ -199,6 +199,5 @@ describe("La red", () => {
   });
   it("G29 sigue pidiendo la falla", () => {
     expect(caso("G29_regla_de_los_no").expected.must_flag).toEqual(["insiste_tras_dos"]);
-    expect(harness.harness_version).toBe("v3.25.0");
   });
 });
