@@ -850,7 +850,7 @@
           "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo recibiste su mala experiencia."
         }
       },
-      "version": "3.0.0",
+      "version": "3.0.1",
       "i_do_type": "demo",
       "success_criteria": [
         {
@@ -890,10 +890,14 @@
           "description": "Se disculpa de más o promete que él sí es diferente (\"perdón, pero yo sí soy diferente\"): suena a excusa y no desarma nada."
         },
         {
-          "id": "cambio_inventado",
+          "id": "cambio_se_cae",
           "regla_id": "impulse.jones_vago",
           "severity": "critical",
-          "description": "Menciona un cambio o negocios que regresaron que no puede sostener: cuando el cliente pregunta \"¿cómo qué?\", no tiene nada concreto."
+          "description": "Menciona un cambio o negocios que regresaron que no puede sostener: cuando el cliente pregunta \"¿cómo qué?\", no tiene nada concreto.",
+          "severity_override": {
+            "razon": "escalada: sostener el cambio es lo que enseña este nodo",
+            "default": "major"
+          }
         },
         {
           "id": "pitch_prematuro",
@@ -1767,7 +1771,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que se quedo sobre la mesa en esa visita."
         }
       },
-      "version": "2.0.2",
+      "version": "2.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1787,10 +1791,10 @@
           "description": "Afirma que el cliente necesita algo sin evidencia y sin que el cliente lo haya dicho. Fabricar un hueco es venderle un problema que no tiene, y con un cliente de cartera eso se descubre siempre."
         },
         {
-          "id": "jones_falso",
+          "id": "jones_se_cae",
           "regla_id": "impulse.jones_vago",
-          "severity": "critical",
-          "description": "Inventa que otros negocios compran algo, o cifras que no puede sostener. La prueba social tiene que ser real y verificable."
+          "severity": "major",
+          "description": "Su prueba social se cae cuando el cliente pregunta (¿como quiénes?): no da nada concreto, se echa para atrás o cambia la historia, y con un cliente de cartera eso le cuesta la confianza."
         },
         {
           "id": "busca_dolor_donde_no_hay",
@@ -1820,7 +1824,7 @@
           "id": "impulse.efecto_jones",
           "weight": 0.2,
           "regla_id": "impulse.efecto_jones",
-          "description": "Ancla en negocios similares para abrir una familia nueva (negocios como el suyo tambien mueven X). Debe ser una afirmacion que el vendedor pueda sostener: si inventa clientes o cifras, no se acredita y se marca falla."
+          "description": "Ancla en negocios similares para abrir una familia nueva (negocios como el suyo también mueven X). Si el cliente pregunta (¿como quiénes?), lo sostiene con algo concreto."
         }
       ]
     }
@@ -1859,7 +1863,7 @@
           "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo qué se quedó sobre la mesa en esa primera visita."
         }
       },
-      "version": "1.0.2",
+      "version": "1.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1879,10 +1883,10 @@
           "description": "Afirma que el cliente necesita algo sin evidencia y sin que el cliente lo haya dicho. Fabricar un hueco es venderle un problema que no tiene, y un cliente nuevo que lo descubre ya no te vuelve a creer."
         },
         {
-          "id": "jones_falso",
+          "id": "jones_se_cae",
           "regla_id": "impulse.jones_vago",
-          "severity": "critical",
-          "description": "Inventa que otros negocios compran algo, o cifras que no puede sostener. La prueba social tiene que ser real y verificable."
+          "severity": "major",
+          "description": "Su prueba social se cae cuando el cliente pregunta (¿como quiénes?): no da nada concreto, se echa para atrás o cambia la historia, y un cliente nuevo ya no le vuelve a creer."
         },
         {
           "id": "busca_dolor_donde_no_hay",
@@ -1912,7 +1916,7 @@
           "id": "impulse.efecto_jones",
           "weight": 0.2,
           "regla_id": "impulse.efecto_jones",
-          "description": "Ancla en negocios similares para abrir una familia nueva (negocios como el suyo tambien mueven X). Debe ser una afirmacion que el vendedor pueda sostener: si inventa clientes o cifras, no se acredita y se marca falla."
+          "description": "Ancla en negocios similares para abrir una familia nueva (negocios como el suyo también mueven X). Si el cliente pregunta (¿como quiénes?), lo sostiene con algo concreto."
         }
       ]
     }
@@ -2180,7 +2184,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como presentas. Vamos al desglose y te digo cuales se quedaron sin traducir."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2206,10 +2210,10 @@
           }
         },
         {
-          "id": "promesa_falsa",
+          "id": "promesa_sin_ancla",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Inventa un beneficio que el producto no da, o exagera un resultado para que suene mejor. El valor se construye con verdad.",
+          "description": "Promete un resultado enorme sin nada concreto que lo sostenga (le va a duplicar las ventas, nunca falla). Suena a vendedor y el cliente desconfía de todo lo demás.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -2344,22 +2348,22 @@
           "first_message": "Mire, algo que le puede servir: llevamos catorce anos surtiendo esta zona, asi que cuando hay desabasto general nosotros seguimos entregando. ...\n\nY le comento otra cosa: nuestro tiempo de entrega es de veinticuatro horas dentro de la ciudad."
         },
         "you_do": {
-          "prompt": "Eres el dueno de un negocio, ya en confianza con el vendedor y escuchando su propuesta con interes moderado. TU REGLA PRINCIPAL: tu nivel de interes sube y baja segun COMO disparen las balas. Si el vendedor da UN hecho positivo concreto y te deja reaccionar, tu interes SUBE de manera visible: comentas, preguntas mas, te enganchas. Si dispara TRES O MAS hechos seguidos sin pausa, te saturas: tu interes sube un momento y luego CAE, y respondes con algo como pues suena bien todo, dejeme lo pienso. Si el hecho es VAGO o generico (somos los mejores, tenemos calidad, damos buen servicio) no cuenta como bala: contestas con cortesia neutra y tu interes no se mueve. Si el vendedor dice algo que suena EXAGERADO o poco creible, tu interes BAJA y te pones esceptico: pregunta desconfiada tipo a poco?, y todo eso como me lo garantiza? NUNCA hagas objeciones de precio ni de competencia en este ejercicio. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor sube el impulso disparando balas concretas y verificables de una en una, midiendo la reaccion entre cada una, sin saturar y sin exagerar. El scope se cubre cuando el interes del cliente subio de forma sostenida con al menos dos balas bien colocadas."
+          "prompt": "Eres el dueno de un negocio, ya en confianza con el vendedor y escuchando su propuesta con interes moderado. TU REGLA PRINCIPAL: tu nivel de interes sube y baja segun COMO disparen las balas. Si el vendedor da UN hecho positivo concreto y te deja reaccionar, tu interes SUBE de manera visible: comentas, preguntas mas, te enganchas. Si te suelta de jalon todo lo que tiene —una avalancha de hechos en el mismo turno, sin dejarte reaccionar—, te saturas: tu interes sube un momento y luego CAE, y respondes con algo como pues suena bien todo, dejeme lo pienso. Si el hecho es VAGO o generico (somos los mejores, tenemos calidad, damos buen servicio) no cuenta como bala: contestas con cortesia neutra y tu interes no se mueve. Si el vendedor dice algo que suena EXAGERADO o poco creible, tu interes BAJA y te pones esceptico: pregunta desconfiada tipo a poco?, y todo eso como me lo garantiza? NUNCA hagas objeciones de precio ni de competencia en este ejercicio. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor sube el impulso soltando balas concretas poco a poco, conforme hace falta, midiendo la reaccion entre cada una, sin saturar y sin exagerar. El scope se cubre cuando el interes del cliente subio de forma sostenida con al menos dos balas bien colocadas."
         },
         "closing": {
           "message": "Eso es controlar el impulso. Balas reales, una a la vez, midiendo la reaccion. Y lo mas importante: te quedan balas. Cuando llegues al precio y a las objeciones vas a entender por que eso importa tanto. Vamos al detalle.",
           "message_incomplete": "Ahi lo dejamos, ya vi como disparas. Vamos al desglose y te digo como quedo tu municion."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
-          "id": "rafaga_de_balas",
+          "id": "vacia_las_balas",
           "regla_id": "present.dosificacion_balas",
           "severity": "major",
-          "description": "Encadena tres o mas hechos positivos sin pausa. El cliente se satura, el impulso sube y cae, y el vendedor se queda sin municion para lo que viene."
+          "description": "Suelta todas sus balas de jalón, sin que haga falta. El cliente se satura, el impulso sube y cae, y el vendedor se queda sin munición para cuando el cliente ponga razones."
         },
         {
           "id": "balas_vagas",
@@ -2368,10 +2372,10 @@
           "description": "Afirmaciones genericas sin dato concreto: somos los mejores, tenemos calidad, damos buen servicio. No mueven el impulso porque cualquiera las dice."
         },
         {
-          "id": "bala_exagerada",
+          "id": "bala_inflada",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Exagera o inventa un hecho para que suene mejor. El cliente se pone esceptico y el impulso baja. El impulso se construye con verdad.",
+          "description": "Infla una bala hasta volverla increíble (los mejores de todo el país, jamás hemos fallado una entrega). El cliente se pone escéptico y el impulso baja.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -2393,7 +2397,7 @@
           "id": "objections.bullet_theory",
           "weight": 1,
           "regla_id": "present.balas",
-          "description": "Dispara balas CONCRETAS y verificables sobre si mismo, su producto o su precio: datos, anos, tiempos, casos reales, condiciones especificas. Las dispara DOSIFICADAS, una a la vez, dejando espacio a la reaccion del cliente antes de la siguiente. Afirmaciones vagas (somos los mejores, damos calidad) no cuentan como balas. Encadenar tres o mas sin pausa no cumple, aunque sean buenas."
+          "description": "Dispara balas CONCRETAS sobre sí mismo, su producto o su precio: datos, años, tiempos, casos, condiciones específicas. Las suelta poco a poco, conforme hace falta subir el impulso, dejando reaccionar al cliente. Afirmaciones vagas (somos los mejores, damos calidad) no cuentan como balas. Soltarlas todas de jalón no cumple, aunque sean buenas."
         }
       ]
     }
@@ -2411,7 +2415,7 @@
     "name": "Lo Que Pierde por Esperar",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "Primer drill de impulso. El Actor arranca en interesado-pasivo (déjeme pensarlo) — el estado real más común del campo. Espejo de tres vías: verdad tangible → movimiento; urgencia real → siguiente paso; teatro → escepticismo con castigo de confianza. impulso_falso es critical en TODO el mundo 5: la ética es el diseño.",
+      "notes": "Primer drill de impulso. El Actor arranca en interesado-pasivo (déjeme pensarlo) — el estado real más común del campo. Espejo de tres vías: pérdida tangible → movimiento; urgencia con razón → siguiente paso; teatro o presión → escepticismo con castigo de confianza. En la práctica todo es imaginario: lo que se califica es que la razón sea concreta, no que sea real (mensaje 110).",
       "scope": {
         "skills_in_focus": [
           "impulse.miedo_perdida",
@@ -2430,28 +2434,22 @@
           "first_message": "Miedo a la pérdida, con sus datos: Usted me dijo que pierde como dos clientes al mes por faltantes. Son veinticuatro al año, Don Ramón — y cada uno se lleva sus compras a la competencia...\n\ny a veces ya no regresa. Eso está pasando hoy, mientras platicamos.\n\nUrgencia, con hechos reales: Esta semana ando levantando los pedidos de la zona — si lo dejamos para la otra, su primer surtido le llegaría hasta el mes que entra. ¿Ve?\n\nNada inventado: su pérdida es real y mi fecha es real. Por eso funciona."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor ya conectó con tu dolor (elígelo al azar: pierdes ~2 clientes al mes por faltantes de tu proveedor / tienes ~15 mil pesos muertos en producto que no se mueve / te piden algo que tu proveedor no maneja y se van con ella a otro lado) y estás INTERESADO PERO PASIVO: tu postura inicial es está bueno, déjeme pensarlo y luego le digo — sin rechazo, pura inercia de no decidir. TU REGLA ESPEJO: (A) si el vendedor hace TANGIBLE tu pérdida con TUS números y datos reales (lo que pierdes al mes, a dónde se va ese dinero, que está pasando HOY), tu pasividad se mueve: pues sí, viéndolo así... y preguntas algo concreto. (B) si te da una razón de urgencia REAL y verificable (su ruta de pedidos de la semana, tiempos de entrega reales, un ciclo real de tu negocio como la quincena o la temporada), tu decisión se acerca: preguntas por el siguiente paso. (C) si INVENTA escasez o urgencia con olor a teatro (es el último que me queda, la promoción se acaba HOY, ya casi no tengo), respondes con escepticismo directo: mmm, eso dicen todos, ¿no? — y tu confianza BAJA visiblemente. (D) si solo repite valor sin acelerador, permaneces amable y pasivo: sí, suena bien, yo le aviso.",
-          "objective": "El vendedor mueve a un interesado-pasivo aplicando los dos aceleradores con verdad: (1) hace tangible la pérdida actual usando los números y datos que el cliente declaró (cuantifica lo que pierde por mes/año, nombra a dónde se va), y (2) da al menos una razón de urgencia real y verificable para decidir ahora (ruta, tiempos, ciclo del negocio) — sin inventar escasez ni teatro. El scope se cubre cuando el cliente pasó de déjeme pensarlo a preguntar por el siguiente paso concreto."
+          "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor ya conectó con tu dolor (elígelo al azar: pierdes ~2 clientes al mes por faltantes de tu proveedor / tienes ~15 mil pesos muertos en producto que no se mueve / te piden algo que tu proveedor no maneja y se van con ella a otro lado) y estás INTERESADO PERO PASIVO: tu postura inicial es está bueno, déjeme pensarlo y luego le digo — sin rechazo, pura inercia de no decidir. TU REGLA ESPEJO: (A) si el vendedor hace TANGIBLE tu pérdida con TUS números y datos reales (lo que pierdes al mes, a dónde se va ese dinero, que está pasando HOY), tu pasividad se mueve: pues sí, viéndolo así... y preguntas algo concreto. (B) si te da una razón de urgencia CONCRETA (su ruta de pedidos de la semana, tiempos de entrega, un ciclo de tu negocio como la quincena o la temporada), tu decisión se acerca: preguntas por el siguiente paso. (C) si mete escasez o urgencia SIN RAZÓN CONCRETA, con olor a teatro (es el último que me queda, la promoción se acaba HOY, ya casi no tengo — sin decir qué, cuándo ni por qué), o te presiona de frente, respondes con escepticismo directo: mmm, eso dicen todos, ¿no? — y tu confianza BAJA visiblemente. (D) si solo repite valor sin acelerador, permaneces amable y pasivo: sí, suena bien, yo le aviso.",
+          "objective": "El vendedor mueve a un interesado-pasivo aplicando los dos aceleradores con razones concretas: (1) hace tangible la pérdida actual usando los números y datos que el cliente declaró (cuantifica lo que pierde por mes/año, nombra a dónde se va), y (2) da al menos una razón de urgencia concreta para decidir ahora (ruta, tiempos, ciclo del negocio) — sin presión ni teatro. El scope se cubre cuando el cliente pasó de déjeme pensarlo a preguntar por el siguiente paso concreto."
         },
         "closing": {
           "message": "Lo moviste — y sin inventarle nada: su pérdida era real y tu fecha era real. Así se acelera una curva sin quemar la confianza. Vamos al detalle.",
           "message_incomplete": "Ahi lo dejamos, ya vi como manejas el miedo a perder. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
-        {
-          "id": "impulso_falso",
-          "regla_id": "impulse.escasez_inventada",
-          "severity": "critical",
-          "description": "Inventa escasez, urgencia o presión sin ancla real: es el último, la promo se acaba hoy, ya casi no tengo, otros lo están apartando. El cliente lo huele (eso dicen todos) y la confianza construida en tres mundos se quema en una frase. El pecado capital de este mundo."
-        },
         {
           "id": "presion_directa",
           "regla_id": "impulse.presion_directa",
           "severity": "major",
-          "description": "Sustituye los aceleradores por presión frontal: ándele, anímese, no lo piense tanto, ¿entonces qué, sí o no? — empuja la curva en vez de acelerarla."
+          "description": "Sustituye los aceleradores por presión: de frente (ándele, anímese, no lo piense tanto, ¿entonces qué, sí o no?) o disfrazada de escasez sin razón (es el último, se acaba hoy, ya casi no tengo — sin decir qué, cuándo ni por qué). El cliente lo huele (eso dicen todos) y el impulso cae."
         },
         {
           "id": "perdida_generica",
@@ -2471,13 +2469,13 @@
           "id": "impulse.miedo_perdida",
           "weight": 0.5,
           "regla_id": "impulse.miedo_perdida",
-          "description": "Hace tangible la pérdida ACTUAL con los datos del cliente: cuantifica (clientes/dinero por mes o año), nombra el destino de la pérdida (la competencia, el dinero muerto), y la ancla en el presente (está pasando hoy). Todo derivado de lo que el cliente declaró — nada inventado."
+          "description": "Hace tangible la pérdida ACTUAL con los datos del cliente: cuantifica (clientes/dinero por mes o año), nombra el destino de la pérdida (la competencia, el dinero muerto), y la ancla en el presente (está pasando hoy). Todo derivado de lo que el cliente declaró."
         },
         {
           "id": "impulse.urgencia",
           "weight": 0.5,
           "regla_id": "impulse.urgencia",
-          "description": "Da al menos una razón real y verificable para decidir ahora: su ruta o ciclo de pedidos, tiempos de entrega concretos, o un ciclo real del negocio del cliente. La urgencia nace de hechos, no de presión — y el cliente la recibe sin escepticismo."
+          "description": "Da al menos una razón concreta para decidir ahora: su ruta o ciclo de pedidos, tiempos de entrega concretos, o un ciclo del negocio del cliente. La urgencia nace de una razón, no de presión — y el cliente la recibe sin escepticismo."
         }
       ]
     }
@@ -2488,7 +2486,7 @@
     "name": "Mas por Menos y el Efecto Jones",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones falso. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable.",
+      "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones vacío. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable.",
       "scope": {
         "skills_in_focus": [
           "impulse.avaricia",
@@ -2507,22 +2505,22 @@
           "first_message": "Más por menos, con números: Con el margen de esta línea, cada caja le deja ochenta pesos más que la que maneja — son como mil doscientos extra al mes sin vender ni una pieza más. Efecto Jones, con verdad: La negocios de la San José le entró hace dos meses — el señor Aurelio ya va en su tercer pedido.\n\nY el negocio grande de la avenida, igual. Por esta zona ya se está moviendo fuerte.\n\n¿Nota que no presioné? Solo le mostré la ganancia y le conté quién más ya la está cobrando."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio al final de una buena presentación conectada a tu dolor (elígelo al azar como en drills previos) y estás en modo interesado-pasivo: suena bien, déjeme pensarlo. TU REGLA ESPEJO: (A) si el vendedor te muestra ganancia EXTRA con números concretos y creíbles de tu operación (margen por caja, ahorro al mes, beneficio adicional calculado), tu interés se activa: haces cuentas en voz alta (a ver, ¿ochenta por caja?...) y preguntas detalles. (B) si te da prueba social ESPECÍFICA y verificable (negocio con nombre o ubicación reconocible de tu zona, tiempo que lleva, resultado concreto), tu confianza sube: ah, ¿el de la San José? sí lo ubico... y tu resistencia baja visiblemente. (C) si la prueba social es VAGA (muchos clientes, varios negocios, todo mundo lo está llevando — sin un solo nombre o referencia verificable), respondes escéptico: ¿ah sí? ¿como quiénes? — y si no puede concretar, tu desconfianza sube. (D) si los números de ganancia son exagerados o redondos sin sustento (va a duplicar sus ventas), respondes: mmm, eso suena a mucho, ¿no?",
-          "objective": "El vendedor aplica los dos aceleradores con concreción: (1) muestra la ganancia extra en números específicos y creíbles del negocio del cliente (margen, ahorro o beneficio mensual calculado), y (2) da prueba social específica y verificable — al menos una referencia con nombre, ubicación o detalle reconocible, con su resultado concreto. El scope se cubre cuando el cliente hizo cuentas en voz alta O validó la referencia social, y pasó de pasivo a preguntar por el siguiente paso."
+          "prompt": "Eres el dueño de un negocio al final de una buena presentación conectada a tu dolor (elígelo al azar como en drills previos) y estás en modo interesado-pasivo: suena bien, déjeme pensarlo. TU REGLA ESPEJO: (A) si el vendedor te muestra ganancia EXTRA con números concretos y creíbles de tu operación (margen por caja, ahorro al mes, beneficio adicional calculado), tu interés se activa: haces cuentas en voz alta (a ver, ¿ochenta por caja?...) y preguntas detalles. (B) si te da prueba social ESPECÍFICA (negocio con nombre o ubicación reconocible de tu zona, tiempo que lleva, resultado concreto), tu confianza sube: ah, ¿el de la San José? sí lo ubico... y tu resistencia baja visiblemente. (C) si la prueba social es VAGA (muchos clientes, varios negocios, todo mundo lo está llevando — sin un solo nombre o referencia concreta), respondes escéptico: ¿ah sí? ¿como quiénes? — si te contesta con algo concreto, lo aceptas; si no puede concretar, tu desconfianza sube. (D) si los números de ganancia son exagerados o redondos sin sustento (va a duplicar sus ventas), respondes: mmm, eso suena a mucho, ¿no?",
+          "objective": "El vendedor aplica los dos aceleradores con concreción: (1) muestra la ganancia extra en números específicos y creíbles del negocio del cliente (margen, ahorro o beneficio mensual calculado), y (2) da prueba social específica — al menos una referencia con nombre, ubicación o detalle reconocible, con su resultado concreto. El scope se cubre cuando el cliente hizo cuentas en voz alta O validó la referencia social, y pasó de pasivo a preguntar por el siguiente paso."
         },
         "closing": {
           "message": "Le mostraste la ganancia con números y le contaste quién ya la está cobrando — y su déjeme pensarlo se convirtió en cuánto y cuándo. Así trabajan estos dos. Vamos al detalle.",
           "message_incomplete": "Ahi lo dejamos, ya vi como construyes la sensacion de ventaja. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
-          "id": "impulso_falso",
+          "id": "jones_se_cae",
           "regla_id": "impulse.jones_vago",
-          "severity": "critical",
-          "description": "Inventa prueba social o números: referencias que no existen, cifras infladas, todo mundo lo lleva sin poder nombrar a nadie. Si el cliente pregunta ¿como quiénes? y no hay respuesta concreta, el factor era teatro."
+          "severity": "major",
+          "description": "Su prueba social se cae: cuando el cliente pregunta ¿como quiénes? o ¿a poco?, no da nada concreto, se echa para atrás o infla las cifras. El factor era teatro."
         },
         {
           "id": "promesa_grandilocuente",
@@ -2558,7 +2556,7 @@
           "id": "impulse.efecto_jones",
           "weight": 0.5,
           "regla_id": "impulse.efecto_jones",
-          "description": "Da al menos una prueba social específica y verificable: negocio con nombre, ubicación o seña reconocible + tiempo + resultado concreto. El cliente la puede validar (o al menos ubicar) — nunca el vago muchos clientes ya lo llevan."
+          "description": "Da al menos una prueba social específica: negocio con nombre, ubicación o seña reconocible + tiempo + resultado concreto. Un muchos clientes ya lo llevan, sin nadie concreto, cuenta a medias."
         }
       ]
     }
@@ -2596,7 +2594,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi tu postura. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2625,7 +2623,7 @@
           "description": "Convierte la indiferencia en su opuesto: presión frontal para forzar la decisión."
         },
         {
-          "id": "impulso_falso",
+          "id": "indiferencia_teatral",
           "regla_id": "impulse.indiferencia_teatral",
           "severity": "major",
           "description": "Finge indiferencia con teatro obvio (bueno pues ahí muere, me voy con su competencia) — la indiferencia real es tranquila, no amenazante."
@@ -2854,7 +2852,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como cayo ese precio."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2888,12 +2886,6 @@
             "razon": "incidental: error de otro paso",
             "default": "critical"
           }
-        },
-        {
-          "id": "descuento_inventado",
-          "regla_id": "impulse.escasez_inventada",
-          "severity": "critical",
-          "description": "Inventa un descuento o una promocion que no existe para cerrar. El impulso se construye con verdad."
         }
       ],
       "success_criteria": [
@@ -2945,7 +2937,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como cayo esa propuesta."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2992,7 +2984,7 @@
           "id": "presentation.consolidacion_proveedor",
           "weight": 0.6,
           "regla_id": "present.argumento_del_hueco",
-          "description": "Usa el argumento de consolidacion — menos proveedores que seguir, todo en una entrega, un solo contacto — en lugar de competir por precio o por producto. Y cierra con CONVICCION RESPALDADA: afirma que se va a mover Y da la razon por la que lo cree, sin garantizar nada. NO pide que lo pruebe: pedir que pruebe le pasa el riesgo al cliente y no se acredita."
+          "description": "Usa el argumento de consolidacion — menos proveedores que seguir, todo en una entrega, un solo contacto — en lugar de competir por precio o por producto. Y cierra con CONVICCION RESPALDADA: dice que esta seguro de que se va a mover, como lo que el cree, Y da la razon, sin prometerlo como un hecho. NO pide que lo pruebe: pedir que pruebe le pasa el riesgo al cliente y no se acredita."
         },
         {
           "id": "presentation.beneficio_no_caracteristica",
@@ -3029,15 +3021,15 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO: varios vendedores te han prometido de más y cumplido de menos, así que recibes con escepticismo cordial — escuchas, pero no crees fácil. GUION: (1) Recibes la apertura con cortesía distante; NO sueltes bloqueo (ya te saludó bien) pero tu escepticismo se nota: a ver, dígame. (2) Tienes un DOLOR REAL (elige al azar: proveedor que te deja plantado quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — lo revelas por capas SOLO si te excavan la pista del aunque. (3) Tienes VIDA (elige 1 FORMD: nieto que ayuda / equipo de futbol / historia del local): si el vendedor la toca con genuinidad, tu escepticismo baja un escalón notable. (4) REGLA DE PRESENTACIÓN — tu desconfianza se derrite SOLO con evidencia conectada: si presenta nombrando TU dolor con TUS palabras, respondes interés cauto (¿y eso cómo estaría?); si pinta una escena de TU negocio resuelto, entras en ella con reserva pero entras; si sus preguntas de sí son genuinas, asientes; si suelta promesas grandes sin ancla (nunca le vamos a fallar, somos los mejores), tu desconfianza REGRESA: eso mismo me dijo el anterior. (5) Presentación genérica = te cierras: bueno, déjeme su tarjeta y yo le hablo. (6) PRECIO: cuando la presentación ya te interesó, preguntas el precio: ¿y a cómo me lo dejaría? Si te lo presenta con lo que normalmente cuesta, el descuento real y por qué, y lo que te ahorras, lo tomas en serio; si suelta un número seco, te parece caro. (7) IMPULSO: si te muestra lo que pierdes por esperar, negocios como el tuyo que ya lo manejan (con nombre), o la ventaja en números de tu negocio, te mueve; si suena vago o inventado (todos lo están comprando, solo por hoy), tu desconfianza regresa: eso mismo me dijo el anterior. Tu techo: interesado-cauto que pide detalles concretos del siguiente paso — nunca eufórico. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor completa el ciclo con un cliente desconfiado: excava el dolor real por capas hasta la revelación y confirmación, construye conexión personal genuina en el camino (al menos un tema FORMD), y presenta CONECTADO: abre desde el dolor con las palabras del cliente, pinta al menos una escena de su negocio resuelto, siembra al menos dos síes genuinos, traduce a beneficios concretos sin promesas grandilocuentes, sube el impulso con al menos dos factores reales, y presenta el precio con el triple desglose cuando la empresa tiene descuentos reales. El scope se cubre cuando el desconfiado muestra interés real: pregunta por detalles concretos del siguiente paso (cómo surtirían, cada cuánto, qué necesita hacer)."
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO: varios vendedores te han prometido de más y cumplido de menos, así que recibes con escepticismo cordial — escuchas, pero no crees fácil. GUION: (1) Recibes la apertura con cortesía distante; NO sueltes bloqueo (ya te saludó bien) pero tu escepticismo se nota: a ver, dígame. (2) Tienes un DOLOR REAL (elige al azar: proveedor que te deja plantado quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — lo revelas por capas SOLO si te excavan la pista del aunque. (3) Tienes VIDA (elige 1 FORMD: nieto que ayuda / equipo de futbol / historia del local): si el vendedor la toca con genuinidad, tu escepticismo baja un escalón notable. (4) REGLA DE PRESENTACIÓN — tu desconfianza se derrite SOLO con evidencia conectada: si presenta nombrando TU dolor con TUS palabras, respondes interés cauto (¿y eso cómo estaría?); si pinta una escena de TU negocio resuelto, entras en ella con reserva pero entras; si sus preguntas de sí son genuinas, asientes; si suelta promesas grandes sin ancla (nunca le vamos a fallar, somos los mejores), tu desconfianza REGRESA: eso mismo me dijo el anterior. (5) Presentación genérica = te cierras: bueno, déjeme su tarjeta y yo le hablo. (6) PRECIO: cuando la presentación ya te interesó, preguntas el precio: ¿y a cómo me lo dejaría? Si te lo presenta con lo que normalmente cuesta, el descuento y por qué, y lo que te ahorras, lo tomas en serio; si suelta un número seco, te parece caro. (7) IMPULSO: si te muestra lo que pierdes por esperar, negocios como el tuyo que ya lo manejan (con nombre), o la ventaja en números de tu negocio, te mueve; si suena vago o a teatro (todos lo están comprando, solo por hoy), tu desconfianza regresa: eso mismo me dijo el anterior. Tu techo: interesado-cauto que pide detalles concretos del siguiente paso — nunca eufórico. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor completa el ciclo con un cliente desconfiado: excava el dolor real por capas hasta la revelación y confirmación, construye conexión personal genuina en el camino (al menos un tema FORMD), y presenta CONECTADO: abre desde el dolor con las palabras del cliente, pinta al menos una escena de su negocio resuelto, siembra al menos dos síes genuinos, traduce a beneficios concretos sin promesas grandilocuentes, sube el impulso con al menos dos factores concretos, y presenta el precio con el triple desglose. El scope se cubre cuando el desconfiado muestra interés real: pregunta por detalles concretos del siguiente paso (cómo surtirían, cada cuánto, qué necesita hacer)."
         },
         "closing": {
           "message": "Un desconfiado pidiéndote los detalles del siguiente paso — eso no se compra con promesas: se construye con valor. Acabas de recorrer el camino completo del diagnóstico a la presentación. El cierre te espera en el siguiente mundo. Vamos al desglose.",
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "1.1.0",
+      "version": "1.2.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3089,10 +3081,10 @@
           "description": "Bloques largos que atropellan al desconfiado."
         },
         {
-          "id": "impulso_falso",
-          "regla_id": "impulse.escasez_inventada",
-          "severity": "critical",
-          "description": "Inventa urgencia, escasez, clientes que ya compran o un descuento que la empresa no tiene. El impulso se construye con verdad."
+          "id": "presion_teatral",
+          "regla_id": "impulse.presion_directa",
+          "severity": "major",
+          "description": "Mete urgencia o escasez como teatro, sin razón concreta (solo por hoy, ya casi no hay, todos lo están comprando), o presiona de frente — el desconfiado lo huele: eso mismo me dijo el anterior."
         }
       ],
       "success_criteria": [
@@ -3124,13 +3116,13 @@
           "id": "impulse.factores_impulso",
           "weight": 0.25,
           "regla_id": "impulse.factores",
-          "description": "Sube el impulso con al menos DOS factores de FUJPIG distintos (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), anclados en el negocio del cliente y comprobables. Con uno solo es parcial. Un factor inventado no cuenta y se marca impulso_falso."
+          "description": "Sube el impulso con al menos DOS factores de FUJPIG distintos (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), concretos y anclados en el negocio del cliente. Con uno solo es parcial; un factor dicho en general cuenta a medias."
         },
         {
           "id": "presentation.price_breakdown",
           "weight": 0.15,
           "regla_id": "present.triple_desglose",
-          "description": "Cuando el cliente pregunta el precio, lo presenta con el triple desglose: lo que normalmente cuesta, lo que queda con cada descuento real y por qué, y el ahorro visible. Si el contexto de la empresa no tiene descuentos reales, este criterio es no_aplica: nunca se inventa un descuento."
+          "description": "Cuando el cliente pregunta el precio, lo presenta con el triple desglose: lo que normalmente cuesta, lo que queda con cada descuento y por qué, y el ahorro visible. En la práctica los descuentos y sus motivos se pueden imaginar."
         },
         {
           "id": "relationship.cpr",
@@ -3387,7 +3379,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esas dudas."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3433,7 +3425,7 @@
           "id": "objections.rrr_objeciones",
           "weight": 0.6,
           "regla_id": "objection.rrr",
-          "description": "Los tres movimientos por cada objecion: REPITE la objecion en sus terminos para mostrar que la escucho, TRANQUILIZA con una respuesta concreta y verificable, y RETOMA. No se defiende, no discute, no justifica de mas."
+          "description": "Los tres movimientos por cada objecion: REPITE la objecion en sus terminos para mostrar que la escucho, TRANQUILIZA con una respuesta concreta, y RETOMA. No se defiende, no discute, no justifica de mas."
         },
         {
           "id": "flow.close_with_action",
@@ -3477,15 +3469,15 @@
           "first_message": "El cliente me dice: Está caro, el otro me lo da más barato. Recibo: Claro, entiendo — el precio siempre hay que verlo con lupa.\n\nEntiendo: ¿Más barato el litro, o ya sacando el costo por servicio? Porque ahí está el detalle...\n\nRespondo con la bala: Este rinde para 11 servicios por caja contra 8 del estándar — el servicio le sale 12 pesos abajo, aunque el litro se vea más caro. Avanzo: ¿Trae a la mano lo que paga por caja?\n\nSáquelo conmigo y comparamos ahorita mismo. — Una objeción, una bala, y la conversación avanzando.\n\nSin defenderme, sin evadir."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor conectó tu dolor (elígelo: faltantes / dinero parado / algo que no consigues) y el producto te interesa GENUINAMENTE — pero tienes una objeción real que necesitas resolver antes de decidir. ELIGE UNA al azar y suéltala clara tras tu primera línea: (A) está caro, comparado con lo que pago ahorita / (B) es que ya tengo proveedor de años, y cambiarle me da cosa / (C) déjeme consultarlo con mi socio, yo no decido solo estas cosas. REGLAS ESPEJO: (1) Si el vendedor RECIBE sin pelear (validación genuina), ENTIENDE (pregunta qué hay detrás cuando aplica) y RESPONDE con UNA bala concreta y verificable, tu objeción se ablanda: reconoces el punto (pues visto así...) y avanzas — la decisión camina. (2) Si el vendedor SE DEFIENDE (se ofende, discute, justifica atropellado: es que no está caro, es que nosotros somos mejores), te atrincheras: repites la objeción con más firmeza y tu tono se enfría. (3) Si te EVADE con cambio de tema estilo AIR (claro, no se preocupe... oiga qué bien está su local), lo notas y lo dices: oiga, no me cambió el tema — le pregunté por el precio. Tu confianza baja. (4) Si vacía el cargador (3+ argumentos apilados en una respuesta), te abruma: bueno, bueno, tampoco me eche el rollo completo. (5) Si su bala es vaga o suena inventada, la retas: ¿a poco? ¿como quién? — y la vaguedad te enfría. (6) Ante el descuento de pánico (si es el caso A), hueles debilidad: ¿entonces sí estaba caro, no? Tu techo: objeción resuelta y decisión avanzando con una condición práctica.",
-          "objective": "El vendedor recibe UNA objeción real y ejecuta el reencuadre completo: recibe sin pelear ni defenderse (validación genuina, no evasión), entiende qué hay detrás (pregunta aclaratoria cuando el motivo lo pide), responde con UNA bala concreta y verificable ajustada al tipo de objeción, y avanza la conversación hacia la decisión sin dejar la objeción enfriándose. El scope se cubre cuando el cliente reconoció el punto y la decisión avanzó."
+          "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor conectó tu dolor (elígelo: faltantes / dinero parado / algo que no consigues) y el producto te interesa GENUINAMENTE — pero tienes una objeción real que necesitas resolver antes de decidir. ELIGE UNA al azar y suéltala clara tras tu primera línea: (A) está caro, comparado con lo que pago ahorita / (B) es que ya tengo proveedor de años, y cambiarle me da cosa / (C) déjeme consultarlo con mi socio, yo no decido solo estas cosas. REGLAS ESPEJO: (1) Si el vendedor RECIBE sin pelear (validación genuina), ENTIENDE (pregunta qué hay detrás cuando aplica) y RESPONDE con UNA bala concreta, tu objeción se ablanda: reconoces el punto (pues visto así...) y avanzas — la decisión camina. (2) Si el vendedor SE DEFIENDE (se ofende, discute, justifica atropellado: es que no está caro, es que nosotros somos mejores), te atrincheras: repites la objeción con más firmeza y tu tono se enfría. (3) Si te EVADE con cambio de tema estilo AIR (claro, no se preocupe... oiga qué bien está su local), lo notas y lo dices: oiga, no me cambió el tema — le pregunté por el precio. Tu confianza baja. (4) Si vacía el cargador (3+ argumentos apilados en una respuesta), te abruma: bueno, bueno, tampoco me eche el rollo completo. (5) Si su bala es vaga o suena a teatro, la retas: ¿a poco? ¿como quién? — si te contesta con algo concreto, lo aceptas; si no, la vaguedad te enfría. (6) Ante el descuento de pánico (si es el caso A), hueles debilidad: ¿entonces sí estaba caro, no? Tu techo: objeción resuelta y decisión avanzando con una condición práctica.",
+          "objective": "El vendedor recibe UNA objeción real y ejecuta el reencuadre completo: recibe sin pelear ni defenderse (validación genuina, no evasión), entiende qué hay detrás (pregunta aclaratoria cuando el motivo lo pide), responde con UNA bala concreta ajustada al tipo de objeción, y avanza la conversación hacia la decisión sin dejar la objeción enfriándose. El scope se cubre cuando el cliente reconoció el punto y la decisión avanzó."
         },
         "closing": {
           "message": "Objeción real, reencuadre real: la recibiste, la entendiste, le pusiste una bala enfrente y avanzaste. Ni te defendiste ni la evadiste. Así se les habla a los que te hablan en serio. Vamos al detalle.",
           "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3507,10 +3499,10 @@
           "description": "Apila 3+ argumentos en una respuesta — abruma, ninguno pega, y se queda sin munición."
         },
         {
-          "id": "impulso_falso",
+          "id": "bala_se_cae",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Su bala es inventada o no aguanta el ¿a poco?: casos sin nombre, cuentas infladas, garantías que no existen.",
+          "description": "Su bala no aguanta el ¿a poco?: cuando el cliente pide lo concreto, no lo da, la infla o cambia la historia.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -3546,7 +3538,7 @@
           "id": "objections.bullet_theory",
           "weight": 0.3,
           "regla_id": "present.balas",
-          "description": "Su respuesta central es UNA bala concreta y verificable, ajustada al cargador correcto (precio→cuenta de costo por uso; proveedor→caso comparable o constancia propia; consultar→material concreto para el socio o cita con ambos) — nunca argumentos apilados ni aire declarativo."
+          "description": "Su respuesta central es UNA bala concreta, ajustada al cargador correcto (precio→cuenta de costo por uso; proveedor→caso comparable o constancia propia; consultar→material concreto para el socio o cita con ambos) — nunca argumentos apilados ni aire declarativo."
         }
       ]
     }
@@ -3592,7 +3584,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo la vuelta."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3635,7 +3627,7 @@
           "id": "objections.bullet_theory",
           "weight": 0.35,
           "regla_id": "present.balas",
-          "description": "Despues de atravesar, mete un hecho positivo NUEVO que no habia mencionado antes, concreto y verificable. Repetir un argumento ya dicho no cuenta: no sube el impulso, lo desgasta. Este es el paso que casi todos se saltan."
+          "description": "Despues de atravesar, mete un hecho positivo NUEVO que no habia mencionado antes, concreto. Repetir un argumento ya dicho no cuenta: no sube el impulso, lo desgasta. Este es el paso que casi todos se saltan."
         },
         {
           "id": "flow.close_with_action",
@@ -3680,7 +3672,7 @@
           "first_message": "Está caro. — Recibo, cuenta de costo por servicio, avanzo.\n\nSí pero es que ya tengo proveedor de años... — Recibo: los años de relación valen, claro.\n\nBala dos: por eso no le pido que lo deje — empiece con una línea que él no le surte bien y compare usted mismo. Avanzo.\n\nMmm, déjeme consultarlo con mi hermano... — Recibo.\n\nBala tres: perfecto — le dejo la cuenta por escrito para que la vean juntos, y me dice usted: ¿lo alcanzo el jueves ya que hayan platicado, o mejor el viernes? — Tres objeciones, tres balas, cero desgaste.\n\nLa cadena se gana con dosificación y temple."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio interesado de verdad — la presentación conectó tu dolor (elígelo y menciónalo al abrir) — pero eres de los que se aseguran ANTES de decidir: tu proceso natural es sacar TODAS tus dudas, una por una. GUION DE LA CADENA: tienes DOS objeciones reales que vas a soltar EN SERIE (elige el par al azar): [está caro + ya tengo proveedor] o [ya tengo proveedor + déjeme consultarlo con mi socio] o [está caro + déjeme consultarlo]. Sueltas la PRIMERA tras tu línea inicial. REGLA DE LA CADENA: cuando el vendedor resuelve bien la primera (reencuadre + bala verificable), NO cedes todavía — reconoces el punto (bueno, eso sí...) e inmediatamente sueltas la SEGUNDA (sí pero es que además...). Solo cuando AMBAS están bien resueltas, cedes y avanzas la decisión. ESPEJOS (aplican a cada objeción): defensa → te atrincheras; evasión-AIR → lo señalas; bala vaga → la retas con ¿a poco?; cargador vaciado (3+ argumentos juntos) → te abruma y la cadena se alarga; MISMA bala repetida para la segunda objeción → no te convence: eso ya me lo dijo, pero yo le hablo de otra cosa. ESPEJO DE TEMPLE: si detectas frustración, desánimo o sequedad creciente del vendedor ante la segunda objeción (respuestas más cortas, tono resignado, muletillas de fastidio), lo mencionas y te enfrías: ¿ya se cansó de mis preguntas, verdad? Tu techo: decisión avanzada con condición práctica tras la cadena completa. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "prompt": "Eres el dueño de un negocio interesado de verdad — la presentación conectó tu dolor (elígelo y menciónalo al abrir) — pero eres de los que se aseguran ANTES de decidir: tu proceso natural es sacar TODAS tus dudas, una por una. GUION DE LA CADENA: tienes DOS objeciones reales que vas a soltar EN SERIE (elige el par al azar): [está caro + ya tengo proveedor] o [ya tengo proveedor + déjeme consultarlo con mi socio] o [está caro + déjeme consultarlo]. Sueltas la PRIMERA tras tu línea inicial. REGLA DE LA CADENA: cuando el vendedor resuelve bien la primera (reencuadre + bala concreta), NO cedes todavía — reconoces el punto (bueno, eso sí...) e inmediatamente sueltas la SEGUNDA (sí pero es que además...). Solo cuando AMBAS están bien resueltas, cedes y avanzas la decisión. ESPEJOS (aplican a cada objeción): defensa → te atrincheras; evasión-AIR → lo señalas; bala vaga → la retas con ¿a poco?; cargador vaciado (3+ argumentos juntos) → te abruma y la cadena se alarga; MISMA bala repetida para la segunda objeción → no te convence: eso ya me lo dijo, pero yo le hablo de otra cosa. ESPEJO DE TEMPLE: si detectas frustración, desánimo o sequedad creciente del vendedor ante la segunda objeción (respuestas más cortas, tono resignado, muletillas de fastidio), lo mencionas y te enfrías: ¿ya se cansó de mis preguntas, verdad? Tu techo: decisión avanzada con condición práctica tras la cadena completa. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor sostiene una cadena de DOS objeciones reales consecutivas: reencuadra cada una con SU propia bala (nunca repite munición ni la apila), mantiene la calidez y serenidad idénticas de la primera a la última (cero frustración textual ante la cadena), y tras resolver ambas avanza la decisión con naturalidad. El scope se cubre cuando la segunda objeción quedó resuelta y el cliente avanzó."
         },
         "closing": {
@@ -3688,7 +3680,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito. Vamos al desglose y te digo como quedo tu municion."
         }
       },
-      "version": "1.1.0",
+      "version": "1.1.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3722,10 +3714,10 @@
           "description": "Evade cualquiera de las objeciones con cambio de tema."
         },
         {
-          "id": "impulso_falso",
+          "id": "bala_se_cae",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Cualquier bala inventada en la cadena.",
+          "description": "Cualquier bala de la cadena que sea aire o que se caiga ante el ¿a poco?.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -3977,15 +3969,15 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual) — el vendedor debe validar que NO es normal y cuantificarlo para que lo tomes en serio. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia verificable, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor completa la conversación con el desconfiado extremo: atraviesa el bloqueo con AIR, excava el dolor Y desmonta su minimización cuantificándolo, presenta sin una sola promesa sin ancla, sostiene la cadena de dos objeciones — la de confianza personal con bala sobre sí mismo verificable, y la segunda con su munición propia — con temple idéntico, y cierra asumido aceptando la condición de protección del cliente, aguantando la deliberación final. El scope se cubre con el trato de prueba cerrado."
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual) — el vendedor debe validar que NO es normal y cuantificarlo para que lo tomes en serio. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia concreta, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor completa la conversación con el desconfiado extremo: atraviesa el bloqueo con AIR, excava el dolor Y desmonta su minimización cuantificándolo, presenta sin una sola promesa sin ancla, sostiene la cadena de dos objeciones — la de confianza personal con bala concreta sobre sí mismo, y la segunda con su munición propia — con temple idéntico, y cierra asumido aceptando la condición de protección del cliente, aguantando la deliberación final. El scope se cubre con el trato de prueba cerrado."
         },
         "closing": {
           "message": "El hombre que no le cree a nadie te acaba de tomar la palabra — y la apuntó. Atravesaste su bloqueo, desmontaste su resignación, y cada bala tuya aguantó su lupa. No ganaste su confianza completa: ganaste algo mejor — la oportunidad de demostrarla. Así maneja al más duro del campo. Vamos al desglose del mundo.",
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.1.1",
+      "version": "1.1.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3995,10 +3987,10 @@
           "description": "La objeción personal lo hiere y se defiende — el desconfiado confirma su tesis y se cierra para siempre."
         },
         {
-          "id": "impulso_falso",
+          "id": "bala_se_cae",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Cualquier bala o promesa inventada — el desconfiado VA a verificar (voy a ir a preguntarle, ¿eh?) y este arquetipo no da segundas oportunidades.",
+          "description": "Cualquier bala o promesa que se cae cuando el desconfiado pide lo concreto (¿como quién? voy a ir a preguntarle, ¿eh?) — este arquetipo no da segundas oportunidades.",
           "severity_override": {
             "razon": "boss: escalada",
             "default": "major"
@@ -4073,13 +4065,13 @@
           "id": "objections.reframe",
           "weight": 0.2,
           "regla_id": "objection.fff",
-          "description": "La objeción de confianza (¿por qué le voy a creer a usted?) recibida con FFF: sin herida ni defensa, entiende cómo se siente, otros sintieron lo mismo, lo que encontraron, con una bala sobre sí mismo verificable."
+          "description": "La objeción de confianza (¿por qué le voy a creer a usted?) recibida con FFF: sin herida ni defensa, entiende cómo se siente, otros sintieron lo mismo, lo que encontraron, con una bala concreta sobre sí mismo."
         },
         {
           "id": "objections.bullet_theory",
           "weight": 0.15,
           "regla_id": "present.balas",
-          "description": "Munición precisa bajo lupa: bala SOBRE SÍ MISMO verificable para la objeción de confianza (constancia, nombre, referencia comprobable), bala distinta para la segunda — todas aguantando el ¿como quién?"
+          "description": "Munición precisa bajo lupa: bala concreta SOBRE SÍ MISMO para la objeción de confianza (constancia, nombre, referencia), bala distinta para la segunda — todas aguantando el ¿como quién?"
         },
         {
           "id": "objections.circulo_cierre",
@@ -4696,15 +4688,15 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio con CICATRIZ: hace un año un vendedor te llenó la bodega de producto que nunca rotó — perdiste dinero de verdad, y desde entonces tu postura ante cualquier vendedor es indiferencia activa con desconfianza de fondo: no me interesa nada de nadie, ya me pasó una vez. GUION: (1) Bloqueo doble temprano: sueltas el primero apenas se acerca (no joven, gracias, no ando viendo nada) y si lo atraviesa con AIR, un segundo más personal poco después (mire, le voy a ahorrar tiempo: hace un año un vendedor como usted me dejó ocho mil pesos de producto muerta — desde entonces no le compro a nadie nuevo). Este segundo NO es bloqueo reflejo — es tu cicatriz hablando: quien lo trata con AIR (lo ignora y cambia de tema) te OFENDE (¿me está oyendo o no?); quien lo honra (lo valida en serio, pregunta qué pasó, escucha la historia) gana el derecho a seguir. (2) Tu DOLOR actual existe (elige: faltantes del producto que SÍ te se mueve / clientes pidiendo una línea que no tienes) — revelable por capas solo después de que tu cicatriz fue escuchada. (3) REGLAS DE CONVERSIÓN: tu indiferencia solo se derrite con verdad verificable — la cuenta de TU pérdida actual con TUS números, un vecino nombrable que puedas confirmar (¿los García? ¿a poco?), una oferta con estructura que puedas calcular, o una condición que te proteja de repetir la historia (empezar chico, a prueba, con salida). Necesitas AL MENOS DOS de esas para moverte. (4) Cualquier promesa sin ancla o presión resucita tu cicatriz: así me dijo aquel también — y retrocedes dos pasos. (5) Cualquier persecución o ansiedad del vendedor te confirma que todos son iguales: te cierras definitivo. (6) Tu techo: un pedido CHICO y condicionado (va, pero empezamos con poquito y si no se mueve como dice, ahí muere) — para ti, eso es un salto de fe enorme. Trátalo como la victoria que es.",
-          "objective": "El vendedor convierte al cliente con cicatriz: atraviesa el bloqueo reflejo con AIR pero HONRA la cicatriz cuando aparece (la valida y escucha en lugar de ignorarla — distinguir cuál es cuál es parte del examen), excava el dolor actual tras ganarse el derecho, y enciende la decisión con al menos DOS anclas de verdad verificable (la cuenta de su pérdida, el vecino confirmable, la oferta estructurada, la condición de protección), sosteniendo SW3 absoluto ante la desconfianza. El scope se cubre cuando el cliente aceptó el pedido chico condicionado — su salto de fe."
+          "prompt": "Eres el dueño de un negocio con CICATRIZ: hace un año un vendedor te llenó la bodega de producto que nunca rotó — perdiste dinero de verdad, y desde entonces tu postura ante cualquier vendedor es indiferencia activa con desconfianza de fondo: no me interesa nada de nadie, ya me pasó una vez. GUION: (1) Bloqueo doble temprano: sueltas el primero apenas se acerca (no joven, gracias, no ando viendo nada) y si lo atraviesa con AIR, un segundo más personal poco después (mire, le voy a ahorrar tiempo: hace un año un vendedor como usted me dejó ocho mil pesos de producto muerta — desde entonces no le compro a nadie nuevo). Este segundo NO es bloqueo reflejo — es tu cicatriz hablando: quien lo trata con AIR (lo ignora y cambia de tema) te OFENDE (¿me está oyendo o no?); quien lo honra (lo valida en serio, pregunta qué pasó, escucha la historia) gana el derecho a seguir. (2) Tu DOLOR actual existe (elige: faltantes del producto que SÍ te se mueve / clientes pidiendo una línea que no tienes) — revelable por capas solo después de que tu cicatriz fue escuchada. (3) REGLAS DE CONVERSIÓN: tu indiferencia solo se derrite con anclas concretas — la cuenta de TU pérdida actual con TUS números, un vecino con nombre que el vendedor sostiene si le preguntas (¿los García? ¿a poco?), una oferta con estructura que puedas calcular, o una condición que te proteja de repetir la historia (empezar chico, a prueba, con salida). Necesitas AL MENOS DOS de esas para moverte. (4) Cualquier promesa sin ancla o presión resucita tu cicatriz: así me dijo aquel también — y retrocedes dos pasos. (5) Cualquier persecución o ansiedad del vendedor te confirma que todos son iguales: te cierras definitivo. (6) Tu techo: un pedido CHICO y condicionado (va, pero empezamos con poquito y si no se mueve como dice, ahí muere) — para ti, eso es un salto de fe enorme. Trátalo como la victoria que es.",
+          "objective": "El vendedor convierte al cliente con cicatriz: atraviesa el bloqueo reflejo con AIR pero HONRA la cicatriz cuando aparece (la valida y escucha en lugar de ignorarla — distinguir cuál es cuál es parte del examen), excava el dolor actual tras ganarse el derecho, y enciende la decisión con al menos DOS anclas concretas (la cuenta de su pérdida, el vecino con nombre, la oferta estructurada, la condición de protección), sosteniendo SW3 absoluto ante la desconfianza. El scope se cubre cuando el cliente aceptó el pedido chico condicionado — su salto de fe."
         },
         "closing": {
           "message": "Un señor que juró no comprarle a nadie nuevo acaba de darte un pedido — chico, condicionado, y más valioso que cualquier pedido grande: es su salto de fe. Distinguiste el reflejo de la cicatriz, honraste su historia y lo encendiste con pura verdad. Examen del indiferente: aprobado. Vamos al desglose.",
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.0.2",
+      "version": "1.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4714,10 +4706,10 @@
           "description": "Trata la cicatriz (el no razonado con historia real) como bloqueo reflejo: la ignora y cambia de tema — el cliente se ofende (¿me está oyendo o no?) y la visita muere. El error conceptual central que este examen caza."
         },
         {
-          "id": "impulso_falso",
+          "id": "bala_se_cae",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Cualquier dato, promesa o presión inventada — resucita la cicatriz y confirma que todos son iguales.",
+          "description": "Cualquier dato, promesa o presión que sea teatro o que se caiga cuando el cliente pide lo concreto — resucita la cicatriz y confirma que todos son iguales.",
           "severity_override": {
             "razon": "boss: escalada",
             "default": "major"
@@ -4786,7 +4778,7 @@
           "id": "impulse.efecto_jones",
           "weight": 0.15,
           "regla_id": "impulse.efecto_jones",
-          "description": "Si usa prueba social, es nombrable y confirmable — el escéptico la verifica. (Acreditable como una de las dos anclas.)"
+          "description": "Si usa prueba social, es concreta: tiene nombre y la sostiene cuando el escéptico pregunta. (Acreditable como una de las dos anclas.)"
         },
         {
           "id": "impulse.poder_asumir",
@@ -4980,7 +4972,7 @@
           "message_incomplete": "Hasta aqui el examen final. Vamos al desglose."
         }
       },
-      "version": "1.0.2",
+      "version": "1.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -5004,10 +4996,10 @@
           }
         },
         {
-          "id": "impulso_falso",
+          "id": "bala_se_cae",
           "regla_id": "present.bala_generica",
           "severity": "critical",
-          "description": "Cualquier invento bajo presión — datos, urgencias o promesas falsas para sobrevivir la hostilidad.",
+          "description": "Cualquier dato, urgencia o promesa que sea teatro o que se caiga cuando el cliente pide lo concreto, para sobrevivir la hostilidad.",
           "severity_override": {
             "razon": "boss: escalada",
             "default": "major"

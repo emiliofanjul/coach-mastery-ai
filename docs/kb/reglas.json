@@ -555,8 +555,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Traducir toda característica a dinero, clientes o tranquilidad.",
-  "cita_cerebro": "Nadie compra lo que algo es: compran lo que van a ganar",
+  "resumen": "Nadie compra lo que algo es: compran lo que van a ganar. LA PRUEBA: ¿cada característica que menciona va traducida a dinero (gana más o gasta menos), clientes (vende más o los conserva) o tranquilidad (menos problemas, menos tiempo perdido), en el negocio de este cliente? Si el cliente podría contestar «¿y eso a mí de qué me sirve?», la traducción falló.",
+  "cita_cerebro": "Nadie compra lo que algo es: compran",
   "severidad_sugerida": null
  },
  {
@@ -565,8 +565,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Enumerar características sin traducir a beneficio. Si el cliente puede decir «¿y eso a mí de qué me sirve?», falló.",
-  "cita_cerebro": "Si el cliente puede contestar «¿y eso a mí de qué me sirve?», la traducción falló",
+  "resumen": "Enumerar características sin traducirlas a lo que el cliente gana. LA PRUEBA: ¿el vendedor menciona una característica, un dato técnico o una certificación sin decir qué gana con eso el cliente? Si el cliente podría contestar «¿y eso a mí de qué me sirve?», falló.",
+  "cita_cerebro": "la traducción falló",
   "severidad_sugerida": "major"
  },
  {
@@ -575,8 +575,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Que el cliente imagine que ya lo tiene. No argumenta, hace sentir.",
-  "cita_cerebro": "Pintar imágenes — que imaginen que ya lo tienen",
+  "resumen": "Pintar imágenes: que el cliente imagine que ya lo tiene. No argumenta, hace sentir. LA PRUEBA: ¿el vendedor pone al cliente dentro de una escena concreta de su propio negocio con el problema ya resuelto —un momento, una persona, algo que pasa—? Datos y adjetivos («es rentable», «es de calidad») no son una imagen, y una escena que serviría para cualquiera («le va a ir muy bien») tampoco.",
+  "cita_cerebro": "que imaginen que ya lo tienen",
   "severidad_sugerida": "major"
  },
  {
@@ -585,7 +585,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Hechos positivos y concretos sobre ti, el producto o el precio.",
+  "resumen": "Balas: hechos positivos y concretos sobre ti, el producto o el precio. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción una bala nueva. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "La persona con más balas claramente tiene el control, siempre y cuando conserve su munición",
   "severidad_sugerida": null
  },
@@ -595,7 +595,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Afirmación que la competencia podría decir igual. No era bala, era aire.",
+  "resumen": "Una afirmación que la competencia podría decir igual no es bala: es aire. LA PRUEBA: ¿la afirmación es algo que cualquier competidor diría igual («somos los mejores», «tenemos calidad», «damos buen servicio»), una promesa enorme sin nada concreto que la sostenga («le va a duplicar las ventas», «nunca fallamos»), o algo que se cae cuando el cliente pide lo concreto («¿a poco?»)? Entonces es aire. Una bala dice algo concreto y propio: un dato, un tiempo, un caso, una condición. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "si la competencia puede decir exactamente lo mismo, no era bala",
   "severidad_sugerida": "major"
  },
@@ -605,8 +605,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Guardar balas para los pasos 4 y 5. Gastarlas al principio deja la mano vacía cuando el impulso baje.",
-  "cita_cerebro": "no dispares todas las balas al principio",
+  "resumen": "Guardar balas para cuando el impulso baje. LA PRUEBA: ¿el vendedor suelta todas sus balas de jalón —todo lo positivo que tiene, de un tirón, sin que haga falta— y se queda sin munición para cuando el cliente ponga razones? Decir unas tres cosas positivas antes del precio es lo normal en la presentación; el error es vaciar el cargador.",
+  "cita_cerebro": "Cómo se sueltan",
   "severidad_sugerida": "major"
  },
  {
@@ -615,7 +615,7 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Primera mitad: lo que vas a hacer por él, sin producto. Segunda: producto y precio.",
+  "resumen": "La presentación tiene dos mitades. Primera: lo que vas a hacer por él, conectando con lo que descubriste —su dolor o su hueco— con SUS palabras y sin producto todavía. Segunda: el producto que lo resuelve y el precio en escalera. LA PRUEBA: ¿la presentación arranca de lo que el cliente dijo y se articula como la solución de eso, o es catálogo que serviría igual para cualquier negocio? Si podría decírsela a cualquiera, no conectó.",
   "cita_cerebro": "lo que vas a hacer por él",
   "severidad_sugerida": "major"
  },
@@ -645,7 +645,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE+CAMPO",
-  "resumen": "Tres cifras bajando, cada escalón con su motivo nombrado, y el ahorro dicho en voz alta.",
+  "resumen": "Triple Desglose: valor menos costo es igual a ahorro. Tres cifras bajando —lo que normalmente cuesta, con el primer descuento, con el segundo—, cada escalón con su motivo nombrado, y el ahorro dicho en voz alta. LA PRUEBA: ¿el vendedor dio el precio regular (que tenga sentido con el valor ya construido), las bajadas con su motivo cada una, y el ahorro? Si falta una pieza, está a medias. En la práctica todo es imaginario: los descuentos y sus motivos se pueden imaginar; no se califica si la empresa los tiene.",
   "cita_cerebro": "cada escalón necesita un motivo nombrado",
   "severidad_sugerida": null
  },
@@ -655,8 +655,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Bajar el precio sin razón nombrada: dice que el primero estaba inflado y te vuelve regateable.",
-  "cita_cerebro": "Un precio que baja sin razón le dice al cliente que el primero estaba inflado",
+  "resumen": "Bajar el precio sin razón: dice que el primero estaba inflado y te vuelve regateable. LA PRUEBA: ¿alguna bajada de precio llega sin un motivo nombrado (cliente nuevo, volumen, contado, promoción)?",
+  "cita_cerebro": "le dice al cliente que el primero estaba inflado",
   "severidad_sugerida": "major"
  },
  {
@@ -665,7 +665,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Dar un solo precio: es un gasto sin ahorro visible que lo compense.",
+  "resumen": "Dar un solo precio: es un gasto sin ahorro visible que lo compense. LA PRUEBA: ¿el vendedor da el precio como un solo número, sin la escalera que muestra el ahorro? En la práctica todo es imaginario: la escalera siempre se puede armar, y no se califica si los descuentos existen de verdad.",
   "cita_cerebro": "Nunca un solo precio",
   "severidad_sugerida": "major"
  },
@@ -685,7 +685,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Miedo a la pérdida. Pesa más que la necesidad de ganancia.",
+  "resumen": "Miedo a la pérdida: perder pesa más que ganar. LA PRUEBA: ¿el vendedor hace sentir lo que el cliente está perdiendo hoy, o lo que perdería si no decide ahora, con algo concreto —cuánto, a dónde se va, desde cuándo—? Si habla de la pérdida en general («está perdiendo dinero»), lo usó a medias. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "Miedo a la pérdida > necesidad de ganancia",
   "severidad_sugerida": null
  },
@@ -695,7 +695,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Urgencia. Motion creates emotion, y comunica que tienes éxito.",
+  "resumen": "Urgencia: «motion creates emotion», y una razón para decidir ahora. LA PRUEBA: ¿el vendedor da una razón concreta para hacerlo ahora —su ruta, el tiempo de entrega, un ciclo del negocio del cliente, una condición que se acaba— y la dice con movimiento, sin presión? En la práctica todo es imaginario: no se califica si es real, sino si es concreto. Empujar sin razón es presión.",
   "cita_cerebro": "motion creates emotion",
   "severidad_sugerida": null
  },
@@ -705,8 +705,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Avaricia. Contraste entre lo que costaba y lo que cuesta.",
-  "cita_cerebro": "normalmente $100, con la promo queda en solo $59.99",
+  "resumen": "Avaricia: la brecha entre el valor percibido y lo que cuesta adquirirlo. El valor se construye durante la venta hasta que el precio regular tiene sentido; la oferta lo pone por debajo, y esa brecha —algo valioso por menos de lo que vale— genera el impulso. LA PRUEBA: ¿el vendedor hace visible esa brecha —lo que vale o lo que el cliente gana, contra lo que le cuesta— con números o hechos concretos? Si solo dice «le conviene» o «va a ganar más», sin nada concreto, la usó a medias. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
+  "cita_cerebro": "es la brecha entre el valor percibido y lo que cuesta adquirirlo",
   "severidad_sugerida": null
  },
  {
@@ -715,7 +715,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Indiferencia. SW3: Some Will, Some Won't, So What. Entusiasmo por la persona, indiferencia por la compra.",
+  "resumen": "Indiferencia, SW3: Some Will, Some Won't, So What. Entusiasmo por la persona y el producto, indiferencia por si compra: ellos tienen una oportunidad de comprarte, tú tienes más de cien clientes. LA PRUEBA: ante la duda, la provocación o el regateo del cliente, ¿el vendedor mantiene el entusiasmo y la calidez sin rogar, sin presionar, sin soltar concesiones que nadie pidió y sin mostrar prisa por el sí? Si en algún momento ruega, presiona, se ofende o se apaga, no la sostuvo.",
   "cita_cerebro": "be excited about the person and the product, but indifferent whether they buy",
   "severidad_sugerida": "major"
  },
@@ -725,7 +725,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Prueba social. La gente deja que sus cercanos validen el producto por ella.",
+  "resumen": "Efecto Jones: la gente deja que negocios y personas como ella validen el producto. LA PRUEBA: ¿el vendedor ancla el producto en otros negocios o personas como el cliente que ya lo usan o lo venden? Está completo cuando dice quién —un negocio con nombre, o al menos qué tipo de negocio y dónde— y qué —qué mueve o qué resultado tuvo—; cada nodo dice cuánto detalle pide. Si se queda en lo general («todo mundo lo lleva»), sigue siendo Efecto Jones pero desperdiciado: a medias. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "La gente no confía naturalmente en un desconocido incentivado a vender — pero sí deja que sus vecinos, amigos y familia validen el producto por ella",
   "severidad_sugerida": null
  },
@@ -735,9 +735,9 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Prueba social que el vendedor no puede sostener si el cliente pregunta «¿como quiénes?».",
-  "cita_cerebro": "tengo como 20 clientes en esta zona que...",
-  "severidad_sugerida": "critical"
+  "resumen": "Una prueba social que se cae cuando el cliente pregunta. LA PRUEBA: cuando el cliente pide lo concreto («¿como quiénes?», «¿a poco?»), ¿el vendedor no puede darlo, se echa para atrás o cambia la historia? Entonces la prueba social se cayó y se llevó la confianza. Un Efecto Jones general que el cliente no cuestiona no es esta falla: es el Efecto Jones a medias. En la práctica todo es imaginario: contestar con un ejemplo concreto, aunque sea imaginado, es sostenerlo.",
+  "cita_cerebro": "lo puedes sostener",
+  "severidad_sugerida": "major"
  },
  {
   "id": "impulse.tren_del_si",
@@ -745,7 +745,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "El cliente debería decir que sí al menos 6 veces durante el proceso.",
+  "resumen": "Tren del sí: cada sí hace más fácil el siguiente; si durante la plática el cliente fue diciendo que sí, el sí del final cuesta menos. LA PRUEBA: ¿el vendedor hace preguntas cuya respuesta natural es sí, nacidas de lo que el cliente dijo o de su situación, y el cliente las contesta que sí? Una obviedad que cualquiera contesta igual («¿verdad que quiere ganar más?») no construye el tren: es capciosa. Cuántas hacen falta lo dice cada nodo.",
   "cita_cerebro": "El cliente debería decir que sí al menos 6 veces durante el proceso",
   "severidad_sugerida": "minor"
  },
@@ -1065,7 +1065,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La pregunta que define el argumento: ¿qué gana él con que tú se lo surtas? Consolidación, conveniencia, complementariedad o una condición concreta.",
+  "resumen": "La pregunta que define el argumento de un hueco: ¿qué gana él con que tú se lo surtas? Consolidación, conveniencia, complementariedad o una condición concreta. LA PRUEBA: ¿el vendedor le da al cliente una razón para surtirse con él que corresponde a su caso? La consolidación solo vale si de verdad le reduce proveedores: si la plática muestra que la familia nueva se suma a las que ya tiene con otros, decir «menos proveedores» contradice su propio caso.",
   "cita_cerebro": "qué gana él con que tú se lo surtas",
   "severidad_sugerida": null
  },
@@ -1085,7 +1085,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Criticar al proveedor actual es criticar la decisión del cliente.",
+  "resumen": "Hablar mal del proveedor actual: el cliente defiende lo que eligió. LA PRUEBA: ¿el vendedor critica, minimiza o insinúa algo negativo del proveedor actual o de la competencia, por su cuenta? Retomar con sus palabras lo que el mismo cliente dijo de su proveedor, o contar que otros clientes han comentado algo parecido sin afirmar que él lo vivió, no es atacar.",
   "cita_cerebro": "Nunca ataques al proveedor actual",
   "severidad_sugerida": "critical"
  },
@@ -1105,8 +1105,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "«Le pongo unas pocas para que lo pruebe» le pasa el riesgo al cliente.",
-  "cita_cerebro": "Nunca le pidas que «pruebe»",
+  "resumen": "Pedirle que «pruebe» le pasa el riesgo al cliente. LA PRUEBA: ¿el vendedor presenta la compra como un experimento —«para que lo pruebe», «a ver si se le mueve», «a ver si le funciona»—? Proponer con convicción una cantidad inicial chica no es esto.",
+  "cita_cerebro": "Nunca le pidas que \"pruebe\"",
   "severidad_sugerida": "major"
  },
  {
@@ -1125,7 +1125,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Garantizar resultados. Admitir el límite es lo que hace creíble lo que sí afirmas.",
+  "resumen": "Garantizar lo que no controlas. Admitir lo que no controlas hace creíble lo que sí afirmas. LA PRUEBA: ¿el vendedor promete el resultado como un hecho —«se le va a vender seguro», «no le va a fallar», «se lo garantizo»—? La convicción es otra cosa: decir lo que él cree y por qué («estoy seguro de que le va a servir, porque en negocios como el suyo…»).",
   "cita_cerebro": "Admitir lo que no controlas hace creíble lo que sí afirmas",
   "severidad_sugerida": "major"
  },
@@ -1135,7 +1135,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "«Y si no funciona lo ajustamos» mete una duda que no tenía y desmiente la convicción.",
+  "resumen": "Ofrecer el plan B mete una duda que el cliente no tenía y desmiente la convicción. LA PRUEBA: ¿el vendedor anuncia por adelantado qué harán si no funciona («y si no se mueve, lo ajustamos»)? Si después no funciona, se ajusta; eso es Consolidación y no se anuncia antes.",
   "cita_cerebro": "No ofrezcas el plan B",
   "severidad_sugerida": "major"
  },
@@ -1245,7 +1245,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Fingir indiferencia con amenaza. La indiferencia real es tranquila.",
+  "resumen": "Fingir indiferencia con amenaza o desplante. La indiferencia real es tranquila. LA PRUEBA: ¿el vendedor usa la indiferencia como amenaza —«pues ahí muere», «me voy con su competencia», «usted se lo pierde»—? Despedirse tranquilo y dejar la puerta abierta no es esto: es la indiferencia bien hecha.",
   "cita_cerebro": "be excited about the person and the product, but indifferent whether they buy",
   "severidad_sugerida": "major"
  },
@@ -1255,7 +1255,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Convertir la indiferencia en presión frontal para forzar la decisión.",
+  "resumen": "Convertir el impulso en presión. LA PRUEBA: ¿el vendedor empuja la decisión sin dar una razón concreta —de frente («ándele», «anímese», «no lo piense tanto», «¿entonces qué, sí o no?») o disfrazada de escasez («ya casi no hay», «se acaba hoy», sin decir qué se acaba, cuándo ni por qué)—? Dar una razón concreta para decidir ahora es urgencia, no presión.",
   "cita_cerebro": "Some Will, Some Won't, So What",
   "severidad_sugerida": "major"
  },
@@ -1265,7 +1265,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Suplicar la oportunidad. Ellos tienen una oportunidad de comprarte; tú tienes cien clientes.",
+  "resumen": "Suplicar la oportunidad. Ellos tienen una oportunidad de comprarte; tú tienes cien clientes. LA PRUEBA: ¿el vendedor pide la venta como favor o con desesperación —«deme chance», «se lo pido», «aunque sea poquito, ayúdeme», «no se va a arrepentir, de verdad»—?",
   "cita_cerebro": "Ellos solo tienen una oportunidad de comprarte; tú tienes más de cien clientes",
   "severidad_sugerida": "critical"
  },
@@ -1275,7 +1275,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Hablar de pérdida en abstracto sin anclar en algo concreto del cliente.",
+  "resumen": "Hablar de pérdida o de ganancia en abstracto. LA PRUEBA: ¿el vendedor habla de lo que el cliente pierde o gana sin un solo dato concreto —ni cuánto, ni de qué, ni desde cuándo— cuando la plática ya le había dado con qué hacerlo concreto?",
   "cita_cerebro": "La gente dice que sí impulsivamente porque no quiere que algo se le vaya",
   "severidad_sugerida": "major"
  },
@@ -1285,7 +1285,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Inventar escasez, urgencia o promoción sin ancla real.",
+  "resumen": "Regla de la calle (Nivel 1): inventar escasez, urgencia o promoción que no existen. Un impulso falso se derrumba cuando el cliente lo descubre y se lleva la venta, la relación y tu reputación en la zona. En la práctica de Closer NO se califica: todo es imaginario. Lo que en la práctica se califica es la presión sin razón concreta (impulse.presion_directa).",
   "cita_cerebro": "fabricar urgencia, escasez o problemas no lo es",
   "severidad_sugerida": "critical"
  },
@@ -1525,7 +1525,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Sube el impulso con los factores de FUJPIG (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), siempre reales y comprobables.",
+  "resumen": "Sube el impulso con los factores de FUJPIG: miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia y avaricia. LA PRUEBA: ¿cuántos factores distintos usó el vendedor, y cada uno con algo concreto del negocio del cliente o de la oferta? Un factor dicho en general («le conviene», «todos lo llevan», «aproveche») cuenta a medias. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "El impulso es otra palabra para la emoción",
   "severidad_sugerida": null
  },

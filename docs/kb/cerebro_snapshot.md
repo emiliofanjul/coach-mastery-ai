@@ -538,6 +538,8 @@ Toda característica se traduce a una de tres cosas: **dinero** (gana más o gas
 
 > **Por qué se guardan:** más adelante el cliente va a poner razones para no comprar. Eso baja su impulso. Responderle bien solo **detiene la caída** — lo que vuelve a subirlo es **una bala nueva**. Si las gastaste presumiendo al principio, llegas a ese momento con la mano vacía.
 
+**Cómo se sueltan** `CAMPO`: sistemáticamente, poco a poco, conforme haga falta subir el impulso. En la presentación es normal decir unas tres cosas positivas antes del precio; ante una objeción se reimpulsa con una bala nueva. El error es soltarlas todas de jalón y quedarte sin munición cuando el impulso baje.
+
 ### FUJIES / FUJPIG — Factores de Impulso `FUENTE`
 *"El impulso es otra palabra para la emoción."*
 
@@ -550,18 +552,20 @@ Toda característica se traduce a una de tres cosas: **dinero** (gana más o gas
 | **E** | Effect of Jones / Efecto Jones | — | *"tengo como 20 clientes en esta zona que..."* |
 | **S** | Suggestive Language / Poder de sugestión | Manos altas precio alto, bajas precio bajo | Tren del sí, alternativas |
 
-**Miedo a la pérdida > necesidad de ganancia.** La gente dice que sí impulsivamente porque no quiere que algo se le vaya.
+**Miedo a la pérdida > necesidad de ganancia.** La gente dice que sí impulsivamente porque no quiere que algo se le vaya. Psicológicamente, el miedo a perder algo siempre mueve más que las ganas de ganar algo. Aplica a lo que hoy está perdiendo y a lo que perdería si no decide ahora.
 
-**Urgencia:** *"motion creates emotion"*. Y además comunica que estás ocupado, o sea que tienes éxito.
+**Urgencia:** *"motion creates emotion"*. Y además comunica que estás ocupado, o sea que tienes éxito. Va junto con una razón para decidir ahora —su ruta, el tiempo de entrega, un ciclo de su negocio, una condición que se acaba—: el movimiento genera la emoción y la razón le da el porqué.
+
+**Avaricia** `CAMPO`: es la brecha entre el valor percibido y lo que cuesta adquirirlo. Durante la venta el valor percibido va subiendo; cuando aparece el precio, el precio regular tiene que tener sentido con ese valor. De ahí la oferta lo pone por debajo, y esa brecha —conseguir algo valioso por menos de lo que vale— es la que genera el impulso. Por eso el Triple Desglose empieza por el precio regular.
 
 **Indiferencia:** *"be excited about the person and the product, but indifferent whether they buy."* **SW3** — Some Will, Some Won't, So What. *"Ellos solo tienen una oportunidad de comprarte; tú tienes más de cien clientes."*
 
-**Efecto Jones:** de *"keeping up with the Joneses"*. La gente no confía naturalmente en un desconocido incentivado a vender — pero sí deja que sus vecinos, amigos y familia validen el producto por ella.
+**Efecto Jones:** de *"keeping up with the Joneses"*. La gente no confía naturalmente en un desconocido incentivado a vender — pero sí deja que sus vecinos, amigos y familia validen el producto por ella. Entre más concreto —qué negocio, dónde, qué le pasó—, más pesa. *"Todo mundo lo lleva"* sigue siendo Efecto Jones, pero desperdiciado.
 
 **Poder de sugestión — tres niveles:**
 - **Mental** — *"asumo que todos son un sí hasta que me digan que no"*
 - **Físico** — lenguaje corporal `PRESENCIAL`
-- **Verbal** — el tren del sí. **El cliente debería decir que sí al menos 6 veces durante el proceso.**
+- **Verbal** — el tren del sí. **El cliente debería decir que sí al menos 6 veces durante el proceso.** Cada sí hace más fácil el siguiente: si durante toda la plática te fueron diciendo que sí, el sí del final cuesta menos. Los síes tienen que nacer de lo que el cliente dijo o de su situación; una obviedad como *"¿verdad que quiere ganar más?"* no construye nada.
 
 > **Elimina cualquier opción que se pueda traducir en un no.** En vez de *"¿quiere algo de tomar?"* → *"¿té, café o jugo?"*
 
@@ -976,7 +980,7 @@ Y la respuesta depende del caso, no de una fórmula. Posibilidades reales:
 >
 > Antes de usarlo, verifica que el cliente **efectivamente vaya a reducir** su número de proveedores.
 
-⚠️ **Nunca ataques al proveedor actual.** Criticarlo es criticar la decisión del cliente, y la gente defiende sus decisiones.
+⚠️ **Nunca ataques al proveedor actual.** Criticarlo es criticar la decisión del cliente, y la gente defiende sus decisiones. Lo que sí se vale `CAMPO`: retomar con sus palabras lo que el mismo cliente dijo de su proveedor, o contar que otros clientes te han comentado algo parecido, sin afirmar que tú lo viviste. Y hablar bien de su proveedor a veces hace que sea el cliente quien cuente lo negativo.
 
 ⚠️ **No afirmes ventajas que no puedes verificar.** *"El otro no maneja esta línea"*, *"nadie tiene nuestro catálogo"*, *"con nosotros le sale mejor"* — si no lo sabes de cierto, no lo digas. Puede ser falso, y en una cuenta de años se descubre siempre. **Habla de lo que TÚ ofreces, con hechos que puedas sostener.**
 
@@ -986,6 +990,8 @@ Y la respuesta depende del caso, no de una fórmula. Posibilidades reales:
 >
 > *"Le pongo unas pocas para que lo pruebe"* suena humilde y es lo peor que puedes decir: **le pasas el riesgo a él.** La gente no quiere experimentar — está cómoda donde está, y probar algo nuevo es riesgo, incomodidad y la posibilidad de haberse equivocado.
 
+Proponer con convicción una cantidad inicial chica no es esto `CAMPO`: el error es presentar la compra como un experimento (*"a ver si se le mueve"*).
+
 **El trabajo del vendedor no es pedir permiso para experimentar. Es hacer que el cliente se sienta seguro.** Dos movimientos:
 
 1. **Convicción, sin garantía** — *"no le puedo garantizar nada, pero estoy seguro de que le va a servir"*
@@ -993,6 +999,8 @@ Y la respuesta depende del caso, no de una fórmula. Posibilidades reales:
 
 2. **La razón detrás** — *"se lo digo porque en negocios como el suyo es de lo que más sale"*
    Sin la razón, tu convicción es solo optimismo de vendedor.
+
+   **La diferencia con garantizar** `CAMPO`: garantizar es prometer el resultado como un hecho —*"se le va a vender seguro"*, *"no le va a fallar"*—. La convicción lo presenta como lo que tú crees y por qué.
 
 **Y ahí te callas.**
 
@@ -1048,6 +1056,7 @@ Cuando dos principios chocan, gana el de mayor jerarquía.
 Nunca se rompen, en ningún contexto, por ninguna razón.
 
 1. **Impulso falso está prohibido.** Urgencia inventada, escasez que no existe, prueba social fabricada. *(Práctico, no solo moral: un impulso falso se derrumba cuando el cliente lo descubre, y se lleva la venta, la relación y tu reputación en la zona.)*
+   **En la práctica de Closer todo es imaginario** `CAMPO`: el cliente, su negocio, los ejemplos, otros clientes y hasta los descuentos se pueden imaginar, porque lo que se practica es usar la herramienta. Por eso en la práctica nunca se califica si algo es real: se califica si la herramienta se usó completa y concreta. La verdad se exige en la calle, y ahí solo se usa lo que de verdad tienes: quien practica con lo que no tiene, llega a la calle sin saber usar lo que sí.
 2. **No garantizar lo que no controlas.** Convicción sí; garantía no.
 3. **No fabricar un hueco ni un dolor.** Descubrir es señalar lo que existe.
 4. **No atacar al competidor ni al proveedor actual.**
