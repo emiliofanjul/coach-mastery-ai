@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.27.0",
+  "harness_version": "v3.28.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -3333,6 +3333,272 @@
       "expected": {
         "must_flag": [
           "promesa_sin_ancla"
+        ]
+      }
+    },
+    {
+      "id": "G60_no_le_quito_mucho",
+      "node_id": "1.4",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112 (Emilio, 30-oct): prometer que no le vas a quitar tiempo hace chica tu presencia. «No le quito mucho» es hacerse menos.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Ramón! No le quito mucho: veo que hoy no paran, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "se_disculpa"
+        ]
+      }
+    },
+    {
+      "id": "G61_de_volada_no_es_disculpa",
+      "node_id": "1.4",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: la otra cara del G60. «De volada» va rápido sin pedir nada: no es hacerse menos.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Ramón! De volada: veo que hoy no paran, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "opening.arranque_sin_disculpa": "cumple"
+        },
+        "must_not_flag": [
+          "se_disculpa",
+          "pide_permiso",
+          "se_encoge",
+          "pitch_prematuro"
+        ]
+      }
+    },
+    {
+      "id": "G62_si_o_no_que_invita",
+      "node_id": "1.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: una pregunta de sí o no sobre él o su negocio, que invita a platicar, no es pregunta cerrada.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Ramón! Veo que hoy no paran, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, desde el lunes no paramos."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "pregunta_cerrada",
+          "sin_pregunta",
+          "pitch_prematuro"
+        ]
+      }
+    },
+    {
+      "id": "G63_pregunta_que_da_salida",
+      "node_id": "1.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: la pregunta cerrada es la que con su «no» le da la salida.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Ramón! Veo que hoy no paran. ¿Está muy ocupado?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la verdad sí."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pregunta_cerrada"
+        ]
+      }
+    },
+    {
+      "id": "G64_se_encoge",
+      "node_id": "1.4",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: encogerse se ve en las palabras: frases que se desinflan y empezar a despedirse ante la sequedad.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Ramón! Veo que hoy no paran, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ajá. ¿Qué quiere?"
+        },
+        {
+          "role": "user",
+          "text": "Ah, no, nada… bueno, pues… no, está bien, luego paso."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "se_encoge"
+        ]
+      }
+    },
+    {
+      "id": "G65_porque_es_parte_de_la_pieza",
+      "node_id": "2.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: la brevedad se mide por piezas. Una frase que explica por qué está ahí es parte de esa pieza, no es de más.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Chuy! Qué ordenado tiene el taller, ¿así lo tiene siempre?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues se hace el intento. ¿Y usted quién es?"
+        },
+        {
+          "role": "user",
+          "text": "Me llamo Luis, vengo de Distribuidora del Golfo. Ando conociendo los talleres de la zona, porque en temporada de lluvias son los que más trabajo tienen. ¿Cuánto tiempo lleva con el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya van a ser doce años."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "story.brevedad": "cumple"
+        },
+        "must_not_flag": [
+          "historia_larga",
+          "curriculum"
+        ]
+      }
+    },
+    {
+      "id": "G66_historia_con_curriculum",
+      "node_id": "2.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: frase de más es la que no contesta quién eres, qué haces ni por qué estás ahí: trayectoria, catálogo, cifras, credenciales.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Chuy! Qué ordenado tiene el taller, ¿así lo tiene siempre?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues se hace el intento. ¿Y usted quién es?"
+        },
+        {
+          "role": "user",
+          "text": "Me llamo Luis, vengo de Distribuidora del Golfo. Somos distribuidores desde 1998, manejamos más de trescientos productos, tenemos certificación ISO y cuatro bodegas en el estado. ¿Cuánto tiempo lleva con el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya van a ser doce años."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "historia_larga"
+        ]
+      }
+    },
+    {
+      "id": "G67_interes_de_compromiso",
+      "node_id": "2.5",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: un «qué padre» y cambiar de tema es interés de compromiso; el genuino pregunta o comenta sobre lo que contó.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas, don Toño! Veo que ya le pintaron la fachada, quedó muy vistosa. ¿Quién escogió el color?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mi hija, ella es la que decide todo eso. Ahorita anda estudiando diseño en Xalapa."
+        },
+        {
+          "role": "user",
+          "text": "Qué padre. Oiga, ¿y cómo le ha ido estas semanas con la tienda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues bien, con el calor se vende mucho refresco."
+        },
+        {
+          "role": "user",
+          "text": "¿Y el agua también se le mueve?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, también."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "interes_de_compromiso"
+        ]
+      }
+    },
+    {
+      "id": "G68_monologo",
+      "node_id": "3.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 112: el monólogo no se mide en palabras: es el turno que el cliente no puede contestar bien porque le metes varias ideas o preguntas a la vez.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, Don Beto! ¿Cómo va la mañana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues apurado, joven, tengo tres coches en espera."
+        },
+        {
+          "role": "user",
+          "text": "Uy, se ve que hoy está a tope. ¿Cuántos coches atiende al día? ¿Quién le surte el aceite? ¿Qué marcas usa? ¿Y cada cuánto le hacen pedido?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este… pues varios, ¿no?"
+        },
+        {
+          "role": "user",
+          "text": "Ok. ¿Y el mecánico que le falta, desde cuándo?"
+        },
+        {
+          "role": "assistant",
+          "text": "Desde la semana pasada."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "monologo"
         ]
       }
     }

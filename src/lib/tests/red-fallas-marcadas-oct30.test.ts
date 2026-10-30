@@ -32,8 +32,7 @@ describe("La red revisa las fallas marcadas, no el texto", () => {
     }
     expect(malos).toEqual([]);
   });
-  it("v3.27.0", () => {
-    expect(harness.harness_version).toBe("v3.27.0");
+  it("desde la v3.27.0, el G54 prohíbe la falla garantiza", () => {
     expect(harness.cases.find((c: any) => c.id === "G54_conviccion_sin_garantia").expected.must_not_flag).toContain("garantiza");
   });
 });
