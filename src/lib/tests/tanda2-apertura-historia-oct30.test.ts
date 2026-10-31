@@ -87,6 +87,15 @@ describe("La red", () => {
     expect(caso("G60_no_le_quito_mucho").expected.must_flag).toEqual(["se_disculpa"]);
     expect(caso("G61_de_volada_no_es_disculpa").expected.must_not_flag).toContain("se_disculpa");
   });
+  it("mensaje 113: presumir la empresa se cobra una vez, como currículum; darle vueltas es historia larga", () => {
+    expect(regla("story.kill").resumen).toContain("el mismo hecho no se cobra dos veces");
+    expect(regla("story.kill_curriculum").resumen).toContain("años, premios, tamaño, catálogo o certificaciones");
+    expect(caso("G66_historia_con_curriculum").expected).toEqual({ must_flag: ["curriculum"], must_not_flag: ["historia_larga"] });
+    expect(caso("G69_historia_que_da_vueltas").expected.must_flag).toEqual(["historia_larga"]);
+    const f = (id: string) => nodo("2.1").practice_script.failure_criteria.find((x: any) => x.id === id).description;
+    expect(f("historia_larga")).toContain("eso es curriculum y no se cobra aqui otra vez");
+    expect(f("curriculum")).toContain("Presume la empresa");
+  });
   it("el P2_10 (la frase que explica el porqué) espera brevedad en cumple", () => {
     expect(caso("P2_10_perfecto").expected.niveles_esperados["story.brevedad"]).toBe("cumple");
   });

@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.28.0",
+  "harness_version": "v3.29.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -3501,7 +3501,7 @@
       "node_id": "2.1",
       "seller_name": "Luis",
       "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
-      "description": "Mensaje 112: frase de más es la que no contesta quién eres, qué haces ni por qué estás ahí: trayectoria, catálogo, cifras, credenciales.",
+      "description": "Mensaje 113: presumir la empresa (años, catálogo, certificaciones, bodegas) es currículum. Como el 2.1 lo califica aparte, no se cobra también como historia larga: el mismo hecho no se cobra dos veces.",
       "transcript": [
         {
           "role": "user",
@@ -3522,6 +3522,9 @@
       ],
       "expected": {
         "must_flag": [
+          "curriculum"
+        ],
+        "must_not_flag": [
           "historia_larga"
         ]
       }
@@ -3599,6 +3602,40 @@
       "expected": {
         "must_flag": [
           "monologo"
+        ]
+      }
+    },
+    {
+      "id": "G69_historia_que_da_vueltas",
+      "node_id": "2.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 113: la otra cara del G66. Lo que sobra no es currículum: le da vueltas con detalles que no contestan quién es, qué hace ni por qué está ahí. Eso es historia larga.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Chuy! Qué ordenado tiene el taller, ¿así lo tiene siempre?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues se hace el intento. ¿Y usted quién es?"
+        },
+        {
+          "role": "user",
+          "text": "Me llamo Luis, vengo de Distribuidora del Golfo. Ando conociendo los talleres de la zona. Bueno, hoy me tocó la zona norte; ayer anduve por el centro y mañana me toca la salida a Veracruz, porque así nos repartimos las rutas en la oficina con mis compañeros, y cada quien agarra un pedazo. ¿Cuánto tiempo lleva con el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya van a ser doce años."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "historia_larga"
+        ],
+        "must_not_flag": [
+          "curriculum",
+          "pitch_prematuro"
         ]
       }
     }
