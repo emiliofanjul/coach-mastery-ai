@@ -41,7 +41,7 @@ const recorta = (s: string, n: number) => (s.length <= n ? s : s.slice(0, n - 1)
 type Bloque = { quien: "vendedor" | "cliente"; texto: string };
 
 /** La conversación en bloques: los mensajes seguidos de la misma persona son un solo turno. */
-function bloques(historia: { role?: string; content?: unknown }[]): Bloque[] {
+export function bloques(historia: { role?: string; content?: unknown }[]): Bloque[] {
   const out: Bloque[] = [];
   for (const t of Array.isArray(historia) ? historia : []) {
     const quien = t?.role === "user" ? "vendedor" : t?.role === "assistant" ? "cliente" : null;

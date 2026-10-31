@@ -31,7 +31,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
-import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta } from "../_shared/hechos_pregunta.ts";
+import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta, corregirPreguntaPorSignos } from "../_shared/hechos_pregunta.ts";
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
@@ -1158,6 +1158,9 @@ Deno.serve(async (req) => {
       // guardarraíl de arriba y ANTES del juez, que revisa la acusación con la
       // prueba de su regla. Así la falla no depende de que el evaluador decida
       // marcarla. En la respuesta solo va el conteo (la red busca ids).
+      // Mensaje 116: antes de usar el hecho, los signos del texto real lo corrigen.
+      const preguntasCorregidas = corregirPreguntaPorSignos(evaluation, fullHistory);
+      if (preguntasCorregidas > 0) console.warn("[closer-voice] hecho de la pregunta corregido por los signos", { session_id, node_id, turnos: preguntasCorregidas });
       const fallasPorHecho = fallasPorHechoDePregunta(evaluation, practice_script);
       if (fallasPorHecho.length > 0) console.warn("[closer-voice] fallas agregadas por el hecho de la pregunta", { session_id, node_id, fallas: fallasPorHecho });
       // Mensaje 115: si la pregunta del primer turno va en medio, la estructura
