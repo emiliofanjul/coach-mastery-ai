@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Mensaje 115: confirmar 799/59 y ocho huellas previas; mover nueve reemplazos exactos y desplegar solo closer-voice.
-- [ ] Mensaje 115: comprobar 808/60, G04 dos veces y registro de todas sus fases; ejecutar red explícita, repetir fallas según instrucciones y reportar consumo.
-- [ ] Mensaje 115: publicar 112–115 solo si se cumplen las verificaciones y condiciones de parada.
+- [x] Mensaje 115: 799/59 y ocho huellas previas confirmadas; nueve reemplazos exactos movidos y solo closer-voice desplegado.
+- [x] Mensaje 115: 808/60 y build OK; G04 2/2 con 53, pregunta en_medio y estructura parcial; evaluate y auditor registrados. Red explícita detenida en G26 tras dos fallas por estructura cumple; juicios del log y consumo de 70 llamadas recuperados.
+- [ ] Mensaje 115: publicar 112–115. Bloqueado por condición de parada de Emilio: G26 falló dos veces; no ejecutar casos restantes ni publicar hasta nuevas instrucciones.
 
 - [x] Mensaje 114: paso 0 confirmado (796/58 y ambos MD5); cinco consultas de diagnóstico ejecutadas.
 - [x] Mensaje 114: reemplazos con MD5 exactos; desplegados closer-voice y harness-runner; 799/59 y build OK; G66 pasó (15) y guardó una fila evaluate.
