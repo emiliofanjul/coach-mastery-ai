@@ -83,6 +83,6 @@ describe("El auditor contesta con una herramienta, no con texto JSON", () => {
   it("closer-voice obliga la herramienta en la llamada del auditor", () => {
     expect(HERRAMIENTA_VEREDICTOS.input_schema.required).toEqual(["veredictos"]);
     expect(voz).toContain('tool_choice: { type: "tool", name: HERRAMIENTA_VEREDICTOS.name },');
-    expect(voz).toContain("const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000);");
+    expect(voz).toContain("const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000, {");
   });
 });

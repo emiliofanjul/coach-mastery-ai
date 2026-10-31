@@ -27,6 +27,20 @@ describe("El registro que no se espera no se pierde", () => {
   it("las llamadas sueltas a logLlmCall van con waitUntil", () => {
     expect(voz).toContain("rt.waitUntil(p)");
     expect(voz.match(/^\s+logLlmCall\(\{/gm)).toBeNull();
-    expect(voz.match(/enSegundoPlano\(logLlmCall\(\{/g)?.length).toBe(2);
+    expect(voz.match(/enSegundoPlano\(logLlmCall\(\{/g)?.length).toBe(3);
+  });
+});
+
+describe("Mensaje 115: todas las llamadas al modelo quedan guardadas", () => {
+  it("solo hay dos fetch a la API: la llamada principal y llamarModelo, que guarda lo que costó", () => {
+    expect(voz.match(/fetch\("https:\/\/api\.anthropic\.com/g)?.length).toBe(2);
+    const i = voz.indexOf("async function llamarModelo(");
+    expect(voz.slice(i, i + 1500)).toContain("enSegundoPlano(logLlmCall({");
+  });
+  it("el juez, el auditor, la ficha y la reescritura pasan por llamarModelo con su fase", () => {
+    expect(voz).toContain('}, "juez", quien));');
+    expect(voz).toContain('}, "auditor", quien));');
+    expect(voz).toContain('400, 0.9, "ficha_cliente", {');
+    expect(voz).toContain('"reescritura",');
   });
 });

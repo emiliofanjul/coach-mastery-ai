@@ -127,7 +127,7 @@ describe("El evaluador anota los hechos y el juez revisa la acusación", () => {
   it("el código agrega la falla después del guardarraíl y ANTES del juez", () => {
     const guard = voz.indexOf("if (todosCumplen && evaluation.flags_detected.length > 0)");
     const hecho = voz.indexOf("fallasPorHechoDeLosNo(evaluation, practice_script, fullHistory)");
-    const juez = voz.indexOf("acusacionesConPrueba(evaluation, practice_script)");
+    const juez = voz.indexOf("acusacionesConPrueba(evaluation, practice_script");
     expect(guard).toBeGreaterThan(0);
     expect(hecho).toBeGreaterThan(guard);
     expect(juez).toBeGreaterThan(hecho);
