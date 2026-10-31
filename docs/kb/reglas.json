@@ -135,7 +135,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Alargarse: cada frase de más gasta la atención recién ganada y suena a discurso. LA PRUEBA: ¿la historia breve trae frases que no contestan quién eres, qué estás haciendo ni por qué estás ahí —la trayectoria de la empresa, el catálogo, cifras, credenciales o explicar el producto—? Una frase que explica el porqué es parte de esa pieza: no es de más.",
+  "resumen": "Alargarse: cada frase de más gasta la atención recién ganada y suena a discurso. LA PRUEBA: ¿la historia breve trae frases que no contestan quién eres, qué estás haciendo ni por qué estás ahí —la trayectoria de la empresa, el catálogo, cifras, credenciales o explicar el producto—? Una frase que explica el porqué es parte de esa pieza: no es de más. Si lo que sobra es presumir la empresa (años, premios, tamaño, catálogo o certificaciones) y el nodo lo califica aparte con story.kill_curriculum, esa falla lo cubre: el mismo hecho no se cobra dos veces.",
   "cita_cerebro": "frase de más gasta la atención que acabas de ganar",
   "severidad_sugerida": "major"
  },
@@ -985,7 +985,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Historia breve inflada con credenciales. LA PRUEBA: ¿el vendedor habla de los años, premios, tamaño o catálogo de su empresa en lugar de quién es él y por qué está ahí?",
+  "resumen": "Historia breve inflada con credenciales. LA PRUEBA: ¿el vendedor presume su empresa —años, premios, tamaño, catálogo o certificaciones— en lugar de decir quién es él y por qué está ahí?",
   "cita_cerebro": "Lo que suena impresionante en tu cabeza suena a discurso en la de él",
   "severidad_sugerida": "major"
  },

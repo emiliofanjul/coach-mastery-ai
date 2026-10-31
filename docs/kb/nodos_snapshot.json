@@ -411,20 +411,20 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como te presentas. Vamos al desglose y te digo que le sobraba o que le faltaba."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "historia_larga",
           "regla_id": "story.kill",
           "severity": "major",
-          "description": "Mete frases que no contestan quien es, que hace ni por que esta ahi: cuenta la trayectoria de la empresa, enumera productos, da cifras o certificaciones. El cliente se desconecta."
+          "description": "Mete frases que no contestan quien es, que hace ni por que esta ahi: da detalles de mas o le da vueltas. Si lo que sobra es presumir la empresa, eso es curriculum y no se cobra aqui otra vez. El cliente se desconecta."
         },
         {
           "id": "curriculum",
           "regla_id": "story.kill_curriculum",
           "severity": "major",
-          "description": "Habla de si mismo y de su empresa sin conectar con el negocio del cliente. Correcto pero irrelevante."
+          "description": "Presume la empresa —anos, premios, tamano, catalogo o certificaciones— en lugar de decir quien es y por que esta ahi. Suena a discurso y el cliente se desconecta."
         },
         {
           "id": "sin_gancho",
