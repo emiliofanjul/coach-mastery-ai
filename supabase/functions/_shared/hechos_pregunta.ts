@@ -15,6 +15,8 @@
 // hecho no viene en todos los turnos, no hace nada (falla abierta: queda lo
 // que dijo el evaluador).
 
+import { bloques } from "./hechos_no.ts";
+
 export type DondePregunta = "al_final" | "en_medio" | "ninguna";
 const VALIDOS: DondePregunta[] = ["al_final", "en_medio", "ninguna"];
 
@@ -89,4 +91,42 @@ export function criteriosPorHechoDePregunta(ev: any, ps: any): string[] {
     decididos.push(c.id);
   }
   return decididos;
+}
+
+// LOS SIGNOS MANDAN (mensaje 116, 31-oct-2026).
+//
+// G26: «¡Buenos días Don Ramón! ¿Cómo está? Oiga, qué movido se ve el negocio
+// hoy, veo que no paran.» La pregunta va en medio. El evaluador anotó
+// «ninguna» las dos veces, el 115 no se activó, y el juez —otra vez— leyó el
+// orden al revés y subió la estructura a cumple. Un hecho anotado por un
+// modelo puede salir mal. Cuando el texto trae signos de interrogación, dónde
+// va la pregunta no hay que preguntárselo a nadie: se lee. Sin signos (la voz
+// a veces no los trae) se queda lo que anotó el evaluador.
+
+/** Dónde va la pregunta, leído de los signos. null si el texto no trae «?»: ahí no se puede leer. */
+export function preguntaPorSignos(texto: string): DondePregunta | null {
+  const t = String(texto ?? "");
+  if (!t.includes("?")) return null;
+  // Lo que puede cerrar después del signo sin ser otra frase: espacios, comillas, paréntesis, «!» y puntos.
+  const fin = t.replace(/[\s"'»”’)\]!¡.…]+$/u, "");
+  return fin.endsWith("?") ? "al_final" : "en_medio";
+}
+
+/**
+ * Corrige el hecho «pregunta» de cada turno con los signos del texto real.
+ * Solo si los turnos del evaluador cuadran uno a uno con los del vendedor.
+ * Devuelve cuántos turnos corrigió.
+ */
+export function corregirPreguntaPorSignos(ev: any, historia: { role?: string; content?: unknown }[]): number {
+  const turnos: any[] = Array.isArray(ev?.analisis_turnos) ? ev.analisis_turnos : [];
+  if (turnos.length === 0) return 0;
+  const delVendedor = bloques(historia).filter((b) => b.quien === "vendedor");
+  if (delVendedor.length !== turnos.length) return 0;
+  const orden = [...turnos].sort((a, b) => Number(a?.turno ?? 0) - Number(b?.turno ?? 0));
+  let corregidos = 0;
+  orden.forEach((t, k) => {
+    const leido = preguntaPorSignos(delVendedor[k].texto);
+    if (leido && t.pregunta !== leido) { t.pregunta = leido; corregidos++; }
+  });
+  return corregidos;
 }
