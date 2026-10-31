@@ -31,7 +31,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { validatePracticeScriptFull } from "../_shared/validate_practice_script.ts";
 import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota } from "../_shared/puntuacion.ts";
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
-import { fallasPorHechoDePregunta } from "../_shared/hechos_pregunta.ts";
+import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta } from "../_shared/hechos_pregunta.ts";
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
@@ -83,8 +83,8 @@ async function logLlmCall(row: {
     const admin = getAdmin();
     if (!admin) return;
     // Mensaje 114: el cliente de Supabase NO lanza error cuando el insert falla:
-    // lo devuelve. Antes se ignoraba, y desde el 29-oct no se guardó ni una
-    // llamada sin que nadie se enterara. Ahora el error queda en el log.
+    // lo devuelve. Antes se ignoraba: si fallaba, nadie se enteraba. Ahora el
+    // error queda en el log.
     const { error } = await admin.from("llm_calls").insert({
       phase: row.phase,
       prompt_version: PROMPT_VERSION,
@@ -503,48 +503,63 @@ Responde JSON exacto:
 
 
 
-/** Llamada corta al modelo: un sistema, un mensaje, texto de vuelta. Para el auditor y la reescritura. */
-async function llamarTexto(apiKey: string, system: string, user: string, maxTokens: number, temperatura = 0): Promise<string> {
+/** De quién es la llamada, para guardarla en llm_calls. */
+type QuienLlama = { session_id?: string | null; company_id?: string | null; seller_id?: string | null };
+
+/**
+ * Mensaje 115: TODAS las llamadas cortas al modelo pasan por aquí, y aquí se
+ * guarda lo que costaron. Antes solo se guardaba la llamada principal: el juez,
+ * el auditor, la ficha del cliente y la reescritura gastaban sin quedar en
+ * llm_calls, y la suma de la red no era lo que de verdad se gastaba.
+ */
+async function llamarModelo(apiKey: string, cuerpo: Record<string, unknown>, fase: string, quien: QuienLlama): Promise<any> {
+  const t0 = Date.now();
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-    body: JSON.stringify({ model: CLAUDE_MODEL, max_tokens: maxTokens, temperature: temperatura, system, messages: [{ role: "user", content: user }] }),
+    body: JSON.stringify({ model: CLAUDE_MODEL, ...cuerpo }),
   });
   if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
   const j = await r.json();
+  const u = j?.usage ?? {};
+  enSegundoPlano(logLlmCall({
+    phase: fase,
+    input_tokens: u.input_tokens ?? null,
+    output_tokens: u.output_tokens ?? null,
+    cached_tokens: u.cache_read_input_tokens ?? null,
+    cache_creation_tokens: u.cache_creation_input_tokens ?? null,
+    latency_ms: Date.now() - t0,
+    session_id: quien.session_id ?? null,
+    company_id: quien.company_id ?? null,
+    seller_id: quien.seller_id ?? null,
+  }));
+  return j;
+}
+
+/** Llamada corta al modelo: un sistema, un mensaje, texto de vuelta. Para la ficha y la reescritura. */
+async function llamarTexto(apiKey: string, system: string, user: string, maxTokens: number, temperatura: number, fase: string, quien: QuienLlama): Promise<string> {
+  const j = await llamarModelo(apiKey, { max_tokens: maxTokens, temperature: temperatura, system, messages: [{ role: "user", content: user }] }, fase, quien);
   return (j?.content ?? []).filter((b: any) => b?.type === "text").map((b: any) => b.text).join("");
 }
 
 /** El auditor contesta con una herramienta: la API entrega los veredictos ya armados. */
-async function llamarAuditor(apiKey: string, system: string, user: string, maxTokens: number): Promise<unknown> {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: CLAUDE_MODEL, max_tokens: maxTokens, temperature: 0, system,
-      messages: [{ role: "user", content: user }],
-      tools: [HERRAMIENTA_VEREDICTOS],
-      tool_choice: { type: "tool", name: HERRAMIENTA_VEREDICTOS.name },
-    }),
-  });
-  if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
-  return veredictosDeRespuesta(await r.json());
+async function llamarAuditor(apiKey: string, system: string, user: string, maxTokens: number, quien: QuienLlama): Promise<unknown> {
+  return veredictosDeRespuesta(await llamarModelo(apiKey, {
+    max_tokens: maxTokens, temperature: 0, system,
+    messages: [{ role: "user", content: user }],
+    tools: [HERRAMIENTA_VEREDICTOS],
+    tool_choice: { type: "tool", name: HERRAMIENTA_VEREDICTOS.name },
+  }, "auditor", quien));
 }
 
 /** El juez de las pruebas contesta con una herramienta: un juicio por acusación. */
-async function llamarJuez(apiKey: string, entrada: string): Promise<Juicio[] | null> {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: CLAUDE_MODEL, max_tokens: 1000, temperature: 0, system: PROMPT_JUEZ,
-      messages: [{ role: "user", content: entrada }],
-      tools: [HERRAMIENTA_JUICIOS],
-      tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
-    }),
-  });
-  if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
-  return juiciosDeRespuesta(await r.json());
+async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama): Promise<Juicio[] | null> {
+  return juiciosDeRespuesta(await llamarModelo(apiKey, {
+    max_tokens: 1000, temperature: 0, system: PROMPT_JUEZ,
+    messages: [{ role: "user", content: entrada }],
+    tools: [HERRAMIENTA_JUICIOS],
+    tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
+  }, "juez", quien));
 }
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
@@ -735,7 +750,7 @@ Deno.serve(async (req) => {
         if (typeof cerebro === "string") { try { cerebro = JSON.parse(cerebro); } catch { cerebro = {}; } }
         const catalogo = catalogoDelCerebro(cerebro);
         const tipico = String(cerebro?.CLIENTE_TIPICO ?? "").slice(0, 1500);
-        const crudo = await llamarTexto(apiKey, PROMPT_FICHA, `Productos activos:\n${catalogo.slice(0, 3000) || "(vacío)"}\n\nCliente típico:\n${tipico || "(vacío)"}\n\nTipo de cliente: ${tipo}`, 400, 0.9);
+        const crudo = await llamarTexto(apiKey, PROMPT_FICHA, `Productos activos:\n${catalogo.slice(0, 3000) || "(vacío)"}\n\nCliente típico:\n${tipico || "(vacío)"}\n\nTipo de cliente: ${tipo}`, 400, 0.9, "ficha_cliente", { session_id: (body as any).session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null });
         const t = crudo.replace(/```json|```/g, "");
         const i = t.indexOf("{"), j = t.lastIndexOf("}");
         if (i >= 0 && j > i) ficha = validarFicha(JSON.parse(t.slice(i, j + 1)), tipo, catalogo);
@@ -1145,6 +1160,10 @@ Deno.serve(async (req) => {
       // marcarla. En la respuesta solo va el conteo (la red busca ids).
       const fallasPorHecho = fallasPorHechoDePregunta(evaluation, practice_script);
       if (fallasPorHecho.length > 0) console.warn("[closer-voice] fallas agregadas por el hecho de la pregunta", { session_id, node_id, fallas: fallasPorHecho });
+      // Mensaje 115: si la pregunta del primer turno va en medio, la estructura
+      // no puede quedar en cumple. Lo decide el hecho; el juez no lo revisa.
+      const criteriosPorHecho = criteriosPorHechoDePregunta(evaluation, practice_script);
+      if (criteriosPorHecho.length > 0) console.warn("[closer-voice] criterios decididos por el hecho de la pregunta", { session_id, node_id, criterios: criteriosPorHecho });
       // El hecho de los «no» (mensaje 105): igual que la pregunta. El evaluador
       // anota, por turno, si la respuesta del cliente justo antes fue un «no» y
       // si el vendedor se fue; el código cuenta. Dos «no» seguidos en la puerta
@@ -1211,7 +1230,7 @@ Deno.serve(async (req) => {
       const tRevision = Date.now();
       const juez: any = { acusaciones: 0, fallas_quitadas: 0, criterios_corregidos: 0 };
       let quitadasPorJuez: { id: string; tipo: string; razon?: string }[] = [];
-      const acusaciones = acusacionesConPrueba(evaluation, practice_script);
+      const acusaciones = acusacionesConPrueba(evaluation, practice_script, criteriosPorHecho);
       juez.acusaciones = acusaciones.length;
       const juzgar = async (): Promise<Juicio[] | null> => {
         if (acusaciones.length === 0) return null;
@@ -1220,7 +1239,7 @@ Deno.serve(async (req) => {
         try {
           for (let intento = 1; intento <= 2; intento++) {
             try {
-              const juicios = await llamarJuez(apiKey, entradaJuez);
+              const juicios = await llamarJuez(apiKey, entradaJuez, { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null });
               if (!juicios) throw new Error("el juez no entregó juicios");
               juez.juzgadas = juicios.length;
               juez.intentos = intento;
@@ -1253,7 +1272,7 @@ Deno.serve(async (req) => {
         });
         for (let intento = 1; intento <= 3; intento++) {
           try {
-            const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000);
+            const veredictos = await llamarAuditor(apiKey, PROMPT_AUDITOR, entrada, 3000, { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null });
             if (!Array.isArray(veredictos)) throw new Error("el auditor no entregó veredictos");
             return { ok: true, revisados: textos.length, veredictos, intentos: intento };
           } catch (e) {
@@ -1476,6 +1495,9 @@ Deno.serve(async (req) => {
           "Reescribe el mensaje sin ninguna grosería ni palabra vulgar, conservando el sentido, el tono del personaje y la longitud. Responde solo con el mensaje reescrito.",
           closerResponse.message,
           600,
+          0,
+          "reescritura",
+          { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null },
         );
         closerResponse.message = contieneGroserias(limpio) || !limpio.trim()
           ? closerResponse.message.replace(/[a-záéíóúñü]+/gi, (w) => (contieneGroserias(` ${w} `) ? "…" : w))

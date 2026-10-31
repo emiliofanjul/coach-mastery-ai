@@ -39,7 +39,11 @@ export interface Juicio { id: string; tipo: string; conducta: "pasa" | "reprueba
 const tienePrueba = (s: unknown): s is string => typeof s === "string" && s.includes("LA PRUEBA");
 
 /** Las acusaciones del evaluador que tienen una prueba escrita en su regla. */
-export function acusacionesConPrueba(ev: any, ps: any): Acusacion[] {
+/**
+ * Mensaje 115: «decididosPorHecho» son criterios que ya decidió un hecho
+ * (criteriosPorHechoDePregunta). No van al juez: un juicio no contradice un hecho.
+ */
+export function acusacionesConPrueba(ev: any, ps: any, decididosPorHecho: string[] = []): Acusacion[] {
   const out: Acusacion[] = [];
   const fallas: any[] = Array.isArray(ps?.failure_criteria) ? ps.failure_criteria : [];
   const evidencia: any[] = Array.isArray(ev?.evidencia_flags) ? ev.evidencia_flags : [];
@@ -55,6 +59,7 @@ export function acusacionesConPrueba(ev: any, ps: any): Acusacion[] {
     if (v?.nivel !== "parcial" && v?.nivel !== "no_cumple") continue;
     // Las escaleras miden calidad por escalones: no son una prueba de sí o no.
     if (v?.escalon !== undefined && v?.escalon !== null) continue;
+    if (decididosPorHecho.includes(String(v?.criterio_id))) continue;
     const c = criterios.find((x) => x?.id === v?.criterio_id);
     const regla = c?.regla_resumen ?? c?.description;
     if (!tienePrueba(regla)) continue;

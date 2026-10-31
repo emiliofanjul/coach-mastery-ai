@@ -52,3 +52,41 @@ export function fallasPorHechoDePregunta(ev: any, ps: any): string[] {
   }
   return agregadas;
 }
+
+// EL HECHO DECIDE LA ESTRUCTURA (mensaje 115, 31-oct-2026).
+//
+// La regla opening.estructura dice: «si la pregunta va en medio y el turno
+// termina con un comentario, es parcial». En el G04 («¡Buenos días! ¿Cómo le
+// va? Qué gusto saludarlo.») el evaluador lo vio bien: parcial. Pero desde el
+// 112 la regla trae «LA PRUEBA», y el juez la revisó y, dos de dos veces,
+// leyó el orden al revés («termina con pregunta: ¿Cómo le va?»). Dónde va la
+// pregunta es un HECHO, no un juicio: ya lo anota el evaluador por turno. Así
+// que el código aplica esa parte de la regla y el juez no la revisa: un juicio
+// no puede contradecir un hecho.
+
+export const REGLA_ESTRUCTURA = "opening.estructura";
+export const FALTA_PREGUNTA_EN_MEDIO = "La pregunta va en medio y el turno termina con un comentario: falta que la pregunta cierre.";
+
+/**
+ * Si en el primer turno la pregunta va en medio, el criterio de estructura no
+ * puede quedar en cumple: queda en parcial (o como lo dejó el evaluador, si lo
+ * dejó más abajo). Devuelve los ids de los criterios que decidió el hecho; el
+ * juez no los revisa. Falla abierta: sin el hecho en todos los turnos, no hace nada.
+ */
+export function criteriosPorHechoDePregunta(ev: any, ps: any): string[] {
+  const turnos: any[] = Array.isArray(ev?.analisis_turnos) ? ev.analisis_turnos : [];
+  if (turnos.length === 0 || !turnos.every((t) => VALIDOS.includes(t?.pregunta))) return [];
+  const primero = [...turnos].sort((a, b) => Number(a?.turno ?? 0) - Number(b?.turno ?? 0))[0];
+  if (primero?.pregunta !== "en_medio") return [];
+  const criterios: any[] = Array.isArray(ps?.success_criteria) ? ps.success_criteria : [];
+  const veredictos: any[] = Array.isArray(ev?.veredictos_criterios) ? ev.veredictos_criterios : [];
+  const decididos: string[] = [];
+  for (const c of criterios) {
+    if (c?.regla_id !== REGLA_ESTRUCTURA || typeof c?.id !== "string") continue;
+    const v = veredictos.find((x) => x?.criterio_id === c.id);
+    if (!v) continue;
+    if (v.nivel === "cumple") { v.nivel = "parcial"; v.falta = FALTA_PREGUNTA_EN_MEDIO; }
+    decididos.push(c.id);
+  }
+  return decididos;
+}

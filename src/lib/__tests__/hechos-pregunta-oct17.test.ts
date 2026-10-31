@@ -59,7 +59,7 @@ describe("En el evaluador", () => {
   it("se aplica después del guardarraíl y antes del juez, que revisa la acusación", () => {
     const hecho = voz.indexOf("const fallasPorHecho = fallasPorHechoDePregunta(evaluation, practice_script);");
     expect(hecho).toBeGreaterThan(voz.indexOf("const todosCumplen ="));
-    expect(hecho).toBeLessThan(voz.indexOf("const acusaciones = acusacionesConPrueba(evaluation, practice_script);"));
+    expect(hecho).toBeLessThan(voz.indexOf("const acusaciones = acusacionesConPrueba(evaluation, practice_script"));
     expect(voz).toMatch(/const PROMPT_VERSION = "v2\.9\.[2-9]"/);
   });
   it("en la respuesta solo va el conteo, no el id", () => {

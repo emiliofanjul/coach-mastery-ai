@@ -112,8 +112,8 @@ describe("Lo que hace el código con los juicios", () => {
 
 describe("El juez en el evaluador", () => {
   it("corre antes del auditor y el auditor sabe qué se quitó", () => {
-    expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script)")).toBeGreaterThan(0);
-    expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script)")).toBeLessThan(voz.indexOf("const textos = textosDeEvaluacion(evaluation)"));
+    expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script")).toBeGreaterThan(0);
+    expect(voz.indexOf("acusacionesConPrueba(evaluation, practice_script")).toBeLessThan(voz.indexOf("const textos = textosDeEvaluacion(evaluation)"));
     expect(voz).toContain("tool_choice: { type: \"tool\", name: HERRAMIENTA_JUICIOS.name }");
     expect(voz).toMatch(/const PROMPT_VERSION = "v2\.9\.[2-9]"/);
   });
