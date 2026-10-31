@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Mensaje 115: confirmar 799/59 y ocho huellas previas; mover nueve reemplazos exactos y desplegar solo closer-voice.
+- [ ] Mensaje 115: comprobar 808/60, G04 dos veces y registro de todas sus fases; ejecutar red explícita, repetir fallas según instrucciones y reportar consumo.
+- [ ] Mensaje 115: publicar 112–115 solo si se cumplen las verificaciones y condiciones de parada.
+
 - [x] Mensaje 114: paso 0 confirmado (796/58 y ambos MD5); cinco consultas de diagnóstico ejecutadas.
 - [x] Mensaje 114: reemplazos con MD5 exactos; desplegados closer-voice y harness-runner; 799/59 y build OK; G66 pasó (15) y guardó una fila evaluate.
 - [x] Mensaje 114: red secuencial detenida en G04 tras dos fallas (73 fuera de 25–65); juicios del log recuperados; cinco registros de las cuatro primeras corridas y repetición confirmados. No publicado según condición de parada; resto de red no ejecutado.
