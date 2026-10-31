@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Mensaje 114: paso 0 confirmado (796/58 y ambos MD5); cinco consultas de diagnóstico ejecutadas.
+- [x] Mensaje 114: reemplazos con MD5 exactos; desplegados closer-voice y harness-runner; 799/59 y build OK; G66 pasó (15) y guardó una fila evaluate.
+- [x] Mensaje 114: red secuencial detenida en G04 tras dos fallas (73 fuera de 25–65); juicios del log recuperados; cinco registros de las cuatro primeras corridas y repetición confirmados. No publicado según condición de parada; resto de red no ejecutado.
+
 - [x] Publicación de mensajes 110 y 111 solicitada para closerapp.ai por autorización de Emilio del 30-oct-2026; despliegue final no confirmado; P2_10 sin cambios y su falla aislada reportada.
 
 - [x] Mensaje 102: paso 0 confirmado con 630/47 pruebas vigentes y huellas exactas; las copias de preparación se excluyeron del baseline.
