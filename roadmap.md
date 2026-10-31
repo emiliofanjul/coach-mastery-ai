@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Mensaje 114: paso 0 confirmado (796/58 y ambos MD5); cinco consultas de diagnóstico ejecutadas.
+- [ ] Mensaje 114: colocar reemplazos exactos, desplegar closer-voice y harness-runner, comprobar 799/59 y registro de G66.
+- [ ] Mensaje 114: si G66 guarda filas, red completa secuencial con IDs explícitos, repetir fallas viejas una vez, informar tabla y consumo; publicar 112–114 solo sin condición de parada.
+
 - [x] Publicación de mensajes 110 y 111 solicitada para closerapp.ai por autorización de Emilio del 30-oct-2026; despliegue final no confirmado; P2_10 sin cambios y su falla aislada reportada.
 
 - [x] Mensaje 102: paso 0 confirmado con 630/47 pruebas vigentes y huellas exactas; las copias de preparación se excluyeron del baseline.
