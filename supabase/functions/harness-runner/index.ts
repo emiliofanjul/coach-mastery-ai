@@ -41,6 +41,8 @@ type CaseResult = {
   /** La cuenta de la nota (mensaje 101): base de los criterios y cada resta. */
   base?: number | null;
   restas?: string[];
+  /** Mensaje 114: la sesión de cada corrida, un uuid real, para sumar en llm_calls lo que costó el caso. */
+  session_ids?: string[];
 };
 
 function getCase(id: string): Case | undefined {
@@ -66,6 +68,9 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
     content: t.text,
   }));
   const t0 = Date.now();
+  // Mensaje 114: llm_calls.session_id es uuid. Con «harness-<uuid>» el registro
+  // fallaba y la red nunca quedaba en llm_calls: no se podía saber lo que costaba.
+  const sessionId = crypto.randomUUID();
   const res = await fetch(`${supabaseUrl}/functions/v1/closer-voice`, {
     method: "POST",
     // El evaluador ya no acepta la llave pública: la red entra con la de servicio,
@@ -84,7 +89,7 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
       company_brain: companyBrain ?? "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos.",
       // Un nombre real, como en producción: con "Vendedor" el evaluador escribía "[tu nombre]".
       seller_name: sellerName ?? "Luis",
-      session_id: `harness-${crypto.randomUUID()}`,
+      session_id: sessionId,
       // Cómo terminó la sesión y con qué cliente: como en producción.
       ...(extra?.cut_reason ? { cut_reason: extra.cut_reason } : {}),
       ...(extra?.ficha_cliente ? { ficha_cliente: extra.ficha_cliente } : {}),
@@ -93,7 +98,7 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
   const text = await res.text();
   let parsed: any = null;
   try { parsed = JSON.parse(text); } catch { /* keep raw */ }
-  return { status: res.status, parsed, raw: text, ms: Date.now() - t0 };
+  return { status: res.status, parsed, raw: text, ms: Date.now() - t0, session_id: sessionId };
 }
 
 function evaluateCase(c: Case, response: any): CaseResult {
@@ -483,9 +488,11 @@ Deno.serve(async (req) => {
           status: reasons.length === 0 ? "pass" : "fail",
           reasons,
           score: typeof s1 === "number" ? s1 : null,
+          session_ids: runResults.map((x) => x?.session_id).filter(Boolean),
         };
       } else {
         const r = evaluateCase(c, runResults[0]);
+        r.session_ids = runResults.map((x) => x?.session_id).filter(Boolean);
         // G19: every observation cites a skill_id from harness.target_skills or practice_script.success_criteria
         if (c.expected?.every_observation_cites_skill_id) {
           const validIds = new Set<string>([

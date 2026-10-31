@@ -59,6 +59,13 @@ function getAdmin() {
   return _admin;
 }
 
+// Mensaje 114: una promesa suelta puede morir cuando la función ya respondió.
+// waitUntil le pide al runtime que la deje terminar.
+function enSegundoPlano(p: Promise<unknown>) {
+  const rt = (globalThis as any).EdgeRuntime;
+  if (rt?.waitUntil) rt.waitUntil(p); else p.catch(() => {});
+}
+
 async function logLlmCall(row: {
   phase: string;
   input_tokens: number | null;
@@ -75,7 +82,10 @@ async function logLlmCall(row: {
   try {
     const admin = getAdmin();
     if (!admin) return;
-    await admin.from("llm_calls").insert({
+    // Mensaje 114: el cliente de Supabase NO lanza error cuando el insert falla:
+    // lo devuelve. Antes se ignoraba, y desde el 29-oct no se guardó ni una
+    // llamada sin que nadie se enterara. Ahora el error queda en el log.
+    const { error } = await admin.from("llm_calls").insert({
       phase: row.phase,
       prompt_version: PROMPT_VERSION,
       model: CLAUDE_MODEL,
@@ -90,6 +100,7 @@ async function logLlmCall(row: {
       seller_id: row.seller_id ?? null,
       analisis_turnos: row.analisis_turnos ?? null,
     });
+    if (error) console.error("[closer-voice] llm_calls insert failed:", { phase: row.phase, session_id: row.session_id ?? null, code: error.code, message: error.message, details: error.details });
   } catch (e) {
     console.error("[closer-voice] llm_calls insert failed:", e);
   }
@@ -992,7 +1003,7 @@ Deno.serve(async (req) => {
     // Fire-and-forget observability write. En evaluate se difiere hasta tener
     // el analisis_turnos parseado (se audita en llm_calls).
     if (phase !== "evaluate") {
-      logLlmCall({
+      enSegundoPlano(logLlmCall({
         phase,
         input_tokens: inputTokens,
         output_tokens: outputTokens,
@@ -1002,7 +1013,7 @@ Deno.serve(async (req) => {
         session_id: session_id ?? null,
         company_id: body.company_id ?? null,
         seller_id: body.seller_id ?? null,
-      });
+      }));
     }
 
     let parsed: CloserResponse | EvaluationResponse | GenerateExampleResponse;
@@ -1101,7 +1112,7 @@ Deno.serve(async (req) => {
       }
 
       // Auditoría: el análisis turno por turno se guarda en llm_calls.
-      logLlmCall({
+      enSegundoPlano(logLlmCall({
         phase,
         input_tokens: inputTokens,
         output_tokens: outputTokens,
@@ -1112,7 +1123,7 @@ Deno.serve(async (req) => {
         company_id: body.company_id ?? null,
         seller_id: body.seller_id ?? null,
         analisis_turnos: evaluation.analisis_turnos,
-      });
+      }));
 
       // Guardarraíl anti-fabricación: si TODOS los turnos cumplen el criterio
       // principal, no puede haber flags.
