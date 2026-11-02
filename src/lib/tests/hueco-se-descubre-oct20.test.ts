@@ -23,7 +23,7 @@ describe("La regla del hueco es una prueba: descubrirlo, no presentarlo", () => 
   });
   it("preguntar sin que salga una familia concreta no basta, y tiene que ser real", () => {
     expect(r.resumen).toContain("Preguntar no basta si la respuesta no dejó ninguna familia concreta.");
-    expect(r.resumen).toContain("Tiene que ser real y verificable");
+    expect(r.resumen).toContain("Tiene que tener base: lo viste, te lo dijo, lo sabes por su giro o por negocios como el suyo.");
   });
   it("ofrecerlo es presentar el hueco, que es el paso 4 del Cerebro", () => {
     expect(r.resumen).toContain("eso es presentar el hueco (paso 4)");

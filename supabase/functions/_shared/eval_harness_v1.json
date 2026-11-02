@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.29.0",
+  "harness_version": "v3.30.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -1600,7 +1600,8 @@
           "insistencia_territorio_seco",
           "interrogatorio",
           "pitch_prematuro",
-          "pregunta_cerrada_en_capa_profunda"
+          "pregunta_cerrada_en_capa_profunda",
+          "pide_opinion_precio"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
@@ -1996,7 +1997,8 @@
           "interrogatorio",
           "kill_curriculum",
           "monologo",
-          "insiste_tras_dos"
+          "insiste_tras_dos",
+          "pide_opinion_precio"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
@@ -3636,6 +3638,592 @@
         "must_not_flag": [
           "curriculum",
           "pitch_prematuro"
+        ]
+      }
+    },
+    {
+      "id": "G70_dolor_sin_devolverlo",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 31-oct): devolver el dolor con sus palabras no es obligatorio. El vendedor excava la pista hasta que sale el dolor y sigue, sin devolverlo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí, ya tiene años conmigo. Todo bien, aunque a veces se tarda en surtir."
+        },
+        {
+          "role": "user",
+          "text": "¿Qué pasa cuando se tarda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues me quedo sin 15W40 dos o tres días, y los clientes que vienen por su cambio se me van a otro taller."
+        },
+        {
+          "role": "user",
+          "text": "¿Y eso cada cuánto le pasa?"
+        },
+        {
+          "role": "assistant",
+          "text": "Fácil una vez al mes. Ya perdí a dos clientes de flotilla por eso."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "discovery.dolor_real": "cumple"
+        },
+        "must_not_flag": [
+          "ignora_pistas",
+          "pitch_prematuro",
+          "pregunta_cerrada_en_capa_profunda"
+        ]
+      }
+    },
+    {
+      "id": "G71_opinion_del_precio",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 2-nov): nunca se le pregunta al cliente qué opina de los precios.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí, ya tiene años conmigo."
+        },
+        {
+          "role": "user",
+          "text": "Ah, muy bien. ¿Y cómo ve los precios? ¿Siente que están caros?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, todo ha subido mucho."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pide_opinion_precio"
+        ]
+      }
+    },
+    {
+      "id": "G72_precio_por_hechos",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117: la otra cara del G71. Preguntar a cómo compra, con opciones, son hechos: no es pedir su opinión.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí, ya tiene años conmigo."
+        },
+        {
+          "role": "user",
+          "text": "¿Y a cómo le está llegando la cubeta de 15W40? ¿Unos 1,100? ¿1,200? ¿1,300?"
+        },
+        {
+          "role": "assistant",
+          "text": "Más bien 1,350, y me la subieron en agosto."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "pide_opinion_precio",
+          "interrogatorio",
+          "pitch_prematuro"
+        ]
+      }
+    },
+    {
+      "id": "G73_nombrar_familia_no_es_receta",
+      "node_id": "3.8",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 31-oct): nombrar una familia para preguntar si la maneja no es recetar: es buscar.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Listo, don Chuy, ya quedó su pedido de siempre: diez cubetas de 15W40. Oiga, ¿y el anticongelante, lo maneja? ¿Con quién lo trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, el anticongelante me lo trae otro proveedor, uno de Monterrey."
+        },
+        {
+          "role": "user",
+          "text": "¿Y el líquido de frenos?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ese no lo manejo, la verdad."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "pitch_prematuro",
+          "hueco_inventado",
+          "solo_revisa_la_cuenta"
+        ]
+      }
+    },
+    {
+      "id": "G74_receta_en_diagnostico",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117: recetar es hablar del producto, sus beneficios o una promoción durante el diagnóstico.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí. Todo bien, aunque a veces se tarda en surtir."
+        },
+        {
+          "role": "user",
+          "text": "Ah, pues nosotros tenemos el Bardahl, que le dura el doble, y este mes se lo dejo en promoción con entrega en 24 horas."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, ¿sí? ¿Y a cómo?"
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pitch_prematuro"
+        ]
+      }
+    },
+    {
+      "id": "G75_opciones_no_es_interrogatorio",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 31-oct): dar opciones después de preguntar es ayudarlo a contestar. No es interrogatorio ni monólogo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. ¿Qué es lo que más se le mueve aquí? ¿Cambios de aceite, frenos, afinaciones?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cambios de aceite, sobre todo."
+        },
+        {
+          "role": "user",
+          "text": "¿Y de aceites, cuál sale más? ¿15W40, 20W50, sintético?"
+        },
+        {
+          "role": "assistant",
+          "text": "El 15W40, por mucho. Aunque a veces se me acaba antes de que me surtan."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "interrogatorio",
+          "pitch_prematuro",
+          "pregunta_cerrada_en_capa_profunda"
+        ]
+      }
+    },
+    {
+      "id": "G76_interrogatorio",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117: interrogatorio son preguntas una tras otra que no recogen nada de lo que el cliente contestó.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "¿Con quién trae el aceite?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí, el de la avenida. Me lo trae el sobrino del dueño, que es buena gente."
+        },
+        {
+          "role": "user",
+          "text": "¿Cuántos coches atiende al día?"
+        },
+        {
+          "role": "assistant",
+          "text": "Unos quince, más o menos, y los sábados más."
+        },
+        {
+          "role": "user",
+          "text": "¿Cada cuándo hace pedido?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cada semana. Este mes ando haciendo un cuarto de lavado, por eso ando corto de espacio."
+        },
+        {
+          "role": "user",
+          "text": "¿Cuántas cubetas pide?"
+        },
+        {
+          "role": "assistant",
+          "text": "Unas diez."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "interrogatorio"
+        ]
+      }
+    },
+    {
+      "id": "G77_cerradas_en_capa_tres",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 31-oct): después de la pista, si todas las preguntas son de sí o no y el cliente deja de contar, falla.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí. Todo bien, aunque a veces se tarda en surtir."
+        },
+        {
+          "role": "user",
+          "text": "¿Y eso le afecta?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí."
+        },
+        {
+          "role": "user",
+          "text": "¿Ha perdido ventas por eso?"
+        },
+        {
+          "role": "assistant",
+          "text": "A veces."
+        },
+        {
+          "role": "user",
+          "text": "¿Le gustaría que le surtieran más rápido?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, pues."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pregunta_cerrada_en_capa_profunda"
+        ]
+      }
+    },
+    {
+      "id": "G78_una_cerrada_suelta",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117: la otra cara del G77. Una pregunta de sí o no suelta, y luego una abierta que hace contar al cliente, no es falla.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí. Todo bien, aunque a veces se tarda en surtir."
+        },
+        {
+          "role": "user",
+          "text": "¿Y eso le afecta?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí."
+        },
+        {
+          "role": "user",
+          "text": "¿Qué pasa cuando se tarda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Me quedo sin 15W40 dos o tres días y los clientes de cambio de aceite se me van a otro taller. Ya perdí uno de flotilla."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "pregunta_cerrada_en_capa_profunda",
+          "ignora_pistas"
+        ]
+      }
+    },
+    {
+      "id": "G79_hueco_con_jones",
+      "node_id": "3.9",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 2-nov): apoyarse en otros clientes como él para abrir una familia no es inventar un hueco.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Listo, don Chuy, ya quedó su pedido de siempre: diez cubetas de 15W40. Oiga, varios talleres como el suyo me compran líquido de frenos junto con el aceite. ¿Usted lo maneja?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, ese no lo manejo. Cuando me lo piden, lo mando comprar enfrente."
+        },
+        {
+          "role": "user",
+          "text": "¿Y cada cuánto se lo piden?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues seguido, unas tres o cuatro veces por semana."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "hueco_inventado",
+          "solo_levanta_pedido"
+        ]
+      }
+    },
+    {
+      "id": "G80_hueco_que_contradice",
+      "node_id": "3.9",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117: inventar un hueco es contradecir lo que el cliente ya dijo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Listo, don Chuy, ya quedó su pedido de siempre: diez cubetas de 15W40. Oiga, ¿y el líquido de frenos con quién lo trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ese me lo surte otro proveedor y estoy bien surtido, no me falta."
+        },
+        {
+          "role": "user",
+          "text": "Pero se ve que le hace falta líquido de frenos, se le va a acabar. Le dejo una caja."
+        },
+        {
+          "role": "assistant",
+          "text": "No, de verdad, estoy bien surtido."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "hueco_inventado"
+        ]
+      }
+    },
+    {
+      "id": "G81_rojo_encantador_sale_bien",
+      "node_id": "7.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 2-nov): verde como persona, rojo como cliente. Hoy no puede comprar nada (traspasa el negocio): se corta rápido y bien y se deja la puerta abierta.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, don Toño! Qué bonito tiene el taller, ¿usted lo puso?"
+        },
+        {
+          "role": "assistant",
+          "text": "¡Pásele, joven! Sí, hace veinte años. Siéntese, ¿un cafecito?"
+        },
+        {
+          "role": "user",
+          "text": "Muchas gracias, don Toño. Soy Luis, de Distribuidora del Golfo. Ando conociendo los talleres de la zona. ¿Cómo ve el negocio este año?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues mire, le voy a ser sincero: ando traspasando el taller. En dos meses ya no es mío, y ya no voy a meter nada de inventario."
+        },
+        {
+          "role": "user",
+          "text": "Ah, qué bueno que me lo dice, don Toño. Entonces no le quito más tiempo. ¿Sabe quién se va a quedar con el taller? Para venir a saludarlo cuando llegue."
+        },
+        {
+          "role": "assistant",
+          "text": "Mi sobrino Rubén. Y oiga, mi compadre tiene un taller igual a tres cuadras, dígale que va de mi parte."
+        },
+        {
+          "role": "user",
+          "text": "Muchas gracias, don Toño, ahí le paso a ver. Que le vaya muy bien con todo."
+        },
+        {
+          "role": "assistant",
+          "text": "Igualmente, joven."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "qualification.luz_verde": "cumple"
+        },
+        "must_not_flag": [
+          "persigue_luz_roja",
+          "regatea_su_tiempo",
+          "sale_frio",
+          "no_califica"
+        ]
+      }
+    },
+    {
+      "id": "G82_contrato_que_deja_algo",
+      "node_id": "3.6",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117 (Emilio, 2-nov): con una o dos preguntas averigua si algo sí puede comprar. El contrato deja fuera el líquido de frenos: es amarillo y se trabaja.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! ¿Cómo va la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, joven, qué gusto verlo. Pero le soy honesto: acabo de firmar exclusividad con otro proveedor."
+        },
+        {
+          "role": "user",
+          "text": "Ah, qué bueno que me lo dice. ¿Y esa exclusividad qué cubre? ¿Todo lo que maneja o nada más algunas líneas?"
+        },
+        {
+          "role": "assistant",
+          "text": "Nada más aceites y anticongelante."
+        },
+        {
+          "role": "user",
+          "text": "Entonces el líquido de frenos y las grasas quedan fuera. ¿Esos con quién los trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "El líquido de frenos lo compro donde caiga, la verdad. Las grasas ni las manejo."
+        },
+        {
+          "role": "user",
+          "text": "¿Y hasta cuándo le dura el contrato? Para venir a verlo antes que nadie."
+        },
+        {
+          "role": "assistant",
+          "text": "Un año, hasta octubre."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "suelta_un_amarillo",
+          "no_investiga_limites",
+          "insiste_en_rojo",
+          "no_califica"
+        ]
+      }
+    },
+    {
+      "id": "G83_se_va_sin_averiguar",
+      "node_id": "3.6",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 117: la otra cara del G82. Al oír el impedimento se va sin averiguar si algo sí puede comprar hoy: suelta a un amarillo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! ¿Cómo va la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, joven, qué gusto verlo. Pero le soy honesto: acabo de firmar exclusividad con otro proveedor."
+        },
+        {
+          "role": "user",
+          "text": "Ah, bueno, no se preocupe. Entonces ahí luego paso. Que le vaya bien."
+        },
+        {
+          "role": "assistant",
+          "text": "Igualmente, joven."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "suelta_un_amarillo"
         ]
       }
     }
