@@ -315,8 +315,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE+CAMPO",
-  "resumen": "Pregunta o acción cuya respuesta solo tiene sentido si el cliente avanza. Se ejecuta en cada tramo de la línea.",
-  "cita_cerebro": "Una pregunta o acción cuya respuesta solo tiene sentido si el cliente está avanzando. Su respuesta es el sí",
+  "resumen": "Close With Action: una pregunta o acción cuya respuesta solo tiene sentido si el cliente está avanzando. Su respuesta es el sí: nunca lo pides explícito. LA PRUEBA: después de resolver algo (un freno, una objeción, el precio), ¿el vendedor avanza en el mismo turno con una pregunta o acción del siguiente paso —una fecha, una forma de pago, un dato para el pedido, o seguir donde iba—, en vez de quedarse esperando o preguntar si le parece?",
+  "cita_cerebro": "Nunca lo pides explícito",
   "severidad_sugerida": null
  },
  {
@@ -325,7 +325,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Quedarse callado esperando permiso después de resolver algo. El cliente retoma el control.",
+  "resumen": "Quedarse callado esperando permiso después de resolver algo: en ese silencio el cliente retoma el control y cierra la plática con amabilidad. No te está rechazando: le devolviste el volante. LA PRUEBA: ¿el vendedor termina un turno sin avanzar —sin una pregunta ni el siguiente paso— y le deja al cliente decidir si la plática sigue?",
   "cita_cerebro": "No te está rechazando: le devolviste el volante",
   "severidad_sugerida": "major"
  },
@@ -765,7 +765,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Si llegaste aquí, presume que tienes un comprador.",
+  "resumen": "Si llegaste al cierre, presume que tienes un comprador: se habla de cuándo, cuál y cómo, no de si. LA PRUEBA: en el tramo final, ¿el lenguaje del vendedor es de avance —cuándo, cuál, cuánto, cómo— sobre lo que ya platicaron, sin preguntas que abran la puerta al no? Asumir no es presionar: se propone el siguiente paso y el cliente elige.",
   "cita_cerebro": "presume que tienes un comprador",
   "severidad_sugerida": null
  },
@@ -775,8 +775,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Cierres que invitan al no: ¿le gustaría comprar?, ¿está interesado?, ¿qué le parece?",
-  "cita_cerebro": "Malos cierres — todos invitan al no",
+  "resumen": "Cierres que invitan al no: «¿le gustaría comprar?», «¿está interesado?», «¿qué le parece?», «¿cómo lo ve?». Pedir la compra con un sí o no también: «¿se lo mando?», «¿le aparto 10 cajas?». Es igual de grave. LA PRUEBA: ¿el vendedor pide la decisión con una pregunta que el cliente puede contestar con un «no» o un «déjeme pensarlo» —de interés, de opinión, o de sí o no sobre la compra—, o propone él mismo dejarlo para después («¿le dejo información?»)? Una alternativa donde las dos respuestas son un sí no es esto.",
+  "cita_cerebro": "Pedir la compra con un sí o no también invita al no",
   "severidad_sugerida": "critical"
  },
  {
@@ -785,8 +785,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Alternativas donde ambas opciones sirven.",
-  "cita_cerebro": "Buenos cierres — alternativas donde ambas opciones sirven",
+  "resumen": "Buenos cierres: alternativas donde las dos opciones sirven. La decisión de fondo ya se asume; la pregunta es sobre los detalles. LA PRUEBA: ¿el vendedor pide la decisión con una alternativa donde cualquier respuesta es un sí —jueves o viernes, 5 cajas o el combo de 8, contado o crédito—, sobre lo que ya platicaron?",
+  "cita_cerebro": "alternativas donde ambas opciones sirven",
   "severidad_sugerida": null
  },
  {
@@ -795,7 +795,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Después de pedir la decisión, no llenar el silencio.",
+  "resumen": "Después de pedir la decisión, el silencio es del cliente: el primero que habla después de un cierre, pierde. LA PRUEBA: después de pedir la decisión y antes de que el cliente decida, ¿el vendedor se queda en su pregunta —sin retractarse, suavizarla, agregar descuentos o argumentos, ni contestarse solo—? Contestar una pregunta del cliente no rompe el silencio.",
   "cita_cerebro": "El primero que habla después de un cierre, pierde",
   "severidad_sugerida": null
  },
@@ -805,7 +805,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Retirar la pregunta, suavizarla o contestarla uno mismo.",
+  "resumen": "Llenar el silencio después del cierre: el vendedor deshace su propio cierre. LA PRUEBA: después de pedir la decisión y antes de que el cliente decida, ¿el vendedor se retracta («bueno, si es mucho, pueden ser cinco»), la suaviza («o si quiere lo piensa»), mete descuentos o argumentos nuevos, o se contesta solo? Si el cliente le preguntó algo, contestarle no es esto.",
   "cita_cerebro": "El vendedor que retira la pregunta, la suaviza o la contesta él mismo, pierde",
   "severidad_sugerida": "major"
  },
@@ -815,8 +815,8 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Señales de compra. En cuanto reconoces una, detienes la presentación y cierras.",
-  "cita_cerebro": "En cuanto reconoces una, DETIENES la presentación y CIERRAS",
+  "resumen": "Señales de compra (FISHBBOD): hablar del futuro, «lo quiero» o «lo necesito», silencio, preguntar cuánto o cuándo, criticar al competidor, ofrecer cortesías, preguntas más profundas. En cuanto reconoces una, dejas de presentar y cierras. LA PRUEBA: cuando el cliente da una señal de compra, ¿en ese turno el vendedor deja de presentar y cierra? Si la señal es una pregunta («¿y cuándo me lo entregan?»), ¿le contesta y cierra en el mismo turno?",
+  "cita_cerebro": "le contestas y cierras en el mismo turno",
   "severidad_sugerida": null
  },
  {
@@ -825,8 +825,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Ver la señal de compra y seguir vendiendo. El impulso baja.",
-  "cita_cerebro": "Señal de compra = deja de presentar y cierra. Aunque te queden balas",
+  "resumen": "Ver la señal de compra y seguir vendiendo: el impulso baja, porque el cliente ya estaba listo. LA PRUEBA: después de una señal de compra, ¿el vendedor agrega aunque sea un beneficio, un argumento o un producto más, en vez de cerrar? Contestar lo que el cliente preguntó no es seguir presentando.",
+  "cita_cerebro": "Señal de compra = deja de presentar y cierra.",
   "severidad_sugerida": "major"
  },
  {
@@ -915,7 +915,7 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Tres no CONSECUTIVOS y sigues adelante. La racha se rompe si la conversación avanza. Solo en el cierre: en cualquier otro momento de la visita son dos (flow.dos_no_seguidos).",
+  "resumen": "Dos «no» CONSECUTIVOS y te vas, también en el cierre. La racha se rompe si la conversación avanza. LA PRUEBA: ¿hubo dos «no» seguidos y, después del segundo, el vendedor siguió insistiendo en vez de despedirse bien? LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa? Entonces es un «no». Si contesta, aunque sea vago o corto, no es un «no». Si contesta algo de pasada pero en la misma respuesta rechaza seguir, sí es un «no»: cuenta lo que la respuesta hace, no cómo empieza. Si pone una duda, una condición o una objeción, tampoco: es una objeción. Seguidos: entre uno y otro la conversación no avanzó.",
   "cita_cerebro": "Tienen que ser CONSECUTIVOS",
   "severidad_sugerida": null
  },
@@ -1155,8 +1155,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Con cliente que ya compra, se cierra lo que se agrega. El pedido base ya existía.",
-  "cita_cerebro": "Lo que se cierra es lo que se agrega",
+  "resumen": "Con un cliente que ya compra, el pedido base no está en duda: ya iba a existir. Lo que se cierra es lo que se agrega. LA PRUEBA: ¿el vendedor cierra solo lo que se agrega —la familia nueva o las cantidades de más—, sin volver a poner en duda el pedido de siempre?",
+  "cita_cerebro": "el pedido base no está en duda: ya iba a existir.",
   "severidad_sugerida": null
  },
  {
@@ -1165,7 +1165,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Volver a confirmar o poner en duda el pedido de siempre invita al cliente a revisar toda la orden.",
+  "resumen": "Reabrir el pedido base al cerrar pone sobre la mesa algo que ya estaba resuelto, e invita al cliente a revisar toda la orden. LA PRUEBA: al cerrar, ¿el vendedor vuelve a confirmar o pone en duda el pedido de siempre («¿y lo de siempre, sí se lo dejo?»)?",
   "cita_cerebro": "Reabrir el pedido base al cerrar pone sobre la mesa algo que ya estaba resuelto",
   "severidad_sugerida": "major"
  },
@@ -1295,7 +1295,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Ceder precio por pánico. El problema nunca está en el número: está en la balanza.",
+  "resumen": "Ceder precio por pánico: el problema nunca está en el número, está en la balanza. LA PRUEBA: ¿el vendedor baja el precio, regala algo o mejora la oferta porque el cliente dijo que está caro, dudó o se hizo el difícil, sin pedir nada a cambio? El descuento que ya era parte de la oferta (la promoción, el desglose) o el que se da a cambio de algo («si se lleva 20, le dejo el precio de mayoreo») no es esto.",
   "cita_cerebro": "El problema nunca está en el número: está en la balanza",
   "severidad_sugerida": "major"
  },
@@ -1305,7 +1305,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Cambiar el asumir por súplica cuando el cliente titubea.",
+  "resumen": "Cambiar el asumir por súplica cuando el cliente titubea: la mayoría de los que batallan para cerrar no rompen la incomodidad de pedir. LA PRUEBA: cuando el cliente titubea, delibera o pide pensarlo, ¿el vendedor le suplica o lo empuja —«ándele», «anímese», «¿entonces qué?», insistir una y otra vez—?",
   "cita_cerebro": "la mayoría de las personas que batallan para cerrar simplemente no están rompiendo la zona de confort que viene con pedir algo",
   "severidad_sugerida": "major"
  },
@@ -1315,7 +1315,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Confundir asumir con imponer: dar por cerrada una venta no aceptada.",
+  "resumen": "Confundir asumir con imponer: un cierre no es algo que le haces a alguien. LA PRUEBA: ¿el vendedor da por hecho algo que el cliente no aceptó o que rechazó (el cliente dice «déjeme ver» y él contesta «ya se lo apunté»), mete cantidades o condiciones que nunca se platicaron, o ignora un cambio que el cliente pidió?",
   "cita_cerebro": "Un cierre no es algo que le haces a alguien",
   "severidad_sugerida": "major"
  },
@@ -1325,7 +1325,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Tras el precio, preguntar qué le parece o cómo lo ve. Invita al no.",
+  "resumen": "Pedir aprobación después del precio o de responder algo: le entrega el control en el momento más delicado. LA PRUEBA: después de dar el precio o de responder una duda, ¿el vendedor pregunta qué le parece, cómo lo ve, si le quedó claro o si así sí? Una pregunta concreta del siguiente paso no es esto.",
   "cita_cerebro": "¿Qué le parece? · ¿Cómo lo ve?",
   "severidad_sugerida": "critical"
  },
@@ -1475,7 +1475,7 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La Regla de los No: tres 'no' CONSECUTIVOS son luz roja (la fuente dice dos; Emilio usa tres, porque hay quien deja ir un sí solo porque el cliente tuvo objeciones). Con la luz roja, el vendedor sale rápido y bien: sin insistir, cuidando la relación y dejando una siguiente cita. Tienen que ser seguidos: si la conversación avanzó entre un no y otro, la racha se rompe. Salir así es la ejecución correcta, no una falta. Esta regla es del cierre: en cualquier otro momento de la visita son dos no seguidos (flow.dos_no_seguidos).",
+  "resumen": "La Regla de los No: dos «no» seguidos y te vas, en cualquier momento de la visita, también en el cierre. Con eso, el vendedor sale rápido y bien: sin insistir, cuidando la relación y dejando la puerta abierta. Salir así es la ejecución correcta, no una falta. LA PRUEBA: después de dos «no» seguidos, ¿el vendedor se despide bien —sin seguir con su tema— y deja la puerta abierta? LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa? Entonces es un «no». Si contesta, aunque sea vago o corto, no es un «no». Si contesta algo de pasada pero en la misma respuesta rechaza seguir, sí es un «no»: cuenta lo que la respuesta hace, no cómo empieza. Si pone una duda, una condición o una objeción, tampoco: es una objeción. Seguidos: entre uno y otro la conversación no avanzó.",
   "cita_cerebro": "dos no seguidos, luz roja, sigue adelante",
   "severidad_sugerida": "None"
  },
@@ -1535,8 +1535,8 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "En cualquier momento de la visita, menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día: se deja para otra visita (en la puerta, quedar de regresar con una alternativa concreta; al buscar el hueco, dejar de buscar). En el cierre son tres: la Regla de los No. LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa? Entonces es un «no». Si contesta, aunque sea vago o corto, no es un «no». Si contesta algo de pasada pero en la misma respuesta rechaza seguir, sí es un «no»: cuenta lo que la respuesta hace, no cómo empieza. Si pone una duda, una condición o una objeción, tampoco: es una objeción. Seguidos: entre uno y otro la conversación no avanzó.",
-  "cita_cerebro": "menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día",
+  "resumen": "En cualquier momento de la visita, también en el cierre, dos «no» seguidos son la señal de que hoy no es el día: se deja para otra visita (en la puerta, quedar de regresar con una alternativa concreta; al buscar el hueco, dejar de buscar; en el cierre, despedirse bien y dejar la puerta abierta). «Lo voy a pensar» es una objeción, no un «no». LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa? Entonces es un «no». Si contesta, aunque sea vago o corto, no es un «no». Si contesta algo de pasada pero en la misma respuesta rechaza seguir, sí es un «no»: cuenta lo que la respuesta hace, no cómo empieza. Si pone una duda, una condición o una objeción, tampoco: es una objeción. Seguidos: entre uno y otro la conversación no avanzó.",
+  "cita_cerebro": "también en el cierre, dos «no» seguidos son la señal de que hoy no es el día",
   "severidad_sugerida": null
  },
  {

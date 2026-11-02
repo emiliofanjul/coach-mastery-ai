@@ -2690,14 +2690,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como asumes. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "abre_puerta_al_no",
           "regla_id": "close.mal_cierre",
           "severity": "major",
-          "description": "Pregunta si en vez de asumir cuando: ¿le interesaría?, ¿quiere que le mande información?, ¿lo piensa y me avisa? — cada una invita el no gratis y el cliente la usa (déjeme ver).",
+          "description": "Pide la decision con una pregunta que se contesta con un no o un dejeme pensarlo: de interes (le interesa?), de opinion (que le parece?) o de si o no sobre la compra (se lo mando?, le aparto 10 cajas?). Todas son igual de graves.",
           "severity_override": {
             "razon": "incidental: error de otro paso",
             "default": "critical"
@@ -2707,7 +2707,7 @@
           "id": "asume_con_presion",
           "regla_id": "close.asume_con_presion",
           "severity": "critical",
-          "description": "Confunde asumir con imponer: da por cerrada una venta no aceptada, ignora los ajustes que el cliente pide, o apura la decisión — el cliente responde espérese, yo no he dicho que sí. La línea entre asumir y presionar es EL aprendizaje de este nodo.",
+          "description": "Da por hecho algo que el cliente no acepto (le dice dejeme ver y contesta ya se lo apunte), mete cantidades o condiciones nunca platicadas, o ignora un cambio que el cliente pidio.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -3185,14 +3185,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como pides la decision. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "abre_puerta_al_no",
           "regla_id": "close.mal_cierre",
           "severity": "critical",
-          "description": "Cierra con pregunta de interés o de veredicto (¿le interesa?, ¿qué piensa?, ¿lo pensamos?) o propone él mismo el aplazamiento (¿le dejo información?) — en el nodo cuyo único tema es no abrir esa puerta, abrirla domina el score."
+          "description": "Pide la decision con una pregunta que se contesta con un no o un dejeme pensarlo: de interes (le interesa?), de opinion (que le parece?) o de si o no sobre la compra (se lo mando?, le aparto 10 cajas?). Todas son igual de graves. O propone el mismo el aplazamiento (le dejo informacion?)."
         },
         {
           "id": "sigue_presentando",
@@ -3204,7 +3204,7 @@
           "id": "atropello",
           "regla_id": "close.asume_con_presion",
           "severity": "major",
-          "description": "Su cierre asume cantidades o condiciones nunca platicadas — el asumido sin rieles."
+          "description": "Da por hecho algo que el cliente no acepto, o su cierre asume cantidades o condiciones nunca platicadas."
         },
         {
           "id": "persigue",
@@ -3276,14 +3276,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como lees las senales. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "sigue_presentando",
           "regla_id": "close.sigue_presentando",
           "severity": "critical",
-          "description": "Recibe la señal de compra y continúa presentando beneficios — deja pasar el pico. El asesino silencioso de ventas que este nodo existe para matar: sobre-presentar mata tantas ventas como presentar mal.",
+          "description": "Recibe la senal de compra y agrega aunque sea un beneficio, argumento o producto mas en vez de cerrar. Contestar lo que el cliente pregunto no es esto.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -3327,7 +3327,7 @@
           "id": "closing.lectura_senales",
           "weight": 0.4,
           "regla_id": "close.fishbbod",
-          "description": "Detecta la señal de compra en el momento en que aparece — su turno inmediatamente posterior cambia de presentar a cerrar. La velocidad de reacción es el criterio: señal → cierre, sin beneficios extra en medio."
+          "description": "Detecta la senal de compra en el momento en que aparece y en ese mismo turno deja de presentar y cierra. Si la senal es una pregunta (cuando me lo entregan?), le contesta y cierra en el mismo turno, sin beneficios extra."
         },
         {
           "id": "closing.cierre_asumido",
@@ -3489,7 +3489,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
         }
       },
-      "version": "1.0.2",
+      "version": "1.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3524,7 +3524,7 @@
           "id": "descuento_de_panico",
           "regla_id": "close.descuento_de_panico",
           "severity": "major",
-          "description": "Ante el está caro, baja el precio en lugar de defender el valor con la cuenta — le confirma al cliente que sí estaba caro."
+          "description": "Baja el precio, regala o mejora la oferta porque el cliente dijo que esta caro o dudo, sin pedir nada a cambio. Un descuento a cambio de algo (mas volumen, pago de contado) o el que ya era parte de la oferta no es esto."
         },
         {
           "id": "monologo",
@@ -3692,7 +3692,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito. Vamos al desglose y te digo como quedo tu municion."
         }
       },
-      "version": "1.1.1",
+      "version": "1.1.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3739,7 +3739,7 @@
           "id": "descuento_de_panico",
           "regla_id": "close.descuento_de_panico",
           "severity": "major",
-          "description": "El precio cede por pánico en cualquier punto."
+          "description": "Baja el precio, regala o mejora la oferta porque el cliente dijo que esta caro o dudo, sin pedir nada a cambio. Un descuento a cambio de algo (mas volumen, pago de contado) o el que ya era parte de la oferta no es esto."
         },
         {
           "id": "monologo",
@@ -3809,14 +3809,14 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que tanto aguantaste el silencio."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "llena_el_silencio",
           "regla_id": "close.llena_el_silencio",
           "severity": "critical",
-          "description": "Tras cerrar, no aguanta la pausa: se retracta (si le parece mucho hay de 3...), descuenta por pánico, apila argumentos nuevos o reabre con ¿o mejor lo piensa? — deshace su propio cierre y siembra la duda que no existía. El suicidio clásico que este nodo entrena a evitar.",
+          "description": "Despues de pedir la decision y antes de que el cliente decida, se retracta (si es mucho, pueden ser cinco), la suaviza (o si quiere lo piensa), mete descuentos o argumentos nuevos, o se contesta solo. Contestar una pregunta del cliente no es esto.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -3905,14 +3905,14 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese cierre."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "pregunta_si_quiere",
           "regla_id": "close.mal_cierre",
           "severity": "critical",
-          "description": "Cierra preguntando si le parece bien, si lo quiere o como lo ve. Le entrega la salida y el cliente toma la comoda: lo voy a pensar."
+          "description": "Pide la decision con una pregunta que se contesta con un no o un dejeme pensarlo: de interes (le interesa?), de opinion (que le parece?) o de si o no sobre la compra (se lo mando?, le aparto 10 cajas?). Todas son igual de graves."
         },
         {
           "id": "reabre_el_pedido_base",
@@ -3961,7 +3961,7 @@
     "name": "Extrae la Decisión",
     "node_type": "boss",
     "practice_script": {
-      "notes": "BOSS del Mundo 7 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega. v1.1.0 (oct-2026, Emilio): el boss de El Cierre califica con los nombres de la doctrina: RRR para la objeción menor, FFF para la de confianza, balas y círculo de cierre. \"Sin defensa\" sale de los criterios porque ya es falla crítica.",
+      "notes": "BOSS del Mundo 7 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3: no se discute, se guarda para la presentación — Emilio, 2-nov-2026), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega. v1.1.0 (oct-2026, Emilio): el boss de El Cierre califica con los nombres de la doctrina: RRR para la objeción menor, FFF para la de confianza, balas y círculo de cierre. \"Sin defensa\" sale de los criterios porque ya es falla crítica.",
       "scope": {
         "skills_in_focus": [
           "blocks.air",
@@ -3981,7 +3981,7 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual) — el vendedor debe validar que NO es normal y cuantificarlo para que lo tomes en serio. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia concreta, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual). Si el vendedor te lo discute o insiste en que lo reconozcas, te pones a la defensiva. Si lo deja pasar y sigue, está bien: no se lo pidas. Lo que sí te mueve es que en la presentación te enseñe con TUS números lo que pierdes. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia concreta, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor completa la conversación con el desconfiado extremo: atraviesa el bloqueo con AIR, excava el dolor Y desmonta su minimización cuantificándolo, presenta sin una sola promesa sin ancla, sostiene la cadena de dos objeciones — la de confianza personal con bala concreta sobre sí mismo, y la segunda con su munición propia — con temple idéntico, y cierra asumido aceptando la condición de protección del cliente, aguantando la deliberación final. El scope se cubre con el trato de prueba cerrado."
         },
         "closing": {
@@ -3989,7 +3989,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.1.3",
+      "version": "1.2.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4023,13 +4023,6 @@
           "regla_id": "objection.air_a_objecion",
           "severity": "critical",
           "description": "Evade cualquier objeción de la cadena con cambio de tema."
-        },
-        {
-          "id": "traga_la_minimizacion",
-          "regla_id": "discovery.escalera_capas",
-          "severity": "major",
-          "description": "Acepta el pero así es esto, todos fallan igual sin desmontarlo — el dolor queda archivado como normal y la venta pierde su motor.",
-          "espejo_de": "discovery.dolor_real"
         },
         {
           "id": "pelea_la_condicion",
@@ -4095,7 +4088,7 @@
           "id": "discovery.dolor_real",
           "weight": 0.1,
           "regla_id": "discovery.escalera_capas",
-          "description": "El dolor excavado por capas Y su minimización desmontada: valida que no es normal y lo cuantifica con los números del cliente hasta que lo tome en serio."
+          "description": "El dolor excavado por capas hasta que el cliente lo cuenta. Si lo minimiza (asi es esto, todos fallan igual), no se lo discute: lo guarda y lo usa en la presentacion con sus numeros."
         },
         {
           "id": "closing.cierre_asumido",
@@ -4849,7 +4842,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "2.0.2",
+      "version": "2.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4888,7 +4881,7 @@
           "id": "pregunta_si_quiere",
           "regla_id": "close.mal_cierre",
           "severity": "major",
-          "description": "Cierra el incremento preguntando si le parece bien.",
+          "description": "Pide la decision con una pregunta que se contesta con un no o un dejeme pensarlo: de interes (le interesa?), de opinion (que le parece?) o de si o no sobre la compra (se lo mando?, le aparto 10 cajas?). Todas son igual de graves.",
           "severity_override": {
             "razon": "incidental: error de otro paso",
             "default": "critical"
@@ -4984,7 +4977,7 @@
           "message_incomplete": "Hasta aqui el examen final. Vamos al desglose."
         }
       },
-      "version": "1.0.4",
+      "version": "1.0.5",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -5001,7 +4994,7 @@
           "id": "descuento_de_panico",
           "regla_id": "close.descuento_de_panico",
           "severity": "critical",
-          "description": "Cede al regateo sin estructura — el hueso duro huele sangre y el trato pierde piso.",
+          "description": "Cede al regateo bajando el precio o regalando sin pedir nada a cambio. Un descuento a cambio de algo (mas volumen, contado) no es esto.",
           "severity_override": {
             "razon": "boss: escalada",
             "default": "major"

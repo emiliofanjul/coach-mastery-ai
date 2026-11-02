@@ -1548,7 +1548,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Los cierres que matan",
-    "body": "\"¿Entonces qué piensa?\" — le pediste un veredicto sobre TODO. Abrumador.\n\"¿Le interesa?\" — pregunta de sí/no con el no gratis.\n\"¿Quiere que le deje información?\" — acabas de proponer TÚ el aplazamiento.\n\"Bueno, ahí me avisa cualquier cosa...\" — ni siquiera es una pregunta. Es una despedida.\n\n¿El patrón? Todos le abren la puerta al no — o peor, al limbo. Y el cliente, ante una puerta abierta, la usa. No por malo: por humano.",
+    "body": "\"¿Entonces qué piensa?\" — le pediste un veredicto sobre TODO. Abrumador.\n\"¿Le interesa?\" — pregunta de sí/no con el no gratis.\n\"¿Se lo mando?\" o \"¿Le aparto 10 cajas?\" — igual: el cliente te contesta \"no, mejor déjeme pensarlo\" sin ningún esfuerzo.\n\"¿Quiere que le deje información?\" — acabas de proponer TÚ el aplazamiento.\n\"Bueno, ahí me avisa cualquier cosa...\" — ni siquiera es una pregunta. Es una despedida.\n\n¿El patrón? Todos le abren la puerta al no — o peor, al limbo. Y el cliente, ante una puerta abierta, la usa. No por malo: por humano.",
     "flip_back_text": null
   },
   {
@@ -1627,8 +1627,8 @@
     "node_id": "5.11",
     "card_order": 2,
     "card_type": "concept",
-    "title": "La regla: tres no SEGUIDOS",
-    "body": "La doctrina original dice dos no y te vas. Nosotros usamos tres, y hay una razon: hay vendedores que dejan ir un si solo porque el cliente tuvo un par de preguntas.\n\nTIENEN QUE SER CONSECUTIVOS. Uno tras otro, sin que la conversacion haya avanzado en medio.\n\nUn no, lo atraviesas, avanzas, y despues otro no: eso NO es una racha. Eso es una conversacion normal.",
+    "title": "La regla: dos no SEGUIDOS y te vas",
+    "body": "Dos no seguidos y te vas. Así de simple, y aplica en toda la visita, también en el cierre.\n\nOjo: \"lo voy a pensar\" no es un no. Es una objeción, y se trabaja. Un no es \"no, gracias, ahorita no quiero\".\n\nTIENEN QUE SER CONSECUTIVOS. Uno tras otro, sin que la conversacion haya avanzado en medio.\n\nUn no, lo atraviesas, avanzas, y despues otro no: eso NO es una racha. Eso es una conversacion normal.",
     "flip_back_text": null
   },
   {
@@ -1636,7 +1636,7 @@
     "card_order": 3,
     "card_type": "why_it_works",
     "title": "Soltar bien es parte del oficio",
-    "body": "Cuando llegan los tres seguidos, ese cliente se volvio rojo. No es fracaso tuyo: es informacion.\n\nY la manera de irte importa. El que insiste hasta incomodar quema la relacion y ya no lo reciben. El que reconoce la situacion y deja la puerta abierta, vuelve cuando las cosas cambien.\n\nCada minuto de mas con un rojo se lo estas quitando a un amarillo que si podia comprar hoy.",
+    "body": "Cuando llegan los dos seguidos, hoy no es el día. No es fracaso tuyo: es informacion.\n\nY la manera de irte importa. El que insiste hasta incomodar quema la relacion y ya no lo reciben. El que reconoce la situacion y deja la puerta abierta, vuelve cuando las cosas cambien.\n\nCada minuto de mas con un rojo se lo estas quitando a un amarillo que si podia comprar hoy.",
     "flip_back_text": null
   },
   {

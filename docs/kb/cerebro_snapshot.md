@@ -59,7 +59,7 @@ La imagen: vas dibujando la línea hacia la derecha y de pronto llega una objeci
 | Objeciones → RRR, FFF | Salida **impuesta** después de entender |
 | Ataque Preventivo | Te adelantas tú a una objeción que ya sabes que viene |
 | Close With Action | Lo que te devuelve y te mueve al siguiente tramo |
-| Los 3 No seguidos (en el cierre) | La señal de que ya no hay línea que recorrer |
+| Los 2 No seguidos | La señal de que ya no hay línea que recorrer |
 
 **Diagnóstico que le da al vendedor:** cuando una visita sale mal, la pregunta no es *"¿qué técnica olvidé?"* sino **"¿dónde salí de la línea y por qué no regresé?"**
 
@@ -293,7 +293,7 @@ Aquí sí hubo pensamiento.
 
 > **El tercer movimiento es el que falla.** Casi todos aceptan bien y casi todos logran no discutir — y después se quedan parados esperando, o peor, vuelven a pedir permiso. Ahí se pierde todo lo ganado.
 
-**Dos no seguidos** `CAMPO`: en cualquier momento de la visita, menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día, y lo correcto es dejarlo para otra visita. En la puerta: si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos. Ahí lo correcto es quedar de regresar en otro momento, con una alternativa concreta: *"¿le queda mejor que pase el jueves o el viernes?"*. Insistir más ya no es seguridad: es terquedad. Al buscar el hueco es igual: si dos intentos seguidos se topan con un «no», dejas de buscar y lo retomas en otra visita. Tienen que ser consecutivos: si la conversación avanzó entre uno y otro, el primero ya quedó atrás. En el cierre la regla es otra: son tres (ver La Regla de los No).
+**Dos no seguidos** `CAMPO`: en cualquier momento de la visita, también en el cierre, dos «no» seguidos son la señal de que hoy no es el día, y lo correcto es dejarlo para otra visita. En la puerta: si haces AIR y el cliente repite el bloqueo de inmediato, ya son dos no seguidos. Ahí lo correcto es quedar de regresar en otro momento, con una alternativa concreta: *"¿le queda mejor que pase el jueves o el viernes?"*. Insistir más ya no es seguridad: es terquedad. Al buscar el hueco es igual: si dos intentos seguidos se topan con un «no», dejas de buscar y lo retomas en otra visita. Tienen que ser consecutivos: si la conversación avanzó entre uno y otro, el primero ya quedó atrás. En el cierre es igual (ver La Regla de los No).
 
 **Qué es un «no»** `CAMPO`: una respuesta que rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa. Una respuesta, aunque sea vaga o corta, no es un «no»: no rechazó nada, y lo que toca es seguir. Pero si en la misma respuesta contesta algo de pasada y rechaza seguir, sí es un «no»: cuenta lo que la respuesta hace con lo que el vendedor intentaba, no cómo empieza. Una duda, una condición o una objeción tampoco es un «no»: es una objeción, y se trabaja con sus herramientas.
 
@@ -388,6 +388,8 @@ El territorio PRECIO es el más fácil de arruinar, porque la pregunta natural e
 
 > **Y si el cliente dice que tu precio está mal, el diagnóstico correcto no es bajarlo.** Es que no encontraste su dolor, o no construiste suficiente valor. **El problema nunca está en el número: está en la balanza.**
 
+**Cuándo sí se vale un descuento** `CAMPO`: el que ya era parte de tu oferta (la promoción, el desglose) y el que das a cambio de algo (*"si se lleva 20 en vez de 10, le dejo el precio de mayoreo"*). Bajar el precio solo porque te dijo que está caro o porque dudó, sin pedir nada a cambio, es descuento de pánico.
+
 ### La Escalera de Capas `CLOSER` `UNIVERSAL`
 **CAPA 1 — Hechos.** Fáciles, cero riesgo. Abren la plática y te dan el mapa.
 **CAPA 2 — La puerta.** Aquí el cliente suelta una pista... o cierra con un "bien". Depende de cómo preguntes.
@@ -468,7 +470,7 @@ Consecuencias que cambian cómo se ejecuta todo el sistema:
 
 - **Un cliente puede no reconocer un problema y aun así sentir alivio cuando se lo resuelves.** El impulso no viene de que aceptó el diagnóstico: viene de imaginar la situación resuelta.
 - **Por eso "pintar imágenes" funciona** — no argumenta, hace sentir.
-- **Por eso el vendedor no debe pelear por el reconocimiento explícito.** Insistir en que el cliente admita un problema lo pone a la defensiva y mata lo emocional, que era donde estaba la venta.
+- **Por eso el vendedor no debe pelear por el reconocimiento explícito.** Insistir en que el cliente admita un problema lo pone a la defensiva y mata lo emocional, que era donde estaba la venta. Si te lo minimiza —*"así es esto, todos fallan igual"*— no se lo discutas `CAMPO`: guárdalo, y en la presentación enséñale con sus números lo que pierde (miedo a la pérdida).
 - **Y por eso el impulso se puede construir sin que haya un dolor declarado.** El 80% indiferente no tiene un problema urgente: se mueve por los factores de impulso, no por el diagnóstico.
 
 **La regla operativa:** si el cliente confirma el dolor, úsalo con sus palabras — es lo más fuerte que tienes. **Si no lo confirma pero la evidencia está, avanza igual**, presentando la situación resuelta en vez del problema reconocido.
@@ -663,6 +665,10 @@ Si llegaste a este punto, **presume que tienes un comprador**.
 **Buenos cierres** — alternativas donde ambas opciones sirven:
 *¿Es su nombre el que va en la cuenta? · Las primeras fechas de entrega son jueves o viernes, ¿cuál le conviene? · ¿Visa o MasterCard? · ¿Contado o crédito?*
 
+**Pedir la compra con un sí o no también invita al no** `CAMPO`: *"¿se lo mando?"* o *"¿le aparto 10 cajas?"* dejan la pregunta abierta, y el cliente contesta *"no, mejor déjeme pensarlo"* con toda facilidad. Es tan grave como *"¿le interesa?"*. Lo correcto es una alternativa donde las dos respuestas son un sí: *"¿se lo mando el jueves o el viernes?"*.
+
+**Asumir no es presionar** `CAMPO`: asumir es proponer el siguiente paso sobre lo que ya platicaron y dejarlo elegir. Presionar es dar por hecho algo que el cliente no aceptó —te dice *"déjeme ver"* y contestas *"ya se lo apunté para el jueves"*—, meter cantidades o condiciones que nunca se platicaron, o ignorar un cambio que te pidió.
+
 > **El diagnóstico de la fuente:** *"la mayoría de las personas que batallan para cerrar simplemente no están rompiendo la zona de confort que viene con pedir algo."*
 >
 > Y: *"aumentas la probabilidad de que compren mientras más confiadamente anuncies tu mensaje."*
@@ -671,6 +677,8 @@ Si llegaste a este punto, **presume que tienes un comprador**.
 No llenes el silencio. Pediste la decisión: **aguanta**.
 
 El vendedor que retira la pregunta, la suaviza o la contesta él mismo, pierde. El primero que habla después de un cierre, pierde.
+
+**En la práctica** `CAMPO`: llenar el silencio es que, después de pedir la decisión y antes de que el cliente decida, te retractes (*"bueno, si es mucho, pueden ser cinco"*), la suavices (*"o si quiere lo piensa"*), metas descuentos o argumentos nuevos, o te contestes solo. Si el cliente te pregunta algo, contestarle no es llenar el silencio.
 
 ### FISHBBOD — Señales de Compra `FUENTE`
 También llamadas **STOP signs**. En cuanto reconoces una, **DETIENES la presentación y CIERRAS**.
@@ -682,6 +690,8 @@ También llamadas **STOP signs**. En cuanto reconoces una, **DETIENES la present
 > **El impulso baja.** Porque el cliente ya estaba listo, y seguir vendiéndole le comunica que hay algo que convencerlo — o le da tiempo de encontrar una razón para no hacerlo.
 >
 > Señal de compra = deja de presentar y cierra. **Aunque te queden balas. De hecho, sobre todo si te quedan.**
+
+**Contesta y cierra** `CAMPO`: si la señal es una pregunta —*"¿y cuándo me lo entregan?"*, de las más fuertes que hay—, le contestas y cierras en el mismo turno: *"los jueves. ¿Se lo aparto para este o para el siguiente?"*. Agregar aunque sea un beneficio más es seguir presentando.
 
 ---
 
@@ -739,8 +749,8 @@ En español: **Entiendo · Sintió · Encontramos**
 
 ### La Regla de los No
 - **Fuente:** *2 no's and a go* — dos no seguidos, luz roja, sigue adelante
-- **Campo `CAMPO`:** Emilio usa **3 no seguidos**, porque hay gente que deja ir un sí solo porque el cliente tuvo preguntas u objeciones
-- **Esta regla es del cierre.** En cualquier otro momento de la visita son **dos** no seguidos: en la puerta quedas de regresar, y al buscar el hueco lo dejas para otra visita (ver Dos no seguidos, en AIR).
+- **Dos no seguidos y te vas, también en el cierre** `CAMPO`: es la misma regla en toda la visita. En la puerta quedas de regresar; al buscar el hueco lo dejas para otra visita; en el cierre te despides bien y dejas la puerta abierta.
+- **«Lo voy a pensar» no es un «no»** `CAMPO`: es una objeción, y se maneja como objeción. Un «no» es *"no, gracias, ahorita no quiero"*.
 
 > **Tienen que ser CONSECUTIVOS.** Un no, lo atraviesas, la conversación avanza, y más adelante otro no: **eso no es una racha**. Es una conversación normal con dos momentos de fricción. La racha se rompe en cuanto la conversación avanza.
 

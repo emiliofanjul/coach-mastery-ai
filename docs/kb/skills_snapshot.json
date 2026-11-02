@@ -487,7 +487,7 @@
     "id": "objections.regla_no",
     "code": "S-063",
     "name": "La Regla de los No",
-    "short_description": "Sigues avanzando hasta tres no seguidos. De ahi sueltas: se volvio rojo. Tienen que ser consecutivos.",
+    "short_description": "Dos no seguidos y te vas, en toda la visita, también en el cierre. Tienen que ser consecutivos. «Lo voy a pensar» es una objeción, no un no.",
     "category": "qualification",
     "world_id_introduced": 5,
     "skill_type": "concepto",
