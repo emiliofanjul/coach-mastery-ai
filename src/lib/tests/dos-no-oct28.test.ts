@@ -19,11 +19,13 @@ const falla = (n: string, f: string) => nodo(n).practice_script.failure_criteria
 const caso = (id: string) => harness.cases.find((c: any) => c.id === id);
 
 describe("Primero el Cerebro", () => {
-  it("dos no seguidos en toda la visita, menos en el cierre", () => {
-    expect(cerebro).toContain("en cualquier momento de la visita, menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día");
+  it("dos no seguidos en toda la visita, también en el cierre (mensaje 119)", () => {
+    expect(cerebro).toContain("en cualquier momento de la visita, también en el cierre, dos «no» seguidos son la señal de que hoy no es el día");
     expect(cerebro).toContain("Al buscar el hueco es igual: si dos intentos seguidos se topan con un «no», dejas de buscar y lo retomas en otra visita.");
-    expect(cerebro).toContain("En el cierre la regla es otra: son tres (ver La Regla de los No).");
-    expect(cerebro).toContain("- **Esta regla es del cierre.** En cualquier otro momento de la visita son **dos** no seguidos");
+    expect(cerebro).toContain("En el cierre es igual (ver La Regla de los No).");
+    expect(cerebro).toContain("- **Dos no seguidos y te vas, también en el cierre** `CAMPO`");
+    expect(cerebro).toContain("- **«Lo voy a pensar» no es un «no»** `CAMPO`");
+    expect(cerebro).not.toMatch(/3 no seguidos|son tres \(ver La Regla/);
   });
   it("qué es un «no», como principio", () => {
     expect(cerebro).toContain("**Qué es un «no»** `CAMPO`: una respuesta que rechaza lo que el vendedor estaba intentando en ese momento");
@@ -44,12 +46,12 @@ describe("Luego las reglas", () => {
     const r = regla("flow.dos_no_seguidos");
     expect(r).toMatchObject({ paso: 0, tipo: "principio", canal: "universal", procedencia: "CAMPO" });
     expect(r.resumen).toContain("LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento");
-    expect(r.resumen).toContain("En el cierre son tres: la Regla de los No.");
+    expect(r.resumen).toContain("también en el cierre, dos «no» seguidos");
     expect(cerebro).toContain(r.cita_cerebro);
   });
-  it("las dos reglas de los tres no dicen que son solo del cierre", () => {
-    expect(regla("objection.regla_de_los_no").resumen).toContain("Solo en el cierre");
-    expect(regla("objections.regla_de_los_no").resumen).toContain("Esta regla es del cierre");
+  it("las dos reglas de los no ya dicen dos, también en el cierre (mensaje 119)", () => {
+    expect(regla("objection.regla_de_los_no").resumen).toContain("Dos «no» CONSECUTIVOS y te vas, también en el cierre");
+    expect(regla("objections.regla_de_los_no").resumen).toContain("dos «no» seguidos y te vas, en cualquier momento de la visita, también en el cierre");
   });
   it("el hueco que no existía es no_aplica, y dejar de buscar tras dos no no es trámite", () => {
     expect(regla("discovery.hueco").resumen).toContain("el criterio es no_aplica: hoy no había nada que descubrir");
@@ -83,14 +85,16 @@ describe("El 7.4 ya no premia atravesar un segundo bloqueo", () => {
 });
 
 describe("El evaluador y el cliente simulado", () => {
-  it("el evaluador: dos fuera del cierre, tres en el cierre, y qué es un «no»", () => {
-    expect(voz).toContain("en cualquier momento de la visita, menos en el cierre, DOS «no» seguidos son la señal de salir");
+  it("el evaluador: dos en toda la visita, también en el cierre, y qué es un «no»", () => {
+    expect(voz).toContain("en cualquier momento de la visita, también en el cierre, DOS «no» seguidos son la señal de salir");
     expect(voz).toContain("una respuesta vaga o corta, una duda o una objeción NO son un «no»");
-    expect(voz).toContain("(b) el vendedor salió bien al llegar a una racha de «no» (dos seguidos, o tres en el cierre: ver abajo);");
+    expect(voz).toContain("(b) el vendedor salió bien al llegar a una racha de «no» (dos seguidos, también en el cierre: ver abajo);");
+    expect(voz).not.toMatch(/son TRES|no le des el tercero/);
     expect(voz).not.toContain("si el cliente dio tres \"no\" CONSECUTIVOS");
   });
   it("el cliente simulado: fuera del cierre no da un segundo «no» seguido, salvo que su guion lo pida", () => {
-    expect(voz).toContain("fuera del cierre, si el vendedor maneja bien tu primer «no»");
+    expect(voz).toContain("si el vendedor maneja bien tu primer «no»");
+    expect(voz).toContain("NO le des un segundo «no» seguido, tampoco en el cierre");
     expect(voz).toContain("NO le des un segundo «no» seguido");
     expect(voz).toContain("salvo que tu guion pida otro «no»");
   });

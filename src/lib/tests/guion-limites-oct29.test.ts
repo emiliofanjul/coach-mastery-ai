@@ -55,8 +55,8 @@ describe("Fallas: hasta 10 en boss, 8 en los demás", () => {
     const malos = conScript.filter((n) => (n.ps.failure_criteria ?? []).length > (n.node_type === "boss" ? 10 : 8)).map((n) => `${n.id} (${n.node_type}): ${n.ps.failure_criteria.length}`);
     expect(malos).toEqual([]);
   });
-  it("el 5.15, el 7.0 y el 7.4 son boss y caben con sus 9 fallas", () => {
-    for (const id of ["5.15", "7.0", "7.4"]) {
+  it("el 7.0 y el 7.4 son boss y caben con sus 9 fallas (el 5.15 quedó en 8 en el mensaje 119)", () => {
+    for (const id of ["7.0", "7.4"]) {
       const n = conScript.find((x) => x.id === id);
       expect(n.node_type).toBe("boss");
       expect(n.ps.failure_criteria).toHaveLength(9);
