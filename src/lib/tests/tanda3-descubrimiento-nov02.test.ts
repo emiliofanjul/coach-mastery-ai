@@ -99,3 +99,13 @@ describe("La red", () => {
     for (const id of ids) expect(harness.cases.find((c: any) => c.id === id), id).toBeDefined();
   });
 });
+
+describe("Mensaje 118: decir lo que ve no se vale si contradice al cliente (G80)", () => {
+  it("en el Cerebro y en la regla, la contradicción va primero", () => {
+    expect(cerebro).toContain("siempre que no contradiga lo que el cliente ya dijo: si te dijo que está bien surtido, «se ve que le hace falta» es inventar.");
+    const r = regla("discovery.hueco_inventado").resumen;
+    expect(r).toContain("LA PRUEBA, en orden. (1) ¿El vendedor contradice lo que el cliente ya dijo");
+    expect(r).toContain("Entonces es inventar, aunque diga que lo ve.");
+    expect(r.indexOf("(1)")).toBeLessThan(r.indexOf("(2)"));
+  });
+});
