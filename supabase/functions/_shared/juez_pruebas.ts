@@ -34,7 +34,9 @@ export interface Acusacion {
  * fallas y criterios, y en una corrida del G38 aceptó «claro, claro» para una
  * y lo rechazó para la otra.)
  */
-export interface Juicio { id: string; tipo: string; conducta: "pasa" | "reprueba" | "no_aplica"; razon?: string }
+/** Mensaje 121: la frase en que se apoya el juez, con su turno. */
+export interface Cita { turno: number; quien: string; dijo: string }
+export interface Juicio { id: string; tipo: string; conducta: "pasa" | "reprueba" | "no_aplica"; razon?: string; citas?: Cita[] }
 
 const tienePrueba = (s: unknown): s is string => typeof s === "string" && s.includes("LA PRUEBA");
 
@@ -78,8 +80,9 @@ Tu único trabajo es aplicar LA PRUEBA, tal como está escrita, a lo que el vend
 5. Lo que dijo el evaluador es una pista y puede estar equivocado: compruébalo en la conversación. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
 6. Sé coherente: la misma frase no puede contar como bien hecha para una regla y como mal hecha para otra que pide lo mismo.
 7. Solo juzgas lo que recibes. No buscas otras fallas ni opinas de lo demás.
+8. CITA ANTES DE DECIDIR. En "citas" copia, LETRA POR LETRA y en el orden de la conversación, las frases que deciden la prueba, cada una con su número de "turno" y "quien" la dijo, tal como vienen en la conversación. Si la prueba pregunta qué hizo el vendedor DESPUÉS de algo (después de una respuesta vaga, de un «no», de la señal), cita las dos cosas: lo que pasó y el turno que siguió. Decide solo con lo que citaste: si una frase no está en la conversación, no existe.
 
-Para cada acusación: primero "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba y la frase del vendedor que lo demuestra. Después "conducta": "pasa", "reprueba" o, solo en un criterio cuya regla lo prevé, "no_aplica". Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
+Para cada acusación: primero "citas"; luego "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba con base en esas citas. Después "conducta": "pasa", "reprueba" o, solo en un criterio cuya regla lo prevé, "no_aplica". Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
 
 export const HERRAMIENTA_JUICIOS = {
   name: "juicios",
@@ -94,10 +97,18 @@ export const HERRAMIENTA_JUICIOS = {
           properties: {
             id: { type: "string" },
             tipo: { type: "string", enum: ["falla", "criterio"] },
+            citas: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: { turno: { type: "integer" }, quien: { type: "string", enum: ["vendedor", "cliente"] }, dijo: { type: "string" } },
+                required: ["turno", "quien", "dijo"],
+              },
+            },
             respuesta: { type: "string" },
             conducta: { type: "string", enum: ["pasa", "reprueba", "no_aplica"] },
           },
-          required: ["id", "tipo", "respuesta", "conducta"],
+          required: ["id", "tipo", "citas", "respuesta", "conducta"],
         },
       },
     },
@@ -138,7 +149,12 @@ export function juiciosDeRespuesta(respuesta: any): Juicio[] | null {
   const lista = uso?.input?.juicios;
   if (!Array.isArray(lista)) return null;
   return lista.filter((j: any) => j && typeof j.id === "string" && (j.conducta === "pasa" || j.conducta === "reprueba" || j.conducta === "no_aplica"))
-    .map((j: any) => ({ id: j.id, tipo: String(j.tipo ?? ""), conducta: j.conducta, razon: typeof j.respuesta === "string" ? j.respuesta.slice(0, 300) : undefined }));
+    .map((j: any) => {
+      const out: Juicio = { id: j.id, tipo: String(j.tipo ?? ""), conducta: j.conducta, razon: typeof j.respuesta === "string" ? j.respuesta.slice(0, 300) : undefined };
+      if (Array.isArray(j.citas)) out.citas = j.citas.filter((c: any) => c && Number.isFinite(Number(c.turno)) && typeof c.dijo === "string")
+        .map((c: any) => ({ turno: Number(c.turno), quien: String(c.quien ?? ""), dijo: String(c.dijo) }));
+      return out;
+    });
 }
 
 /**
@@ -181,4 +197,44 @@ export function aplicarJuicios(ev: any, acusaciones: Acusacion[], juicios: Juici
     quitadas.push({ id: a.id, tipo: a.tipo, razon: j.razon });
   }
   return quitadas;
+}
+
+// LAS CITAS SE COMPRUEBAN (mensaje 121, 2-nov-2026).
+//
+// G42: el vendedor da opciones concretas justo después de la respuesta vaga
+// («¿Como anticongelante, grasas o aditivos?»), y el juez dijo, tres de tres
+// veces, que «ante respuestas vagas no siguió con opciones». Antes, en el G04 y
+// el G26, leyó el orden de las frases al revés. Un juicio que se apoya en una
+// frase que no está donde dice no vale. Ahora el juez cita, con su turno, las
+// frases en que se apoya, y el código revisa que cada cita esté en ese turno y
+// lo haya dicho quien dice. Si una cita no está, el juicio se descarta y queda
+// lo que dijo el evaluador.
+
+const normaliza = (s: string) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zñ0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+
+/** ¿La cita está en ese turno? Basta con que casi todas sus palabras estén ahí (el juez puede omitir signos o una palabra). */
+export function citaEnConversacion(c: Cita, conversacion: { role?: string; content?: unknown }[]): boolean {
+  const lista = (Array.isArray(conversacion) ? conversacion : []).slice(-40);
+  const t = lista[Number(c?.turno) - 1];
+  if (!t) return false;
+  const quien = t.role === "user" ? "vendedor" : "cliente";
+  if (c.quien && c.quien !== quien) return false;
+  const texto = " " + normaliza(String(t.content ?? "")) + " ";
+  const palabras = normaliza(c.dijo).split(" ").filter((w) => w.length >= 3);
+  if (palabras.length === 0) return false;
+  const estan = palabras.filter((w) => texto.includes(" " + w + " ") || texto.includes(w)).length;
+  return estan / palabras.length >= 0.8;
+}
+
+/** Separa los juicios que se apoyan en citas que sí están de los que no. Sin citas, el juicio no se puede comprobar: se descarta. */
+export function juiciosConCitasValidas(juicios: Juicio[], conversacion: { role?: string; content?: unknown }[]): { validos: Juicio[]; descartados: { id: string; tipo: string; razon: string }[] } {
+  const validos: Juicio[] = [], descartados: { id: string; tipo: string; razon: string }[] = [];
+  for (const j of juicios) {
+    const citas = Array.isArray(j.citas) ? j.citas : [];
+    const malas = citas.filter((c) => !citaEnConversacion(c, conversacion));
+    if (citas.length === 0) descartados.push({ id: j.id, tipo: j.tipo, razon: "sin citas" });
+    else if (malas.length > 0) descartados.push({ id: j.id, tipo: j.tipo, razon: "cita que no está en ese turno: " + malas.map((m) => `turno ${m.turno} «${m.dijo.slice(0, 80)}»`).join(" | ") });
+    else validos.push(j);
+  }
+  return { validos, descartados };
 }

@@ -121,8 +121,8 @@ describe("El juez en el evaluador", () => {
     expect(voz).toContain("const [juicios, primera] = await Promise.all([juzgar(), auditar([])]);");
     expect(voz).toContain("const segunda = await auditar(quitadasPorJuez);");
     // Lo del juez se aplica después del auditor: los ids del auditor son posiciones.
-    expect(voz.indexOf("aplicarAuditoria(evaluation, primera.veredictos)")).toBeLessThan(voz.indexOf("quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, juicios)"));
-    expect(voz).toContain('console.log("[closer-voice] juez de las pruebas", { session_id, node_id, juicios });');
+    expect(voz.indexOf("aplicarAuditoria(evaluation, primera.veredictos)")).toBeLessThan(voz.indexOf("quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, validos)"));
+    expect(voz).toContain('console.log("[closer-voice] juez de las pruebas", { session_id, node_id, acusaciones:');
     expect(voz).toContain("auditoria.latencia_ms = Date.now() - tRevision;");
   });
   it("la red reporta el tiempo de cada caso y lo que hizo el juez", () => {

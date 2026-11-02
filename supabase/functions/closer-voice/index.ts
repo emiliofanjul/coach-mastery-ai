@@ -33,7 +33,7 @@ import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota 
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
 import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta, corregirPreguntaPorSignos } from "../_shared/hechos_pregunta.ts";
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
-import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, type Juicio } from "../_shared/juez_pruebas.ts";
+import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, juiciosConCitasValidas, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
@@ -555,7 +555,7 @@ async function llamarAuditor(apiKey: string, system: string, user: string, maxTo
 /** El juez de las pruebas contesta con una herramienta: un juicio por acusación. */
 async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama): Promise<Juicio[] | null> {
   return juiciosDeRespuesta(await llamarModelo(apiKey, {
-    max_tokens: 1000, temperature: 0, system: PROMPT_JUEZ,
+    max_tokens: 2000, temperature: 0, system: PROMPT_JUEZ,
     messages: [{ role: "user", content: entrada }],
     tools: [HERRAMIENTA_JUICIOS],
     tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
@@ -1298,9 +1298,14 @@ Deno.serve(async (req) => {
       // Lo del juez se aplica DESPUÉS del auditor: los ids del auditor son
       // posiciones en los textos de antes de quitar nada.
       if (juicios) {
-        // Todos los juicios al log, con su razón: los que quitan y los que dejan.
-        console.log("[closer-voice] juez de las pruebas", { session_id, node_id, juicios });
-        quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, juicios);
+        // Todos los juicios al log, con su razón y sus citas, y lo que recibió
+        // de cada acusación (mensaje 121: antes no quedaba en ningún lado).
+        console.log("[closer-voice] juez de las pruebas", { session_id, node_id, acusaciones: acusaciones.map((a) => ({ id: a.id, tipo: a.tipo, senalado: a.senalado.slice(0, 300) })), juicios });
+        // Mensaje 121: un juicio que cita una frase que no está en ese turno no cuenta.
+        const { validos, descartados } = juiciosConCitasValidas(juicios, fullHistory);
+        juez.descartados_por_cita = descartados.length;
+        if (descartados.length > 0) console.warn("[closer-voice] juez de las pruebas: juicios descartados por sus citas", { session_id, node_id, descartados });
+        quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, validos);
         juez.fallas_quitadas = quitadasPorJuez.filter((q) => q.tipo === "falla").length;
         juez.criterios_corregidos = quitadasPorJuez.filter((q) => q.tipo === "criterio").length;
         if (quitadasPorJuez.length > 0) console.warn("[closer-voice] juez de las pruebas: acusaciones que no se sostienen", { session_id, node_id, quitadas: quitadasPorJuez });
