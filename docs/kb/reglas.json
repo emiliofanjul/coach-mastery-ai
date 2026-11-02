@@ -1055,7 +1055,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Fabricar un hueco: venderle un problema que no tiene. LA PRUEBA: ¿el vendedor afirma que al cliente le falta algo o que lo necesita sin ninguna base —ni lo dijo el cliente, ni se ve, ni es de su giro, ni lo apoya en negocios como el suyo—, o contradice lo que el cliente ya dijo? Preguntar nunca es inventar. Apoyarse en otros clientes como él, o decir lo que ve (en la práctica se imagina), tampoco.",
+  "resumen": "Fabricar un hueco: venderle un problema que no tiene. LA PRUEBA, en orden. (1) ¿El vendedor contradice lo que el cliente ya dijo —el cliente dijo que está surtido o que no le hace falta, y el vendedor afirma que le falta o que lo necesita—? Entonces es inventar, aunque diga que lo ve. (2) Si no contradice nada: ¿afirma que al cliente le falta algo o que lo necesita sin ninguna base —ni lo dijo el cliente, ni se ve, ni es de su giro, ni lo apoya en negocios como el suyo—? Preguntar nunca es inventar. Apoyarse en otros clientes como él tampoco. Decir lo que ve tampoco (en la práctica se imagina), siempre que no contradiga lo que el cliente dijo.",
   "cita_cerebro": "Inventar es afirmar que le falta o que lo necesita sin ninguna base",
   "severidad_sugerida": "critical"
  },

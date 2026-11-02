@@ -951,7 +951,7 @@ Hay dos diferencias que no son obvias y que sí conviene tener explícitas, porq
 
 > **La línea que no se cruza:** un hueco tiene que ser real y verificable. **Descubrir un hueco es señalar algo que ya existe. Fabricarlo es venderle un problema que no tiene.**
 
-**Qué sí se vale y qué es inventar** `CAMPO`: preguntar nunca es inventar (*"¿y el líquido de frenos, lo maneja?"*). Tampoco apoyarte en otros clientes como él (*"varios talleres como el suyo me compran líquido de frenos"*), ni decir lo que ves —en la práctica lo que ves se imagina—. Inventar es afirmar que le falta o que lo necesita sin ninguna base, o contradecir lo que el cliente ya dijo.
+**Qué sí se vale y qué es inventar** `CAMPO`: preguntar nunca es inventar (*"¿y el líquido de frenos, lo maneja?"*). Tampoco apoyarte en otros clientes como él (*"varios talleres como el suyo me compran líquido de frenos"*), ni decir lo que ves —en la práctica lo que ves se imagina—, siempre que no contradiga lo que el cliente ya dijo: si te dijo que está bien surtido, «se ve que le hace falta» es inventar. Inventar es afirmar que le falta o que lo necesita sin ninguna base, o contradecir lo que el cliente ya dijo.
 
 **Si no hay hueco** `CAMPO`: si lo buscaste bien —con las herramientas, y siguiendo las respuestas vagas— y no apareció, o te topaste con dos «no» seguidos, hoy no había nada que descubrir. No es una falla: lo retomas en otra visita.
 
