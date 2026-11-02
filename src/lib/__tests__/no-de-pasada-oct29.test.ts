@@ -34,7 +34,7 @@ describe("El evaluador dice lo mismo", () => {
   it("en las reglas de los no y en el hecho cliente_antes", () => {
     expect(voz).toContain("una respuesta vaga o corta, una duda o una objeción NO son un «no»; pero si en la misma respuesta contesta algo de pasada y rechaza seguir, SÍ es un «no»: cuenta lo que la respuesta hace, no cómo empieza.");
     expect(voz).toContain('"rechaza" (rechaza lo que el vendedor intentaba en ese momento, aunque traiga excusa o conteste algo de pasada)');
-    expect(voz).toContain('const PROMPT_VERSION = "v2.9.6"');
+    expect(voz).toMatch(/const PROMPT_VERSION = "v2\.9\.([6-9]|\d{2})"/);
   });
 });
 

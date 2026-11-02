@@ -93,7 +93,7 @@ describe("los guiones", () => {
       "4.10/se_derrumba", "4.12/cierra_con_afirmacion", "4.3/explica_sin_pintar", "4.3/imagen_generica",
       "4.3/presentacion_generica", "5.6/no_repite", "6.2/proximos_pasos_vagos",
       "2.8/la_trata_como_bloqueo", "2.8/se_defiende",
-      "1.6/se_encoge", "3.10/ignora_pistas", "3.10/ignora_estado", "4.16/explica_sin_pintar", "5.15/traga_la_minimizacion",
+      "1.6/se_encoge", "3.10/ignora_pistas", "3.10/ignora_estado", "4.16/explica_sin_pintar",
     ].sort());
   });
 });

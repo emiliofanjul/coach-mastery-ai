@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.30.0",
+  "harness_version": "v3.31.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -4224,6 +4224,307 @@
       "expected": {
         "must_flag": [
           "suelta_un_amarillo"
+        ]
+      }
+    },
+    {
+      "id": "G84_presiona_no_asume",
+      "node_id": "5.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119 (Emilio, 2-nov): asumir es proponer y dejarlo elegir. Presionar es dar por hecho lo que el cliente no aceptó.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces, don Chuy, con lo que me dijo: se queda sin 15W40 cada quincena y pierde unos cinco cambios cada vez. Con entrega cada jueves eso se le acaba, y le sale la cubeta en 1,250 en vez de 1,350."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la cuenta sale. Ya me tiene harto quedarme sin aceite."
+        },
+        {
+          "role": "user",
+          "text": "¿Se las mando el jueves o el viernes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Déjeme ver, todavía no sé."
+        },
+        {
+          "role": "user",
+          "text": "Ya se las apunté para el jueves: diez cubetas."
+        },
+        {
+          "role": "assistant",
+          "text": "Oiga, espérese, yo no he dicho que sí."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "atropello"
+        ]
+      }
+    },
+    {
+      "id": "G85_alternativa_asumida",
+      "node_id": "5.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119: la otra cara del G84. Alternativa donde las dos respuestas son un sí, sobre lo ya platicado.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces, don Chuy, con lo que me dijo: se queda sin 15W40 cada quincena y pierde unos cinco cambios cada vez. Con entrega cada jueves eso se le acaba, y le sale la cubeta en 1,250 en vez de 1,350."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la cuenta sale. Ya me tiene harto quedarme sin aceite."
+        },
+        {
+          "role": "user",
+          "text": "Entonces arrancamos: ¿le mando las diez cubetas este jueves o prefiere el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves, de una vez."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "abre_puerta_al_no",
+          "atropello",
+          "sigue_presentando",
+          "persigue"
+        ]
+      }
+    },
+    {
+      "id": "G86_se_lo_mando",
+      "node_id": "5.1",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119 (Emilio, 2-nov): «¿se lo mando?» es un mal cierre, igual de grave que «¿le interesa?»: el no sale gratis.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces, don Chuy, con lo que me dijo: se queda sin 15W40 cada quincena y pierde unos cinco cambios cada vez. Con entrega cada jueves eso se le acaba, y le sale la cubeta en 1,250 en vez de 1,350."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la cuenta sale. Ya me tiene harto quedarme sin aceite."
+        },
+        {
+          "role": "user",
+          "text": "¿Se las mando?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, mejor déjeme pensarlo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "abre_puerta_al_no"
+        ]
+      }
+    },
+    {
+      "id": "G87_senal_contesta_y_cierra",
+      "node_id": "5.3",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119 (Emilio, 2-nov): «¿y cuándo me lo entregan?» es de las señales más fuertes. Se contesta y se cierra en el mismo turno.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Este 15W40 le aguanta más kilómetros entre cambios, y sus clientes regresan menos con quejas de motor."
+        },
+        {
+          "role": "assistant",
+          "text": "Oiga, ¿y cuándo me lo entregan?"
+        },
+        {
+          "role": "user",
+          "text": "Los jueves, don Chuy. ¿Se lo aparto para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Para este."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "sigue_presentando",
+          "abre_puerta_al_no",
+          "atropello"
+        ]
+      }
+    },
+    {
+      "id": "G88_senal_un_beneficio_mas",
+      "node_id": "5.3",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119: la otra cara del G87. Contestar y agregar aunque sea un beneficio más es seguir presentando.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Este 15W40 le aguanta más kilómetros entre cambios, y sus clientes regresan menos con quejas de motor."
+        },
+        {
+          "role": "assistant",
+          "text": "Oiga, ¿y cuándo me lo entregan?"
+        },
+        {
+          "role": "user",
+          "text": "Los jueves. Y además le damos crédito a 30 días, y la cubeta trae un empaque más resistente que no se le revienta en la bodega."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, órale."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "sigue_presentando"
+        ]
+      }
+    },
+    {
+      "id": "G89_llena_el_silencio",
+      "node_id": "5.13",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119 (Emilio, 2-nov): después de pedir la decisión, retractarse o suavizar es llenar el silencio.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces, don Chuy, con lo que me dijo: se queda sin 15W40 cada quincena y pierde unos cinco cambios cada vez. Con entrega cada jueves eso se le acaba, y le sale la cubeta en 1,250 en vez de 1,350."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la cuenta sale. Ya me tiene harto quedarme sin aceite."
+        },
+        {
+          "role": "user",
+          "text": "¿Le armo las diez cubetas o el combo de quince?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm…"
+        },
+        {
+          "role": "user",
+          "text": "Bueno, si le parece mucho pueden ser cinco… o si quiere lo piensa y paso la otra semana."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, mejor lo pienso."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "llena_el_silencio"
+        ]
+      }
+    },
+    {
+      "id": "G90_contestar_no_es_llenar",
+      "node_id": "5.13",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119: la otra cara del G89. Si el cliente pregunta algo, contestarle no es llenar el silencio.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces, don Chuy, con lo que me dijo: se queda sin 15W40 cada quincena y pierde unos cinco cambios cada vez. Con entrega cada jueves eso se le acaba, y le sale la cubeta en 1,250 en vez de 1,350."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la cuenta sale. Ya me tiene harto quedarme sin aceite."
+        },
+        {
+          "role": "user",
+          "text": "¿Le armo las diez cubetas o el combo de quince?"
+        },
+        {
+          "role": "assistant",
+          "text": "¿El combo trae el anticongelante también?"
+        },
+        {
+          "role": "user",
+          "text": "Sí, trae dos garrafas de anticongelante."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, entonces el combo."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "llena_el_silencio",
+          "persigue",
+          "abre_puerta_al_no"
+        ]
+      }
+    },
+    {
+      "id": "G91_descuento_a_cambio",
+      "node_id": "5.8",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119 (Emilio, 2-nov): el descuento a cambio de algo (más volumen) no es descuento de pánico.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Le queda en 1,250 la cubeta, con entrega cada jueves."
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Lo entiendo, don Chuy, muchos clientes sintieron lo mismo al principio, hasta que vieron que dejaron de perder cambios por quedarse sin aceite. Y mire: si en vez de diez se lleva veinte, le dejo el precio de mayoreo, 1,180. ¿Le armo las veinte para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Va, veinte para este jueves."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "descuento_de_panico"
+        ]
+      }
+    },
+    {
+      "id": "G92_descuento_de_panico",
+      "node_id": "5.8",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 119: la otra cara del G91. Bajar el precio solo porque dijo que está caro, sin pedir nada a cambio.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Le queda en 1,250 la cubeta, con entrega cada jueves."
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Bueno, se la dejo en 1,100 para que no se vaya."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues a ver."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "descuento_de_panico"
         ]
       }
     }
