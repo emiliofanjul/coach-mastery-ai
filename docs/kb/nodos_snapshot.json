@@ -1170,7 +1170,7 @@
           "message_incomplete": "Ahi lo dejamos — ya vi como lees y como ajustas. Vamos al desglose y te digo cual era la siguiente jugada."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1213,7 +1213,7 @@
         {
           "id": "discovery.escucha_activa",
           "weight": 0.4,
-          "regla_id": "discovery.escalera_capas",
+          "regla_id": "discovery.escucha",
           "description": "Sus turnos construyen sobre lo que el cliente acaba de decir — retoma sus palabras, su tema, su estado — en lugar de avanzar una agenda propia desconectada de las respuestas."
         }
       ]
@@ -1254,7 +1254,7 @@
           "message_incomplete": "Ahi paramos la excavacion — ya vi como preguntas y con eso trabajo. Vamos al desglose y te digo cual era la siguiente jugada."
         }
       },
-      "version": "1.3.1",
+      "version": "1.4.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1291,13 +1291,13 @@
           "id": "interrogatorio",
           "regla_id": "discovery.interrogatorio",
           "severity": "minor",
-          "description": "Preguntas en rafaga sin construir sobre las respuestas — el cliente se siente en el ministerio publico, no en una conversacion."
+          "description": "Preguntas una tras otra que no recogen nada de lo que el cliente acaba de contestar: suena a entrevista, no a platica. Dar opciones despues de preguntar no es esto."
         },
         {
           "id": "pitch_prematuro",
           "regla_id": "discovery.receta_sin_diagnostico",
           "severity": "critical",
-          "description": "Presenta el producto al detectar el dolor (o antes). El descubrimiento se contamina: en cuanto presentas, el cliente deja de revelar. La presentacion tiene su propio mundo.",
+          "description": "Habla de su producto, sus beneficios, su precio o una promocion durante el diagnostico. Nombrar una familia para preguntar si la maneja no es presentar.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -1307,11 +1307,17 @@
           "id": "pregunta_cerrada_en_capa_profunda",
           "regla_id": "discovery.solo_cerradas",
           "severity": "minor",
-          "description": "Ya que el dolor asomo (capa 3), profundiza con cerradas de si/no que cortan la revelacion en lugar de abiertas que la expanden. Aplica SOLO a capa 3: en capa 2 la pregunta concreta y acotada es lo correcto.",
+          "description": "Ya que salio la pista, todas sus preguntas sobre ella son de si o no y el cliente deja de contar. Una cerrada suelta no es esto.",
           "severity_override": {
             "razon": "incidental: fuera del foco del nodo",
             "default": "major"
           }
+        },
+        {
+          "id": "pide_opinion_precio",
+          "regla_id": "discovery.opinion_de_precio",
+          "severity": "critical",
+          "description": "Le pide al cliente su opinion sobre los precios (como ve los precios, siente algo caro, estamos bien de precio). Preguntar a como compra o cada cuanto le suben no es esto: son hechos."
         }
       ],
       "success_criteria": [
@@ -1319,7 +1325,7 @@
           "id": "discovery.preguntas_capas",
           "weight": 0.28,
           "regla_id": "discovery.escalera_capas",
-          "description": "Progresion visible de capas con mapa: preguntas de hechos primero (que, cuanto, cuales, a como), luego subida a capa 2, y excavacion con preguntas ABIERTAS una vez que aparece la pista (en capa 3 las abiertas son lo correcto: expanden el relato). Recorre territorios (producto, servicio, precio) en lugar de agotar uno solo; cambiar de territorio ante una negacion limpia es ejecucion CORRECTA y se acredita. Cada pregunta nace de la respuesta anterior. Cualquier territorio elegido para explorar primero es valido."
+          "description": "Sube de los hechos a preguntas que abren la puerta y, cuando aparece la pista, la excava con preguntas abiertas. No se cuentan territorios: cambia de territorio solo si el cliente le dejo claro que ahi no hay problema."
         },
         {
           "id": "discovery.pregunta_especifica",
@@ -1330,8 +1336,8 @@
         {
           "id": "discovery.dolor_real",
           "weight": 0.28,
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
-          "description": "Detecta la pista (el aunque, el a veces, el lo unico), la excava hasta que el cliente revela el dolor completo, Y lo confirma verbalizandolo de vuelta en sus propias palabras. Quedarse en la pista sin excavarla, o excavarla sin confirmarla, no cumple. Preguntar el dolor directo (que problemas tiene?) tampoco: el dolor se deja emerger."
+          "regla_id": "discovery.escalera_capas",
+          "description": "Detecta la pista (el aunque, el a veces, el lo unico) y la excava hasta que el cliente cuenta el dolor completo. Devolverselo con sus palabras no se pide: se lo puede quedar callado y seguir, para usarlo en la presentacion."
         },
         {
           "id": "discovery.suggestive_language",
@@ -1375,7 +1381,7 @@
           "message_incomplete": "Ahi lo dejamos — ya vi como escuchas. Vamos al desglose y te enseno que regalos quedaron en la mesa."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1392,7 +1398,7 @@
           "id": "interrogatorio",
           "regla_id": "discovery.interrogatorio",
           "severity": "major",
-          "description": "Ráfaga de preguntas desconectadas de las respuestas — la conversación suena a formulario.",
+          "description": "Preguntas una tras otra que no recogen nada de lo que el cliente acaba de contestar: suena a entrevista, no a platica. Dar opciones despues de preguntar no es esto.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "minor"
@@ -1412,7 +1418,7 @@
         },
         {
           "id": "conversacion_desconectada",
-          "regla_id": "discovery.escalera_capas",
+          "regla_id": "discovery.escucha",
           "severity": "major",
           "description": "NINGUNA de las preguntas del vendedor conecta con lo que el cliente acaba de decir: dispara una lista propia mientras el cliente habla de otra cosa. Se penaliza la desconexion total, no el hecho de no recoger algun dato en particular.",
           "espejo_de": "discovery.escucha_activa"
@@ -1422,7 +1428,7 @@
         {
           "id": "discovery.escucha_activa",
           "weight": 0.6,
-          "regla_id": "discovery.escalera_capas",
+          "regla_id": "discovery.escucha",
           "description": "Al menos UNA de las preguntas del vendedor nace directamente de un dato que el cliente acaba de regalar, usando sus propias palabras. NO se exige recoger todos los datos que el cliente menciona: eso seria un interrogatorio. Se exige que la conversacion este HILADA — que se note que escucho. Explorar un solo hilo a fondo cumple; guardar los demas para mas adelante es estrategia legitima del vendedor y no se penaliza."
         },
         {
@@ -1467,7 +1473,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como mezclas lo personal con el diagnostico. Vamos al desglose."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1528,7 +1534,7 @@
           "id": "discovery.preguntas_capas",
           "weight": 0.45,
           "regla_id": "discovery.escalera_capas",
-          "description": "Sostiene el avance del diagnostico: recorre mas de un territorio de negocio y las preguntas nacen de las respuestas anteriores. El toque personal no debe descarrilar el barrido: despues del desvio, el diagnostico continua donde iba."
+          "description": "Sostiene el avance del diagnostico: las preguntas nacen de las respuestas anteriores y, despues del desvio personal, el diagnostico sigue donde iba."
         }
       ]
     }
@@ -1573,14 +1579,14 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que habia disponible en esa visita."
         }
       },
-      "version": "2.1.0",
+      "version": "2.2.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "insiste_en_rojo",
           "regla_id": "discovery.rojo_insistir",
           "severity": "critical",
-          "description": "Ante un ROJO GENUINO — cliente que no quiere, desganado o cortante — sigue intentando convencerlo despues de conocer la razon. Le roba tiempo a otro cliente e incomoda a alguien que fue honesto. NO aplica cuando el cliente es amable y su impedimento es circunstancial: ahi seguir buscando es lo correcto.",
+          "description": "Despues de saber que hoy el cliente no puede o no quiere comprar nada, sigue tratando de convencerlo. No aplica si la restriccion deja algo fuera: ahi trabajar eso es lo correcto.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -1590,7 +1596,7 @@
           "id": "suelta_un_amarillo",
           "regla_id": "discovery.suelta_amarrado",
           "severity": "critical",
-          "description": "Ante un cliente AMABLE y dispuesto cuyo impedimento es una circunstancia temporal, se rinde y se va sin investigar los limites de esa restriccion ni buscar que si puede venderle hoy. Es la falla mas cara del oficio: ese cliente queria comprar y el vendedor se fue solo.",
+          "description": "Al oir el impedimento se va sin averiguar si algo si puede comprar hoy. Ese cliente si le iba a comprar y se fue solo.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -1606,7 +1612,7 @@
           "id": "no_investiga_limites",
           "regla_id": "discovery.bordes_restriccion",
           "severity": "major",
-          "description": "Descubre una restriccion parcial (un contrato, una exclusividad, una politica) y la toma como total sin preguntar que cubre y que deja fuera. Es donde vive la venta que la competencia no vio."
+          "description": "Se queda, pero toma la restriccion como total: nunca pregunta que cubre ni que deja fuera (sigue platicando, o insiste en lo que el contrato cubre). Si se fue sin averiguar, eso es soltar al amarillo, no esto: no se cobra dos veces."
         },
         {
           "id": "salida_seca",
@@ -1634,13 +1640,13 @@
           "id": "qualification.luz_verde",
           "weight": 0.55,
           "regla_id": "discovery.rojo_vs_amarrado",
-          "description": "Distingue QUE TIPO de no es. Hay dos casos y se ejecutan distinto. (A) ROJO GENUINO — el cliente no quiere, no le interesa, o es cortante y desganado: aqui la ejecucion correcta es ACEPTAR y SALIR bien, sin insistir. (B) AMARRADO TEMPORALMENTE — el cliente es amable, honesto, te recibe con gusto, y la razon por la que no compra es una circunstancia que va a cambiar (un contrato, no ser el que decide, un inventario recien surtido): aqui SALIR ES LA FALLA. Se acepta la circunstancia sin pelearla, se busca que SI se puede vender hoy dentro de esa restriccion, y se deja sembrado el momento en que cambie. Acreditar cualquiera de las dos ejecuciones segun el caso que el Actor haya presentado."
+          "description": "Averigua rapido, preguntando, si el cliente puede comprar algo hoy, y actua segun lo que encuentra. Si no puede comprar nada (rojo como cliente, aunque sea amable), corta rapido y bien y deja la puerta abierta. Si algo si puede (amarillo), lo trabaja: ahi irse es la falla."
         },
         {
           "id": "discovery.preguntas_capas",
           "weight": 0.45,
           "regla_id": "discovery.escalera_capas",
-          "description": "Llega a la razon real preguntando, no adivinando ni rindiendose antes de saber. Y si la razon es una restriccion parcial, INVESTIGA SUS LIMITES: que cubre exactamente, que queda fuera, hasta cuando dura. Ahi es donde suele estar la venta que nadie mas encontro. Cierra dejando la puerta abierta, sin quemar la relacion ni despedirse en seco."
+          "description": "Llega a la razon real preguntando, no adivinando ni rindiendose antes de saber. Si es una restriccion, con una o dos preguntas averigua que cubre, que queda fuera y hasta cuando dura. Cierra dejando la puerta abierta."
         }
       ]
     }
@@ -1685,7 +1691,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que habia en ese mostrador que no alcanzaste a ver."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1708,13 +1714,13 @@
           "id": "hueco_inventado",
           "regla_id": "discovery.hueco_inventado",
           "severity": "critical",
-          "description": "Afirma que el cliente necesita algo sin que el cliente lo haya dicho ni exista evidencia. Fabricar un hueco es venderle un problema que no tiene."
+          "description": "Afirma que al cliente le falta algo o que lo necesita sin ninguna base, o contradice lo que el cliente dijo. Preguntar, apoyarse en negocios como el suyo o decir lo que ve no es inventar."
         },
         {
           "id": "pitch_prematuro",
           "regla_id": "discovery.receta_sin_diagnostico",
           "severity": "minor",
-          "description": "Empieza a presentar producto antes de terminar de mapear. Aqui solo se descubre.",
+          "description": "Empieza a presentar producto, beneficios o precio antes de terminar de mapear. Nombrar una familia para preguntar si la maneja no es presentar.",
           "severity_override": {
             "razon": "incidental: fuera del foco del nodo",
             "default": "major"
@@ -1771,7 +1777,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que se quedo sobre la mesa en esa visita."
         }
       },
-      "version": "2.0.3",
+      "version": "2.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1788,7 +1794,7 @@
           "id": "hueco_inventado",
           "regla_id": "discovery.hueco_inventado",
           "severity": "critical",
-          "description": "Afirma que el cliente necesita algo sin evidencia y sin que el cliente lo haya dicho. Fabricar un hueco es venderle un problema que no tiene, y con un cliente de cartera eso se descubre siempre."
+          "description": "Afirma que al cliente le falta algo o que lo necesita sin ninguna base, o contradice lo que el cliente dijo. Preguntar, apoyarse en negocios como el suyo o decir lo que ve no es inventar."
         },
         {
           "id": "jones_se_cae",
@@ -1863,7 +1869,7 @@
           "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo qué se quedó sobre la mesa en esa primera visita."
         }
       },
-      "version": "1.0.3",
+      "version": "1.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1880,7 +1886,7 @@
           "id": "hueco_inventado",
           "regla_id": "discovery.hueco_inventado",
           "severity": "critical",
-          "description": "Afirma que el cliente necesita algo sin evidencia y sin que el cliente lo haya dicho. Fabricar un hueco es venderle un problema que no tiene, y un cliente nuevo que lo descubre ya no te vuelve a creer."
+          "description": "Afirma que al cliente le falta algo o que lo necesita sin ninguna base, o contradice lo que el cliente dijo. Preguntar, apoyarse en negocios como el suyo o decir lo que ve no es inventar."
         },
         {
           "id": "jones_se_cae",
@@ -1954,14 +1960,14 @@
           "message_incomplete": "Hasta aqui la sesion — un diagnostico de verdad no siempre se termina, pero siempre ensena. Vamos al desglose y te digo exactamente donde quedo la excavacion."
         }
       },
-      "version": "1.0.2",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "pitch_prematuro",
           "regla_id": "discovery.receta_sin_diagnostico",
           "severity": "critical",
-          "description": "Presenta producto en cualquier punto — incluso al descubrir el dolor. El diagnóstico termina donde empieza la receta, y la receta es del siguiente mundo.",
+          "description": "Presenta producto, beneficios o precio en cualquier punto, incluso al descubrir el dolor. Hoy solo se diagnostica.",
           "severity_override": {
             "razon": "boss: escalada",
             "default": "major"
@@ -1992,7 +1998,7 @@
           "id": "interrogatorio",
           "regla_id": "discovery.interrogatorio",
           "severity": "minor",
-          "description": "Ráfagas de preguntas desconectadas de las respuestas."
+          "description": "Preguntas una tras otra que no recogen nada de lo que el cliente acaba de contestar: suena a entrevista, no a platica. Dar opciones despues de preguntar no es esto."
         },
         {
           "id": "kill_curriculum",
@@ -2015,6 +2021,12 @@
           "regla_id": "blocks.insistir_tras_dos_no",
           "severity": "major",
           "description": "Después de dos no seguidos en la puerta sigue insistiendo: pide un minutito, vuelve a su tema o trata de convencerlo, en vez de quedar de regresar en otro momento. Ya no es seguridad, es terquedad. Solo cuenta lo que dice DESPUÉS del segundo no seguido."
+        },
+        {
+          "id": "pide_opinion_precio",
+          "regla_id": "discovery.opinion_de_precio",
+          "severity": "critical",
+          "description": "Le pide al cliente su opinion sobre los precios (como ve los precios, siente algo caro, estamos bien de precio). Preguntar a como compra o cada cuanto le suben no es esto: son hechos."
         }
       ],
       "success_criteria": [
@@ -2027,13 +2039,13 @@
         {
           "id": "discovery.dolor_real",
           "weight": 0.2,
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
-          "description": "El dolor completo fue revelado por el cliente Y confirmado verbalmente por el vendedor en sus propias palabras antes del cierre de la sesión."
+          "regla_id": "discovery.escalera_capas",
+          "description": "Detecta la pista (el aunque, el a veces, el lo unico) y la excava hasta que el cliente cuenta el dolor completo. Devolverselo con sus palabras no se pide: se lo puede quedar callado y seguir, para usarlo en la presentacion."
         },
         {
           "id": "discovery.escucha_activa",
           "weight": 0.15,
-          "regla_id": "discovery.escalera_capas",
+          "regla_id": "discovery.escucha",
           "description": "Recoge al menos un dato lateral regalado por el cliente y construye sobre él con las palabras del cliente."
         },
         {
@@ -3977,7 +3989,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.1.2",
+      "version": "1.1.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4014,7 +4026,7 @@
         },
         {
           "id": "traga_la_minimizacion",
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
+          "regla_id": "discovery.escalera_capas",
           "severity": "major",
           "description": "Acepta el pero así es esto, todos fallan igual sin desmontarlo — el dolor queda archivado como normal y la venta pierde su motor.",
           "espejo_de": "discovery.dolor_real"
@@ -4082,7 +4094,7 @@
         {
           "id": "discovery.dolor_real",
           "weight": 0.1,
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
+          "regla_id": "discovery.escalera_capas",
           "description": "El dolor excavado por capas Y su minimización desmontada: valida que no es normal y lo cuantifica con los números del cliente hasta que lo tome en serio."
         },
         {
@@ -4441,7 +4453,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "1.1.2",
+      "version": "1.1.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4545,8 +4557,8 @@
         {
           "id": "discovery.dolor_real",
           "weight": 0.15,
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
-          "description": "Descubrimiento por capas hasta el dolor completo, revelado por el cliente y confirmado verbalmente antes de presentar."
+          "regla_id": "discovery.escalera_capas",
+          "description": "Descubrimiento por capas hasta que el cliente cuenta el dolor completo, antes de presentar. Devolverselo con sus palabras no se pide aqui: se usa en la presentacion."
         },
         {
           "id": "presentation.conectar_dolor",
@@ -4591,7 +4603,7 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio ENCANTADOR — cálido, platicador, hospitalario, te cae bien el vendedor de inmediato... y eres una LUZ ROJA GENUINA: hoy NO puedes comprar, hagas lo que hagas el vendedor. TU RAZÓN REAL (elige al azar): (A) acabas de firmar exclusividad por un año con otro proveedor — contrato firmado, con penalización; (B) estás traspasando el negocio — en dos meses ya no es tuyo y no vas a meter inventario nuevo; (C) tu negocio genuinamente no maneja ni puede manejar esa categoría de producto (no tienes ni el permiso ni la clientela). REGLAS: (1) NO revelas tu razón de entrada — pero NO la escondes: cualquier pregunta de descubrimiento decente la saca a la luz en la primera o segunda capa (¿qué tal le va con su proveedor? → uy, fíjese que acabo de firmar con... / ¿cómo ve el negocio este año? → pues mire, le voy a ser sincero, ando en pláticas de traspaso...). La cuentas con total honestidad y simpatía. (2) Mientras tanto PLATICAS encantador de todo — la familia, la zona, el futbol — eres el cliente más agradable del munda. (3) Si el vendedor, DESPUÉS de conocer tu razón, sigue presentando o intenta convencerte (para cuando se le acabe el contrato le conviene ir conociendo... / de todas formas déjeme mostrarle...), respondes con amabilidad pero firmeza creciente: no joven, de verdad — no le quiero hacer perder su tiempo, y a la segunda insistencia tu simpatía se tensa visiblemente: le agradezco, pero ya le expliqué mi situación. (4) Si el vendedor honra tu situación, cierra cálido y rápido, deja la puerta abierta (cuando se le venza el contrato / con el nuevo dueño), y — si la plática lo ganó — pide referido con naturalidad: le das UNO real con gusto (mi compadre tiene un negocio igual a tres cuadras, dígale que va de mi parte). (5) NUNCA compras. Bajo ninguna técnica, ninguna presión, ningún encanto. Hoy no se puede — y esa es la verdad del examen.",
+          "prompt": "Eres el dueño de un negocio ENCANTADOR — cálido, platicador, hospitalario, te cae bien el vendedor de inmediato... y eres una LUZ ROJA GENUINA: hoy NO puedes comprar, hagas lo que hagas el vendedor. TU RAZÓN REAL (elige al azar): (A) acabas de firmar exclusividad por un año con otro proveedor — contrato firmado, con penalización, que cubre TODO lo que vende el vendedor (si te pregunta qué cubre, le dices que todo); (B) estás traspasando el negocio — en dos meses ya no es tuyo y no vas a meter inventario nuevo; (C) tu negocio genuinamente no maneja ni puede manejar esa categoría de producto (no tienes ni el permiso ni la clientela). REGLAS: (1) NO revelas tu razón de entrada — pero NO la escondes: cualquier pregunta de descubrimiento decente la saca a la luz en la primera o segunda capa (¿qué tal le va con su proveedor? → uy, fíjese que acabo de firmar con... / ¿cómo ve el negocio este año? → pues mire, le voy a ser sincero, ando en pláticas de traspaso...). La cuentas con total honestidad y simpatía. (2) Mientras tanto PLATICAS encantador de todo — la familia, la zona, el futbol — eres el cliente más agradable del munda. (3) Si el vendedor, DESPUÉS de conocer tu razón, sigue presentando o intenta convencerte (para cuando se le acabe el contrato le conviene ir conociendo... / de todas formas déjeme mostrarle...), respondes con amabilidad pero firmeza creciente: no joven, de verdad — no le quiero hacer perder su tiempo, y a la segunda insistencia tu simpatía se tensa visiblemente: le agradezco, pero ya le expliqué mi situación. (4) Si el vendedor honra tu situación, cierra cálido y rápido, deja la puerta abierta (cuando se le venza el contrato / con el nuevo dueño), y — si la plática lo ganó — pide referido con naturalidad: le das UNO real con gusto (mi compadre tiene un negocio igual a tres cuadras, dígale que va de mi parte). (5) NUNCA compras. Bajo ninguna técnica, ninguna presión, ningún encanto. Hoy no se puede — y esa es la verdad del examen.",
           "objective": "El vendedor CALIFICA temprano (sus preguntas de descubrimiento revelan la luz roja en las primeras capas), RECONOCE la luz roja cuando aparece (deja de vender de inmediato — ni un intento de convencer después de conocer la razón), y SALE con calidad: cierre de visita cálido y breve, puerta explícitamente abierta al futuro (el vencimiento del contrato, el nuevo dueño), y idealmente un referido pedido con naturalidad. El scope se cubre cuando la visita quedó cerrada con calidez, brevedad y la relación intacta — en pocos turnos."
         },
         "closing": {
@@ -4599,7 +4611,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose y te digo que tan rapido leiste la luz."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4646,7 +4658,7 @@
           "id": "qualification.luz_verde",
           "weight": 0.4,
           "regla_id": "discovery.rojo_vs_amarrado",
-          "description": "Reconoce la luz roja en cuanto la razón real aparece: detiene toda venta de inmediato — cero intentos de convencer, rodear o sembrar para después de conocer la situación. La velocidad y la firmeza amable de la lectura es el corazón del examen."
+          "description": "Reconoce la luz roja: el cliente es encantador como persona, pero hoy no puede comprar. En cuanto la razon aparece, corta rapido y bien: cero intentos de convencer o de sembrar."
         },
         {
           "id": "discovery.preguntas_capas",
@@ -4837,7 +4849,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4860,7 +4872,7 @@
           "id": "hueco_inventado",
           "regla_id": "discovery.hueco_inventado",
           "severity": "critical",
-          "description": "Afirma que el cliente necesita algo sin evidencia."
+          "description": "Afirma que al cliente le falta algo o que lo necesita sin ninguna base, o contradice lo que el cliente dijo. Preguntar, apoyarse en negocios como el suyo o decir lo que ve no es inventar."
         },
         {
           "id": "garantiza",
@@ -4972,7 +4984,7 @@
           "message_incomplete": "Hasta aqui el examen final. Vamos al desglose."
         }
       },
-      "version": "1.0.3",
+      "version": "1.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -5058,8 +5070,8 @@
         {
           "id": "discovery.dolor_real",
           "weight": 0.13,
-          "regla_id": "discovery.confirmacion_con_sus_palabras",
-          "description": "Excava el dolor con preguntas de calidad que aguantan el sarcasmo — hasta la revelación y confirmación."
+          "regla_id": "discovery.escalera_capas",
+          "description": "Excava el dolor con preguntas de calidad que aguantan el sarcasmo, hasta que el cliente lo cuenta."
         },
         {
           "id": "presentation.conectar_dolor",

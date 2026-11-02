@@ -684,7 +684,7 @@
     "card_order": 6,
     "card_type": "concept",
     "title": "La regla del investigador",
-    "body": "El dolor NUNCA se pregunta directo. \"Que problemas tiene?\" produce un \"ninguno, todo bien\" — garantizado.\n\nEl dolor se deja emerger: preguntas por los hechos de un territorio, subes a la experiencia, y esperas el flaqueo — el \"aunque...\", el \"a veces...\", el \"lo unico es que...\".\n\nY cuando el dolor sale completo, lo confirmas con SUS palabras: \"entonces lo que mas le pega es X, cierto?\" Hasta que el cliente dice que si, no has terminado de diagnosticar.",
+    "body": "El dolor NUNCA se pregunta directo. \"Que problemas tiene?\" produce un \"ninguno, todo bien\" — garantizado.\n\nEl dolor se deja emerger: preguntas por los hechos de un territorio, subes a la experiencia, y esperas el flaqueo — el \"aunque...\", el \"a veces...\", el \"lo unico es que...\".\n\nY cuando el dolor sale, apréndetelo con SUS palabras. Se lo puedes repetir en ese momento, o quedarte callado y seguir. Lo importante es no olvidarlo: lo vas a usar en la presentación.",
     "flip_back_text": null
   },
   {
@@ -732,7 +732,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "El cuarto Boss.",
-    "body": "Un cliente analítico, apurado y desconfiado — le han hecho perder el tiempo antes. Trae un dolor real en el negocio, pero no se lo cuenta a cualquiera.\n\nTu misión: la conversación completa. Abrir. Presentarte. Atravesar el \"no\" que va a caer. Leer su prisa. Y excavar — capa por capa, pista por pista — hasta que el dolor salga completo. Confírmalo con sus palabras y habrás terminado.\n\nY recuerda la regla del doctor: hoy NO se receta. Solo se diagnostica.",
+    "body": "Un cliente analítico, apurado y desconfiado — le han hecho perder el tiempo antes. Trae un dolor real en el negocio, pero no se lo cuenta a cualquiera.\n\nTu misión: la conversación completa. Abrir. Presentarte. Atravesar el \"no\" que va a caer. Leer su prisa. Y excavar — capa por capa, pista por pista — hasta que el dolor salga completo. Cuando salga, apréndetelo con sus palabras: lo vas a usar después.\n\nY recuerda la regla del doctor: hoy NO se receta. Solo se diagnostica.",
     "flip_back_text": null
   },
   {
@@ -797,6 +797,14 @@
     "card_type": "concept",
     "title": "Y si de verdad no hay nada ahi? El barrido.",
     "body": "A veces preguntas concreto y el cliente lo niega limpio: \"no, eso si no, mi proveedor me cumple bien.\" Y es verdad.\n\nAhi el vendedor promedio hace una de dos: insiste hasta volverse pesado, o se rinde. El investigador hace la tercera: le CREE, y CAMBIA DE TERRITORIO. Servicio salio sano? Explora producto: \"y hay algo que sus clientes le pidan y batalle para conseguir?\" O precio: \"y a como le esta llegando su estrella?\"\n\nEl dolor casi siempre existe. Solo que vive en OTRA zona del mapa. Negacion limpia = siguiente territorio.",
+    "flip_back_text": null
+  },
+  {
+    "node_id": "3.2",
+    "card_order": 9,
+    "card_type": "concept",
+    "title": "Nunca le preguntes qué opina de tus precios",
+    "body": "Cuando hablas de precio, es tentador preguntarle al cliente: \"¿cómo ve los precios?\" o \"¿le parece caro?\".\n\nNo lo hagas. Si te contesta \"están caros\", ya lo dijo en voz alta, y ahora lo va a defender. Te creaste un problema que no existía.\n\nAdemás, le das a entender que tu precio se mueve según lo que él opine. Y tú conoces el mercado mejor que él: muchas veces está pagando de más y ni lo sabe.\n\nLo que sí le preguntas son datos: \"¿a cómo lo compra hoy?\", \"¿cada cuánto le suben?\", \"¿le dan crédito?\". Con eso sabes dónde estás parado, sin regalarle una objeción.",
     "flip_back_text": null
   },
   {

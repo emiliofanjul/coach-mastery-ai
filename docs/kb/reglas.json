@@ -365,7 +365,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Pedirle al cliente su opinión o aprobación sobre precios. Crea una objeción que no existía y cede la autoridad.",
+  "resumen": "Pedirle al cliente su opinión o su aprobación sobre los precios: te creas una objeción que no existía, cedes la autoridad sobre el precio y desperdicias tu ventaja de conocer el mercado. LA PRUEBA: ¿el vendedor le pregunta qué opina de los precios —«¿cómo ve los precios?», «¿siente algo muy caro?», «¿le parece que estamos bien de precio?»—? Preguntar hechos —a cómo compra, cada cuánto le suben, qué plazo le dan— no es esto.",
   "cita_cerebro": "NUNCA le pidas al cliente su opinión ni su aprobación sobre precios",
   "severidad_sugerida": "critical"
  },
@@ -385,8 +385,8 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Capa 1 hechos, capa 2 la puerta, capa 3 el dolor. Solo se abre si recoges la pista.",
-  "cita_cerebro": "CAPA 3 — El dolor. Solo se abre si recoges la pista y profundizas con preguntas abiertas",
+  "resumen": "La escalera de capas: capa 1 los hechos, capa 2 la puerta (el cliente suelta una pista o cierra con un «bien»), capa 3 el dolor, que solo se abre si recoges la pista y profundizas. LA PRUEBA: ¿el vendedor pasó de los hechos a preguntas que abren la puerta y, cuando apareció una pista (el «aunque», el «a veces», el «lo único es que»), se quedó en ella y la excavó hasta que el cliente contó el dolor? No se cuentan territorios: si el dolor sale en el primero, se excava ahí y cumple. Devolverle el dolor con sus palabras no se pide aquí: se puede quedar callado y seguir. Si nunca apareció una pista, ¿por lo menos subió de los hechos a preguntas de capa 2? Entonces cumple lo que se podía.",
+  "cita_cerebro": "Solo se abre si recoges la pista y profundizas con preguntas abiertas",
   "severidad_sugerida": "major"
  },
  {
@@ -395,8 +395,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Nombrar un dato o situación concreta que el cliente tenga que ir a buscar, en vez de preguntar al aire.",
-  "cita_cerebro": "El «bien» no es información: es un reflejo social",
+  "resumen": "El «bien» no es información: es un reflejo social. Para pasar de capa se pregunta por algo concreto que el cliente tenga que ir a buscar en su experiencia, o se normaliza citando a otros («varios clientes me comentan que batallan con faltantes, ¿a usted le pasa?»). LA PRUEBA: al subir a la capa 2, ¿el vendedor preguntó por un dato o una situación concreta —o normalizó citando a otros—, en vez de pedir una opinión general («¿qué tal le va?», «¿todo bien?»)? Y si recibió un «bien», ¿lo volvió a intentar con algo concreto en vez de conformarse?",
+  "cita_cerebro": "La solución tiene dos formas",
   "severidad_sugerida": "minor"
  },
  {
@@ -415,7 +415,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Después de preguntar, sugerir tres o cuatro opciones reales del giro. Transversal: sirve después de cualquier pregunta.",
+  "resumen": "Después de preguntar, sugerir tres o cuatro opciones reales del giro del cliente: le das de dónde agarrarse. O elige una, o te corrige con el dato real. LA PRUEBA: cuando el cliente contestó vago o no tenía el dato a la mano, ¿el vendedor le dio opciones concretas (familias, rangos de precio) para que eligiera o lo corrigiera? Si el cliente lo corrige, ¿aceptó la corrección? Si el cliente nunca contestó vago, no hacía falta. Dar opciones no es interrogatorio.",
   "cita_cerebro": "La solución: después de preguntar, sugiere opciones",
   "severidad_sugerida": null
  },
@@ -445,7 +445,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Territorio limpio: ni insistir ni rendirse, cambiar de territorio.",
+  "resumen": "Territorio limpio: ni insistir ni rendirse, cambiar de territorio. Insistir en zona sana te vuelve interrogador; rendirte regala la visita. LA PRUEBA: cuando el cliente dijo con claridad que en un territorio no tiene problema, ¿el vendedor siguió preguntando ahí, más y más, en vez de cambiar de territorio? Si siguió ahí, falla. No se cuentan territorios: si el dolor salió en el primero, quedarse ahí es lo correcto.",
   "cita_cerebro": "Insistir en zona sana te vuelve interrogador; rendirte regala la visita",
   "severidad_sugerida": "minor"
  },
@@ -455,7 +455,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Preguntar el dolor de frente. «¿Qué problemas tiene?» produce «ninguno», garantizado.",
+  "resumen": "El dolor nunca se pregunta directo: «¿qué problemas tiene?» produce «ninguno», garantizado. Se deja emerger. LA PRUEBA: ¿el vendedor preguntó por problemas en general —«¿qué problemas tiene?», «¿algo que le falle?», «¿algo que no le guste?»—? Con una basta. Preguntar por una situación concreta («¿le ha tocado quedarse sin su producto estrella?») no es esto: es la pregunta específica.",
   "cita_cerebro": "El dolor nunca se pregunta directo",
   "severidad_sugerida": "major"
  },
@@ -465,8 +465,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Cuando el dolor aparece, devolvérselo con SUS palabras.",
-  "cita_cerebro": "devuélveselo con SUS palabras",
+  "resumen": "El dolor que el cliente contó se aprende con SUS palabras y se usa en la presentación: «como me dijo que se le acaba en temporada, mire lo que le traigo». En el descubrimiento devolverlo no es obligatorio: se puede quedar callado y seguir. LA PRUEBA: al presentar, ¿el vendedor conecta su propuesta con el dolor que el cliente contó, usando las palabras del cliente? Si el cliente no contó ningún dolor, el criterio es no_aplica.",
+  "cita_cerebro": "apréndetelo con SUS palabras",
   "severidad_sugerida": "major"
  },
  {
@@ -485,8 +485,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Afirmar un problema que el cliente ya negó o del que no hay indicio. Leer un dolor probable no es inventarlo.",
-  "cita_cerebro": "Fabricar es afirmar un problema que el cliente ya negó o del que no hay ningún indicio",
+  "resumen": "Afirmar un problema que el cliente ya negó o del que no hay ningún indicio. Leer un dolor probable no es inventarlo. LA PRUEBA: después de que el cliente negó con claridad un problema, ¿el vendedor insiste en que sí lo tiene? O ¿afirma un problema sin nada que lo apoye —ni algo que dijo, ni algo que se ve, ni su giro—? Mencionar que a otros clientes les pasa no es esto: es normalizar.",
+  "cita_cerebro": "Leer un dolor probable no es inventarlo",
   "severidad_sugerida": "critical"
  },
  {
@@ -515,8 +515,8 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "El que quiere y no puede no es rojo: es verde amarrado. Se distinguen por el trato.",
-  "cita_cerebro": "Este no es rojo: es verde amarrado",
+  "resumen": "El semáforo se mide como cliente, no como persona. ROJO: hoy no puede o no quiere comprar —grosero o encantador; puede ser verde como persona y rojo como cliente—: se corta rápido y bien y se va a seguir vendiendo. AMARILLO: está entre el sí y el no —algo se lo impide, o falta valor—: se trabaja, hasta el segundo «no» seguido. VERDE: se nota que quiere comprar. LA PRUEBA: ¿el vendedor averiguó rápido, preguntando, si el cliente puede comprar algo hoy, y actuó según lo que encontró? Si no puede comprar nada, ¿cortó rápido y bien, dejando la puerta abierta? Si algo sí puede, ¿lo trabajó?",
+  "cita_cerebro": "Puede ser verde como persona y rojo como cliente.",
   "severidad_sugerida": null
  },
  {
@@ -525,7 +525,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Casi toda restricción tiene bordes: qué cubre, qué queda fuera, hasta cuándo dura.",
+  "resumen": "Casi toda restricción tiene bordes: qué cubre, qué queda fuera, hasta cuándo dura. LA PRUEBA: cuando el cliente dijo que no puede comprar por un contrato, una política o una circunstancia, ¿el vendedor hizo una o dos preguntas para saber qué cubre y qué queda fuera, en vez de tomarlo como total? Averiguar rápido no es quedarse a platicar.",
   "cita_cerebro": "Casi toda restricción tiene bordes",
   "severidad_sugerida": "major"
  },
@@ -535,7 +535,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Insistir en lo que el cliente ya dijo que está dentro de su compromiso: es pedirle que rompa su palabra.",
+  "resumen": "Insistir en lo que el cliente ya dijo que está dentro de su compromiso es pedirle que rompa su palabra, y eso quema la relación. Se busca lo que sí puede, nunca se pelea lo que no. LA PRUEBA: después de que el cliente dijo que algo está dentro de su compromiso, ¿el vendedor insiste en venderle eso mismo?",
   "cita_cerebro": "insistir en eso es pedirle que rompa su palabra — y eso quema la relación",
   "severidad_sugerida": "critical"
  },
@@ -545,8 +545,8 @@
   "tipo": "principio",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Quality Time with Quality People. Cada minuto con un rojo se lo quitas a un amarillo.",
-  "cita_cerebro": "Perder tiempo y energía con las personas equivocadas destruye tu capacidad de ser lo suficientemente urgente",
+  "resumen": "Quality Time with Quality People: tu tiempo de trabajo es para quien puede comprar. Con quien hoy no puede, sé amable, deja la puerta abierta y sigue. LA PRUEBA: después de saber que hoy el cliente no puede comprar nada, ¿el vendedor se queda platicando de más —turno tras turno— en vez de despedirse bien? Dejar la puerta abierta o pedir un referido no es quedarse de más.",
+  "cita_cerebro": "tu tiempo de trabajo es para quien puede comprar",
   "severidad_sugerida": "major"
  },
  {
@@ -1035,7 +1035,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Lo que ves dice qué maneja y de quién: estante vacío es hueco, producto empolvado es dolor.",
+  "resumen": "Lo que ves dice qué maneja y de quién: un producto de otra marca es un espacio ocupado; un estante vacío es una familia que nadie cubre. LA PRUEBA: ¿el vendedor averiguó, de al menos una familia distinta a lo que hoy le vende, si el cliente la maneja y con quién —viéndolo o preguntándolo—? Cuenta aunque la familia la nombre el cliente al contestar una pregunta abierta. En la práctica lo que se ve se imagina. Preguntar solo por lo que ya le vende no cumple.",
   "cita_cerebro": "Un producto de otra marca es un espacio ocupado; un estante vacío es una familia que nadie cubre",
   "severidad_sugerida": null
  },
@@ -1055,8 +1055,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Fabricar un hueco: venderle un problema que no tiene.",
-  "cita_cerebro": "Descubrir un hueco es señalar algo que ya existe. Fabricarlo es venderle un problema que no tiene",
+  "resumen": "Fabricar un hueco: venderle un problema que no tiene. LA PRUEBA: ¿el vendedor afirma que al cliente le falta algo o que lo necesita sin ninguna base —ni lo dijo el cliente, ni se ve, ni es de su giro, ni lo apoya en negocios como el suyo—, o contradice lo que el cliente ya dijo? Preguntar nunca es inventar. Apoyarse en otros clientes como él, o decir lo que ve (en la práctica se imagina), tampoco.",
+  "cita_cerebro": "Inventar es afirmar que le falta o que lo necesita sin ninguna base",
   "severidad_sugerida": "critical"
  },
  {
@@ -1185,8 +1185,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Insistir ante un rojo genuino desgasta la actitud y le roba tiempo a un amarillo.",
-  "cita_cerebro": "Sal de las luces rojas rápido y educadamente",
+  "resumen": "Quedarse con un rojo: el tiempo que le das se lo quitas al siguiente cliente. LA PRUEBA: después de saber que hoy el cliente no puede o no quiere comprar nada —porque lo dijo o porque es grosero—, ¿el vendedor sigue tratando de convencerlo: le presenta, le argumenta, le ofrece o le pide que lo pruebe? Preguntar la razón no es insistir: es averiguar. Dejar la puerta abierta tampoco.",
+  "cita_cerebro": "Con cualquiera de los dos haces lo mismo: cortas rápido y bien",
   "severidad_sugerida": "major"
  },
  {
@@ -1195,8 +1195,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Rendirse ante quien quiere y no puede: ese cliente sí quería comprar y el vendedor se fue solo.",
-  "cita_cerebro": "con él, rendirse es la falla más cara del oficio",
+  "resumen": "Soltar a un amarillo: rendirse ante quien está entre el sí y el no. Es la falla más cara del oficio: ese cliente sí te iba a comprar y te fuiste solo. LA PRUEBA: cuando el cliente dijo que no puede, ¿el vendedor se fue sin averiguar si algo sí puede comprar hoy? O, si había algo, ¿se rindió antes del segundo «no» seguido? Si averiguó y no quedaba nada, irse es lo correcto.",
+  "cita_cerebro": "Rendirse ante un amarillo es la falla más cara del oficio",
   "severidad_sugerida": "major"
  },
  {
@@ -1205,8 +1205,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Ráfagas de preguntas desconectadas de las respuestas. Insistir en zona sana te vuelve interrogador.",
-  "cita_cerebro": "Insistir en zona sana te vuelve interrogador",
+  "resumen": "Interrogatorio: preguntas una tras otra que no recogen nada de lo que el cliente acaba de contestar. El cliente se siente en una entrevista, no en una plática. LA PRUEBA: ¿hay dos o más turnos seguidos en los que la pregunta del vendedor no recoge nada de la respuesta anterior del cliente? Dar opciones después de preguntar no es esto. Varias preguntas en un mismo turno son monólogo, no esto: no se cobra dos veces.",
+  "cita_cerebro": "preguntas una tras otra que no recogen nada de lo que el cliente acaba de contestar",
   "severidad_sugerida": "minor"
  },
  {
@@ -1215,8 +1215,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CLOSER",
-  "resumen": "Todas las preguntas de sí o no. La capa 3 solo se abre con abiertas.",
-  "cita_cerebro": "Solo se abre si recoges la pista y profundizas con preguntas abiertas",
+  "resumen": "En la capa 3 el dolor se abre con preguntas abiertas: «¿qué pasa cuando se tarda?», «cuénteme, ¿cómo le hace?». LA PRUEBA: después de que apareció la pista, ¿todas las preguntas del vendedor sobre ella fueron de sí o no, y el cliente dejó de contar? Entonces falla. Una pregunta de sí o no suelta no es esto.",
+  "cita_cerebro": "Está mal cuando todas son de sí o no y el cliente deja de contar.",
   "severidad_sugerida": "major"
  },
  {
@@ -1225,8 +1225,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Reconocer un estado que el cliente no mostró. Leer es leer, no suponer.",
-  "cita_cerebro": "Tres cosas que leer: el ambiente, la demografía de la persona, y su estado de ánimo",
+  "resumen": "Reconocer un estado que el cliente no mostró: leer es leer, no suponer. LA PRUEBA: ¿el vendedor le atribuye al cliente un estado (prisa, molestia, preocupación) que nada de lo que dijo o mostró indica, o que contradice lo que mostró?",
+  "cita_cerebro": "Tres cosas que leer:",
   "severidad_sugerida": "major"
  },
  {
@@ -1395,7 +1395,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Presentar producto o precio antes de terminar el diagnóstico. En cuanto presentas, el cliente deja de revelar. (Antes compartía etiqueta con opening.pitch_prematuro.)",
+  "resumen": "Presentar antes de terminar el diagnóstico: en cuanto presentas, el cliente deja de revelar. Primero el examen, luego la receta. LA PRUEBA: durante el descubrimiento, ¿el vendedor habla de su producto, de sus beneficios, de su precio o de una promoción, o se lo ofrece como solución? Nombrar una familia para preguntar si la maneja («¿y el anticongelante, lo maneja?») no es recetar: es buscar. Tampoco anclar en negocios como el suyo.",
   "cita_cerebro": "Primero el examen, luego la receta",
   "severidad_sugerida": "major"
  },
@@ -1485,7 +1485,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, una que le piden y no maneja, o una que no maneja nadie. No tiene señal verbal: se ve o se pregunta. Tiene que ser real y verificable: lo viste, te lo dijo, o lo sabes por su giro. LA PRUEBA, en orden. (1) Al terminar la plática, ¿quedó al descubierto al menos un hueco concreto —una familia con nombre— porque el vendedor lo preguntó, lo vio, lo ancló en negocios como el suyo, o el cliente lo dijo? Si sí, cumple, aunque el vendedor no lo mencione: el hueco se descubre y se apunta para usarlo en la presentación. Preguntar no basta si la respuesta no dejó ninguna familia concreta. Ofrecérselo o decirle por qué le conviene no se pide aquí: eso es presentar el hueco (paso 4). (2) Si no apareció ninguno: ¿el vendedor buscó de verdad, o salió después de dos «no» seguidos? Entonces el criterio es no_aplica: hoy no había nada que descubrir. Buscó de verdad si usó al menos una de las herramientas del hueco —leer el lugar (ver o preguntar qué otras líneas maneja y con quién), preguntar qué le piden que no tenga, o anclar en negocios como el suyo— y, cada vez que la respuesta fue vaga, siguió con opciones concretas o con otra herramienta. Una respuesta es vaga si no dice qué ni con quién («de todo un poco», «lo normal»); si lo dice, o dice que no hay, ya contestó: no pide seguir. (3) Solo si no apareció ninguno y el vendedor no buscó de verdad, es no_cumple.",
+  "resumen": "El hueco es algo que el cliente podría comprarte y no te compra: una familia que le compra a otro proveedor, una que le piden y no maneja, o una que no maneja nadie. No tiene señal verbal: se ve o se pregunta. Tiene que tener base: lo viste, te lo dijo, lo sabes por su giro o por negocios como el suyo. En la práctica lo que se ve se imagina. LA PRUEBA, en orden. (1) Al terminar la plática, ¿quedó al descubierto al menos un hueco concreto —una familia con nombre— porque el vendedor lo preguntó, lo vio, lo ancló en negocios como el suyo, o el cliente lo dijo? Si sí, cumple, aunque el vendedor no lo mencione: el hueco se descubre y se apunta para usarlo en la presentación. Preguntar no basta si la respuesta no dejó ninguna familia concreta. Ofrecérselo o decirle por qué le conviene no se pide aquí: eso es presentar el hueco (paso 4). (2) Si no apareció ninguno: ¿el vendedor buscó de verdad, o salió después de dos «no» seguidos? Entonces el criterio es no_aplica: hoy no había nada que descubrir. Buscó de verdad si usó al menos una de las herramientas del hueco —leer el lugar (ver o preguntar qué otras líneas maneja y con quién), preguntar qué le piden que no tenga, o anclar en negocios como el suyo— y, cada vez que la respuesta fue vaga, siguió con opciones concretas o con otra herramienta. Una respuesta es vaga si no dice qué ni con quién («de todo un poco», «lo normal»); si lo dice, o dice que no hay, ya contestó: no pide seguir. (3) Solo si no apareció ninguno y el vendedor no buscó de verdad, es no_cumple.",
   "cita_cerebro": "algo que podría comprarte y no te compra",
   "severidad_sugerida": "None"
  },
@@ -1538,5 +1538,15 @@
   "resumen": "En cualquier momento de la visita, menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día: se deja para otra visita (en la puerta, quedar de regresar con una alternativa concreta; al buscar el hueco, dejar de buscar). En el cierre son tres: la Regla de los No. LA PRUEBA DE UN «NO»: ¿la respuesta del cliente rechaza lo que el vendedor estaba intentando en ese momento —seguir la plática, explorar ese tema o avanzar a la decisión—, aunque traiga excusa? Entonces es un «no». Si contesta, aunque sea vago o corto, no es un «no». Si contesta algo de pasada pero en la misma respuesta rechaza seguir, sí es un «no»: cuenta lo que la respuesta hace, no cómo empieza. Si pone una duda, una condición o una objeción, tampoco: es una objeción. Seguidos: entre uno y otro la conversación no avanzó.",
   "cita_cerebro": "menos en el cierre, dos «no» seguidos son la señal de que hoy no es el día",
   "severidad_sugerida": null
+ },
+ {
+  "id": "discovery.escucha",
+  "paso": 3,
+  "tipo": "requisito",
+  "canal": "universal",
+  "procedencia": "CAMPO",
+  "severidad_sugerida": "major",
+  "resumen": "Tu siguiente pregunta nace de lo que él dijo. Cuando el cliente te cuenta algo, pregúntale sobre eso, con sus palabras, en vez de sacar la siguiente pregunta de tu lista. Así se siente una plática y no una entrevista. LA PRUEBA: ¿al menos una pregunta del vendedor nace de lo que el cliente acaba de decir, retomando sus palabras o su tema? No se pide recoger todo lo que el cliente menciona: eso sería un interrogatorio.",
+  "cita_cerebro": "Tu siguiente pregunta nace de lo que él dijo"
  }
 ]

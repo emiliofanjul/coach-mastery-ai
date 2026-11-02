@@ -340,6 +340,8 @@ Una pregunta o acción cuya respuesta **solo tiene sentido si el cliente está a
 
 **La ironía:** el que pregunta vende más que el que habla.
 
+**Qué es recetar** `CAMPO`: hablar de tu producto, de sus beneficios, de su precio o de una promoción, u ofrecerlo como solución. Nombrar una familia para preguntar si la maneja —*"¿y el anticongelante, lo maneja?"*— no es recetar: es buscar. Tampoco lo es anclar en negocios como el suyo —*"talleres como el suyo también mueven frenos"*—.
+
 ### RRR — Read, Relate, Relax `FUENTE` `UNIVERSAL`
 Lee · Conecta · Relaja.
 
@@ -382,12 +384,18 @@ El territorio PRECIO es el más fácil de arruinar, porque la pregunta natural e
 
 **La diferencia:** un hecho te da información que puedes usar. Una opinión sobre tu precio te da una objeción que tendrás que atravesar.
 
+**En palabras simples** `CAMPO`: pregúntale a cómo compra, no qué opina del precio. Si le preguntas *"¿cómo ve los precios?"*, lo pones a pensar que están caros, y luego te toca convencerlo de lo contrario.
+
 > **Y si el cliente dice que tu precio está mal, el diagnóstico correcto no es bajarlo.** Es que no encontraste su dolor, o no construiste suficiente valor. **El problema nunca está en el número: está en la balanza.**
 
 ### La Escalera de Capas `CLOSER` `UNIVERSAL`
 **CAPA 1 — Hechos.** Fáciles, cero riesgo. Abren la plática y te dan el mapa.
 **CAPA 2 — La puerta.** Aquí el cliente suelta una pista... o cierra con un "bien". Depende de cómo preguntes.
 **CAPA 3 — El dolor.** Solo se abre si recoges la pista y profundizas con preguntas abiertas.
+
+**Tu siguiente pregunta nace de lo que él dijo** `CAMPO`. Cuando el cliente te cuenta algo, pregúntale sobre eso, con sus palabras, en vez de sacar la siguiente pregunta de tu lista. Así se siente una plática y no una entrevista. Mete lo personal (CPR) en medio, y la plática fluye sola.
+
+**La pregunta cerrada en la capa 3** `CAMPO`: cuando ya salió la pista, para que el cliente cuente más necesitas preguntas abiertas —*"¿qué pasa cuando se tarda?"*, *"cuénteme, ¿cómo le hace?"*—. Una pregunta de sí o no suelta no está mal. Está mal cuando todas son de sí o no y el cliente deja de contar.
 
 ### La Pregunta Específica `CAMPO` `UNIVERSAL`
 > **El "bien" no es información: es un reflejo social.**
@@ -433,10 +441,14 @@ Territorio limpio → ni insistas ni te rindas: **cambia de territorio.**
 
 El dolor casi siempre existe, solo que vive en otra zona del mapa. Insistir en zona sana te vuelve interrogador; rendirte regala la visita.
 
-### El dolor y la confirmación `CLOSER` `UNIVERSAL`
-Cuando el dolor aparece, **devuélveselo con SUS palabras**. *"Entonces lo que más le pega es X, ¿cierto?"*
+**No se cuentan territorios** `CAMPO`: si el dolor sale en el primero, lo excavas ahí y está bien. Cambias de territorio cuando el cliente te dejó claro que ahí no hay problema.
 
-Eso hace dos cosas: confirma que entendiste, y **le da forma consciente a algo que a lo mejor solo sentía.**
+### El dolor y la confirmación `CLOSER` `UNIVERSAL`
+Cuando el dolor aparece, **apréndetelo con SUS palabras**, porque lo vas a usar en la presentación: *"como me dijo que se le acaba en temporada, mire lo que le traigo"*.
+
+**Devolverlo en ese momento no es obligatorio** `CAMPO`: puedes decírselo —*"entonces lo que más le pega es X, ¿cierto?"*— o quedarte callado y seguir avanzando. Lo que no se vale es olvidarlo.
+
+Si se lo devuelves, eso hace dos cosas: confirma que entendiste, y **le da forma consciente a algo que a lo mejor solo sentía.**
 
 > ⚠️ **Pero la confirmación explícita no es requisito para avanzar.**
 >
@@ -466,6 +478,8 @@ Consecuencias que cambian cómo se ejecuta todo el sistema:
 ### La regla del investigador
 **El dolor nunca se pregunta directo.** *"¿Qué problemas tiene?"* produce *"ninguno"*, garantizado. Se deja emerger.
 
+**Interrogatorio** `CAMPO`: preguntas una tras otra que no recogen nada de lo que el cliente acaba de contestar. El cliente se siente en una entrevista, no en una plática. Dar opciones después de preguntar —*"¿qué se le mueve más? ¿anticongelante, aceite, diésel?"*— no es interrogatorio: es ayudarlo a contestar. Y meter varias preguntas en un mismo turno ya es monólogo: no se cobra dos veces.
+
 ### Luz Verde — 10/80/10 `FUENTE` `UNIVERSAL`
 **10% negativos · 80% indiferentes · 10% positivos.**
 
@@ -475,23 +489,25 @@ Consecuencias que cambian cómo se ejecuta todo el sistema:
 
 **Los factores de impulso existen principalmente para convertir al 80% indiferente.**
 
-#### El rojo verdadero y el que quiere pero no puede `CAMPO`
+#### El semáforo se mide como cliente, no como persona `CAMPO`
 
-La luz roja no es cualquier "no". Es un tipo específico de cliente, y confundirlo cuesta ventas.
+La luz no dice si la persona es agradable. Dice si hoy te puede comprar.
 
-**ROJO GENUINO** — no quiere. Es cortante, tajante, desganado. Muchas veces medio grosero. Y tiene un costo escondido: **interactuar de más con él desgasta tu actitud**, que es la variable de entrada de todo tu sistema. Con este, salir rápido y bien es la ejecución correcta.
+**ROJO** — hoy no puede o no quiere comprarte. A veces es grosero o muy tajante, y se nota luego luego. Pero muchas veces es encantador: te ofrece café, te platica, te cae bien… y su negocio no maneja lo que vendes, o lo está traspasando, o tiene un contrato que cubre todo lo tuyo. **Puede ser verde como persona y rojo como cliente.** Y quedarte de más tiene un costo escondido: interactuar de más con él desgasta tu actitud, que es la variable de entrada de todo tu sistema. Con cualquiera de los dos haces lo mismo: cortas rápido y bien, dejas la puerta abierta, y te vas a seguir vendiendo. Estás trabajando.
 
-**AMARRADO TEMPORALMENTE** — quiere y no puede. Te recibe con gusto, te habla con honestidad, y su impedimento es una **circunstancia que va a cambiar**: un contrato de exclusividad, un inventario recién surtido, un presupuesto agotado, no ser él quien decide las compras grandes.
+**AMARILLO** — está entre el sí y el no. Algo en la cabeza se lo está impidiendo —un contrato que no cubre todo, el inventario, el presupuesto, una duda—, o todavía no le has dado suficiente valor ni razones para decidir. Con él se sigue: es donde vive tu trabajo. Te vas hasta el segundo «no» seguido.
 
-> **Este no es rojo: es verde amarrado.** Y con él, rendirse es la falla más cara del oficio — porque ese cliente sí quería comprarte y el vendedor se fue solo.
+**VERDE** — se le nota luego luego que quiere comprar.
 
-**Cómo se distinguen:** el rojo se nota en el trato. Es seco, no da información, quiere que te vayas. El amarrado hace lo contrario: es amable, te explica su situación con detalle, y muchas veces se disculpa por no poder.
+**Cómo sabes si puede comprar:** preguntando, rápido. Si te dice que no puede, una o dos preguntas te dicen si es todo o si algo queda fuera. Si no queda nada, es rojo: te vas. Si queda algo, es amarillo: trabajas eso. Averiguar rápido no es quedarse a platicar.
+
+> Rendirse ante un amarillo es la falla más cara del oficio: ese cliente sí te iba a comprar y te fuiste solo. Quedarse con un rojo es la otra: el tiempo que le das se lo quitas al siguiente cliente.
 
 #### Casi toda restricción tiene bordes `CAMPO`
 
 Y aquí está la mecánica que separa al vendedor promedio del que crece cuentas.
 
-Cuando un cliente dice que no puede, **el promedio lo toma como total y se va**. El Closer investiga hasta dónde llega:
+Cuando un cliente dice que no puede, **el promedio lo toma como total y se va**. El Closer averigua rápido hasta dónde llega:
 
 - **¿Qué cubre exactamente?** Una exclusividad casi nunca abarca todas las familias
 - **¿Qué queda fuera?** Ahí está la venta que la competencia no vio
@@ -499,7 +515,7 @@ Cuando un cliente dice que no puede, **el promedio lo toma como total y se va**.
 
 > Un contrato que cubre lubricantes, anticongelantes y grasas **deja fuera el líquido de frenos.** Y el vendedor que preguntó se lleva una venta de un cliente que "no podía comprar".
 
-**Y la relación sigue construyéndose mientras tanto.** Seguir visitando a un amarrado no es perder el tiempo: es estar presente el día que la restricción se acabe. El que se rindió no va a estar ahí.
+**Y la relación sigue construyéndose mientras tanto.** Seguir visitando a un amarillo no es perder el tiempo: es estar presente el día que la restricción se acabe. El que se rindió no va a estar ahí.
 
 ⚠️ **La línea:** investigar los bordes no es presionar. Si el cliente ya dijo que algo está dentro de su compromiso, insistir en eso es pedirle que rompa su palabra — y eso quema la relación. Se busca lo que **sí** puede, nunca se pelea lo que no.
 
@@ -509,6 +525,8 @@ Cuando un cliente dice que no puede, **el promedio lo toma como total y se va**.
 > *"Perder tiempo y energía con las personas equivocadas destruye tu capacidad de ser lo suficientemente urgente"* — y la urgencia es de lo que vive tu ley de promedios.
 
 Cada minuto con un rojo se lo quitas a un amarillo que sí podía comprar hoy.
+
+**En palabras simples** `CAMPO`: tu tiempo de trabajo es para quien puede comprar. Con quien hoy no puede, sé amable, deja la puerta abierta y sigue. No es que no te importe la persona: es que estás trabajando, y el siguiente cliente te está esperando.
 
 ---
 
@@ -932,6 +950,8 @@ Hay dos diferencias que no son obvias y que sí conviene tener explícitas, porq
 **Adaptación por canal:** presencial observas; a distancia preguntas por el catálogo. **Adaptación por giro:** si el cliente no revende, "lo que ves" no es un mostrador — son sus unidades, su patio, su operación.
 
 > **La línea que no se cruza:** un hueco tiene que ser real y verificable. **Descubrir un hueco es señalar algo que ya existe. Fabricarlo es venderle un problema que no tiene.**
+
+**Qué sí se vale y qué es inventar** `CAMPO`: preguntar nunca es inventar (*"¿y el líquido de frenos, lo maneja?"*). Tampoco apoyarte en otros clientes como él (*"varios talleres como el suyo me compran líquido de frenos"*), ni decir lo que ves —en la práctica lo que ves se imagina—. Inventar es afirmar que le falta o que lo necesita sin ninguna base, o contradecir lo que el cliente ya dijo.
 
 **Si no hay hueco** `CAMPO`: si lo buscaste bien —con las herramientas, y siguiendo las respuestas vagas— y no apareció, o te topaste con dos «no» seguidos, hoy no había nada que descubrir. No es una falla: lo retomas en otra visita.
 
