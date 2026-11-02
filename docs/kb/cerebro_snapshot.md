@@ -709,22 +709,24 @@ También llamadas **STOP signs**. En cuanto reconoces una, **DETIENES la present
 | **RRR** — Repeat, Reassure, Resume | Objeciones menores y comunes | Repite, responde, **continúa sin pausa** |
 | **FFF** — Feel, Felt, Found | Preocupación seria o personal | Nunca discutas |
 
+**¿Cuál usar?** `CAMPO`: en el nodo que enseña una herramienta, se usa esa. En los demás, cualquiera de las dos sirve, mientras no discutas ni le saques la vuelta a la objeción.
+
 ### RRR de objeciones `FUENTE` `UNIVERSAL`
-**R**epeat — repite la objeción en sus términos, para que vea que la escuchaste
+**R**epeat — repite la objeción en sus términos, para que vea que la escuchaste `CAMPO`: con sus palabras o muy parecido —*"o sea que el jueves no le acomoda"*—. Si la cambias por algo que no dijo, no cuenta.
 **R**eassure — la respuesta concreta, con datos
 **R**esume — **retoma sin pausa**
 
 > **La tercera R es la que falla.** El vendedor responde bien y se queda callado esperando a ver si convenció. En ese espacio el cliente encuentra la siguiente objeción, o dice que lo va a pensar.
 
 ### FFF — el procedimiento completo `FUENTE` `UNIVERSAL`
-**Nunca discutas con un cliente.** Ganar la discusión es perder la venta.
+**Nunca discutas con un cliente.** Ganar la discusión es perder la venta. **Qué es discutir** `CAMPO`: contradecirlo o corregirlo —*"no, no está caro"*, *"usted no entiende"*—. Dar datos sin decirle que se equivoca no es discutir: *"entiendo, se ve alto; varios sintieron lo mismo, y lo que encontraron fue…"*.
 
 En español: **Entiendo · Sintió · Encontramos**
 
 1. **"Entiendo cómo se siente"** — estar de acuerdo te vuelve distinto del vendedor promedio, **y por eso te escuchan**
 2. **"Mi último cliente sentía lo mismo"** — para que sepa que no está solo
 3. **"Lo que encontramos fue..."** — por qué dejaron de pensar así. **Esto usa Efecto Jones**
-4. **Inserta 3 balas** de la Teoría de las Balas
+4. **Re-impulsa con una bala** `CAMPO`: una sola, y cierras. Tres de golpe sería vaciar el cargador.
 5. **Close With Action**
 
 > ⚠️ **FFF no termina en la tercera F.** El documento en español del sistema fuente está truncado y solo llega al paso 3 — por eso mucha gente aprendió un FFF incompleto, sin re-impulso y sin cierre. **Los pasos 4 y 5 son el Círculo de Cierre.**
@@ -745,7 +747,7 @@ En español: **Entiendo · Sintió · Encontramos**
 >
 > Técnicamente respondiste. Pero **atravesar solo detiene la caída del impulso** — no lo sube. Estás pidiendo una decisión en el punto más bajo de la conversación, y desde ahí la respuesta cómoda siempre es *"déjeme lo pienso"*.
 
-**Y la bala tiene que ser NUEVA.** Repetir un argumento ya usado no sube nada: comunica que ya no tienes más, y eso baja el impulso en lugar de subirlo.
+**Y la bala tiene que subir el impulso** `CAMPO`. Una bala nueva es un beneficio o un dato que todavía no habías dicho; decir lo mismo con otras palabras es repetirla. Una que ya usaste también se vale si ahora la conectas con la objeción: ante *"está caro"*, *"por eso le sale más barato: ya no pierde cambios por quedarse sin aceite"*. Lo que no sirve es repetirla tal cual, sin conectarla con nada: repetir un argumento ya usado no sube nada, comunica que ya no tienes más, y eso baja el impulso en lugar de subirlo.
 
 ### La Regla de los No
 - **Fuente:** *2 no's and a go* — dos no seguidos, luz roja, sigue adelante
@@ -764,6 +766,8 @@ En español: **Entiendo · Sintió · Encontramos**
 **Dos propósitos** `FUENTE`:
 1. **Capitalizar a un cliente ya positivo** — *"la gente compra de sus amigos mucho más fácil que de un desconocido"*
 2. **Dejarlo positivo y entendiendo los siguientes pasos** — *"la causa número uno de cancelaciones es la falta de entendimiento"*
+
+**La otra venta escondida no es venderle más hoy** `CAMPO`: después del sí no se ofrece nada más. La otra venta son los referidos y la siguiente visita.
 
 ### El arrepentimiento del comprador
 Apenas dice que sí, **el impulso cae**. El cerebro empieza a buscar razones por las que quizá no debió. Es automático y no es desconfianza hacia ti.
@@ -784,6 +788,10 @@ Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero produ
 **Por qué funciona:** si tu actitud es idéntica antes y después de la firma, el cliente concluye solo lo que ninguna frase habría logrado convencerlo — **que no lo trataste así para venderle, sino porque así eres.** Y con esa conclusión, el arrepentimiento no tiene de qué agarrarse.
 
 **Y deja claro qué sigue.** La falta de entendimiento es la causa número uno de cancelaciones.
+
+**Explicar lo que sigue no es seguir vendiendo** `CAMPO`: *"perfecto, se lo entrego el jueves en la mañana y me paga al recibir"* es lo correcto. *"¡Excelente decisión, no se va a arrepentir, con esto deja de perder clientes!"* es seguir vendiendo y festejar de más. Un *"gracias, don Chuy"* corto está bien.
+
+**Referidos** `CAMPO`: no son obligatorios, pero se valen. Si los pides, amárralos a algo que el cliente dijo: *"me contó que su compadre tiene un taller, ¿le puedo decir que voy de su parte?"*. Pedirlos en frío —*"¿no tiene a alguien que me recomiende?"*— incomoda al cliente que acaba de comprarte.
 
 ---
 

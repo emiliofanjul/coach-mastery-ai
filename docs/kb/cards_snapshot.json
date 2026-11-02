@@ -1596,7 +1596,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Los tres movimientos del circulo",
-    "body": "Cuando llega la objecion:\n\n1. ATRAVIESA — con RRR si es menor, con FFF si es de verdad.\n2. RE-IMPULSA — una bala NUEVA, algo positivo que no habias dicho.\n3. CIERRA CON ACCION — el siguiente paso concreto.\n\nEn ese orden y sin saltarse el dos.",
+    "body": "Cuando llega la objecion:\n\n1. ATRAVIESA — con RRR si es menor, con FFF si es de verdad.\n2. RE-IMPULSA — una bala: algo positivo que no habías dicho, o algo que ya dijiste pero que ahora contesta su objeción.\n3. CIERRA CON ACCION — el siguiente paso concreto.\n\nEn ese orden y sin saltarse el dos.",
     "flip_back_text": null
   },
   {
@@ -1611,8 +1611,8 @@
     "node_id": "5.10",
     "card_order": 3,
     "card_type": "why_it_works",
-    "title": "Nueva, no repetida",
-    "body": "Y tiene que ser una bala que NO hayas dicho antes.\n\nRepetir un argumento que ya usaste no sube nada: le comunica al cliente que ya no tienes mas, y eso baja el impulso en lugar de subirlo.\n\nAqui es donde por fin se entiende lo de dosificar. El vendedor que gasto todo su arsenal presumiendo al principio llega a este momento con la mano vacia.",
+    "title": "Nueva, o conectada con su objeción",
+    "body": "Lo mejor es una bala que no hayas dicho. Si usas una que ya dijiste, conéctala con su objeción. Si te dijo \"está caro\": \"por eso le sale más barato: ya no pierde cambios por quedarse sin aceite\".\n\nLo que no sirve es repetirla igualita: le comunica al cliente que ya no tienes más, y eso baja el impulso en lugar de subirlo.\n\nAqui es donde por fin se entiende lo de dosificar. El vendedor que gasto todo su arsenal presumiendo al principio llega a este momento con la mano vacia.",
     "flip_back_text": null
   },
   {
@@ -1884,7 +1884,7 @@
     "card_order": 4,
     "card_type": "concept",
     "title": "Y los dos que faltan",
-    "body": "PASO 4 — INSERTA TRES BALAS. La objecion tumbo el impulso. Responderla solo evita que siga cayendo. Lo que lo vuelve a subir son hechos positivos nuevos. Aqui es donde entiendes por que se guardan.\n\nPASO 5 — CIERRA CON ACCION. No preguntes si ya quedo claro. Muevelo al siguiente paso.\n\nCinco pasos. El que se queda en tres respondio la objecion y perdio la venta.",
+    "body": "PASO 4 — UNA BALA. La objeción tumbó el impulso. Responderla solo evita que siga cayendo. Lo que lo vuelve a subir es una bala: una sola, y cierras. Si sueltas tres de golpe, abrumas.\n\nPASO 5 — CIERRA CON ACCION. No preguntes si ya quedo claro. Muevelo al siguiente paso.\n\nCinco pasos. El que se queda en tres respondio la objecion y perdio la venta.",
     "flip_back_text": null
   },
   {
@@ -1900,7 +1900,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Los cinco pasos, en orden",
-    "body": "1. ENTIENDO — valida de verdad, sin peros.\n2. SINTIO — mi ultimo cliente sentia lo mismo.\n3. ENCONTRAMOS — la razon por la que cambio de opinion.\n4. TRES BALAS — hechos positivos nuevos para volver a subir el impulso.\n5. CIERRA CON ACCION — el siguiente paso concreto.\n\nEn este drill practicas los tres primeros a fondo. Los dos ultimos los vas a integrar mas adelante.",
+    "body": "1. ENTIENDO — valida de verdad, sin peros.\n2. SINTIO — mi ultimo cliente sentia lo mismo.\n3. ENCONTRAMOS — la razon por la que cambio de opinion.\n4. UNA BALA — un hecho positivo para volver a subir el impulso. Una sola.\n5. CIERRA CON ACCION — el siguiente paso concreto.\n\nEn este drill practicas los tres primeros a fondo. Los dos ultimos los vas a integrar mas adelante.",
     "flip_back_text": null
   },
   {

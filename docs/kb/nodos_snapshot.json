@@ -3391,7 +3391,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esas dudas."
         }
       },
-      "version": "2.0.2",
+      "version": "2.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3437,7 +3437,7 @@
           "id": "objections.rrr_objeciones",
           "weight": 0.6,
           "regla_id": "objection.rrr",
-          "description": "Los tres movimientos por cada objecion: REPITE la objecion en sus terminos para mostrar que la escucho, TRANQUILIZA con una respuesta concreta, y RETOMA. No se defiende, no discute, no justifica de mas."
+          "description": "Los tres movimientos por cada objecion: REPITE la objecion con sus palabras o muy parecido, TRANQUILIZA con una respuesta concreta, y RETOMA sin pausa. No se defiende, no discute, no justifica de mas."
         },
         {
           "id": "flow.close_with_action",
@@ -3489,14 +3489,14 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
         }
       },
-      "version": "1.0.3",
+      "version": "1.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "se_pone_defensivo",
           "regla_id": "objection.discutir",
           "severity": "critical",
-          "description": "Discute, se justifica atropellado o se ofende ante la objeción (es que no está caro, es que usted no entiende) — confirma los miedos del cliente y lo atrinchera. El anti-patrón central del mundo."
+          "description": "Contradice o corrige al cliente (no, no esta caro; usted no entiende) o se justifica a la defensiva: confirma sus miedos y lo atrinchera. Dar datos sin decirle que se equivoca no es esto."
         },
         {
           "id": "air_a_objecion",
@@ -3508,7 +3508,7 @@
           "id": "vacia_el_cargador",
           "regla_id": "objection.vacia_el_cargador",
           "severity": "major",
-          "description": "Apila 3+ argumentos en una respuesta — abruma, ninguno pega, y se queda sin munición."
+          "description": "Suelta dos o mas balas en la misma respuesta a la objecion, en vez de una sola antes de cerrar: abruma, ninguna pega, y se queda sin municion."
         },
         {
           "id": "bala_se_cae",
@@ -3596,7 +3596,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo la vuelta."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3613,7 +3613,7 @@
           "id": "bala_repetida",
           "regla_id": "objection.bala_repetida",
           "severity": "major",
-          "description": "Como hecho nuevo repite algo que ya habia dicho. No sube el impulso: comunica que ya no tiene nada mas."
+          "description": "Como re-impulso repite algo que ya habia dicho, igual o con otras palabras, sin conectarlo con la objecion. Una bala ya dicha que ahora contesta la objecion no es esto."
         },
         {
           "id": "discute_la_objecion",
@@ -3692,7 +3692,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito. Vamos al desglose y te digo como quedo tu municion."
         }
       },
-      "version": "1.1.2",
+      "version": "1.1.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3711,13 +3711,13 @@
           "id": "repite_bala",
           "regla_id": "objection.bala_repetida",
           "severity": "major",
-          "description": "Usa la misma bala para la segunda objeción — munición equivocada que no responde al motivo nuevo."
+          "description": "Para la segunda objecion repite tal cual una bala que ya uso, sin conectarla con el motivo nuevo: no le responde y comunica que ya no tiene mas."
         },
         {
           "id": "vacia_el_cargador",
           "regla_id": "objection.vacia_el_cargador",
           "severity": "major",
-          "description": "Apila argumentos en cualquier respuesta de la cadena."
+          "description": "Suelta dos o mas balas en una misma respuesta de la cadena."
         },
         {
           "id": "air_a_objecion",
@@ -3753,7 +3753,7 @@
           "id": "objections.reframe",
           "weight": 0.3,
           "regla_id": "objection.fff",
-          "description": "Cada objeción de la cadena recibe su FFF completo: la entiende sin discutir (cómo se siente, otros sintieron lo mismo, lo que encontraron), responde al contenido específico con una bala nueva, y avanza. Ninguna queda a medias."
+          "description": "Cada objecion de la cadena recibe su FFF completo: la entiende sin discutir (como se siente, otros sintieron lo mismo, lo que encontraron), sube el impulso con una bala que responde a ESA objecion, y avanza. Ninguna queda a medias."
         },
         {
           "id": "objections.bullet_theory",
@@ -3771,7 +3771,7 @@
           "id": "objections.circulo_cierre",
           "weight": 0.2,
           "regla_id": "objection.circulo_de_cierre",
-          "description": "Después de atravesar cada objeción, re-impulsa con una bala NUEVA y vuelve a pedir la decisión con acción."
+          "description": "Despues de atravesar cada objecion, re-impulsa con UNA bala (nueva, o una ya dicha si ahora la conecta con la objecion) y vuelve a pedir la decision con accion."
         }
       ]
     }
@@ -3989,7 +3989,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.2.0",
+      "version": "1.2.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4038,7 +4038,7 @@
           "id": "vacia_el_cargador",
           "regla_id": "objection.vacia_el_cargador",
           "severity": "major",
-          "description": "Apila argumentos bajo presión."
+          "description": "Bajo presion suelta dos o mas balas en una misma respuesta."
         },
         {
           "id": "llena_el_silencio",
@@ -4082,7 +4082,7 @@
           "id": "objections.circulo_cierre",
           "weight": 0.15,
           "regla_id": "objection.circulo_de_cierre",
-          "description": "Después de atravesar cada objeción, re-impulsa con una bala NUEVA y vuelve a pedir la decisión con acción."
+          "description": "Despues de atravesar cada objecion, re-impulsa con UNA bala (nueva, o una ya dicha si ahora la conecta con la objecion) y vuelve a pedir la decision con accion."
         },
         {
           "id": "discovery.dolor_real",

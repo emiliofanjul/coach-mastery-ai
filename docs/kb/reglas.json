@@ -845,8 +845,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Discutir con el cliente. Ganar la discusión es perder la venta.",
-  "cita_cerebro": "Nunca discutas con un cliente. Ganar la discusión es perder la venta",
+  "resumen": "Discutir con el cliente: ganar la discusión es perder la venta. LA PRUEBA: ante una objeción, ¿el vendedor contradice o corrige al cliente —«no, no está caro», «usted no entiende», «eso no fue culpa nuestra»— o se justifica a la defensiva? Dar datos sin decirle que se equivoca no es discutir.",
+  "cita_cerebro": "Ganar la discusión es perder la venta",
   "severidad_sugerida": "critical"
  },
  {
@@ -855,7 +855,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Repeat, Reassure, Resume. Para objeciones menores y comunes.",
+  "resumen": "RRR para objeciones menores y comunes (precio, día de entrega, mínimo): Repeat, Reassure, Resume. LA PRUEBA: ¿el vendedor (1) repite la objeción con las palabras del cliente o muy parecido —«o sea que el jueves no le acomoda»—, (2) responde con algo concreto y (3) retoma sin pausa? Si falta una pieza, está a medias. Si cambia la objeción por algo que el cliente no dijo, no cuenta como repetirla.",
   "cita_cerebro": "repite la objeción en sus términos, para que vea que la escuchaste",
   "severidad_sugerida": "minor"
  },
@@ -865,7 +865,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Responder bien y quedarse callado. Ahí el cliente encuentra la siguiente objeción.",
+  "resumen": "Responder bien y quedarse callado: en ese silencio el cliente encuentra la siguiente objeción o dice que lo va a pensar. LA PRUEBA: después de responder la objeción, ¿el vendedor termina su turno sin retomar —sin una pregunta, el siguiente paso o seguir donde iba—, esperando a ver si convenció?",
   "cita_cerebro": "La tercera R es la que falla",
   "severidad_sugerida": "major"
  },
@@ -875,7 +875,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Feel, Felt, Found, más tres balas y Close With Action. No termina en la tercera F.",
+  "resumen": "Feel, Felt, Found para la preocupación seria o personal: «entiendo cómo se siente», «otros sintieron lo mismo», «lo que encontraron fue…». No termina en la tercera F: sigue una bala y el cierre con acción. LA PRUEBA: ante una objeción seria, ¿el vendedor la valida sin discutir, dice que otros sintieron lo mismo y lo que encontraron, y avanza? En la práctica los otros clientes se imaginan. Si falta una de las tres F, está a medias.",
   "cita_cerebro": "FFF no termina en la tercera F",
   "severidad_sugerida": null
  },
@@ -885,8 +885,8 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Atravesar la objeción, re-impulsar con una bala NUEVA, y cerrar.",
-  "cita_cerebro": "atravesar solo detiene la caída del impulso — no lo sube",
+  "resumen": "El Círculo de Cierre: atravesar la objeción, re-impulsar con una bala y volver a cerrar con acción. Atravesar solo detiene la caída del impulso: no lo sube. LA PRUEBA: después de atravesar la objeción, ¿el vendedor sube el impulso con una bala —nueva, o una ya dicha si ahora la conecta con la objeción— y vuelve a pedir la decisión con una pregunta de acción?",
+  "cita_cerebro": "atravesar solo detiene la caída del impulso",
   "severidad_sugerida": "major"
  },
  {
@@ -895,7 +895,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala nueva.",
+  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala: pides una decisión en el punto más bajo de la conversación. LA PRUEBA: después de atender la objeción, ¿el vendedor pide la decisión sin dar antes ninguna bala que suba el impulso?",
   "cita_cerebro": "El error más común: atravesar la objeción y cerrar de inmediato, saltándose la bala",
   "severidad_sugerida": "major"
  },
@@ -905,8 +905,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Re-impulsar con un argumento ya usado: comunica que ya no tienes más.",
-  "cita_cerebro": "Repetir un argumento ya usado no sube nada",
+  "resumen": "Repetir una bala tal cual: comunica que ya no tienes más, y baja el impulso en vez de subirlo. LA PRUEBA: como re-impulso, ¿el vendedor repite algo que ya había dicho —igual o con otras palabras— sin conectarlo con la objeción? Una bala ya dicha que ahora contesta la objeción («por eso le sale más barato: ya no pierde cambios») no es esto.",
+  "cita_cerebro": "Lo que no sirve es repetirla tal cual, sin conectarla con nada",
   "severidad_sugerida": "major"
  },
  {
@@ -925,8 +925,8 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Remember Everyone Has Another Sale Hidden. Capitalizar a un cliente ya positivo.",
-  "cita_cerebro": "la gente compra de sus amigos mucho más fácil que de un desconocido",
+  "resumen": "REHASH: todos tienen otra venta escondida. La otra venta no es venderle más hoy: son los referidos y la siguiente visita. LA PRUEBA: después del sí, ¿el vendedor deja abierta la siguiente oportunidad —la siguiente visita con día y propósito, o un referido amarrado a algo que el cliente dijo— sin ofrecerle nada más?",
+  "cita_cerebro": "La otra venta escondida no es venderle más hoy",
   "severidad_sugerida": null
  },
  {
@@ -945,7 +945,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Reforzar la compra después del sí. Le dice al cliente que necesitabas la venta, y toda la conversación se vuelve técnica retroactivamente.",
+  "resumen": "Seguir vendiendo después del sí: le dice al cliente que necesitabas la venta, y toda la conversación se vuelve técnica. LA PRUEBA: después del sí, ¿el vendedor repite beneficios, el ahorro o argumentos, ofrece algo más, o le asegura que tomó una gran decisión («no se va a arrepentir»)? Explicar lo que sigue —la entrega, el pago— no es esto.",
   "cita_cerebro": "Retroactivamente, toda la conversación se convierte en una técnica",
   "severidad_sugerida": "critical"
  },
@@ -955,7 +955,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Demostrar que nada cambió: misma indiferencia sobre la compra, misma calidez sobre la relación, cero producto.",
+  "resumen": "Demostrar que nada cambió: misma indiferencia sobre la compra, misma calidez sobre la relación, cero producto. LA PRUEBA: después del sí, ¿el vendedor mantiene el mismo trato que antes, sin hablar de producto ni de beneficios?",
   "cita_cerebro": "Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero producto",
   "severidad_sugerida": null
  },
@@ -965,7 +965,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Dejar claro qué sigue. La falta de entendimiento es la causa número uno de cancelaciones.",
+  "resumen": "Dejar claro qué sigue: la falta de entendimiento es la causa número uno de cancelaciones. LA PRUEBA: después del sí, ¿el vendedor deja claro qué sigue —qué se entrega, cuándo, cuánto y cómo se paga— con datos concretos (día, cantidad, monto), no vagos («ahí luego vemos»)?",
   "cita_cerebro": "la causa número uno de cancelaciones es la falta de entendimiento",
   "severidad_sugerida": "major"
  },
@@ -1335,8 +1335,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Festejo desbordado tras el sí. Huele a que necesitabas la venta.",
-  "cita_cerebro": "Seguir vendiendo después del sí le dice al cliente que necesitabas la venta",
+  "resumen": "Festejar de más después del sí: huele a que necesitabas la venta. LA PRUEBA: ¿el vendedor celebra o elogia la decisión de forma desbordada —«¡es la mejor decisión que ha tomado!», «¡qué gusto, no sabe cuánto me alegra!»—? Un «gracias, don Chuy» corto no es esto.",
+  "cita_cerebro": "Seguir vendiendo después del sí le dice al cliente que",
   "severidad_sugerida": "major"
  },
  {
@@ -1345,8 +1345,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Pedir referidos sin ancla y en tono transaccional.",
-  "cita_cerebro": "la gente compra de sus amigos mucho más fácil que de un desconocido",
+  "resumen": "Pedir referidos en frío incomoda al cliente que acaba de comprarte. Los referidos no son obligatorios, pero se valen si van amarrados a algo que el cliente dijo. LA PRUEBA: ¿el vendedor pide referidos sin amarrarlos a nada que el cliente haya dicho —«¿no tiene a alguien que me recomiende?», «¿me pasa unos contactos?»—, o vuelve a pedirlos después de que el cliente lo evadió?",
+  "cita_cerebro": "Pedirlos en frío",
   "severidad_sugerida": "major"
  },
  {
@@ -1355,7 +1355,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Salir sin dejar puerta abierta ni cerrar en buenos términos.",
+  "resumen": "Salir sin dejar la puerta abierta ni cerrar en buenos términos. LA PRUEBA: al despedirse, ¿el vendedor se va brusco, cortante o resentido, sin dejar abierta la siguiente visita?",
   "cita_cerebro": "Dejarlo positivo y entendiendo los siguientes pasos",
   "severidad_sugerida": "major"
  },
@@ -1365,7 +1365,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Aplicar AIR a una objeción real: evadir a alguien que habló en serio.",
+  "resumen": "Aplicar AIR a una objeción real: evadir a alguien que habló en serio. LA PRUEBA: ante una objeción o una preocupación real (no un «no» reflejo de la puerta), ¿el vendedor la reconoce y cambia de tema sin responderla?",
   "cita_cerebro": "E ignorar una objeción real ofende a alguien que sí te escuchó y sí pensó",
   "severidad_sugerida": "critical"
  },
@@ -1375,7 +1375,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Apilar argumentos en una respuesta. Las balas se dosifican.",
+  "resumen": "Apilar argumentos en una respuesta: las balas se dosifican. LA PRUEBA: al atender una objeción, ¿el vendedor suelta dos o más balas en la misma respuesta, en vez de una sola antes de cerrar?",
   "cita_cerebro": "Reserva algunas para que no importe cuántas balas tenga tu cliente",
   "severidad_sugerida": "major"
  },
@@ -1385,7 +1385,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "La segunda objeción drena el ánimo. KILT: la actitud es la variable de entrada.",
+  "resumen": "Que la segunda objeción le drene el ánimo: la actitud es la variable de entrada. LA PRUEBA: ante otra objeción, ¿el vendedor se encoge en lo que dice —contesta cada vez más corto, en tono de resignación o fastidio, o empieza a rendirse—?",
   "cita_cerebro": "interactuar de más con él desgasta tu actitud, que es la variable de entrada de todo tu sistema",
   "severidad_sugerida": "major"
  },
