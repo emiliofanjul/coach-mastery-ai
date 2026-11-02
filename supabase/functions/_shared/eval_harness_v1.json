@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.31.0",
+  "harness_version": "v3.32.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -4525,6 +4525,348 @@
       "expected": {
         "must_flag": [
           "descuento_de_panico"
+        ]
+      }
+    },
+    {
+      "id": "G93_una_bala_y_cierra",
+      "node_id": "5.10",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): el Círculo de Cierre lleva UNA bala antes de cerrar.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada jueves ya no se queda sin 15W40, don Chuy, y deja de perder esos cinco cambios por quincena. La cubeta le queda en 1,250. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Chuy. Varios talleres sintieron lo mismo al principio, y lo que encontraron fue que dejaron de perder clientes por quedarse sin aceite. Y además le damos 30 días de crédito, así que lo paga con lo que ya le dejó. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bueno, para este jueves."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "salta_la_bala",
+          "bala_repetida",
+          "discute_la_objecion",
+          "no_cierra"
+        ]
+      }
+    },
+    {
+      "id": "G94_bala_ya_dicha_conectada",
+      "node_id": "5.10",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): una bala que ya usó se vale si ahora la conecta con la objeción.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada jueves ya no se queda sin 15W40, don Chuy, y deja de perder esos cinco cambios por quincena. La cubeta le queda en 1,250. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Chuy. Varios talleres sintieron lo mismo, y lo que encontraron fue que por eso les sale más barato: con la entrega cada jueves ya no pierden cambios por quedarse sin aceite, y esos cinco cambios por quincena pagan la diferencia. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Visto así, va. Este jueves."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "bala_repetida",
+          "salta_la_bala",
+          "discute_la_objecion"
+        ]
+      }
+    },
+    {
+      "id": "G95_bala_repetida_tal_cual",
+      "node_id": "5.10",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120: la otra cara del G94. Repetir la bala igualita, sin conectarla con la objeción.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada jueves ya no se queda sin 15W40, don Chuy, y deja de perder esos cinco cambios por quincena. La cubeta le queda en 1,250. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Chuy. Varios talleres sintieron lo mismo, y lo que encontraron fue que les convino. Y como le dije, con la entrega cada jueves ya no se queda sin 15W40. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, no sé."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "bala_repetida"
+        ]
+      }
+    },
+    {
+      "id": "G96_apila_balas",
+      "node_id": "5.8",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): después de la objeción va una sola bala. Soltar varias de golpe es vaciar el cargador.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada jueves ya no se queda sin 15W40, don Chuy, y deja de perder esos cinco cambios por quincena. La cubeta le queda en 1,250. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo."
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, joven, me está mareando."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "vacia_el_cargador"
+        ]
+      }
+    },
+    {
+      "id": "G97_discute_la_objecion",
+      "node_id": "5.8",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): discutir es contradecir o corregir al cliente.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada jueves ya no se queda sin 15W40, don Chuy, y deja de perder esos cinco cambios por quincena. La cubeta le queda en 1,250. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "No, don Chuy, no está caro. Comparado con lo que paga ahorita, está barato. Usted no está haciendo bien la cuenta."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues yo sé lo que pago, joven."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "se_pone_defensivo"
+        ]
+      }
+    },
+    {
+      "id": "G98_responde_sin_discutir",
+      "node_id": "5.8",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120: la otra cara del G97. Dar datos sin decirle que se equivoca no es discutir.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada jueves ya no se queda sin 15W40, don Chuy, y deja de perder esos cinco cambios por quincena. La cubeta le queda en 1,250. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo, don Chuy, se ve alto. Varios talleres sintieron lo mismo, y lo que encontraron fue que dejaron de perder clientes por quedarse sin aceite. ¿Le armo las diez para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bueno, el siguiente."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "se_pone_defensivo",
+          "air_a_objecion",
+          "vacia_el_cargador"
+        ]
+      }
+    },
+    {
+      "id": "G99_siguientes_pasos_claros",
+      "node_id": "6.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): explicar lo que sigue no es seguir vendiendo. Un «gracias» corto está bien.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces quedamos: diez cubetas de 15W40. ¿Se las entrego este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy, gracias. Entonces el jueves a las diez de la mañana le llegan las diez cubetas, son 12,500 y me paga al recibir. Si algo llega mal, me marca a este número y lo cambiamos ese mismo día. ¿Le queda claro o le apunto algo?"
+        },
+        {
+          "role": "assistant",
+          "text": "Así está bien, joven."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "celebra_y_corre",
+          "reabre_la_venta",
+          "sobre_celebra",
+          "proximos_pasos_vagos"
+        ]
+      }
+    },
+    {
+      "id": "G100_sigue_vendiendo",
+      "node_id": "6.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120: después del sí, repetir beneficios es seguir vendiendo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces quedamos: diez cubetas de 15W40. ¿Se las entrego este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto. Y acuérdese que con esto deja de perder clientes, el aceite le dura el doble y sus clientes van a regresar más contentos. Va a ver que le conviene muchísimo."
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, ya me dijo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "reabre_la_venta"
+        ]
+      }
+    },
+    {
+      "id": "G101_festeja_de_mas",
+      "node_id": "6.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): festejar de más después del sí huele a que necesitabas la venta.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces quedamos: diez cubetas de 15W40. ¿Se las entrego este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "¡Uy, qué gusto, don Chuy! ¡Es la mejor decisión que ha tomado, de verdad no sabe cuánto me alegra! El jueves a las diez le llegan las diez cubetas, son 12,500 y me paga al recibir."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele, pues."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "sobre_celebra"
+        ]
+      }
+    },
+    {
+      "id": "G102_referido_amarrado",
+      "node_id": "6.3",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120 (Emilio, 2-nov): el referido se vale si va amarrado a algo que el cliente dijo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces quedamos: diez cubetas de 15W40. ¿Se las entrego este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy: el jueves a las diez le llegan, son 12,500 y me paga al recibir. Oiga, hace rato me contó que su compadre tiene un taller en la colonia Centro. ¿Le puedo decir que voy de su parte?"
+        },
+        {
+          "role": "assistant",
+          "text": "Claro, se llama Rubén, dígale que va de mi parte."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "referido_en_frio",
+          "insiste_tras_evasion",
+          "proximos_pasos_vagos"
+        ]
+      }
+    },
+    {
+      "id": "G103_referido_en_frio",
+      "node_id": "6.3",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 120: la otra cara del G102. Pedir referidos sin amarrarlos a nada.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces quedamos: diez cubetas de 15W40. ¿Se las entrego este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy: el jueves a las diez le llegan, son 12,500 y me paga al recibir. Oiga, ¿no tiene a alguien que me recomiende? Unos contactos, lo que sea."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, pues ahorita no se me ocurre nadie."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "referido_en_frio"
         ]
       }
     }
