@@ -101,6 +101,19 @@ async function callEvaluate(transcript: { role: string; text: string }[], practi
   return { status: res.status, parsed, raw: text, ms: Date.now() - t0, session_id: sessionId };
 }
 
+export function resumenDeTiempos(results: { id: string; ms_total?: number }[]) {
+  const medidos = results.filter((r) => typeof r.ms_total === "number") as { id: string; ms_total: number }[];
+  if (medidos.length === 0) return null;
+  const orden = [...medidos].sort((x, y) => y.ms_total - x.ms_total);
+  const promedio = Math.round(medidos.reduce((s, r) => s + r.ms_total, 0) / medidos.length);
+  return {
+    casos_medidos: medidos.length,
+    promedio_ms: promedio,
+    mas_lentos: orden.slice(0, 3).map((r) => ({ id: r.id, ms: r.ms_total })),
+    sobre_90s: medidos.filter((r) => r.ms_total > 90_000).length,
+  };
+}
+
 function evaluateCase(c: Case, response: any): CaseResult {
   const reasons: string[] = [];
   const exp = c.expected ?? {};
@@ -538,6 +551,9 @@ Deno.serve(async (req) => {
       pass: results.filter((r) => r.status === "pass").length,
       fail: results.filter((r) => r.status === "fail").length,
       skipped: results.filter((r) => r.status === "skipped").length,
+      // Mensaje 126: cuánto tarda una calificación completa. El teléfono espera
+      // hasta 4 minutos; aquí se ve qué tan lejos estamos de ese límite.
+      tiempos: resumenDeTiempos(results),
     };
 
     return new Response(JSON.stringify({
