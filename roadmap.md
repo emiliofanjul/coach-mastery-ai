@@ -1,7 +1,8 @@
 # Roadmap
 
 - [x] Mensaje 129: Paso 0, 955/71 y cinco huellas; SQL corregido aplicado exacto, verificación completa correcta, una práctica recuperada.
-- [ ] Mensaje 129: mover diez archivos exactos y retirar SQL; desplegar solo closer-voice, save-practice-event y harness-runner; pruebas 978/74 y build.
+- [x] Mensaje 129: retirar los dos SQL después de verificar aplicación exacta y resultado.
+- [ ] Mensaje 129: mover diez archivos exactos; desplegar solo closer-voice, save-practice-event y harness-runner; pruebas 978/74. Bloqueador: la herramienta rechazó el traslado del nuevo helper _shared/evento_practica.ts; todos los archivos entregados y las cinco huellas previas siguen intactos.
 - [ ] Mensaje 129: confirmar historial de Emilio en Mi equipo; G105 tres veces y juicios completos si parcial; repetir disputa y marcar prueba 129; publicar tras funciones.
 - [ ] Mensaje 129: consultar evaluación, evento/audio/rachas y fallas_app después de la próxima práctica real de Emilio (requiere que la haga).
 
