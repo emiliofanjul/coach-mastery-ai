@@ -223,7 +223,7 @@ export function aplicarJuicios(ev: any, acusaciones: Acusacion[], juicios: Juici
 // lo haya dicho quien dice. Si una cita no está, el juicio se descarta y queda
 // lo que dijo el evaluador.
 
-const normaliza = (s: string) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zñ0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+const normaliza = (s: string) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-zñ0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
 
 /** ¿La cita está en ese turno? Basta con que casi todas sus palabras estén ahí (el juez puede omitir signos o una palabra). */
 export function citaEnConversacion(c: Cita, conversacion: { role?: string; content?: unknown }[]): boolean {
