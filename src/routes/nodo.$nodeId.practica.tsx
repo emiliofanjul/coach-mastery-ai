@@ -115,6 +115,11 @@ function PracticaPage() {
   const [phase, setPhase] = useState<Phase>("prep");
   const [micGranted, setMicGranted] = useState(false);
   const [sellerData, setSellerData] = useState<any>(null);
+  // Mensaje 125: si el vendedor no tiene guardado que acepta la grabación, se le
+  // pide una sola vez, antes de su práctica. Queda guardado por él mismo.
+  const [pideConsentimiento, setPideConsentimiento] = useState<{ sellerId: string } | null>(null);
+  const [guardandoConsentimiento, setGuardandoConsentimiento] = useState(false);
+  const [errorConsentimiento, setErrorConsentimiento] = useState<string | null>(null);
   const [nodeData, setNodeData] = useState<any>(null);
   const [companyData, setCompanyData] = useState<any>(null);
   const [skillsContext, setSkillsContext] = useState<any>(null);
@@ -318,6 +323,10 @@ function PracticaPage() {
       }
       if (seller.is_active === false) {
         setPrepError("Tu cuenta está pausada por tu líder de equipo.");
+        return;
+      }
+      if (seller.audio_consent !== true) {
+        setPideConsentimiento({ sellerId: seller.id });
         return;
       }
       let node: any = null;
@@ -1713,7 +1722,35 @@ function PracticaPage() {
           />
         )}
 
-        {phase === "prep" && (
+        {phase === "prep" && pideConsentimiento && (
+          <ConsentimientoGrabacion
+            key="consentimiento"
+            guardando={guardandoConsentimiento}
+            error={errorConsentimiento}
+            onAceptar={async () => {
+              setGuardandoConsentimiento(true);
+              setErrorConsentimiento(null);
+              try {
+                const filas = await restMutate<any>(`sellers?id=eq.${pideConsentimiento.sellerId}`, {
+                  method: "PATCH",
+                  body: { audio_consent: true },
+                  prefer: "return=representation",
+                });
+                if (filas?.[0]?.audio_consent !== true) throw new Error("no quedó guardado");
+                setPideConsentimiento(null);
+                void handleListo();
+              } catch (e) {
+                console.error("[practica] no se guardó el consentimiento:", e);
+                setErrorConsentimiento("No pudimos guardarlo. Revisa tu conexión y vuelve a tocar el botón.");
+              } finally {
+                setGuardandoConsentimiento(false);
+              }
+            }}
+            onSalir={() => navigate({ to: "/mapa" })}
+          />
+        )}
+
+        {phase === "prep" && !pideConsentimiento && (
           <PrepPhase
             key="prep"
             micGranted={micGranted}
@@ -2904,6 +2941,51 @@ function VoicePhase({
   );
 }
 
+
+// ───────────────────────── CONSENTIMIENTO ─────────────────────────
+// Mensaje 125: una sola pantalla, un solo botón. Se muestra solo a quien no
+// tiene guardado que acepta la grabación, y no se vuelve a pedir.
+
+function ConsentimientoGrabacion({
+  guardando,
+  error,
+  onAceptar,
+  onSalir,
+}: {
+  guardando: boolean;
+  error: string | null;
+  onAceptar: () => void;
+  onSalir: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "1.5rem", textAlign: "center", gap: 16 }}
+    >
+      <CloserCharacter size={96} state="normal" />
+      <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: 0, color: "#F0F0F5" }}>Antes de practicar</h2>
+      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "rgba(240,240,245,0.8)", maxWidth: 380, margin: 0 }}>
+        Closer funciona con tu voz. Para practicar, tus prácticas se graban: así recibes tu calificación y tu manager te puede dar mejor coaching.
+      </p>
+      {error && <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: RED, margin: 0 }}>{error}</p>}
+      <button
+        onClick={onAceptar}
+        disabled={guardando}
+        style={{ background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, border: "none", borderRadius: 99, padding: "14px 28px", cursor: guardando ? "wait" : "pointer", opacity: guardando ? 0.6 : 1, boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)" }}
+      >
+        {guardando ? "Guardando…" : "Acepto que se graben mis prácticas"}
+      </button>
+      <button
+        onClick={onSalir}
+        style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.45)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: "pointer", padding: 4 }}
+      >
+        Regresar al mapa
+      </button>
+    </motion.div>
+  );
+}
 
 // ───────────────────────── TRANSITION ─────────────────────────
 
