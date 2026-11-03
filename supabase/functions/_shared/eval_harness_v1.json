@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.33.0",
+  "harness_version": "v3.34.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -4922,6 +4922,91 @@
           "pregunta_si_quiere",
           "solo_levanta_pedido"
         ]
+      }
+    },
+    {
+      "id": "G105_espejo_no_contradice_su_criterio",
+      "node_id": "3.10",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; aceite para transmisión; anticongelante; grasas; aditivos.",
+      "cut_reason": "critical_failure",
+      "description": "Disputa real (3-nov-2026, mensaje 128). El vendedor recogió la pista («a veces sí me pasa») y la excavó hasta el dolor completo (pierde la venta, manda al cliente a otro lado, compra más caro): preguntas_capas y dolor_real cumplen. La evaluación además marcó ignora_pistas, que es su espejo: no puede salir si su criterio cumple. Y sí presentó producto («claro que nosotros lo podemos ayudar. Nosotros manejamos…») en un nodo que solo diagnostica: pitch_prematuro se queda (Emilio lo confirmó).",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, buen día, don Alberto. ¿Cómo está? Híjole, hoy está tranquilo el asunto, ¿verdad? Yo creo que ha de ser el clima lo que lo está espantando a la gente."
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, tranquilo. Mire, la verdad ando algo apurado, traigo varios pendientes. ¿En qué le puedo ayudar?"
+        },
+        {
+          "role": "user",
+          "text": "Claro, me imagino. Sí, nombre, ya somos dos. También ando corriendo. Oiga, este, fíjese, yo soy Emilio y estaba pasando por aquí por la zona visitando otras refaccionarias y quería pasar a visitarlo para ver si lo podía ayudar en algo. ¿Con quién está usando su-- eh, con quién está manejando los aceites para motor?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues tengo con quien trabajo eso. Manejo Castrol y Mobil, principalmente."
+        },
+        {
+          "role": "user",
+          "text": "Ah, muy bien, muy bien, súper. Oiga, este, y de Castrol Inmóvil, ¿qué presentación se está usando más que nada?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues me muevo aceite de litro y de galón, más que nada el sintético y el semisintético. El mineral ya casi no."
+        },
+        {
+          "role": "user",
+          "text": "Ah, okey, perfecto, perfecto. Me imagino que el 15W-40 o el 20W-50. Oiga, y de esos productos, ¿le ha tocado quedarse sin producto por falta de surtido de sus proveedores? Nos han re-- nos han reportado otros clientes que de repente tienen ese problema."
+        },
+        {
+          "role": "assistant",
+          "text": "Mire, ahí está el detalle. A veces sí me pasa, aunque no muy seguido. Con uno de ellos luego me dejan colgado con las entregas. Me dicen que llega el martes y llega hasta el viernes, y ya perdí la venta."
+        },
+        {
+          "role": "user",
+          "text": "Claro, claro, claro, entiendo perfecto. Entonces, cuando pasa eso, usted pierde la venta. ¿Y cómo lo soluciona, don Ramiro?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues tengo que mandar al cliente a otra refaccionaria o decirle que regrese. Y eso me molesta, porque se va y no sé si vuelve. A veces termino comprándole a un proveedor más caro nomás para tener algo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, claro, claro, entiendo. Este, sí, no, ese es un dolor muy común y, pues grave, ¿no? Oiga, y entonces, ¿qué presentaciones son las que más está manejando?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya me lo dijo hace rato: litro y galón, sintético y semisintético. Mire, ya le comenté lo que me pasa con las entregas. ¿A dónde quiere llegar con esto?"
+        },
+        {
+          "role": "user",
+          "text": "Perfecto. Sí, pues a ver, básicamente, eh, el servicio, ya entiendo que está teniendo un problema con el servicio y claro que nosotros lo podemos ayudar. Nosotros manejamos Bardal, Repsol y Mixloop. Eh, pero, pues para ver si lo podemos atender bien, eh, me interesaría saber qué volúmenes maneja y cada cuánto le gusta hacer pedidos a usted."
+        },
+        {
+          "role": "assistant",
+          "text": "Mire, no estoy para que me vendan nada ahorita. Tengo pendientes. Si me quiere dejar una cotización o algo, déjela, pero no tengo tiempo para esto."
+        }
+      ],
+      "expected": {
+        "score_range": [
+          0,
+          30
+        ],
+        "must_flag": [
+          "pitch_prematuro"
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "must_not_flag": [
+          "ignora_pistas"
+        ],
+        "niveles_esperados": {
+          "discovery.preguntas_capas": "cumple",
+          "discovery.dolor_real": "cumple"
+        }
       }
     }
   ]

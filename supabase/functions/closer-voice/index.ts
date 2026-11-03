@@ -6,7 +6,7 @@
 // Semver: patch = wording tweak, minor = new behavior, major = breaking contract.
 // Every response includes this string so downstream consumers can pin evals to
 // the exact prompt that produced them.
-const PROMPT_VERSION = "v2.9.7";
+const PROMPT_VERSION = "v2.9.8";
 
 /** Mundos 1 a 6 = pasos 1 a 6. La certificación (7) no tiene un solo paso. */
 function pasoPorMundo(nodeId: string | null): number | null {
@@ -40,6 +40,8 @@ import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shar
 import { quienLlama, respuestaNoAutorizado, type Llamante } from "../_shared/quien_llama.ts";
 import { decidirEvaluacion, esIdDePractica, type FilaEvaluacion } from "../_shared/evaluacion_guardada.ts";
 import { etiquetarPasos } from "../_shared/pasos.ts";
+import { quitarEspejosDeCriteriosCumplidos } from "../_shared/espejos.ts";
+import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, type RevisionJuez } from "../_shared/replica_revisada.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
@@ -496,10 +498,11 @@ Responde JSON exacto:
 {
   "message": "lo que le dices al vendedor",
   "concede": true | false,
+  "concede_en": ["<id de CADA falla o criterio en que le das la razón>"],
   "criterio_id": "<id del criterio o de la falla que estaba mal, o null>",
   "motivo": "una línea: qué estuvo mal en la evaluación, o por qué se sostiene"
 }
-"concede" es true SOLO si reconoces que una observación, un veredicto o la nota estuvo mal. Esto lo lee el equipo de Closer para corregir al evaluador: sé exacto.`;
+"concede" es true SOLO si reconoces que una observación, un veredicto o la nota estuvo mal. "concede_en" lleva el id de TODAS las fallas y criterios en que le das la razón (vacío si no le das la razón en ninguno). Antes de que tu respuesta llegue al vendedor, el juez de las pruebas revisa cada id de "concede_en" con la prueba de su regla. Esto lo lee el equipo de Closer para corregir al evaluador: sé exacto.`;
 }
 
 
@@ -1397,6 +1400,15 @@ async function atender(body: ReqBody): Promise<Response> {
         juez.criterios_corregidos = quitadasPorJuez.filter((q) => q.tipo === "criterio").length;
         if (quitadasPorJuez.length > 0) console.warn("[closer-voice] juez de las pruebas: acusaciones que no se sostienen", { session_id, node_id, quitadas: quitadasPorJuez });
       }
+      // Mensaje 128: una falla espejo no puede quedar si su criterio salió
+      // «cumple». Después del juez (que puede subir un criterio) y antes de la
+      // segunda revisión del auditor, para que ningún consejo hable de ella.
+      const quitadasPorEspejo = quitarEspejosDeCriteriosCumplidos(evaluation, practice_script);
+      if (quitadasPorEspejo.length > 0) {
+        auditoria.fallas_espejo_quitadas = quitadasPorEspejo.length;
+        console.warn("[closer-voice] fallas espejo quitadas: su criterio salió cumple", { session_id, node_id, quitadas: quitadasPorEspejo });
+        quitadasPorJuez = [...quitadasPorJuez, ...quitadasPorEspejo];
+      }
       if (auditorOk && quitadasPorJuez.length > 0) {
         const segunda = await auditar(quitadasPorJuez);
         auditorOk = segunda.ok;
@@ -1519,6 +1531,65 @@ async function atender(body: ReqBody): Promise<Response> {
           { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
+      // Mensaje 128: lo que la respuesta concede en una acusación con prueba
+      // escrita lo revisa el juez, con el argumento del vendedor, ANTES de que
+      // llegue al vendedor. Si el juez la sostiene (o no pudo revisarla), la
+      // respuesta se vuelve a escribir con lo que decidió el juez.
+      let revisionJuez: RevisionJuez | null = null;
+      {
+        const r0: any = parsed;
+        const evOriginal = body.original_evaluation ?? {};
+        const ids = idsConcedidos(r0, evOriginal);
+        const aRevisar = acusacionesARevisar(ids, evOriginal, practice_script);
+        if (aRevisar.length > 0) {
+          const quienJuez = { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null };
+          const argumento = [
+            ...(Array.isArray(body.replica_thread) ? body.replica_thread.filter((m) => m.role !== "assistant").map((m) => m.content) : []),
+            String(body.user_message ?? ""),
+          ].join("\n").trim();
+          let juicios: Juicio[] | null = null;
+          try {
+            juicios = await llamarJuez(apiKey, entradaJuezConArgumento(aRevisar, fullHistory, argumento), quienJuez);
+          } catch (e) {
+            console.error("[closer-voice] juez de la disputa:", e);
+          }
+          const { validos, descartados } = juicios ? juiciosConCitasValidas(juicios, fullHistory) : { validos: null, descartados: [] };
+          revisionJuez = clasificarRevision(ids, aRevisar, validos, descartados);
+          console.log("[closer-voice] juez de la disputa", { session_id, node_id, pedidas: ids, juicios, revision: revisionJuez });
+          if (hayQueReescribir(revisionJuez)) {
+            try {
+              const j2 = await llamarModelo(apiKey, {
+                max_tokens: 1024,
+                system: [...system, plain(bloqueRevisionJuez(revisionJuez))],
+                messages,
+              }, "replica_revisada", quienJuez);
+              const t2: string = j2?.content?.[0]?.text ?? "";
+              const p2: any = extractJson<any>(t2);
+              if (typeof p2?.message === "string" && p2.message.trim()) {
+                parsed = p2;
+              } else {
+                throw new Error("respuesta revisada sin mensaje");
+              }
+            } catch (e) {
+              // Sin respuesta revisada, el vendedor NO recibe una concesión que el
+              // juez no confirmó: recibe que su punto queda registrado.
+              console.error("[closer-voice] no se pudo reescribir la respuesta de la disputa:", e);
+              parsed = {
+                message: "Buen punto, gracias por explicarlo. Lo revisé contra la regla de este nodo y no lo puedo confirmar ahorita, así que queda registrado y lo revisa el equipo de Closer.",
+                concede: null,
+                criterio_id: ids[0] ?? null,
+                motivo: "respuesta revisada no disponible",
+              } as any;
+            }
+          }
+          // Lo que se registra sigue a lo que decidió el juez, no a lo que quiso conceder la respuesta.
+          const r1: any = parsed;
+          const confirmadas = revisionJuez.confirmadas.map((c) => c.id);
+          r1.concede_en = confirmadas;
+          if (r1.concede !== null) r1.concede = confirmadas.length > 0;
+          r1.criterio_id = confirmadas[0] ?? revisionJuez.sostenidas[0]?.id ?? revisionJuez.sin_revisar[0]?.id ?? r1.criterio_id ?? null;
+        }
+      }
       // La disputa se guarda en el servidor, con el contexto completo, para que el
       // equipo de Closer la audite y la convierta en un caso de la red. Si
       // falla el guardado, el vendedor igual recibe su respuesta.
@@ -1535,20 +1606,22 @@ async function atender(body: ReqBody): Promise<Response> {
             turno: Array.isArray(body.replica_thread) ? Math.floor(body.replica_thread.length / 2) + 1 : 1,
             nota_original: typeof body.original_evaluation?.score === "number" ? body.original_evaluation.score : null,
             mensaje_vendedor: String(body.user_message ?? "").slice(0, 4000),
-            respuesta_closer: String(rep.message).slice(0, 4000),
+            respuesta_closer: String((parsed as any).message).slice(0, 4000),
             concede,
             criterio_id: typeof r.criterio_id === "string" && r.criterio_id ? r.criterio_id.slice(0, 120) : null,
             motivo: typeof r.motivo === "string" && r.motivo ? r.motivo.slice(0, 600) : null,
             contexto: {
               evaluacion: body.original_evaluation ?? null,
               conversacion: Array.isArray(conversation_history) ? conversation_history.slice(-40) : [],
+              // Mensaje 128: qué revisó el juez antes de contestar, y qué decidió.
+              revision_juez: revisionJuez,
             },
           });
         }
       } catch (e) {
         console.error("[closer-voice] no se pudo guardar la disputa (fail-open):", e);
       }
-      return new Response(JSON.stringify({ message: rep.message, ...meta }), {
+      return new Response(JSON.stringify({ message: (parsed as any).message, ...meta }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

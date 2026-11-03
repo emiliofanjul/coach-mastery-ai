@@ -11,7 +11,7 @@ export interface Disputa {
   concede: boolean | null;
   criterio_id: string | null;
   motivo: string | null;
-  contexto: { evaluacion?: any; conversacion?: { role: string; content: string }[] } | null;
+  contexto: { evaluacion?: any; conversacion?: { role: string; content: string }[]; revision_juez?: any } | null;
   revisada: boolean;
   nota_revision: string | null;
 }
@@ -54,6 +54,8 @@ export function armarReporteDisputas(lista: Disputa[]): string {
     if (ev) lineas.push(`   decidió: ${veredictos(ev)}`);
     if (ev && fallas(ev)) lineas.push(`   fallas: ${fallas(ev)}`);
     if (ev?.cut_reason) lineas.push(`   terminó: ${CORTE[ev.cut_reason] ?? ev.cut_reason}`);
+    const juez = revisionDelJuez(d.contexto?.revision_juez);
+    if (juez) lineas.push(`   juez de la disputa: ${juez}`);
     const conv = d.contexto?.conversacion ?? [];
     if (conv.length) {
       lineas.push("   conversación:");
@@ -75,6 +77,18 @@ export interface VistaDisputa {
   decidio: string;
   fallas: string;
   termino: string | null;
+  /** Mensaje 128: lo que el juez revisó antes de que Closer le diera la razón. */
+  juez: string | null;
+}
+
+function revisionDelJuez(r: any): string | null {
+  if (!r || typeof r !== "object") return null;
+  const partes: string[] = [];
+  const ids = (xs: any) => (Array.isArray(xs) ? xs.map((x: any) => x?.id).filter(Boolean) : []);
+  if (ids(r.sostenidas).length) partes.push(`sostuvo ${ids(r.sostenidas).join(", ")}`);
+  if (ids(r.confirmadas).length) partes.push(`confirmó que estuvo mal ${ids(r.confirmadas).join(", ")}`);
+  if (ids(r.sin_revisar).length) partes.push(`no pudo revisar ${ids(r.sin_revisar).join(", ")}`);
+  return partes.length ? partes.join(" · ") : null;
 }
 
 export function vistaDeDisputa(d: Disputa): VistaDisputa {
@@ -89,5 +103,6 @@ export function vistaDeDisputa(d: Disputa): VistaDisputa {
     decidio: ev ? veredictos(ev) : "",
     fallas: ev ? fallas(ev) : "",
     termino: ev?.cut_reason ? (CORTE[ev.cut_reason] ?? String(ev.cut_reason)) : null,
+    juez: revisionDelJuez(d.contexto?.revision_juez),
   };
 }
