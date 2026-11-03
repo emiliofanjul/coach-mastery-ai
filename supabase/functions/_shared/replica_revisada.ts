@@ -130,3 +130,63 @@ export function bloqueRevisionJuez(r: RevisionJuez): string {
   lineas.push(`En el JSON: "concede_en" lleva SOLO lo que el juez confirmó; "concede" es true solo si hay algo en "concede_en".`);
   return lineas.join("\n");
 }
+
+// ── La falla grave no se calla (mensaje 130, 3-nov-2026) ─────────────────
+//
+// Emilio: en una disputa, Closer dice en qué tiene razón el vendedor y también
+// en qué NO. Si una falla crítica dejó la nota en 30 y no se le concede, se le
+// recuerda siempre: qué dijo, en qué turno y por qué cuenta. En la disputa
+// repetida del 3.10, Closer le dio la razón en ignora_pistas y elogió su
+// estrategia, sin mencionar que «claro que nosotros lo podemos ayudar.
+// Nosotros manejamos…» sí fue presentar: el vendedor se iba sin saber por qué
+// tenía 30. El prompt lo pide; si la respuesta no lo dice, el código lo agrega.
+
+const normal = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9ñ ]+/g, " ").replace(/\s+/g, " ").trim();
+
+/** ¿El mensaje cita la frase? Basta con cuatro palabras seguidas de ella. */
+export function mencionaLaFrase(mensaje: string, frase: string): boolean {
+  const m = ` ${normal(mensaje)} `;
+  const p = normal(frase).split(" ").filter(Boolean);
+  if (p.length === 0) return false;
+  if (p.length < 4) return m.includes(` ${p.join(" ")} `);
+  for (let i = 0; i + 4 <= p.length; i++) {
+    if (m.includes(` ${p.slice(i, i + 4).join(" ")} `)) return true;
+  }
+  return false;
+}
+
+/** En qué turno (1 = el primer mensaje) dijo el vendedor esa frase. */
+export function turnoDeLaFrase(conversacion: { role?: string; content?: unknown }[], frase: string): number | null {
+  const f = normal(frase).split(" ").slice(0, 6).join(" ");
+  if (!f) return null;
+  const conv = (Array.isArray(conversacion) ? conversacion : []).slice(-40);
+  const i = conv.findIndex((t) => t?.role === "user" && normal(String(t?.content ?? "")).includes(f));
+  return i >= 0 ? i + 1 : null;
+}
+
+/**
+ * La frase que hay que agregar si la respuesta calló la falla crítica que se
+ * sostiene. null si no hay falla crítica sin conceder, o si ya la mencionó.
+ */
+export function recordatorioFallaCritica(a: {
+  evaluacion: any;
+  conversacion: { role?: string; content?: unknown }[];
+  concedidas: string[];
+  mensaje: string;
+  fallasDelNodo: any[];
+}): string | null {
+  const fallas: any[] = Array.isArray(a.evaluacion?.fallas) ? a.evaluacion.fallas : [];
+  const critica = fallas.find((f) => f?.severidad === "critical" && typeof f?.id === "string" && !a.concedidas.includes(f.id));
+  if (!critica) return null;
+  const cita = String(critica.cita ?? "").trim();
+  if (cita && mencionaLaFrase(a.mensaje, cita)) return null;
+  const turno = cita ? turnoDeLaFrase(a.conversacion, cita) : null;
+  const def = (Array.isArray(a.fallasDelNodo) ? a.fallasDelNodo : []).find((f) => f?.id === critica.id);
+  const porQue = String(def?.description ?? "").trim();
+  const corta = cita.length > 160 ? `${cita.slice(0, 157).trimEnd()}…` : cita;
+  const donde = cita
+    ? `${turno ? `En el turno ${turno}` : "En la práctica"} dijiste «${corta}».`
+    : "En la práctica cometiste la falla grave de este nodo.";
+  return `Lo que sí se sostiene: ${donde}${porQue ? ` ${porQue}` : ""} Esa es la falla grave de este nodo, y por eso la nota no pasa de 30.`;
+}
