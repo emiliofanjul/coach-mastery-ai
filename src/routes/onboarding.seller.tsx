@@ -420,11 +420,18 @@ function ChallengeStep({
             lineHeight: 1.45,
           }}
         >
-          Acepto que mis prácticas de voz se graben para recibir mejor coaching
-          personalizado. Puedes cambiar esto después.
+          Acepto que mis prácticas de voz se graben. Closer funciona con tu voz:
+          sin grabar no se puede practicar, y tu manager usa las grabaciones para
+          darte mejor coaching.
         </span>
       </label>
-      <PrimaryButton onClick={onNext} disabled={!value} label="Ver mi plan →" />
+      {value && !audioConsent && (
+        <p style={{ margin: "0.8rem 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "#FFD166", textAlign: "left" }}>
+          Para seguir, acepta que tus prácticas de voz se graben: sin eso no se puede practicar.
+        </p>
+      )}
+      {/* Mensaje 123: aceptar la grabación es obligatorio (antes dejaba seguir sin aceptarla). */}
+      <PrimaryButton onClick={onNext} disabled={!value || !audioConsent} label="Ver mi plan →" />
     </>
   );
 }

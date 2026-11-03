@@ -91,17 +91,27 @@ function SignupScreen() {
     return () => clearTimeout(handle);
   }, [inviteCode, isVendedor]);
 
-  const formValid = (() => {
-    const base = baseSchema.safeParse({ fullName, email, password });
-    if (!base.success || !accepted) return false;
-    if (isManager && companyName.trim().length < 2) return false;
-    if (isVendedor && inviteState.status !== "valid") return false;
-    return true;
+  // Mensaje 123: lo que falta, en palabras. Antes el botón solo se apagaba y nadie
+  // sabía por qué (un vendedor puso una contraseña corta y no supo qué hacer).
+  const faltantes = (() => {
+    const f: string[] = [];
+    if (fullName.trim().length < 2) f.push("Escribe tu nombre completo.");
+    if (!baseSchema.shape.email.safeParse(email).success) f.push("Escribe un correo válido, como tu@correo.com.");
+    if (password.length < 8) f.push(password.length === 0 ? "Escribe una contraseña de al menos 8 caracteres." : `Tu contraseña es muy corta: te faltan ${8 - password.length} caracteres (mínimo 8).`);
+    if (isManager && companyName.trim().length < 2) f.push("Escribe el nombre de tu empresa.");
+    if (isVendedor && inviteState.status !== "valid") f.push(inviteState.status === "checking" ? "Estamos revisando tu código de empresa." : "Escribe el código de empresa que te dio tu manager.");
+    if (!accepted) f.push("Acepta los términos y condiciones.");
+    return f;
   })();
+  const formValid = faltantes.length === 0;
+  // Se muestran cuando ya empezó a llenar, o si intentó crear la cuenta.
+  const [intento, setIntento] = useState(false);
+  const empezo = fullName.length > 0 || email.length > 0 || password.length > 0;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIntento(true);
     if (!formValid || !role) return;
     setLoading(true);
 
@@ -159,6 +169,12 @@ function SignupScreen() {
 
   const handleGoogle = async () => {
     setError(null);
+    // Mensaje 123: con Google también hay que aceptar los términos (antes se los saltaba).
+    if (!accepted) {
+      setIntento(true);
+      setError("Para continuar con Google, primero acepta los términos y condiciones.");
+      return;
+    }
     if (isManager) setPendingCompanyName(companyName.trim());
     if (isVendedor && inviteState.status === "valid") setPendingInviteCode(inviteCode.trim());
     const result = await lovable.auth.signInWithOAuth("google", {
@@ -248,6 +264,11 @@ function SignupScreen() {
               maxLength={128}
             />
             <StrengthBar level={strength} />
+            {password.length > 0 && password.length < 8 && (
+              <p style={{ margin: "6px 0 0", fontSize: "0.74rem", color: "#FFD166" }}>
+                Te faltan {8 - password.length} caracteres (mínimo 8).
+              </p>
+            )}
           </div>
 
           {isManager && (
@@ -311,9 +332,18 @@ function SignupScreen() {
 
           {error && <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>}
 
+          {!formValid && (intento || empezo) && (
+            <div role="status" style={{ fontSize: "0.76rem", color: "#FFD166", lineHeight: 1.5 }}>
+              <p style={{ margin: 0, fontWeight: 600 }}>Para crear tu cuenta te falta:</p>
+              <ul style={{ margin: "4px 0 0", paddingLeft: "1.1rem" }}>
+                {faltantes.map((f) => <li key={f}>{f}</li>)}
+              </ul>
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={!formValid || loading}
+            disabled={loading}
             style={primaryBtn(loading, !formValid)}
           >
             {loading ? "Creando cuenta..." : "Crear mi cuenta"}
