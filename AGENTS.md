@@ -4,3 +4,4 @@
 - Existing evaluation Edge Functions remain maintained in place; deploy only the functions explicitly requested so unrelated live behavior stays unchanged.
 - Harness evaluations use real UUID session IDs returned per case; closer-voice checks insert errors and protects background consumption writes with EdgeRuntime.waitUntil so usage can be correlated without silent failures.
 - Short model calls in closer-voice use one instrumented wrapper with phase and session attribution so judge, auditor, client-profile and rewrite consumption is recorded alongside evaluation.
+- Rated practices are recorded server-side before evaluation completion; phone audio and streaks complete that event by practice_session_id, preserving server data so phone failures cannot erase history.

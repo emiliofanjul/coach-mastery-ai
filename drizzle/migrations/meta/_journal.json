@@ -43,6 +43,13 @@
       "when": 1792160889026,
       "tag": "0005_director_falla_critica",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793736179568,
+      "tag": "0006_historial_129",
+      "breakpoints": true
     }
   ]
 }
