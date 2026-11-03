@@ -3,8 +3,9 @@
 - [x] Mensaje 129: Paso 0, 955/71 y cinco huellas; SQL corregido aplicado exacto, verificación completa correcta, una práctica recuperada.
 - [x] Mensaje 129: retirar los dos SQL después de verificar aplicación exacta y resultado.
 - [x] Mensaje 129: archivo compartido evento_practica.ts creado con MD5 8b43b82c9435eb5897f5e2b13b85e71e.
-- [ ] Mensaje 129: retirar copia compartida y mover otros nueve archivos exactos; desplegar solo closer-voice, save-practice-event y harness-runner; pruebas 978/74. Bloqueador: la herramienta volvió a rechazar el comando de traslado de funciones existentes; no ejecutó ninguna operación. Copia compartida y otros nueve entregables conservados; cinco huellas previas intactas.
-- [ ] Mensaje 129: confirmar historial de Emilio en Mi equipo; G105 tres veces y juicios completos si parcial; repetir disputa y marcar prueba 129; publicar tras funciones.
+- [x] Mensaje 129: cuatro archivos existentes reemplazados con editor y cinco movidos fuera de functions; diez MD5 exactos, copias retiradas, tres funciones desplegadas, 978/74 y build OK; publicación solicitada después de funciones, dominio respondió HTTP 200.
+- [x] Mensaje 129: práctica recuperada consultada: evento 89941403-e19f-479d-aec8-a3a24851bf85, 17:51:35.056048 UTC, nodo 3.10, nota 30, recuperado_mensaje_129, 15 mensajes.
+- [ ] Mensaje 129: confirmar historial en Mi equipo, terminar G105 tres veces y repetir disputa/marcar prueba 129. Bloqueado por condición de parada: primera G105 falló con nota 18, preguntas_capas y dolor_real parcial, ignora_pistas presente, espejos_quitados 0; juez falló en dos intentos sin juicios. Sesión ad154d18-3581-4d5f-aaff-ae451104aa15; no se ejecutaron vueltas 2/3 ni disputa.
 - [ ] Mensaje 129: consultar evaluación, evento/audio/rachas y fallas_app después de la próxima práctica real de Emilio (requiere que la haga).
 
 - [x] Mensaje 127: baseline 936/69 y cinco huellas exactas.
