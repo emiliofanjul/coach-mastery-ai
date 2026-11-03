@@ -50,7 +50,8 @@ describe("El código comprueba las citas (G42)", () => {
     expect(voz).toContain("const { validos, descartados } = juiciosConCitasValidas(juicios, fullHistory);");
     expect(voz).toContain("quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, validos);");
     expect(voz).toContain("acusaciones: acusaciones.map((a) => ({ id: a.id, tipo: a.tipo, senalado: a.senalado.slice(0, 300) }))");
-    expect(voz).toContain("max_tokens: 2000, temperature: 0, system: PROMPT_JUEZ,");
+    // Mensaje 130: el tope del juez ya no es fijo (2000): crece con las acusaciones.
+    expect(voz).toContain("max_tokens: tope, temperature: 0, system: PROMPT_JUEZ,");
   });
 });
 
