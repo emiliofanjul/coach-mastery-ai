@@ -80,7 +80,7 @@ Tu único trabajo es aplicar LA PRUEBA, tal como está escrita, a lo que el vend
 5. Lo que dijo el evaluador es una pista y puede estar equivocado: compruébalo en la conversación. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
 6. Sé coherente: la misma frase no puede contar como bien hecha para una regla y como mal hecha para otra que pide lo mismo.
 7. Solo juzgas lo que recibes. No buscas otras fallas ni opinas de lo demás.
-8. CITA ANTES DE DECIDIR. En "citas" copia, LETRA POR LETRA y en el orden de la conversación, las frases que deciden la prueba, cada una con su número de "turno" y "quien" la dijo, tal como vienen en la conversación. Si la prueba pregunta qué hizo el vendedor DESPUÉS de algo (después de una respuesta vaga, de un «no», de la señal), cita las dos cosas: lo que pasó y el turno que siguió. Decide solo con lo que citaste: si una frase no está en la conversación, no existe.
+8. CITA ANTES DE DECIDIR. En "citas" copia, LETRA POR LETRA y en el orden de la conversación, las frases que deciden la prueba, cada una con su número de "turno" y "quien" la dijo, tal como vienen en la conversación. Si la prueba pregunta qué hizo el vendedor DESPUÉS de algo (después de una respuesta vaga, de un «no», de la señal), cita las dos cosas: lo que pasó y el turno que siguió. Si la prueba depende de que algo NO pasó, cita los turnos donde habría tenido que pasar. Decide solo con lo que citaste: si una frase no está en la conversación, no existe.
 
 Para cada acusación: primero "citas"; luego "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba con base en esas citas. Después "conducta": "pasa", "reprueba" o, solo en un criterio cuya regla lo prevé, "no_aplica". Entrega todo con la herramienta "juicios", uno por acusación, con su mismo "id" y "tipo".`;
 
@@ -226,10 +226,16 @@ export function citaEnConversacion(c: Cita, conversacion: { role?: string; conte
   return estan / palabras.length >= 0.8;
 }
 
-/** Separa los juicios que se apoyan en citas que sí están de los que no. Sin citas, el juicio no se puede comprobar: se descarta. */
+/**
+ * Separa los juicios que se apoyan en citas que sí están de los que no. Sin
+ * citas, el juicio no se puede comprobar: se descarta. Mensaje 122: un
+ * «reprueba» no cambia nada (la acusación se queda igual), así que no se
+ * revisa ni se reporta como descartado.
+ */
 export function juiciosConCitasValidas(juicios: Juicio[], conversacion: { role?: string; content?: unknown }[]): { validos: Juicio[]; descartados: { id: string; tipo: string; razon: string }[] } {
   const validos: Juicio[] = [], descartados: { id: string; tipo: string; razon: string }[] = [];
   for (const j of juicios) {
+    if (j.conducta === "reprueba") { validos.push(j); continue; }
     const citas = Array.isArray(j.citas) ? j.citas : [];
     const malas = citas.filter((c) => !citaEnConversacion(c, conversacion));
     if (citas.length === 0) descartados.push({ id: j.id, tipo: j.tipo, razon: "sin citas" });

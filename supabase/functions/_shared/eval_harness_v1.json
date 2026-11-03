@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.32.0",
+  "harness_version": "v3.33.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -4867,6 +4867,60 @@
       "expected": {
         "must_flag": [
           "referido_en_frio"
+        ]
+      }
+    },
+    {
+      "id": "G104_argumento_segun_el_caso",
+      "node_id": "7.3",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 122 (Cerebro 4.3): para una familia que el cliente no maneja, la razón es conveniencia o complementariedad, no «menos proveedores». La consolidación no es un argumento universal.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! ¿Cómo va la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, joven. Ya sabe, tráigame lo de siempre: diez cubetas de 15W40."
+        },
+        {
+          "role": "user",
+          "text": "Claro, se las anoto. Oiga, además del aceite, ¿qué otras cosas maneja y con quién las trae?"
+        },
+        {
+          "role": "assistant",
+          "text": "El anticongelante me lo trae otro proveedor desde hace años. Y líquido de frenos no manejo; cuando me lo piden, los mando enfrente."
+        },
+        {
+          "role": "user",
+          "text": "¿Y cada cuánto se lo piden?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues seguido, unas tres o cuatro veces por semana."
+        },
+        {
+          "role": "user",
+          "text": "Entonces ahí hay algo: el líquido de frenos se lo piden y hoy esa venta se va enfrente. Yo ya vengo cada quince días con su aceite, así que agregarlo no le suma ni una visita ni un pedido aparte, y se vende junto con los cambios de aceite que ya hace. ¿Le dejo una caja de doce con las diez cubetas o prefiere empezar con dos cajas?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues una caja, para empezar."
+        }
+      ],
+      "expected": {
+        "niveles_esperados": {
+          "presentation.consolidacion_proveedor": "cumple"
+        },
+        "must_not_flag": [
+          "ataca_al_proveedor",
+          "hueco_inventado",
+          "garantiza",
+          "pide_que_pruebe",
+          "pregunta_si_quiere",
+          "solo_levanta_pedido"
         ]
       }
     }

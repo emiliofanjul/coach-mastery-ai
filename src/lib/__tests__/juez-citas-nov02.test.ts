@@ -37,10 +37,10 @@ describe("El código comprueba las citas (G42)", () => {
     expect(citaEnConversacion({ turno: 7, quien: "vendedor", dijo: "le dejo una caja de líquido de frenos" }, g42)).toBe(false);
     expect(citaEnConversacion({ turno: 99, quien: "vendedor", dijo: "hola" }, g42)).toBe(false);
   });
-  it("el juicio con una cita falsa o sin citas se descarta; queda lo del evaluador", () => {
+  it("el juicio que quita algo con una cita falsa o sin citas se descarta; queda lo del evaluador", () => {
     const { validos, descartados } = juiciosConCitasValidas([
       { id: "a", tipo: "criterio", conducta: "pasa", citas: [{ turno: 7, quien: "vendedor", dijo: "Como anticongelante, grasas o aditivos" }] },
-      { id: "b", tipo: "criterio", conducta: "reprueba", citas: [{ turno: 7, quien: "vendedor", dijo: "de todo un poco, lo normal" }] },
+      { id: "b", tipo: "criterio", conducta: "pasa", citas: [{ turno: 7, quien: "vendedor", dijo: "de todo un poco, lo normal" }] },
       { id: "c", tipo: "falla", conducta: "pasa" },
     ], g42);
     expect(validos.map((j) => j.id)).toEqual(["a"]);
@@ -51,5 +51,19 @@ describe("El código comprueba las citas (G42)", () => {
     expect(voz).toContain("quitadasPorJuez = aplicarJuicios(evaluation, acusaciones, validos);");
     expect(voz).toContain("acusaciones: acusaciones.map((a) => ({ id: a.id, tipo: a.tipo, senalado: a.senalado.slice(0, 300) }))");
     expect(voz).toContain("max_tokens: 2000, temperature: 0, system: PROMPT_JUEZ,");
+  });
+});
+
+describe("Mensaje 122: un «reprueba» no se descarta, y lo que no pasó también se cita", () => {
+  it("el juicio que reprueba se queda aunque no traiga citas (no cambia nada)", () => {
+    const { validos, descartados } = juiciosConCitasValidas([{ id: "impulse.efecto_jones", tipo: "criterio", conducta: "reprueba" }], g42);
+    expect(validos.map((j) => j.id)).toEqual(["impulse.efecto_jones"]);
+    expect(descartados).toEqual([]);
+  });
+  it("el no_aplica sin citas sí se descarta", () => {
+    expect(juiciosConCitasValidas([{ id: "x", tipo: "criterio", conducta: "no_aplica" }], g42).descartados.map((d) => d.id)).toEqual(["x"]);
+  });
+  it("el prompt pide citar dónde habría tenido que pasar", () => {
+    expect(PROMPT_JUEZ).toContain("Si la prueba depende de que algo NO pasó, cita los turnos donde habría tenido que pasar.");
   });
 });
