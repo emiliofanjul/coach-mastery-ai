@@ -41,7 +41,8 @@ import { quienLlama, respuestaNoAutorizado, type Llamante } from "../_shared/qui
 import { decidirEvaluacion, esIdDePractica, type FilaEvaluacion } from "../_shared/evaluacion_guardada.ts";
 import { etiquetarPasos } from "../_shared/pasos.ts";
 import { quitarEspejosDeCriteriosCumplidos } from "../_shared/espejos.ts";
-import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, type RevisionJuez } from "../_shared/replica_revisada.ts";
+import { armarEventoDePractica, guardarEventoDePractica, type PracticaGuardada } from "../_shared/evento_practica.ts";
+import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, recordatorioFallaCritica, type RevisionJuez } from "../_shared/replica_revisada.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
@@ -441,6 +442,20 @@ Responde JSON exacto:
 }
 
 
+/**
+ * Mensaje 130: la conversación numerada igual que la ve el juez y la página de
+ * disputas (1 = el primer mensaje). Antes la respuesta a la disputa contaba
+ * los turnos a su manera: decía «turno 5» para lo que el juez y la página
+ * llaman turno 10.
+ */
+export function transcriptNumerado(conv: unknown): { turno: number; quien: string; dijo: string }[] {
+  return (Array.isArray(conv) ? conv : []).slice(-40).map((t: any, i: number) => ({
+    turno: i + 1,
+    quien: t?.role === "user" ? "vendedor" : "cliente",
+    dijo: String(t?.content ?? ""),
+  }));
+}
+
 function buildReplicaSystemPrompt(
   practice_script: any,
   original_evaluation: any,
@@ -469,6 +484,7 @@ REGLAS ABSOLUTAS:
 - Si el vendedor expone una estrategia legítima distinta, reconócela con respeto y explica la diferencia entre su estrategia y la MECÁNICA específica que este nodo mide. Cierra con: "Registro tu punto — estos casos se revisan para mejorar el entrenamiento."
 - Mantén lenguaje de aprendizaje siempre (sin regañar, sin condescender, sin capitular).
 - Prohibido evaluar prosodia o audio. Prohibido inventar criterios que no estén en el practice_script.
+- DI EN QUÉ TIENE RAZÓN Y EN QUÉ NO. Si le das la razón en algo, dilo claro; y si hay una falla crítica que dejó la nota en 30 y NO se la concedes, recuérdasela SIEMPRE, aunque su mensaje no hable de ella: qué dijo (cítalo, con su turno) y por qué cuenta en este nodo. Un vendedor que se va sin saber por qué tiene 30 no aprende nada.
 - Máximo 5 frases por respuesta.
 ${LENGUAJE_CLOSER}
 - LA NOTA SE EXPLICA SOLO CON EL CÁLCULO DE ABAJO ("CÓMO SE CALCULÓ LA NOTA"). No existe otra nota, otra escala, "nota de calidad", "sistema de progresión" ni nada parecido: PROHIBIDO mencionarlos. Si hubo una falla crítica, eso es lo primero que explicas cuando pregunten por la nota: qué dijo (cítalo) y que una falla crítica resta 30 y deja la nota en máximo 30. Si pregunta "cuánto habría sacado", responde solo con la aritmética de ese cálculo; mientras la falla crítica siga ahí, la nota no pasa de 30.
@@ -491,8 +507,8 @@ ${JSON.stringify(failureCriteria, null, 2)}
 EVALUACIÓN ORIGINAL (inmutable):
 ${JSON.stringify(evaluacion, null, 2)}
 
-TRANSCRIPT DE LA SESIÓN:
-${JSON.stringify(conversation_history ?? [], null, 2)}
+TRANSCRIPT DE LA SESIÓN (numerado: "turno" es el número de cada mensaje, contando los del vendedor y los del cliente; el juez y la página de disputas usan esta misma numeración. Cuando digas «turno N», usa SIEMPRE este número):
+${JSON.stringify(transcriptNumerado(conversation_history), null, 2)}
 
 Responde JSON exacto:
 {
@@ -763,7 +779,9 @@ async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessio
   if (!admin) return respuestaJson(500, { error: "Sin acceso a la base para guardar la calificación" });
 
   const { data: practica, error: errPractica } = await admin
-    .from("practice_sessions").select("id, seller_id").eq("id", practiceSessionId).maybeSingle();
+    .from("practice_sessions")
+    .select("id, seller_id, company_id, node_id, world_id, practice_type, is_boss_level, transcript")
+    .eq("id", practiceSessionId).maybeSingle();
   if (errPractica) return respuestaJson(500, { error: `No se pudo leer la práctica: ${errPractica.message}` });
   if (!practica) return respuestaJson(404, { error: "La práctica no existe" });
   // Nadie califica (ni lee) la práctica de otro.
@@ -800,11 +818,30 @@ async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessio
     let estado: "lista" | "error" = "error";
     let resultado: unknown = null;
     let error: string | null = null;
+    let eventoId: string | null = null;
+    let errorEvento: string | null = null;
     try {
       const r = await atender(body);
       const texto = await r.text();
       if (r.ok) {
         resultado = JSON.parse(texto);
+        // Mensaje 129: la práctica entra al historial AQUÍ, antes de marcar la
+        // calificación como lista, sin depender de que el teléfono lo logre.
+        // Si esto falla, la calificación igual se entrega y el teléfono
+        // todavía crea el evento como antes.
+        try {
+          const ev = await guardarEventoDePractica(admin, armarEventoDePractica({
+            practica: practica as PracticaGuardada,
+            resultado,
+            extra: (body as any).evento ?? {},
+            ficha_cliente: (body as any).ficha_cliente ?? null,
+            session_id: typeof body.session_id === "string" ? body.session_id : null,
+          }), (practica as any).company_id ?? null);
+          eventoId = ev.event_id;
+        } catch (e) {
+          errorEvento = e instanceof Error ? e.message : String(e);
+          console.error("[closer-voice] no se pudo crear el evento de la práctica", { practice_session_id: practiceSessionId, error: errorEvento });
+        }
         estado = "lista";
       } else {
         error = `HTTP ${r.status}: ${texto.slice(0, 2000)}`;
@@ -813,9 +850,10 @@ async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessio
       error = e instanceof Error ? e.message : String(e);
     }
     const duracion = Date.now() - t0;
-    console.log("[closer-voice] calificación guardada", { practice_session_id: practiceSessionId, session_id: body.session_id ?? null, node_id: body.node_id ?? null, estado, duracion_ms: duracion, error });
+    console.log("[closer-voice] calificación guardada", { practice_session_id: practiceSessionId, session_id: body.session_id ?? null, node_id: body.node_id ?? null, estado, duracion_ms: duracion, error, evento_id: eventoId, error_evento: errorEvento });
     const { error: errFin } = await admin.from("evaluaciones_practica").update({
       estado, resultado, error, duracion_ms: duracion, actualizada_en: new Date().toISOString(),
+      evento_id: eventoId, error_evento: errorEvento,
     }).eq("practice_session_id", practiceSessionId);
     if (errFin) console.error("[closer-voice] no se pudo guardar la calificación", { practice_session_id: practiceSessionId, error: errFin.message });
   })());
@@ -1588,6 +1626,27 @@ async function atender(body: ReqBody): Promise<Response> {
           r1.concede_en = confirmadas;
           if (r1.concede !== null) r1.concede = confirmadas.length > 0;
           r1.criterio_id = confirmadas[0] ?? revisionJuez.sostenidas[0]?.id ?? revisionJuez.sin_revisar[0]?.id ?? r1.criterio_id ?? null;
+        }
+      }
+      // Mensaje 130: si una falla crítica dejó la nota en 30 y no se le
+      // concedió, se le recuerda siempre (si la respuesta no la mencionó, el
+      // código lo agrega). Lo concedido es lo que confirmó el juez; sin revisión
+      // del juez, lo que concedió la respuesta.
+      {
+        const r2: any = parsed;
+        const concedidas = revisionJuez
+          ? revisionJuez.confirmadas.map((c) => c.id)
+          : idsConcedidos(r2, body.original_evaluation ?? {});
+        const recordatorio = recordatorioFallaCritica({
+          evaluacion: body.original_evaluation ?? {},
+          conversacion: fullHistory,
+          concedidas,
+          mensaje: String(r2.message ?? ""),
+          fallasDelNodo: Array.isArray(practice_script?.failure_criteria) ? practice_script.failure_criteria : [],
+        });
+        if (recordatorio) {
+          r2.message = `${String(r2.message ?? "").trim()}\n\n${recordatorio}`;
+          console.warn("[closer-voice] disputa: se agregó la falla crítica que la respuesta no mencionó", { session_id, node_id });
         }
       }
       // La disputa se guarda en el servidor, con el contexto completo, para que el
