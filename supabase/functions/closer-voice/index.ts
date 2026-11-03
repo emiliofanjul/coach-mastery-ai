@@ -33,7 +33,7 @@ import { aplicarTopeCritico, calcularScore, estrellasDe, fallasDe, explicarNota 
 import { filtrarSiguienteNivel, pasoDelNodo } from "../_shared/siguiente_nivel.ts";
 import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta, corregirPreguntaPorSignos } from "../_shared/hechos_pregunta.ts";
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
-import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, juiciosConCitasValidas, type Juicio } from "../_shared/juez_pruebas.ts";
+import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, presupuestoJuez, TOPE_MAXIMO_JUEZ, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, juiciosConCitasValidas, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
@@ -542,6 +542,8 @@ async function llamarModelo(apiKey: string, cuerpo: Record<string, unknown>, fas
   if (!r.ok) throw new Error(`modelo HTTP ${r.status}`);
   const j = await r.json();
   const u = j?.usage ?? {};
+  // Mensaje 130: una respuesta cortada por el tope de tokens ya no pasa en silencio.
+  if (j?.stop_reason === "max_tokens") console.warn("[closer-voice] respuesta cortada por max_tokens", { fase, output_tokens: u.output_tokens ?? null, session_id: quien.session_id ?? null });
   enSegundoPlano(logLlmCall({
     phase: fase,
     input_tokens: u.input_tokens ?? null,
@@ -573,13 +575,22 @@ async function llamarAuditor(apiKey: string, system: string, user: string, maxTo
 }
 
 /** El juez de las pruebas contesta con una herramienta: un juicio por acusación. */
-async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama): Promise<Juicio[] | null> {
-  return juiciosDeRespuesta(await llamarModelo(apiKey, {
-    max_tokens: 2000, temperature: 0, system: PROMPT_JUEZ,
-    messages: [{ role: "user", content: entrada }],
-    tools: [HERRAMIENTA_JUICIOS],
-    tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
-  }, "juez", quien));
+async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama, acusaciones: number): Promise<Juicio[] | null> {
+  // Mensaje 130: el tope crece con las acusaciones; si aun así se corta, se
+  // dice en el log y se intenta una vez con el doble (hasta el tope máximo).
+  let tope = presupuestoJuez(acusaciones);
+  for (;;) {
+    const j = await llamarModelo(apiKey, {
+      max_tokens: tope, temperature: 0, system: PROMPT_JUEZ,
+      messages: [{ role: "user", content: entrada }],
+      tools: [HERRAMIENTA_JUICIOS],
+      tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
+    }, "juez", quien);
+    if (j?.stop_reason !== "max_tokens") return juiciosDeRespuesta(j);
+    console.error("[closer-voice] al juez se le acabó el tope de tokens", { session_id: quien.session_id ?? null, acusaciones, max_tokens: tope, output_tokens: j?.usage?.output_tokens ?? null });
+    if (tope >= TOPE_MAXIMO_JUEZ) throw new Error(`al juez se le acabó el tope de ${tope} tokens`);
+    tope = Math.min(TOPE_MAXIMO_JUEZ, tope * 2);
+  }
 }
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
@@ -1370,7 +1381,7 @@ async function atender(body: ReqBody): Promise<Response> {
         try {
           for (let intento = 1; intento <= 2; intento++) {
             try {
-              const juicios = await llamarJuez(apiKey, entradaJuez, { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null });
+              const juicios = await llamarJuez(apiKey, entradaJuez, { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null }, acusaciones.length);
               if (!juicios) throw new Error("el juez no entregó juicios");
               juez.juzgadas = juicios.length;
               juez.intentos = intento;
@@ -1587,7 +1598,7 @@ async function atender(body: ReqBody): Promise<Response> {
           ].join("\n").trim();
           let juicios: Juicio[] | null = null;
           try {
-            juicios = await llamarJuez(apiKey, entradaJuezConArgumento(aRevisar, fullHistory, argumento), quienJuez);
+            juicios = await llamarJuez(apiKey, entradaJuezConArgumento(aRevisar, fullHistory, argumento), quienJuez, aRevisar.length);
           } catch (e) {
             console.error("[closer-voice] juez de la disputa:", e);
           }

@@ -124,6 +124,19 @@ export const HERRAMIENTA_JUICIOS = {
  */
 export const LARGO_REGLA_JUEZ = 2400;
 
+/**
+ * Mensaje 130 (3-nov-2026): cuánto puede escribir el juez. Antes era un tope
+ * fijo de 2000 tokens. Con cinco acusaciones, cada una con sus citas letra por
+ * letra, la respuesta se cortaba a la mitad, el juez «no entregaba juicios»
+ * dos veces y se quedaba lo del evaluador (G105: preguntas_capas y dolor_real
+ * en parcial, la falla espejo sin quitar, nota 18). El tope crece con las
+ * acusaciones. Solo se paga lo que de verdad escribe.
+ */
+export const TOPE_MAXIMO_JUEZ = 8000;
+export function presupuestoJuez(acusaciones: number): number {
+  return Math.min(TOPE_MAXIMO_JUEZ, 1200 + 900 * Math.max(1, Math.floor(acusaciones)));
+}
+
 export function armarEntradaJuez(acusaciones: Acusacion[], conversacion: { role?: string; content?: unknown }[]): string {
   return JSON.stringify({
     conversacion: (Array.isArray(conversacion) ? conversacion : []).slice(-40).map((t, i) => ({
