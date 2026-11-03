@@ -12,6 +12,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { recomputeSellerSkillState } from "../_shared/skill_state.ts";
+import { buscarEventoDePractica, combinarPayload } from "../_shared/evento_practica.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -79,14 +80,38 @@ Deno.serve(async (req) => {
       model: meta?.model ?? null,
     };
 
-    const { data: inserted, error: insErr } = await admin
-      .from("seller_events")
-      .insert(insertRow)
-      .select("id")
-      .single();
-    if (insErr || !inserted) return json({ error: "Insert failed", detail: insErr?.message }, 500);
-
-    const eventId: string = inserted.id;
+    // Mensaje 129: el servidor ya creó el evento al terminar la calificación.
+    // Si existe (por practice_session_id), se le agrega lo que trae el
+    // teléfono; si no (o es un evento sin práctica), se crea como antes. Un
+    // reintento del teléfono tampoco duplica.
+    const practiceSessionId = typeof payload?.practice_session_id === "string" && payload.practice_session_id ? payload.practice_session_id : null;
+    let eventId: string;
+    let combinado = false;
+    const existente = practiceSessionId && eventType === "practice_session"
+      ? await buscarEventoDePractica(admin, seller.id, practiceSessionId)
+      : null;
+    if (existente) {
+      const { error: updErr } = await admin
+        .from("seller_events")
+        .update({
+          payload: combinarPayload(existente.payload, payload),
+          ...(insertRow.skill_ids.length > 0 ? { skill_ids: insertRow.skill_ids } : {}),
+          ...(insertRow.prompt_version ? { prompt_version: insertRow.prompt_version } : {}),
+          ...(insertRow.model ? { model: insertRow.model } : {}),
+        })
+        .eq("id", existente.id);
+      if (updErr) return json({ error: "Update failed", detail: updErr.message }, 500);
+      eventId = existente.id;
+      combinado = true;
+    } else {
+      const { data: inserted, error: insErr } = await admin
+        .from("seller_events")
+        .insert(insertRow)
+        .select("id")
+        .single();
+      if (insErr || !inserted) return json({ error: "Insert failed", detail: insErr?.message }, 500);
+      eventId = inserted.id;
+    }
 
     // Audio upload (only if consent AND audio provided)
     const audio = form.get("audio");
@@ -133,7 +158,11 @@ Deno.serve(async (req) => {
     // Radar de Fundamentos — alerta al manager cuando una regresión llega a la 3ª
     // sesión consecutiva. Se registra como seller_event separado para que el panel
     // del manager pueda leerlo sin tener que escanear cada practice_session.
-    const rachas = Array.isArray((meta as any)?.rachas) ? (meta as any).rachas : [];
+    // Las rachas vienen dentro de payload (así las manda la app). Antes se
+    // buscaban en meta.rachas, que nunca existe: la alerta no se creaba nunca.
+    const rachas = Array.isArray((payload as any)?.rachas) ? (payload as any).rachas
+      : Array.isArray((meta as any)?.rachas) ? (meta as any).rachas : [];
+    let alertasCreadas = 0;
     const alerts = rachas.filter(
       (r: any) => r && typeof r?.skill_id === "string" && typeof r?.streak === "number" && r.streak >= 3,
     );
@@ -156,6 +185,7 @@ Deno.serve(async (req) => {
         }));
         const { error: alertErr } = await admin.from("seller_events").insert(alertRows);
         if (alertErr) console.error("[save-practice-event] regression_alert insert failed:", alertErr);
+        alertasCreadas = alertErr ? 0 : alertRows.length;
       } catch (e) {
         console.error("[save-practice-event] regression_alert threw:", e);
       }
@@ -179,6 +209,8 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({
       ok: true,
       event_id: eventId,
+      combinado,
+      alertas_creadas: alertasCreadas,
       audio_url: audioUrl,
       session_id: sessionId,
       llm_calls_backfilled: llmCallsBackfilled,
