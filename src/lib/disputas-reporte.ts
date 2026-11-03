@@ -63,3 +63,31 @@ export function armarReporteDisputas(lista: Disputa[]): string {
   }
   return lineas.join("\n");
 }
+
+/**
+ * Lo que se ve al abrir una disputa (3-nov-2026, Emilio: «si no, no sabemos
+ * qué estamos analizando»): la conversación completa, con los turnos
+ * numerados igual que los cita Closer (1 = el primer mensaje), y lo que
+ * decidió la calificación.
+ */
+export interface VistaDisputa {
+  turnos: { n: number; quien: "Vendedor" | "Cliente"; texto: string }[];
+  decidio: string;
+  fallas: string;
+  termino: string | null;
+}
+
+export function vistaDeDisputa(d: Disputa): VistaDisputa {
+  const conv = Array.isArray(d.contexto?.conversacion) ? d.contexto!.conversacion! : [];
+  const ev = d.contexto?.evaluacion;
+  return {
+    turnos: conv.map((t, i) => ({
+      n: i + 1,
+      quien: t?.role === "user" ? "Vendedor" : "Cliente",
+      texto: String(t?.content ?? ""),
+    })),
+    decidio: ev ? veredictos(ev) : "",
+    fallas: ev ? fallas(ev) : "",
+    termino: ev?.cut_reason ? (CORTE[ev.cut_reason] ?? String(ev.cut_reason)) : null,
+  };
+}
