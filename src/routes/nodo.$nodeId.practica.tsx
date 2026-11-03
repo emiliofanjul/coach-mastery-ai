@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { obtenerCalificacion, CalificacionTardada } from "@/lib/evaluacion-guardada";
+import { conReintentos, registrarFallaApp } from "@/lib/guardado-practica";
 import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, ErrorTokenVoz, type ControlTurno } from "@/lib/voz/turno-voz";
 import { sesionFresca } from "@/lib/sesion-viva";
 import { avisoDeFallaVoz, avisoDeArranque } from "@/lib/voz/avisos-voz";
@@ -1471,6 +1472,16 @@ function PracticaPage() {
 
         cut_reason: cutReasonRef.current ?? "unknown",
         director_user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
+        // Mensaje 129: con esto el servidor registra la práctica en el historial
+        // en cuanto la califica, aunque después este teléfono pierda la señal.
+        evento: {
+          skill_ids: Array.isArray(skillsContextRef.current?.skillsInFocus) ? skillsContextRef.current.skillsInFocus : [],
+          input_mode: inputModeRef.current,
+          transcript: transcriptFullRef.current,
+          director_decisions: directorDecisionsRef.current,
+          incidentes_voz: incidentesVozRef.current,
+          audio_turnos: audioTurnosRef.current,
+        },
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
       const rawText = await obtenerCalificacion({
@@ -1664,18 +1675,45 @@ function PracticaPage() {
           if (audioBlob && sellerData?.audio_consent) {
             form.append("audio", audioBlob, "session.webm");
           }
-          const evRes = await fetch(`${SUPABASE_URL}/functions/v1/save-practice-event`, {
-            method: "POST",
-            headers: {
-              apikey: SUPABASE_ANON,
-              Authorization: `Bearer ${accessToken || (await llaveUsuario())}`,
-            },
-            body: form,
-          });
-          const evText = await evRes.text();
-          console.log("[save-practice-event] ←", evRes.status, evText);
+          // Mensaje 129: el servidor ya registró la práctica; esto le agrega el
+          // audio y las rachas. Se reintenta, y si no se logra queda registrado
+          // por qué (antes el error solo iba a la consola y se perdía).
+          const r = await conReintentos(async () => {
+            const evRes = await fetch(`${SUPABASE_URL}/functions/v1/save-practice-event`, {
+              method: "POST",
+              headers: {
+                apikey: SUPABASE_ANON,
+                Authorization: `Bearer ${(await sesionFresca())?.accessToken || accessToken || (await llaveUsuario())}`,
+              },
+              body: form,
+            });
+            const evText = await evRes.text();
+            console.log("[save-practice-event] ←", evRes.status, evText);
+            return { status: evRes.status, texto: evText };
+          }, { esperar: (ms) => new Promise((res) => setTimeout(res, ms)) });
+          if (!r.ok) {
+            void registrarFallaApp({
+              seller_id: sellerData?.id ?? null,
+              donde: "save-practice-event",
+              detalle: r.detalle,
+              datos: {
+                practice_session_id: session?.id ?? null,
+                node_id: nodeId,
+                intentos: r.intentos,
+                status: r.status,
+                bytes_audio: audioBlob?.size ?? 0,
+                con_audio: !!(audioBlob && sellerData?.audio_consent),
+              },
+            });
+          }
         } catch (uplErr) {
           console.error("[save-practice-event] failed:", uplErr);
+          void registrarFallaApp({
+            seller_id: sellerData?.id ?? null,
+            donde: "save-practice-event",
+            detalle: String((uplErr as any)?.message ?? uplErr).slice(0, 1000),
+            datos: { practice_session_id: session?.id ?? null, node_id: nodeId, antes_de_enviar: true },
+          });
         }
       }
     } catch (err) {
