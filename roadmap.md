@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Mensaje 123: PASO 0 exacto, 909/66 y huellas; 9 vendedores activos con audio_consent=false (solo lectura).
+- [ ] Mensaje 123: mover cuatro archivos con huellas exactas; verificar 914/67 y pantallas; publicar solo si todo sale bien.
+
 - [x] Mensaje 115: 799/59 y ocho huellas previas confirmadas; nueve reemplazos exactos movidos y solo closer-voice desplegado.
 - [x] Mensaje 115: 808/60 y build OK; G04 2/2 con 53, pregunta en_medio y estructura parcial; evaluate y auditor registrados. Red explícita detenida en G26 tras dos fallas por estructura cumple; juicios del log y consumo de 70 llamadas recuperados.
 - [ ] Mensaje 115: publicar 112–115. Bloqueado por condición de parada de Emilio: G26 falló dos veces; no ejecutar casos restantes ni publicar hasta nuevas instrucciones.
