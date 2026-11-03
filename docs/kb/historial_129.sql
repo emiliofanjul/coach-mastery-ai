@@ -15,15 +15,17 @@ CREATE TABLE IF NOT EXISTS public.fallas_app (
   datos jsonb NOT NULL DEFAULT '{}'::jsonb,
   agente text
 );
+-- Permisos justo después de crear la tabla, antes del candado y su regla:
+-- el servidor (service_role) todo; el vendedor solo escribir; anónimo nada.
+REVOKE ALL ON public.fallas_app FROM PUBLIC, anon, authenticated;
+GRANT ALL ON public.fallas_app TO service_role;
+GRANT INSERT ON public.fallas_app TO authenticated;
 CREATE INDEX IF NOT EXISTS idx_fallas_app_fecha ON public.fallas_app (created_at DESC);
 ALTER TABLE public.fallas_app ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "seller inserts own fallas" ON public.fallas_app;
 CREATE POLICY "seller inserts own fallas" ON public.fallas_app
   FOR INSERT TO authenticated
   WITH CHECK (public.owns_seller(seller_id));
-REVOKE ALL ON public.fallas_app FROM anon;
-REVOKE SELECT, UPDATE, DELETE ON public.fallas_app FROM authenticated;
-GRANT INSERT ON public.fallas_app TO authenticated;
 
 -- 3) La alerta del radar se guarda como evento «regression_alert», pero ese
 --    tipo no estaba en la lista de tipos permitidos. Se agrega, conservando
