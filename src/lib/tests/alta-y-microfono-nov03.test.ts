@@ -44,3 +44,13 @@ describe("Crear cuenta dice qué falta", () => {
     expect(alta).toContain("Para continuar con Google, primero acepta los términos y condiciones.");
   });
 });
+
+describe("Mensaje 124: el consentimiento se guarda primero y se comprueba", () => {
+  it("se guarda antes del mensaje de la IA, y si falla se avisa", () => {
+    const guardar = onboarding.indexOf('const { error: guardarErr } = await supabase');
+    expect(guardar).toBeGreaterThan(0);
+    expect(guardar).toBeLessThan(onboarding.indexOf("const res = await generateSellerWelcome({"));
+    expect(onboarding).toContain('setAiError("No pudimos guardar tus respuestas. Toca para reintentar.");');
+    expect(onboarding.match(/audio_consent: audioConsent/g)?.length).toBe(1);
+  });
+});
