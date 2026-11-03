@@ -790,7 +790,9 @@ export type Database = {
           duracion_ms: number | null
           empezada_en: string
           error: string | null
+          error_evento: string | null
           estado: string
+          evento_id: string | null
           intentos: number
           practice_session_id: string
           resultado: Json | null
@@ -801,7 +803,9 @@ export type Database = {
           duracion_ms?: number | null
           empezada_en?: string
           error?: string | null
+          error_evento?: string | null
           estado: string
+          evento_id?: string | null
           intentos?: number
           practice_session_id: string
           resultado?: Json | null
@@ -812,7 +816,9 @@ export type Database = {
           duracion_ms?: number | null
           empezada_en?: string
           error?: string | null
+          error_evento?: string | null
           estado?: string
+          evento_id?: string | null
           intentos?: number
           practice_session_id?: string
           resultado?: Json | null
@@ -828,6 +834,44 @@ export type Database = {
           },
           {
             foreignKeyName: "evaluaciones_practica_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fallas_app: {
+        Row: {
+          agente: string | null
+          created_at: string
+          datos: Json
+          detalle: string | null
+          donde: string
+          id: string
+          seller_id: string
+        }
+        Insert: {
+          agente?: string | null
+          created_at?: string
+          datos?: Json
+          detalle?: string | null
+          donde: string
+          id?: string
+          seller_id: string
+        }
+        Update: {
+          agente?: string | null
+          created_at?: string
+          datos?: Json
+          detalle?: string | null
+          donde?: string
+          id?: string
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fallas_app_seller_id_fkey"
             columns: ["seller_id"]
             isOneToOne: false
             referencedRelation: "sellers"
