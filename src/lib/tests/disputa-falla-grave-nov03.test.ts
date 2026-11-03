@@ -56,7 +56,7 @@ describe("la falla grave que dejó la nota en 30 no se calla", () => {
   it("encuentra la frase aunque cambien acentos y signos, y sabe en qué turno la dijo", () => {
     expect(mencionaLaFrase("tú DIJISTE: ¡Ya entiendo que esta teniendo un problema!", "ya entiendo que está teniendo")).toBe(true);
     expect(mencionaLaFrase("hablaste de tus marcas", "ya entiendo que está teniendo")).toBe(false);
-    expect(turnoDeLaFrase(conversacion, evaluacion.fallas[0].cita)).toBe(13);
+    expect(turnoDeLaFrase(conversacion, evaluacion.fallas[0]!.cita)).toBe(13);
   });
 
   it("closer-voice lo pide en el prompt y lo garantiza antes de guardar la disputa", () => {
