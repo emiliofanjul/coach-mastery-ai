@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 125: baseline 915/67 y las tres huellas exactas.
+- [x] Mensaje 125: dos archivos movidos con huellas exactas; 917/68 y build OK; ningún consentimiento modificado por terceros.
+- [ ] Mensaje 125: publicación solicitada; aceptación y persistencia no comprobadas con usuario sin consentimiento, pues no se puede aceptar por terceros.
+- [ ] Mensaje 125: en unos días consultar, solo lectura, cuántos de los nueve ya aceptaron; pendiente del tiempo solicitado y de una nueva consulta.
+
 - [x] Mensaje 124: cuatro huellas exactas y nueve registros consultados sin nombres ni correos: todos onboarding completo; seis managers con respuestas vacías y tres vendedores con respuestas completas.
 - [x] Mensaje 124: dos archivos movidos exactos, copias retiradas, 915/67 y build OK; sin llamadas de IA ni cambios a consentimientos existentes.
 - [ ] Mensaje 124: publicar junto con el 123 por instrucción explícita; la pregunta 3 con vendedor real sigue sin comprobarse por no haber altas pendientes.
