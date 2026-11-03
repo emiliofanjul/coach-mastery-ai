@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 129: Paso 0, 955/71 y cinco huellas; SQL corregido aplicado exacto, verificación completa correcta, una práctica recuperada.
+- [ ] Mensaje 129: mover diez archivos exactos y retirar SQL; desplegar solo closer-voice, save-practice-event y harness-runner; pruebas 978/74 y build.
+- [ ] Mensaje 129: confirmar historial de Emilio en Mi equipo; G105 tres veces y juicios completos si parcial; repetir disputa y marcar prueba 129; publicar tras funciones.
+- [ ] Mensaje 129: consultar evaluación, evento/audio/rachas y fallas_app después de la próxima práctica real de Emilio (requiere que la haga).
+
 - [x] Mensaje 127: baseline 936/69 y cinco huellas exactas.
 - [x] Mensaje 127: práctica, evaluación y eventos consultados sin modificar datos; los registros del rango solicitado no están disponibles (consultas vacías de todas las fuentes), no permiten afirmar ausencia de llamadas.
 - [x] Mensaje 127: tres archivos movidos con huellas exactas; 940/70 y build OK; disputa real abierta con sesión de Emilio, 14 turnos, fallas, criterios y final visibles, sin errores de navegador.
