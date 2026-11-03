@@ -2,7 +2,8 @@
 
 - [x] Mensaje 129: Paso 0, 955/71 y cinco huellas; SQL corregido aplicado exacto, verificación completa correcta, una práctica recuperada.
 - [x] Mensaje 129: retirar los dos SQL después de verificar aplicación exacta y resultado.
-- [ ] Mensaje 129: mover diez archivos exactos; desplegar solo closer-voice, save-practice-event y harness-runner; pruebas 978/74. Bloqueador: la herramienta rechazó el traslado del nuevo helper _shared/evento_practica.ts; todos los archivos entregados y las cinco huellas previas siguen intactos.
+- [x] Mensaje 129: archivo compartido evento_practica.ts creado con MD5 8b43b82c9435eb5897f5e2b13b85e71e.
+- [ ] Mensaje 129: retirar copia compartida y mover otros nueve archivos exactos; desplegar solo closer-voice, save-practice-event y harness-runner; pruebas 978/74. Bloqueador: la herramienta volvió a rechazar el comando de traslado de funciones existentes; no ejecutó ninguna operación. Copia compartida y otros nueve entregables conservados; cinco huellas previas intactas.
 - [ ] Mensaje 129: confirmar historial de Emilio en Mi equipo; G105 tres veces y juicios completos si parcial; repetir disputa y marcar prueba 129; publicar tras funciones.
 - [ ] Mensaje 129: consultar evaluación, evento/audio/rachas y fallas_app después de la próxima práctica real de Emilio (requiere que la haga).
 
