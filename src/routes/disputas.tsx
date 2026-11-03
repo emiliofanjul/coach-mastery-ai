@@ -154,11 +154,12 @@ function ConversacionDeDisputa({ d }: { d: Disputa }) {
         Ver conversación y calificación ({v.turnos.length} turnos)
       </summary>
       <div className="px-3 pb-3 text-sm">
-        {(v.fallas || v.decidio || v.termino) && (
+        {(v.fallas || v.decidio || v.termino || v.juez) && (
           <div className="mb-3 flex flex-col gap-1 rounded-lg bg-white/[0.04] p-2 text-xs text-white/70">
             {v.fallas && <div><span className="text-white/45">Fallas: </span>{v.fallas}</div>}
             {v.decidio && <div className="break-words"><span className="text-white/45">Criterios: </span>{v.decidio}</div>}
             {v.termino && <div><span className="text-white/45">Terminó: </span>{v.termino}</div>}
+            {v.juez && <div><span className="text-white/45">Juez de la disputa: </span>{v.juez}</div>}
           </div>
         )}
         <ol className="flex flex-col gap-2">
