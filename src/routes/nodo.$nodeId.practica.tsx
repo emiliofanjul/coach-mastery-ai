@@ -2635,6 +2635,8 @@ function VoicePhase({
 
   const micDisabled = isAgentSpeaking;
   const micBg = isUserListening ? RED : ORANGE;
+  // Mensaje 123: le toca hablar al vendedor (nadie habla, nada se procesa, sin error).
+  const teTocaHablar = !isUserListening && !isAgentSpeaking && !isProcessing && !connectionError;
   const micLabel = isUserListening
     ? "Te escucho. Puedes pausar y seguir — toca para enviar ya."
     : isAgentSpeaking
@@ -2643,7 +2645,7 @@ function VoicePhase({
         ? "Pensando…"
         : isIDo
           ? "Toca para responder como cliente"
-          : "Toca para hablar";
+          : "Te toca. Toca el micrófono para hablar";
 
 
   const [textDraft, setTextDraft] = useState("");
@@ -2675,6 +2677,15 @@ function VoicePhase({
         @keyframes practica-pulse {
           0%, 100% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.08); opacity: 0.6; }
+        }
+        /* Mensaje 123: cuando le toca hablar al vendedor, el micrófono lo invita
+           con un halo suave que respira. Sutil: no parpadea ni cambia de color. */
+        @keyframes practica-invita {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.45), 0 10px 30px -8px rgba(255,107,43,0.33); }
+          50% { box-shadow: 0 0 0 12px rgba(255,107,43,0), 0 10px 30px -8px rgba(255,107,43,0.33); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .practica-mic-invita { animation: none !important; }
         }
       `}</style>
 
@@ -2862,6 +2873,7 @@ function VoicePhase({
                   onClick={onMicClick}
                   disabled={micDisabled}
                   aria-label={micLabel}
+                  className={teTocaHablar ? "practica-mic-invita" : undefined}
                   style={{
                     width: 84, height: 84, borderRadius: 99, border: "none",
                     background: micBg, color: "#08080F", fontSize: 32,
@@ -2869,7 +2881,7 @@ function VoicePhase({
                     opacity: micDisabled ? 0.4 : 1,
                     boxShadow: `0 10px 30px -8px ${micBg}55`,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    animation: isUserListening ? "practica-pulse 1.2s ease-in-out infinite" : undefined,
+                    animation: isUserListening ? "practica-pulse 1.2s ease-in-out infinite" : teTocaHablar ? "practica-invita 2.4s ease-out infinite" : undefined,
                   }}
                 >
                   {isUserListening ? "■" : "🎤"}
