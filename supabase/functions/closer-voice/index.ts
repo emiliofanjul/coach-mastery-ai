@@ -37,7 +37,8 @@ import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, acusacionesConPrueba, armarEntradaJue
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
-import { quienLlama, respuestaNoAutorizado } from "../_shared/quien_llama.ts";
+import { quienLlama, respuestaNoAutorizado, type Llamante } from "../_shared/quien_llama.ts";
+import { decidirEvaluacion, esIdDePractica, type FilaEvaluacion } from "../_shared/evaluacion_guardada.ts";
 import { etiquetarPasos } from "../_shared/pasos.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
@@ -712,30 +713,116 @@ function extractJson<T>(text: string): T {
 const CONVERSATION_PHASES = new Set<Phase>(["i_do", "you_do", "boss_sim", "closing"]);
 
 
+function respuestaJson(status: number, cuerpo: unknown): Response {
+  return new Response(JSON.stringify(cuerpo), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+  if (req.method !== "POST") return respuestaJson(405, { error: "Method not allowed" });
+
+  let quien: Llamante | null;
+  let body: ReqBody;
+  try {
+    // Solo usuarios con sesión (o la red de seguridad, con la llave de
+    // servicio). La empresa y el vendedor del consumo salen de la base.
+    quien = await quienLlama(req);
+    if (!quien) return respuestaNoAutorizado(corsHeaders);
+    body = (await req.json()) as ReqBody;
+  } catch (e) {
+    console.error("[closer-voice] error:", e);
+    return respuestaJson(500, { error: e instanceof Error ? e.message : String(e) });
+  }
+  if (quien.tipo === "usuario") {
+    body.company_id = quien.companyId;
+    body.seller_id = quien.sellerId;
   }
 
+  // Mensaje 126: la calificación de una práctica guardada se calcula en
+  // segundo plano y queda guardada, aunque el teléfono deje de esperar.
+  const practiceSessionId = (body as any).practice_session_id;
+  if (body.phase === "evaluate" && practiceSessionId != null) {
+    return await evaluacionGuardada(body, quien, practiceSessionId);
+  }
+  return await atender(body);
+});
+
+/**
+ * La calificación de una práctica que ya está guardada en practice_sessions.
+ * Responde de inmediato: 200 con el resultado si ya está listo, o 202
+ * «procesando» mientras se calcula. El cálculo es exactamente el de siempre
+ * (atender); lo único nuevo es que su resultado se guarda.
+ */
+async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessionId: unknown): Promise<Response> {
+  if (!esIdDePractica(practiceSessionId)) return respuestaJson(400, { error: "practice_session_id inválido" });
+  const admin = getAdmin();
+  if (!admin) return respuestaJson(500, { error: "Sin acceso a la base para guardar la calificación" });
+
+  const { data: practica, error: errPractica } = await admin
+    .from("practice_sessions").select("id, seller_id").eq("id", practiceSessionId).maybeSingle();
+  if (errPractica) return respuestaJson(500, { error: `No se pudo leer la práctica: ${errPractica.message}` });
+  if (!practica) return respuestaJson(404, { error: "La práctica no existe" });
+  // Nadie califica (ni lee) la práctica de otro.
+  if (quien.tipo === "usuario" && practica.seller_id !== quien.sellerId) {
+    return respuestaJson(403, { error: "Esta práctica no es tuya" });
+  }
+
+  const { data: fila, error: errFila } = await admin
+    .from("evaluaciones_practica")
+    .select("estado, resultado, actualizada_en, intentos")
+    .eq("practice_session_id", practiceSessionId).maybeSingle();
+  if (errFila) return respuestaJson(500, { error: `No se pudo leer la calificación: ${errFila.message}` });
+
+  const decision = decidirEvaluacion(fila as FilaEvaluacion | null, Date.now());
+  if (decision === "devolver") return respuestaJson(200, (fila as any).resultado);
+  if (decision === "esperar") return respuestaJson(202, { estado: "procesando" });
+
+  const empezada = new Date().toISOString();
+  const { error: errInicio } = await admin.from("evaluaciones_practica").upsert({
+    practice_session_id: practiceSessionId,
+    seller_id: practica.seller_id,
+    estado: "procesando",
+    resultado: null,
+    error: null,
+    duracion_ms: null,
+    intentos: Number((fila as any)?.intentos ?? 0) + 1,
+    empezada_en: empezada,
+    actualizada_en: empezada,
+  }, { onConflict: "practice_session_id" });
+  if (errInicio) return respuestaJson(500, { error: `No se pudo registrar la calificación: ${errInicio.message}` });
+
+  const t0 = Date.now();
+  enSegundoPlano((async () => {
+    let estado: "lista" | "error" = "error";
+    let resultado: unknown = null;
+    let error: string | null = null;
+    try {
+      const r = await atender(body);
+      const texto = await r.text();
+      if (r.ok) {
+        resultado = JSON.parse(texto);
+        estado = "lista";
+      } else {
+        error = `HTTP ${r.status}: ${texto.slice(0, 2000)}`;
+      }
+    } catch (e) {
+      error = e instanceof Error ? e.message : String(e);
+    }
+    const duracion = Date.now() - t0;
+    console.log("[closer-voice] calificación guardada", { practice_session_id: practiceSessionId, session_id: body.session_id ?? null, node_id: body.node_id ?? null, estado, duracion_ms: duracion, error });
+    const { error: errFin } = await admin.from("evaluaciones_practica").update({
+      estado, resultado, error, duracion_ms: duracion, actualizada_en: new Date().toISOString(),
+    }).eq("practice_session_id", practiceSessionId);
+    if (errFin) console.error("[closer-voice] no se pudo guardar la calificación", { practice_session_id: practiceSessionId, error: errFin.message });
+  })());
+  return respuestaJson(202, { estado: "procesando" });
+}
+
+async function atender(body: ReqBody): Promise<Response> {
   try {
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured");
-
-    // Solo usuarios con sesión (o la red de seguridad, con la llave de
-    // servicio). La empresa y el vendedor del consumo salen de la base.
-    const quien = await quienLlama(req);
-    if (!quien) return respuestaNoAutorizado(corsHeaders);
-
-    const body = (await req.json()) as ReqBody;
-    if (quien.tipo === "usuario") {
-      body.company_id = quien.companyId;
-      body.seller_id = quien.sellerId;
-    }
 
     // La ficha del cliente de la práctica: se crea mientras el vendedor ve la
     // demostración. Con temperatura alta para que cada práctica sea un cliente
@@ -1531,4 +1618,4 @@ Deno.serve(async (req) => {
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
-});
+}

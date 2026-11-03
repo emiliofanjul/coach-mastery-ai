@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
+import { obtenerCalificacion, CalificacionTardada } from "@/lib/evaluacion-guardada";
 import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, ErrorTokenVoz, type ControlTurno } from "@/lib/voz/turno-voz";
 import { sesionFresca } from "@/lib/sesion-viva";
 import { avisoDeFallaVoz, avisoDeArranque } from "@/lib/voz/avisos-voz";
@@ -1434,16 +1435,26 @@ function PracticaPage() {
   }
 
   /**
-   * Llama al evaluador con el MISMO transcript. Reintentable sin perder nada.
-   * Timeout duro de 60s: la pantalla de análisis nunca se queda sin salida.
+   * Pide la calificación de la práctica ya guardada. Reintentable sin perder nada.
+   * Mensaje 126: el servidor la calcula en segundo plano y la GUARDA; el teléfono
+   * pregunta por ella hasta que está lista. Antes había un corte fijo de 60 s:
+   * si el servidor tardaba más, la calificación se perdía y al reintentar se
+   * calculaba otra vez (doble costo y otra nota posible). Ahora reintentar trae
+   * la misma calificación guardada.
    */
   async function runEvaluation() {
     setEvalError(null);
     setFeedbackResult(null);
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 60_000);
+    // Sin práctica guardada no hay calificación guardada: primero se guarda.
+    if (!savedSessionRef.current) await persistPracticeSession();
+    const practiceSessionId: string | null = savedSessionRef.current?.id ?? null;
+    if (!practiceSessionId) {
+      setEvalError("No pude guardar tu práctica. Revisa tu conexión y vuelve a intentarlo: tu conversación sigue en este teléfono.");
+      return;
+    }
     try {
       const evaluatePayload = {
+        practice_session_id: practiceSessionId,
         transcript: "",
         phase: "evaluate" as const,
         node_id: nodeId,
@@ -1462,19 +1473,39 @@ function PracticaPage() {
         director_user_turns: conversationHistoryRef.current.filter((m) => m.role === "user").length,
       };
       console.log("[closer-voice evaluate] →", evaluatePayload);
-      const evaluateRes = await fetchFuncion(VOICE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: SUPABASE_ANON,
-          Authorization: `Bearer ${await llaveUsuario()}`,
+      const rawText = await obtenerCalificacion({
+        pedir: async () => {
+          // El pedido solo registra la calificación: la respuesta es inmediata.
+          // El límite es solo para una red colgada; si se corta, se pregunta
+          // por la fila igual (el servidor pudo haberlo recibido).
+          const ctrl = new AbortController();
+          const limite = setTimeout(() => ctrl.abort(), 30_000);
+          try {
+            const res = await fetchFuncion(VOICE_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                apikey: SUPABASE_ANON,
+                Authorization: `Bearer ${await llaveUsuario()}`,
+              },
+              body: JSON.stringify(evaluatePayload),
+              signal: ctrl.signal,
+            });
+            const texto = await res.text();
+            console.log("[closer-voice evaluate] ← status", res.status, "body:", texto);
+            return { status: res.status, texto };
+          } finally {
+            clearTimeout(limite);
+          }
         },
-        body: JSON.stringify(evaluatePayload),
-        signal: ctrl.signal,
+        leer: () =>
+          restGetMaybeSingle<{ estado: string; resultado: unknown; error: string | null }>(
+            `evaluaciones_practica?select=estado,resultado,error&practice_session_id=eq.${encodeURIComponent(practiceSessionId)}&limit=1`,
+            { timeoutMs: 15_000 },
+          ),
+        dormir: (ms) => new Promise((r) => setTimeout(r, ms)),
+        ahora: () => Date.now(),
       });
-      const rawText = await evaluateRes.text();
-      console.log("[closer-voice evaluate] ← status", evaluateRes.status, "body:", rawText);
-      if (!evaluateRes.ok) throw new Error(`closer-voice evaluate HTTP ${evaluateRes.status}: ${rawText}`);
       let evaluation: any;
       try {
         evaluation = JSON.parse(rawText);
@@ -1650,14 +1681,11 @@ function PracticaPage() {
     } catch (err) {
       console.error("[practica] runEvaluation error:", err);
       setFeedbackResult(null);
-      const aborted = (err as any)?.name === "AbortError";
       setEvalError(
-        aborted
-          ? "El análisis tardó demasiado. Tu práctica está guardada — puedes reintentarlo."
-          : "No pude generar tu análisis. Tu práctica está guardada — puedes reintentarlo.",
+        err instanceof CalificacionTardada
+          ? "El análisis está tardando más de lo normal."
+          : "No pude generar tu análisis.",
       );
-    } finally {
-      clearTimeout(timer);
     }
   }
 
@@ -3550,7 +3578,7 @@ function FeedbackPhase({
     if (!evalError && feedback === null && step === "eval_error") setStep("analyzing");
   }, [evalError, feedback, step]);
 
-  // "Esto está tardando más de lo normal" a los 25s.
+  // A los 25 s, aviso honesto: un análisis completo puede tardar más de un minuto.
   useEffect(() => {
     if (step !== "analyzing") {
       setSlowNotice(false);
@@ -3977,7 +4005,9 @@ function FeedbackPhase({
             lineHeight: 1.5,
           }}
         >
-          {evalError} Tu conversación completa quedó guardada.
+          {evalError} {evalError?.startsWith("No pude guardar tu práctica")
+            ? ""
+            : "Tu práctica quedó guardada: al reintentar no pierdes nada."}
         </div>
         <button
           onClick={() => onRetryEvaluation?.()}
@@ -4143,7 +4173,7 @@ function FeedbackPhase({
           }}
         >
           {slowNotice
-            ? "Esto está tardando más de lo normal, dame unos segundos más."
+            ? "Estoy revisando tu práctica con calma: puede tardar un par de minutos. No cierres la app."
             : mensajes[Math.min(msgIdx, mensajes.length - 1)]}
 
         </motion.div>
