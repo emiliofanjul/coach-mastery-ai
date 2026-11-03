@@ -1,8 +1,9 @@
 # Roadmap
 
 - [x] Mensaje 127: baseline 936/69 y cinco huellas exactas.
-- [ ] Mensaje 127: consultar práctica, evaluación, eventos y registros de Emilio sin modificar datos; reportar todo el Paso 1.
-- [ ] Mensaje 127: mover los tres archivos, comprobar 940/70 y conversación real en disputas; publicar.
+- [x] Mensaje 127: práctica, evaluación y eventos consultados sin modificar datos; los registros del rango solicitado no están disponibles (consultas vacías de todas las fuentes), no permiten afirmar ausencia de llamadas.
+- [x] Mensaje 127: tres archivos movidos con huellas exactas; 940/70 y build OK; disputa real abierta con sesión de Emilio, 14 turnos, fallas, criterios y final visibles, sin errores de navegador.
+- [ ] Mensaje 127: publicar y reportar el Paso 1 completo.
 
 - [x] Mensaje 125: baseline 915/67 y las tres huellas exactas.
 - [x] Mensaje 125: dos archivos movidos con huellas exactas; 917/68 y build OK; ningún consentimiento modificado por terceros.
