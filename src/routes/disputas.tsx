@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/app/AppShell";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
-import { armarReporteDisputas, filtrar, type Disputa, type Filtro } from "@/lib/disputas-reporte";
+import { armarReporteDisputas, filtrar, vistaDeDisputa, type Disputa, type Filtro } from "@/lib/disputas-reporte";
 
 export const Route = createFileRoute("/disputas")({ component: DisputasPage });
 
@@ -118,6 +118,7 @@ function DisputasPage() {
               {d.motivo && <div className="text-sm mb-2"><span className="text-white/50">Motivo: </span>{d.motivo}</div>}
               <div className="text-sm mb-1"><span className="text-white/50">Vendedor: </span>{d.mensaje_vendedor}</div>
               <div className="text-sm text-white/80"><span className="text-white/50">Closer: </span>{d.respuesta_closer}</div>
+              <ConversacionDeDisputa d={d} />
               {d.revisada ? (
                 d.nota_revision && <div className="mt-2 text-xs text-white/60">Nota: {d.nota_revision}</div>
               ) : (
@@ -138,5 +139,39 @@ function DisputasPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** La conversación y la calificación de la disputa, para decidir quién tiene razón. */
+function ConversacionDeDisputa({ d }: { d: Disputa }) {
+  const v = vistaDeDisputa(d);
+  if (v.turnos.length === 0 && !v.decidio && !v.fallas) {
+    return <div className="mt-2 text-xs text-white/40">Esta disputa no guardó la conversación.</div>;
+  }
+  return (
+    <details className="mt-3 rounded-xl border border-white/10 bg-black/30">
+      <summary className="cursor-pointer select-none px-3 py-2 text-sm text-[#FF6B2B]">
+        Ver conversación y calificación ({v.turnos.length} turnos)
+      </summary>
+      <div className="px-3 pb-3 text-sm">
+        {(v.fallas || v.decidio || v.termino) && (
+          <div className="mb-3 flex flex-col gap-1 rounded-lg bg-white/[0.04] p-2 text-xs text-white/70">
+            {v.fallas && <div><span className="text-white/45">Fallas: </span>{v.fallas}</div>}
+            {v.decidio && <div className="break-words"><span className="text-white/45">Criterios: </span>{v.decidio}</div>}
+            {v.termino && <div><span className="text-white/45">Terminó: </span>{v.termino}</div>}
+          </div>
+        )}
+        <ol className="flex flex-col gap-2">
+          {v.turnos.map((t) => (
+            <li key={t.n} className={`rounded-lg px-3 py-2 ${t.quien === "Vendedor" ? "bg-[#FF6B2B]/10" : "bg-white/[0.05]"}`}>
+              <div className="mb-0.5 text-[11px] font-bold uppercase tracking-wide text-white/45">
+                Turno {t.n} · {t.quien}
+              </div>
+              <div className="whitespace-pre-wrap break-words text-white/85">{t.texto}</div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </details>
   );
 }
