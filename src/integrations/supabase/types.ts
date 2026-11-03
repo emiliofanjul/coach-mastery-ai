@@ -784,6 +784,57 @@ export type Database = {
         }
         Relationships: []
       }
+      evaluaciones_practica: {
+        Row: {
+          actualizada_en: string
+          duracion_ms: number | null
+          empezada_en: string
+          error: string | null
+          estado: string
+          intentos: number
+          practice_session_id: string
+          resultado: Json | null
+          seller_id: string
+        }
+        Insert: {
+          actualizada_en?: string
+          duracion_ms?: number | null
+          empezada_en?: string
+          error?: string | null
+          estado: string
+          intentos?: number
+          practice_session_id: string
+          resultado?: Json | null
+          seller_id: string
+        }
+        Update: {
+          actualizada_en?: string
+          duracion_ms?: number | null
+          empezada_en?: string
+          error?: string | null
+          estado?: string
+          intentos?: number
+          practice_session_id?: string
+          resultado?: Json | null
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluaciones_practica_practice_session_id_fkey"
+            columns: ["practice_session_id"]
+            isOneToOne: true
+            referencedRelation: "practice_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluaciones_practica_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invite_attempts: {
         Row: {
           actor_id: string | null
