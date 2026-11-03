@@ -123,6 +123,32 @@ function SellerOnboarding() {
     setLoadingAI(true);
     setAiError(null);
     goto(4);
+    // Mensaje 124: lo que el vendedor contestó —sobre todo que acepta la
+    // grabación— se guarda PRIMERO y se comprueba. Antes se guardaba solo
+    // después del mensaje de bienvenida de la IA: si la IA fallaba, nada se
+    // guardaba y nadie se enteraba (en nov-2026 había 9 vendedores sin
+    // consentimiento, y Emilio los vio marcar la casilla).
+    if (!sellerId) {
+      setAiError("No encontramos tu registro de vendedor. Toca para reintentar.");
+      setLoadingAI(false);
+      return;
+    }
+    const { error: guardarErr } = await supabase
+      .from("sellers")
+      .update({
+        full_name: name.trim(),
+        experience_level: exp,
+        main_challenge: ch,
+        audio_consent: audioConsent,
+        onboarding_completed: true,
+      })
+      .eq("id", sellerId);
+    if (guardarErr) {
+      console.error("[onboarding.seller] no se guardaron las respuestas:", guardarErr);
+      setAiError("No pudimos guardar tus respuestas. Toca para reintentar.");
+      setLoadingAI(false);
+      return;
+    }
     try {
       const res = await generateSellerWelcome({
         data: {
@@ -137,19 +163,8 @@ function SellerOnboarding() {
       setWelcomeMsg(res.mensaje);
       setExpectativa(res.expectativa);
 
-      // Persistir en sellers + seller_memory
+      // Persistir el mensaje de bienvenida en seller_memory (las respuestas ya se guardaron arriba).
       if (sellerId) {
-        await supabase
-          .from("sellers")
-          .update({
-            full_name: name.trim(),
-            experience_level: exp,
-            main_challenge: ch,
-            audio_consent: audioConsent,
-            onboarding_completed: true,
-          })
-          .eq("id", sellerId);
-
         if (companyId) {
           const { data: existingMem } = await supabase
             .from("seller_memory")
