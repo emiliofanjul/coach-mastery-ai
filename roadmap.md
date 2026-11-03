@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Mensaje 124: confirmar las cuatro huellas y consultar los nueve registros sin nombres ni correos.
+- [ ] Mensaje 124: mover los dos archivos exactos, comprobar 915/67 y publicar junto con el 123; no modificar consentimientos existentes.
+
 - [x] Mensaje 123: PASO 0 exacto, 909/66 y huellas; 9 vendedores activos con audio_consent=false (solo lectura).
 - [x] Mensaje 123: cuatro archivos movidos con huellas exactas; 914/67 y build OK. Alta de vendedor: contraseña 5 caracteres, lista al tocar Crear mi cuenta y Google sin términos verificados. Práctica 7.0 con sesión real de Emilio: micrófono invita, halo activo y reducir movimiento lo desactiva.
 - [ ] Mensaje 123: verificar pregunta 3 con vendedor real y publicar. Bloqueador: no hay vendedores con onboarding pendiente; Emilio es manager con onboarding completo. No modificar cuentas ni marcar consentimiento por terceros.
