@@ -399,6 +399,8 @@ El territorio PRECIO es el más fácil de arruinar, porque la pregunta natural e
 
 **La pregunta cerrada en la capa 3** `CAMPO`: cuando ya salió la pista, para que el cliente cuente más necesitas preguntas abiertas —*"¿qué pasa cuando se tarda?"*, *"cuénteme, ¿cómo le hace?"*—. Una pregunta de sí o no suelta no está mal. Está mal cuando todas son de sí o no y el cliente deja de contar.
 
+**Cuándo el dolor ya está contado** `CAMPO`: cuando el cliente ya dijo qué le pasa y qué le cuesta —*"luego no me entrega a tiempo"* y *"pierdo la venta, el cliente se me va"*—, la pista ya está excavada. Te guardas el dolor para la presentación y sigues con lo demás: no hace falta medirlo más.
+
 ### La Pregunta Específica `CAMPO` `UNIVERSAL`
 > **El "bien" no es información: es un reflejo social.**
 
