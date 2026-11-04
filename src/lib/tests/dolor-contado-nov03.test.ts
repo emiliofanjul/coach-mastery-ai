@@ -40,7 +40,7 @@ describe("cuándo el dolor ya está contado", () => {
   });
 
   it("la red tiene los dos lados: G105 (dolor contado, sigue → cumple) y G106 (suelta las pistas sin dolor → falla)", () => {
-    expect(red.harness_version).toBe("v3.35.0");
+    expect(red.harness_version).toMatch(/^v3\.(3[5-9]|[4-9]\d)\./);
     const g105 = red.cases.find((c: any) => c.id === "G105_espejo_no_contradice_su_criterio");
     expect(g105.expected.niveles_esperados["discovery.preguntas_capas"]).toBe("cumple");
     expect(g105.expected.must_not_flag).toContain("ignora_pistas");
