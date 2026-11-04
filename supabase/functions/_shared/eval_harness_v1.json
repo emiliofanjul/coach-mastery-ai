@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.34.0",
+  "harness_version": "v3.35.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -5007,6 +5007,63 @@
           "discovery.preguntas_capas": "cumple",
           "discovery.dolor_real": "cumple"
         }
+      }
+    },
+    {
+      "id": "G106_suelta_la_pista_sin_el_dolor",
+      "node_id": "3.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 131 (Emilio, 3-nov): el dolor ya está contado cuando el cliente dijo qué le pasa y qué le cuesta; ahí se puede seguir. Este caso es el contrario: el cliente suelta dos pistas («a veces se tarda en surtir», «lo único es que el de las grasas luego me falla») y el vendedor las deja pasar las dos sin preguntar qué pasa ni qué le cuesta. El cliente nunca contó el dolor: la regla nueva no lo hace pasar.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenos días, don Chuy! Se ve que hoy no paran en el taller, ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, bastante movido, gracias a Dios."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí, ya tiene años conmigo. Todo bien, aunque a veces se tarda en surtir."
+        },
+        {
+          "role": "user",
+          "text": "Ah, okey. ¿Y qué marcas maneja?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bardahl y Mobil, más que nada. Lo único es que el de las grasas luego me falla."
+        },
+        {
+          "role": "user",
+          "text": "Muy bien. ¿Y cuántos cambios de aceite hace a la semana, más o menos?"
+        },
+        {
+          "role": "assistant",
+          "text": "Unos treinta, depende de la temporada."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto. ¿Y el anticongelante también lo maneja?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, ese también lo traigo."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "ignora_pistas"
+        ],
+        "must_not_flag": [
+          "pitch_prematuro"
+        ]
       }
     }
   ]
