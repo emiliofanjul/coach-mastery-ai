@@ -1,7 +1,7 @@
 # Roadmap
 
-- [ ] Mensaje 132: confirmar baseline 985/76, Cerebro v17 y huellas; detenerse ante diferencias.
-- [ ] Mensaje 132: ejecutar SQL protegido exacto, verificar 18/true/3/true y retirar SQL.
+- [x] Mensaje 132: baseline 985/76, Cerebro v17 y seis huellas vigentes exactas; snapshots ya traen las dos huellas nuevas esperadas; nueve huellas de entrega exactas.
+- [ ] Mensaje 132: ejecutar SQL protegido exacto, verificar 18/true/3/true y retirar SQL. Bloqueador: la herramienta protegida disponible recibe texto, no archivo; la regla vigente prohíbe transcribir el SQL. No SQL ejecutado ni entregas reemplazadas.
 - [ ] Mensaje 132: instalar nueve entregas exactas, ejecutar 991/77; desplegar solo closer-voice y harness-runner, sin publicar.
 - [ ] Mensaje 132: verificar 16 corridas solicitadas, repetir fallas una vez y reportar tabla, tiempos, juez y cliente_antes.
 
