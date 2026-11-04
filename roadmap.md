@@ -4,15 +4,15 @@
 - [x] Mensaje 131: confirmar Cerebro v16, aplicar SQL protegido exacto y verificar 17/true/true/true; retirar ambos SQL.
 - [x] Mensaje 131: instalar red y dos pruebas exactas, verificar cinco huellas y retirar copias; 985/76 pasan.
 - [x] Mensaje 131: desplegar solo harness-runner; 985/76 pasan, build automático OK; red viva v3.35.0 confirmada.
-- [ ] Mensaje 131: G105 tres vueltas, G106 dos y nueve casos hermanos, con notas, juez y tiempos; detener ante dos fallas del mismo caso.
-- [ ] Mensaje 131: si pasan los casos, confirmar práctica recuperada en Mi equipo y revisar disputa 3.10 con nota prueba 131; entregar respuesta y revision_juez.
+- [x] Mensaje 131: G105 3/3, G106 2/2 y nueve hermanos 9/9; 14 corridas, promedio 44,336 ms y ninguna sobre 90 s.
+- [x] Mensaje 131: práctica recuperada visible en Mi equipo, nodo 3.10 nota 30; disputa repetida con sesión real de Emilio (llave de servicio inaccesible), concesión ignora_pistas confirmada por juez T7–11, pitch_prematuro sostenido T13, nota prueba 131 visible. Nueva disputa 2cc1a655-ed9d-4cfe-ad1c-123eec33049e. No publicación solicitada en 131.
 
 - [x] Mensaje 129: Paso 0, 955/71 y cinco huellas; SQL corregido aplicado exacto, verificación completa correcta, una práctica recuperada.
 - [x] Mensaje 129: retirar los dos SQL después de verificar aplicación exacta y resultado.
 - [x] Mensaje 129: archivo compartido evento_practica.ts creado con MD5 8b43b82c9435eb5897f5e2b13b85e71e.
 - [x] Mensaje 129: cuatro archivos existentes reemplazados con editor y cinco movidos fuera de functions; diez MD5 exactos, copias retiradas, tres funciones desplegadas, 978/74 y build OK; publicación solicitada después de funciones, dominio respondió HTTP 200.
 - [x] Mensaje 129: práctica recuperada consultada: evento 89941403-e19f-479d-aec8-a3a24851bf85, 17:51:35.056048 UTC, nodo 3.10, nota 30, recuperado_mensaje_129, 15 mensajes.
-- [ ] Mensaje 129: confirmar historial en Mi equipo, terminar G105 tres veces y repetir disputa/marcar prueba 129. Bloqueado por condición de parada: primera G105 falló con nota 18, preguntas_capas y dolor_real parcial, ignora_pistas presente, espejos_quitados 0; juez falló en dos intentos sin juicios. Sesión ad154d18-3581-4d5f-aaff-ae451104aa15; no se ejecutaron vueltas 2/3 ni disputa.
+- [x] Mensaje 129: historial en Mi equipo, G105 tres veces y disputa completados por el 131; nota prueba 131 sustituye prueba 129 por instrucción de Emilio.
 - [ ] Mensaje 129: consultar evaluación, evento/audio/rachas y fallas_app después de la próxima práctica real de Emilio (requiere que la haga).
 
 - [x] Mensaje 127: baseline 936/69 y cinco huellas exactas.
