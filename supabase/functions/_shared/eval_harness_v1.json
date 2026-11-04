@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.35.0",
+  "harness_version": "v3.36.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -5064,6 +5064,49 @@
         "must_not_flag": [
           "pitch_prematuro"
         ]
+      }
+    },
+    {
+      "id": "G107_no_que_invita",
+      "node_id": "2.7c",
+      "seller_name": "Luis",
+      "company_brain": "Ferretera del Golfo: Proveedor de ferretería (tornillería, herramienta manual, pinturas) para ferreterías de barrio.",
+      "description": "Mensaje 132 (Emilio, 3-nov): un «no» que en la misma respuesta invita a seguir («ahorita ando a tope. A ver, ¿qué necesita? Dígame rápido») sí es un «no», pero deja la puerta abierta: contestarle directo no es insistir, hasta puede ser una señal de interés. Es el gemelo de G35: ahí el segundo «no» cierra y el vendedor insiste; aquí el segundo «no» invita y el vendedor contesta corto.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes, Don Rafa! Se ve que hoy no le para el mostrador. ¿Así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "No me interesa, gracias."
+        },
+        {
+          "role": "user",
+          "text": "Claro que sí, entiendo. Oiga, ¿y cuánto tiempo lleva con el negocio?"
+        },
+        {
+          "role": "assistant",
+          "text": "De verdad, ahorita ando a tope. A ver, ¿qué necesita? Dígame rápido."
+        },
+        {
+          "role": "user",
+          "text": "Gracias, Don Rafa, voy rápido. Soy Luis, ando visitando ferreterías de la zona. ¿La tornillería con quién la trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con uno del centro. Ya, déjeme atender."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "insiste_tras_dos",
+          "discute_el_bloqueo"
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "blocks.dos_no_seguidos": "cumple"
+        }
       }
     }
   ]

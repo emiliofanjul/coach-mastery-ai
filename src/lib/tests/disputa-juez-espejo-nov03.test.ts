@@ -174,7 +174,7 @@ describe("la respuesta a una disputa no concede sin el juez", () => {
   });
 
   it("cambió cómo se califica y cómo se contesta: la versión lo dice", () => {
-    expect(leer("supabase/functions/closer-voice/index.ts")).toContain('const PROMPT_VERSION = "v2.9.8";');
+    expect(leer("supabase/functions/closer-voice/index.ts")).toMatch(/const PROMPT_VERSION = "v2\.9\.([89]|\d{2})";/);
   });
 });
 

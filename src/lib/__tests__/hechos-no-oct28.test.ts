@@ -121,7 +121,8 @@ describe("El evaluador anota los hechos y el juez revisa la acusación", () => {
   it("el evaluador: cliente_antes con la prueba de un «no», y se_va", () => {
     expect(voz).toContain('En "cliente_antes", qué hizo la respuesta del cliente justo antes de ese turno, con la prueba de un «no»');
     expect(voz).toContain('"no_rechaza" (contesta, aunque sea vago o corto, o pone una duda, una condición o una objeción)');
-    expect(voz).toContain('"cliente_antes": "<rechaza | no_rechaza | no_hay>"');
+    // Mensaje 132: el «no» que invita a seguir es su propio hecho.
+    expect(voz).toContain('"cliente_antes": "<rechaza | rechaza_e_invita | no_rechaza | no_hay>"');
     expect(voz).toContain('"se_va": "<si | no>"');
   });
   it("el código agrega la falla después del guardarraíl y ANTES del juez", () => {

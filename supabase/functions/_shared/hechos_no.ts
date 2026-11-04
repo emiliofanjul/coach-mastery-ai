@@ -11,7 +11,14 @@
 //
 // El evaluador solo anota dos hechos por turno del vendedor:
 //   cliente_antes: la respuesta del cliente justo antes, con la prueba de un
-//                  «no» (flow.dos_no_seguidos): "rechaza" | "no_rechaza" | "no_hay".
+//                  «no» (flow.dos_no_seguidos): "rechaza" | "rechaza_e_invita" |
+//                  "no_rechaza" | "no_hay".
+//
+// Mensaje 132 (Emilio, 3-nov): un «no» que en la misma respuesta invita a
+// seguir («de verdad traigo prisa, ¿qué necesita saber exactamente?») sí es
+// un «no», pero deja la puerta abierta: seguir para contestar la invitación no
+// es insistir. Por eso, si el SEGUNDO «no» invita, no hay falla. (Si el que
+// invita es el primero y el segundo cierra, sí son dos «no» seguidos.)
 //   se_va:         si en ese turno el vendedor deja la visita para otro momento
 //                  o se despide: "si" | "no".
 // El código cuenta. Y como la regla trae su prueba, el juez revisa la
@@ -24,8 +31,9 @@
 // AGREGA, nunca quita. Si los hechos no vienen completos, o no cuadran con la
 // conversación, no hace nada (falla abierta: queda lo que dijo el evaluador).
 
-export type ClienteAntes = "rechaza" | "no_rechaza" | "no_hay";
-const CLIENTE_ANTES: ClienteAntes[] = ["rechaza", "no_rechaza", "no_hay"];
+export type ClienteAntes = "rechaza" | "rechaza_e_invita" | "no_rechaza" | "no_hay";
+const CLIENTE_ANTES: ClienteAntes[] = ["rechaza", "rechaza_e_invita", "no_rechaza", "no_hay"];
+const ES_UN_NO = new Set<ClienteAntes>(["rechaza", "rechaza_e_invita"]);
 const SE_VA = ["si", "no"];
 
 export const REGLA_INSISTIR = "blocks.insistir_tras_dos_no";
@@ -84,7 +92,7 @@ export function fallasPorHechoDeLosNo(ev: any, ps: any, historia: { role?: strin
   // siguiente turno. Si el cliente habló primero, no es esta puerta.
   if (orden.length < 3 || orden[0].cliente_antes !== "no_hay") return [];
   const [, despuesDelPrimero, despuesDelSegundo] = orden;
-  if (despuesDelPrimero.cliente_antes !== "rechaza" || despuesDelSegundo.cliente_antes !== "rechaza") return [];
+  if (!ES_UN_NO.has(despuesDelPrimero.cliente_antes) || despuesDelSegundo.cliente_antes !== "rechaza") return [];
   if (despuesDelPrimero.se_va === "si" || despuesDelSegundo.se_va === "si") return [];
 
   const segundoNo = bs[delVendedor[2].i - 1].texto;
