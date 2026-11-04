@@ -1,5 +1,12 @@
 # Roadmap
 
+- [x] Mensaje 131: baseline 982/75 y huellas previas/entregadas exactas; snapshots ya traen las huellas nuevas previstas.
+- [ ] Mensaje 131: confirmar Cerebro v16, aplicar SQL protegido exacto y verificar 17/true/true/true; retirar ambos SQL.
+- [ ] Mensaje 131: instalar red y dos pruebas exactas, verificar cinco huellas y retirar copias.
+- [ ] Mensaje 131: desplegar solo harness-runner; confirmar 985/76 y ausencia de errores.
+- [ ] Mensaje 131: G105 tres vueltas, G106 dos y nueve casos hermanos, con notas, juez y tiempos; detener ante dos fallas del mismo caso.
+- [ ] Mensaje 131: si pasan los casos, confirmar práctica recuperada en Mi equipo y revisar disputa 3.10 con nota prueba 131; entregar respuesta y revision_juez.
+
 - [x] Mensaje 129: Paso 0, 955/71 y cinco huellas; SQL corregido aplicado exacto, verificación completa correcta, una práctica recuperada.
 - [x] Mensaje 129: retirar los dos SQL después de verificar aplicación exacta y resultado.
 - [x] Mensaje 129: archivo compartido evento_practica.ts creado con MD5 8b43b82c9435eb5897f5e2b13b85e71e.
