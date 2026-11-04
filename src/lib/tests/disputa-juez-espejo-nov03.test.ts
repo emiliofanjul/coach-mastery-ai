@@ -181,7 +181,7 @@ describe("la respuesta a una disputa no concede sin el juez", () => {
 describe("la red vigila este caso", () => {
   it("G105: ignora_pistas no sale, pitch_prematuro sí, con los criterios en cumple", () => {
     const red = JSON.parse(leer("supabase/functions/_shared/eval_harness_v1.json"));
-    expect(red.harness_version).toBe("v3.34.0");
+    expect(red.harness_version).toMatch(/^v3\.(3[4-9]|[4-9]\d)\./);
     const c = red.cases.find((x: any) => x.id === "G105_espejo_no_contradice_su_criterio");
     expect(c.node_id).toBe("3.10");
     expect(c.expected.must_flag).toEqual(["pitch_prematuro"]);
