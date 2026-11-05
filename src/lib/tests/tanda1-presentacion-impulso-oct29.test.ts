@@ -101,7 +101,8 @@ describe("Los guiones ya no califican lo «inventado»", () => {
     expect(nodo("4.6").practice_script.phases.you_do.prompt).not.toContain("TRES O MAS hechos seguidos");
   });
   it("la convicción del 4.15 no es garantía", () => {
-    expect(nodo("4.15").practice_script.success_criteria[0].description).toContain("dice que esta seguro de que se va a mover, como lo que el cree, Y da la razon, sin prometerlo como un hecho");
+    // Mensaje 135: con acentos.
+    expect(nodo("4.15").practice_script.success_criteria[0].description).toContain("dice que está seguro de que se va a mover, como lo que él cree, y da la razón, sin prometerlo como un hecho");
   });
 });
 
