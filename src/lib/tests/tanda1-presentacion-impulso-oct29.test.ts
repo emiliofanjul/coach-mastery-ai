@@ -108,9 +108,10 @@ describe("Los guiones ya no califican lo «inventado»", () => {
 describe("La introducción a FUJPIG lo dice", () => {
   it("4.7: en la práctica se imagina; en la calle, lo que tienes", () => {
     const t = (o: number) => tarjetas.find((x) => x.node_id === "4.7" && x.card_order === o).body;
-    expect(t(6)).toContain("En la practica de Closer todo es imaginario");
+    // Mensaje 134: con acentos.
+    expect(t(6)).toContain("En la práctica de Closer todo es imaginario");
     expect(t(6)).not.toContain("En Closer eso cuenta como falla grave");
-    expect(t(4)).toContain("Todo mundo lo lleva sigue siendo Efecto Jones, pero desperdiciado.");
+    expect(t(4)).toContain('"Todo mundo lo lleva" sigue siendo Efecto Jones, pero desperdiciado.');
   });
 });
 
