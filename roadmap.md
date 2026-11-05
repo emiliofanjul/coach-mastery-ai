@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Mensaje 134: Paso 0 detenido; snapshots ya tienen las cuatro huellas nuevas, prueba existente conserva huella previa; baseline 990 pasan y 1 falla en 77 archivos. Esperar instrucción de Emilio antes de reemplazar o ejecutar SQL.
+- [ ] Mensaje 134: aplicar SQL exacto y verificar 19/3/3/true/4; retirar ambos SQL, instalar dos pruebas exactas y comprobar 1002/78, tipos y app como Emilio; publicar sin desplegar funciones ni correr red. Bloqueado por Paso 0.
+
 - [x] Mensaje 132: baseline 985/76, Cerebro v17 y seis huellas vigentes exactas; snapshots ya traen las dos huellas nuevas esperadas; nueve huellas de entrega exactas.
 - [ ] Mensaje 132: ejecutar SQL protegido exacto, verificar 18/true/3/true y retirar SQL. Bloqueador: la herramienta protegida disponible recibe texto, no archivo; la regla vigente prohíbe transcribir el SQL. No SQL ejecutado ni entregas reemplazadas.
 - [ ] Mensaje 132: instalar nueve entregas exactas, ejecutar 991/77; desplegar solo closer-voice y harness-runner, sin publicar.
