@@ -20,11 +20,16 @@ describe("El 7.3 sigue al Cerebro 4.3", () => {
   it("el criterio pide el argumento de SU caso, no la consolidación siempre", () => {
     const d = crit("presentation.consolidacion_proveedor").description;
     expect(d).toContain("un argumento que corresponde a SU caso");
-    expect(d).toContain("Consolidacion solo si de verdad le reduce proveedores");
+    // Mensaje 135 (Emilio, 5-nov): el argumento sale de las balas de producto, servicio o precio;
+    // «un proveedor menos» solo cuando el cliente deja ver que le pesa tratar con tantos.
+    expect(d).toContain("una bala de producto, servicio o precio que le sube el valor o le baja el costo");
+    expect(d).toContain("«Un proveedor menos» solo si el cliente dejó ver que le pesa tratar con tantos proveedores; nunca para una familia que no maneja.");
     expect(d).not.toMatch(/con el argumento de consolidacion/);
   });
   it("el cliente simulado no se convence con «menos proveedores» para lo que no maneja", () => {
-    expect(ps.phases.you_do.prompt).toContain("Si para la familia que no manejas te dice que asi tendras menos proveedores, no te convence");
+    expect(ps.phases.you_do.prompt).toContain("Para la familia que no manejas, menos proveedores nunca te convence: no te reduce nada.");
+    // Y para la que ya le compra a otro, depende: a veces le pesa tener tantos, a veces prefiere tener dos.
+    expect(ps.phases.you_do.prompt).toContain("(b) prefieres tener dos proveedores para lo mismo, por si uno te falla");
     expect(ps.phases.you_do.prompt).not.toContain("SI TE HABLA DE CONSOLIDAR: te interesa de verdad");
   });
   it("el cierre de la visita sigue la regla del REHASH (mensaje 120)", () => {

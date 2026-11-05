@@ -84,7 +84,7 @@ describe("los guiones", () => {
     }
     expect(malos).toEqual([]);
   });
-  it("son los 20 pares acordados: 13 de nodos normales, el 2.2, los dos del 2.8 nuevo y 5 de los boss (oct-2026)", () => {
+  it("son los pares acordados: 13 de nodos normales, el 2.2, los dos del 2.8 nuevo, 5 de los boss (oct-2026) y los dos de «un proveedor menos» (mensaje 135)", () => {
     const pares = nodos.flatMap((n) => (n.practice_script?.failure_criteria ?? [])
       .filter((f: any) => f.espejo_de).map((f: any) => `${n.id}/${f.id}`));
     expect(pares.sort()).toEqual([
@@ -94,6 +94,7 @@ describe("los guiones", () => {
       "4.3/presentacion_generica", "5.6/no_repite", "6.2/proximos_pasos_vagos",
       "2.8/la_trata_como_bloqueo", "2.8/se_defiende",
       "1.6/se_encoge", "3.10/ignora_pistas", "3.10/ignora_estado", "4.16/explica_sin_pintar",
+      "4.15/proveedor_menos_sin_que_aplique", "7.3/proveedor_menos_sin_que_aplique",
     ].sort());
   });
 });

@@ -54,7 +54,7 @@ describe("el «no» que invita a seguir", () => {
     expect(pruebaNo("blocks.insistir_tras_dos_no")).toBe(pruebaNo("flow.dos_no_seguidos"));
   });
   it("la red tiene el gemelo de G35: G107, donde el segundo «no» invita y el vendedor contesta corto", () => {
-    expect(red.harness_version).toBe("v3.36.0");
+    expect(red.harness_version).toMatch(/^v3\.(3[6-9]|[4-9]\d)\./);
     const c = red.cases.find((x: any) => x.id === "G107_no_que_invita");
     expect(c.node_id).toBe("2.7c");
     expect(c.expected.must_not_flag).toContain("insiste_tras_dos");

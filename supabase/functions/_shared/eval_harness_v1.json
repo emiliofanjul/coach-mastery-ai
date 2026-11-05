@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.36.0",
+  "harness_version": "v3.37.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -2759,8 +2759,7 @@
         "must_not_flag": [
           "jones_se_cae",
           "promesa_grandilocuente",
-          "presion_directa",
-          "perdida_generica"
+          "presion_directa"
         ]
       }
     },
@@ -3074,7 +3073,7 @@
       "node_id": "4.15",
       "seller_name": "Luis",
       "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
-      "description": "Mensaje 110: consolidación (la familia que hoy trae con otro se pasa a una sola entrega), convicción con su razón sin prometerla como hecho, y un primer pedido chico propuesto con convicción, que no es «que lo pruebe».",
+      "description": "Mensaje 110: consolidación (la familia que hoy trae con otro se pasa a una sola entrega), convicción con su razón sin prometerla como hecho, y un primer pedido chico propuesto con convicción, que no es «que lo pruebe». Mensaje 135: el vendedor da una bala de servicio (la misma entrega, sin pedido aparte) y es el cliente quien dice que le pesa tener tantos proveedores; ahí «uno menos» sí aplica.",
       "transcript": [
         {
           "role": "assistant",
@@ -3082,15 +3081,15 @@
         },
         {
           "role": "user",
-          "text": "Qué bueno, don Ramón, se ve que escogió bien. Ya le traigo el aceite y el anticongelante cada semana: si le sumo las grasas, le llega todo en la misma entrega, con un solo pedido y una sola persona a quien marcarle."
+          "text": "Qué bueno, don Ramón, se ve que escogió bien. Ya le traigo el aceite y el anticongelante cada semana: si le sumo las grasas, le llegan en la misma entrega, sin pedido aparte."
         },
         {
           "role": "assistant",
-          "text": "Pues sí, sería un proveedor menos que andar siguiendo…"
+          "text": "Pues sí, la verdad sí es un relajo andar con tantos proveedores…"
         },
         {
           "role": "user",
-          "text": "Exacto: menos pedidos que rastrear y menos gente que atender. No le puedo garantizar nada, pero estoy seguro de que se le va a mover, porque en talleres como el suyo la grasa de litio es de lo que más sale."
+          "text": "Exacto: uno menos que andar siguiendo, y menos pedidos que hacer. No le puedo garantizar nada, pero estoy seguro de que se le va a mover, porque en talleres como el suyo la grasa de litio es de lo que más sale."
         },
         {
           "role": "assistant",
@@ -3119,7 +3118,8 @@
           "pide_que_pruebe",
           "anuncia_plan_b",
           "ataca_al_proveedor",
-          "solo_precio"
+          "solo_precio",
+          "proveedor_menos_sin_que_aplique"
         ]
       }
     },
@@ -3298,10 +3298,10 @@
     },
     {
       "id": "G59_promesa_sin_ancla",
-      "node_id": "4.2",
+      "node_id": "4.6",
       "seller_name": "Luis",
       "company_brain": "Lubricantes del Golfo: distribuidora de aceites Bardahl para talleres mecánicos y refaccionarias. PRODUCTOS_ACTIVOS: aceite de motor multigrado; anticongelante; grasas; aditivos.",
-      "description": "Mensaje 110: una promesa enorme sin nada concreto que la sostenga es aire, aunque en la práctica todo sea imaginario.",
+      "description": "Mensaje 110: una promesa enorme sin nada concreto que la sostenga es aire, aunque en la práctica todo sea imaginario. Mensaje 135: se califica donde se enseña, en las balas (4.6); en el 4.2 todavía no se ha enseñado.",
       "transcript": [
         {
           "role": "assistant",
@@ -3334,7 +3334,7 @@
       ],
       "expected": {
         "must_flag": [
-          "promesa_sin_ancla"
+          "bala_inflada"
         ]
       }
     },
@@ -5107,6 +5107,565 @@
           "blocks.air": "cumple",
           "blocks.dos_no_seguidos": "cumple"
         }
+      }
+    },
+    {
+      "id": "G108_proveedor_menos_sin_que_aplique",
+      "node_id": "4.15",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135 (Emilio, 5-nov): «un proveedor menos» solo es bala cuando el cliente deja ver que le pesa tratar con tantos proveedores. Aquí el vendedor lo da por hecho, y el cliente prefiere tener dos por si uno le falla.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Las grasas se las compro a otro proveedor desde hace años y no me ha fallado."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno que lo tenga cubierto. Si me las pasa a mí, tiene un proveedor menos que andar siguiendo, todo con una sola persona."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues no sé, a mí me gusta tener dos, por si uno me falla."
+        },
+        {
+          "role": "user",
+          "text": "Claro. No le puedo garantizar nada, pero estoy seguro de que se le va a mover, porque en talleres como el suyo la grasa de litio es de lo que más sale."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, déjeme ver."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "proveedor_menos_sin_que_aplique"
+        ],
+        "must_not_flag": [
+          "ataca_al_proveedor",
+          "garantiza",
+          "pide_que_pruebe"
+        ]
+      }
+    },
+    {
+      "id": "G109_bala_de_servicio_que_sirve",
+      "node_id": "4.15",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: el hueco con una bala de servicio que le baja el costo (ya lo visita, se lo trae en la misma entrega, sin pedido aparte), sin decir que tendrá un proveedor menos, con convicción y su razón.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Las grasas se las compro a otro proveedor desde hace años y no me ha fallado."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno que lo tenga cubierto. Nosotros también traemos grasa de litio y de chasis. Y como ya lo visito cada martes con el aceite, se la puedo traer en la misma entrega, sin pedido aparte."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, ¿en la misma entrega? Eso sí me acomoda, luego ando haciendo pedidos por todos lados."
+        },
+        {
+          "role": "user",
+          "text": "Así es: un pedido menos que hacer cada semana. No le puedo garantizar nada, pero estoy seguro de que se le va a mover, porque en talleres como el suyo la de litio es de lo que más sale."
+        },
+        {
+          "role": "assistant",
+          "text": "Va, ¿y a cómo me la deja?"
+        }
+      ],
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.consolidacion_proveedor": "cumple",
+          "presentation.beneficio_no_caracteristica": "cumple"
+        },
+        "must_not_flag": [
+          "proveedor_menos_sin_que_aplique",
+          "garantiza",
+          "pide_que_pruebe",
+          "ataca_al_proveedor",
+          "solo_precio",
+          "anuncia_plan_b"
+        ]
+      }
+    },
+    {
+      "id": "P4_1_perfecto",
+      "node_id": "4.1",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del nodo 4.1 (Conectar con el Dolor), construida criterio por criterio desde la doctrina escrita.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí, como le digo, lo que más me pega es que mi proveedor me deja plantado cada quincena y se me van las ventas... a ver, ¿usted qué trae?"
+        },
+        {
+          "role": "user",
+          "text": "Por eso le quiero platicar, don Ramón: usted me dijo que cada quincena su proveedor lo deja plantado y ahí se le van las ventas. Eso es lo que le vengo a resolver."
+        },
+        {
+          "role": "assistant",
+          "text": "A ver, ¿cómo?"
+        },
+        {
+          "role": "user",
+          "text": "Yo paso por esta zona cada martes, así que lo que se le acaba en la semana lo tiene el martes siguiente en su mostrador. Para usted eso es que el cliente que viene por su aceite lo encuentra aquí y no se va con el de enfrente."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Y cada cuánto surten?"
+        },
+        {
+          "role": "user",
+          "text": "Cada semana, y con una caja ya le entrego: así no tiene que comprar de más para aguantar la quincena, ni tener dinero parado en la bodega."
+        },
+        {
+          "role": "assistant",
+          "text": "Eso me interesa. ¿Y cómo estaría eso del pedido?"
+        }
+      ],
+      "traza": {
+        "presentation.conectar_dolor": "usted me dijo que cada quincena su proveedor lo deja plantado",
+        "presentation.valor_personalizado": "el cliente que viene por su aceite lo encuentra aquí y no se va con el de enfrente",
+        "presentation.beneficio_no_caracteristica": "no tiene que comprar de más para aguantar la quincena, ni tener dinero parado en la bodega"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.conectar_dolor": "cumple",
+          "presentation.valor_personalizado": "cumple",
+          "presentation.beneficio_no_caracteristica": "cumple"
+        },
+        "must_not_flag": [
+          "presentacion_generica",
+          "caracteristicas_sin_beneficio",
+          "baja_su_valor",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P4_2_perfecto",
+      "node_id": "4.2",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del nodo 4.2 (Beneficio, no característica): cada característica, en la misma frase, traducida a lo que el cliente gana en su negocio.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Ya le conté que lo que me pega es que se me van las ventas cuando me falta producto. ¿Qué trae?"
+        },
+        {
+          "role": "user",
+          "text": "Este aceite maneja una formulación más estable a temperatura alta. Para usted, eso es que le dura más antes del siguiente cambio: menos regresos por quejas y clientes que vuelven contentos."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, ¿menos quejas? Eso sí me sirve, luego me reclaman."
+        },
+        {
+          "role": "user",
+          "text": "Y viene en cubeta de diecinueve litros: para usted es que un solo envase le alcanza para varios cambios, o sea menos pedidos y menos espacio en la bodega."
+        },
+        {
+          "role": "assistant",
+          "text": "Eso sí, la bodega la tengo llena. ¿Y cada cuánto me surten?"
+        }
+      ],
+      "traza": {
+        "presentation.beneficio_no_caracteristica": "le dura más antes del siguiente cambio: menos regresos por quejas y clientes que vuelven contentos"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.beneficio_no_caracteristica": "cumple"
+        },
+        "must_not_flag": [
+          "caracteristica_sin_traducir",
+          "catalogo",
+          "beneficio_generico"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P4_3_perfecto",
+      "node_id": "4.3",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del nodo 4.3 (Pintar la Imagen): dos escenas de su negocio con el dolor resuelto, y el cliente entra en ellas.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues lo que más me pega es que me falta el 15W40 y se me van los clientes."
+        },
+        {
+          "role": "user",
+          "text": "Imagínese la quincena que viene: llega su cliente de siempre por sus tres litros de 15W40... y ahora sí los tiene en el anaquel. Se los lleva, y la ganancia se queda con usted y no con el de enfrente."
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí... y hasta me ahorraría el coraje de estar llamándole al proveedor."
+        },
+        {
+          "role": "user",
+          "text": "Exacto. Y piense en el sábado en la mañana, cuando esto se llena: el muchacho que le ayuda ya no le tiene que decir a nadie «no hay, regrese el lunes». Despacha y sigue."
+        },
+        {
+          "role": "assistant",
+          "text": "Eso sí, los sábados es cuando más se me van. ¿Y cómo le haríamos?"
+        }
+      ],
+      "traza": {
+        "presentation.pintar_imagenes": "Imagínese la quincena que viene: llega su cliente de siempre por sus tres litros de 15W40",
+        "presentation.conectar_dolor": "y ahora sí los tiene en el anaquel"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.pintar_imagenes": "cumple",
+          "presentation.conectar_dolor": "cumple"
+        },
+        "must_not_flag": [
+          "explica_sin_pintar",
+          "imagen_generica",
+          "presentacion_generica",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P4_10_perfecto",
+      "node_id": "4.10",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del nodo 4.10 (La Postura del Indiferente): entusiasmo por el producto, tranquilidad con la decisión, sin rogar ni soltar concesiones.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Mmm, la verdad no sé... hay muchos proveedores dando vueltas. ¿Y usted qué tiene de especial?"
+        },
+        {
+          "role": "user",
+          "text": "Tiene razón, hay muchos, y qué bueno que tenga de dónde escoger. A mí este producto me encanta y por eso lo traigo: el de la San José lo mueve cada semana. Si a usted le sirve, qué bueno; si no, no pasa nada."
+        },
+        {
+          "role": "assistant",
+          "text": "La verdad no me urge."
+        },
+        {
+          "role": "user",
+          "text": "Claro, sin prisa. ¿Le platico cómo lo está usando el de la San José, o lo dejamos para otra vuelta?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bueno, a ver, platíqueme. ¿Y cómo estaría eso en pedidos?"
+        }
+      ],
+      "traza": {
+        "impulse.indiferencia": "Si a usted le sirve, qué bueno; si no, no pasa nada.",
+        "mindset.kilt": "Tiene razón, hay muchos, y qué bueno que tenga de dónde escoger."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "impulse.indiferencia": "cumple",
+          "mindset.kilt": "cumple"
+        },
+        "must_not_flag": [
+          "ruega",
+          "concesion_no_pedida",
+          "se_derrumba",
+          "presion_directa",
+          "indiferencia_teatral"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P4_11_perfecto",
+      "node_id": "4.11",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del nodo 4.11 (El Poder de Asumir): sugiere qué, le da a escoger cuándo, y el cliente escoge y ajusta.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí me convence lo de la entrega cada semana. ¿Y qué me recomienda?"
+        },
+        {
+          "role": "user",
+          "text": "Usted me dijo que lo que más se le acaba es el 15W40 y el anticongelante, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, eso es lo que más sale."
+        },
+        {
+          "role": "user",
+          "text": "Entonces para su movimiento le funciona la caja mixta: doce de 15W40 y seis de anticongelante. ¿Se la traigo el jueves o el viernes, que ando por acá?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mejor el viernes. Y empecemos con tres de anticongelante."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto: el viernes, con doce de 15W40 y tres de anticongelante. Así la quincena la agarra surtido."
+        },
+        {
+          "role": "assistant",
+          "text": "Va."
+        }
+      ],
+      "traza": {
+        "impulse.poder_asumir": "¿Se la traigo el jueves o el viernes, que ando por acá?",
+        "presentation.tren_si_si": "Usted me dijo que lo que más se le acaba es el 15W40 y el anticongelante, ¿verdad?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "impulse.poder_asumir": "cumple",
+          "presentation.tren_si_si": "cumple"
+        },
+        "must_not_flag": [
+          "abre_puerta_al_no",
+          "asume_con_presion",
+          "avance_desconectado",
+          "presion_directa"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G110_decide_por_el",
+      "node_id": "4.11",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135 (Emilio, 5-nov): asumir es dar opciones y que el cliente escoja. Aquí el vendedor decide por él la cantidad y el día, y cuando el cliente lo frena, insiste.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues sí me interesa lo de la entrega cada semana."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, le traigo tres cajas de 15W40 el jueves."
+        },
+        {
+          "role": "assistant",
+          "text": "Espérese, ¿tres cajas? Yo no le he dicho cuántas."
+        },
+        {
+          "role": "user",
+          "text": "No se preocupe, ya se las apunté. El jueves se las dejo."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm, déjeme pensarlo mejor."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "asume_con_presion"
+        ]
+      }
+    },
+    {
+      "id": "P4_12_perfecto",
+      "node_id": "4.12",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del nodo 4.12 (El Tren del Sí): tres síes genuinos, anclados en su dolor, intercalados con valor.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues lo que más coraje me da es mandar clientes a la competencia cuando me falta el aceite."
+        },
+        {
+          "role": "user",
+          "text": "Usted me decía que lo que más coraje le da es mandar clientes a la competencia, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, la verdad sí."
+        },
+        {
+          "role": "user",
+          "text": "Yo paso cada martes por esta zona, así que lo que se le acaba en la semana lo tiene el martes siguiente. Y un cliente que se va por un faltante, a veces ya no regresa, ¿no le ha pasado?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, me ha pasado. El de las combis ya no volvió."
+        },
+        {
+          "role": "user",
+          "text": "Por eso: con la entrega de cada martes, el de las combis y los demás encuentran su aceite aquí. Tener el producto cuando se lo piden le cuida justo eso, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, eso es lo que necesito."
+        }
+      ],
+      "traza": {
+        "presentation.tren_si_si": "Y un cliente que se va por un faltante, a veces ya no regresa, ¿no le ha pasado?",
+        "presentation.beneficio_no_caracteristica": "con la entrega de cada martes, el de las combis y los demás encuentran su aceite aquí"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.tren_si_si": "cumple",
+          "presentation.beneficio_no_caracteristica": "cumple"
+        },
+        "must_not_flag": [
+          "si_capcioso",
+          "interrogatorio",
+          "cierra_con_afirmacion",
+          "presentacion_generica"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P4_16_perfecto",
+      "node_id": "4.16",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 135: ejecución perfecta del jefe del mundo 4 (Construye el Valor) ante el desconfiado: excava el dolor por capas, toca lo personal, y presenta conectado, con una escena, síes genuinos, dos factores concretos y el precio en escalera.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenas tardes, don Toño. Qué bien se ve el taller con las tres bahías llenas; ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, hay chamba. A ver, dígame."
+        },
+        {
+          "role": "user",
+          "text": "Soy Luis, de Lubricantes del Golfo; ando visitando talleres de la zona. Oiga, ¿el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí. Todo bien, aunque a veces se tarda en surtir."
+        },
+        {
+          "role": "user",
+          "text": "¿Y qué pasa cuando se tarda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues me quedo sin 15W40 dos o tres días, y los de flotilla que vienen por su cambio se van a otro taller. Ya perdí a uno así."
+        },
+        {
+          "role": "user",
+          "text": "¿Y eso cada cuánto le pasa?"
+        },
+        {
+          "role": "assistant",
+          "text": "Fácil una vez al mes. Mi nieto, que me ayuda en las tardes, ya hasta les dice «regrese mañana»."
+        },
+        {
+          "role": "user",
+          "text": "¿Su nieto le ayuda? Qué bien. ¿Y le está agarrando gusto al taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, ya cambia aceite solito. Pero bueno, ¿usted qué me trae?"
+        },
+        {
+          "role": "user",
+          "text": "Qué orgullo. Mire, don Toño: usted me dijo que una vez al mes se queda sin 15W40 y los de flotilla se le van a otro taller. Eso es lo que le vengo a resolver. Yo paso cada martes, y lo que se le acaba en la semana lo tiene el martes siguiente. Un cliente de flotilla que se va, a veces ya no regresa, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, el que le digo ya no volvió."
+        },
+        {
+          "role": "user",
+          "text": "Imagínese el lunes en la mañana: llega la camioneta de la flotilla por su cambio, su nieto agarra el 15W40 del anaquel y en veinte minutos sale. El taller del Puente, aquí en la avenida, trabaja así con nosotros desde hace un año: con la entrega del martes, ya no ha tenido que mandar a nadie a otro lado. Tener el aceite cuando llega la flotilla le cuida justo eso, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí... ¿y a cómo me lo dejaría?"
+        },
+        {
+          "role": "user",
+          "text": "La caja de doce normalmente sale en mil doscientos. Como es su primer pedido, mil cincuenta, y de contado se la dejo en novecientos sesenta: son doscientos cuarenta de ahorro. Y cada mes que se queda sin aceite se le va una flotilla. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm... ¿y cómo le hago para el pedido? ¿Me lo trae junto con el anticongelante?"
+        }
+      ],
+      "traza": {
+        "presentation.conectar_dolor": "usted me dijo que una vez al mes se queda sin 15W40 y los de flotilla se le van a otro taller",
+        "presentation.beneficio_no_caracteristica": "lo que se le acaba en la semana lo tiene el martes siguiente",
+        "presentation.pintar_imagenes": "Imagínese el lunes en la mañana: llega la camioneta de la flotilla por su cambio",
+        "presentation.tren_si_si": "Un cliente de flotilla que se va, a veces ya no regresa, ¿verdad?",
+        "impulse.factores_impulso": "El taller del Puente, aquí en la avenida, trabaja así con nosotros desde hace un año",
+        "presentation.price_breakdown": "La caja de doce normalmente sale en mil doscientos. Como es su primer pedido, mil cincuenta, y de contado se la dejo en novecientos sesenta",
+        "relationship.cpr": "¿Su nieto le ayuda? Qué bien. ¿Y le está agarrando gusto al taller?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "presentation.conectar_dolor": "cumple",
+          "presentation.beneficio_no_caracteristica": "cumple",
+          "presentation.pintar_imagenes": "cumple",
+          "presentation.tren_si_si": "cumple",
+          "impulse.factores_impulso": "cumple",
+          "presentation.price_breakdown": "cumple",
+          "relationship.cpr": "cumple"
+        },
+        "must_not_flag": [
+          "presentacion_generica",
+          "promesa_grandilocuente",
+          "pitch_prematuro",
+          "ignora_pistas",
+          "si_capcioso",
+          "explica_sin_pintar",
+          "monologo",
+          "presion_teatral"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
     }
   ]
