@@ -1052,15 +1052,15 @@
     "card_order": 4,
     "card_type": "concept",
     "title": "Entrénate a escuchar la balanza",
-    "body": "\"Esto le rinde el doble antes del siguiente cambio\" -> SUBE VALOR.\n\n\"Y mire, le dejamos el primer pedido a consignacion\" -> BAJA COSTO.\n\n\"Bueno, si no le alcanza hay uno mas economico...\" -> BAJA VALOR (acabas de decirle que lo bueno no era para el).\n\n\"Le manejo pedido minimo de veinte piezas\" -> SUBE COSTO.\n\nMisma conversacion, cuatro frases, cuatro efectos distintos. Escucha la tuya asi.",
+    "body": "\"Esto le rinde el doble antes del siguiente cambio\" → SUBE EL VALOR.\n\n\"Y se lo traigo en la misma visita, sin pedido aparte\" → BAJA EL COSTO.\n\n\"Bueno, si no le alcanza, hay uno más económico...\" → BAJA EL VALOR (acabas de decirle que lo bueno no era para él).\n\n\"Le manejo pedido mínimo de veinte piezas\" → SUBE EL COSTO.\n\nMisma conversación, cuatro frases, cuatro efectos distintos. Escucha la tuya así.",
     "flip_back_text": null
   },
   {
     "node_id": "4.0",
     "card_order": 5,
     "card_type": "why_it_works",
-    "title": "Siempre estas haciendo una de cuatro cosas",
-    "body": "Esto es lo que convierte la balanza en una herramienta y no solo en una idea bonita.\n\nCada frase que dices, cada gesto, cada silencio, hace una de estas cuatro cosas:\n\nSUBE el valor percibido.\nLO BAJA.\nSUBE el costo percibido.\nLO BAJA.\n\nNo hay frases neutras. Cuando titubeas al dar un precio, subes el costo. Cuando cuentas un caso real de otro cliente, subes el valor. Cuando te disculpas por algo, bajas el valor.\n\nA partir de ahora, escucha tu propia presentacion asi: que plato acabo de mover?",
+    "title": "Siempre estás haciendo una de cuatro cosas",
+    "body": "Esto es lo que convierte la balanza en una herramienta y no solo en una idea bonita.\n\nCada frase que dices, cada gesto, cada silencio, hace una de estas cuatro cosas:\n\nSUBE el valor percibido.\nLO BAJA.\nSUBE el costo percibido.\nLO BAJA.\n\nNo hay frases neutras. Cuando titubeas al dar un precio, subes el costo. Cuando cuentas un caso real de otro cliente, subes el valor. Cuando te disculpas por algo, bajas el valor.\n\nA partir de ahora, escucha tu propia presentación así: ¿qué plato acabo de mover?",
     "flip_back_text": null
   },
   {
@@ -1077,7 +1077,7 @@
     "card_type": "bad_example",
     "title": null,
     "body": "Ejemplo de presentación genérica aplicada al contexto de la empresa: catálogo, calidad, años de experiencia y precios — sin una sola mención del problema del cliente.",
-    "flip_back_text": "Esta presentación servería idéntica en cualquier negocio de la ciudad — y por eso no vende en ninguno. Genérico = invisible."
+    "flip_back_text": "Esta presentación serviría idéntica en cualquier negocio de la ciudad — y por eso no vende en ninguno. Genérico = invisible."
   },
   {
     "node_id": "4.1",
@@ -1100,7 +1100,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "SW3 en el campo: emocionado por el producto, tranquilo con la decisión.",
-    "body": "Ojo con el matiz — indiferencia NO es frialdad ni desgano:\n\nPor tu PRODUCTO: entusiasmo genuino, siempre. \"El producto me encanta y por eso lo traigo.\"\nPor SU DECISIÓN: tranquilidad total. \"Si le sirve, qué bueno. Si no, no pasa nada — la zona es grande.\"\n\nY la frase que desarma a cualquier difícil: \"¿Le platico cómo lo está usando el de la San José... o lo dejamos para otra vuelta?\" El que está dispuesto a irse es, misteriosamente, al que no dejan ir.",
+    "body": "Ojo con el matiz — indiferencia NO es frialdad ni desgano. Se resume en SW3: Some Will, Some Won't, So What. Algunos sí, algunos no... ¿y qué?\n\nPor tu PRODUCTO: entusiasmo genuino, siempre. \"El producto me encanta y por eso lo traigo.\"\nPor SU DECISIÓN: tranquilidad total. \"Si le sirve, qué bueno. Si no, no pasa nada — la zona es grande.\"\n\nY la frase que desarma a cualquier difícil: \"¿Le platico cómo lo está usando el de la San José... o lo dejamos para otra vuelta?\" El que está dispuesto a irse es, misteriosamente, al que no dejan ir.",
     "flip_back_text": null
   },
   {
@@ -1124,7 +1124,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Asumir: lenguaje de \"cuando\", no de \"si acaso\".",
-    "body": "\"Mire, para su movimiento lo que le va a funcionar es la caja mixta. Se la traigo el jueves que ando por acá — y la quincena la agarra surtido.\"\n\nQué hizo esa frase: sugirió QUÉ (específico para su caso), sugirió CUÁNDO (día concreto), y pintó el resultado. Ni una pregunta de permiso.\n\n¿Y si algo no le late al cliente? Él lo dice — \"mejor el viernes\", \"mejor media caja\" — y fíjate: ajustar detalles ES participar del plan. El que negocia el día del pedido... ya está pidiendo.",
+    "body": "\"Mire, para su movimiento lo que le va a funcionar es la caja mixta. ¿Se la traigo el jueves o el viernes, que ando por acá?\"\n\nQué hizo esa frase: sugirió QUÉ (específico para su caso), le dio a escoger CUÁNDO entre dos opciones, y las dos son un sí. No pidió permiso.\n\nEl cliente escoge — y al escoger, ya dijo que sí, aunque sea de forma indirecta. Y si quiere ajustar algo (\"mejor media caja\"), ajustar también es participar del plan.",
     "flip_back_text": null
   },
   {
@@ -1132,7 +1132,7 @@
     "card_order": 3,
     "card_type": "why_it_works",
     "title": "La línea sagrada: asumir NO es presionar.",
-    "body": "Asumir es sugerir el camino natural y dejar al cliente caminar — con libertad total de ajustar o parar.\n\nPresionar es dar por cerrado lo que no se aceptó, ignorar sus ajustes, o apurar. La respuesta del cliente te dice de qué lado estás: si fluye y ajusta detalles, asumiste bien. Si dice \"espérese, yo no he dicho que sí\" — cruzaste la línea, y toca dar un paso atrás con gracia: \"tiene razón, me emocioné — ¿usted cómo lo ve?\"\n\nEl poder de asumir funciona porque respeta: sugiere sin encerrar. En el siguiente mundo, esta habilidad se gradúa: se llama cierre.",
+    "body": "Asumir es proponer el camino natural y dejar que el cliente escoja.\n\nPresionar es decidir por él: dar por cerrado lo que no aceptó (\"ya se lo apunté\"), meter cantidades o condiciones que nunca platicaron, o ignorar un cambio que te pidió.\n\nLa diferencia está en quién decide. Si le das opciones y él escoge, asumiste bien. Si decides tú por él, presionaste.\n\nEn el siguiente mundo, esta habilidad se gradúa: se llama cierre.",
     "flip_back_text": null
   },
   {
@@ -1140,7 +1140,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "El impulso sube por escalones — y cada escalón es un \"sí\".",
-    "body": "\"Usted me decía que le da coraje mandar clientes a la competencia, ¿verdad?\" — Sí.\n\"Y un cliente que se va, a veces ya no regresa, ¿no le ha pasado?\" — Sí, me ha pasado.\n\"Entonces el surtido garantizado le cuida justo eso, ¿me explico?\" — Pues sí.\n\nTres síes. Tres escalones. El cliente lleva tres acuerdos contigo antes de hablar de ningún pedido — y decir el cuarto sí es más fácil que decir el primero. Así funciona el impulso.",
+    "body": "\"Usted me decía que le da coraje mandar clientes a la competencia, ¿verdad?\" — Sí.\n\"Y un cliente que se va, a veces ya no regresa, ¿no le ha pasado?\" — Sí, me ha pasado.\n\"Entonces tener el producto cuando se lo piden le cuida justo eso, ¿verdad?\" — Pues sí.\n\nTres síes. Tres escalones. El cliente lleva tres acuerdos contigo antes de hablar de ningún pedido — y decir el cuarto sí es más fácil que decir el primero. Así funciona el impulso.",
     "flip_back_text": null
   },
   {
@@ -1164,7 +1164,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Valor menos costo es igual a ahorro",
-    "body": "Esa es la formula, y toda la tecnica sale de ahi.\n\nEl cliente no compara tu precio contra cero. Lo compara contra lo que cree que vale. Si construiste bien el valor, tu precio ya se siente justo antes de que lo digas.\n\nY el ahorro no es una idea abstracta: es la distancia entre esas dos cifras. Tu trabajo es hacerla visible.",
+    "body": "Esa es la fórmula, y toda la técnica sale de ahí.\n\nEl cliente no compara tu precio contra cero. Lo compara contra lo que cree que vale. Si construiste bien el valor, tu precio ya se siente justo antes de que lo digas.\n\nY el ahorro no es una idea abstracta: es la distancia entre esas dos cifras. Tu trabajo es hacerla visible.",
     "flip_back_text": null
   },
   {
@@ -1172,31 +1172,31 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "La escalera",
-    "body": "No des un solo numero. Da tres, bajando:\n\nNORMALMENTE — lo que cuesta de lista. Aqui hace match con lo que el cliente ya esperaba.\n\nCON EL PRIMER DESCUENTO — por ser cliente nuevo, por el volumen, por lo que aplique.\n\nCON EL SEGUNDO — por pago de contado, por cerrar hoy, por lo que corresponda.\n\nCien. Noventa. Ochenta. El cliente no escucho un precio: vio bajar uno.",
+    "body": "No des un solo número. Da tres, bajando:\n\nNORMALMENTE — lo que cuesta de lista. Aquí hace match con lo que el cliente ya esperaba.\n\nCON EL PRIMER DESCUENTO — por ser cliente nuevo, por el volumen, por lo que aplique.\n\nCON EL SEGUNDO — por pago de contado, por cerrar hoy, por lo que corresponda.\n\nCien. Noventa. Ochenta. El cliente no escuchó un precio: vio bajar uno.",
     "flip_back_text": null
   },
   {
     "node_id": "4.13",
     "card_order": 3,
     "card_type": "concept",
-    "title": "Cada escalon necesita un motivo",
-    "body": "Esta es la regla que hace que funcione, y la que casi todos rompen.\n\nUn precio que baja SIN razon le dice al cliente algo terrible: el primero estaba inflado. Y a partir de ahi te vuelve regateable, porque si bajo dos veces solo, va a bajar otra vez si presiona.\n\nUn precio que baja POR RAZONES NOMBRADAS hace lo contrario: confirma que los cien eran reales, y cada escalon se vuelve una bala de precio.\n\nNunca bajes un numero sin decir por que.",
+    "title": "Cada escalón necesita un motivo",
+    "body": "Esta es la regla que hace que funcione, y la que casi todos rompen.\n\nUn precio que baja SIN razón le dice al cliente algo terrible: el primero estaba inflado. Y a partir de ahí te vuelve regateable, porque si bajó dos veces solo, va a bajar otra vez si presiona.\n\nUn precio que baja POR RAZONES NOMBRADAS hace lo contrario: confirma que los cien eran reales, y cada escalón se vuelve una bala de precio.\n\nNunca bajes un número sin decir por qué.",
     "flip_back_text": null
   },
   {
     "node_id": "4.13",
     "card_order": 4,
     "card_type": "why_it_works",
-    "title": "Por que se ve y no solo se escucha",
-    "body": "Si dices queda en ochenta, el cliente escucha un gasto de ochenta.\n\nSi dices normalmente cien, con su descuento de cliente nuevo noventa, y de contado ochenta, el cliente ve veinte pesos de ahorro que antes no existian.\n\nEs el mismo numero final. Pero uno se siente costo y el otro se siente ganancia. Y como el segundo descuento depende de algo que puede hacer HOY, aparece solo lo que ya conoces: el miedo a perder.",
+    "title": "Por qué se ve y no solo se escucha",
+    "body": "Si dices \"queda en ochenta\", el cliente escucha un gasto de ochenta.\n\nSi dices \"normalmente cien, con su descuento de cliente nuevo noventa, y de contado ochenta\", el cliente ve veinte pesos de ahorro que antes no existían.\n\nEs el mismo número final. Pero uno se siente costo y el otro se siente ganancia. Y como el segundo descuento depende de algo que puede hacer HOY, aparece solo lo que ya conoces: el miedo a perder.",
     "flip_back_text": null
   },
   {
     "node_id": "4.13",
     "card_order": 5,
     "card_type": "concept",
-    "title": "Y despues del numero, no te calles",
-    "body": "Aqui es donde mueren mas ventas que en ningun otro punto de la conversacion.\n\nEl vendedor da el precio y se queda callado, esperando la reaccion. Y en ese silencio el cliente hace lo unico que puede hacer sin comprometerse: lo voy a pensar.\n\nLo que sigue despues del precio es tan importante que tiene su propio nodo. Es el siguiente.",
+    "title": "Y después del número, no te calles",
+    "body": "Aquí es donde mueren más ventas que en ningún otro punto de la conversación.\n\nEl vendedor da el precio y se queda callado, esperando la reacción. Y en ese silencio el cliente hace lo único que puede hacer sin comprometerse: \"lo voy a pensar\".\n\nLo que sigue después del precio es tan importante que tiene su propio nodo. Es el siguiente.",
     "flip_back_text": null
   },
   {
@@ -1204,7 +1204,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Los dos movimientos, juntos",
-    "body": "Este nodo no entrena una cosa: entrena dos que en la calle siempre van pegadas.\n\nPRIMERO el desglose: tres numeros bajando, con su motivo cada uno.\n\nY DE INMEDIATO, sin pausa, el movimiento al siguiente paso.\n\nSeparados no funcionan. Un desglose perfecto seguido de silencio se convierte en un lo voy a pensar.",
+    "body": "Este nodo no entrena una cosa: entrena dos que en la calle siempre van pegadas.\n\nPRIMERO el desglose: tres números bajando, con su motivo cada uno.\n\nY DE INMEDIATO, sin pausa, el movimiento al siguiente paso.\n\nSeparados no funcionan. Un desglose perfecto seguido de silencio se convierte en un \"lo voy a pensar\".",
     "flip_back_text": null
   },
   {
@@ -1212,23 +1212,23 @@
     "card_order": 2,
     "card_type": "bad_example",
     "title": null,
-    "body": "Le queda en novecientos sesenta. ... Que le parece?",
-    "flip_back_text": "Dos errores en una frase. Un solo numero, asi que el cliente escucho un gasto y no un ahorro. Y despues le pregunto que le parece, que es entregarle el control justo en el momento mas delicado. La respuesta comoda a esa pregunta siempre es dejeme lo pienso."
+    "body": "\"Le queda en novecientos sesenta.\" ... \"¿Qué le parece?\"",
+    "flip_back_text": "Dos errores en una frase. Un solo número, así que el cliente escuchó un gasto y no un ahorro. Y después le preguntó qué le parece, que es entregarle el control justo en el momento más delicado. La respuesta cómoda a esa pregunta siempre es \"déjeme lo pienso\"."
   },
   {
     "node_id": "4.14",
     "card_order": 3,
     "card_type": "good_example",
     "title": null,
-    "body": "Normalmente le sale en mil doscientos. Como es su primer pedido, mil cincuenta. Y de contado se lo dejo en novecientos sesenta, son doscientos cuarenta de ahorro. Antes de que se emocione dejeme ver si alcanzamos entrega esta semana: le acomoda mas jueves o viernes?",
-    "flip_back_text": "Tres numeros bajando, cada uno con su razon, y el ahorro dicho en voz alta. Y sin respirar, ya lo movio a elegir una fecha. Fijate en lo que NO hizo: no pregunto si le parece bien ni si lo quiere. La respuesta a jueves o viernes ya es un si."
+    "body": "\"Normalmente le sale en mil doscientos. Como es su primer pedido, mil cincuenta. Y de contado se lo dejo en novecientos sesenta: son doscientos cuarenta de ahorro. Para que lo tenga esta semana, ¿le acomoda más jueves o viernes?\"",
+    "flip_back_text": "Tres números bajando, cada uno con su razón, y el ahorro dicho en voz alta. Y sin respirar, ya lo movió a escoger una fecha. Fíjate en lo que NO hizo: no preguntó si le parece bien ni si lo quiere. La respuesta a \"¿jueves o viernes?\" ya es un sí."
   },
   {
     "node_id": "4.15",
     "card_order": 1,
     "card_type": "concept",
-    "title": "Aqui no hay nada que resolver",
-    "body": "Cuando presentas una solucion a un dolor, el cliente ya sabe que algo le duele. Tu trabajo es conectar.\n\nCon un hueco es distinto: el cliente esta contento. No le duele nada. Ya lo tiene resuelto con alguien mas.\n\nNo hay problema que resolver. Hay un espacio que ocupar. Y eso se presenta diferente.",
+    "title": "Aquí no hay nada que resolver",
+    "body": "Cuando presentas una solución a un dolor, el cliente ya sabe que algo le duele. Tu trabajo es conectar.\n\nCon un hueco es distinto: el cliente está contento. No le duele nada. Esa familia ya se la surte alguien más, o no la maneja.\n\nNo hay problema que resolver, pero la balanza sigue ahí. La pregunta es la misma de siempre: ¿qué gana él con que tú se lo surtas?",
     "flip_back_text": null
   },
   {
@@ -1236,15 +1236,15 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Nunca ataques al proveedor actual",
-    "body": "Es la tentacion natural: si le fallan, si le cobran caro, si se tardan.\n\nY es la manera mas rapida de cerrar la puerta. Si el cliente lleva anos con ese proveedor, criticarlo es criticar SU decision. Y la gente defiende sus decisiones, aunque sean malas.\n\nLo correcto es lo contrario: reconocelo. Que bueno que lo tenga cubierto. Desde ahi si se puede hablar.",
+    "body": "Es la tentación natural: si le fallan, si le cobran caro, si se tardan.\n\nY es la manera más rápida de cerrar la puerta. Si el cliente lleva años con ese proveedor, criticarlo es criticar SU decisión. Y la gente defiende sus decisiones, aunque sean malas.\n\nLo correcto es lo contrario: reconócelo. \"Qué bueno que lo tenga cubierto.\" Desde ahí sí se puede hablar.",
     "flip_back_text": null
   },
   {
     "node_id": "4.15",
     "card_order": 3,
     "card_type": "why_it_works",
-    "title": "Lo que vendes es un proveedor menos",
-    "body": "No estas vendiendo el producto: eso ya lo tiene.\n\nEstas vendiendo dejar de esperar dos entregas. Un pedido menos que rastrear. Una persona menos a quien marcarle cuando algo falta.\n\nY fijate en lo mejor: es un argumento que el otro proveedor NO puede igualar, porque el no tiene tu catalogo completo. Es lo unico que tienes que el no.",
+    "title": "Tus balas, escogidas para su caso",
+    "body": "Para un hueco usas las mismas balas de siempre: producto, servicio y precio. Lo que cambia es cuáles escoges, porque tienen que servirle a ÉL.\n\n\"Como ya lo visito cada semana, se lo traigo en la misma entrega, sin pedido aparte.\" Es una bala de servicio que le baja el costo: su tiempo y su esfuerzo.\n\nOjo con \"así tiene un proveedor menos\": solo es bala si él te dejó ver que le pesa tratar con tantos proveedores. Muchos negocios tienen dos proveedores para lo mismo, a propósito, por si uno les falla. Y si es una familia que no maneja, no le quitas un proveedor: le sumas uno.",
     "flip_back_text": null
   },
   {
@@ -1252,22 +1252,22 @@
     "card_order": 4,
     "card_type": "bad_example",
     "title": null,
-    "body": "Le pongo unas pocas nada mas para que lo pruebe y vea si le funciona.",
-    "flip_back_text": "Suena humilde y es lo peor que puedes decir: le estas diciendo yo no se si esto sirve, averigualo tu con tu dinero. La gente no quiere experimentar — esta comoda donde esta, y probar algo nuevo es riesgo. Le pasaste el riesgo a el."
+    "body": "\"Le pongo unas pocas nada más para que lo pruebe y vea si le funciona.\"",
+    "flip_back_text": "Suena humilde y es lo peor que puedes decir: le estás diciendo \"yo no sé si esto sirve, averígualo tú con tu dinero\". La gente no quiere experimentar: está cómoda donde está, y probar algo nuevo es riesgo. Le pasaste el riesgo a él."
   },
   {
     "node_id": "4.15",
     "card_order": 5,
     "card_type": "good_example",
     "title": null,
-    "body": "Yo no le puedo garantizar nada, pero estoy seguro de que se le va a mover. Se lo digo porque en los negocios de por aca es de lo que mas sale.",
-    "flip_back_text": "Dos movimientos y se calla. Reconocer que no puede garantizar es justamente lo que hace creible lo que si afirma. Y la razon detras convierte su conviccion en algo verificable en vez de puro entusiasmo de vendedor. Ojo con lo que NO dijo: nada de y si no se mueve lo ajustamos. Eso le meteria una duda que el cliente no tenia."
+    "body": "\"Yo no le puedo garantizar nada, pero estoy seguro de que se le va a mover. Se lo digo porque en los negocios de por acá es de lo que más sale.\"",
+    "flip_back_text": "Dos movimientos y se calla. Reconocer que no puede garantizar es justamente lo que hace creíble lo que sí afirma. Y la razón detrás convierte su convicción en algo que se puede comprobar, en vez de puro entusiasmo de vendedor. Ojo con lo que NO dijo: nada de \"y si no se mueve, lo ajustamos\". Eso le metería una duda que el cliente no tenía."
   },
   {
     "node_id": "4.16",
     "card_order": 1,
     "card_type": "concept",
-    "title": "El quinto Boss.",
+    "title": "El cuarto Boss.",
     "body": "Este cliente ya escuchó todas las promesas. Vendedores que juraban no fallar nunca — y fallaron. Su escudo: \"eso mismo me dijo el anterior.\"\n\nTu misión: el ciclo completo. Excava su dolor. Gánatelo como persona. Y presenta con valor REAL — su problema, sus palabras, su negocio en la escena, síes que le nazcan solos. Ni una promesa grandilocuente: con los desconfiados, la promesa grande es veneno y el detalle concreto es oro.\n\nGanas cuando el desconfiado te pida los detalles del siguiente paso. Ahí sabrás que el valor pesó más que la cicatriz.",
     "flip_back_text": null
   },
@@ -1275,8 +1275,8 @@
     "node_id": "4.2",
     "card_order": 1,
     "card_type": "concept",
-    "title": "Nadie compra caracteristicas",
-    "body": "Le dices al cliente que tu producto tiene una formulacion mas estable a temperatura alta.\n\nY el piensa: y?\n\nNo es que no le importe. Es que le hablaste en tu idioma. Una caracteristica es lo que el producto ES. Y nadie compra lo que algo es: compran lo que van a ganar con eso.",
+    "title": "Nadie compra características",
+    "body": "Le dices al cliente que tu producto tiene una formulación más estable a temperatura alta.\n\nY él piensa: ¿y?\n\nNo es que no le importe. Es que le hablaste en tu idioma. Una característica es lo que el producto ES. Y nadie compra lo que algo es: compran lo que van a ganar con eso.",
     "flip_back_text": null
   },
   {
@@ -1284,7 +1284,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Traduce a dinero, clientes o tranquilidad",
-    "body": "Toda caracteristica se puede traducir a una de tres cosas que si le importan a cualquier dueno de negocio:\n\nDINERO — gana mas o gasta menos.\nCLIENTES — vende mas o los conserva.\nTRANQUILIDAD — menos problemas, menos tiempo perdido, menos gente reclamando.\n\nSi no puedes traducir una caracteristica a una de esas tres, probablemente no valia la pena mencionarla.",
+    "body": "Toda característica se puede traducir a una de tres cosas que sí le importan a cualquier dueño de negocio:\n\nDINERO — gana más o gasta menos.\nCLIENTES — vende más o los conserva.\nTRANQUILIDAD — menos problemas, menos tiempo perdido, menos gente reclamando.\n\nSi no puedes traducir una característica a una de esas tres, probablemente no valía la pena mencionarla.",
     "flip_back_text": null
   },
   {
@@ -1292,23 +1292,23 @@
     "card_order": 3,
     "card_type": "bad_example",
     "title": null,
-    "body": "Este producto tiene formulacion sintetica de ultima generacion, con aditivos anti-desgaste y certificacion internacional.",
-    "flip_back_text": "Todo cierto, todo impresionante, y el cliente no entendio nada de lo que gana. Escucho tres caracteristicas seguidas en el idioma del vendedor. La respuesta natural es la que mas duele: y eso a mi de que me sirve?"
+    "body": "\"Este producto tiene formulación sintética de última generación, con aditivos antidesgaste y certificación internacional.\"",
+    "flip_back_text": "Todo cierto, todo impresionante, y el cliente no entendió nada de lo que gana. Escuchó tres características seguidas en el idioma del vendedor. La respuesta natural es la que más duele: ¿y eso a mí de qué me sirve?"
   },
   {
     "node_id": "4.2",
     "card_order": 4,
     "card_type": "good_example",
     "title": null,
-    "body": "Este dura casi el doble antes del siguiente cambio. Para usted eso son la mitad de servicios al ano por unidad, y clientes que regresan contentos en lugar de regresar a reclamar.",
-    "flip_back_text": "La misma caracteristica, traducida. Dijo lo que el producto hace y en la misma frase lo que el cliente gana: menos trabajo repetido y clientes que vuelven de buenas. Ya no es informacion tecnica, es una razon para comprar."
+    "body": "\"Este dura casi el doble antes del siguiente cambio. Para usted, eso son la mitad de servicios al año por unidad, y clientes que regresan contentos en lugar de regresar a reclamar.\"",
+    "flip_back_text": "La misma característica, traducida. Dijo lo que el producto hace y, en la misma frase, lo que el cliente gana: menos trabajo repetido y clientes que vuelven de buenas. Ya no es información técnica: es una razón para comprar."
   },
   {
     "node_id": "4.3",
     "card_order": 1,
     "card_type": "concept",
     "title": "Explicar informa. Pintar vende.",
-    "body": "\"El producto tiene buena movimiento y margen competitivo.\" — Tu cliente escuchó un dato. Los datos se evalúan... y se olvidan.\n\n\"Imagínese la quincena que viene: llega su cliente de siempre por sus tres litros — y ahora SÍ los tiene.\" — Tu cliente se VIO en la escena. Y de una escena donde está ganando, nadie se quiere salir.\n\nLa gente no compra productos. Compra la película de su vida con el problema resuelto.",
+    "body": "\"El producto tiene buen movimiento y margen competitivo.\" — Tu cliente escuchó un dato. Los datos se evalúan... y se olvidan.\n\n\"Imagínese la quincena que viene: llega su cliente de siempre por sus tres litros — y ahora SÍ los tiene.\" — Tu cliente se VIO en la escena. Y de una escena donde está ganando, nadie se quiere salir.\n\nLa gente no compra productos. Compra la película de su vida con el problema resuelto.",
     "flip_back_text": null
   },
   {
@@ -1316,7 +1316,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Cómo se pinta una imagen",
-    "body": "Tres brochazos:\n\nEL MOMENTO — ponle tiempo y lugar: \"la quincena que viene\", \"el sábado en la mañana cuando esto se llena\".\nEL PERSONAJE — mete a SU gente: \"su cliente de siempre\", \"el muchacho que le ayuda\", \"el de la unidades que viene cada semana\".\nEL DESENLACE — el dolor resuelto, con ganancia visible: \"se lo lleva, le deja la ganancia a usted y no al de enfrente.\"\n\nY la llave de entrada, siempre: \"Imagínese que...\"",
+    "body": "Tres brochazos:\n\nEL MOMENTO — ponle tiempo y lugar: \"la quincena que viene\", \"el sábado en la mañana cuando esto se llena\".\nEL PERSONAJE — mete a SU gente: \"su cliente de siempre\", \"el muchacho que le ayuda\", \"el de las unidades que viene cada semana\".\nEL DESENLACE — el dolor resuelto, con ganancia visible: \"se lo lleva, le deja la ganancia a usted y no al de enfrente.\"\n\nY la llave de entrada, siempre: \"Imagínese que...\"",
     "flip_back_text": null
   },
   {
@@ -1372,23 +1372,23 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "El tiroteo",
-    "body": "Imaginalo asi: los dos entran a la conversacion con municion.\n\nTus balas son razones para comprar. Las del cliente son razones para no hacerlo.\n\nLa doctrina lo dice claro: la persona con mas balas claramente tiene el control, siempre y cuando conserve su municion. Esa ultima parte es la que casi nadie respeta.",
+    "body": "Imagínalo así: los dos entran a la conversación con munición.\n\nTus balas son razones para comprar. Las del cliente son razones para no hacerlo.\n\nLa doctrina lo dice claro: la persona con más balas claramente tiene el control, siempre y cuando conserve su munición. Esa última parte es la que casi nadie respeta.",
     "flip_back_text": null
   },
   {
     "node_id": "4.5",
     "card_order": 2,
     "card_type": "concept",
-    "title": "Que es una bala",
-    "body": "Una bala es un HECHO POSITIVO y concreto que sube el impulso del cliente.\n\nNo es una opinion. No es un adjetivo. Somos los mejores no es una bala: es aire. Llevamos catorce anos surtiendo esta zona sin fallar en desabasto, si lo es.\n\nLa prueba: si la competencia puede decir exactamente lo mismo, no era una bala.",
+    "title": "Qué es una bala",
+    "body": "Una bala es un HECHO POSITIVO y concreto que sube el impulso del cliente.\n\nNo es una opinión. No es un adjetivo. \"Somos los mejores\" no es una bala: es aire. \"Llevamos catorce años surtiendo esta zona\" sí lo es.\n\nLa prueba: si la competencia puede decir exactamente lo mismo, no era una bala.",
     "flip_back_text": null
   },
   {
     "node_id": "4.5",
     "card_order": 3,
     "card_type": "concept",
-    "title": "De donde salen: tres arsenales",
-    "body": "SOBRE TI Y TU EMPRESA — anos en la zona, experiencia, premios, casos de exito, tu propia dedicacion.\n\nSOBRE EL PRODUCTO — lo que lo diferencia, mejoras recientes, datos duros, certificaciones.\n\nSOBRE EL PRECIO — la propuesta de valor, descuentos, condiciones de pago, comparacion honesta con lo que hay.\n\nAntes de salir a la calle deberias tener claras al menos tres de cada uno.",
+    "title": "De dónde salen: producto, servicio y precio",
+    "body": "PRODUCTO — lo que lo hace distinto: la presentación, la marca, cuánto rinde, datos duros, certificaciones.\n\nSERVICIO — tú, tu empresa y cómo se lo haces llegar: años en la zona, casos de éxito, tu dedicación, cada cuánto lo visitas, en cuánto tiempo le entregas, el plazo que le das.\n\nPRECIO — la propuesta de valor, los descuentos con su motivo, la comparación honesta con lo que hay.\n\nY cada bala mueve la balanza: sube el valor o baja el costo.\n\nAntes de salir a la calle deberías tener claras al menos tres de cada uno.",
     "flip_back_text": null
   },
   {
@@ -1396,15 +1396,15 @@
     "card_order": 4,
     "card_type": "concept",
     "title": "La regla que casi nadie respeta",
-    "body": "No dispares todas las balas al principio.\n\nEs la tentacion natural: tienes al cliente escuchando y quieres impresionarlo con todo lo que traes. Y ahi es donde te quedas desarmado.\n\nReserva algunas. Guarda balas para el cierre. Porque lo que viene despues cambia el juego, y vas a necesitar municion fresca justo cuando creas que ya no hace falta.",
+    "body": "No dispares todas las balas al principio.\n\nEs la tentación natural: tienes al cliente escuchando y quieres impresionarlo con todo lo que traes. Y ahí es donde te quedas desarmado.\n\nReserva algunas. En la presentación, con unas tres cosas positivas antes del precio basta. Las demás guárdalas para cuando de verdad hagan falta, porque lo que viene después cambia el juego.",
     "flip_back_text": null
   },
   {
     "node_id": "4.5",
     "card_order": 5,
     "card_type": "why_it_works",
-    "title": "Por que se guardan",
-    "body": "Mas adelante en el mapa vas a ver que pasa cuando el cliente pone una razon para no comprar.\n\nCuando eso ocurre, su impulso BAJA. Y responderle bien no lo sube: solo evita que siga cayendo.\n\nLo que lo vuelve a subir es una bala nueva. Si ya las gastaste todas presumiendo al principio, llegas a ese momento con la mano vacia. Por eso se dosifican.",
+    "title": "Por qué se guardan",
+    "body": "Más adelante en el mapa vas a ver qué pasa cuando el cliente pone una razón para no comprar.\n\nCuando eso ocurre, su impulso BAJA. Y responderle bien no lo sube: solo evita que siga cayendo.\n\nLo que lo vuelve a subir es una bala nueva. Si ya las gastaste todas presumiendo al principio, llegas a ese momento con la mano vacía. Por eso se dosifican.",
     "flip_back_text": null
   },
   {
@@ -1412,7 +1412,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Una a la vez",
-    "body": "El error natural es soltar todo lo bueno de golpe, como quien vacia el cargador.\n\nY pasa algo curioso: el impulso sube un momento y despues CAE. El cliente se satura, deja de procesar, y se defiende con un pues suena bien todo, dejeme lo pienso.\n\nUna bala. Pausa. Ves como reacciona. Y de ahi decides la siguiente.",
+    "body": "El error natural es soltar todo lo bueno de golpe, como quien vacía el cargador.\n\nY pasa algo curioso: el impulso sube un momento y después CAE. El cliente se satura, deja de procesar y se defiende con un \"pues suena bien todo, déjeme lo pienso\".\n\nUna bala. Pausa. Ves cómo reacciona. Y de ahí decides la siguiente. En la presentación, unas tres antes del precio es lo normal; el error es vaciar el cargador.",
     "flip_back_text": null
   },
   {
@@ -1420,23 +1420,23 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Concreta o no es bala",
-    "body": "Somos los mejores del mercado. Tenemos mucha calidad. Damos buen servicio.\n\nNinguna de esas mueve nada, porque cualquiera las dice y ninguna se puede comprobar.\n\nCatorce anos surtiendo esta zona. Entrega en veinticuatro horas dentro de la ciudad. Tres negocios de esta misma calle ya lo manejan.\n\nEsas si. Numeros, tiempos, hechos verificables.",
+    "body": "\"Somos los mejores del mercado.\" \"Tenemos mucha calidad.\" \"Damos buen servicio.\"\n\nNinguna de esas mueve nada, porque cualquiera las dice y ninguna se puede comprobar.\n\n\"Catorce años surtiendo esta zona.\" \"Entrega en veinticuatro horas dentro de la ciudad.\" \"Tres negocios de esta misma calle ya lo manejan.\"\n\nEsas sí. Números, tiempos, hechos que se pueden comprobar.",
     "flip_back_text": null
   },
   {
     "node_id": "4.6",
     "card_order": 3,
     "card_type": "why_it_works",
-    "title": "Exagerar cuesta mas que callarse",
-    "body": "Cuando una bala suena demasiado buena, el cliente no se emociona: se pone esceptico. Y una vez que duda de un dato tuyo, empieza a dudar de todos.\n\nEl impulso construido con verdad se sostiene. El construido con exageracion se cae solo, y se lleva tu credibilidad de paso.\n\nSi no tienes una bala buena para ese momento, no inventes una. Usa la que si tienes.",
+    "title": "Exagerar cuesta más que callarse",
+    "body": "Cuando una bala suena demasiado buena, el cliente no se emociona: se pone escéptico. Y una vez que duda de un dato tuyo, empieza a dudar de todos.\n\nEl impulso construido con verdad se sostiene. El construido con exageración se cae solo, y se lleva tu credibilidad de paso.\n\nSi no tienes una bala buena para ese momento, no inventes una. Usa la que sí tienes.",
     "flip_back_text": null
   },
   {
     "node_id": "4.7",
     "card_order": 1,
     "card_type": "concept",
-    "title": "El impulso es otra palabra para la emocion",
-    "body": "Ya sabes que el impulso es del cliente: que tanto quiere comprar, en este momento.\n\nY no sube solo. Sube porque tu haces algo que lo mueve.\n\nHay seis maneras de moverlo. Se llaman FUJPIG, y las vas a practicar una por una en los nodos que siguen.",
+    "title": "El impulso es otra palabra para la emoción",
+    "body": "Ya sabes que el impulso es del cliente: qué tanto quiere comprar, en este momento.\n\nY no sube solo. Sube porque tú haces algo que lo mueve.\n\nHay seis maneras de moverlo. Se llaman FUJPIG, y las vas a practicar una por una en los nodos que siguen.",
     "flip_back_text": null
   },
   {
@@ -1444,7 +1444,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "FUJPIG",
-    "body": "F — FEAR OF LOSS / Miedo a la perdida\nU — URGENCY / Urgencia\nJ — JONES EFFECT / Efecto Jones\nP — POWER OF SUGGESTION / Poder de asumir\nI — INDIFFERENCE / Indiferencia\nG — GREED / Avaricia\n\nSeis. Ni una mas. Y funcionan combinadas: casi nunca vas a usar una sola.",
+    "body": "F — FEAR OF LOSS / Miedo a la pérdida\nU — URGENCY / Urgencia\nJ — JONES EFFECT / Efecto Jones\nP — POWER OF SUGGESTION / Poder de sugestión\nI — INDIFFERENCE / Indiferencia\nG — GREED / Avaricia\n\nSeis. Ni una más. Y funcionan combinadas: casi nunca vas a usar una sola.",
     "flip_back_text": null
   },
   {
@@ -1452,7 +1452,7 @@
     "card_order": 3,
     "card_type": "concept",
     "title": "F y U: perder y ahora",
-    "body": "MIEDO A LA PERDIDA. La doctrina lo dice sin rodeos: el miedo a perder es mayor que la necesidad de ganar. A la gente le mueve mas no quedarse sin algo que la posibilidad de obtenerlo.\n\nURGENCIA. El movimiento crea emocion. Una decision que puede esperar, espera para siempre.\n\nLas dos van juntas casi siempre: que se le va, y por que se le va hoy.",
+    "body": "MIEDO A LA PÉRDIDA. La doctrina lo dice sin rodeos: el miedo a perder es mayor que la necesidad de ganar. A la gente le mueve más no quedarse sin algo que la posibilidad de obtenerlo.\n\nURGENCIA. El movimiento crea emoción. Una decisión que puede esperar, espera para siempre.\n\nLas dos van juntas casi siempre: qué se le va, y por qué se le va hoy.",
     "flip_back_text": null
   },
   {
@@ -1460,23 +1460,23 @@
     "card_order": 4,
     "card_type": "concept",
     "title": "J y G: los otros y la ventaja",
-    "body": "EFECTO JONES. Viene de keeping up with the Joneses: la gente copia a la gente. Otros negocios como el suyo ya lo hacen. Ojo con esto: entre mas concreto (que negocio, donde, que le paso), mas pesa. Todo mundo lo lleva sigue siendo Efecto Jones, pero desperdiciado. Y en la calle tiene que ser real: inventarlo es la peor decision que puedes tomar.\n\nAVARICIA. La sensacion de estar obteniendo mas por menos. No es codicia fea: es la satisfaccion legitima de sentir que hiciste un buen trato.",
+    "body": "EFECTO JONES. Viene de \"keeping up with the Joneses\": la gente copia a la gente. Otros negocios como el suyo ya lo hacen. Ojo con esto: entre más concreto (qué negocio, dónde, qué le pasó), más pesa. \"Todo mundo lo lleva\" sigue siendo Efecto Jones, pero desperdiciado. Y en la calle tiene que ser real: inventarlo es la peor decisión que puedes tomar.\n\nAVARICIA. La sensación de estar obteniendo más por menos: lo que vale contra lo que le cuesta. No es codicia fea: es la satisfacción legítima de sentir que hiciste un buen trato.",
     "flip_back_text": null
   },
   {
     "node_id": "4.7",
     "card_order": 5,
     "card_type": "concept",
-    "title": "P e I: asumir y no necesitar",
-    "body": "PODER DE ASUMIR. Diriges la conversacion hacia el resultado, dando por hecho el siguiente paso. Nada de preguntas de si o no: alternativas donde las dos opciones te sirven.\n\nINDIFERENCIA. Se lo opuesto a un vendedor. Emocionado con la persona y con el producto, indiferente a si compra. Suena raro y es lo que mas funciona: la presion genera resistencia, y quitar la presion la disuelve.",
+    "title": "P e I: sugerir y no necesitar",
+    "body": "PODER DE SUGESTIÓN. Llevas la conversación hacia el resultado, con dos herramientas: el tren del sí (preguntas cuya respuesta natural es sí, nacidas de lo que el cliente te contó) y asumir (das por hecho el siguiente paso y le das a escoger entre opciones donde las dos te sirven). Nada de preguntas de sí o no sobre la compra.\n\nINDIFERENCIA. Sé lo opuesto a un vendedor. Emocionado con la persona y con el producto, indiferente a si compra. Suena raro y es lo que más funciona: la presión genera resistencia, y quitar la presión la disuelve.",
     "flip_back_text": null
   },
   {
     "node_id": "4.7",
     "card_order": 6,
     "card_type": "why_it_works",
-    "title": "La linea que nunca se cruza",
-    "body": "Los seis factores son poderosos, y por eso hay una regla que no se negocia.\n\nEl impulso se construye con VERDAD. Urgencia que no existe, escasez inventada, otros clientes que nunca compraron: todo eso esta prohibido, y no por moral abstracta.\n\nEs practico: un impulso falso se derrumba en cuanto el cliente lo descubre, y se lleva la venta, la relacion y tu reputacion en la zona.\n\nEn la practica de Closer todo es imaginario: puedes imaginar clientes, ejemplos y descuentos, porque lo que practicas es usar la herramienta. Aprovechalo para practicar con lo que tu empresa SI tiene: asi llegas a la calle sabiendo usarlo.",
+    "title": "La línea que nunca se cruza",
+    "body": "Los seis factores son poderosos, y por eso hay una regla que no se negocia.\n\nEl impulso se construye con VERDAD. Urgencia que no existe, escasez inventada, otros clientes que nunca compraron: todo eso está prohibido, y no por moral abstracta.\n\nEs práctico: un impulso falso se derrumba en cuanto el cliente lo descubre, y se lleva la venta, la relación y tu reputación en la zona.\n\nEn la práctica de Closer todo es imaginario: puedes imaginar clientes, ejemplos y descuentos, porque lo que practicas es usar la herramienta. Aprovéchalo para practicar con lo que tu empresa SÍ tiene: así llegas a la calle sabiendo usarlo.",
     "flip_back_text": null
   },
   {
@@ -1492,7 +1492,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Se construye con SUS números — no con tus adjetivos.",
-    "body": "Débil: \"Está perdiendo mucho dinero con esos faltantes.\"\nPotente: \"Usted me dijo que se le van dos clientes al mes. Son veinticuatro al año, Don Ramón — cada uno comprándole a la competencia. Y eso está pasando hoy.\"\n\nLa receta: toma el dolor que Él te declaró, ponle números, ponle destino (¿a dónde se va esa pérdida?), y áncla en el presente. Su propio dato, devuelto con peso. Contra eso no hay \"déjeme pensarlo\" que aguante.",
+    "body": "Débil: \"Está perdiendo mucho dinero con esos faltantes.\"\nPotente: \"Usted me dijo que se le van dos clientes al mes. Son veinticuatro al año, don Ramón — cada uno comprándole a la competencia. Y eso está pasando hoy.\"\n\nLa receta: toma el dolor que él te declaró, ponle números, ponle destino (¿a dónde se va esa pérdida?) y ánclalo en el presente. Su propio dato, devuelto con peso.",
     "flip_back_text": null
   },
   {
@@ -1500,7 +1500,7 @@
     "card_order": 3,
     "card_type": "concept",
     "title": "Urgencia: razones reales para decidir HOY.",
-    "body": "La urgencia honesta existe y sobra — no hay que inventarla:\n\nTu ruta es real: \"esta semana levanto los pedidos de la zona; si lo dejamos, su surtido llega hasta el mes que entra.\"\nSus ciclos son reales: \"la quincena se le viene encima — ¿la quiere recibir surtido o esperando?\"\nLos tiempos son reales: \"el pedido tarda una semana en llegar; decidiendo hoy, lo tiene antes del fin de semana bueno.\"\n\nEl movimiento crea emoción. La fecha real crea decisión.",
+    "body": "La urgencia honesta existe y sobra — no hay que inventarla:\n\nTu ruta es real: \"esta semana levanto los pedidos de la zona; si lo dejamos, su surtido llega hasta el mes que entra.\"\nSus ciclos son reales: \"la quincena se le viene encima; si lo pedimos hoy, la agarra surtido.\"\nLos tiempos son reales: \"el pedido tarda una semana en llegar; decidiendo hoy, lo tiene antes del fin de semana bueno.\"\n\nEl movimiento crea emoción. La fecha real crea decisión.",
     "flip_back_text": null
   },
   {
@@ -1516,7 +1516,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Más por menos: la ganancia que se siente ganga.",
-    "body": "A todos nos gusta ganar de más — es humano. El acelerador de la avaricia no es codicia: es mostrarle al cliente la ganancia EXTRA que hoy no está viendo.\n\nDébil: \"le conviene, va a ganar más.\"\nPotente: \"cada caja le deja ochenta pesos más que la que maneja — son mil doscientos extra al mes sin vender una pieza más.\"\n\nLa regla: números que ÉL pueda verificar con sus propias cuentas. Cuando el cliente hace la cuenta en voz alta... el acelerador ya está trabajando solo.",
+    "body": "A todos nos gusta ganar de más — es humano. El acelerador de la avaricia no es codicia: es hacer visible la brecha entre lo que algo vale y lo que le cuesta.\n\nDébil: \"le conviene, va a ganar más.\"\nPotente: \"Esta caja normalmente sale en mil doscientos; a usted le queda en mil cincuenta. Y como le deja ochenta pesos más por caja que la que maneja, son como mil doscientos extra al mes.\"\n\nLa regla: números que ÉL pueda verificar con sus propias cuentas. Cuando el cliente hace la cuenta en voz alta... el acelerador ya está trabajando solo.",
     "flip_back_text": null
   },
   {
@@ -1524,7 +1524,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "El Efecto Jones: nadie quiere quedarse fuera.",
-    "body": "Es la fuerza más vieja del mundo: si al de al lado le está funcionando, yo también quiero. En los negocios pesa doble — porque quedarse fuera no es solo antojo: es la competencia ganándote clientes.\n\n\"La negocios de la San José le entró hace dos meses — don Aurelio ya va en su tercer pedido.\"\n\nNombre, lugar, tiempo, resultado. El cliente lo puede ubicar, hasta preguntarle. Eso es prueba social — lo demás es rumor.",
+    "body": "Es la fuerza más vieja del mundo: si al de al lado le está funcionando, yo también quiero. En los negocios pesa doble — porque quedarse fuera no es solo antojo: es la competencia ganándote clientes.\n\n\"El negocio de la calle San José le entró hace dos meses — don Aurelio ya va en su tercer pedido.\"\n\nNombre, lugar, tiempo, resultado. El cliente lo puede ubicar, hasta preguntarle. Eso es prueba social — lo demás es rumor.",
     "flip_back_text": null
   },
   {

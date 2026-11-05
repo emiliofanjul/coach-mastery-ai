@@ -635,5 +635,83 @@
     "explanation_correct": "Correcto. El impulso se construye con verdad: una escasez inventada se derrumba en cuanto el cliente la descubre, y se lleva la venta y tu credibilidad.",
     "explanation_wrong": "La que nunca se vale es la escasez inventada. Las otras dos son buenas si son verdad: el impulso se construye con verdad.",
     "regla_id": "impulse.escasez_inventada"
+  },
+  {
+    "node_id": "4.5",
+    "question_order": 1,
+    "question_text": "¿Cuál de estas frases es una bala?",
+    "option_a": "\"Somos los mejores de la zona.\"",
+    "option_b": "\"Llevamos catorce años surtiendo esta zona.\"",
+    "option_c": "\"Damos un servicio de calidad.\"",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Exacto: es un hecho concreto que la competencia no puede decir igual. Eso es una bala.",
+    "explanation_wrong": "Las otras dos las puede decir cualquier competidor. Si la competencia puede decir exactamente lo mismo, no es bala: es aire.",
+    "regla_id": "present.bala_generica"
+  },
+  {
+    "node_id": "4.5",
+    "question_order": 2,
+    "question_text": "\"Como ya lo visito cada semana, se lo traigo en la misma entrega, sin pedido aparte.\" ¿De dónde sale esa bala?",
+    "option_a": "Del producto.",
+    "option_b": "Del servicio.",
+    "option_c": "Del precio.",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Es una bala de servicio: cómo se lo haces llegar. Y le baja el costo: su tiempo y su esfuerzo.",
+    "explanation_wrong": "No habla del producto ni del precio: habla de cómo se lo haces llegar. Eso es servicio, y le baja el costo al cliente.",
+    "regla_id": "present.balas"
+  },
+  {
+    "node_id": "4.5",
+    "question_order": 3,
+    "question_text": "El cliente escucha con interés y el vendedor le suelta de jalón diez cosas buenas de su producto, su servicio y su precio. ¿Qué problema le va a traer?",
+    "option_a": "Ninguno: entre más balas, más impulso.",
+    "option_b": "Se queda sin munición para cuando el cliente ponga razones para no comprar.",
+    "option_c": "Que el cliente le va a pedir descuento.",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Correcto. Cuando el cliente ponga una razón para no comprar, lo que vuelve a subir su impulso es una bala nueva. Si ya las gastó todas, llega con la mano vacía.",
+    "explanation_wrong": "El problema es la munición: en la presentación, unas tres cosas positivas antes del precio bastan. Las demás se guardan para cuando el cliente ponga razones para no comprar.",
+    "regla_id": "present.dosificacion_balas"
+  },
+  {
+    "node_id": "4.13",
+    "question_order": 1,
+    "question_text": "¿Cuál es el triple desglose bien hecho?",
+    "option_a": "\"Le queda en ochenta.\"",
+    "option_b": "\"Normalmente cien, luego noventa, y le queda en ochenta.\"",
+    "option_c": "\"Normalmente cien, por ser cliente nuevo noventa, y de contado ochenta: son veinte de ahorro.\"",
+    "option_d": null,
+    "correct_option": "C",
+    "explanation_correct": "Exacto: tres números bajando, cada uno con su motivo, y el ahorro dicho en voz alta.",
+    "explanation_wrong": "El primero es un solo número: el cliente escucha un gasto. El segundo baja sin decir por qué: parece que el primer precio estaba inflado. El bueno es el tercero.",
+    "regla_id": "present.triple_desglose"
+  },
+  {
+    "node_id": "4.13",
+    "question_order": 2,
+    "question_text": "¿Qué le dice al cliente un precio que baja sin ninguna razón?",
+    "option_a": "Que el primer precio estaba inflado, y que si presiona, va a bajar otra vez.",
+    "option_b": "Que el vendedor es generoso.",
+    "option_c": "Nada: el cliente solo se fija en el número final.",
+    "option_d": null,
+    "correct_option": "A",
+    "explanation_correct": "Correcto. Por eso cada escalón necesita su motivo: así confirmas que el primer precio era real y no te vuelves regateable.",
+    "explanation_wrong": "Un precio que baja solo le enseña al cliente que el primero estaba inflado. Y si bajó dos veces sin razón, va a presionar para que baje otra vez.",
+    "regla_id": "present.escalon_sin_motivo"
+  },
+  {
+    "node_id": "4.13",
+    "question_order": 3,
+    "question_text": "Acabas de decir el último número del desglose. ¿Qué haces?",
+    "option_a": "Me quedo callado para que el cliente lo piense.",
+    "option_b": "Le pregunto: \"¿qué le parece?\"",
+    "option_c": "Avanzo de inmediato al siguiente paso: \"¿le acomoda más jueves o viernes?\"",
+    "option_d": null,
+    "correct_option": "C",
+    "explanation_correct": "Exacto. Después del número, sin pausa, el siguiente paso. Contestar \"¿jueves o viernes?\" ya es un sí.",
+    "explanation_wrong": "En el silencio, el cliente dice \"lo voy a pensar\". Y \"¿qué le parece?\" le entrega el control. Lo que sigue es avanzar de inmediato con el siguiente paso.",
+    "regla_id": "close.devuelve_el_volante"
   }
 ]

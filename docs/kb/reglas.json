@@ -585,7 +585,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Balas: hechos positivos y concretos sobre ti, el producto o el precio. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción una bala nueva. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
+  "resumen": "Balas: hechos positivos y concretos sobre el producto, el servicio (tú, tu empresa y cómo se lo haces llegar) o el precio. Con cada una subes el valor o bajas el costo. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción una bala nueva. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "La persona con más balas claramente tiene el control, siempre y cuando conserve su munición",
   "severidad_sugerida": null
  },
@@ -1065,7 +1065,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "La pregunta que define el argumento de un hueco: ¿qué gana él con que tú se lo surtas? Consolidación, conveniencia, complementariedad o una condición concreta. LA PRUEBA: ¿el vendedor le da al cliente una razón para surtirse con él que corresponde a su caso? La consolidación solo vale si de verdad le reduce proveedores: si la plática muestra que la familia nueva se suma a las que ya tiene con otros, decir «menos proveedores» contradice su propio caso.",
+  "resumen": "La pregunta que define el argumento de un hueco: ¿qué gana él con que tú se lo surtas? Es la balanza: qué valor le sumas o qué costo le bajas, con balas de producto, servicio o precio escogidas para su caso. LA PRUEBA: ¿el vendedor le da al cliente una razón para surtirse con él —algo que le sube el valor o le baja el costo— que corresponde a su caso? «Un proveedor menos» solo vale si el cliente dejó ver que le pesa tratar con tantos proveedores o que dejaría al otro; si no lo dijo, o si la familia es nueva para él, decir «menos proveedores» contradice su propio caso.",
   "cita_cerebro": "qué gana él con que tú se lo surtas",
   "severidad_sugerida": null
  },
@@ -1075,7 +1075,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Usar «menos proveedores» cuando el producto es complementario y el cliente pasa a tener más, no menos.",
+  "resumen": "Usar «un proveedor menos» donde no aplica: el cliente no dejó ver que le pesa tratar con tantos proveedores ni que dejaría al otro, o la familia es nueva para él y pasa a tener más proveedores, no menos. LA PRUEBA: ¿el vendedor le dice al cliente que con él tendrá menos proveedores sin que el cliente lo haya dejado ver, o para una familia que no maneja? Entonces es una bala inventada.",
   "cita_cerebro": "La consolidación NO es un argumento universal",
   "severidad_sugerida": "major"
  },
@@ -1525,7 +1525,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Sube el impulso con los factores de FUJPIG: miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia y avaricia. LA PRUEBA: ¿cuántos factores distintos usó el vendedor, y cada uno con algo concreto del negocio del cliente o de la oferta? Un factor dicho en general («le conviene», «todos lo llevan», «aproveche») cuenta a medias. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
+  "resumen": "Sube el impulso con los factores de FUJPIG: miedo a la pérdida, urgencia, efecto Jones, poder de sugestión (el tren del sí y asumir), indiferencia y avaricia. LA PRUEBA: ¿cuántos factores distintos usó el vendedor, y cada uno con algo concreto del negocio del cliente o de la oferta? Un factor dicho en general («le conviene», «todos lo llevan», «aproveche») cuenta a medias. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "El impulso es otra palabra para la emoción",
   "severidad_sugerida": null
  },

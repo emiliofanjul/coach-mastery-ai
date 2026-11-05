@@ -561,10 +561,12 @@ Toda característica se traduce a una de tres cosas: **dinero** (gana más o gas
 ### Teoría de las Balas `FUENTE` `UNIVERSAL`
 > *"La persona con más balas claramente tiene el control, siempre y cuando conserve su munición."*
 
-**Las balas son TUYAS.** Son hechos positivos y concretos sobre:
-- **Ti / tu empresa** — experiencia, premios, casos de éxito, dedicación
-- **El producto** — lo que lo diferencia, mejoras, datos, certificaciones
-- **El precio** — propuesta de valor, descuentos, financiamiento, comparación
+**Las balas son TUYAS.** Son hechos positivos y concretos, y salen de tres lugares `CAMPO`:
+- **El producto** — lo que lo diferencia: presentación, marca, rendimiento, mejoras, datos, certificaciones
+- **El servicio** — tú y tu empresa (experiencia, años en la zona, casos de éxito, dedicación) y cómo se lo haces llegar (entrega, cada cuánto lo visitas, plazo, atención)
+- **El precio** — propuesta de valor, descuentos con su motivo, comparación
+
+Con cada bala mueves la balanza: subes el valor o bajas el costo.
 
 **La prueba de si algo es bala:** si la competencia puede decir exactamente lo mismo, no era bala. *"Somos los mejores"* es aire; *"catorce años surtiendo esta zona sin fallar"* es bala.
 
@@ -1021,16 +1023,15 @@ Cuando lo que encontraste es un hueco, no hay nada que resolver: el cliente est�
 
 **La pregunta que define el argumento: ¿qué gana él con que tú se lo surtas?**
 
-Y la respuesta depende del caso, no de una fórmula. Posibilidades reales:
+Es la balanza de siempre: qué valor le sumas o qué costo le bajas. Y se contesta con balas de los mismos tres lugares —**producto**, **servicio** y **precio**—, escogidas para SU caso, no de una fórmula. Por ejemplo:
 
-- **Consolidación** — si el cliente trata con muchos proveedores y eso le pesa, reducir el número tiene valor por sí mismo
-- **Conveniencia** — te ve de todos modos; agregar una familia no le suma trabajo
-- **Complementariedad** — lo que ofreces se usa junto con lo que ya te compra
-- **Una condición concreta** — plazo, disponibilidad, presentación, tiempo de entrega
+- **Servicio que le baja el costo** — *"como ya lo visito cada semana, se lo traigo en la misma entrega, sin pedido aparte"*
+- **Producto** — la presentación que le acomoda, o algo que se vende junto con lo que ya te compra
+- **Precio** — un descuento con su motivo, o una condición de pago
 
-> ⚠️ **La consolidación NO es un argumento universal.** Si tu producto es complementario y el cliente ya tiene cinco proveedores, con la familia nueva pasa a tener **seis, no cuatro**. Ahí *"menos proveedores que seguir"* es falso, y usarlo te desacredita.
+> ⚠️ **La consolidación NO es un argumento universal.** *"Así tiene un proveedor menos"* es una bala de servicio solo cuando aplica: cuando el cliente deja ver que le pesa tratar con tantos proveedores, o que dejaría al otro. Muchos negocios tienen dos o tres proveedores para el mismo producto, a propósito, por si uno les falla. Y si la familia es nueva para él, no le quitas un proveedor: le sumas uno.
 >
-> Antes de usarlo, verifica que el cliente **efectivamente vaya a reducir** su número de proveedores.
+> Usarla donde no aplica es una bala inventada, y te desacredita.
 
 ⚠️ **Nunca ataques al proveedor actual.** Criticarlo es criticar la decisión del cliente, y la gente defiende sus decisiones. Lo que sí se vale `CAMPO`: retomar con sus palabras lo que el mismo cliente dijo de su proveedor, o contar que otros clientes te han comentado algo parecido, sin afirmar que tú lo viviste. Y hablar bien de su proveedor a veces hace que sea el cliente quien cuente lo negativo.
 
