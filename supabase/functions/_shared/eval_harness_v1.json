@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.37.0",
+  "harness_version": "v3.38.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -5664,6 +5664,498 @@
           "explica_sin_pintar",
           "monologo",
           "presion_teatral"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P5_6_perfecto",
+      "node_id": "5.6",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137: ejecución perfecta del nodo 5.6 (RRR en Vivo): tres dudas de trámite, cada una repetida, respondida con un dato y retomada sin pausa.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Me interesa, joven, pero ¿cuánto tardan en entregar?"
+        },
+        {
+          "role": "user",
+          "text": "O sea que le preocupa cuánto tardamos. Dentro de la ciudad entregamos en veinticuatro horas, y si pide antes de mediodía sale el mismo día. ¿Cuántas cubetas de 15W40 mueve usted a la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Como seis. ¿Y manejan crédito o es de contado?"
+        },
+        {
+          "role": "user",
+          "text": "Me pregunta si hay crédito: sí, a partir del segundo pedido le damos quince días. Con seis a la semana, ¿le acomoda más que le surta los martes o los jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Los martes. ¿Y si me sale mala una cubeta?"
+        },
+        {
+          "role": "user",
+          "text": "Si le sale mala una cubeta, se la cambio en la siguiente visita, sin costo. Entonces, ¿arrancamos este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este martes."
+        }
+      ],
+      "traza": {
+        "objections.rrr_objeciones": "O sea que le preocupa cuánto tardamos.",
+        "flow.close_with_action": "¿le acomoda más que le surta los martes o los jueves?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "objections.rrr_objeciones": "cumple",
+          "flow.close_with_action": "cumple"
+        },
+        "must_not_flag": [
+          "responde_y_espera",
+          "se_defiende",
+          "no_repite",
+          "pide_aprobacion"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G111_responde_y_espera",
+      "node_id": "5.6",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137: la tercera R es la que falla. El vendedor repite y responde bien, pero se queda callado esperando, y el cliente saca otra duda, y otra.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "¿Cuánto tardan en entregar?"
+        },
+        {
+          "role": "user",
+          "text": "O sea que le preocupa el plazo. Dentro de la ciudad entregamos en veinticuatro horas."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah. ¿Y manejan crédito?"
+        },
+        {
+          "role": "user",
+          "text": "Me pregunta por el crédito: sí, a partir del segundo pedido le damos quince días."
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm. ¿Y si me sale malo el producto?"
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "responde_y_espera"
+        ],
+        "must_not_flag": [
+          "se_defiende",
+          "no_repite"
+        ]
+      }
+    },
+    {
+      "id": "P5_8_perfecto",
+      "node_id": "5.8",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137 (Emilio, 5-nov): FFF completo, los cinco pasos: entiendo, sintió, encontramos, una bala y cierre con acción.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada martes ya no se queda sin 15W40, don Chuy. La caja de doce normalmente sale en mil doscientos; como es su primer pedido, mil cincuenta. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Es que ya tengo proveedor de años, joven, y cambiarle me da cosa."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Chuy: son años de confianza, y eso vale. Don Aurelio, el de la San José, sentía lo mismo, y lo que encontró fue que no tenía que dejar a nadie: conmigo se surte del 15W40 cuando a su proveedor se le acaba."
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, ¿o sea que no lo dejo?"
+        },
+        {
+          "role": "user",
+          "text": "Así es. Y como paso cada martes, ya no tiene que comprar de más para aguantar la quincena. ¿Le traigo la primera caja este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues visto así... el siguiente martes."
+        }
+      ],
+      "traza": {
+        "objections.reframe": "Entiendo cómo se siente, don Chuy",
+        "objections.no_defensivo": "son años de confianza, y eso vale",
+        "objections.bullet_theory": "ya no tiene que comprar de más para aguantar la quincena"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "objections.reframe": "cumple",
+          "objections.no_defensivo": "cumple",
+          "objections.bullet_theory": "cumple"
+        },
+        "must_not_flag": [
+          "se_pone_defensivo",
+          "air_a_objecion",
+          "vacia_el_cargador",
+          "salta_la_bala",
+          "bala_se_cae",
+          "descuento_de_panico",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G112_fff_sin_bala",
+      "node_id": "5.8",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137 (Emilio, 5-nov): FFF no termina en la tercera F. Aquí el vendedor hace las tres F y pide la decisión sin ninguna bala.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Con la entrega cada martes ya no se queda sin 15W40, don Chuy. La caja de doce normalmente sale en mil doscientos; como es su primer pedido, mil cincuenta. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Es que ya tengo proveedor de años, joven, y cambiarle me da cosa."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que les convino. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues... déjeme lo pienso."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "salta_la_bala"
+        ],
+        "must_not_flag": [
+          "se_pone_defensivo",
+          "air_a_objecion"
+        ]
+      }
+    },
+    {
+      "id": "P5_12_perfecto",
+      "node_id": "5.12",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137: ejecución perfecta del nodo 5.12 (Objeciones Encadenadas): la primera con RRR y su bala, la segunda con FFF y otra bala distinta, el mismo ánimo, y cierra después de cada una.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "La caja de doce normalmente sale en mil doscientos; por primer pedido, mil cincuenta. ¿Se la traigo el martes o el jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro, joven, comparado con lo que pago."
+        },
+        {
+          "role": "user",
+          "text": "O sea que le parece caro contra lo que paga ahorita. Sacando la cuenta por servicio, este le rinde once cambios por caja contra ocho del que trae: el cambio le sale doce pesos más barato. ¿Se la traigo el martes o el jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bueno, eso sí... pero es que además ya tengo proveedor de años."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, los años de relación valen. Al taller del Puente le pasaba igual, y lo que encontró fue que no tenía que dejar a nadie. Y como paso cada martes, lo que se le acabe en la semana lo tiene el martes siguiente. ¿Arrancamos este martes o el que sigue?"
+        },
+        {
+          "role": "assistant",
+          "text": "Va, este martes."
+        }
+      ],
+      "traza": {
+        "objections.reframe": "O sea que le parece caro contra lo que paga ahorita.",
+        "objections.bullet_theory": "este le rinde once cambios por caja contra ocho del que trae",
+        "objections.circulo_cierre": "¿Arrancamos este martes o el que sigue?",
+        "impulse.indiferencia": "Entiendo cómo se siente, los años de relación valen."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "objections.reframe": "cumple",
+          "objections.bullet_theory": "cumple",
+          "objections.circulo_cierre": "cumple",
+          "impulse.indiferencia": "cumple"
+        },
+        "must_not_flag": [
+          "se_pone_defensivo",
+          "se_desanima_en_cadena",
+          "repite_bala",
+          "vacia_el_cargador",
+          "air_a_objecion",
+          "bala_se_cae",
+          "descuento_de_panico",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G113_objecion_despues_de_aguantar",
+      "node_id": "5.13",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137 (Emilio, 5-nov): aguantar no garantiza el sí. El vendedor cierra y aguanta; el cliente piensa y pone una objeción. No es falla del vendedor: la trabaja como objeción (la entiende, da una bala nueva y vuelve a cerrar con opciones).",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces, don Chuy, con lo que me dijo: se queda sin 15W40 cada quincena y pierde unos cinco cambios cada vez. Con entrega cada jueves eso se le acaba, y le sale la cubeta en 1,250 en vez de 1,350. ¿Le armo las diez cubetas para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, la cuenta sale... Mmm... déjeme pensarlo, la verdad este mes ando corto."
+        },
+        {
+          "role": "user",
+          "text": "Entiendo, don Chuy: cuando el mes viene corto, hay que cuidar cada peso. Otro taller de la avenida estaba igual, y lo que encontró fue que con la entrega semanal ya no tenía que comprar de más para aguantar. Y la cubeta se la cobro hasta que se la entrego. ¿Se las armo para este jueves o para el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bueno, para el siguiente, que ya cobré."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "llena_el_silencio",
+          "persigue",
+          "salta_la_bala",
+          "abre_puerta_al_no"
+        ]
+      }
+    },
+    {
+      "id": "P5_14_perfecto",
+      "node_id": "5.14",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137 (Emilio, 5-nov): cierra solo el incremento con una alternativa y aguanta; el cliente duda (es una objeción, no un castigo), y el vendedor la atiende con una bala y vuelve a cerrar sin tocar el pedido de siempre.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues ya le di lo de siempre, joven: las seis cubetas de 15W40."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy. Me decía que la flotilla le pide anticongelante y usted lo compra en la refaccionaria de la esquina."
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, ahí lo compro cuando se me acaba."
+        },
+        {
+          "role": "user",
+          "text": "Como ya le traigo el aceite cada martes, le traigo también el anticongelante en la misma entrega, sin vuelta a la refaccionaria. ¿Le pongo dos garrafas o arrancamos con cuatro?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm... déjeme pensarlo, no sé si se me vaya a mover tanto."
+        },
+        {
+          "role": "user",
+          "text": "O sea que le preocupa que no se le mueva. Con dos garrafas le alcanza para la quincena, y si se le acaban se las repongo el martes siguiente: no se queda con producto parado. ¿Se las pongo en esta entrega o en la del próximo martes?"
+        },
+        {
+          "role": "assistant",
+          "text": "En esta, va."
+        }
+      ],
+      "traza": {
+        "closing.cerrar_incremento": "le traigo también el anticongelante en la misma entrega",
+        "closing.cierre_asumido": "¿Le pongo dos garrafas o arrancamos con cuatro?",
+        "flow.close_with_action": "¿Se las pongo en esta entrega o en la del próximo martes?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "closing.cerrar_incremento": "cumple",
+          "closing.cierre_asumido": "cumple",
+          "flow.close_with_action": "cumple"
+        },
+        "must_not_flag": [
+          "pregunta_si_quiere",
+          "reabre_el_pedido_base",
+          "presiona",
+          "salta_la_bala"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G114_reabre_lo_de_siempre",
+      "node_id": "5.14",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137: al cerrar el incremento, el vendedor vuelve a poner en la mesa el pedido de siempre, y el cliente se pone a revisarlo todo.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues ya le di lo de siempre, joven: las seis cubetas de 15W40."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy. Y como ya le traigo el aceite cada martes, le traigo también el anticongelante en la misma entrega. Entonces, ¿sí le mando lo de siempre más las dos garrafas?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ah, pues déjeme revisar bien lo de siempre también, no vaya a ser que me sobre."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "reabre_el_pedido_base"
+        ]
+      }
+    },
+    {
+      "id": "P5_15_perfecto",
+      "node_id": "5.15",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 137: ejecución perfecta del jefe del mundo 5 (Extrae la Decisión) ante el desconfiado: AIR al bloqueo, el dolor por capas sin discutirle la minimización, la presentación con sus números, FFF a la objeción de confianza con una bala sobre sí mismo, RRR a la menor con su bala, y el cierre asumido honrando su condición.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Buenas. Mire, le voy a ahorrar tiempo: no me interesa."
+        },
+        {
+          "role": "user",
+          "text": "Lo entiendo, don Toño, seguro le llegan muchos. Soy Luis, de Lubricantes del Golfo. Qué bien se ve el taller con las tres bahías llenas: ¿así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, hay chamba."
+        },
+        {
+          "role": "user",
+          "text": "Se nota. ¿Y el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de aquí. Todo bien, aunque a veces se tarda."
+        },
+        {
+          "role": "user",
+          "text": "¿Y qué pasa cuando se tarda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Me quedo sin 15W40 dos o tres días, y los de flotilla se van a otro taller. Pero bueno, así es esto, todos fallan igual."
+        },
+        {
+          "role": "user",
+          "text": "¿Y eso cada cuánto le pasa?"
+        },
+        {
+          "role": "assistant",
+          "text": "Una vez al mes, fácil. Y cada flotilla que se va son como cuatro cambios, a seiscientos cada uno."
+        },
+        {
+          "role": "user",
+          "text": "Mire, don Toño: usted me dijo que una vez al mes se le van cuatro cambios de flotilla, o sea dos mil cuatrocientos pesos que se quedan en otro taller. Yo paso cada martes, y lo que se le acaba en la semana lo tiene el martes siguiente. La caja de doce normalmente sale en mil doscientos; por primer pedido, mil cincuenta. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Eso mismo me dijo el anterior. ¿Y por qué le voy a creer a usted, si el otro me dejó plantado?"
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente, don Toño: si ya lo dejaron plantado, yo tampoco le creería a la primera. Don Beto, el del taller del Puente, sentía lo mismo, y lo que encontró fue que en el año que lleva conmigo no le he fallado un solo martes: vaya y pregúntele, está aquí en la avenida. Y yo llevo seis años en esta ruta. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Voy a ir a preguntarle, ¿eh? Y además el martes no me acomoda, ese día no estoy."
+        },
+        {
+          "role": "user",
+          "text": "O sea que el martes no le acomoda. También paso los jueves en la tarde, y su muchacho me la puede recibir; así la tiene antes del fin de semana. ¿Se la dejo este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. Y empezamos con un pedido chico, nada más una caja."
+        },
+        {
+          "role": "user",
+          "text": "Me parece muy bien, don Toño: apúntelo todo. Una caja, entonces. ¿Se la traigo este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "... Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto: este jueves en la tarde, y me paga al recibir."
+        }
+      ],
+      "traza": {
+        "blocks.air": "Lo entiendo, don Toño, seguro le llegan muchos.",
+        "objections.rrr_objeciones": "O sea que el martes no le acomoda.",
+        "objections.reframe": "Entiendo cómo se siente, don Toño",
+        "objections.bullet_theory": "no le he fallado un solo martes",
+        "objections.circulo_cierre": "¿Se la dejo este jueves o el siguiente?",
+        "discovery.dolor_real": "¿Y eso cada cuánto le pasa?",
+        "closing.cierre_asumido": "Una caja, entonces. ¿Se la traigo este jueves o el siguiente?"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "objections.rrr_objeciones": "cumple",
+          "objections.reframe": "cumple",
+          "objections.bullet_theory": "cumple",
+          "objections.circulo_cierre": "cumple",
+          "discovery.dolor_real": "cumple",
+          "closing.cierre_asumido": "cumple"
+        },
+        "must_not_flag": [
+          "se_pone_defensivo",
+          "bala_se_cae",
+          "promesa_grandilocuente",
+          "air_a_objecion",
+          "pelea_la_condicion",
+          "abre_puerta_al_no",
+          "vacia_el_cargador",
+          "llena_el_silencio",
+          "insiste_tras_dos"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }

@@ -101,6 +101,8 @@ describe("la red cubre todas las prácticas del mundo 4", () => {
       for (const frase of Object.values(c.traza) as string[]) expect(texto).toContain(frase);
       expect(c.expected.score_range).toEqual([85, 100]);
     }
-    expect(red.harness_version).toBe("v3.37.0");
+    // desde la v3.37.0 (mensaje 135); las versiones posteriores conservan estos casos
+    const [, mayor, menor] = red.harness_version.match(/^v(\d+)\.(\d+)\./).map(Number);
+    expect(mayor * 1000 + menor).toBeGreaterThanOrEqual(3037);
   });
 });
