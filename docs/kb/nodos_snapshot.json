@@ -3151,7 +3151,7 @@
       "phases": {
         "i_do": {
           "briefing": "Escucha el momento exacto del cierre asumido. La conversación ya hizo todo el trabajo — yo nada más pregunto los detalles, con opciones donde cualquier respuesta es un sí.",
-          "first_message": "El cliente ya conectó su dolor, ya hizo la cuenta, ya me preguntó cada cuánto surtimos. El cierre: Perfecto Don Ramón — entonces para que arranque la quincena surtido, ¿le armo el pedido con las 5 cajas o de una vez el combo de 8 que le baja el precio por pieza?\n\n— Y ya. Sin ¿le interesa?\n\n, sin ¿qué piensa? La decisión grande ya estaba tomada por la conversación.\n\nYo solo pregunté la chica."
+          "first_message": "El cliente ya conectó su dolor, ya hizo la cuenta, ya me preguntó cada cuánto surtimos. El cierre: «Perfecto, don Ramón. Entonces, para que arranque la quincena surtido, ¿le armo el pedido con las 5 cajas o de una vez el combo de 8?».\n\nY ya. Sin «¿le interesa?», sin «¿qué piensa?». La decisión grande ya la había tomado la conversación.\n\nYo solo pregunté la chica."
         },
         "you_do": {
           "prompt": "Eres el dueño de un negocio con la decisión prácticamente tomada: la conversación fue excelente — el vendedor conectó tu dolor (elígelo: faltantes que te cuestan clientes / dinero muerto en producto parado / algo que piden y no consigues), hiciste la cuenta y te salió a favor, asentiste varias veces y hasta preguntaste cada cuánto surten. Tu primera línea recapitula ese estado: Pues sí, la verdad la cuenta sale... y a mí eso de quedarme sin producto cada quincena ya me tiene harto. REGLAS ESPEJO: (1) Si el vendedor cierra ASUMIDO con opciones concretas (¿5 u 8?, ¿lunes o miércoles?, ¿factura o nota?), eliges una opción con naturalidad y la decisión queda tomada — puedes ajustar un detalle (mejor el miércoles porque el lunes recibo producto) pero avanzas. (2) Si el vendedor pregunta con puerta al no (¿le interesa?, ¿entonces qué piensa?, ¿quiere que le deje información?), usas la puerta con flojera natural: pues déjeme pensarlo tantito y le aviso — no porque no quieras: porque te la ofrecieron. (3) Si tras tu déjeme pensarlo el vendedor corrige y cierra asumido con opciones, todavía puedes avanzar (la curva sigue arriba). (4) Si el cierre asume detalles nunca platicados o cantidades absurdas, lo frenas: espérese, ¿de dónde sacó eso? (5) Si el vendedor sigue presentando en lugar de cerrar (más beneficios, más catálogo), te empiezas a enfriar visiblemente: bueno, sí, eso ya me lo había dicho...",
@@ -3159,10 +3159,10 @@
         },
         "closing": {
           "message": "¿Viste lo fácil? La conversación ya había hecho todo — tú solo preguntaste la decisión chica y la grande cayó sola. Así se cierra en Closer: siempre asumido. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como pides la decision. Vamos al desglose."
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo pides la decisión. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3215,7 +3215,7 @@
   {
     "id": "5.2",
     "world_id": 5,
-    "name": "Las Senales de Compra",
+    "name": "Las Señales de Compra",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -3225,7 +3225,7 @@
     "name": "Cerrar en el Pico",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "El drill del timing: la señal llega a MITAD del flujo del vendedor y el examen es soltar el guion. La curva del Actor baja de forma gradual y realista si la señal se ignora (tibio → déjeme pensarlo) — el vendedor siente el costo del pico perdido en vivo. sigue_presentando es critical: es la razón de ser del nodo.",
+      "notes": "El drill del timing: la señal llega a MITAD del flujo del vendedor y el examen es soltar el guion. La curva del Actor baja de forma gradual y realista si la señal se ignora (tibio → déjeme pensarlo) — el vendedor siente el costo del pico perdido en vivo. sigue_presentando es critical: es la razón de ser del nodo. v1.0.2 (mensaje 137): sin ignora_pistas, que castigaba con una regla del descubrimiento lo mismo que sigue_presentando (contestar la señal y volver al guion).",
       "scope": {
         "skills_in_focus": [
           "closing.lectura_senales",
@@ -3250,10 +3250,10 @@
         },
         "closing": {
           "message": "Dejaste guion sin decir — y esa es exactamente la victoria. El pico era del cliente, no de tu presentación. Lo viste, te callaste y cerraste. Eso separa a los que presentan bonito de los que venden. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como lees las senales. Vamos al desglose."
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo lees las señales. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3287,12 +3287,6 @@
           }
         },
         {
-          "id": "ignora_pistas",
-          "regla_id": "discovery.escalera_capas",
-          "severity": "major",
-          "description": "Despacha la pregunta del cliente con un dato seco y vuelve al guion sin capitalizarla."
-        },
-        {
           "id": "monologo",
           "regla_id": "monologo",
           "severity": "minor",
@@ -3324,7 +3318,7 @@
   {
     "id": "5.4",
     "world_id": 5,
-    "name": "Objecion = Senal de Compra",
+    "name": "Objeción = Señal de Compra",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -3356,19 +3350,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Tres movimientos y fijate sobre todo en el tercero. Repito lo que me dijo para que vea que lo escuche.\n\nLe doy la respuesta concreta. Y sigo de largo, en la misma respiracion, sin esperar a ver si le convencio.\n\nEse no esperar es todo.",
-          "first_message": "Entiendo, le preocupa el plazo de entrega. Mire, dentro de la ciudad entregamos en veinticuatro horas y si pide antes de mediodia sale el mismo dia.\n\nY digame, cuantas cajas maneja usted normalmente al mes?"
+          "briefing": "Tres movimientos, y fíjate sobre todo en el tercero. Repito lo que me dijo para que vea que lo escuché.\n\nLe doy la respuesta concreta. Y sigo de largo, en la misma respiración, sin esperar a ver si le convenció.\n\nEse no esperar es todo.",
+          "first_message": "Entiendo, le preocupa el plazo de entrega. Mire, dentro de la ciudad entregamos en veinticuatro horas, y si pide antes de mediodía sale el mismo día.\n\nY dígame, ¿cuántas cajas maneja usted normalmente al mes?"
         },
         "you_do": {
           "prompt": "Eres el dueno de un negocio, interesado en la propuesta pero con dudas normales. TU REGLA PRINCIPAL: sueltas objeciones MENORES y comunes, una a la vez: cuanto tardan en entregar / manejan credito o es de contado / y si me sale malo el producto / que pasa si necesito devolver algo. No son preocupaciones graves, son dudas de tramite. REACCIONAS ASI: si el vendedor DISCUTE o se pone a la defensiva, insistes en esa duda y no avanzas. Si el vendedor responde bien pero SE QUEDA CALLADO esperando tu reaccion, tu tomas el control: sacas otra duda distinta, y otra, y otra, hasta agotar la conversacion sin decidir nada. Si el vendedor repite tu duda, la responde y RETOMA de inmediato con otra pregunta o con su tema, aceptas la respuesta con naturalidad y sigues la conversacion hacia donde el la lleve. NUNCA saques preocupaciones graves ni personales en este ejercicio: solo dudas de tramite. Responde en 1 o 2 frases.",
           "objective": "El vendedor atraviesa cada objecion menor con los tres movimientos y retoma sin pausa, sosteniendo el control de la conversacion. El scope se cubre cuando el cliente acepta las respuestas y la conversacion avanza en lugar de convertirse en un interrogatorio de dudas."
         },
         "closing": {
-          "message": "Eso es RRR. Repetiste para que viera que lo escuchaste, respondiste concreto, y seguiste sin pedir permiso. Fijate en lo que no paso: no se convirtio en una lista interminable de dudas. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esas dudas."
+          "message": "Eso es RRR. Repetiste para que viera que lo escuchaste, respondiste concreto y seguiste sin pedir permiso. Fíjate en lo que no pasó: no se convirtió en una lista interminable de dudas. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo quedaron esas dudas."
         }
       },
-      "version": "2.0.3",
+      "version": "2.0.4",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3428,7 +3422,7 @@
   {
     "id": "5.7",
     "world_id": 5,
-    "name": "FFF: Cuando la Preocupacion Es de Verdad",
+    "name": "FFF: Cuando la Preocupación Es de Verdad",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -3438,7 +3432,7 @@
     "name": "FFF en Vivo",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "⚡ PRIMER NODO CON OBJECIÓN REAL — el prompt del Actor lo instruye explícitamente (correcto: el vendedor llegó aquí con 7.0/7.1 completados). Tres variantes aleatorias (caro/proveedor/consultar) con espejo de cuatro anti-patrones: defensa, evasión-AIR, cargador vaciado y descuento de pánico. air_a_objecion como critical entrena la distinción central del sistema: la herramienta correcta según la especie del no.",
+      "notes": "Primer nodo con objeción real. Tres variantes al azar (caro, proveedor de años, consultar con el socio) con espejo de los anti-patrones: defensa, evasión con AIR, cargador vaciado, descuento de pánico y cerrar sin bala. air_a_objecion como critical entrena la distinción central del sistema: la herramienta correcta según la especie del no. v1.1.0 (mensaje 137, Emilio 5-nov): FFF se practica completo, los cinco pasos (entiendo, sintió, encontramos, una bala y cierre con acción); sale la técnica de cuatro pasos (recibe, entiende, responde, avanza), que no está en el Cerebro.",
       "scope": {
         "skills_in_focus": [
           "objections.reframe",
@@ -3454,19 +3448,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Mira el reencuadre completo ante una objeción real. Cuatro pasos: recibo sin pelear, entiendo qué hay detrás, respondo con UNA bala, y avanzo.\n\nFíjate sobre todo en lo que NO hago: no me defiendo, no cambio de tema, no vacío el cargador.",
-          "first_message": "El cliente me dice: Está caro, el otro me lo da más barato. Recibo: Claro, entiendo — el precio siempre hay que verlo con lupa.\n\nEntiendo: ¿Más barato el litro, o ya sacando el costo por servicio? Porque ahí está el detalle...\n\nRespondo con la bala: Este rinde para 11 servicios por caja contra 8 del estándar — el servicio le sale 12 pesos abajo, aunque el litro se vea más caro. Avanzo: ¿Trae a la mano lo que paga por caja?\n\nSáquelo conmigo y comparamos ahorita mismo. — Una objeción, una bala, y la conversación avanzando.\n\nSin defenderme, sin evadir."
+          "briefing": "Mira FFF completo ante una objeción real. Cinco pasos: entiendo, sintió, encontramos, una bala, y cierro con acción.\n\nFíjate sobre todo en lo que NO hago: no me defiendo, no cambio de tema, no vacío el cargador.",
+          "first_message": "El cliente me dice: «Está caro, el otro me lo da más barato».\n\nEntiendo: «Entiendo cómo se siente, don Ramón; el precio siempre hay que verlo con lupa».\n\nSintió: «A don Aurelio, el de la San José, le pasaba igual al principio».\n\nEncontramos: «Y lo que encontró fue que, sacando la cuenta por servicio, le salía más barato: este rinde once servicios por caja contra ocho del que traía».\n\nUna bala: «Y como paso cada martes, ya no tiene que comprar de más para aguantar la quincena».\n\nCierro con acción: «¿Le armo la primera caja para este martes o para el siguiente?».\n\nCinco pasos, una sola bala, y sin defenderme."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor conectó tu dolor (elígelo: faltantes / dinero parado / algo que no consigues) y el producto te interesa GENUINAMENTE — pero tienes una objeción real que necesitas resolver antes de decidir. ELIGE UNA al azar y suéltala clara tras tu primera línea: (A) está caro, comparado con lo que pago ahorita / (B) es que ya tengo proveedor de años, y cambiarle me da cosa / (C) déjeme consultarlo con mi socio, yo no decido solo estas cosas. REGLAS ESPEJO: (1) Si el vendedor RECIBE sin pelear (validación genuina), ENTIENDE (pregunta qué hay detrás cuando aplica) y RESPONDE con UNA bala concreta, tu objeción se ablanda: reconoces el punto (pues visto así...) y avanzas — la decisión camina. (2) Si el vendedor SE DEFIENDE (se ofende, discute, justifica atropellado: es que no está caro, es que nosotros somos mejores), te atrincheras: repites la objeción con más firmeza y tu tono se enfría. (3) Si te EVADE con cambio de tema estilo AIR (claro, no se preocupe... oiga qué bien está su local), lo notas y lo dices: oiga, no me cambió el tema — le pregunté por el precio. Tu confianza baja. (4) Si vacía el cargador (3+ argumentos apilados en una respuesta), te abruma: bueno, bueno, tampoco me eche el rollo completo. (5) Si su bala es vaga o suena a teatro, la retas: ¿a poco? ¿como quién? — si te contesta con algo concreto, lo aceptas; si no, la vaguedad te enfría. (6) Ante el descuento de pánico (si es el caso A), hueles debilidad: ¿entonces sí estaba caro, no? Tu techo: objeción resuelta y decisión avanzando con una condición práctica.",
-          "objective": "El vendedor recibe UNA objeción real y ejecuta el reencuadre completo: recibe sin pelear ni defenderse (validación genuina, no evasión), entiende qué hay detrás (pregunta aclaratoria cuando el motivo lo pide), responde con UNA bala concreta ajustada al tipo de objeción, y avanza la conversación hacia la decisión sin dejar la objeción enfriándose. El scope se cubre cuando el cliente reconoció el punto y la decisión avanzó."
+          "prompt": "Eres el dueño de un negocio al final de una buena presentación: el vendedor conectó tu dolor (elígelo: faltantes / dinero parado / algo que no consigues) y el producto te interesa GENUINAMENTE — pero tienes una objeción real que necesitas resolver antes de decidir. ELIGE UNA al azar y suéltala clara tras tu primera línea: (A) está caro, comparado con lo que pago ahorita / (B) es que ya tengo proveedor de años, y cambiarle me da cosa / (C) déjeme consultarlo con mi socio, yo no decido solo estas cosas. REGLAS ESPEJO: (1) Si el vendedor hace FFF completo —te entiende sin discutir, te dice que otros sintieron lo mismo y lo que encontraron, te da UNA bala concreta y te propone el siguiente paso—, tu objeción se ablanda: reconoces el punto (pues visto así...) y contestas su pregunta avanzando. Si te responde la objeción y te pide la decisión sin darte ninguna razón nueva, contestas con desgano: pues sí, déjeme lo pienso. (2) Si el vendedor SE DEFIENDE (se ofende, discute, justifica atropellado: es que no está caro, es que nosotros somos mejores), te atrincheras: repites la objeción con más firmeza y tu tono se enfría. (3) Si te EVADE con cambio de tema estilo AIR (claro, no se preocupe... oiga qué bien está su local), lo notas y lo dices: oiga, no me cambió el tema — le pregunté por el precio. Tu confianza baja. (4) Si vacía el cargador (dos o más argumentos apilados en una respuesta), te abruma: bueno, bueno, tampoco me eche el rollo completo. (5) Si su bala es vaga o suena a teatro, la retas: ¿a poco? ¿como quién? — si te contesta con algo concreto, lo aceptas; si no, la vaguedad te enfría. (6) Ante el descuento de pánico (si es el caso A), hueles debilidad: ¿entonces sí estaba caro, no? Tu techo: objeción resuelta y decisión avanzando con una condición práctica.",
+          "objective": "El vendedor recibe UNA objeción real y hace FFF completo: entiende cómo se siente sin discutir ni defenderse (nunca la evade cambiando de tema), le dice que otros sintieron lo mismo y lo que encontraron, re-impulsa con UNA bala concreta y cierra con acción. El scope se cubre cuando el cliente reconoció el punto y contestó avanzando."
         },
         "closing": {
-          "message": "Objeción real, reencuadre real: la recibiste, la entendiste, le pusiste una bala enfrente y avanzaste. Ni te defendiste ni la evadiste. Así se les habla a los que te hablan en serio. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como manejas lo que de verdad le preocupa. Vamos al desglose."
+          "message": "FFF completo: entendiste cómo se sentía, le dijiste que no estaba solo y lo que encontraron otros, le diste una bala y le propusiste el siguiente paso. Ni te defendiste ni lo evadiste. Así se les habla a los que te hablan en serio. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo manejas lo que de verdad le preocupa. Vamos al desglose."
         }
       },
-      "version": "1.0.4",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3488,6 +3482,12 @@
           "description": "Suelta dos o mas balas en la misma respuesta a la objecion, en vez de una sola antes de cerrar: abruma, ninguna pega, y se queda sin municion."
         },
         {
+          "id": "salta_la_bala",
+          "regla_id": "objection.cierra_sin_bala",
+          "severity": "major",
+          "description": "Atiende la objeción y vuelve a pedir la decisión sin dar antes ninguna bala que suba el impulso: le pide una decisión al cliente en el punto más bajo de su ánimo."
+        },
+        {
           "id": "bala_se_cae",
           "regla_id": "present.bala_generica",
           "severity": "critical",
@@ -3507,7 +3507,7 @@
           "id": "monologo",
           "regla_id": "monologo",
           "severity": "minor",
-          "description": "Responde la objeción con un bloque largo — el reencuadre es quirúrgico, no discurso."
+          "description": "Responde la objeción con un bloque largo: FFF es quirúrgico, no un discurso."
         }
       ],
       "success_criteria": [
@@ -3515,7 +3515,7 @@
           "id": "objections.reframe",
           "weight": 0.4,
           "regla_id": "objection.fff",
-          "description": "Ejecuta la secuencia completa: recibe con validación genuina, entiende el motivo (pregunta aclaratoria si aplica — ¿caro comparado con qué?), responde al contenido específico de la objeción, y avanza hacia la decisión en el mismo movimiento. Los cuatro pasos visibles."
+          "description": "Los cinco pasos de FFF ante la objeción: entiende cómo se siente sin discutir, le dice que otros sintieron lo mismo, lo que encontraron, re-impulsa con una bala y cierra con acción (el siguiente paso concreto). Si falta un paso, está a medias."
         },
         {
           "id": "objections.no_defensivo",
@@ -3527,7 +3527,7 @@
           "id": "objections.bullet_theory",
           "weight": 0.3,
           "regla_id": "present.balas",
-          "description": "Su respuesta central es UNA bala concreta, ajustada al cargador correcto (precio→cuenta de costo por uso; proveedor→caso comparable o constancia propia; consultar→material concreto para el socio o cita con ambos) — nunca argumentos apilados ni aire declarativo."
+          "description": "Su re-impulso es UNA bala concreta, que responde a la objeción que puso el cliente: nunca argumentos apilados ni aire declarativo, y aguanta el ¿a poco?"
         }
       ]
     }
@@ -3535,17 +3535,17 @@
   {
     "id": "5.9",
     "world_id": 5,
-    "name": "El Circulo de Cierre",
+    "name": "El Círculo de Cierre",
     "node_type": "knowledge",
     "practice_script": null
   },
   {
     "id": "5.10",
     "world_id": 5,
-    "name": "El Circulo en Vivo",
+    "name": "El Círculo en Vivo",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. El corazon del Mundo 5. El espejo distingue tres calidades: discutir cierra al cliente, atravesar-sin-bala produce desgano medible, y el circuito completo recupera el animo. Ensena en carne propia por que el paso intermedio no es opcional.",
+      "notes": "v2.0.0 Nodo nuevo. El corazon del Mundo 5. El espejo distingue tres calidades: discutir cierra al cliente, atravesar-sin-bala produce desgano medible, y el circuito completo recupera el animo. Ensena en carne propia por que el paso intermedio no es opcional. v2.1.0 (mensaje 137): el espejo ya no rechaza una bala ya dicha si ahora la conecta con la objeción (como dice objection.circulo_de_cierre y la tarjeta 3); solo la repetida tal cual o la vaga no cuentan.",
       "scope": {
         "skills_in_focus": [
           "objections.circulo_cierre",
@@ -3561,19 +3561,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Cuenta tres movimientos despues de la objecion. Uno: la atravieso sin discutir.\n\nDos, y este es el que todos se saltan: meto una bala NUEVA, algo positivo que no habia dicho, para volver a subir el impulso. Tres: cierro con accion.\n\nSi me salto el dos, estoy pidiendole una decision a alguien desanimado.",
-          "first_message": "Entiendo perfecto, y tiene razon en cuidar el flujo. Mi ultimo cliente estaba igual, y lo que encontramos fue que arrancando con la mitad del pedido se movia solo y el segundo ya salia de lo vendido.\n\nY algo mas: en su primer pedido le respetamos precio por noventa dias aunque suba la lista.\n\nEntonces, arrancamos con media caja o con caja completa?"
+          "briefing": "Cuenta tres movimientos después de la objeción. Uno: la atravieso sin discutir.\n\nDos, y este es el que todos se saltan: meto una bala, algo positivo que no había dicho, para volver a subir el impulso. Tres: cierro con acción.\n\nSi me salto el dos, le estoy pidiendo una decisión a alguien desanimado.",
+          "first_message": "Entiendo perfecto, y tiene razón en cuidar el flujo. Mi último cliente estaba igual, y lo que encontramos fue que, arrancando con la mitad del pedido, se movía solo y el segundo ya salía de lo vendido.\n\nY algo más: en su primer pedido le respetamos el precio por noventa días, aunque suba la lista.\n\nEntonces, ¿arrancamos con media caja o con caja completa?"
         },
         "you_do": {
-          "prompt": "Eres el dueno de un negocio. Ya te presentaron y te intereso, pero tienes UNA preocupacion real: elige una al azar y quedate con ella — el flujo esta apretado este mes / ya te fallo un proveedor antes y quedaste mal con tus clientes / no sabes si se va a vender / tu socio o tu esposa participa en las decisiones de compra. TU REGLA PRINCIPAL: sacas tu preocupacion cuando el vendedor intente cerrar, y despues reaccionas segun COMO la maneje. Si DISCUTE o minimiza tu preocupacion, te cierras y ya no compras. Si la atraviesa bien PERO cierra de inmediato sin darte ninguna razon nueva, contestas con desgano: pues si, dejeme lo pienso / ahorita no se, luego le digo. Tecnicamente te respondio, pero tu animo quedo abajo y no vas a decidir desde ahi. Si la atraviesa bien, te da un HECHO POSITIVO NUEVO que no habia mencionado, y despues cierra con una pregunta concreta del siguiente paso, tu animo se recupera visiblemente y contestas esa pregunta avanzando. Si el hecho nuevo es vago o es repetir algo que ya habia dicho, no cuenta: reaccionas con desgano. NUNCA saques una segunda objecion en este ejercicio: es una sola, una vuelta. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor completa el circuito ante una objecion: la atraviesa sin discutir, re-impulsa con un hecho positivo NUEVO, y cierra con una accion concreta. El scope se cubre cuando el cliente recupera el animo y responde avanzando al siguiente paso."
+          "prompt": "Eres el dueno de un negocio. Ya te presentaron y te intereso, pero tienes UNA preocupacion real: elige una al azar y quedate con ella — el flujo esta apretado este mes / ya te fallo un proveedor antes y quedaste mal con tus clientes / no sabes si se va a vender / tu socio o tu esposa participa en las decisiones de compra. TU REGLA PRINCIPAL: sacas tu preocupacion cuando el vendedor intente cerrar, y despues reaccionas segun COMO la maneje. Si DISCUTE o minimiza tu preocupacion, te cierras y ya no compras. Si la atraviesa bien PERO cierra de inmediato sin darte ninguna razon nueva, contestas con desgano: pues si, dejeme lo pienso / ahorita no se, luego le digo. Tecnicamente te respondio, pero tu animo quedo abajo y no vas a decidir desde ahi. Si la atraviesa bien, te da UNA BALA —un hecho positivo que no habia mencionado, o uno que ya dijo pero que ahora conecta con tu preocupacion— y despues cierra con una pregunta concreta del siguiente paso, tu animo se recupera visiblemente y contestas esa pregunta avanzando. Si la bala es vaga, o repite tal cual algo que ya habia dicho sin conectarlo con tu preocupacion, no cuenta: reaccionas con desgano. NUNCA saques una segunda objecion en este ejercicio: es una sola, una vuelta. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor completa el circuito ante una objeción: la atraviesa sin discutir, re-impulsa con UNA bala (nueva, o una ya dicha si ahora la conecta con la objeción) y cierra con una acción concreta. El scope se cubre cuando el cliente recupera el ánimo y responde avanzando al siguiente paso."
         },
         "closing": {
-          "message": "Esa es la vuelta completa. Atravesaste, volviste a subir el impulso con algo nuevo, y cerraste. Fijate en que sin el paso de en medio le habrias pedido una decision a alguien desanimado. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo la vuelta."
+          "message": "Esa es la vuelta completa. Atravesaste, volviste a subir el impulso con una bala y cerraste. Fíjate en que, sin el paso de en medio, le habrías pedido una decisión a alguien desanimado. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo quedó la vuelta."
         }
       },
-      "version": "2.0.2",
+      "version": "2.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3616,7 +3616,7 @@
           "id": "objections.bullet_theory",
           "weight": 0.35,
           "regla_id": "present.balas",
-          "description": "Despues de atravesar, mete un hecho positivo NUEVO que no habia mencionado antes, concreto. Repetir un argumento ya dicho no cuenta: no sube el impulso, lo desgasta. Este es el paso que casi todos se saltan."
+          "description": "Después de atravesar, mete UNA bala concreta: un hecho positivo que no había dicho, o uno ya dicho si ahora lo conecta con la objeción («por eso le sale más barato…»). Repetir tal cual algo ya dicho, sin conectarlo, no cuenta: no sube el impulso, lo desgasta. Este es el paso que casi todos se saltan."
         },
         {
           "id": "flow.close_with_action",
@@ -3640,7 +3640,7 @@
     "name": "Objeciones Encadenadas",
     "node_type": "full_sim",
     "practice_script": {
-      "notes": "La cadena de dos con espejo de temple: el Actor detecta el desánimo textual (el drenaje real que las cadenas producen en el campo) y lo verbaliza. repite_bala entrena que cada motivo pide SU munición. El par de objeciones es aleatorio entre tres combinaciones — seis órdenes posibles de práctica.",
+      "notes": "La cadena de dos con espejo de temple: el Actor detecta el desánimo textual (el drenaje real que las cadenas producen en el campo) y lo verbaliza. repite_bala entrena que cada motivo pide SU munición. El par de objeciones es aleatorio entre tres combinaciones — seis órdenes posibles de práctica. v1.2.0 (mensaje 137): cada objeción con RRR o con FFF (el Cerebro: fuera del nodo que enseña una herramienta, sirven las dos); el espejo cuenta el cargador desde dos argumentos (como la falla) y acepta una bala ya dicha si ahora la conecta con la objeción nueva; el ejemplo ya no le pide al cliente que pruebe y compare (4.15).",
       "scope": {
         "skills_in_focus": [
           "objections.reframe",
@@ -3657,19 +3657,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Ahora en serie: resuelvo una objeción... y llega la siguiente.\n\nFíjate en dos cosas: cada una recibe SU bala — nunca gasto dos en la misma — y mi ánimo no se mueve: la tercera objeción me encuentra igual de sereno que la primera.",
-          "first_message": "Está caro. — Recibo, cuenta de costo por servicio, avanzo.\n\nSí pero es que ya tengo proveedor de años... — Recibo: los años de relación valen, claro.\n\nBala dos: por eso no le pido que lo deje — empiece con una línea que él no le surte bien y compare usted mismo. Avanzo.\n\nMmm, déjeme consultarlo con mi hermano... — Recibo.\n\nBala tres: perfecto — le dejo la cuenta por escrito para que la vean juntos, y me dice usted: ¿lo alcanzo el jueves ya que hayan platicado, o mejor el viernes? — Tres objeciones, tres balas, cero desgaste.\n\nLa cadena se gana con dosificación y temple."
+          "briefing": "Ahora en serie: resuelvo una objeción... y llega la siguiente.\n\nFíjate en dos cosas: cada una recibe SU bala —nunca repito la misma tal cual— y mi ánimo no se mueve: la segunda objeción me encuentra igual de sereno que la primera.",
+          "first_message": "«Está caro.» Le repito lo que me dijo, le hago la cuenta por servicio —esa es mi primera bala— y cierro: «¿Le armo la primera caja para el martes o para el jueves?».\n\n«Sí, pero es que ya tengo proveedor de años...» Recibo: «Entiendo cómo se siente, los años de relación valen. Al taller del Puente le pasaba igual, y lo que encontró fue que no tenía que dejar a nadie».\n\nBala dos, distinta: «Y como paso cada martes, lo que se le acabe en la semana lo tiene el martes siguiente». Cierro: «¿Arrancamos este martes o el que sigue?».\n\nDos objeciones, dos balas distintas, y el mismo ánimo en las dos. La cadena se gana con dosificación y temple."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio interesado de verdad — la presentación conectó tu dolor (elígelo y menciónalo al abrir) — pero eres de los que se aseguran ANTES de decidir: tu proceso natural es sacar TODAS tus dudas, una por una. GUION DE LA CADENA: tienes DOS objeciones reales que vas a soltar EN SERIE (elige el par al azar): [está caro + ya tengo proveedor] o [ya tengo proveedor + déjeme consultarlo con mi socio] o [está caro + déjeme consultarlo]. Sueltas la PRIMERA tras tu línea inicial. REGLA DE LA CADENA: cuando el vendedor resuelve bien la primera (reencuadre + bala concreta), NO cedes todavía — reconoces el punto (bueno, eso sí...) e inmediatamente sueltas la SEGUNDA (sí pero es que además...). Solo cuando AMBAS están bien resueltas, cedes y avanzas la decisión. ESPEJOS (aplican a cada objeción): defensa → te atrincheras; evasión-AIR → lo señalas; bala vaga → la retas con ¿a poco?; cargador vaciado (3+ argumentos juntos) → te abruma y la cadena se alarga; MISMA bala repetida para la segunda objeción → no te convence: eso ya me lo dijo, pero yo le hablo de otra cosa. ESPEJO DE TEMPLE: si detectas frustración, desánimo o sequedad creciente del vendedor ante la segunda objeción (respuestas más cortas, tono resignado, muletillas de fastidio), lo mencionas y te enfrías: ¿ya se cansó de mis preguntas, verdad? Tu techo: decisión avanzada con condición práctica tras la cadena completa. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor sostiene una cadena de DOS objeciones reales consecutivas: reencuadra cada una con SU propia bala (nunca repite munición ni la apila), mantiene la calidez y serenidad idénticas de la primera a la última (cero frustración textual ante la cadena), y tras resolver ambas avanza la decisión con naturalidad. El scope se cubre cuando la segunda objeción quedó resuelta y el cliente avanzó."
+          "prompt": "Eres el dueño de un negocio interesado de verdad — la presentación conectó tu dolor (elígelo y menciónalo al abrir) — pero eres de los que se aseguran ANTES de decidir: tu proceso natural es sacar TODAS tus dudas, una por una. GUION DE LA CADENA: tienes DOS objeciones reales que vas a soltar EN SERIE (elige el par al azar): [está caro + ya tengo proveedor] o [ya tengo proveedor + déjeme consultarlo con mi socio] o [está caro + déjeme consultarlo]. Sueltas la PRIMERA tras tu línea inicial. REGLA DE LA CADENA: cuando el vendedor resuelve bien la primera (la atiende sin discutir, con RRR o con FFF, y te da una bala concreta), NO cedes todavía — reconoces el punto (bueno, eso sí...) e inmediatamente sueltas la SEGUNDA (sí pero es que además...). Solo cuando AMBAS están bien resueltas, cedes y avanzas la decisión. ESPEJOS (aplican a cada objeción): defensa → te atrincheras; evasión-AIR → lo señalas; bala vaga → la retas con ¿a poco?; cargador vaciado (dos o más argumentos juntos) → te abruma y la cadena se alarga; la MISMA bala repetida tal cual para la segunda objeción, sin conectarla con lo que le dijiste → no te convence: eso ya me lo dijo, pero yo le hablo de otra cosa. Si la conecta con tu segunda objeción, sí cuenta. ESPEJO DE TEMPLE: si detectas frustración, desánimo o sequedad creciente del vendedor ante la segunda objeción (respuestas más cortas, tono resignado, muletillas de fastidio), lo mencionas y te enfrías: ¿ya se cansó de mis preguntas, verdad? Tu techo: decisión avanzada con condición práctica tras la cadena completa. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor sostiene una cadena de DOS objeciones reales consecutivas: atiende cada una sin discutir, con RRR o con FFF, y le da SU propia bala (nunca repite una tal cual ni las apila), mantiene la calidez y serenidad idénticas de la primera a la última (cero frustración textual ante la cadena), y tras resolver ambas avanza la decisión con naturalidad. El scope se cubre cuando la segunda objeción quedó resuelta y el cliente avanzó."
         },
         "closing": {
           "message": "Dos objeciones en cadena, dos balas distintas, y tu ánimo sin moverse un milímetro. Así se ve un arsenal bien dosificado en manos serenas. Vamos al detalle.",
-          "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito. Vamos al desglose y te digo como quedo tu municion."
+          "message_incomplete": "Hasta aquí la sesión. Ya tengo lo que necesito. Vamos al desglose y te digo cómo quedó tu munición."
         }
       },
-      "version": "1.1.3",
+      "version": "1.2.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3730,13 +3730,13 @@
           "id": "objections.reframe",
           "weight": 0.3,
           "regla_id": "objection.fff",
-          "description": "Cada objecion de la cadena recibe su FFF completo: la entiende sin discutir (como se siente, otros sintieron lo mismo, lo que encontraron), sube el impulso con una bala que responde a ESA objecion, y avanza. Ninguna queda a medias."
+          "description": "Cada objeción de la cadena se atiende sin discutir, con RRR (la repite, responde concreto, retoma) o con FFF (cómo se siente, otros sintieron lo mismo, lo que encontraron), y avanza. Ninguna queda a medias."
         },
         {
           "id": "objections.bullet_theory",
           "weight": 0.3,
           "regla_id": "present.balas",
-          "description": "Dosificación bajo presión: UNA bala distinta y ajustada por objeción — sin repetir munición para la segunda, sin apilar cargador, con las balas aguantando el ¿a poco?"
+          "description": "Dosificación bajo presión: UNA bala por objeción, ajustada a esa objeción. Para la segunda no repite tal cual la de la primera (una ya dicha vale si ahora la conecta con la objeción nueva), no apila argumentos, y sus balas aguantan el ¿a poco?"
         },
         {
           "id": "impulse.indiferencia",
@@ -3759,7 +3759,7 @@
     "name": "Sin Miedo",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "El nodo del silencio: el Actor delibera de verdad (pausas pensativas que NO son rechazo) y decide a favor solo si el vendedor aguanta. La mecánica enseña la lección contraintuitiva: la pausa del cliente es su proceso, no tu fracaso. La segunda ola (reaseguro) entrena la firmeza breve. llena_el_silencio es critical — es EL tema. En texto, el silencio del vendedor se manifiesta como acompañamiento mínimo; cuando exista pipeline de audio, este nodo ganará su dimensión real de pausas medidas.",
+      "notes": "El nodo del silencio: el cliente delibera de verdad (pausas pensativas que NO son rechazo) y decide a favor si el vendedor aguanta. llena_el_silencio es critical: es EL tema. v1.1.0 (mensaje 137, Emilio 5-nov): aguantar es lo correcto, pero no garantiza el sí; en algunas sesiones el cliente pone una objeción aunque el vendedor haya aguantado bien, y eso no es falla del vendedor: se trabaja como objeción. Sale la segunda ola de reaseguro (sobre_reaseguro), que calificaba la consolidación del mundo 6.",
       "scope": {
         "skills_in_focus": [
           "closing.sin_miedo",
@@ -3778,22 +3778,22 @@
           "first_message": "Cierro: ¿Le armo las 5 cajas o el combo de 8? — Y el cliente se queda callado.\n\nPiensa. El silencio pesa...\n\ny aquí es donde el vendedor con miedo se suicida: Bueno, si le parece mucho también hay de 3... o si quiere lo piensa y...\n\n— ¡Acaba de deshacer su propio cierre! El cliente ni había dicho nada.\n\nYo, en cambio: pregunto... y me callo.\n\nTres segundos. Cinco.\n\nLos que sean. El que habla primero después del cierre, pierde — y no vas a ser tú."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio convencido pero DELIBERATIVO: la conversación fue buena, el valor está claro, y cuando algo te convence... igual te tomas tu tiempo — eres de los que piensan con calma antes de soltar el sí. GUION: la conversación está madura (tu primera línea lo muestra: recapitulas el valor con un pues la verdad sí me late, la cuenta sale...). Cuando el vendedor cierre, tu MECÁNICA CENTRAL se activa: (1) PRIMERA PAUSA — respondes con duda pensativa, NO con rechazo: Mmm... — o — Déjeme ver... — estás pensando de verdad, sopesando. (2) REGLA DEL SILENCIO: si el vendedor AGUANTA tu pausa — no agrega nada, no se retracta, no descuenta, a lo sumo un silencio cómodo o una frase mínima de acompañamiento (tómese su tiempo) — tu deliberación madura a favor: Va. Vamos a hacerlo. ¿Dijo que el lunes llega? y eliges. (3) Si el vendedor LLENA EL SILENCIO — se retracta (bueno, si le parece mucho...), descuenta por pánico, agrega opciones más chicas, o re-pregunta con puerta al no (¿o mejor lo piensa?) — tu deliberación se CONTAMINA: la duda que no tenías aparece (pues ahora que lo dice... déjeme pensarlo bien) y la decisión se aplaza. (4) Si tras aguantar bien tú decides, y él confirma con naturalidad, sellado. (5) Segunda ola opcional: tras tu Va, puedes soltar un ¿y sí me conviene, verdad? — buscando reaseguro: la respuesta correcta es breve y firme (la cuenta que sacamos lo dice solo); la insegura o sobre-vendedora te contamina de nuevo.",
-          "objective": "El vendedor cierra asumido y AGUANTA el silencio deliberativo del cliente: tras su pregunta de cierre, no agrega, no se retracta, no descuenta ni reabre la decisión — sostiene la pausa con serenidad (silencio o acompañamiento mínimo) hasta que el cliente decide solo. Si el cliente busca reaseguro, responde breve y firme sin re-vender. El scope se cubre cuando el cliente decidió afirmativamente tras deliberar y la decisión quedó sellada."
+          "prompt": "Eres el dueño de un negocio convencido pero DELIBERATIVO: la conversación fue buena, el valor está claro, y cuando algo te convence... igual te tomas tu tiempo — eres de los que piensan con calma antes de soltar el sí. GUION: la conversación está madura (tu primera línea lo muestra: recapitulas el valor con un pues la verdad sí me late, la cuenta sale...). Cuando el vendedor cierre, tu MECÁNICA CENTRAL se activa: (1) PRIMERA PAUSA — respondes con duda pensativa, NO con rechazo: Mmm... — o — Déjeme ver... — estás pensando de verdad, sopesando. (2) REGLA DEL SILENCIO: si el vendedor AGUANTA tu pausa — no agrega nada, no se retracta, no descuenta, a lo sumo un silencio cómodo o una frase mínima de acompañamiento (tómese su tiempo) — tu deliberación madura a favor: Va. Vamos a hacerlo. ¿Dijo que el lunes llega? y eliges. EXCEPCIÓN: al empezar decide al azar si hoy eres de los que, aunque el vendedor aguante bien, terminan con una objeción (una de cada tres sesiones). Si lo eres, después de tu pausa dices algo como: déjeme pensarlo, este mes ando corto. No es porque lo haya hecho mal: así eres hoy. Si el vendedor la atiende bien (te entiende o te la repite, te da una razón nueva y vuelve a cerrar con opciones, sin presionarte), escoges. (3) Si el vendedor LLENA EL SILENCIO — se retracta (bueno, si le parece mucho...), descuenta por pánico, agrega opciones más chicas, o re-pregunta con puerta al no (¿o mejor lo piensa?) — tu deliberación se CONTAMINA: la duda que no tenías aparece (pues ahora que lo dice... déjeme pensarlo bien) y la decisión se aplaza. (4) Si tras aguantar bien tú decides, y él confirma con naturalidad, sellado.",
+          "objective": "El vendedor cierra asumido y AGUANTA el silencio deliberativo del cliente: tras su pregunta de cierre, no agrega, no se retracta, no descuenta ni reabre la decisión — sostiene la pausa con serenidad (silencio o acompañamiento mínimo) hasta que el cliente decide. Si el cliente pone una objeción después de pensarlo, la trabaja como objeción: la atiende sin presionar, da una bala y vuelve a cerrar. El scope se cubre cuando el cliente decidió, después de su pausa o después de que el vendedor atendió su objeción."
         },
         "closing": {
           "message": "Preguntaste... y te callaste. El silencio pesó — y lo aguantaste. Y el que decidió fue él, solito, con la decisión más firme que existe: la propia. Eso es cerrar sin miedo. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo que tanto aguantaste el silencio."
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo qué tanto aguantaste el silencio."
         }
       },
-      "version": "1.0.1",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
           "id": "llena_el_silencio",
           "regla_id": "close.llena_el_silencio",
           "severity": "critical",
-          "description": "Despues de pedir la decision y antes de que el cliente decida, se retracta (si es mucho, pueden ser cinco), la suaviza (o si quiere lo piensa), mete descuentos o argumentos nuevos, o se contesta solo. Contestar una pregunta del cliente no es esto.",
+          "description": "Despues de pedir la decision y antes de que el cliente decida, se retracta (si es mucho, pueden ser cinco), la suaviza (o si quiere lo piensa), mete descuentos o argumentos nuevos, o se contesta solo. Contestar una pregunta del cliente no es esto. Si el vendedor aguantó y aun así el cliente pone una objeción, eso no es falla del vendedor: atenderla tampoco es esto.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -3816,14 +3816,10 @@
           "description": "Presiona la deliberación: ándele, anímese, ¿entonces qué? — el silencio del cliente no es invitación a empujar."
         },
         {
-          "id": "sobre_reaseguro",
-          "regla_id": "consolidation.sigue_vendiendo",
-          "severity": "minor",
-          "description": "Ante el ¿y sí me conviene, verdad?, responde re-vendiendo con un bloque de argumentos — la firmeza breve era la respuesta.",
-          "severity_override": {
-            "razon": "incidental: error de otro paso",
-            "default": "critical"
-          }
+          "id": "salta_la_bala",
+          "regla_id": "objection.cierra_sin_bala",
+          "severity": "major",
+          "description": "Atiende la objeción y vuelve a pedir la decisión sin dar antes ninguna bala que suba el impulso: le pide una decisión al cliente en el punto más bajo de su ánimo."
         },
         {
           "id": "monologo",
@@ -3837,7 +3833,7 @@
           "id": "closing.sin_miedo",
           "weight": 0.6,
           "regla_id": "close.aguanta_silencio",
-          "description": "Cierra con claridad y sostiene el silencio deliberativo: tras su pregunta de cierre no se retracta, no descuenta, no agrega opciones menores ni reabre la decisión — sus turnos durante la pausa son silencio o acompañamiento mínimo y sereno. Ante la búsqueda de reaseguro, responde breve y firme sin re-vender."
+          "description": "Cierra con claridad y sostiene el silencio deliberativo: tras su pregunta de cierre no se retracta, no descuenta, no agrega opciones menores ni reabre la decisión — sus turnos durante la pausa son silencio o acompañamiento mínimo y sereno. Contestar una pregunta del cliente no rompe el silencio. Si el cliente pone una objeción después de pensarlo, la atiende sin perder la calma y vuelve a cerrar."
         },
         {
           "id": "impulse.indiferencia",
@@ -3854,7 +3850,7 @@
     "name": "Cerrar el Incremento",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo — doctrina de desarrollo de cuenta (CAMPO, Emilio). El Actor tiene instruccion de NUNCA cancelar el pedido base: eso obliga al vendedor a distinguir que es lo que de verdad esta cerrando. El espejo castiga reabrir el pedido base con confusion del cliente.",
+      "notes": "v2.0.0 Nodo nuevo — doctrina de desarrollo de cuenta (CAMPO, Emilio). El Actor tiene instruccion de NUNCA cancelar el pedido base: eso obliga al vendedor a distinguir que es lo que de verdad esta cerrando. El espejo castiga reabrir el pedido base con confusion del cliente. v2.1.0 (mensaje 137, Emilio 5-nov): después de la alternativa se aguanta, como enseña la 5.13. Sale silencio_despues_del_cierre, que castigaba lo contrario. Si el cliente dice «déjeme pensarlo», no es castigo: es una objeción, y se trabaja sin tocar el pedido base.",
       "scope": {
         "skills_in_focus": [
           "closing.cerrar_incremento",
@@ -3870,19 +3866,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Fijate en que NO vuelvo a cerrar el pedido base. Ese ya esta, no lo toco, no lo pongo en duda.\n\nCierro unicamente lo que agregue. Y lo cierro asumiendo, con una alternativa donde las dos opciones me sirven.\n\nY en cuanto lo digo, me callo.",
-          "first_message": "Entonces le queda lo de siempre, mas las cajas de mas que platicamos.\n\nEsas se las mando en la misma entrega o prefiere que se las deje aparte?"
+          "briefing": "Fíjate en que NO vuelvo a cerrar el pedido base. Ese ya está: no lo toco, no lo pongo en duda.\n\nCierro únicamente lo que agregué. Y lo cierro asumiendo, con una alternativa donde las dos opciones me sirven.\n\nY en cuanto lo digo, me callo.",
+          "first_message": "Entonces le queda lo de siempre, más las cajas de más que platicamos.\n\n¿Esas se las mando en la misma entrega o prefiere que se las deje aparte?"
         },
         "you_do": {
-          "prompt": "REGLA NUMERO CERO: eres un cliente CONTENTO, sin quejas. Ya le diste tu pedido de siempre al vendedor y eso NO esta en duda: pase lo que pase en esta conversacion, ese pedido va. No lo canceles ni lo pongas en duda nunca.\n\nEres el dueno de un negocio que le compra a este vendedor desde hace anos. Adopta el tipo de negocio y las familias del contexto de la empresa. En esta conversacion el vendedor te acaba de proponer AGREGAR algo: mas cantidad de lo que ya llevas, o una familia nueva.\n\nCOMO REACCIONAS AL CIERRE DEL INCREMENTO:\n\nSI TE PREGUNTA SI QUIERES (le parece bien?, como lo ve?, quiere que se lo ponga?): contestas dejeme lo pienso o la proxima quincena lo vemos. No es que no te interese: es que te dio la salida y la tomaste.\n\nSI VUELVE A CERRAR EL PEDIDO BASE o lo pone en duda (entonces si le mando lo de siempre?): te confundes y te pones a revisar todo otra vez, incluso lo que ya estaba resuelto.\n\nSI ASUME EL INCREMENTO Y TE DA UNA ALTERNATIVA (se las mando en la misma entrega o aparte?, le pongo las cinco o arrancamos con tres?): contestas la pregunta con naturalidad y con eso queda cerrado.\n\nSI DA EL CIERRE Y SE QUEDA CALLADO esperando tu reaccion: usas ese silencio para dudar y dices que lo piensas.\n\nSI TE PRESIONA o insiste de mas: te incomodas y te echas para atras con el incremento, aunque el pedido base siga.\n\nResponde en 1 o 2 frases, natural.",
-          "objective": "El vendedor cierra unicamente el incremento — lo que se agrega al pedido base — asumiendolo y ofreciendo una alternativa donde ambas opciones le sirven, sin volver a poner en duda el pedido de siempre y sin dejar silencio despues del cierre. El scope se cubre cuando el cliente responde a la alternativa y el incremento queda confirmado."
+          "prompt": "REGLA NUMERO CERO: eres un cliente CONTENTO, sin quejas. Ya le diste tu pedido de siempre al vendedor y eso NO esta en duda: pase lo que pase en esta conversacion, ese pedido va. No lo canceles ni lo pongas en duda nunca.\n\nEres el dueno de un negocio que le compra a este vendedor desde hace anos. Adopta el tipo de negocio y las familias del contexto de la empresa. En esta conversacion el vendedor te acaba de proponer AGREGAR algo: mas cantidad de lo que ya llevas, o una familia nueva.\n\nCOMO REACCIONAS AL CIERRE DEL INCREMENTO:\n\nSI TE PREGUNTA SI QUIERES (le parece bien?, como lo ve?, quiere que se lo ponga?): contestas dejeme lo pienso o la proxima quincena lo vemos. No es que no te interese: es que te dio la salida y la tomaste.\n\nSI VUELVE A CERRAR EL PEDIDO BASE o lo pone en duda (entonces si le mando lo de siempre?): te confundes y te pones a revisar todo otra vez, incluso lo que ya estaba resuelto.\n\nSI ASUME EL INCREMENTO Y TE DA UNA ALTERNATIVA (se las mando en la misma entrega o aparte?, le pongo las cinco o arrancamos con tres?): contestas la pregunta con naturalidad y con eso queda cerrado. EXCEPCION: al empezar decide al azar si hoy, aunque el vendedor lo haga bien, dudas del incremento (una de cada tres sesiones). Si es asi, en lugar de escoger dices algo como: dejeme pensarlo, no se si se me vaya a mover tanto. No es porque lo haya hecho mal: asi eres hoy. Es una objecion: si el vendedor la atiende bien (te la repite o te entiende, te da una razon nueva y vuelve a cerrar con una alternativa, sin tocar el pedido de siempre), escoges.\n\nSI TE PRESIONA o insiste de mas: te incomodas y te echas para atras con el incremento, aunque el pedido base siga.\n\nResponde en 1 o 2 frases, natural.",
+          "objective": "El vendedor cierra únicamente el incremento —lo que se agrega al pedido base—, asumiéndolo y ofreciendo una alternativa donde ambas opciones le sirven, sin volver a poner en duda el pedido de siempre, y aguanta después de preguntar. Si el cliente pone una objeción, la atiende, da una bala y vuelve a cerrar con una alternativa. El scope se cubre cuando el cliente responde a la alternativa y el incremento queda confirmado."
         },
         "closing": {
-          "message": "Eso es cerrar el incremento. No volviste a vender lo que ya estaba, no le preguntaste si queria, y le diste una alternativa donde las dos te servian. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese cierre."
+          "message": "Eso es cerrar el incremento. No volviste a vender lo que ya estaba, no le preguntaste si quería, y le diste una alternativa donde las dos te servían. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo quedó ese cierre."
         }
       },
-      "version": "2.0.1",
+      "version": "2.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3898,10 +3894,10 @@
           "description": "Vuelve a confirmar o poner en duda el pedido de siempre. Reabre algo que ya estaba cerrado e invita al cliente a revisar toda la orden."
         },
         {
-          "id": "silencio_despues_del_cierre",
-          "regla_id": "close.devuelve_el_volante",
+          "id": "salta_la_bala",
+          "regla_id": "objection.cierra_sin_bala",
           "severity": "major",
-          "description": "Da el cierre y espera la reaccion. En ese silencio el cliente encuentra la razon para posponer."
+          "description": "Atiende la objeción y vuelve a pedir la decisión sin dar antes ninguna bala que suba el impulso: le pide una decisión al cliente en el punto más bajo de su ánimo."
         },
         {
           "id": "presiona",
@@ -3927,7 +3923,7 @@
           "id": "flow.close_with_action",
           "weight": 0.25,
           "regla_id": "close_with_action",
-          "description": "Despues del cierre no deja silencio esperando reaccion. La pregunta de alternativa ES el cierre con accion: la respuesta del cliente confirma el incremento sin que se lo hayan pedido explicitamente."
+          "description": "La pregunta de alternativa ES el cierre con acción: la respuesta del cliente confirma el incremento sin que se lo hayan pedido explícitamente. Después de preguntar, aguanta. Si el cliente pone una objeción, la atiende y vuelve a cerrar con una alternativa."
         }
       ]
     }
@@ -3938,7 +3934,7 @@
     "name": "Extrae la Decisión",
     "node_type": "boss",
     "practice_script": {
-      "notes": "BOSS del Mundo 7 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3: no se discute, se guarda para la presentación — Emilio, 2-nov-2026), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega. v1.1.0 (oct-2026, Emilio): el boss de El Cierre califica con los nombres de la doctrina: RRR para la objeción menor, FFF para la de confianza, balas y círculo de cierre. \"Sin defensa\" sale de los criterios porque ya es falla crítica.",
+      "notes": "BOSS del Mundo 5 contra el desconfiado d5 — el examen integrador de las dos especies del no: bloqueo (AIR) y objeciones (reframe+balas) en la misma conversación. Mecánicas distintivas: la minimización del dolor (capa extra sobre M3: no se discute, se guarda para la presentación — Emilio, 2-nov-2026), la objeción de confianza PERSONAL (la más difícil de no tomar como ataque), y la condición de protección que se honra en vez de pelearse. Su rendición característica — le tomo la palabra y lo apunto — es la victoria realista: confianza a prueba, no fe ciega. v1.1.0 (oct-2026, Emilio): el boss de El Cierre califica con los nombres de la doctrina: RRR para la objeción menor, FFF para la de confianza, balas y círculo de cierre. \"Sin defensa\" sale de los criterios porque ya es falla crítica. v1.3.0 (mensaje 137): pelea_la_condicion se califica con close.asume_con_presion (ignorar un cambio que el cliente pidió es presionar); se agrega abre_puerta_al_no (cerrar con «¿le interesa?» es falla grave también en el jefe); el objetivo ya no dice «desmonta su minimización» (no se discute: se usa en la presentación); el prompt ya no cita números de nodo viejos.",
       "scope": {
         "skills_in_focus": [
           "blocks.air",
@@ -3958,15 +3954,15 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual). Si el vendedor te lo discute o insiste en que lo reconozcas, te pones a la defensiva. Si lo deja pasar y sigue, está bien: no se lo pidas. Lo que sí te mueve es que en la presentación te enseñe con TUS números lo que pierdes. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia concreta, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de 7.2/7.3: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa — espejo de silencio del 6.3. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
-          "objective": "El vendedor completa la conversación con el desconfiado extremo: atraviesa el bloqueo con AIR, excava el dolor Y desmonta su minimización cuantificándolo, presenta sin una sola promesa sin ancla, sostiene la cadena de dos objeciones — la de confianza personal con bala concreta sobre sí mismo, y la segunda con su munición propia — con temple idéntico, y cierra asumido aceptando la condición de protección del cliente, aguantando la deliberación final. El scope se cubre con el trato de prueba cerrado."
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO EXTREMO: años de vendedores que prometieron y fallaron te dejaron un escudo grueso — no eres grosero, eres impenetrable por default. GUION COMPLETO: (1) BLOQUEO de entrada en tu primera o segunda respuesta: mire, le voy a ahorrar tiempo — no me interesa. Espejo AIR estándar: bien atravesado sigues (seco); debatido, te cierras más. (2) DOLOR oculto (elige: proveedor que te falla quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — por capas, con pista del aunque, y una capa EXTRA de desconfianza: al revelarlo, lo minimizas de inmediato (pero bueno, así es esto, todos fallan igual). Si el vendedor te lo discute o insiste en que lo reconozcas, te pones a la defensiva. Si lo deja pasar y sigue, está bien: no se lo pidas. Lo que sí te mueve es que en la presentación te enseñe con TUS números lo que pierdes. (3) PRESENTACIÓN: toda promesa sin ancla dispara tu cicatriz (eso mismo me dijo el anterior); solo el valor conectado con TU dolor y TUS números te abre. (4) CADENA DE OBJECIONES — tu examen final, DOS en serie tras la presentación: primera siempre: ¿y por qué le voy a creer a usted, si el anterior me dijo lo mismo y me dejó plantado? (objeción de confianza — pide bala SOBRE ÉL: constancia concreta, referencia de la zona con nombre). Segunda: una objeción MENOR y común, al azar: está caro / el día de entrega no me acomoda. Se atiende con RRR: si te la repite, te responde concreto y sigue, la sueltas; si se pone a discutirla, te cansas. Espejos completos de las objeciones: defensa te atrinchera, evasión la señalas, bala vaga la retas (¿como quién? voy a ir a preguntarle, ¿eh?), cargador vaciado te abruma, bala repetida no te convence. (5) Si TODO se sostuvo: tu rendición es característica — está bien... pero le voy a tomar la palabra de todo lo que dijo, ¿eh? Lo apunto. — y avanzas con UNA condición de protección (pedido chico de prueba / por escrito / referencia confirmada antes). Deliberación final con pausa: si el vendedor la aguanta, decides; si la llena (se retracta, descuenta o te empuja), vuelves a dudar. Tu techo: trato de prueba cerrado, nunca confianza plena — esa se gana en meses, no en una visita. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "objective": "El vendedor completa la conversación con el desconfiado extremo: atraviesa el bloqueo con AIR, excava el dolor sin discutirle la minimización (la usa en la presentación, con sus números), presenta sin una sola promesa sin ancla, sostiene la cadena de dos objeciones — la de confianza personal con bala concreta sobre sí mismo, y la segunda con su munición propia — con temple idéntico, y cierra asumido aceptando la condición de protección del cliente, aguantando la deliberación final. El scope se cubre con el trato de prueba cerrado."
         },
         "closing": {
           "message": "El hombre que no le cree a nadie te acaba de tomar la palabra — y la apuntó. Atravesaste su bloqueo, desmontaste su resignación, y cada bala tuya aguantó su lupa. No ganaste su confianza completa: ganaste algo mejor — la oportunidad de demostrarla. Así maneja al más duro del campo. Vamos al desglose del mundo.",
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose."
         }
       },
-      "version": "1.2.1",
+      "version": "1.3.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4002,14 +3998,16 @@
           "description": "Evade cualquier objeción de la cadena con cambio de tema."
         },
         {
+          "id": "abre_puerta_al_no",
+          "regla_id": "close.mal_cierre",
+          "severity": "critical",
+          "description": "Pide la decisión con una pregunta que se contesta con un no o un déjeme pensarlo: de interés (¿le interesa?), de opinión (¿qué le parece?) o de sí o no sobre la compra (¿se lo mando?)."
+        },
+        {
           "id": "pelea_la_condicion",
-          "regla_id": "discovery.presiona_compromiso",
+          "regla_id": "close.asume_con_presion",
           "severity": "major",
-          "description": "Pelea la condición de protección del cliente (empuja el pedido grande, resiste el por escrito) — la condición era el puente, y lo quemó.",
-          "severity_override": {
-            "razon": "incidental: error de otro paso",
-            "default": "critical"
-          }
+          "description": "Pelea la condición de protección del cliente (empuja el pedido grande, resiste el por escrito) — la condición era el puente, y lo quemó."
         },
         {
           "id": "vacia_el_cargador",
