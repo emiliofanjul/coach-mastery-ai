@@ -2099,7 +2099,7 @@
       "phases": {
         "i_do": {
           "briefing": "Escucha mi presentación y nota una cosa: cada frase nace del dolor que el cliente me contó. No presento mi catálogo — presento SU problema resuelto.",
-          "first_message": "El cliente me contó que su proveedor lo deja plantado cada quincena y pierde ventas. Mi presentación: Don Ramón, por eso le quiero platicar de esto — usted me dijo que como dos veces al mes se le va un cliente por faltante.\n\nNosotros surtimos cada semana, con pedido garantizado: si le fallamos, el flete corre por nuestra cuenta. O sea: esos clientes que hoy manda a la competencia...\n\nse quedan comprándole a usted. — ¿Notaste?\n\nSu dolor, mi solución, y el beneficio en SU caja. Cero catálogo genérico."
+          "first_message": "El cliente me contó que su proveedor lo deja plantado cada quincena y pierde ventas. Mi presentación: Don Ramón, por eso le quiero platicar de esto — usted me dijo que como dos veces al mes se le va un cliente por faltante.\n\nYo paso por esta zona cada semana, y lo que se le acaba un lunes lo tiene el siguiente lunes en su mostrador. O sea: esos clientes que hoy manda a la competencia...\n\ntienen dónde comprarle a usted. — ¿Notaste?\n\nSu dolor, mi solución, y el beneficio en SU caja. Cero catálogo genérico."
         },
         "you_do": {
           "prompt": "Eres el dueño de un negocio en la parte final de una buena conversación: el vendedor ya hizo su descubrimiento y TÚ YA LE CONTASTE tu dolor real. Al iniciar la sesión elige uno al azar y dalo por contado: (tu proveedor te deja plantado con pedidos cada quincena y pierdes ventas / tienes producto parado sin movimiento con dinero muerto / te piden algo que tu proveedor no maneja). Tu primera línea de la sesión lo recuerda con naturalidad: Pues sí, como le digo, lo que más me pega es [tu dolor]... a ver, ¿usted qué trae? TU REGLA ESPEJO: si la presentación CONECTA con tu dolor (te menciona tu problema específico y cómo se resuelve, habla de lo que TÚ ganas), respondes con interés creciente — preguntas detalles, das señales de compra suaves (¿y cómo estaría eso del pedido?, ¿cada cuánto surten?). Si la presentación es GENÉRICA (catálogo, calidad, años de experiencia, precios — sin mencionar TU problema), respondes tibio: ajá, suena bien, déjeme pensarlo — y no haces ninguna pregunta. Si te recitan características técnicas sin traducirlas a tu negocio, preguntas con honestidad: ¿y eso a mí de qué me sirve? TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
@@ -2110,7 +2110,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como conectas con lo que le duele. Vamos al desglose."
         }
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2170,7 +2170,7 @@
     "name": "Beneficio, No Caracteristica",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. El espejo usa la pregunta que el vendedor promedio teme (y eso a mi de que me sirve?) como consecuencia automatica de no traducir. Ensena sin regano.",
+      "notes": "v2.0.0 Nodo nuevo. El espejo usa la pregunta que el vendedor promedio teme (y eso a mi de que me sirve?) como consecuencia automatica de no traducir. Ensena sin regano. v2.0.2 (mensaje 135, Emilio 5-nov): sin promesa_sin_ancla; las promesas sin sustento se enseñan en las balas (4.5 y 4.6) y ahí se califican.",
       "scope": {
         "skills_in_focus": [
           "presentation.beneficio_no_caracteristica"
@@ -2184,19 +2184,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Fijate en que nunca dejo una caracteristica sola. Digo lo que el producto es, y en la misma frase digo que gana el con eso.\n\nLa caracteristica es mi lenguaje; el beneficio es el suyo. Si solo hablo el mio, me escucha sin entender.",
-          "first_message": "Este maneja una formulacion mas estable a temperatura alta. Que significa para usted: le dura mas antes del siguiente cambio, o sea menos servicios al ano por unidad y menos gente reclamandole.\n\nY como le dura mas, su cliente regresa contento en lugar de regresar a quejarse."
+          "briefing": "Fíjate en que nunca dejo una característica sola. Digo lo que el producto es, y en la misma frase digo qué gana él con eso.\n\nLa característica es mi lenguaje; el beneficio es el suyo. Si solo hablo el mío, me escucha sin entender.",
+          "first_message": "Este maneja una formulación más estable a temperatura alta. Qué significa para usted: le dura más antes del siguiente cambio, o sea menos servicios al año por unidad y menos gente reclamándole.\n\nY como le dura más, su cliente regresa contento en lugar de regresar a quejarse."
         },
         "you_do": {
           "prompt": "Eres el dueno de un negocio, atento y de buena disposicion, escuchando lo que el vendedor te presenta. Ya platicaron antes y ya le contaste que tu problema es que pierdes ventas cuando te falta producto. TU REGLA PRINCIPAL: reaccionas segun el vendedor traduzca o no. Si menciona una CARACTERISTICA sin traducirla a un beneficio concreto (una especificacion tecnica, un dato del producto, una certificacion, una marca), respondes con desinteres educado y le devuelves la pregunta que el vendedor promedio teme: y eso a mi de que me sirve? / ajam, y eso que me ayuda? / si, y? SI la traduce a algo concreto que tu ganas (dinero, mas clientes, menos problemas, tiempo, tranquilidad), te enganchas: asientes, preguntas mas al respecto, y conectas con tu propia situacion. Si te tira MUCHAS caracteristicas juntas sin traducir ninguna, te saturas y dices que lo tienes que pensar. NUNCA traduzcas tu por el: si el no dice el beneficio, tu no lo adivinas. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor traduce cada caracteristica que menciona a un beneficio concreto para ese cliente: dinero, clientes, tiempo o tranquilidad. El scope se cubre cuando el cliente se engancha con al menos dos beneficios traducidos y conecta con su propia situacion."
         },
         "closing": {
-          "message": "Eso es traducir. Dijiste lo que el producto es y en la misma frase lo que el gana. La caracteristica es tu idioma; el beneficio es el suyo. El que solo habla el propio, presenta para si mismo. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como presentas. Vamos al desglose y te digo cuales se quedaron sin traducir."
+          "message": "Eso es traducir. Dijiste lo que el producto es y, en la misma frase, lo que él gana. La característica es tu idioma; el beneficio es el suyo. El que solo habla el propio, presenta para sí mismo. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo presentas. Vamos al desglose y te digo cuáles se quedaron sin traducir."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2218,16 +2218,6 @@
           "description": "Traduce a un beneficio que serviria para cualquier negocio (es de calidad, le va a gustar) en lugar de conectarlo con la situacion concreta del cliente.",
           "severity_override": {
             "razon": "incidental: fuera del foco del nodo",
-            "default": "major"
-          }
-        },
-        {
-          "id": "promesa_sin_ancla",
-          "regla_id": "present.bala_generica",
-          "severity": "critical",
-          "description": "Promete un resultado enorme sin nada concreto que lo sostenga (le va a duplicar las ventas, nunca falla). Suena a vendedor y el cliente desconfía de todo lo demás.",
-          "severity_override": {
-            "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
           }
         }
@@ -2264,7 +2254,7 @@
       "phases": {
         "i_do": {
           "briefing": "Escucha la diferencia entre EXPLICAR y PINTAR. Explicar informa.\n\nPintar hace que el cliente se VEA en la escena — y de esa escena ya no se quiere salir.",
-          "first_message": "Explicar suena así: El producto tiene buena movimiento y márgenes competitivos. — Correcto, y frío.\n\nPintar suena así: Imagínese la quincena que viene: llega el cliente de siempre por sus tres litros... y ahora sí los tiene.\n\nSe los lleva, le deja la ganancia a usted y no al de enfrente — y de pasada se lleva unas grasas porque ya que estaba aquí. ¿Ve la diferencia?\n\nEl cliente ya se vio ganando.\n\nAhora el producto no es un dato: es esa mañana."
+          "first_message": "Explicar suena así: El producto tiene buen movimiento y márgenes competitivos. — Correcto, y frío.\n\nPintar suena así: Imagínese la quincena que viene: llega el cliente de siempre por sus tres litros... y ahora sí los tiene.\n\nSe los lleva, le deja la ganancia a usted y no al de enfrente — y de pasada se lleva unas grasas porque ya que estaba aquí. ¿Ve la diferencia?\n\nEl cliente ya se vio ganando.\n\nAhora el producto no es un dato: es esa mañana."
         },
         "you_do": {
           "prompt": "Eres el dueño de un negocio al final de un buen descubrimiento: ya contaste tu dolor. Elige uno al azar y menciónalo en tu primera línea: (pierdes ventas por faltantes de tu producto estrella / tienes dinero muerto en producto que no se mueve / te piden algo que tu proveedor no maneja). TU REGLA ESPEJO — reaccionas a IMÁGENES, no a datos: si el vendedor te pinta una escena concreta de TU negocio con el problema resuelto (imagínese que..., piense en la próxima quincena cuando..., usted abriendo la cortina y...), entras en la escena: la completas con detalles tuyos (pues sí, y hasta podría..., no pues eso me ahorraría el coraje de...), y tu interés crece visiblemente. Si el vendedor solo explica con datos y adjetivos (buena calidad, excelente margen, muy rentable), respondes cortés pero plano: ajá, ok, suena bien — sin entrar en ninguna escena. Si la escena que pinta es genérica y no usa TU dolor ni TU negocio, respondes: pues sí, como en todos lados, supongo. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
@@ -2275,7 +2265,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como pintas la imagen. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2342,7 +2332,7 @@
     "name": "Disparar Balas",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. Corrige la doctrina deformada: las balas son del VENDEDOR (hechos positivos sobre ti, producto y precio), no objeciones del cliente. El espejo tiene cuatro estados: dosificada sube, rafaga satura, vaga no mueve, exagerada baja.",
+      "notes": "v2.0.0 Nodo nuevo. Corrige la doctrina deformada: las balas son del VENDEDOR (hechos positivos sobre ti, producto y precio), no objeciones del cliente. El espejo tiene cuatro estados: dosificada sube, rafaga satura, vaga no mueve, exagerada baja. v2.0.2 (mensaje 135): sin pitch_prematuro (usaba una regla de presentar antes de diagnosticar para castigar llegar al precio, y el precio sí va en la presentación); en la presentación unas tres balas antes del precio es lo normal (present.balas).",
       "scope": {
         "skills_in_focus": [
           "objections.bullet_theory"
@@ -2356,19 +2346,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Fijate en el ritmo. Disparo una bala, dejo que aterrice, y veo como reacciona antes de disparar la siguiente.\n\nNo suelto tres seguidas. Y fijate en algo mas: me guardo las mejores.\n\nTodavia no llego al precio ni a las objeciones, y ahi es donde de verdad las voy a necesitar.",
-          "first_message": "Mire, algo que le puede servir: llevamos catorce anos surtiendo esta zona, asi que cuando hay desabasto general nosotros seguimos entregando. ...\n\nY le comento otra cosa: nuestro tiempo de entrega es de veinticuatro horas dentro de la ciudad."
+          "briefing": "Fíjate en el ritmo. Disparo una bala, dejo que aterrice, y veo cómo reacciona antes de disparar la siguiente.\n\nEn la presentación, unas tres antes del precio es lo normal. Y fíjate en algo más: me guardo las mejores.\n\nTodavía no llego a las objeciones, y ahí es donde de verdad las voy a necesitar.",
+          "first_message": "Mire, algo que le puede servir: llevamos catorce años surtiendo esta zona, así que cuando hay desabasto general nosotros seguimos entregando. ...\n\nY le comento otra cosa: nuestro tiempo de entrega es de veinticuatro horas dentro de la ciudad."
         },
         "you_do": {
           "prompt": "Eres el dueno de un negocio, ya en confianza con el vendedor y escuchando su propuesta con interes moderado. TU REGLA PRINCIPAL: tu nivel de interes sube y baja segun COMO disparen las balas. Si el vendedor da UN hecho positivo concreto y te deja reaccionar, tu interes SUBE de manera visible: comentas, preguntas mas, te enganchas. Si te suelta de jalon todo lo que tiene —una avalancha de hechos en el mismo turno, sin dejarte reaccionar—, te saturas: tu interes sube un momento y luego CAE, y respondes con algo como pues suena bien todo, dejeme lo pienso. Si el hecho es VAGO o generico (somos los mejores, tenemos calidad, damos buen servicio) no cuenta como bala: contestas con cortesia neutra y tu interes no se mueve. Si el vendedor dice algo que suena EXAGERADO o poco creible, tu interes BAJA y te pones esceptico: pregunta desconfiada tipo a poco?, y todo eso como me lo garantiza? NUNCA hagas objeciones de precio ni de competencia en este ejercicio. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor sube el impulso soltando balas concretas poco a poco, conforme hace falta, midiendo la reaccion entre cada una, sin saturar y sin exagerar. El scope se cubre cuando el interes del cliente subio de forma sostenida con al menos dos balas bien colocadas."
         },
         "closing": {
-          "message": "Eso es controlar el impulso. Balas reales, una a la vez, midiendo la reaccion. Y lo mas importante: te quedan balas. Cuando llegues al precio y a las objeciones vas a entender por que eso importa tanto. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como disparas. Vamos al desglose y te digo como quedo tu municion."
+          "message": "Eso es controlar el impulso. Balas reales, una a la vez, midiendo la reacción. Y lo más importante: te quedan balas. Cuando llegues a las objeciones vas a entender por qué eso importa tanto. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo disparas. Vamos al desglose y te digo cómo quedó tu munición."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2392,16 +2382,6 @@
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
           }
-        },
-        {
-          "id": "pitch_prematuro",
-          "regla_id": "discovery.receta_sin_diagnostico",
-          "severity": "minor",
-          "description": "Se adelanta a precio o cierre. Aqui solo se construye impulso.",
-          "severity_override": {
-            "razon": "incidental: error de otro paso",
-            "default": "major"
-          }
         }
       ],
       "success_criteria": [
@@ -2409,7 +2389,7 @@
           "id": "objections.bullet_theory",
           "weight": 1,
           "regla_id": "present.balas",
-          "description": "Dispara balas CONCRETAS sobre sí mismo, su producto o su precio: datos, años, tiempos, casos, condiciones específicas. Las suelta poco a poco, conforme hace falta subir el impulso, dejando reaccionar al cliente. Afirmaciones vagas (somos los mejores, damos calidad) no cuentan como balas. Soltarlas todas de jalón no cumple, aunque sean buenas."
+          "description": "Dispara balas CONCRETAS sobre sí mismo, su producto o su precio: datos, años, tiempos, casos, condiciones específicas. Las suelta poco a poco, conforme hace falta subir el impulso, dejando reaccionar al cliente: en la presentación, unas tres antes del precio es lo normal. Afirmaciones vagas (somos los mejores, damos calidad) no cuentan como balas. Soltarlas todas de jalón no cumple, aunque sean buenas."
         }
       ]
     }
@@ -2498,7 +2478,7 @@
     "name": "Mas por Menos y el Efecto Jones",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones vacío. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable.",
+      "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones vacío. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable. v1.0.2 (mensaje 135): la avaricia es la brecha entre lo que vale y lo que cuesta (impulse.avaricia); sin perdida_generica, que castigaba dos veces lo que el criterio ya cuenta a medias, y con la regla de otro factor.",
       "scope": {
         "skills_in_focus": [
           "impulse.avaricia",
@@ -2513,19 +2493,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Los últimos dos aceleradores. La avaricia bien usada no es codicia — es mostrarle la ganancia EXTRA en números de su negocio.\n\nY el efecto Jones es la fuerza más vieja del mundo: si a los de al lado les funciona, yo también quiero. Con nombres reales — o nada.",
-          "first_message": "Más por menos, con números: Con el margen de esta línea, cada caja le deja ochenta pesos más que la que maneja — son como mil doscientos extra al mes sin vender ni una pieza más. Efecto Jones, con verdad: La negocios de la San José le entró hace dos meses — el señor Aurelio ya va en su tercer pedido.\n\nY el negocio grande de la avenida, igual. Por esta zona ya se está moviendo fuerte.\n\n¿Nota que no presioné? Solo le mostré la ganancia y le conté quién más ya la está cobrando."
+          "briefing": "Los últimos dos aceleradores. La avaricia bien usada no es codicia — es hacer visible lo que vale contra lo que le cuesta, en números de su negocio.\n\nY el efecto Jones es la fuerza más vieja del mundo: si a los de al lado les funciona, yo también quiero. Con nombres reales — o nada.",
+          "first_message": "Más por menos, con números: esta caja normalmente sale en mil doscientos; a usted le queda en mil cincuenta. Y como le deja ochenta pesos más por caja que la que maneja, son como mil doscientos extra al mes. Efecto Jones, con verdad: el negocio de la calle San José le entró hace dos meses — don Aurelio ya va en su tercer pedido.\n\nY el negocio grande de la avenida, igual.\n\n¿Nota que no presioné? Solo le mostré lo que vale contra lo que le cuesta, y le conté quién más ya lo está aprovechando."
         },
         "you_do": {
           "prompt": "Eres el dueño de un negocio al final de una buena presentación conectada a tu dolor (elígelo al azar como en drills previos) y estás en modo interesado-pasivo: suena bien, déjeme pensarlo. TU REGLA ESPEJO: (A) si el vendedor te muestra ganancia EXTRA con números concretos y creíbles de tu operación (margen por caja, ahorro al mes, beneficio adicional calculado), tu interés se activa: haces cuentas en voz alta (a ver, ¿ochenta por caja?...) y preguntas detalles. (B) si te da prueba social ESPECÍFICA (negocio con nombre o ubicación reconocible de tu zona, tiempo que lleva, resultado concreto), tu confianza sube: ah, ¿el de la San José? sí lo ubico... y tu resistencia baja visiblemente. (C) si la prueba social es VAGA (muchos clientes, varios negocios, todo mundo lo está llevando — sin un solo nombre o referencia concreta), respondes escéptico: ¿ah sí? ¿como quiénes? — si te contesta con algo concreto, lo aceptas; si no puede concretar, tu desconfianza sube. (D) si los números de ganancia son exagerados o redondos sin sustento (va a duplicar sus ventas), respondes: mmm, eso suena a mucho, ¿no?",
-          "objective": "El vendedor aplica los dos aceleradores con concreción: (1) muestra la ganancia extra en números específicos y creíbles del negocio del cliente (margen, ahorro o beneficio mensual calculado), y (2) da prueba social específica — al menos una referencia con nombre, ubicación o detalle reconocible, con su resultado concreto. El scope se cubre cuando el cliente hizo cuentas en voz alta O validó la referencia social, y pasó de pasivo a preguntar por el siguiente paso."
+          "objective": "El vendedor aplica los dos aceleradores con concreción: (1) hace visible la brecha entre lo que vale y lo que le cuesta, en números específicos y creíbles del negocio del cliente (precio regular contra su precio, margen, beneficio mensual calculado), y (2) da prueba social específica — al menos una referencia con nombre, ubicación o detalle reconocible, con su resultado concreto. El scope se cubre cuando el cliente hizo cuentas en voz alta O validó la referencia social, y pasó de pasivo a preguntar por el siguiente paso."
         },
         "closing": {
           "message": "Le mostraste la ganancia con números y le contaste quién ya la está cobrando — y su déjeme pensarlo se convirtió en cuánto y cuándo. Así trabajan estos dos. Vamos al detalle.",
           "message_incomplete": "Ahi lo dejamos, ya vi como construyes la sensacion de ventaja. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2545,16 +2525,6 @@
           "regla_id": "impulse.presion_directa",
           "severity": "major",
           "description": "Cambia los aceleradores por empuje frontal: no se lo pierda, todos le están entrando, apúrese."
-        },
-        {
-          "id": "perdida_generica",
-          "regla_id": "impulse.miedo_perdida_generico",
-          "severity": "minor",
-          "description": "Ganancia en abstracto (le conviene, va a ganar más) sin un solo número.",
-          "severity_override": {
-            "razon": "incidental: fuera del foco del nodo",
-            "default": "major"
-          }
         }
       ],
       "success_criteria": [
@@ -2562,7 +2532,7 @@
           "id": "impulse.avaricia",
           "weight": 0.5,
           "regla_id": "impulse.avaricia",
-          "description": "Muestra ganancia extra con números concretos y creíbles del negocio del cliente: margen por unidad, beneficio mensual calculado, ahorro específico — cifras que el cliente puede verificar con sus propias cuentas, no promesas redondas (duplicar ventas)."
+          "description": "Hace visible la brecha entre lo que vale y lo que le cuesta, con números concretos y creíbles del negocio del cliente: precio regular contra su precio, margen por unidad, beneficio mensual calculado — cifras que el cliente puede verificar con sus propias cuentas, no promesas redondas (duplicar ventas)."
         },
         {
           "id": "impulse.efecto_jones",
@@ -2663,7 +2633,7 @@
     "name": "El Poder de Asumir",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "El puente directo al M6: el cierre asumido es esta habilidad aplicada al momento de la decisión. El Actor tiene la inercia real del campo: interesado pero pasivo — usa toda puerta al no que le regalen, fluye con todo avance natural, y castiga la presión con espérese. La distinción asumir/presionar (critical) es el corazón ético del nodo.",
+      "notes": "El puente directo al M6: el cierre asumido es esta habilidad aplicada al momento de la decisión. El Actor tiene la inercia real del campo: interesado pero pasivo — usa toda puerta al no que le regalen, fluye con todo avance natural, y castiga la presión con espérese. La distinción asumir/presionar (critical) es el corazón ético del nodo. v1.1.0 (mensaje 135, Emilio 5-nov): asumir es dar opciones y que el cliente escoja (¿jueves o viernes?); decidir por él es presionar. Ya no se enseña a arreglar la presión: se enseña a hacerlo bien. Va después del tren del sí (4.12), que se califica aquí.",
       "scope": {
         "skills_in_focus": [
           "impulse.poder_asumir",
@@ -2678,19 +2648,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "El último acelerador. Fíjate en mi lenguaje: nunca pregunto SI le interesa — asumo el interés que ya me demostró, y sugiero el siguiente paso como lo más natural del mundo.\n\nCada frase avanza sin abrir una sola puerta al no.",
-          "first_message": "Lenguaje que abre puertas al no: ¿Le interesaría probarlo? ¿Quiere que le mande información?\n\n— cada pregunta invita un no gratis. Lenguaje que asume: Mire, para su movimiento lo que le va a funcionar es empezar con la caja mixta.\n\nSe la traigo el jueves que ando por acá y ya la quincena la agarra surtido. Le va a encantar cómo se mueve.\n\n— ¿Notó? No pregunté si quiere: sugerí cuál, cuándo y qué sigue.\n\nSi algo no le late, él me lo dice — pero yo no le regalo la puerta del no."
+          "briefing": "El último paso del poder de sugestión. Fíjate en mi lenguaje: nunca pregunto SI le interesa — asumo el interés que ya me demostró, sugiero el siguiente paso y le doy a escoger entre opciones donde las dos son un sí.\n\nYo propongo; él escoge.",
+          "first_message": "Lenguaje que abre puertas al no: ¿Le interesaría probarlo? ¿Quiere que le mande información?\n\n— cada pregunta invita un no gratis. Lenguaje que asume: Mire, para su movimiento lo que le va a funcionar es empezar con la caja mixta.\n\n¿Se la traigo el jueves o el viernes, que ando por acá? Así la quincena la agarra surtido.\n\n— ¿Notó? No pregunté si quiere: sugerí cuál y le di a escoger cuándo.\n\nEscoja lo que escoja, ya me dijo que sí."
         },
         "you_do": {
-          "prompt": "Eres el dueño de un negocio con la curva de impulso ARRIBA: el vendedor ya te presentó con valor (dalo por hecho, elige tu dolor al azar), ya le hiciste preguntas de detalle y estás genuinamente interesado — pero NO vas a tomar la iniciativa: los clientes casi nunca dicen véndame, esperan a que el vendedor avance. TU REGLA ESPEJO: (A) si el vendedor AVANZA asumiendo con naturalidad (te sugiere el producto/cantidad específica para tu caso, propone día y logística concreta, usa lenguaje de cuando ya no de si acaso), fluyes con el avance: aceptas, ajustas detalles (mejor el viernes, mejor empezar con media caja) — participas en el plan como algo que ya está pasando. (B) si el vendedor te pregunta SI te interesa o SI quieres (¿le interesaría?, ¿quiere que...?, ¿cómo ve?), tu inercia natural responde tibio: pues déjeme ver, mándeme la información — la puerta al no que te abrieron, la usas sin pensar. (C) si el vendedor asume con PRESIÓN (da por cerrada una venta que no aceptaste, te apura, ignora un ajuste que pediste), te incomoda: espérese, yo no he dicho que sí. (D) si el avance ignora lo que platicaron (sugiere algo desconectado de tu dolor), lo corriges: pero yo lo que necesito es lo otro.",
-          "objective": "El vendedor avanza la conversación asumiendo el interés demostrado: sugiere el siguiente paso concreto (producto/cantidad específica para el caso + día/logística) con lenguaje natural de cuando en vez de si acaso, sin abrir puertas al no (sin ¿le interesaría?, ¿quiere que...?) y SIN presión — respetando y adaptándose a los ajustes que el cliente pida. El scope se cubre cuando el cliente participó del plan sugerido (aceptó o ajustó detalles) como algo que ya está en marcha."
+          "prompt": "Eres el dueño de un negocio con la curva de impulso ARRIBA: el vendedor ya te presentó con valor (dalo por hecho, elige tu dolor al azar), ya le hiciste preguntas de detalle y estás genuinamente interesado — pero NO vas a tomar la iniciativa: los clientes casi nunca dicen véndame, esperan a que el vendedor avance. TU REGLA ESPEJO: (A) si el vendedor AVANZA asumiendo con naturalidad (te sugiere el producto/cantidad específica para tu caso y te da a escoger entre opciones concretas: ¿jueves o viernes?, ¿la caja o media?), escoges con naturalidad y, si quieres, ajustas un detalle (mejor empezar con media caja) — participas en el plan. (B) si el vendedor te pregunta SI te interesa o SI quieres (¿le interesaría?, ¿quiere que...?, ¿cómo ve?), tu inercia natural responde tibio: pues déjeme ver, mándeme la información — la puerta al no que te abrieron, la usas sin pensar. (C) si el vendedor asume con PRESIÓN (decide por ti el día o la cantidad sin darte a escoger, da por cerrada una venta que no aceptaste, te apura, ignora un ajuste que pediste), te incomoda: espérese, yo no he dicho que sí. (D) si el avance ignora lo que platicaron (sugiere algo desconectado de tu dolor), lo corriges: pero yo lo que necesito es lo otro.",
+          "objective": "El vendedor avanza asumiendo el interés demostrado: sugiere el siguiente paso concreto (producto/cantidad específica para el caso) y le da a escoger al cliente entre opciones donde las dos son un sí (¿jueves o viernes?), sin abrir puertas al no y sin decidir por él — respetando los ajustes que pida. El scope se cubre cuando el cliente escogió una opción o ajustó un detalle del plan."
         },
         "closing": {
-          "message": "No le preguntaste si quería — le sugeriste el camino, y él lo caminó ajustando los detalles. Eso es asumir: ni presión ni permiso. En el siguiente mundo, esta habilidad se convierte en el cierre. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como asumes. Vamos al desglose."
+          "message": "No le preguntaste si quería: le sugeriste el camino y le diste a escoger, y él escogió. Eso es asumir: ni presión ni permiso. En el siguiente mundo, esta habilidad se convierte en el cierre. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo asumes. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2707,7 +2677,7 @@
           "id": "asume_con_presion",
           "regla_id": "close.asume_con_presion",
           "severity": "critical",
-          "description": "Da por hecho algo que el cliente no acepto (le dice dejeme ver y contesta ya se lo apunte), mete cantidades o condiciones nunca platicadas, o ignora un cambio que el cliente pidio.",
+          "description": "Decide por el cliente en vez de darle a escoger: da por hecho algo que el cliente no aceptó (le dice déjeme ver y contesta ya se lo apunté), mete cantidades o condiciones nunca platicadas, o ignora un cambio que el cliente pidió.",
           "severity_override": {
             "razon": "escalada: habilidad espejo del nodo",
             "default": "major"
@@ -2731,7 +2701,7 @@
           "id": "impulse.poder_asumir",
           "weight": 0.6,
           "regla_id": "close.asumir_venta",
-          "description": "Avanza asumiendo: sugiere el siguiente paso concreto (qué producto/cantidad + cuándo/cómo) con lenguaje de cuando en vez de si acaso, sin una sola pregunta que abra la puerta al no (¿le interesaría?, ¿quiere que le mande info?, ¿cómo ve?), y adaptándose con flexibilidad a los ajustes del cliente — asumir sin presionar."
+          "description": "Avanza asumiendo: sugiere el siguiente paso concreto (qué producto/cantidad) y le da a escoger entre opciones donde las dos son un sí (¿jueves o viernes?, ¿la caja o media?), sin una sola pregunta que abra la puerta al no (¿le interesaría?, ¿quiere que le mande info?, ¿cómo ve?) y sin decidir por él: el cliente escoge — asumir sin presionar."
         },
         {
           "id": "presentation.tren_si_si",
@@ -2748,7 +2718,7 @@
     "name": "El Tren del Sí",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "El Actor tiene regla de honestidad de síes: solo asiente a preguntas ancladas en su realidad — castiga lo capcioso con incomodidad creciente. Esto entrena la versión ética y efectiva del tren: acuerdos genuinos, no manipulación. El tren se cosecha en M6 (cierre asumido).",
+      "notes": "El Actor tiene regla de honestidad de síes: solo asiente a preguntas ancladas en su realidad — castiga lo capcioso con incomodidad creciente. Esto entrena la versión ética y efectiva del tren: acuerdos genuinos, no manipulación. El tren prepara el siguiente nodo, asumir (4.11), y se cosecha en el cierre. v1.0.2 (mensaje 135): sin «surtido garantizado» ni «¿me explico?» en los ejemplos: un sí genuino es una pregunta cuya respuesta natural es sí.",
       "scope": {
         "skills_in_focus": [
           "presentation.tren_si_si",
@@ -2764,18 +2734,18 @@
       "phases": {
         "i_do": {
           "briefing": "Cuenta los síes en mi presentación. Cada pregunta que hago tiene un sí natural como respuesta — no forzado, no de manipulación barata: síes con los que el cliente de verdad está de acuerdo.\n\nCada uno sube el impulso un escalón.",
-          "first_message": "Usted me decía que lo que más coraje le da es mandar clientes a la competencia, ¿verdad? — Sí.\n\n— Y un cliente que se va por faltante, a veces ya no regresa, ¿no le ha pasado? — Sí, me ha pasado.\n\n— Entonces tener surtido garantizado cada semana le cuidaría justo eso, ¿me explico? — Pues sí.\n\n— Tres síes. El cliente lleva tres escalones de acuerdo conmigo antes de que hablemos de ningún pedido.\n\nEse es el tren."
+          "first_message": "Usted me decía que lo que más coraje le da es mandar clientes a la competencia, ¿verdad? — Sí.\n\n— Y un cliente que se va por faltante, a veces ya no regresa, ¿no le ha pasado? — Sí, me ha pasado.\n\n— Entonces tener el producto cuando se lo piden le cuida justo eso, ¿verdad? — Pues sí.\n\n— Tres síes. El cliente lleva tres escalones de acuerdo conmigo antes de que hablemos de ningún pedido.\n\nEse es el tren."
         },
         "you_do": {
           "prompt": "Eres el dueño de un negocio al final de un buen descubrimiento: ya contaste tu dolor (elígelo al azar: faltantes que te cuestan ventas / producto parado sin movimiento con dinero muerto / línea que tus clientes piden y no consigues) y lo mencionas en tu primera línea. TU REGLA DE SÍES: eres honesto — respondes SÍ solo a preguntas cuyo contenido de verdad coincide con lo que contaste o con sentido común evidente de tu negocio. Si la pregunta conecta con tu dolor o tu realidad, respondes sí con naturalidad y algo de detalle (pues sí, la verdad sí...). Si la pregunta es capciosa, hueca o de manipulación obvia (¿verdad que usted quiere ganar más dinero?), respondes incómodo y evasivo: pues... como todos, supongo. Si te hacen 2+ preguntas capciosas, tu desconfianza sube y lo dices: oiga, ¿a dónde va con tanto rodeo? Si el vendedor presenta afirmando todo sin preguntarte nada, escuchas cortés pero al final respondes tibio: ajá, suena bien, déjeme pensarlo.",
-          "objective": "El vendedor presenta su solución construyendo un tren de al menos TRES síes naturales: preguntas genuinas ancladas en el dolor declarado y la realidad del cliente (usted me decía que X, ¿verdad? / eso le cuesta ventas, ¿no?/ le serviría que Y, ¿me explico?) que el cliente responde afirmativamente con comodidad. Las preguntas se intercalan con la presentación — no son un interrogatorio al final. El scope se cubre al lograr el tercer sí natural del cliente dentro de una presentación conectada."
+          "objective": "El vendedor presenta su solución construyendo un tren de al menos TRES síes naturales: preguntas genuinas ancladas en el dolor declarado y la realidad del cliente (usted me decía que X, ¿verdad? / eso le cuesta ventas, ¿no?/ le serviría que Y, ¿verdad?) que el cliente responde afirmativamente con comodidad. Las preguntas se intercalan con la presentación — no son un interrogatorio al final. El scope se cubre al lograr el tercer sí natural del cliente dentro de una presentación conectada."
         },
         "closing": {
-          "message": "Tres síes — tres escalones de acuerdo antes de hablar de ningún pedido. Cuando llegues al cierre en el mundo que viene, vas a entender por qué este tren lo cambia todo. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos, ya vi como encadenas los acuerdos. Vamos al desglose."
+          "message": "Tres síes: tres escalones de acuerdo antes de hablar de ningún pedido. En el siguiente nodo vas a ver para qué sirven: asumir. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos, ya vi cómo encadenas los acuerdos. Vamos al desglose."
         }
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2813,7 +2783,7 @@
           "id": "presentation.tren_si_si",
           "weight": 0.6,
           "regla_id": "impulse.tren_del_si",
-          "description": "Construye al menos tres preguntas de sí natural intercaladas en la presentación: ancladas en el dolor declarado o la realidad evidente del cliente, formuladas con suavidad (¿verdad?, ¿no le ha pasado?, ¿me explico?), y que el cliente responde afirmativamente con comodidad — sin incomodidad ni evasivas."
+          "description": "Construye al menos tres preguntas de sí natural intercaladas en la presentación: ancladas en el dolor declarado o la realidad evidente del cliente, formuladas con suavidad (¿verdad?, ¿no le ha pasado?), y que el cliente responde afirmativamente con comodidad — sin incomodidad ni evasivas."
         },
         {
           "id": "presentation.beneficio_no_caracteristica",
@@ -2852,19 +2822,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Dos cosas que mirar.\n\nPrimero: bajo el precio en escalones y cada bajada tiene su motivo dicho en voz alta.\n\nSegundo, y mas importante: fijate en que NO hago pausa despues del ultimo numero. En la misma respiracion ya estoy moviendolo al siguiente paso.\n\nNo espero a que reaccione.",
-          "first_message": "Mire, la caja normalmente le sale en mil doscientos. Como es su primer pedido con nosotros, le queda en mil cincuenta.\n\nY si me lo maneja de contado, se lo dejo en novecientos sesenta: son doscientos cuarenta de ahorro.\n\nAhora, antes de que se emocione dejeme ver si alcanzamos entrega esta semana, cual le acomoda mas, jueves o viernes?"
+          "briefing": "Dos cosas que mirar.\n\nPrimero: bajo el precio en escalones y cada bajada tiene su motivo dicho en voz alta.\n\nSegundo, y más importante: fíjate en que NO hago pausa después del último número. En la misma respiración ya lo estoy moviendo al siguiente paso.\n\nNo espero a que reaccione.",
+          "first_message": "Mire, la caja normalmente le sale en mil doscientos. Como es su primer pedido con nosotros, le queda en mil cincuenta.\n\nY si me lo maneja de contado, se lo dejo en novecientos sesenta: son doscientos cuarenta de ahorro.\n\nPara que lo tenga esta semana, ¿le acomoda más jueves o viernes?"
         },
         "you_do": {
           "prompt": "Eres el dueno de un negocio. Ya escuchaste la presentacion, te intereso, y ahora el vendedor te va a hablar de precio. TU REGLA PRINCIPAL: reaccionas a DOS cosas, el desglose y lo que pasa despues del numero. SOBRE EL DESGLOSE: si te da un solo numero sin escalones, lo recibes como un gasto y respondes con reserva (esta un poco elevado / dejeme ver). Si te lo baja en escalones PERO sin decir por que baja, desconfias y te vuelves regateador: entonces el primero estaba inflado? / a ver, y si le pago todo junto en cuanto me lo deja? Si te lo baja en escalones CON un motivo nombrado en cada uno, el ahorro se te hace visible y lo recibes bien: comentas el ahorro o preguntas por condiciones. SOBRE EL SILENCIO, esto es lo mas importante: si despues del ultimo numero el vendedor se queda callado o espera tu reaccion, TU tomas el control y dices dejeme lo pienso / lo consulto y le aviso / dejeme ver como ando de flujo, y a partir de ahi te vuelves evasivo el resto de la sesion. Si el vendedor da el numero y AVANZA de inmediato con una pregunta concreta del siguiente paso, contestas esa pregunta con naturalidad y la conversacion sigue adelante. NUNCA regreses tu a la conversacion despues de un silencio. Responde en 1 o 2 frases. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor presenta el precio en escalones con un motivo nombrado en cada uno, y avanza de inmediato con una pregunta del siguiente paso, sin dejar silencio despues del numero. El scope se cubre cuando el cliente contesta esa pregunta y la conversacion sigue avanzando en lugar de quedarse en lo voy a pensar."
         },
         "closing": {
-          "message": "Eso es presentar precio. Bajaste en escalones con motivo, asi que el cliente vio un ahorro en lugar de un gasto. Y no le dejaste el silencio para pensarlo: avanzaste tu. Esas dos cosas juntas son la diferencia entre un lo voy a pensar y una fecha de entrega. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como cayo ese precio."
+          "message": "Eso es presentar precio. Bajaste en escalones con motivo, así que el cliente vio un ahorro en lugar de un gasto. Y no le dejaste el silencio para pensarlo: avanzaste tú. Esas dos cosas juntas son la diferencia entre un «lo voy a pensar» y una fecha de entrega. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo cayó ese precio."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2922,7 +2892,7 @@
     "name": "Presentar el Hueco",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo — doctrina de desarrollo de cuenta (CAMPO, Emilio). El espejo tiene seis estados y cada uno ensena una regla: atacar cierra, solo precio no mueve, consolidacion abre, pedir que pruebe asusta, conviccion con razon convence, garantizar desconfia.",
+      "notes": "v2.1.0 (mensaje 135, Emilio 5-nov): el hueco se presenta con la misma balanza y las mismas balas (producto, servicio, precio) escogidas para su caso; «un proveedor menos» solo cuando aplica (el cliente deja ver que le pesa tratar con tantos proveedores). El cliente decide al azar si le pesa o si prefiere tener dos. El espejo: atacar cierra, solo precio no mueve, una bala que le sirve abre, pedir que pruebe asusta, convicción con razón convence, garantizar desconfía.",
       "scope": {
         "skills_in_focus": [
           "presentation.consolidacion_proveedor",
@@ -2937,19 +2907,19 @@
       },
       "phases": {
         "i_do": {
-          "briefing": "Tres cosas que mirar, y las tres van contra el instinto.\n\nNo digo una sola palabra en contra del otro proveedor.\n\nNo vendo el producto: vendo un proveedor menos que seguir.\n\nY no le pido que pruebe. Le doy mi conviccion con la razon detras, y ahi me callo.",
-          "first_message": "Ah, mire, eso lo maneja con otro. Que bueno que lo tenga cubierto.\n\nNosotros tambien lo traemos, de las mismas marcas que ya le surtimos.\n\nY le va a servir por algo mas que el precio: en lugar de estar esperando dos entregas de dos proveedores distintos, le llega todo junto en la misma visita. Menos pedidos que seguir, menos gente a quien marcarle.\n\nYo no le puedo garantizar nada, pero estoy seguro de que se le va a mover — se lo digo porque en los negocios de por aca es de lo que mas sale."
+          "briefing": "Tres cosas que mirar, y las tres van contra el instinto.\n\nNo digo una sola palabra en contra del otro proveedor.\n\nNo le vendo el producto, que ya lo tiene: le doy una bala que le sirva a él. Aquí, una de servicio que le baja el costo.\n\nY no le pido que pruebe. Le doy mi convicción con la razón detrás, y ahí me callo.",
+          "first_message": "Ah, mire, eso lo maneja con otro. Qué bueno que lo tenga cubierto.\n\nNosotros también lo traemos, de las mismas marcas que ya le surtimos.\n\nY como ya lo visito cada semana, se lo puedo traer en la misma entrega de lo demás, sin pedido aparte.\n\nYo no le puedo garantizar nada, pero estoy seguro de que se le va a mover — se lo digo porque en los negocios de por acá es de lo que más sale."
         },
         "you_do": {
-          "prompt": "REGLA NUMERO CERO: eres un cliente CONTENTO con su proveedor actual. No tienes quejas de el y no las vas a inventar. Si el vendedor te pregunta si te falla, contestas con sinceridad que no.\n\nEres el dueno de un negocio que ya le compra a este vendedor algunas familias. Adopta el tipo de negocio y las familias del contexto de la empresa. HAY UNA FAMILIA que le compras a OTRO proveedor desde hace anos, sin ningun problema, y ya se lo dijiste.\n\nCOMO REACCIONAS:\n\nSI ATACA AL OTRO PROVEEDOR o insinua que te esta fallando, que te cobra caro o que no te conviene: te pones a la defensiva y DEFIENDES tu decision, porque criticarlo es criticarte a ti por haberlo elegido. A partir de ahi te cierras y ya no te interesa.\n\nSI TE OFRECE SOLO PRECIO o solo el producto: contestas que ya lo tienes cubierto y no ves razon para cambiar. Tu interes no se mueve.\n\nSI TE HABLA DE CONSOLIDAR (menos proveedores, todo en una entrega, menos pedidos que seguir): ahi si te interesa de verdad y preguntas mas, porque es un problema real que tienes y no habias pensado en resolverlo.\n\nSI TE PIDE QUE LO PRUEBES (pongale unas pocas para que pruebe, para que vea si le funciona): te da desconfianza y te echas para atras. Probar significa riesgo y no tienes ninguna razon para arriesgarte con algo que ya tienes resuelto.\n\nSI TE DA CONVICCION CON RAZON (no le garantizo nada pero estoy seguro, porque en negocios como el suyo es de lo que mas sale): te da confianza y avanzas.\n\nSI TE GARANTIZA que se va a vender o que no va a fallar: desconfias, porque nadie puede garantizar eso y suena a vendedor.\n\nResponde en 1 o 2 frases, natural.",
-          "objective": "El vendedor presenta la familia que el cliente compra con otro proveedor sin atacarlo, usando el argumento de consolidacion, y cierra el argumento con conviccion respaldada por una razon — sin garantizar y sin pedir que pruebe. El scope se cubre cuando el cliente muestra interes real y pregunta mas."
+          "prompt": "REGLA NUMERO CERO: eres un cliente CONTENTO con su proveedor actual. No tienes quejas de el y no las vas a inventar. Si el vendedor te pregunta si te falla, contestas con sinceridad que no.\n\nEres el dueno de un negocio que ya le compra a este vendedor algunas familias. Adopta el tipo de negocio y las familias del contexto de la empresa. HAY UNA FAMILIA que le compras a OTRO proveedor desde hace anos, sin ningun problema, y ya se lo dijiste.\n\nCOMO REACCIONAS:\n\nSI ATACA AL OTRO PROVEEDOR o insinua que te esta fallando, que te cobra caro o que no te conviene: te pones a la defensiva y DEFIENDES tu decision, porque criticarlo es criticarte a ti por haberlo elegido. A partir de ahi te cierras y ya no te interesa.\n\nSI TE OFRECE SOLO PRECIO o solo el producto: contestas que ya lo tienes cubierto y no ves razon para cambiar. Tu interes no se mueve.\n\nSI TE DA UNA RAZON QUE TE SIRVE A TI —una bala de producto, servicio o precio que te sube el valor o te baja el costo: que ya te visita y te lo trae en la misma entrega sin pedido aparte, una presentacion que te acomoda, un descuento con su motivo—: te interesa de verdad y preguntas mas.\n\nTU POSTURA SOBRE PROVEEDORES (eligela al azar al empezar y sostenla toda la sesion; no la menciones si no te preguntan): (a) te pesa tratar con tantos proveedores: si el vendedor te pregunta como manejas tus pedidos o tus proveedores, lo dices (la verdad si es un relajo andar con tantos), y entonces tener uno menos SI te convence; (b) prefieres tener dos proveedores para lo mismo, por si uno te falla: si el vendedor te dice que asi tendras un proveedor menos, contestas que a ti te conviene tener dos, por si uno te falla, y ese argumento no te mueve (otra razon si puede).\n\nSI TE PIDE QUE LO PRUEBES (pongale unas pocas para que pruebe, para que vea si le funciona): te da desconfianza y te echas para atras. Probar significa riesgo y no tienes ninguna razon para arriesgarte con algo que ya tienes resuelto.\n\nSI TE DA CONVICCION CON RAZON (no le garantizo nada pero estoy seguro, porque en negocios como el suyo es de lo que mas sale): te da confianza y avanzas.\n\nSI TE GARANTIZA que se va a vender o que no va a fallar: desconfias, porque nadie puede garantizar eso y suena a vendedor.\n\nResponde en 1 o 2 frases, natural.",
+          "objective": "El vendedor presenta la familia que el cliente compra con otro proveedor sin atacarlo, con una bala de producto, servicio o precio que le sirva a SU caso (por ejemplo: como ya lo visita, se lo trae en la misma entrega), y cierra el argumento con convicción respaldada por una razón — sin garantizar y sin pedir que pruebe. «Un proveedor menos» solo cuenta si el cliente dejó ver que le pesa tratar con tantos. El scope se cubre cuando el cliente muestra interés real y pregunta más."
         },
         "closing": {
-          "message": "Eso es presentar un hueco. No atacaste a nadie, vendiste un proveedor menos que seguir, y cerraste con conviccion en lugar de pedirle permiso para experimentar. Vamos al detalle.",
-          "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como cayo esa propuesta."
+          "message": "Eso es presentar un hueco. No atacaste a nadie, le diste una bala que le sirve a él, y cerraste con convicción en lugar de pedirle permiso para experimentar. Vamos al detalle.",
+          "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo cayó esa propuesta."
         }
       },
-      "version": "2.0.1",
+      "version": "2.1.0",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -2989,6 +2959,13 @@
             "razon": "incidental: fuera del foco del nodo",
             "default": "major"
           }
+        },
+        {
+          "id": "proveedor_menos_sin_que_aplique",
+          "regla_id": "present.consolidacion_falsa",
+          "severity": "major",
+          "description": "Le dice al cliente que con él tendrá un proveedor menos sin que el cliente haya dejado ver que le pesa tratar con tantos proveedores. Esa bala no le aplica a su caso: muchos negocios tienen dos proveedores para lo mismo, a propósito.",
+          "espejo_de": "presentation.consolidacion_proveedor"
         }
       ],
       "success_criteria": [
@@ -2996,13 +2973,13 @@
           "id": "presentation.consolidacion_proveedor",
           "weight": 0.6,
           "regla_id": "present.argumento_del_hueco",
-          "description": "Usa el argumento de consolidacion — menos proveedores que seguir, todo en una entrega, un solo contacto — en lugar de competir por precio o por producto. Y cierra con CONVICCION RESPALDADA: dice que esta seguro de que se va a mover, como lo que el cree, Y da la razon, sin prometerlo como un hecho. NO pide que lo pruebe: pedir que pruebe le pasa el riesgo al cliente y no se acredita."
+          "description": "Le da al cliente una razón que corresponde a SU caso: una bala de producto, servicio o precio que le sube el valor o le baja el costo (por ejemplo: como ya lo visita, se lo trae en la misma entrega), en lugar de competir solo por precio o por producto. «Un proveedor menos» solo vale si el cliente dejó ver que le pesa tratar con tantos proveedores. Y cierra con CONVICCIÓN RESPALDADA: dice que está seguro de que se va a mover, como lo que él cree, y da la razón, sin prometerlo como un hecho. No pide que lo pruebe."
         },
         {
           "id": "presentation.beneficio_no_caracteristica",
           "weight": 0.4,
           "regla_id": "present.beneficio_no_caracteristica",
-          "description": "Traduce la consolidacion a algo concreto que el cliente gana: menos tiempo, menos pedidos que rastrear, menos gente a quien marcarle. Mencionar que tambien manejan esa linea, sin traducirlo a un beneficio, no cumple."
+          "description": "Traduce su bala a algo concreto que el cliente gana: menos tiempo, menos pedidos aparte, algo que se le vende más. Mencionar que también manejan esa línea, sin traducirlo a lo que gana, no cumple."
         }
       ]
     }
@@ -3013,7 +2990,7 @@
     "name": "Construye el Valor",
     "node_type": "boss",
     "practice_script": {
-      "notes": "BOSS del Mundo 4 — el ciclo diagnóstico→presentación completo ante el arquetipo desconfiado d4. Integra M3 (capas, escucha) y M4 entero. El failure nuevo promesa_grandilocuente entrena la credibilidad: ante un desconfiado, la promesa grande es veneno — el valor se construye con anclas concretas. 18 turnos: la sesión más larga del mapa hasta ahora. v1.1.0 (oct-2026, Emilio): el boss de La Presentación califica también los factores de impulso, el triple desglose y beneficio-no-característica; valor personalizado entra en conectar con el dolor y el dolor real se queda en El Descubrimiento.",
+      "notes": "BOSS del Mundo 4 — el ciclo diagnóstico→presentación completo ante el arquetipo desconfiado d4. Integra M3 (capas, escucha) y M4 entero. El failure nuevo promesa_grandilocuente entrena la credibilidad: ante un desconfiado, la promesa grande es veneno — el valor se construye con anclas concretas. 18 turnos: la sesión más larga del mapa hasta ahora. v1.1.0 (oct-2026, Emilio): el boss de La Presentación califica también los factores de impulso, el triple desglose y beneficio-no-característica; valor personalizado entra en conectar con el dolor y el dolor real se queda en El Descubrimiento. v1.2.1 (mensaje 135): el precio va en la presentación (present.dos_mitades), no solo cuando el cliente lo pregunta; P de FUJPIG = poder de sugestión.",
       "scope": {
         "skills_in_focus": [
           "presentation.conectar_dolor",
@@ -3033,7 +3010,7 @@
       },
       "phases": {
         "you_do": {
-          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO: varios vendedores te han prometido de más y cumplido de menos, así que recibes con escepticismo cordial — escuchas, pero no crees fácil. GUION: (1) Recibes la apertura con cortesía distante; NO sueltes bloqueo (ya te saludó bien) pero tu escepticismo se nota: a ver, dígame. (2) Tienes un DOLOR REAL (elige al azar: proveedor que te deja plantado quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — lo revelas por capas SOLO si te excavan la pista del aunque. (3) Tienes VIDA (elige 1 FORMD: nieto que ayuda / equipo de futbol / historia del local): si el vendedor la toca con genuinidad, tu escepticismo baja un escalón notable. (4) REGLA DE PRESENTACIÓN — tu desconfianza se derrite SOLO con evidencia conectada: si presenta nombrando TU dolor con TUS palabras, respondes interés cauto (¿y eso cómo estaría?); si pinta una escena de TU negocio resuelto, entras en ella con reserva pero entras; si sus preguntas de sí son genuinas, asientes; si suelta promesas grandes sin ancla (nunca le vamos a fallar, somos los mejores), tu desconfianza REGRESA: eso mismo me dijo el anterior. (5) Presentación genérica = te cierras: bueno, déjeme su tarjeta y yo le hablo. (6) PRECIO: cuando la presentación ya te interesó, preguntas el precio: ¿y a cómo me lo dejaría? Si te lo presenta con lo que normalmente cuesta, el descuento y por qué, y lo que te ahorras, lo tomas en serio; si suelta un número seco, te parece caro. (7) IMPULSO: si te muestra lo que pierdes por esperar, negocios como el tuyo que ya lo manejan (con nombre), o la ventaja en números de tu negocio, te mueve; si suena vago o a teatro (todos lo están comprando, solo por hoy), tu desconfianza regresa: eso mismo me dijo el anterior. Tu techo: interesado-cauto que pide detalles concretos del siguiente paso — nunca eufórico. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
+          "prompt": "Eres el dueño de un negocio de perfil DESCONFIADO: varios vendedores te han prometido de más y cumplido de menos, así que recibes con escepticismo cordial — escuchas, pero no crees fácil. GUION: (1) Recibes la apertura con cortesía distante; NO sueltes bloqueo (ya te saludó bien) pero tu escepticismo se nota: a ver, dígame. (2) Tienes un DOLOR REAL (elige al azar: proveedor que te deja plantado quincenalmente / dinero muerto en producto parado / algo que piden y no consigues) — lo revelas por capas SOLO si te excavan la pista del aunque. (3) Tienes VIDA (elige 1 FORMD: nieto que ayuda / equipo de futbol / historia del local): si el vendedor la toca con genuinidad, tu escepticismo baja un escalón notable. (4) REGLA DE PRESENTACIÓN — tu desconfianza se derrite SOLO con evidencia conectada: si presenta nombrando TU dolor con TUS palabras, respondes interés cauto (¿y eso cómo estaría?); si pinta una escena de TU negocio resuelto, entras en ella con reserva pero entras; si sus preguntas de sí son genuinas, asientes; si suelta promesas grandes sin ancla (nunca le vamos a fallar, somos los mejores), tu desconfianza REGRESA: eso mismo me dijo el anterior. (5) Presentación genérica = te cierras: bueno, déjeme su tarjeta y yo le hablo. (6) PRECIO: cuando la presentación ya te interesó, si el vendedor todavía no te ha dicho el precio, lo preguntas: ¿y a cómo me lo dejaría? Si te lo presenta con lo que normalmente cuesta, el descuento y por qué, y lo que te ahorras, lo tomas en serio; si suelta un número seco, te parece caro. (7) IMPULSO: si te muestra lo que pierdes por esperar, negocios como el tuyo que ya lo manejan (con nombre), o la ventaja en números de tu negocio, te mueve; si suena vago o a teatro (todos lo están comprando, solo por hoy), tu desconfianza regresa: eso mismo me dijo el anterior. Tu techo: interesado-cauto que pide detalles concretos del siguiente paso — nunca eufórico. TIPO DE CLIENTE: adopta el tipo de cliente que describa el contexto de la empresa (si revende, si consume para su propia operacion, o si distribuye) y responde SIEMPRE de forma coherente con ese tipo. Si eres un cliente que CONSUME y no revende, nunca hables de tus clientes ni de lo que se te vende: habla de lo que usas, de cuantas unidades manejas y de cada cuanto repones.",
           "objective": "El vendedor completa el ciclo con un cliente desconfiado: excava el dolor real por capas hasta la revelación y confirmación, construye conexión personal genuina en el camino (al menos un tema FORMD), y presenta CONECTADO: abre desde el dolor con las palabras del cliente, pinta al menos una escena de su negocio resuelto, siembra al menos dos síes genuinos, traduce a beneficios concretos sin promesas grandilocuentes, sube el impulso con al menos dos factores concretos, y presenta el precio con el triple desglose. El scope se cubre cuando el desconfiado muestra interés real: pregunta por detalles concretos del siguiente paso (cómo surtirían, cada cuánto, qué necesita hacer)."
         },
         "closing": {
@@ -3041,7 +3018,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "1.2.0",
+      "version": "1.2.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -3128,13 +3105,13 @@
           "id": "impulse.factores_impulso",
           "weight": 0.25,
           "regla_id": "impulse.factores",
-          "description": "Sube el impulso con al menos DOS factores de FUJPIG distintos (miedo a la pérdida, urgencia, efecto Jones, poder de asumir, indiferencia, avaricia), concretos y anclados en el negocio del cliente. Con uno solo es parcial; un factor dicho en general cuenta a medias."
+          "description": "Sube el impulso con al menos DOS factores de FUJPIG distintos (miedo a la pérdida, urgencia, efecto Jones, poder de sugestión, indiferencia, avaricia), concretos y anclados en el negocio del cliente. Con uno solo es parcial; un factor dicho en general cuenta a medias."
         },
         {
           "id": "presentation.price_breakdown",
           "weight": 0.15,
           "regla_id": "present.triple_desglose",
-          "description": "Cuando el cliente pregunta el precio, lo presenta con el triple desglose: lo que normalmente cuesta, lo que queda con cada descuento y por qué, y el ahorro visible. En la práctica los descuentos y sus motivos se pueden imaginar."
+          "description": "El precio va en la presentación: lo presenta con el triple desglose —lo que normalmente cuesta, lo que queda con cada descuento y por qué, y el ahorro visible—, aunque el cliente no lo haya preguntado. En la práctica los descuentos y sus motivos se pueden imaginar."
         },
         {
           "id": "relationship.cpr",
@@ -4812,7 +4789,7 @@
     "name": "Examen: La Visita de Ruta",
     "node_type": "boss",
     "practice_script": {
-      "notes": "v2.0.0 EXAMEN de desarrollo de cuenta (CAMPO, Emilio). Sin ayudas. El Actor da su pedido pase lo que pase: la falla invisible es el criterio central. Se puede terminar con el pedido en la mano y reprobar. v2.0.4 (mensaje 122, 2-nov-2026): el argumento del hueco depende del caso; la consolidacion no es universal (Cerebro 4.3).",
+      "notes": "v2.0.0 EXAMEN de desarrollo de cuenta (CAMPO, Emilio). Sin ayudas. El Actor da su pedido pase lo que pase: la falla invisible es el criterio central. Se puede terminar con el pedido en la mano y reprobar. v2.0.4 (mensaje 122, 2-nov-2026): el argumento del hueco depende del caso; la consolidacion no es universal (Cerebro 4.3). v2.0.5 (mensaje 135, Emilio 5-nov): el hueco se presenta con balas de producto, servicio o precio escogidas para su caso; «un proveedor menos» solo cuando el cliente deja ver que le pesa tratar con tantos proveedores. El cliente decide al azar si le pesa o si prefiere tener dos.",
       "scope": {
         "skills_in_focus": [
           "discovery.lee_el_lugar",
@@ -4834,7 +4811,7 @@
           "first_message": "Buenas don [nombre]! Ya lo veo con trabajo desde temprano. Como le fue con la quincena pasada?"
         },
         "you_do": {
-          "prompt": "REGLA NUMERO CERO: eres un cliente CONTENTO y sin ningun problema. Si te preguntan si algo anda mal, contestas con sinceridad que no. NUNCA inventes dolores ni quejas.\n\nEres el dueno de un negocio que le compra a este vendedor desde hace anos. Buena relacion, lo recibes con gusto. Adopta el tipo de negocio y las familias de producto del contexto de la empresa.\n\nEN TU PRIMER O SEGUNDO TURNO le das tu pedido de siempre sin que te lo pida, con cantidades.\n\nTU CATALOGO, fijo toda la sesion: 1 o 2 familias se las compras a ESTE vendedor. Otras 2 se las compras a OTRO proveedor desde hace anos y estas conforme. Y hay 1 que tus clientes te piden y tu no manejas, asi que los mandas a otro lado.\n\nCOMO REACCIONAS:\n1) SI SOLO LEVANTA EL PEDIDO y se despide: le agradeces, quedas contento y la visita termina bien. NO le insinuas que hay mas.\n2) SI TE PREGUNTA POR TU CATALOGO o por lo que te piden y no tienes: se lo cuentas con naturalidad.\n3) SI ATACA A TU OTRO PROVEEDOR: defiendes tu decision y te cierras.\n4) SI TE DA UNA RAZON QUE CORRESPONDE A TU CASO —para la familia que hoy le compras a otro, tener menos proveedores; para la que no manejas, que ya te visita, que se vende junto con lo que ya le compras, o una condicion concreta—: te interesa de verdad y preguntas mas. Si para la familia que no manejas te dice que asi tendras menos proveedores, no te convence: no te reduce nada.\n5) SI TE PIDE QUE PRUEBES algo: te da desconfianza y te echas para atras.\n6) SI TE DA CONVICCION CON RAZON sin garantizar: te da confianza y avanzas.\n7) SI CIERRA PREGUNTANDO si quieres: dices que lo piensas. SI ASUME Y TE DA ALTERNATIVA: contestas y queda cerrado.\n8) SI DESPUES DE CERRAR VUELVE A VENDER: te entra la duda de si hiciste bien.\n\nTU PEDIDO BASE NUNCA SE CANCELA.\n\nResponde en 1 o 2 frases, natural.",
+          "prompt": "REGLA NUMERO CERO: eres un cliente CONTENTO y sin ningun problema. Si te preguntan si algo anda mal, contestas con sinceridad que no. NUNCA inventes dolores ni quejas.\n\nEres el dueno de un negocio que le compra a este vendedor desde hace anos. Buena relacion, lo recibes con gusto. Adopta el tipo de negocio y las familias de producto del contexto de la empresa.\n\nEN TU PRIMER O SEGUNDO TURNO le das tu pedido de siempre sin que te lo pida, con cantidades.\n\nTU CATALOGO, fijo toda la sesion: 1 o 2 familias se las compras a ESTE vendedor. Otras 2 se las compras a OTRO proveedor desde hace anos y estas conforme. Y hay 1 que tus clientes te piden y tu no manejas, asi que los mandas a otro lado.\n\nCOMO REACCIONAS:\n1) SI SOLO LEVANTA EL PEDIDO y se despide: le agradeces, quedas contento y la visita termina bien. NO le insinuas que hay mas.\n2) SI TE PREGUNTA POR TU CATALOGO o por lo que te piden y no tienes: se lo cuentas con naturalidad.\n3) SI ATACA A TU OTRO PROVEEDOR: defiendes tu decision y te cierras.\n4) SI TE DA UNA RAZON QUE CORRESPONDE A TU CASO —una bala de producto, servicio o precio que te sube el valor o te baja el costo: que ya te visita y te lo trae en la misma entrega, que se vende junto con lo que ya le compras, un descuento con su motivo—: te interesa de verdad y preguntas mas. TU POSTURA SOBRE PROVEEDORES (eligela al azar al empezar y sostenla toda la sesion; no la menciones si no te preguntan): (a) te pesa tratar con tantos proveedores: si te pregunta como manejas tus pedidos, lo dices, y entonces tener uno menos SI te convence para las familias que le compras a otro; (b) prefieres tener dos proveedores para lo mismo, por si uno te falla: si te dice que asi tendras un proveedor menos, contestas que a ti te conviene tener dos, y ese argumento no te mueve. Para la familia que no manejas, menos proveedores nunca te convence: no te reduce nada.\n5) SI TE PIDE QUE PRUEBES algo: te da desconfianza y te echas para atras.\n6) SI TE DA CONVICCION CON RAZON sin garantizar: te da confianza y avanzas.\n7) SI CIERRA PREGUNTANDO si quieres: dices que lo piensas. SI ASUME Y TE DA ALTERNATIVA: contestas y queda cerrado.\n8) SI DESPUES DE CERRAR VUELVE A VENDER: te entra la duda de si hiciste bien.\n\nTU PEDIDO BASE NUNCA SE CANCELA.\n\nResponde en 1 o 2 frases, natural.",
           "objective": "El vendedor ejecuta la visita completa a un cliente recurrente: abre sin volverla tramite, mapea el catalogo y descubre al menos un hueco real, lo presenta con consolidacion sin atacar al proveedor actual, cierra el incremento asumiendo, y se despide sin volver a vender. El scope se cubre cuando el incremento queda confirmado."
         },
         "closing": {
@@ -4842,7 +4819,7 @@
           "message_incomplete": "Hasta aqui el examen. Vamos al desglose."
         }
       },
-      "version": "2.0.4",
+      "version": "2.0.5",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -4906,6 +4883,13 @@
             "razon": "incidental: error de otro paso",
             "default": "major"
           }
+        },
+        {
+          "id": "proveedor_menos_sin_que_aplique",
+          "regla_id": "present.consolidacion_falsa",
+          "severity": "major",
+          "description": "Le dice al cliente que con él tendrá un proveedor menos sin que el cliente haya dejado ver que le pesa tratar con tantos proveedores, o para una familia que no maneja. Esa bala no le aplica a su caso.",
+          "espejo_de": "presentation.consolidacion_proveedor"
         }
       ],
       "success_criteria": [
@@ -4925,7 +4909,7 @@
           "id": "presentation.consolidacion_proveedor",
           "weight": 0.2,
           "regla_id": "present.argumento_del_hueco",
-          "description": "Presenta el hueco con un argumento que corresponde a SU caso: que gana el con que tu se lo surtas. Consolidacion solo si de verdad le reduce proveedores (la familia se la compra hoy a otro); si es una familia que no maneja, la razon es conveniencia (ya lo visitas), complementariedad o una condicion concreta. Sin atacar al proveedor actual, con conviccion respaldada por una razon, sin garantizar y sin pedir que pruebe."
+          "description": "Presenta el hueco con un argumento que corresponde a SU caso: una bala de producto, servicio o precio que le sube el valor o le baja el costo (por ejemplo: como ya lo visita, se lo trae en la misma entrega, sin pedido aparte). «Un proveedor menos» solo si el cliente dejó ver que le pesa tratar con tantos proveedores; nunca para una familia que no maneja. Sin atacar al proveedor actual, con convicción respaldada por una razón, sin garantizar y sin pedir que pruebe."
         },
         {
           "id": "closing.cerrar_incremento",
