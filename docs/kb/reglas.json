@@ -795,7 +795,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Después de pedir la decisión, el silencio es del cliente: el primero que habla después de un cierre, pierde. LA PRUEBA: después de pedir la decisión y antes de que el cliente decida, ¿el vendedor se queda en su pregunta —sin retractarse, suavizarla, agregar descuentos o argumentos, ni contestarse solo—? Contestar una pregunta del cliente no rompe el silencio.",
+  "resumen": "Después de pedir la decisión, el silencio es del cliente: el primero que habla después de un cierre, pierde. LA PRUEBA: después de pedir la decisión y antes de que el cliente decida, ¿el vendedor se queda en su pregunta —sin retractarse, suavizarla, agregar descuentos o argumentos, ni contestarse solo—? Contestar una pregunta del cliente no rompe el silencio. Aguantar no garantiza el sí: si después el cliente pone una objeción («déjeme pensarlo»), no es falla del vendedor; se trabaja como objeción.",
   "cita_cerebro": "El primero que habla después de un cierre, pierde",
   "severidad_sugerida": null
  },

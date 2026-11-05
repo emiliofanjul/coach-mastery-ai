@@ -686,6 +686,8 @@ El vendedor que retira la pregunta, la suaviza o la contesta él mismo, pierde. 
 
 **En la práctica** `CAMPO`: llenar el silencio es que, después de pedir la decisión y antes de que el cliente decida, te retractes (*"bueno, si es mucho, pueden ser cinco"*), la suavices (*"o si quiere lo piensa"*), metas descuentos o argumentos nuevos, o te contestes solo. Si el cliente te pregunta algo, contestarle no es llenar el silencio.
 
+**Aguantar no garantiza el sí** `CAMPO`: aguantar es el movimiento correcto, pero la gente no reacciona igual. Unos deciden ahí mismo; otros, aunque hayas hecho todo bien, te contestan *"déjeme pensarlo"*. Eso no es un castigo por algo que hiciste mal: es una objeción, y se trabaja como objeción.
+
 ### FISHBBOD — Señales de Compra `FUENTE`
 También llamadas **STOP signs**. En cuanto reconoces una, **DETIENES la presentación y CIERRAS**.
 
@@ -759,6 +761,7 @@ En español: **Entiendo · Sintió · Encontramos**
 - **Fuente:** *2 no's and a go* — dos no seguidos, luz roja, sigue adelante
 - **Dos no seguidos y te vas, también en el cierre** `CAMPO`: es la misma regla en toda la visita. En la puerta quedas de regresar; al buscar el hueco lo dejas para otra visita; en el cierre te despides bien y dejas la puerta abierta.
 - **«Lo voy a pensar» no es un «no»** `CAMPO`: es una objeción, y se maneja como objeción. Un «no» es *"no, gracias, ahorita no quiero"*.
+- **Buscarle solución a una objeción no es insistir** `CAMPO`: *"ahorita no puedo, hasta el otro mes que cobre lo del contrato"* también es una objeción. Está bien darle la vuelta y volver a cerrar: hecho bien, no se siente insistente, porque estás buscando cómo ayudarlo. El límite es el de siempre: dos no seguidos y te vas.
 
 > **Tienen que ser CONSECUTIVOS.** Un no, lo atraviesas, la conversación avanza, y más adelante otro no: **eso no es una racha**. Es una conversación normal con dos momentos de fricción. La racha se rompe en cuanto la conversación avanza.
 
