@@ -1,7 +1,8 @@
 # Roadmap
 
-- [ ] Mensaje 134: Paso 0 detenido; snapshots ya tienen las cuatro huellas nuevas, prueba existente conserva huella previa; baseline 990 pasan y 1 falla en 77 archivos. Esperar instrucción de Emilio antes de reemplazar o ejecutar SQL.
-- [ ] Mensaje 134: aplicar SQL exacto y verificar 19/3/3/true/4; retirar ambos SQL, instalar dos pruebas exactas y comprobar 1002/78, tipos y app como Emilio; publicar sin desplegar funciones ni correr red. Bloqueado por Paso 0.
+- [x] Mensaje 134: Paso 0 diferencias esperadas confirmadas por Emilio; cuatro snapshots coinciden con huellas nuevas, prueba previa con huella exacta, baseline 990/991 en 77 archivos por acentos nuevos.
+- [x] Mensaje 134: SQL completo aplicado en una ejecución, verificación 19/3/3/true/4; dos SQL retirados, dos pruebas instaladas con MD5 exactos; 1002/1002 en 78 archivos.
+- [ ] Mensaje 134: completar verificación de app como Emilio y publicación sin desplegar funciones ni correr red; registro automático de build/tipos aún no disponible.
 
 - [x] Mensaje 132: baseline 985/76, Cerebro v17 y seis huellas vigentes exactas; snapshots ya traen las dos huellas nuevas esperadas; nueve huellas de entrega exactas.
 - [ ] Mensaje 132: ejecutar SQL protegido exacto, verificar 18/true/3/true y retirar SQL. Bloqueador: la herramienta protegida disponible recibe texto, no archivo; la regla vigente prohíbe transcribir el SQL. No SQL ejecutado ni entregas reemplazadas.
