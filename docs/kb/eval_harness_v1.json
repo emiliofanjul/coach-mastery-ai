@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.41.0",
+  "harness_version": "v3.41.1",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -6506,7 +6506,7 @@
         },
         {
           "role": "user",
-          "text": "O sea que cada quincena se le van unos tres mil pesos a otro taller. Yo paso cada jueves por esta ruta, así que el 15W40 lo tendría cada semana y no se le acabaría a media quincena. La cubeta le queda en 1,250. ¿Verdad que estaría bien que la flotilla ya no se le fuera?"
+          "text": "O sea que cada quincena se le van unos tres mil pesos a otro taller. Yo paso cada jueves por esta ruta, así que el 15W40 lo tendría cada semana y no se le acabaría a media quincena. La cubeta le queda en 1,250, y con eso la flotilla ya no se le va."
         },
         {
           "role": "assistant",
