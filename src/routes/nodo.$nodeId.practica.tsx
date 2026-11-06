@@ -8,7 +8,7 @@ import { conReintentos, registrarFallaApp } from "@/lib/guardado-practica";
 import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, ErrorTokenVoz, type ControlTurno } from "@/lib/voz/turno-voz";
 import { sesionFresca } from "@/lib/sesion-viva";
 import { avisoDeFallaVoz, avisoDeArranque } from "@/lib/voz/avisos-voz";
-import { resolverTipoCliente, lineaDelCliente, fichaRespaldoVisible, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
+import { resolverTipoCliente, lineaDelCliente, contextoDelCliente, fichaRespaldoVisible, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -2186,6 +2186,9 @@ function PracticaPage() {
                         {fichaCliente.tipo === "nuevo" ? "Cliente nuevo" : "Cliente recurrente"}
                       </div>
                       <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.85)", lineHeight: 1.5 }}>{lineaDelCliente(fichaCliente)}</div>
+                      {contextoDelCliente(fichaCliente).map((t) => (
+                        <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.85)", lineHeight: 1.5, marginTop: 6 }}>• {t}</div>
+                      ))}
                       <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "#F0F0F5", fontWeight: 600, lineHeight: 1.5, marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.08)" }}>{LLAMADO_A_LA_ACCION}</div>
                     </>
                   ) : (
@@ -2797,6 +2800,9 @@ function VoicePhase({
           <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#FF6B2B", marginBottom: 4 }}>Tu cliente</div>
           <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, color: "#F0F0F5" }}>{fichaCliente.nombre} · {fichaCliente.negocio}</div>
           <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgba(240,240,245,0.8)", marginTop: 2 }}>{lineaDelCliente(fichaCliente)}</div>
+          {contextoDelCliente(fichaCliente).map((t) => (
+            <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgba(240,240,245,0.8)", marginTop: 2 }}>• {t}</div>
+          ))}
           <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "#F0F0F5", marginTop: 8, fontWeight: 600 }}>{LLAMADO_A_LA_ACCION}</div>
         </div>
       )}
