@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Mensaje 138: huellas previas y doce entregas coinciden; baseline 1028/1035 en 81 archivos, con siete fallas leyendo snapshots nuevos.
+- [ ] Mensaje 138: pasos 1–4 y publicación detenidos por condición del Paso 0; esperar autorización de Emilio ante baseline distinto.
+
 - [x] Mensaje 134: Paso 0 diferencias esperadas confirmadas por Emilio; cuatro snapshots coinciden con huellas nuevas, prueba previa con huella exacta, baseline 990/991 en 77 archivos por acentos nuevos.
 - [x] Mensaje 134: SQL completo aplicado en una ejecución, verificación 19/3/3/true/4; dos SQL retirados, dos pruebas instaladas con MD5 exactos; 1002/1002 en 78 archivos.
 - [x] Mensaje 134: app comprobada con sesión real de Emilio: mapa 4.12 antes de 4.11, quizzes 4.5 y 4.13 con 3 preguntas y tarjeta 4.15 #3 con título esperado; sin errores de navegador. Build automático OK a 17:22:34 y 17:23:59 UTC.
