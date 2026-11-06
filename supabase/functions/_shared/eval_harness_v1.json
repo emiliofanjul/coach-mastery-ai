@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.39.0",
+  "harness_version": "v3.40.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -4721,7 +4721,7 @@
       "node_id": "6.2",
       "seller_name": "Luis",
       "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
-      "description": "Mensaje 120 (Emilio, 2-nov): explicar lo que sigue no es seguir vendiendo. Un «gracias» corto está bien.",
+      "description": "Mensaje 120 (Emilio, 2-nov): explicar lo que sigue no es seguir vendiendo. Un «gracias» corto está bien. Mensaje 142 (Emilio, 6-nov): sin anunciar qué pasa si algo falla; pregunta si le quedó alguna duda y lo acompaña.",
       "transcript": [
         {
           "role": "user",
@@ -4733,11 +4733,19 @@
         },
         {
           "role": "user",
-          "text": "Perfecto, don Chuy, gracias. Entonces el jueves a las diez de la mañana le llegan las diez cubetas, son 12,500 y me paga al recibir. Si algo llega mal, me marca a este número y lo cambiamos ese mismo día. ¿Le queda claro o le apunto algo?"
+          "text": "Perfecto, don Chuy, gracias. Entonces el jueves a las diez de la mañana le llegan las diez cubetas, son 12,500 y me paga al recibir. ¿Le quedó alguna duda?"
         },
         {
           "role": "assistant",
-          "text": "Así está bien, joven."
+          "text": "No, así está bien, joven."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto. Todo va a salir bien; y si cualquier cosa no sale como esperaba, me marca o me escribe en cualquier momento."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele, gracias."
         }
       ],
       "expected": {
@@ -4745,7 +4753,8 @@
           "celebra_y_corre",
           "reabre_la_venta",
           "sobre_celebra",
-          "proximos_pasos_vagos"
+          "proximos_pasos_vagos",
+          "anuncia_plan_b"
         ]
       }
     },
@@ -6156,6 +6165,285 @@
           "vacia_el_cargador",
           "llena_el_silencio",
           "insiste_tras_dos"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G115_anuncia_plan_b",
+      "node_id": "6.2",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 142 (Emilio, 6-nov): después del sí, el vendedor anuncia por su cuenta qué pasa si algo falla, y le mete al cliente una duda que no tenía.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Entonces quedamos: diez cubetas de 15W40. ¿Se las entrego este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy: el jueves a las diez le llegan las diez cubetas, son 12,500 y me paga al recibir. Y si el jueves no llega el camión, me marca y vemos qué hacemos."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Por qué, suele fallar?"
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "anuncia_plan_b"
+        ],
+        "must_not_flag": [
+          "celebra_y_corre",
+          "reabre_la_venta"
+        ]
+      }
+    },
+    {
+      "id": "P6_2_perfecto",
+      "node_id": "6.2",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 142: ejecución perfecta del nodo 6.2 (Cierra en Nota Positiva): sella el trato, pregunta si le quedó alguna duda, lo acompaña sin anunciar un plan B, y se despide retomando lo personal que el cliente mencionó.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Va, me convence. Hágame el pedido entonces: las diez cubetas. Nomás que sea rápido, que hoy en la tarde me caen los nietos."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy, gracias. Le repito cómo queda, para que no haya sorpresas: son diez cubetas de 15W40, le llegan el jueves a las diez de la mañana, son 12,500 y me paga al recibir. ¿Le quedó alguna duda?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, así está claro."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto. Todo va a salir bien; y si cualquier cosa no sale como esperaba o le surge una duda, me marca o me escribe en cualquier momento a este número."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele, se lo apunto."
+        },
+        {
+          "role": "user",
+          "text": "Que le vaya bonito con los nietos, don Chuy. El jueves que venga con la entrega me cuenta cómo le fue."
+        },
+        {
+          "role": "assistant",
+          "text": "Ja, sí, a ver si sobrevivo. Gracias, joven."
+        }
+      ],
+      "traza": {
+        "consolidation.proteger_venta": "le llegan el jueves a las diez de la mañana, son 12,500 y me paga al recibir",
+        "relationship.cpr": "Que le vaya bonito con los nietos, don Chuy."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "consolidation.proteger_venta": "cumple",
+          "relationship.cpr": "cumple"
+        },
+        "must_not_flag": [
+          "celebra_y_corre",
+          "reabre_la_venta",
+          "proximos_pasos_vagos",
+          "anuncia_plan_b",
+          "sobre_celebra",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P6_3_perfecto",
+      "node_id": "6.3",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 142: ejecución perfecta del nodo 6.3 (La Siguiente Puerta): la siguiente visita con día y razón, y el referido amarrado al compadre que el cliente mencionó en la plática.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues quedamos entonces; la verdad se me hace buen trato. A mi compadre, el del taller de la colonia Centro, también le urge alguien que le surta así."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno que le gustó, don Chuy. Yo paso cada semana por esta ruta: ¿le late que le caiga los jueves, para ver cómo va rotando y que nunca ande corto?"
+        },
+        {
+          "role": "assistant",
+          "text": "Los jueves está bien; los fines de semana ando a las carreras."
+        },
+        {
+          "role": "user",
+          "text": "Los jueves, entonces. Oiga, ahorita que me platicó de su compadre el de la Centro, ¿usted cree que a él le sirva esto de la entrega semanal? Si gusta, dígale que voy de su parte."
+        },
+        {
+          "role": "assistant",
+          "text": "Claro, se llama Rubén. Dígale que va de mi parte, pero cáigale en la mañana, que en la tarde anda de malas."
+        },
+        {
+          "role": "user",
+          "text": "Así le hago. Gracias, don Chuy, y que le aflojen los fines de semana. Nos vemos el jueves."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele, joven, hasta el jueves."
+        }
+      ],
+      "traza": {
+        "consolidation.siguiente_oportunidad": "¿le late que le caiga los jueves, para ver cómo va rotando y que nunca ande corto?",
+        "relationship.cpr": "que le aflojen los fines de semana"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "consolidation.siguiente_oportunidad": "cumple",
+          "relationship.cpr": "cumple"
+        },
+        "must_not_flag": [
+          "referido_en_frio",
+          "insiste_tras_evasion",
+          "proximos_pasos_vagos",
+          "sobre_celebra",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G116_sin_referido",
+      "node_id": "6.3",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 142 (Emilio, 6-nov): el referido no es obligatorio. El vendedor deja la siguiente visita con día y razón y no pide el referido: no resta.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues quedamos entonces; la verdad se me hace buen trato. A mi compadre, el del taller de la colonia Centro, también le urge alguien que le surta así."
+        },
+        {
+          "role": "user",
+          "text": "Qué bueno que le gustó, don Chuy. Yo paso cada semana por esta ruta: ¿le late que le caiga los jueves, para ver cómo va rotando y que nunca ande corto?"
+        },
+        {
+          "role": "assistant",
+          "text": "Los jueves está bien."
+        },
+        {
+          "role": "user",
+          "text": "Los jueves, entonces. Gracias, don Chuy, nos vemos el jueves."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele, joven."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "referido_en_frio",
+          "proximos_pasos_vagos"
+        ],
+        "niveles_esperados": {
+          "consolidation.siguiente_oportunidad": "cumple"
+        }
+      }
+    },
+    {
+      "id": "P6_4_perfecto",
+      "node_id": "6.4",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 142: ejecución perfecta del jefe del mundo 6 (De Cliente a Aliado) con el comprador formal: cada término con hora y número, la respuesta concreta cuando él pregunta qué pasa si algo falla, nada nuevo que vender, relación en su registro y la siguiente visita agendada.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Muy bien, queda aprobado el pedido entonces. Ahora sí, dígame exactamente cómo vamos a operar esto, porque le soy franco: con el proveedor anterior lo hablado y lo entregado nunca coincidió."
+        },
+        {
+          "role": "user",
+          "text": "Con gusto, licenciado. Son veinte cubetas de 15W40 a 1,250 cada una: 25,000 pesos. Se las entrego el lunes entre las nueve y las once de la mañana, aquí en su almacén."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Y el pago? ¿Contra entrega en efectivo o acepta transferencia?"
+        },
+        {
+          "role": "user",
+          "text": "Por transferencia, contra entrega. Le dejo la factura con el pedido, y la orden de compra se la mando hoy por correo para que quede por escrito."
+        },
+        {
+          "role": "assistant",
+          "text": "Bien. ¿Y si el camión no llega el lunes, yo a quién le hablo? El anterior nada más no daba la cara."
+        },
+        {
+          "role": "user",
+          "text": "A mí directamente: Luis Pérez, este es mi celular. Si a las once no ha llegado, me marca, y yo le confirmo la hora en menos de una hora."
+        },
+        {
+          "role": "assistant",
+          "text": "Así da gusto, oiga. Llevo doce años administrando esto y valoro a los proveedores que duran."
+        },
+        {
+          "role": "user",
+          "text": "Doce años no es poca cosa, licenciado. ¿Le acomoda que lo visite los lunes después de la entrega, para revisar cómo va el inventario?"
+        },
+        {
+          "role": "assistant",
+          "text": "Los lunes, entonces; quedará anotado. A ver: veinte cubetas, lunes de nueve a once, transferencia contra entrega y la factura con el pedido."
+        },
+        {
+          "role": "user",
+          "text": "Así es, licenciado. ¿Le quedó alguna duda?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ninguna. Y le voy a comentar al administrador del negocio de mi hermano: si él le llama, es que le hablé bien de usted."
+        },
+        {
+          "role": "user",
+          "text": "Se lo agradezco mucho, licenciado. Nos vemos el lunes."
+        }
+      ],
+      "traza": {
+        "consolidation.proteger_venta": "Se las entrego el lunes entre las nueve y las once de la mañana",
+        "consolidation.relacion_largo_plazo": "¿Le acomoda que lo visite los lunes después de la entrega, para revisar cómo va el inventario?",
+        "relationship.cpr": "Doce años no es poca cosa, licenciado.",
+        "consolidation.siguiente_oportunidad": "¿Le acomoda que lo visite los lunes después de la entrega"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "consolidation.proteger_venta": "cumple",
+          "consolidation.relacion_largo_plazo": "cumple",
+          "relationship.cpr": "cumple",
+          "consolidation.siguiente_oportunidad": "cumple"
+        },
+        "must_not_flag": [
+          "reabre_la_venta",
+          "proximos_pasos_vagos",
+          "celebra_y_corre",
+          "confianzudo",
+          "referido_en_frio",
+          "sobre_celebra",
+          "monologo"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }

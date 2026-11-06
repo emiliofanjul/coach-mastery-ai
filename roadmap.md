@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 142 (v2): Paso 1 con ambos SQL exactos en una ejecución cada uno, sin abortos; verificación con Cerebro v22, 3 preguntas en 6.1, nodo «Después del Sí» y tres guiones 1.1.0 con huellas exactas; tres SQL retirados.
+- [x] Mensaje 142 (v2): Paso 2 con red v3.40.0 aplicada con el editor (diff acotado: versión, G99 y cinco casos nuevos) y prueba nueva en src/lib/tests; ambos MD5 exactos (a606755738afc5ecdab19a23877d401a y a8a5cb36ad0c34c7b9c710f81da821b8); originales de docs/kb retirados; 1052/1052 en 83 archivos, tipos y build OK.
+- [x] Mensaje 142 (v2): Paso 3 con solo harness-runner desplegado; red viva v3.40.0 confirmada.
+- [x] Mensaje 142 (v2): Paso 4 con 12/12 casos a la primera, promedio 29231 ms, ninguno sobre 90 s; publicación solicitada para closerapp.ai, despliegue final no confirmado.
+
 - [x] Mensaje 141: estado previo vacío y ambas huellas exactas; límite aplicado mediante Storage API, 52428800 bytes y sin filtro MIME comprobados.
 - [x] Mensaje 141: práctica de voz 1.2 con sesión de Emilio y consentimiento existente; WAV nuevo 383432 bytes, evento 729269ba-9aa5-407a-985a-bf8976d1812c con audio_url y sesión b19328aa-0b1e-42c9-bbd8-3dc551dcd071 comprobados. Sin reversión.
 - [x] Mensaje 141: cuatro advertencias aceptadas con motivos exactos y audio resuelto; solo certificado y avance quedan activos por decisión de Emilio. Retirado solo audios_limite_141.sql; ambos deshacer conservados. Sin código ni pruebas modificados, despliegue ni publicación.
