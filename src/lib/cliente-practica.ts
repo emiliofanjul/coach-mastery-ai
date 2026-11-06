@@ -18,7 +18,7 @@ export function resolverTipoCliente(nodo: unknown, empresa: unknown, azar: numbe
   return azar < 0.5 ? "nuevo" : "recurrente";
 }
 
-export interface FichaVisible { tipo: TipoCliente; nombre: string; negocio: string; ya_te_compra?: string; ultima_visita?: string }
+export interface FichaVisible { tipo: TipoCliente; nombre: string; negocio: string; ya_te_compra?: string; ultima_visita?: string; su_pedido?: string; algo_personal?: string }
 
 /** La línea de la tarjeta. Nunca revela lo que el cliente le compra a otro: eso se descubre. */
 export function lineaDelCliente(f: FichaVisible): string {
@@ -27,11 +27,23 @@ export function lineaDelCliente(f: FichaVisible): string {
     : `Cliente recurrente: ya te compra ${f.ya_te_compra ?? "sus productos de siempre"}. Tu última visita fue ${f.ultima_visita ?? "hace poco"}.`;
 }
 
+/**
+ * Lo que el vendedor ya sabe de un cliente recurrente, además de la línea (nov-2026, Emilio): cuánto pide y
+ * algo de su vida. Así entra a la visita con contexto, como en la calle, y practica la memoria.
+ */
+export function contextoDelCliente(f: FichaVisible): string[] {
+  if (f.tipo !== "recurrente") return [];
+  const c: string[] = [];
+  if (f.su_pedido) c.push(`Normalmente te pide ${f.su_pedido}.`);
+  if (f.algo_personal) c.push(`De su vida: ${f.algo_personal}.`);
+  return c;
+}
+
 export const LLAMADO_A_LA_ACCION = "Toca el micrófono y saluda a tu cliente como si estuvieras llegando a visitarlo.";
 
 /** Si la ficha no llega, una de respaldo con la misma forma que la del servidor: la práctica nunca espera. */
 export function fichaRespaldoVisible(tipo: TipoCliente): FichaVisible {
   return tipo === "recurrente"
-    ? { tipo, nombre: "Don Ramón", negocio: "su negocio", ya_te_compra: "sus productos de siempre", ultima_visita: "hace dos semanas" }
+    ? { tipo, nombre: "Don Ramón", negocio: "su negocio", ya_te_compra: "sus productos de siempre", ultima_visita: "hace dos semanas", su_pedido: "más o menos lo mismo cada dos semanas", algo_personal: "no se pierde el partido de futbol los domingos" }
     : { tipo, nombre: "Don Ramón", negocio: "su negocio" };
 }

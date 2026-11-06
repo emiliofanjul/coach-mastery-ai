@@ -17,13 +17,21 @@ export interface FichaCliente {
   ya_te_compra?: string;       // solo recurrente: lo que ya le vendes
   ultima_visita?: string;      // solo recurrente: "hace dos semanas"
   le_compra_a_otro?: string;   // solo recurrente, OCULTO al vendedor: el hueco por descubrir
+  su_pedido?: string;          // solo recurrente: cuánto pide normalmente y cada cuánto, sin nombrar productos
+  algo_personal?: string;      // solo recurrente: algo de su vida que el vendedor ya sabe
 }
+
+// Nov-2026 (Emilio): al cliente recurrente se le agregan dos o tres datos de contexto que el vendedor ya
+// sabe —qué compra, cuánto pide y algo personal—, para que la práctica sea real y se practique la memoria.
+// Lo personal siempre sale de FORMS: Familia, Ocupación, Recreación, Motivación o Deporte. Recordarlo es
+// hacer CPR. Es cotidiano: nunca salud, dinero, política, religión ni problemas familiares.
+const PERSONAL_PROHIBIDO = /(salud|enferm|hospital|operaci[oó]n|c[aá]ncer|diabet|muri[oó]|falleci|luto|funeral|divorci|separ[oó]|deuda|debe dinero|quiebra|pol[ií]tic|religi|iglesia|elecci|pleito|demanda|embarazo)/i;
 
 const corto = (x: unknown, n: number) => (typeof x === "string" ? x.replace(/\s+/g, " ").trim().slice(0, n) : "");
 
 export function fichaDeRespaldo(tipo: TipoCliente): FichaCliente {
   return tipo === "recurrente"
-    ? { tipo, nombre: "Don Ramón", negocio: "su negocio", ya_te_compra: "sus productos de siempre", ultima_visita: "hace dos semanas" }
+    ? { tipo, nombre: "Don Ramón", negocio: "su negocio", ya_te_compra: "sus productos de siempre", ultima_visita: "hace dos semanas", su_pedido: "más o menos lo mismo cada dos semanas", algo_personal: "no se pierde el partido de futbol los domingos" }
     : { tipo, nombre: "Don Ramón", negocio: "su negocio" };
 }
 
@@ -69,6 +77,11 @@ export function validarFicha(raw: unknown, tipo: TipoCliente, catalogo?: string)
     f.ya_te_compra = vale(ya) ? ya : base.ya_te_compra;
     f.ultima_visita = corto(r.ultima_visita, 40) || base.ultima_visita;
     if (vale(otro)) f.le_compra_a_otro = otro;
+    // Cuánto pide: sin productos (los productos ya van en ya_te_compra, validados contra el catálogo).
+    const pedido = corto(r.su_pedido, 80);
+    f.su_pedido = pedido && /\d|un[ao]s?\b|dos|tres|cuatro|cinco|seis|siete|ocho|diez|doce|media/i.test(pedido) ? pedido : base.su_pedido;
+    const personal = corto(r.algo_personal, 120);
+    f.algo_personal = personal && !PERSONAL_PROHIBIDO.test(personal) ? personal : base.algo_personal;
   }
   return f;
 }
@@ -83,7 +96,7 @@ export function fichaDePeticion(raw: unknown): FichaCliente | null {
 export const PROMPT_FICHA = `Creas el perfil breve de un cliente para una práctica de ventas de campo. El cliente es dueño o encargado de un negocio como el que describe "Cliente típico".
 REGLA ABSOLUTA: los productos que nombres los COPIAS de "Productos activos", con las mismas palabras. No agregues ningún producto, familia ni marca que no esté escrito ahí, aunque sea común en la industria. Si "Productos activos" está vacío, deja vacíos los campos de productos.
 Responde SOLO con JSON:
-{"nombre": "Don/Doña + nombre de pila", "negocio": "tipo de negocio, corto, según Cliente típico", "ya_te_compra": "SOLO si es recurrente: una o dos familias copiadas de Productos activos", "ultima_visita": "SOLO si es recurrente: p. ej. hace dos semanas", "le_compra_a_otro": "SOLO si es recurrente: UNA familia distinta, copiada de Productos activos, que le compra a otro proveedor"}`;
+{"nombre": "Don/Doña + nombre de pila", "negocio": "tipo de negocio, corto, según Cliente típico", "ya_te_compra": "SOLO si es recurrente: una o dos familias copiadas de Productos activos", "ultima_visita": "SOLO si es recurrente: p. ej. hace dos semanas", "le_compra_a_otro": "SOLO si es recurrente: UNA familia distinta, copiada de Productos activos, que le compra a otro proveedor", "su_pedido": "SOLO si es recurrente: cuánto te pide normalmente y cada cuánto, con números y SIN nombrar productos, p. ej. unas seis cajas cada semana", "algo_personal": "SOLO si es recurrente: UN detalle de su vida que el vendedor ya sabe de visitas anteriores, de uno de los cinco caminos de FORMS: Familia (su hija entra a la prepa en enero), Ocupación (abrió una segunda sucursal), Recreación (se va de pesca los fines de semana), Motivación (quiere dejarle el negocio a su hijo) o Deporte (le va al Cruz Azul). Cotidiano y positivo o neutro. NUNCA salud, dinero, política, religión ni problemas personales"}`;
 
 /** Lo que recibe el cliente simulado. */
 // La ficha manda sobre la RELACIÓN con el vendedor, aunque el guion del nodo
@@ -103,7 +116,7 @@ Reacciona SOLO a lo que el vendedor diga en esta conversación.`;
 NO inventes historial de pedidos ni contexto que el vendedor no haya mencionado. Reacciona SOLO a lo que diga en esta conversación.
 ${PRECEDENCIA_FICHA}`;
   }
-  return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Eres cliente RECURRENTE de este vendedor: ya le compras ${f.ya_te_compra}; su última visita fue ${f.ultima_visita}. Lo conoces y lo tratas con la confianza de un proveedor que ya te surte.${f.le_compra_a_otro ? `\n${f.le_compra_a_otro} se lo compras a OTRO proveedor. No lo menciones por tu cuenta; si el vendedor pregunta bien, lo cuentas.` : ""}
+  return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Eres cliente RECURRENTE de este vendedor: ya le compras ${f.ya_te_compra}; su última visita fue ${f.ultima_visita}. Lo conoces y lo tratas con la confianza de un proveedor que ya te surte.${f.su_pedido ? ` Normalmente le pides ${f.su_pedido}.` : ""}${f.algo_personal ? `\nAlgo de tu vida que el vendedor ya sabe: ${f.algo_personal}. No lo sacas tú de entrada; si el vendedor lo retoma con interés genuino, te da gusto que se acuerde y le platicas un poco.` : ""}${f.le_compra_a_otro ? `\n${f.le_compra_a_otro} se lo compras a OTRO proveedor. No lo menciones por tu cuenta; si el vendedor pregunta bien, lo cuentas.` : ""}
 Fuera de estos hechos, NO inventes historial: ni pedidos, ni pláticas anteriores, ni problemas pasados.
 ${PRECEDENCIA_FICHA}`;
 }
@@ -113,6 +126,6 @@ export function bloqueEvaluador(f: FichaCliente | null): string {
   if (!f || f.tipo === "nuevo") {
     return `CLIENTE DE ESTA PRÁCTICA: nuevo${f ? ` (${f.nombre}, ${f.negocio})` : ""}. Es la primera visita: ningún consejo puede citar una visita anterior. Si un criterio habla de "lo que ya le vende" o "su pedido de siempre", léelo como "lo que el cliente ya pidió hoy".`;
   }
-  return `CLIENTE DE ESTA PRÁCTICA: RECURRENTE — ${f.nombre}, ${f.negocio}. Hechos que SÍ existen y el vendedor conoce: ya le compra ${f.ya_te_compra}; última visita ${f.ultima_visita}.${f.le_compra_a_otro ? ` (Oculto para el vendedor: ${f.le_compra_a_otro} se lo compra a otro proveedor.)` : ""}
-Recordar un hecho de esta lista es legítimo y es el escalón 3 de la especificidad. Cualquier recuerdo que NO esté en esta lista es inventado.`;
+  return `CLIENTE DE ESTA PRÁCTICA: RECURRENTE — ${f.nombre}, ${f.negocio}. Hechos que SÍ existen y el vendedor conoce: ya le compra ${f.ya_te_compra}; última visita ${f.ultima_visita}${f.su_pedido ? `; normalmente le pide ${f.su_pedido}` : ""}${f.algo_personal ? `; algo personal que el vendedor ya sabe: ${f.algo_personal}` : ""}.${f.le_compra_a_otro ? ` (Oculto para el vendedor: ${f.le_compra_a_otro} se lo compra a otro proveedor.)` : ""}
+Recordar un hecho de esta lista es legítimo y es el escalón 3 de la especificidad. Retomar con interés genuino lo personal que ya sabe de él (FORMS) es hacer CPR. Cualquier recuerdo que NO esté en esta lista es inventado.`;
 }
