@@ -925,7 +925,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "REHASH: todos tienen otra venta escondida. La otra venta no es venderle más hoy: son los referidos y la siguiente visita. LA PRUEBA: después del sí, ¿el vendedor deja abierta la siguiente oportunidad —la siguiente visita con día y propósito, o un referido amarrado a algo que el cliente dijo— sin ofrecerle nada más?",
+  "resumen": "REHASH: todos tienen otra venta escondida. La otra venta no es venderle más hoy: son los referidos y la siguiente visita. LA PRUEBA: después del sí, ¿el vendedor deja abierta la siguiente oportunidad —la siguiente visita con día y propósito, o un referido amarrado a algo que el cliente dijo— sin ofrecerle nada más? El referido no es obligatorio: pedirlo amarrado suma, no pedirlo no resta.",
   "cita_cerebro": "La otra venta escondida no es venderle más hoy",
   "severidad_sugerida": null
  },
@@ -965,7 +965,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Dejar claro qué sigue: la falta de entendimiento es la causa número uno de cancelaciones. LA PRUEBA: después del sí, ¿el vendedor deja claro qué sigue —qué se entrega, cuándo, cuánto y cómo se paga— con datos concretos (día, cantidad, monto), no vagos («ahí luego vemos»)?",
+  "resumen": "Dejar claro qué sigue: la falta de entendimiento es la causa número uno de cancelaciones. LA PRUEBA: después del sí, ¿el vendedor deja claro qué sigue —qué se entrega, cuándo, cuánto y cómo se paga— con datos concretos (día, cantidad, monto), no vagos («ahí luego vemos»)? Preguntarle si le quedó alguna duda y dejarle claro que lo puede contactar en cualquier momento es parte de esto. Anunciar por su cuenta qué pasa si algo falla no lo pide: eso es ofrecer un plan B.",
   "cita_cerebro": "la causa número uno de cancelaciones es la falta de entendimiento",
   "severidad_sugerida": "major"
  },
@@ -1125,7 +1125,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Garantizar lo que no controlas. Admitir lo que no controlas hace creíble lo que sí afirmas. LA PRUEBA: ¿el vendedor promete el resultado como un hecho —«se le va a vender seguro», «no le va a fallar», «se lo garantizo»—? La convicción es otra cosa: decir lo que él cree y por qué («estoy seguro de que le va a servir, porque en negocios como el suyo…»).",
+  "resumen": "Garantizar lo que no controlas. Admitir lo que no controlas hace creíble lo que sí afirmas. LA PRUEBA: ¿el vendedor promete como un hecho un resultado que no controla —«se le va a vender seguro», «sus clientes van a regresar», «se lo garantizo» sobre la venta—? La convicción es otra cosa: decir lo que él cree y por qué («estoy seguro de que le va a servir, porque en negocios como el suyo…»). Garantizar lo que sí controla —la entrega, la atención, que cualquier problema se le resuelva— no es esto.",
   "cita_cerebro": "Admitir lo que no controlas hace creíble lo que sí afirmas",
   "severidad_sugerida": "major"
  },
@@ -1135,7 +1135,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Ofrecer el plan B mete una duda que el cliente no tenía y desmiente la convicción. LA PRUEBA: ¿el vendedor anuncia por adelantado qué harán si no funciona («y si no se mueve, lo ajustamos»)? Si después no funciona, se ajusta; eso es Consolidación y no se anuncia antes.",
+  "resumen": "Ofrecer el plan B mete una duda que el cliente no tenía y desmiente la convicción. LA PRUEBA: ¿el vendedor anuncia por adelantado qué harán si no funciona o si algo falla («y si no se mueve, lo ajustamos», «si el lunes no llega el camión, me marca»)? Si después no funciona, se ajusta; eso es Consolidación y no se anuncia antes. Acompañar no es esto: «todo va a salir bien; si cualquier cosa no sale como esperaba, me marca en cualquier momento». Contestar cuando el cliente pregunta qué pasa si algo falla tampoco.",
   "cita_cerebro": "No ofrezcas el plan B",
   "severidad_sugerida": "major"
  },

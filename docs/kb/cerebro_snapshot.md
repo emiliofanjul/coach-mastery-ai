@@ -800,7 +800,11 @@ Misma indiferencia sobre la compra. Misma calidez sobre la relación. Cero produ
 
 **Explicar lo que sigue no es seguir vendiendo** `CAMPO`: *"perfecto, se lo entrego el jueves en la mañana y me paga al recibir"* es lo correcto. *"¡Excelente decisión, no se va a arrepentir, con esto deja de perder clientes!"* es seguir vendiendo y festejar de más. Un *"gracias, don Chuy"* corto está bien.
 
-**Referidos** `CAMPO`: no son obligatorios, pero se valen. Si los pides, amárralos a algo que el cliente dijo: *"me contó que su compadre tiene un taller, ¿le puedo decir que voy de su parte?"*. Pedirlos en frío —*"¿no tiene a alguien que me recomiende?"*— incomoda al cliente que acaba de comprarte.
+**Pregúntale si le quedó alguna duda** `CAMPO`: es parte de la consolidación. Una duda que se queda puede terminar en cancelación, y ese es el momento de aclararla. Aunque te diga que no tiene ninguna, déjale claro que si en cualquier momento le surge una duda o necesita cualquier cosa, te puede contactar directamente y con gusto lo ayudas.
+
+**Acompañar no es ofrecer un plan B** `CAMPO`: no anuncies por tu cuenta qué pasa si algo falla (*"si el lunes no llega el camión, me marca"*): le mete una duda que no tenía. Lo que da tranquilidad es el acompañamiento: *"todo va a salir bien; y si cualquier cosa no sale como esperaba, me marca o me escribe en cualquier momento"*. Si él te pregunta qué pasa si algo falla, ahí sí le contestas concreto: con quién, cómo y cuándo.
+
+**Referidos** `CAMPO`: no son obligatorios, pero pedirlos es bueno. Si los pides, amárralos a algo que el cliente dijo: *"me contó que su compadre tiene un taller, ¿le puedo decir que voy de su parte?"*. Pedirlos en frío —*"¿no tiene a alguien que me recomiende?"*— incomoda al cliente que acaba de comprarte.
 
 ---
 
@@ -1057,6 +1061,8 @@ Proponer con convicción una cantidad inicial chica no es esto `CAMPO`: el error
    Sin la razón, tu convicción es solo optimismo de vendedor.
 
    **La diferencia con garantizar** `CAMPO`: garantizar es prometer el resultado como un hecho —*"se le va a vender seguro"*, *"no le va a fallar"*—. La convicción lo presenta como lo que tú crees y por qué.
+
+   **Lo que sí controlas, sí se garantiza** `CAMPO`: la entrega, la atención y que cualquier problema se le resuelva dependen de ti y de tu empresa, y con años de historial atendiendo clientes se pueden garantizar: *"todo va a salir bien; y si cualquier cosa no sale como esperaba, me marca y se lo resolvemos"*. Lo que no se garantiza es lo que no controlas: que se le venda, que su cliente regrese.
 
 **Y ahí te callas.**
 

@@ -1356,7 +1356,7 @@
     "card_order": 4,
     "card_type": "concept",
     "title": "Las tres reglas de oro de la curva",
-    "body": "REGLA 1 — Encuentra al cliente en un punto comun de emocion al inicio, y construye desde ahi. No llegues gritando con alguien tranquilo ni apagado con alguien entusiasmado: empiezas donde esta el, y de ahi suben juntos.\n\nREGLA 2 — Cierra en el momento correcto. La curva tiene un pico, y despues del pico baja. Esperar de mas apaga lo que costo trabajo encender.\n\nREGLA 3 — El impulso no termina cuando el cliente dice que si: ahi empieza a caer. Eso tambien se trabaja, y lo vas a ver al final del mapa.",
+    "body": "REGLA 1 — Encuentra al cliente en un punto común de emoción al inicio, y construye desde ahí. No llegues gritando con alguien tranquilo ni apagado con alguien entusiasmado: empiezas donde está él, y de ahí suben juntos.\n\nREGLA 2 — Cierra en el momento correcto. La curva tiene un pico, y después del pico baja. Esperar de más apaga lo que costó trabajo encender.\n\nREGLA 3 — El impulso no termina cuando el cliente dice que sí: ahí empieza a caer. Eso también se trabaja, y lo vas a ver al final del mapa.",
     "flip_back_text": null
   },
   {
@@ -1948,7 +1948,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "El enemigo invisible: el remordimiento del comprador",
-    "body": "El cliente dijo que sí. Te fuiste feliz. Y esa noche, solo con su decisión, le llega la visita: \"¿habré hecho bien? ¿y si no me se mueve? ¿qué le voy a decir a mi esposa si esto no jala?\"\n\nEso es el remordimiento del comprador — y le pasa a TODOS. La diferencia entre la venta que se sostiene y la que se cancela mañana no es el producto: es con cuánta claridad y tranquilidad se quedó el cliente cuando saliste por la puerta.",
+    "body": "El cliente dijo que sí. Te fuiste feliz. Y esa noche, solo con su decisión, le llega la visita: \"¿habré hecho bien? ¿y si no se me mueve? ¿qué le voy a decir a mi esposa si esto no jala?\"\n\nEso es el remordimiento del comprador, y le pasa a TODOS. La diferencia entre la venta que se sostiene y la que se cancela mañana no es el producto: es con cuánta claridad y tranquilidad se quedó el cliente cuando saliste por la puerta.",
     "flip_back_text": null
   },
   {
@@ -1956,15 +1956,15 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "La causa #1 de cancelación: falta de comprensión.",
-    "body": "Las ventas no se caen porque el cliente \"se arrepintió del producto\". Se caen porque no entendió algo: cuándo llega, cuánto va a pagar exactamente, qué hace si algo sale mal, qué sigue después.\n\nCada hueco de comprensión es una grieta — y el remordimiento nocturno se mete por las grietas. La consolidación existe para sellarlas TODAS antes de irte: qué llega, cuándo llega, qué cuesta, qué hace él, qué haces tú, y a quién le habla si algo falla.",
+    "body": "Las ventas no se caen porque el cliente \"se arrepintió del producto\". Se caen porque no entendió algo: cuándo llega, cuánto va a pagar exactamente, qué sigue después.\n\nCada hueco de comprensión es una grieta, y el remordimiento nocturno se mete por las grietas. La consolidación existe para sellarlas TODAS antes de irte: qué llega, cuándo, cuánto y cómo se paga. Y le preguntas si le quedó alguna duda: aunque te diga que no, le dejas claro que te puede buscar en cualquier momento.",
     "flip_back_text": null
   },
   {
     "node_id": "6.0",
     "card_order": 3,
     "card_type": "concept",
-    "title": "El mal paso 5 y el buen paso 5",
-    "body": "MAL paso 5: toda la explicación al INICIO de la relación (el vendedor que abruma con condiciones antes de vender) y al final... nada: \"¡excelente decisión! cualquier cosa me marca\" — y se fue corriendo con su comisión.\n\nBUEN paso 5: la explicación llega DESPUÉS del sí — concisa, clara, completa. Y el vendedor se va al final con calma, dejando dos cosas sembradas: la relación (CPR de despedida) y la siguiente puerta (la próxima visita, el conocido al que le puede servir).",
+    "title": "La mala consolidación y la buena",
+    "body": "MALA: el cliente dice que sí, y el vendedor festeja y se va: \"¡excelente decisión! cualquier cosa me marca\". Nada quedó claro.\n\nBUENA: después del sí, la explicación llega concisa, clara y completa: qué, cuándo, cuánto y cómo se paga. Le preguntas si le quedó alguna duda, y te vas con calma, dejando dos cosas sembradas: la relación y la siguiente puerta (la próxima visita y, si se puede, un referido).",
     "flip_back_text": null
   },
   {
@@ -1972,7 +1972,7 @@
     "card_order": 4,
     "card_type": "why_it_works",
     "title": "La consolidación es donde nace tu segundo cliente.",
-    "body": "Un cliente bien consolidado hace dos cosas que valen oro: NO cancela (entendió todo, durmió tranquilo) y TE RECOMIENDA (la confianza del final de la visita es la que se cuenta a los amigos).\n\nEl vendedor promedio ve el sí como la meta. El Closer lo ve como la mitad: la venta se cierra en el paso 4 — pero se GANA en el 5. Y la siguiente venta, también.",
+    "body": "Un cliente bien consolidado hace dos cosas que valen oro: NO cancela (entendió todo, durmió tranquilo) y TE RECOMIENDA (la confianza del final de la visita es la que se cuenta a los amigos).\n\nEl vendedor promedio ve el sí como la meta. El Closer lo ve como la mitad: la venta se cierra en el paso 5, pero se GANA en el 6. Y la siguiente venta, también.",
     "flip_back_text": null
   },
   {
@@ -1980,7 +1980,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "La tercera regla de la curva",
-    "body": "Te acuerdas de las tres reglas de oro del impulso? La tercera decia que el impulso no termina cuando el cliente dice que si.\n\nAhi empieza a caer.\n\nEs el arrepentimiento del comprador, y es automatico. Apenas dice que si, el cerebro empieza a buscar razones por las que a lo mejor no debio. No es desconfianza hacia ti: es como funcionamos todos.",
+    "body": "¿Te acuerdas de las tres reglas de oro del impulso? La tercera decía que el impulso no termina cuando el cliente dice que sí.\n\nAhí empieza a caer.\n\nEs el arrepentimiento del comprador, y es automático. Apenas dice que sí, el cerebro empieza a buscar razones por las que a lo mejor no debió. No es desconfianza hacia ti: es como funcionamos todos.",
     "flip_back_text": null
   },
   {
@@ -1988,39 +1988,39 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "El error que parece lo correcto",
-    "body": "La reaccion natural del vendedor es reforzar la compra. Recordarle lo bueno del producto, repetirle el ahorro, insistir en que tomo una gran decision.\n\nY es exactamente lo que NO hay que hacer.\n\nSeguir vendiendo despues del si le dice al cliente algo que no querias decirle: que necesitabas esa venta.",
+    "body": "La reacción natural del vendedor es reforzar la compra. Recordarle lo bueno del producto, repetirle el ahorro, insistir en que tomó una gran decisión.\n\nY es exactamente lo que NO hay que hacer.\n\nSeguir vendiendo después del sí le dice al cliente algo que no querías decirle: que necesitabas esa venta.",
     "flip_back_text": null
   },
   {
     "node_id": "6.1",
     "card_order": 3,
     "card_type": "why_it_works",
-    "title": "Por que eso destruye todo lo anterior",
-    "body": "Y si necesitabas la venta, entonces la indiferencia era actuada. Y si la indiferencia era actuada, tambien el interes por su negocio, tambien las preguntas, tambien la platica de su hijo.\n\nRetroactivamente, toda la conversacion se convierte en una tecnica.\n\nEse es el riesgo real del rehash mal hecho: no solo no quita el arrepentimiento, sino que lo confirma.",
+    "title": "Por qué eso destruye todo lo anterior",
+    "body": "Y si necesitabas la venta, entonces la indiferencia era actuada. Y si la indiferencia era actuada, también el interés por su negocio, también las preguntas, también la plática de su hijo.\n\nRetroactivamente, toda la conversación se convierte en una técnica.\n\nEse es el riesgo real del rehash mal hecho: no solo no quita el arrepentimiento, sino que lo confirma.",
     "flip_back_text": null
   },
   {
     "node_id": "6.1",
     "card_order": 4,
     "card_type": "concept",
-    "title": "Lo que si funciona: no cambiar nada",
-    "body": "El rehash correcto no es decir mas cosas. Es DEMOSTRAR que nada cambio en ti.\n\nSigues indiferente sobre la compra. Sigues amigable sobre la relacion. Y le das la confianza de que ahi vas a estar para lo que necesite.\n\nNi una palabra mas de producto. Ni una justificacion. Trato de amigo, igual que hace diez minutos.",
+    "title": "Lo que sí funciona: no cambiar nada",
+    "body": "El rehash correcto no es decir más cosas. Es DEMOSTRAR que nada cambió en ti.\n\nSigues indiferente sobre la compra. Sigues amigable sobre la relación. Y le das la confianza de que ahí vas a estar para lo que necesite.\n\nNi una palabra más de producto. Ni una justificación. Trato de amigo, igual que hace diez minutos.\n\nLo que sí haces es dejarle claro qué sigue: cuándo llega, cuánto y cómo paga. Explicar eso no es seguir vendiendo.",
     "flip_back_text": null
   },
   {
     "node_id": "6.1",
     "card_order": 5,
     "card_type": "why_it_works",
-    "title": "Por que funciona",
-    "body": "Porque prueba, sin decirlo, que todo lo anterior era real.\n\nSi tu actitud es identica antes y despues de la firma, el cliente concluye solo lo que ninguna frase habria logrado convencerlo: que no lo trataste asi para venderle. Lo trataste asi porque asi eres.\n\nY con esa conclusion, el arrepentimiento no tiene de que agarrarse. Se disuelve solo.",
+    "title": "Por qué funciona",
+    "body": "Porque prueba, sin decirlo, que todo lo anterior era real.\n\nSi tu actitud es idéntica antes y después de la firma, el cliente concluye solo lo que ninguna frase habría logrado convencerlo: que no lo trataste así para venderle. Lo trataste así porque así eres.\n\nY con esa conclusión, el arrepentimiento no tiene de qué agarrarse. Se disuelve solo.",
     "flip_back_text": null
   },
   {
     "node_id": "6.2",
     "card_order": 1,
     "card_type": "concept",
-    "title": "Los tres minutos que blindan la venta",
-    "body": "El cliente acaba de decir sí — y su cabeza, sin que lo diga, ya está incubando tres preguntas: ¿cuándo me llega? ¿qué hago si algo sale mal? ¿cuánto acabo pagando exactamente?\n\nSi esas preguntas se quedan sin respuesta, esta noche se convierten en remordimiento. Tu trabajo en los siguientes tres minutos: matarlas ANTES de que nazcan. Repite el trato completo — qué, cuándo, cuánto, y el plan B si algo falla. Y verifica: \"¿le quedó alguna duda de cómo va a funcionar?\"",
+    "title": "Los minutos que blindan la venta",
+    "body": "El cliente acaba de decir sí, y su cabeza, sin que lo diga, ya está incubando preguntas: ¿cuándo me llega? ¿cuánto acabo pagando exactamente? ¿y si necesito algo?\n\nSi se quedan sin respuesta, esta noche se convierten en remordimiento. Tu trabajo en los siguientes minutos: repite el trato completo —qué, cuándo, cuánto y cómo se paga— y pregúntale si le quedó alguna duda. Aunque te diga que no, déjale claro que te puede contactar en cualquier momento.",
     "flip_back_text": null
   },
   {
@@ -2028,7 +2028,7 @@
     "card_order": 2,
     "card_type": "concept",
     "title": "Lo que NO se hace después del sí",
-    "body": "NO celebres de más: \"¡no se va a arrepentir!\" huele a comisión — y despierta la pregunta inversa: ¿de qué me podría arrepentir?\n\nNO sigas vendiendo: el cliente ya decidió. Cada beneficio extra después del sí siembra la duda de qué no le has dicho.\n\nNO salgas corriendo: la prisa del vendedor tras el sí es la imagen que el cliente recuerda esa noche — y no le gusta.\n\nCalma. Claridad. Y la relación sembrada al salir.",
+    "body": "NO celebres de más: \"¡no se va a arrepentir!\" huele a comisión, y despierta la pregunta inversa: ¿de qué me podría arrepentir?\n\nNO sigas vendiendo: el cliente ya decidió. Cada beneficio extra después del sí siembra la duda de qué no le has dicho.\n\nNO anuncies qué pasa si algo falla: \"si el camión no llega, me marca\" le mete una duda que no tenía. Lo que da tranquilidad es acompañarlo: \"todo va a salir bien; y si cualquier cosa no sale como esperaba, me marca o me escribe en cualquier momento\".\n\nNO salgas corriendo: la prisa del vendedor tras el sí es la imagen que el cliente recuerda esa noche.\n\nCalma. Claridad. Y la relación sembrada al salir.",
     "flip_back_text": null
   },
   {
@@ -2036,23 +2036,23 @@
     "card_order": 3,
     "card_type": "why_it_works",
     "title": "La despedida es de personas, no de facturas.",
-    "body": "Ya sellaste la comprensión. El último toque es el CPR de cierre: retoma algo de SU vida que la conversación te regaló — \"que le vaya bonito el fin con los nietos; el lunes me cuenta cómo quedó el partido.\"\n\nEse detalle hace dos cosas: convierte la transacción en relación (la próxima visita ya no es de vendedor — es de conocido), y le deja al cliente la última emoción de la visita: calidez. Y la última emoción es la que se recuerda... y la que se cuenta.",
+    "body": "Ya sellaste la comprensión. El último toque es el CPR de cierre: retoma algo de SU vida que te contó en la plática: \"que le vaya bonito el fin con los nietos; el lunes me cuenta cómo quedó el partido.\"\n\nEse detalle hace dos cosas: convierte la transacción en relación (la próxima visita ya no es de vendedor, es de conocido) y le deja al cliente la última emoción de la visita: calidez. Y la última emoción es la que se recuerda... y la que se cuenta.",
     "flip_back_text": null
   },
   {
     "node_id": "6.3",
     "card_order": 1,
     "card_type": "concept",
-    "title": "Cada cliente contento trae al siguiente — si le abres la puerta.",
-    "body": "La visita perfecta no termina en la venta. Termina con DOS puertas abiertas:\n\nLa recompra: \"yo paso cada semana — ¿le late que le caiga los lunes para que nunca ande corto?\" Es servicio, tiene día y tiene razón. El cliente que acepta tu ruta te acaba de convertir en SU proveedor.\n\nEl referido: la puerta al siguiente cliente... que él ya te mencionó sin darse cuenta.",
+    "title": "Cada cliente contento trae al siguiente, si le abres la puerta.",
+    "body": "La visita perfecta no termina en la venta. Termina con la siguiente puerta abierta:\n\nLa siguiente visita: \"yo paso cada semana; ¿le late que le caiga los lunes para que nunca ande corto?\". Es servicio, tiene día y tiene razón. El cliente que acepta tu ruta te acaba de convertir en SU proveedor.\n\nY, si se puede, el referido: la puerta al siguiente cliente... que él ya te mencionó sin darse cuenta. No es obligatorio, pero pedirlo bien es bueno.",
     "flip_back_text": null
   },
   {
     "node_id": "6.3",
     "card_order": 2,
     "card_type": "concept",
-    "title": "El referido se ancla — o no se pide.",
-    "body": "EN FRÍO suena así: \"¿no tiene conocidos que quieran comprar?\" — y el cliente más contento del mundo se incomoda: le acabas de cobrar la confianza.\n\nANCLADO suena así: \"ahorita que me platicó de su compadre el del negocio... ¿usted cree que a él le sirva esto? Si gusta, dígale que voy de su parte.\" — nació de SU plática, es ligero, y el que queda bien presentándote es ÉL.\n\nLa regla: si el cliente no te regaló el ancla en la conversación, la puerta del referido se queda para la próxima visita. Nunca se fuerza.",
+    "title": "El referido se amarra, o no se pide.",
+    "body": "EN FRÍO suena así: \"¿no tiene conocidos que quieran comprar?\", y el cliente más contento del mundo se incomoda: le acabas de cobrar la confianza.\n\nAMARRADO suena así: \"ahorita que me platicó de su compadre el del negocio... ¿usted cree que a él le sirva esto? Si gusta, dígale que voy de su parte.\" Nació de SU plática, es ligero, y el que queda bien presentándote es ÉL.\n\nLa regla: si el cliente no te dio de dónde amarrarlo en la conversación, el referido se queda para la próxima visita. Nunca se fuerza.",
     "flip_back_text": null
   },
   {
@@ -2060,15 +2060,15 @@
     "card_order": 3,
     "card_type": "why_it_works",
     "title": "La matemática silenciosa de la consolidación",
-    "body": "Un vendedor que solo vende necesita encontrar cada cliente desde cero — puerta fría tras puerta fría, todos los días.\n\nUn Closer que consolida construye una red: cada cliente sellado es una ruta semanal (recompra sin esfuerzo) y un puente a su compadre (puerta tibia, \"va de mi parte\"). A los seis meses, la mitad de sus ventas ya no empiezan en frío.\n\nLa Ley de los Promedios sigue mandando — pero la consolidación te mejora la proporción. Para siempre.",
+    "body": "Un vendedor que solo vende necesita encontrar cada cliente desde cero: puerta fría tras puerta fría, todos los días.\n\nUn Closer que consolida construye una red: cada cliente sellado es una ruta semanal (la siguiente visita sin esfuerzo) y un puente a su compadre (una puerta tibia: \"va de mi parte\"). Con el tiempo, cada vez más ventas dejan de empezar en frío.\n\nLa Ley de los Promedios sigue mandando, pero la consolidación te mejora la proporción. Para siempre.",
     "flip_back_text": null
   },
   {
     "node_id": "6.4",
     "card_order": 1,
     "card_type": "concept",
-    "title": "El octavo Boss.",
-    "body": "La venta ya está hecha — un administrador formal acaba de aprobar tu pedido. Y ahí empieza tu examen, porque a este señor todos sus proveedores le han fallado en los DETALLES: entregas tarde, cobros distintos, nadie que dé la cara.\n\nTu misión NO es vender — de hecho, vender algo más aquí es reprobar. Es sellar: cada término con hora y número, el plan B con nombre y teléfono, su cicatriz sanada con compromisos que se puedan cobrar. Relación sí — pero a su manera: formal, ganada, sin confiancitas.\n\nGanas cuando él repita tu trato de memoria... y le hable de ti al negocio de su hermano. Así se fabrica un aliado.",
+    "title": "El sexto Boss.",
+    "body": "La venta ya está hecha: un administrador formal acaba de aprobar tu pedido. Y ahí empieza tu examen, porque a este señor todos sus proveedores le han fallado en los DETALLES: entregas tarde, cobros distintos, nadie que dé la cara.\n\nTu misión NO es vender: de hecho, vender algo más aquí es reprobar. Es sellar: cada término con hora y número, y cuando te pregunte qué pasa si algo falla, la respuesta con nombre y teléfono. Su cicatriz se sana con compromisos que se puedan cobrar. Relación sí, pero a su manera: formal, ganada, sin confiancitas.\n\nGanas cuando él repita tu trato de memoria... y le hable de ti al negocio de su hermano. Así se fabrica un aliado.",
     "flip_back_text": null
   },
   {

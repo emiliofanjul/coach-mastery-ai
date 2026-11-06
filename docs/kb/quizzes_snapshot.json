@@ -541,8 +541,8 @@
     "option_c": "El cliente es indeciso, no es culpa del vendedor.",
     "option_d": null,
     "correct_option": "B",
-    "explanation_correct": "La causa #1 de cancelación no es arrepentimiento del producto — es no haber entendido algo. Cuándo llega, qué hace si falla, qué sigue. Cada hueco es una grieta, y las grietas se sellan ANTES de salir por la puerta, no \"cualquier cosa me marca\".",
-    "explanation_wrong": "La venta cerrada es la venta más frágil que existe — esa noche llega el remordimiento del comprador, y busca grietas: ¿cuándo llega? ¿y si sale mal? El \"cualquier cosa me marca\" no sella nada. La consolidación era el paso que faltó — y puede costar la venta completa.",
+    "explanation_correct": "La causa número uno de cancelación no es arrepentimiento del producto: es no haber entendido algo. Cuándo llega, cuánto y cómo paga, qué sigue. Cada hueco es una grieta, y las grietas se sellan ANTES de salir por la puerta. \"Cualquier cosa me marca\", solo y sin explicar nada, no sella nada.",
+    "explanation_wrong": "La venta recién cerrada es la más frágil que existe: esa noche llega el remordimiento del comprador, y busca grietas: ¿cuándo llega? ¿cuánto pago? Un \"cualquier cosa me marca\" sin explicar nada no sella nada. La consolidación era el paso que faltó, y puede costar la venta completa.",
     "regla_id": "consolidation.siguientes_pasos"
   },
   {
@@ -554,7 +554,7 @@
     "option_c": "Repetir la presentación completa para reforzar la decisión.",
     "option_d": null,
     "correct_option": "B",
-    "explanation_correct": "Los dos, en ese orden: primero la claridad — qué llega, cuándo, qué sigue, qué hace si algo falla — que blinda la venta contra el remordimiento. Y luego la cosecha: la relación sembrada y la puerta a la siguiente venta o al referido.",
+    "explanation_correct": "Los dos: la claridad —qué llega, cuándo, cuánto y cómo se paga, y si le quedó alguna duda—, que blinda la venta contra el remordimiento. Y la cosecha: la relación sembrada y la puerta a la siguiente visita o al referido.",
     "explanation_wrong": "Ni la prisa ni la re-presentación. Repetir la venta después del sí siembra dudas (¿por qué me sigue convenciendo?). Los dos propósitos reales: comprensión total (la venta que se entiende no se cancela) y capitalización (la relación y la siguiente puerta).",
     "regla_id": "consolidation.siguientes_pasos"
   },
@@ -908,5 +908,44 @@
     "explanation_correct": "Hoy no es el día, y eso es información, no fracaso. El que deja la puerta abierta vuelve cuando las cosas cambian.",
     "explanation_wrong": "Después de dos no seguidos, seguir es quemar la relación, y un descuento por pánico además te quita margen y respeto. Te despides bien y dejas la puerta abierta.",
     "regla_id": "objection.regla_de_los_no"
+  },
+  {
+    "node_id": "6.1",
+    "question_order": 1,
+    "question_text": "El cliente acaba de decir que sí. ¿Qué le pasa a su impulso?",
+    "option_a": "Sigue subiendo: ya está convencido.",
+    "option_b": "Empieza a caer: es el arrepentimiento del comprador, y es automático.",
+    "option_c": "Se queda igual hasta que le entregues.",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Eso es. Apenas dice que sí, el cerebro empieza a buscar razones por las que a lo mejor no debió. No es desconfianza hacia ti: es como funcionamos todos.",
+    "explanation_wrong": "El impulso no termina en el sí: ahí empieza a caer. Es la tercera regla de oro de la curva, y le pasa a todos.",
+    "regla_id": "consolidation.arrepentimiento"
+  },
+  {
+    "node_id": "6.1",
+    "question_order": 2,
+    "question_text": "Después del sí, el vendedor le dice: \"Y acuérdese que con esto deja de perder clientes, y le dura el doble\". ¿Qué provoca?",
+    "option_a": "Refuerza la compra.",
+    "option_b": "Le dice al cliente que necesitabas la venta, y toda la conversación se vuelve una técnica.",
+    "option_c": "Nada: es la verdad.",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Exacto. Si necesitabas la venta, la indiferencia era actuada, y también el interés por su negocio. Seguir vendiendo después del sí confirma el arrepentimiento en vez de quitarlo.",
+    "explanation_wrong": "Suena a reforzar, pero hace lo contrario: le comunica que necesitabas la venta. Lo que funciona es demostrar que nada cambió en ti: cero producto.",
+    "regla_id": "consolidation.sigue_vendiendo"
+  },
+  {
+    "node_id": "6.1",
+    "question_order": 3,
+    "question_text": "¿Cuál de estas SÍ va después del sí?",
+    "option_a": "\"¡Excelente decisión, no se va a arrepentir!\"",
+    "option_b": "\"Perfecto, se lo entrego el jueves en la mañana y me paga al recibir.\"",
+    "option_c": "\"Y si quiere, le agrego unas cajas más de lo otro.\"",
+    "option_d": null,
+    "correct_option": "B",
+    "explanation_correct": "Correcto. Explicar lo que sigue no es seguir vendiendo: es dejarle claro qué pasa ahora, y eso evita cancelaciones.",
+    "explanation_wrong": "La primera es festejar de más y la tercera es seguir vendiendo. Lo que va es dejar claro qué sigue: cuándo llega y cómo se paga.",
+    "regla_id": "consolidation.siguientes_pasos"
   }
 ]
