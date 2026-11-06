@@ -29,7 +29,8 @@ describe("Primero el Cerebro (v16)", () => {
   it("las decisiones están escritas", () => {
     expect(cerebro).toContain("4. **Re-impulsa con una bala** `CAMPO`: una sola, y cierras.");
     expect(cerebro).not.toContain("**Inserta 3 balas**");
-    expect(cerebro).toContain("Una que ya usaste también se vale si ahora la conectas con la objeción");
+    // Emilio, 6-nov (mensaje 138): la bala la escoge el vendedor; una ya dicha también se vale, aun tal cual.
+    expect(cerebro).toContain("**La bala la escoges tú** `CAMPO`");
     expect(cerebro).toContain("**Qué es discutir** `CAMPO`");
     expect(cerebro).toContain("**¿Cuál usar?** `CAMPO`");
     expect(cerebro).toContain("**La otra venta escondida no es venderle más hoy** `CAMPO`");
@@ -47,8 +48,9 @@ describe("Las reglas de las tandas son prueba y su cita está en el Cerebro", ()
   }
   it("lo que decidió Emilio, en las reglas", () => {
     expect(regla("objection.vacia_el_cargador").resumen).toContain("dos o más balas en la misma respuesta");
-    expect(regla("objection.bala_repetida").resumen).toContain("sin conectarlo con la objeción");
-    expect(regla("objection.circulo_de_cierre").resumen).toContain("una bala —nueva, o una ya dicha si ahora la conecta con la objeción—");
+    expect(regla("objection.bala_repetida").resumen).toContain("también re-impulsa");
+    expect(regla("objection.bala_repetida").tipo).toBe("principio");
+    expect(regla("objection.circulo_de_cierre").resumen).toContain("una bala —la que escoja: una que no había dicho, o una ya dicha, aunque la repita tal cual—");
     expect(regla("consolidation.rehash").resumen).toContain("La otra venta no es venderle más hoy");
   });
 });
@@ -57,7 +59,7 @@ describe("Guiones y tarjetas", () => {
   it("una sola bala, también en las tarjetas", () => {
     expect(carta("5.7", 4).body).toContain("PASO 4 — UNA BALA.");
     expect(carta("5.8", 2).body).toContain("4. UNA BALA");
-    expect(carta("5.10", 3).title).toBe("Nueva, o conectada con su objeción");
+    expect(carta("5.10", 3).title).toBe("La bala la escoges tú");
     for (const n of ["5.8", "5.12", "5.15"]) expect(ps(n).failure_criteria.find((f: any) => f.id === "vacia_el_cargador").description).toContain("dos o mas balas");
   });
 });
