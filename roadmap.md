@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Mensaje 141: estado previo vacío y ambas huellas exactas; límite aplicado mediante Storage API, 52428800 bytes y sin filtro MIME comprobados.
+- [x] Mensaje 141: práctica de voz 1.2 con sesión de Emilio y consentimiento existente; WAV nuevo 383432 bytes, evento 729269ba-9aa5-407a-985a-bf8976d1812c con audio_url y sesión b19328aa-0b1e-42c9-bbd8-3dc551dcd071 comprobados. Sin reversión.
+- [x] Mensaje 141: cuatro advertencias aceptadas con motivos exactos y audio resuelto; solo certificado y avance quedan activos por decisión de Emilio. Retirado solo audios_limite_141.sql; ambos deshacer conservados. Sin código ni pruebas modificados, despliegue ni publicación.
+
 - [x] Mensaje 138: huellas previas y doce entregas coinciden; baseline 1028/1035 en 81 archivos, con siete fallas leyendo snapshots nuevos.
 - [x] Mensaje 138: Emilio autorizó continuar desde el Paso 1; siete fallas esperadas por snapshots nuevos leídos por red/pruebas anteriores.
 - [x] Mensaje 138: bala_contenido_138.sql ejecutado completo y chequeo final pasó (Cerebro v21).
