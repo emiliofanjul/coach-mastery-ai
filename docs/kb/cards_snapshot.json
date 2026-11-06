@@ -1404,7 +1404,7 @@
     "card_order": 5,
     "card_type": "why_it_works",
     "title": "Por qué se guardan",
-    "body": "Más adelante en el mapa vas a ver qué pasa cuando el cliente pone una razón para no comprar.\n\nCuando eso ocurre, su impulso BAJA. Y responderle bien no lo sube: solo evita que siga cayendo.\n\nLo que lo vuelve a subir es una bala nueva. Si ya las gastaste todas presumiendo al principio, llegas a ese momento con la mano vacía. Por eso se dosifican.",
+    "body": "Más adelante en el mapa vas a ver qué pasa cuando el cliente pone una razón para no comprar.\n\nCuando eso ocurre, su impulso BAJA. Y responderle bien no lo sube: solo evita que siga cayendo.\n\nLo que lo vuelve a subir es una bala. Si ya las gastaste todas presumiendo al principio, llegas a ese momento con menos de dónde escoger. Por eso se dosifican.",
     "flip_back_text": null
   },
   {
@@ -1596,7 +1596,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Los tres movimientos del círculo",
-    "body": "Cuando llega la objeción:\n\n1. ATRAVIESA — con RRR si es menor, con FFF si es de verdad.\n2. RE-IMPULSA — una bala: algo positivo que no habías dicho, o algo que ya dijiste pero que ahora contesta su objeción.\n3. CIERRA CON ACCIÓN — el siguiente paso concreto.\n\nEn ese orden, y sin saltarte el dos.",
+    "body": "Cuando llega la objeción:\n\n1. ATRAVIESA — con RRR si es menor, con FFF si es de verdad.\n2. RE-IMPULSA — una bala: la que escojas para volver a subirle el ánimo a ese cliente.\n3. CIERRA CON ACCIÓN — el siguiente paso concreto.\n\nEn ese orden, y sin saltarte el dos. Ojo: en FFF, \"lo que encontramos\" no es la bala. La bala va aparte, después.",
     "flip_back_text": null
   },
   {
@@ -1611,8 +1611,8 @@
     "node_id": "5.10",
     "card_order": 3,
     "card_type": "why_it_works",
-    "title": "Nueva, o conectada con su objeción",
-    "body": "Lo mejor es una bala que no hayas dicho. Si usas una que ya dijiste, conéctala con su objeción. Si te dijo \"está caro\": \"por eso le sale más barato: ya no pierde cambios por quedarse sin aceite\".\n\nLo que no sirve es repetirla igualita: le comunica al cliente que ya no tienes más, y eso baja el impulso en lugar de subirlo.\n\nAquí es donde por fin se entiende lo de dosificar. El vendedor que gastó todo su arsenal presumiendo al principio llega a este momento con la mano vacía.",
+    "title": "La bala la escoges tú",
+    "body": "Puede ser una que no habías dicho, o una que ya dijiste.\n\nVolver a decir una ya dicha también se vale: no pega igual que una nueva, pero muchas veces ayuda, porque le confirma que lo que le dijiste es verdad. Y pega más si la conectas con su objeción. Si te dijo \"está caro\": \"por eso le sale más barato: ya no pierde cambios por quedarse sin aceite\".\n\nUnas balas les pegan más a unos clientes que a otros. Leer cuál te conviene en ese momento es tu trabajo. Y por eso se dosifica: el que gastó todo presumiendo al principio llega aquí con menos de dónde escoger.",
     "flip_back_text": null
   },
   {
@@ -1652,7 +1652,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Las objeciones cazan en manada.",
-    "body": "Resolviste \"está caro\" con tu mejor cuenta... y el cliente suelta: \"sí, pero es que además ya tengo proveedor de años.\" Y detrás de esa, puede venir otra.\n\nNo es mala señal: es su proceso. Está sacando TODAS sus dudas antes del sí. La cadena es la antesala de la decisión.\n\nTu examen doble: cada objeción con SU bala (la repetida tal cual no convence, la apilada abruma), y tu ánimo idéntico en la primera y en la última. El cliente está midiendo tu temple tanto como tus respuestas.",
+    "body": "Resolviste \"está caro\" con tu mejor cuenta... y el cliente suelta: \"sí, pero es que además ya tengo proveedor de años.\" Y detrás de esa, puede venir otra.\n\nNo es mala señal: es su proceso. Está sacando TODAS sus dudas antes del sí. La cadena es la antesala de la decisión.\n\nTu examen doble: cada objeción con SU bala (una sola, la que le convenga a esa objeción; la apilada abruma), y tu ánimo idéntico en la primera y en la última. El cliente está midiendo tu temple tanto como tus respuestas.",
     "flip_back_text": null
   },
   {
@@ -1916,7 +1916,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "El circuito",
-    "body": "Ya tienes todas las piezas. Así se arman:\n\nCIERRAS CON ACCIÓN.\nSi llega una objeción, el impulso BAJA.\nLa atraviesas con RRR o con FFF.\nRE-IMPULSAS con una bala nueva.\nY CIERRAS CON ACCIÓN otra vez.\n\nY si llega otra objeción, vuelves a girar. Eso es el Círculo de Cierre.",
+    "body": "Ya tienes todas las piezas. Así se arman:\n\nCIERRAS CON ACCIÓN.\nSi llega una objeción, el impulso BAJA.\nLa atraviesas con RRR o con FFF.\nRE-IMPULSAS con una bala.\nY CIERRAS CON ACCIÓN otra vez.\n\nY si llega otra objeción, vuelves a girar. Eso es el Círculo de Cierre.",
     "flip_back_text": null
   },
   {
@@ -1932,7 +1932,7 @@
     "card_order": 3,
     "card_type": "why_it_works",
     "title": "Aquí se entiende lo de guardar munición",
-    "body": "Cada vuelta del círculo te consume una bala.\n\nSi disparaste todo tu arsenal en la presentación porque querías impresionar, llegas a la tercera objeción sin nada nuevo que decir. Repites lo mismo tal cual, y repetir no sube el impulso: lo desgasta.\n\nEl vendedor que dosificó llega a la tercera vuelta con munición fresca. Por eso gana conversaciones que el otro pierde.",
+    "body": "Cada vuelta del círculo te pide una bala.\n\nSi disparaste todo tu arsenal en la presentación porque querías impresionar, llegas a la tercera objeción con poco de dónde escoger. Puedes volver a decir una que ya usaste, y a veces ayuda: le confirma que lo que dijiste es verdad. Pero no siempre es la que mejor le pega a ese cliente.\n\nEl vendedor que dosificó llega a la tercera vuelta escogiendo. Por eso gana conversaciones que el otro pierde.",
     "flip_back_text": null
   },
   {

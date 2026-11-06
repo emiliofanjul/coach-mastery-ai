@@ -572,9 +572,9 @@ Con cada bala mueves la balanza: subes el valor o bajas el costo.
 
 **La regla de dosificación:** *"no dispares todas las balas al principio. Reserva algunas para que no importe cuántas balas tenga tu cliente, tengas más con qué responder. Guarda balas para los pasos 4 y 5."*
 
-> **Por qué se guardan:** más adelante el cliente va a poner razones para no comprar. Eso baja su impulso. Responderle bien solo **detiene la caída** — lo que vuelve a subirlo es **una bala nueva**. Si las gastaste presumiendo al principio, llegas a ese momento con la mano vacía.
+> **Por qué se guardan:** más adelante el cliente va a poner razones para no comprar. Eso baja su impulso. Responderle bien solo **detiene la caída** — lo que vuelve a subirlo es **una bala**. Si las gastaste todas presumiendo al principio, llegas a ese momento con menos de dónde escoger.
 
-**Cómo se sueltan** `CAMPO`: sistemáticamente, poco a poco, conforme haga falta subir el impulso. En la presentación es normal decir unas tres cosas positivas antes del precio; ante una objeción se reimpulsa con una bala nueva. El error es soltarlas todas de jalón y quedarte sin munición cuando el impulso baje.
+**Cómo se sueltan** `CAMPO`: sistemáticamente, poco a poco, conforme haga falta subir el impulso. En la presentación es normal decir unas tres cosas positivas antes del precio; ante una objeción se reimpulsa con la bala que escojas para ese momento. El error es soltarlas todas de jalón y quedarte sin munición cuando el impulso baje.
 
 ### FUJIES / FUJPIG — Factores de Impulso `FUENTE`
 *"El impulso es otra palabra para la emoción."*
@@ -734,7 +734,7 @@ En español: **Entiendo · Sintió · Encontramos**
 1. **"Entiendo cómo se siente"** — estar de acuerdo te vuelve distinto del vendedor promedio, **y por eso te escuchan**
 2. **"Mi último cliente sentía lo mismo"** — para que sepa que no está solo
 3. **"Lo que encontramos fue..."** — por qué dejaron de pensar así. **Esto usa Efecto Jones**
-4. **Re-impulsa con una bala** `CAMPO`: una sola, y cierras. Tres de golpe sería vaciar el cargador.
+4. **Re-impulsa con una bala** `CAMPO`: una sola, y cierras. Tres de golpe sería vaciar el cargador. «Lo que encontramos» no es la bala: es el paso 3. La bala va aparte, después.
 5. **Close With Action**
 
 > ⚠️ **FFF no termina en la tercera F.** El documento en español del sistema fuente está truncado y solo llega al paso 3 — por eso mucha gente aprendió un FFF incompleto, sin re-impulso y sin cierre. **Los pasos 4 y 5 son el Círculo de Cierre.**
@@ -748,14 +748,14 @@ En español: **Entiendo · Sintió · Encontramos**
             ↓                        │
    Atraviesas (RRR o FFF)            │
             ↓                        │
-   RE-IMPULSAS con una bala NUEVA ───┘
+   RE-IMPULSAS con una bala ─────────┘
 ```
 
 > **El error más común: atravesar la objeción y cerrar de inmediato, saltándose la bala.**
 >
 > Técnicamente respondiste. Pero **atravesar solo detiene la caída del impulso** — no lo sube. Estás pidiendo una decisión en el punto más bajo de la conversación, y desde ahí la respuesta cómoda siempre es *"déjeme lo pienso"*.
 
-**Y la bala tiene que subir el impulso** `CAMPO`. Una bala nueva es un beneficio o un dato que todavía no habías dicho; decir lo mismo con otras palabras es repetirla. Una que ya usaste también se vale si ahora la conectas con la objeción: ante *"está caro"*, *"por eso le sale más barato: ya no pierde cambios por quedarse sin aceite"*. Lo que no sirve es repetirla tal cual, sin conectarla con nada: repetir un argumento ya usado no sube nada, comunica que ya no tienes más, y eso baja el impulso en lugar de subirlo.
+**La bala la escoges tú** `CAMPO`: la que te convenga para volver a subir el impulso de ese cliente en ese momento. Puede ser una que todavía no habías dicho, o una que ya dijiste. Volver a decir una ya dicha, aunque sea tal cual, también se vale: no es igual de efectivo, pero muchas veces ayuda, porque le ratifica que lo que dijiste es verdad y le da seguridad. Y una ya dicha pega más si la conectas con la objeción: ante *"está caro"*, *"por eso le sale más barato: ya no pierde cambios por quedarse sin aceite"*. Unas balas van a ser más efectivas que otras con distintos clientes: leer cuál te conviene usar en ese momento es trabajo del vendedor. Lo que no es bala es algo vago que cualquiera diría.
 
 ### La Regla de los No
 - **Fuente:** *2 no's and a go* — dos no seguidos, luz roja, sigue adelante

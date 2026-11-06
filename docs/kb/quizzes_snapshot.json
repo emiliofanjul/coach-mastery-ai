@@ -671,7 +671,7 @@
     "option_c": "Que el cliente le va a pedir descuento.",
     "option_d": null,
     "correct_option": "B",
-    "explanation_correct": "Correcto. Cuando el cliente ponga una razón para no comprar, lo que vuelve a subir su impulso es una bala nueva. Si ya las gastó todas, llega con la mano vacía.",
+    "explanation_correct": "Correcto. Cuando el cliente ponga una razón para no comprar, lo que vuelve a subir su impulso es una bala. Si ya las gastó todas, llega con menos de dónde escoger.",
     "explanation_wrong": "El problema es la munición: en la presentación, unas tres cosas positivas antes del precio bastan. Las demás se guardan para cuando el cliente ponga razones para no comprar.",
     "regla_id": "present.dosificacion_balas"
   },
@@ -862,12 +862,12 @@
     "question_order": 3,
     "question_text": "¿Por qué conviene no gastar todas tus balas en la presentación?",
     "option_a": "Para que la plática dure más.",
-    "option_b": "Porque cada vuelta del círculo te consume una bala, y sin munición nueva llegas con la mano vacía.",
+    "option_b": "Porque cada vuelta del círculo te pide una bala, y si ya las gastaste todas te queda menos de dónde escoger.",
     "option_c": "Porque el cliente se aburre.",
     "option_d": null,
     "correct_option": "B",
-    "explanation_correct": "Correcto. El que dosificó llega a la tercera vuelta con munición fresca. El que vació el cargador repite lo mismo, y repetir desgasta.",
-    "explanation_wrong": "Es por la munición: cada objeción pide una bala para volver a subir el impulso. Si ya las gastaste todas, solo te queda repetir, y repetir no sube nada.",
+    "explanation_correct": "Correcto. El que dosificó llega a la tercera vuelta escogiendo la bala que mejor le pega a ese cliente. El que vació el cargador solo puede volver a decir lo que ya dijo: a veces ayuda, pero no siempre es lo que más le pega.",
+    "explanation_wrong": "Es por la munición: cada objeción pide una bala para volver a subir el impulso. Si las guardaste, puedes escoger la que mejor le pega a ese cliente.",
     "regla_id": "present.dosificacion_balas"
   },
   {

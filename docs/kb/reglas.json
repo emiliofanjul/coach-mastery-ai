@@ -585,7 +585,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Balas: hechos positivos y concretos sobre el producto, el servicio (tú, tu empresa y cómo se lo haces llegar) o el precio. Con cada una subes el valor o bajas el costo. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción una bala nueva. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
+  "resumen": "Balas: hechos positivos y concretos sobre el producto, el servicio (tú, tu empresa y cómo se lo haces llegar) o el precio. Con cada una subes el valor o bajas el costo. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción la bala que el vendedor escoja para ese momento. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "La persona con más balas claramente tiene el control, siempre y cuando conserve su munición",
   "severidad_sugerida": null
  },
@@ -875,7 +875,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Feel, Felt, Found para la preocupación seria o personal: «entiendo cómo se siente», «otros sintieron lo mismo», «lo que encontraron fue…». No termina en la tercera F: sigue una bala y el cierre con acción. LA PRUEBA: ante una objeción seria, ¿el vendedor la valida sin discutir, dice que otros sintieron lo mismo y lo que encontraron, y avanza? En la práctica los otros clientes se imaginan. Si falta una de las tres F, está a medias.",
+  "resumen": "Feel, Felt, Found para la preocupación seria o personal: «entiendo cómo se siente», «otros sintieron lo mismo», «lo que encontraron fue…». No termina en la tercera F: sigue una bala y el cierre con acción. «Lo que encontraron» no es la bala: es la tercera F. LA PRUEBA: ante una objeción seria, ¿el vendedor la valida sin discutir, dice que otros sintieron lo mismo y lo que encontraron, y avanza? En la práctica los otros clientes se imaginan. Si falta una de las tres F, está a medias.",
   "cita_cerebro": "FFF no termina en la tercera F",
   "severidad_sugerida": null
  },
@@ -885,7 +885,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "El Círculo de Cierre: atravesar la objeción, re-impulsar con una bala y volver a cerrar con acción. Atravesar solo detiene la caída del impulso: no lo sube. LA PRUEBA: después de atravesar la objeción, ¿el vendedor sube el impulso con una bala —nueva, o una ya dicha si ahora la conecta con la objeción— y vuelve a pedir la decisión con una pregunta de acción?",
+  "resumen": "El Círculo de Cierre: atravesar la objeción, re-impulsar con una bala y volver a cerrar con acción. Atravesar solo detiene la caída del impulso: no lo sube. LA PRUEBA: después de atravesar la objeción, ¿el vendedor sube el impulso con una bala —la que escoja: una que no había dicho, o una ya dicha, aunque la repita tal cual— y vuelve a pedir la decisión con una pregunta de acción? «Lo que encontraron» de FFF no es la bala: es el paso anterior.",
   "cita_cerebro": "atravesar solo detiene la caída del impulso",
   "severidad_sugerida": "major"
  },
@@ -895,19 +895,19 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala: pides una decisión en el punto más bajo de la conversación. LA PRUEBA: después de atender la objeción, ¿el vendedor pide la decisión sin dar antes ninguna bala que suba el impulso?",
+  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala: pides una decisión en el punto más bajo de la conversación. LA PRUEBA: después de atender la objeción, ¿el vendedor pide la decisión sin dar antes ninguna bala que suba el impulso? «Lo que encontraron» de FFF no cuenta como bala, aunque sea concreto: es la tercera F, y la bala va aparte. Una bala ya dicha, aunque la repita tal cual, sí cuenta.",
   "cita_cerebro": "El error más común: atravesar la objeción y cerrar de inmediato, saltándose la bala",
   "severidad_sugerida": "major"
  },
  {
   "id": "objection.bala_repetida",
   "paso": 0,
-  "tipo": "error",
+  "tipo": "principio",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Repetir una bala tal cual: comunica que ya no tienes más, y baja el impulso en vez de subirlo. LA PRUEBA: como re-impulso, ¿el vendedor repite algo que ya había dicho —igual o con otras palabras— sin conectarlo con la objeción? Una bala ya dicha que ahora contesta la objeción («por eso le sale más barato: ya no pierde cambios») no es esto.",
-  "cita_cerebro": "Lo que no sirve es repetirla tal cual, sin conectarla con nada",
-  "severidad_sugerida": "major"
+  "resumen": "Volver a decir una bala que ya dijiste también re-impulsa: le ratifica al cliente que lo que dijiste es verdad y le da seguridad. No es igual de efectivo que la bala que mejor le pega a ese cliente en ese momento, pero no es falla: escoger cuál usar es trabajo del vendedor. LA PRUEBA: como re-impulso, ¿el vendedor vuelve a decir algo concreto que ya había dicho, igual o conectado con la objeción? Entonces sí dio una bala: no se saltó la bala, sin importar cuántas veces lo haya dicho antes. Si es vago, no es bala.",
+  "cita_cerebro": "le ratifica que lo que dijiste es verdad y le da seguridad",
+  "severidad_sugerida": null
  },
  {
   "id": "objection.regla_de_los_no",
