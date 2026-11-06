@@ -47,9 +47,9 @@ describe("FFF completo en la 5.8", () => {
 });
 
 describe("el cliente simulado no contradice lo que se califica", () => {
-  it("la bala ya dicha y conectada con la objeción sí cuenta (5.10 y 5.12)", () => {
-    expect(ps("5.10").phases.you_do.prompt).toContain("o uno que ya dijo pero que ahora conecta con tu preocupacion");
-    expect(ps("5.12").phases.you_do.prompt).toContain("Si la conecta con tu segunda objeción, sí cuenta.");
+  it("la bala ya dicha sí cuenta, aun tal cual (5.10 y 5.12; mensaje 138)", () => {
+    expect(ps("5.10").phases.you_do.prompt).toContain("Si te repite tal cual algo que ya te habia dicho, si cuenta");
+    expect(ps("5.12").phases.you_do.prompt).toContain("la MISMA bala de la primera para la segunda objeción → cuenta");
   });
   it("el cargador se vacía desde dos argumentos, como la falla", () => {
     for (const n of ["5.8", "5.12"]) {

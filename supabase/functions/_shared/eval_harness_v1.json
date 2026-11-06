@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.38.0",
+  "harness_version": "v3.39.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -4555,7 +4555,6 @@
       "expected": {
         "must_not_flag": [
           "salta_la_bala",
-          "bala_repetida",
           "discute_la_objecion",
           "no_cierra"
         ]
@@ -4587,7 +4586,6 @@
       ],
       "expected": {
         "must_not_flag": [
-          "bala_repetida",
           "salta_la_bala",
           "discute_la_objecion"
         ]
@@ -4598,7 +4596,7 @@
       "node_id": "5.10",
       "seller_name": "Luis",
       "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
-      "description": "Mensaje 120: la otra cara del G94. Repetir la bala igualita, sin conectarla con la objeción.",
+      "description": "Mensaje 138 (Emilio, 6-nov): repetir tal cual una bala ya dicha también re-impulsa: le ratifica al cliente que es verdad, aunque pegue menos. No es saltarse la bala.",
       "transcript": [
         {
           "role": "user",
@@ -4618,8 +4616,8 @@
         }
       ],
       "expected": {
-        "must_flag": [
-          "bala_repetida"
+        "must_not_flag": [
+          "salta_la_bala"
         ]
       }
     },
@@ -4688,7 +4686,7 @@
       "node_id": "5.8",
       "seller_name": "Luis",
       "company_brain": "Distribuidora del Golfo: distribuidora de lubricantes y aditivos (aceites Bardahl, anticongelante, líquido de frenos, grasas) para talleres, refaccionarias y flotillas.",
-      "description": "Mensaje 120: la otra cara del G97. Dar datos sin decirle que se equivoca no es discutir.",
+      "description": "Mensaje 120: la otra cara del G97. Dar datos sin decirle que se equivoca no es discutir. Mensaje 138 (Emilio, 6-nov): «lo que encontraron», aunque sea concreto, no es la bala: le faltó re-impulsar antes de cerrar.",
       "transcript": [
         {
           "role": "user",
@@ -4712,6 +4710,9 @@
           "se_pone_defensivo",
           "air_a_objecion",
           "vacia_el_cargador"
+        ],
+        "must_flag": [
+          "salta_la_bala"
         ]
       }
     },
@@ -5912,7 +5913,6 @@
         "must_not_flag": [
           "se_pone_defensivo",
           "se_desanima_en_cadena",
-          "repite_bala",
           "vacia_el_cargador",
           "air_a_objecion",
           "bala_se_cae",
