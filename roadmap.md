@@ -5,7 +5,7 @@
 - [x] Mensaje 138: bala_contenido_138.sql ejecutado completo y chequeo final pasó (Cerebro v21).
 - [x] Mensaje 138: bala_practicas_138.sql pasó en el segundo intento autorizado; primero abortó en 5.15 por «¿a poco?» añadido accidentalmente. Seis versiones y huellas exactas verificadas; Cerebro 21/principio/null; bala_contenido_138.sql no repetido.
 - [x] Mensaje 138: tres SQL retirados y entregas instaladas con nueve MD5 exactos; 1041/1041 en 82 archivos. Solo harness-runner desplegado y red viva v3.39.0 comprobada con sesión de Emilio; 17/17 pasan a la primera, promedio 28604 ms, ninguna sobre 90 s. Build automático OK 15:10:09 UTC; comprobación de tipos separada no ejecutada (la ejecuta el harness).
-- [ ] Mensaje 138: publicar tras las verificaciones; confirmar resultado devuelto por la herramienta.
+- [x] Mensaje 138: publicación solicitada para closerapp.ai; herramienta confirmó programación, no despliegue final en vivo.
 
 - [x] Mensaje 134: Paso 0 diferencias esperadas confirmadas por Emilio; cuatro snapshots coinciden con huellas nuevas, prueba previa con huella exacta, baseline 990/991 en 77 archivos por acentos nuevos.
 - [x] Mensaje 134: SQL completo aplicado en una ejecución, verificación 19/3/3/true/4; dos SQL retirados, dos pruebas instaladas con MD5 exactos; 1002/1002 en 78 archivos.
