@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.40.0",
+  "harness_version": "v3.41.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -6444,6 +6444,381 @@
           "referido_en_frio",
           "sobre_celebra",
           "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P7_0_perfecto",
+      "node_id": "7.0",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 144: ejecución perfecta del examen 7.0 (La Conversación Completa): los seis pasos con un cliente realista, con bloqueo, dolor por capas, señal de compra contestada y cerrada, y consolidación.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenos días. Qué movimiento tiene hoy el taller, ¿siempre está así de lleno los lunes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ando ocupado, joven; hoy no ando viendo nada."
+        },
+        {
+          "role": "user",
+          "text": "Claro, no le quito mucho. Soy Luis, de Lubricantes del Golfo: surtimos aceite a varios talleres de la avenida, y ando conociendo a los de la zona. ¿Usted es el dueño?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, yo. Pues aquí, con la chamba."
+        },
+        {
+          "role": "user",
+          "text": "¿Y el aceite con quién lo trae ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor del centro. Todo bien."
+        },
+        {
+          "role": "user",
+          "text": "¿Y cada cuánto le surte?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cada quince días, aunque a veces se me acaba antes."
+        },
+        {
+          "role": "user",
+          "text": "¿Y qué pasa cuando se le acaba antes?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues me quedo sin 15W40 un par de días, y los de la flotilla se van a otro taller. Unos cinco cambios cada quincena."
+        },
+        {
+          "role": "user",
+          "text": "¿Y cuánto le deja cada cambio?"
+        },
+        {
+          "role": "assistant",
+          "text": "Como seiscientos pesos."
+        },
+        {
+          "role": "user",
+          "text": "O sea que cada quincena se le van unos tres mil pesos a otro taller. Yo paso cada jueves por esta ruta, así que el 15W40 lo tendría cada semana y no se le acabaría a media quincena. La cubeta le queda en 1,250. ¿Verdad que estaría bien que la flotilla ya no se le fuera?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí. ¿Y cuánto me pide de mínimo?"
+        },
+        {
+          "role": "user",
+          "text": "Cinco cubetas. ¿Le traigo cinco este jueves, o diez para que le alcance la quincena?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm... diez, este jueves."
+        },
+        {
+          "role": "user",
+          "text": "Perfecto, don Chuy. Entonces el jueves a las diez le llegan las diez cubetas, son 12,500 y me paga al recibir. ¿Le quedó alguna duda?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, así está bien."
+        },
+        {
+          "role": "user",
+          "text": "Todo va a salir bien; y si cualquier cosa no sale como esperaba, me marca a este número. Lo veo el jueves."
+        },
+        {
+          "role": "assistant",
+          "text": "Ándele, joven."
+        }
+      ],
+      "traza": {
+        "opening.estructura_apertura": "Qué movimiento tiene hoy el taller, ¿siempre está así de lleno los lunes?",
+        "story.historia_breve": "Soy Luis, de Lubricantes del Golfo",
+        "blocks.air": "Claro, no le quito mucho.",
+        "flow.close_with_action": "¿Y el aceite con quién lo trae ahorita?",
+        "discovery.dolor_real": "¿Y qué pasa cuando se le acaba antes?",
+        "presentation.conectar_dolor": "O sea que cada quincena se le van unos tres mil pesos a otro taller.",
+        "closing.cierre_asumido": "¿Le traigo cinco este jueves, o diez para que le alcance la quincena?",
+        "consolidation.proteger_venta": "el jueves a las diez le llegan las diez cubetas, son 12,500 y me paga al recibir"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "opening.estructura_apertura": "cumple",
+          "story.historia_breve": "cumple",
+          "blocks.air": "cumple",
+          "flow.close_with_action": "cumple",
+          "discovery.dolor_real": "cumple",
+          "presentation.conectar_dolor": "cumple",
+          "closing.cierre_asumido": "cumple",
+          "consolidation.proteger_venta": "cumple"
+        },
+        "must_not_flag": [
+          "pitch_prematuro",
+          "abre_puerta_al_no",
+          "sigue_presentando",
+          "celebra_y_corre",
+          "debate_bloqueo",
+          "salta_la_bala",
+          "se_defiende",
+          "presentacion_generica",
+          "monologo",
+          "insiste_tras_dos"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P7_2_perfecto",
+      "node_id": "7.2",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 144 (Emilio, 6-nov): ejecución perfecta del examen 7.2 (El Indiferente): AIR al reflejo, la cicatriz escuchada como objeción, su pérdida con sus números, un vecino con nombre, y un pedido chico con convicción; el cliente pone su condición y el vendedor la acepta.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenas tardes. Qué ordenado tiene el mostrador, ¿usted lo acomoda?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, joven, gracias, no ando viendo nada."
+        },
+        {
+          "role": "user",
+          "text": "Claro, se lo entiendo. Soy Luis, de Lubricantes del Golfo; ando conociendo los talleres de la zona. ¿Hace cuánto tiene el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mire, le voy a ahorrar tiempo: hace un año un vendedor como usted me dejó ocho mil pesos de producto muerto. Desde entonces no le compro a nadie nuevo."
+        },
+        {
+          "role": "user",
+          "text": "Uy, ocho mil pesos. Entiendo perfecto cómo se siente, don Toño; yo también estaría así. ¿Qué fue lo que le dejaron?"
+        },
+        {
+          "role": "assistant",
+          "text": "Un aditivo que nadie me pidió nunca. Me lo vendió bonito y ahí sigue."
+        },
+        {
+          "role": "user",
+          "text": "Con razón. Y hoy, de lo que sí se le mueve, ¿qué es lo que más le piden?"
+        },
+        {
+          "role": "assistant",
+          "text": "El 15W40. Y ese a veces se me acaba antes de que me surtan."
+        },
+        {
+          "role": "user",
+          "text": "¿Y qué pasa cuando se le acaba?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues pierdo los cambios de la flotilla, unos cuatro por quincena, a seiscientos cada uno."
+        },
+        {
+          "role": "user",
+          "text": "O sea, unos dos mil cuatrocientos pesos cada quincena que se van a otro taller. No le estoy hablando de un aditivo: es el aceite que usted ya vende todos los días. Don Beto, el del taller del Puente, estaba igual, y lo que encontró fue que con la entrega de cada jueves ya no se le acaba."
+        },
+        {
+          "role": "assistant",
+          "text": "¿Don Beto, el del Puente? ¿A poco?"
+        },
+        {
+          "role": "user",
+          "text": "Sí, don Beto Ramírez; lleva un año conmigo, vaya y pregúntele. Le propongo empezar con cinco cubetas, que es lo que se le acaba en una quincena. ¿Se las traigo este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Va, pero empezamos con poquito; y si no se mueve como dice, ahí muere."
+        },
+        {
+          "role": "user",
+          "text": "Me parece justo, don Toño. Cinco cubetas, entonces: ¿este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Este jueves."
+        }
+      ],
+      "traza": {
+        "objections.reframe": "Entiendo perfecto cómo se siente, don Toño",
+        "impulse.miedo_perdida": "unos dos mil cuatrocientos pesos cada quincena que se van a otro taller",
+        "impulse.efecto_jones": "don Beto Ramírez; lleva un año conmigo",
+        "impulse.poder_asumir": "Le propongo empezar con cinco cubetas, que es lo que se le acaba en una quincena.",
+        "impulse.indiferencia": "Me parece justo, don Toño.",
+        "presentation.conectar_dolor": "es el aceite que usted ya vende todos los días"
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "objections.reframe": "cumple",
+          "impulse.miedo_perdida": "cumple",
+          "impulse.efecto_jones": "cumple",
+          "impulse.poder_asumir": "cumple",
+          "impulse.indiferencia": "cumple",
+          "presentation.conectar_dolor": "cumple"
+        },
+        "must_not_flag": [
+          "air_a_la_cicatriz",
+          "bala_se_cae",
+          "persigue",
+          "empuja_pedido_grande",
+          "debate_bloqueo",
+          "pide_que_pruebe",
+          "anuncia_plan_b",
+          "pelea_la_condicion",
+          "presentacion_generica",
+          "monologo"
+        ],
+        "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "P7_4_perfecto",
+      "node_id": "7.4",
+      "tipo": "perfecto",
+      "seller_name": "Luis",
+      "company_brain": "Lubricantes del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 144: ejecución perfecta del examen final 7.4 (El Certificado) con el cliente hostil: AIR, el dolor con preguntas que aguantan el sarcasmo, la presentación con sus números, las dos objeciones atendidas cada una con su bala y su cierre, el regateo sostenido, el silencio aguantado y la consolidación.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenos días. Qué movimiento trae el taller, ¿así está toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "No, gracias. Siguiente puerta."
+        },
+        {
+          "role": "user",
+          "text": "Claro, no le quito tiempo. Soy Luis, de Lubricantes del Golfo; ando conociendo los talleres de la avenida."
+        },
+        {
+          "role": "assistant",
+          "text": "A ver, ¿y usted qué trae? Ándele, que ando con prisa."
+        },
+        {
+          "role": "user",
+          "text": "Aceite para motor, y lo entrego cada jueves en esta ruta. ¿Con quién trae el suyo ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con mi proveedor de siempre. ¿Y a usted eso qué le importa?"
+        },
+        {
+          "role": "user",
+          "text": "Me importa porque a varios talleres de aquí se les acaba antes de que les surtan. ¿A usted le ha pasado?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, cada quincena me quedo sin 15W40 un par de días, y la flotilla se va con otro."
+        },
+        {
+          "role": "user",
+          "text": "¿Cuántos cambios se le van así?"
+        },
+        {
+          "role": "assistant",
+          "text": "Unos cinco, a seiscientos cada uno."
+        },
+        {
+          "role": "user",
+          "text": "Tres mil pesos cada quincena que se van a otro taller. Yo paso cada jueves, así que el 15W40 no se le acabaría a media quincena. La cubeta le queda en 1,250. ¿Le traigo diez este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Está caro. El mío me la deja en 1,150."
+        },
+        {
+          "role": "user",
+          "text": "O sea que le parece caro contra los 1,150 que paga. Con un solo cambio que ya no se le va, los cien pesos de diferencia por cubeta se pagan solos. ¿Este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Además ya tengo proveedor de años. ¿Por qué le voy a creer a usted?"
+        },
+        {
+          "role": "user",
+          "text": "Entiendo cómo se siente: yo tampoco le creería a la primera a alguien que acaba de llegar. Don Beto, el del taller del Puente, sentía lo mismo, y lo que encontró fue que en un año no le he fallado un solo jueves; pregúntele. Y llevo seis años en esta ruta. ¿Le traigo las diez este jueves o el siguiente?"
+        },
+        {
+          "role": "assistant",
+          "text": "¿Cuál es el pedido mínimo?"
+        },
+        {
+          "role": "user",
+          "text": "Cinco cubetas. ¿Le traigo cinco o diez este jueves?"
+        },
+        {
+          "role": "assistant",
+          "text": "Diez. Pero bájele un diez por ciento y cerramos ahorita."
+        },
+        {
+          "role": "user",
+          "text": "El precio es 1,250, don Chuy; es lo que me permite traérselo cada jueves sin falta. ¿Se las traigo a las diez o a las doce?"
+        },
+        {
+          "role": "assistant",
+          "text": "Mmm... a ver... deme un segundo... Va. A las diez. Pero me cumple, ¿eh?"
+        },
+        {
+          "role": "user",
+          "text": "Le cumplo. El jueves a las diez le llegan las diez cubetas, son 12,500 y me paga al recibir. ¿Le quedó alguna duda?"
+        },
+        {
+          "role": "assistant",
+          "text": "No. Ahí lo espero."
+        }
+      ],
+      "traza": {
+        "blocks.air": "Claro, no le quito tiempo.",
+        "discovery.dolor_real": "¿A usted le ha pasado?",
+        "presentation.conectar_dolor": "Tres mil pesos cada quincena que se van a otro taller.",
+        "objections.reframe": "Entiendo cómo se siente: yo tampoco le creería a la primera",
+        "closing.cierre_asumido": "¿Le traigo cinco o diez este jueves?",
+        "closing.sin_miedo": "El precio es 1,250, don Chuy",
+        "impulse.indiferencia": "es lo que me permite traérselo cada jueves sin falta",
+        "consolidation.proteger_venta": "El jueves a las diez le llegan las diez cubetas, son 12,500 y me paga al recibir."
+      },
+      "expected": {
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple",
+          "discovery.dolor_real": "cumple",
+          "presentation.conectar_dolor": "cumple",
+          "objections.reframe": "cumple",
+          "closing.cierre_asumido": "cumple",
+          "closing.sin_miedo": "cumple",
+          "impulse.indiferencia": "cumple",
+          "consolidation.proteger_venta": "cumple"
+        },
+        "must_not_flag": [
+          "se_derrumba",
+          "descuento_de_panico",
+          "bala_se_cae",
+          "se_defiende",
+          "salta_la_bala",
+          "llena_el_silencio",
+          "debate_bloqueo",
+          "abre_puerta_al_no",
+          "monologo",
+          "insiste_tras_dos"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
