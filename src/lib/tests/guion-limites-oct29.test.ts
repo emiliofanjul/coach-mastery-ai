@@ -55,11 +55,12 @@ describe("Fallas: hasta 10 en boss, 8 en los demás", () => {
     const malos = conScript.filter((n) => (n.ps.failure_criteria ?? []).length > (n.node_type === "boss" ? 10 : 8)).map((n) => `${n.id} (${n.node_type}): ${n.ps.failure_criteria.length}`);
     expect(malos).toEqual([]);
   });
-  it("el 7.0 y el 7.4 son boss y caben con sus 9 fallas (el 5.15 quedó en 8 en el mensaje 119)", () => {
+  // Mensaje 144 (6-nov-2026): el 7.0 y el 7.4 suman salta_la_bala y quedan en 10, el tope de un boss.
+  it("el 7.0 y el 7.4 son boss y caben con sus 10 fallas (el 5.15 quedó en 8 en el mensaje 119)", () => {
     for (const id of ["7.0", "7.4"]) {
       const n = conScript.find((x) => x.id === id);
       expect(n.node_type).toBe("boss");
-      expect(n.ps.failure_criteria).toHaveLength(9);
+      expect(n.ps.failure_criteria).toHaveLength(10);
       expect(n.ps.failure_criteria.some((f: any) => f.id === "insiste_tras_dos")).toBe(true);
     }
   });
