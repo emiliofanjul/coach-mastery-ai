@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Mensaje 144: Paso 0 exacto: 1063/1064 en 84 archivos, única falla esperada de 9 frente a 10; huellas previas y entregadas correctas, Cerebro 23 y cinco guiones vigentes exactos; vendedores sin certificado: [].
+- [ ] Mensaje 144: aplicar dos SQL exactos en orden, verificar y retirar; instalar cinco entregas; 1069/85; desplegar solo harness-runner; ejecutar cinco casos y tiempos; publicar únicamente si todo pasa; retirar verificar_144.sql.
+
 - [x] Mensaje 142 (v2): Paso 1 con ambos SQL exactos en una ejecución cada uno, sin abortos; verificación con Cerebro v22, 3 preguntas en 6.1, nodo «Después del Sí» y tres guiones 1.1.0 con huellas exactas; tres SQL retirados.
 - [x] Mensaje 142 (v2): Paso 2 con red v3.40.0 aplicada con el editor (diff acotado: versión, G99 y cinco casos nuevos) y prueba nueva en src/lib/tests; ambos MD5 exactos (a606755738afc5ecdab19a23877d401a y a8a5cb36ad0c34c7b9c710f81da821b8); originales de docs/kb retirados; 1052/1052 en 83 archivos, tipos y build OK.
 - [x] Mensaje 142 (v2): Paso 3 con solo harness-runner desplegado; red viva v3.40.0 confirmada.
