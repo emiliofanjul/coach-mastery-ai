@@ -259,6 +259,8 @@ Los cinco caminos a la persona. Más cumplidos genuinos y chistes sencillos.
 
 **No requiere cierta personalidad ni ser naturalmente extrovertido: se aprende.**
 
+**Recordar también es CPR** `CAMPO`: con un cliente que ya conoces, retomar lo que te contó de su familia, su ocupación, su recreación, su motivación o su deporte —*"¿y cómo le fue a su hija con lo de la prepa?"*— es hacer CPR. Crear, mantener y hacer crecer la relación personal con el cliente es de lo más importante.
+
 ### El desvío con regreso `CAMPO` `UNIVERSAL`
 La mecánica que hace que el CPR no mate la venta.
 
