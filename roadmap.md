@@ -2,8 +2,9 @@
 
 - [x] Mensaje 138: huellas previas y doce entregas coinciden; baseline 1028/1035 en 81 archivos, con siete fallas leyendo snapshots nuevos.
 - [x] Mensaje 138: Emilio autorizó continuar desde el Paso 1; siete fallas esperadas por snapshots nuevos leídos por red/pruebas anteriores.
-- [ ] Mensaje 138: aplicar dos SQL exactos, verificar Cerebro v21 y seis guiones, retirar tres SQL; instalar entregas exactas y verificar 1041/82 (detener si falla alguna).
-- [ ] Mensaje 138: desplegar solo harness-runner, comprobar build/tipos y 17 casos (repetir una vez cualquier falla, detener al segundo fallo); reportar tabla, tiempos y publicar si todo pasa.
+- [x] Mensaje 138: bala_contenido_138.sql ejecutado completo y chequeo final pasó (Cerebro v21).
+- [ ] Mensaje 138: detenido por aborto de bala_practicas_138.sql en 5.10; la llamada omitió accidentalmente el espacio de «propia operacion». No reintentar sin autorización; conservar tres SQL y entregas intactas.
+- [ ] Mensaje 138: tras autorización, completar SQL exacto, verificar seis guiones, retirar SQL e instalar entregas; 1041/82, solo harness-runner, build/tipos, 17 casos y publicación pendientes por aborto del Paso 1.
 
 - [x] Mensaje 134: Paso 0 diferencias esperadas confirmadas por Emilio; cuatro snapshots coinciden con huellas nuevas, prueba previa con huella exacta, baseline 990/991 en 77 archivos por acentos nuevos.
 - [x] Mensaje 134: SQL completo aplicado en una ejecución, verificación 19/3/3/true/4; dos SQL retirados, dos pruebas instaladas con MD5 exactos; 1002/1002 en 78 archivos.
