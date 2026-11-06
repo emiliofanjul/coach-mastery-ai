@@ -3,7 +3,7 @@
 - [x] Mensaje 144: Paso 0 exacto: 1063/1064 en 84 archivos, única falla esperada de 9 frente a 10; huellas previas y entregadas correctas, Cerebro 23 y cinco guiones vigentes exactos; vendedores sin certificado: [].
 - [x] Mensaje 144: dos SQL aplicados en orden a la primera; Cerebro 23 y cinco huellas finales exactas; lista pendiente []; dos SQL retirados. Cinco entregas con MD5 exactos instaladas, snapshots exactos conservados; 1069/1069 en 85 archivos.
 - [x] Mensaje 144: solo harness-runner desplegado; red viva v3.41.0 verificada; build automático OK. P7_0_perfecto falló dos veces: base 100, abre_puerta_al_no major -30, nota 70; 63217 y 62539 ms. Juicios y citas recuperados, sin cambios correctivos.
-- [ ] Mensaje 144: cuatro casos restantes, publicación y retirada de verificar_144.sql detenidos por instrucción de Emilio al fallar P7_0_perfecto dos veces; esperar su decisión. Certificación end-to-end no ejecutada; no se certificó a nadie.
+- [x] Mensaje 144-B: red v3.41.1 (MD5 5c5ec3c8…) copiada, 1069/1069 en 85 archivos; solo harness-runner desplegado; 5/5 casos a la primera; publicación solicitada; verificar_144.sql retirado.
 
 - [x] Mensaje 142 (v2): Paso 1 con ambos SQL exactos en una ejecución cada uno, sin abortos; verificación con Cerebro v22, 3 preguntas en 6.1, nodo «Después del Sí» y tres guiones 1.1.0 con huellas exactas; tres SQL retirados.
 - [x] Mensaje 142 (v2): Paso 2 con red v3.40.0 aplicada con el editor (diff acotado: versión, G99 y cinco casos nuevos) y prueba nueva en src/lib/tests; ambos MD5 exactos (a606755738afc5ecdab19a23877d401a y a8a5cb36ad0c34c7b9c710f81da821b8); originales de docs/kb retirados; 1052/1052 en 83 archivos, tipos y build OK.
