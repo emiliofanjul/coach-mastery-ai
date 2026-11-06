@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Mensaje 141: estado previo vacío y ambas huellas exactas; límite aplicado mediante Storage API, 52428800 bytes y sin filtro MIME comprobados.
+- [ ] Mensaje 141: práctica de voz con sesión de Emilio y consentimiento existente; comprobar archivo nuevo y audio_url del evento, revertir límite si falla el guardado.
+- [ ] Mensaje 141: aceptar cuatro advertencias indicadas, resolver audio solo tras verificación; certificado y avance quedan abiertos. Retirar solo audios_limite_141.sql; sin despliegue ni publicación.
+
 - [x] Mensaje 138: huellas previas y doce entregas coinciden; baseline 1028/1035 en 81 archivos, con siete fallas leyendo snapshots nuevos.
 - [x] Mensaje 138: Emilio autorizó continuar desde el Paso 1; siete fallas esperadas por snapshots nuevos leídos por red/pruebas anteriores.
 - [x] Mensaje 138: bala_contenido_138.sql ejecutado completo y chequeo final pasó (Cerebro v21).
