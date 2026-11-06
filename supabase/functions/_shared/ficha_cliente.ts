@@ -44,7 +44,7 @@ export function catalogoDelCerebro(cerebro: unknown): string {
   return Array.isArray(v) ? v.map(String).join("; ") : typeof v === "string" ? v : "";
 }
 
-const sinAcentos = (x: string) => x.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const sinAcentos = (x: string) => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 const VACIAS = new Set(["para", "como", "todo", "toda", "todos", "todas", "otro", "otra", "otros", "otras", "linea", "lineas", "familia", "familias", "productos", "producto", "marca", "marcas", "tipo", "tipos", "sus", "mas"]);
 
 /**
