@@ -12,6 +12,7 @@ import { resolverTipoCliente, lineaDelCliente, contextoDelCliente, fichaRespaldo
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
+import { NODO_CERTIFICACION } from "@/lib/certificacion";
 import RetryScreen from "@/components/RetryScreen";
 
 
@@ -2279,10 +2280,11 @@ function PracticaPage() {
                 });
               }
 
-              // Certificación Closer: pasar 9.3 con score >= 85 sella la certificación.
+              // Certificación Closer: pasar el examen final (7.4) con score >= 85 sella la certificación.
               // Un pase menor completa el nodo pero no certifica (se puede repetir).
+              // Nov-2026 (mensaje 144): decía "9.3", un id del mapa viejo que ya no existe, y nadie se certificaba.
               const finalScore = feedbackResult?.score ?? 0;
-              if (nodeId === "9.3" && finalScore >= 85 && !sellerData.certified_at) {
+              if (nodeId === NODO_CERTIFICACION && finalScore >= 85 && !sellerData.certified_at) {
                 await restMutate(`sellers?id=eq.${sellerData.id}`, {
                   method: "PATCH",
                   body: { certified_at: new Date().toISOString() },

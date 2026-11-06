@@ -2076,7 +2076,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Examen 1 de 4.",
-    "body": "Un cliente de verdad. Sin guion pedagógico, sin pistas, sin red.\n\nLos seis pasos completos: ábrete la puerta, preséntate en un respiro, excava hasta el dolor, preséntale SU problema resuelto, cierra asumido en el pico — y sella el trato tan bien que ninguna duda nazca después.\n\nTodo lo que aprendiste en ocho mundos, en una sola conversación. Como va a ser en el campo, todos los días.",
+    "body": "Un cliente de verdad. Sin guion pedagógico, sin pistas, sin red.\n\nLos seis pasos completos: ábrete la puerta, preséntate en un respiro, excava hasta el dolor, preséntale SU problema resuelto, cierra asumido en el pico, y sella el trato tan bien que ninguna duda nazca después.\n\nTodo lo que aprendiste en seis mundos, en una sola conversación. Como va a ser en el campo, todos los días.",
     "flip_back_text": null
   },
   {
@@ -2092,15 +2092,15 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "Examen 3 de 4.",
-    "body": "A este señor le vendieron mal hace un año — ocho mil pesos de producto muerta — y juró no comprarle a nadie nuevo. Te va a decir que no dos veces: la primera es el reflejo de siempre. La segunda es su cicatriz.\n\nNo las confundas: el reflejo se atraviesa. La cicatriz se ESCUCHA.\n\nY si te ganas el derecho a seguir, enciéndelo como aprendiste: con su cuenta, con sus vecinos, con condiciones que lo protejan — pura verdad verificable. Su pedido chico condicionado es la victoria más grande de este mapa: el salto de fe de alguien que juró no volver a saltar.",
+    "body": "A este señor le vendieron mal hace un año —ocho mil pesos de producto muerto— y juró no comprarle a nadie nuevo.\n\nPrimero te va a decir que no: es el reflejo de siempre, y se atraviesa con AIR. Luego te va a contar por qué. Eso ya no es un no: trae su razón, y eso lo hace una objeción. Su cicatriz se ESCUCHA.\n\nY si te ganas el derecho a seguir, enciéndelo como aprendiste: con su cuenta, con sus vecinos, con la convicción de un pedido chico. Sin pedirle que pruebe y sin ofrecerle salida; si él pone su condición, se la aceptas. Ese pedido chico es la victoria más grande de este mapa: el salto de fe de alguien que juró no volver a saltar.",
     "flip_back_text": null
   },
   {
     "node_id": "7.3",
     "card_order": 1,
     "card_type": "concept",
-    "title": "El examen que puedes reprobar sintiendote bien",
-    "body": "Este cliente lleva anos comprandote. Te recibe con gusto, te da su pedido sin que se lo pidas, y se queda contento hagas lo que hagas.\n\nPuedes terminar esta conversacion con el pedido en la mano, sentir que fue una buena visita, y haber reprobado.\n\nPorque la pregunta no es si saliste con pedido. Es si saliste sabiendo que mas puede comprarte, y si lograste que empezara a hacerlo.",
+    "title": "El examen que puedes reprobar sintiéndote bien",
+    "body": "Este cliente lleva años comprándote. Te recibe con gusto, te da su pedido sin que se lo pidas, y se queda contento hagas lo que hagas.\n\nPuedes terminar esta conversación con el pedido en la mano, sentir que fue una buena visita, y haber reprobado.\n\nPorque la pregunta no es si saliste con pedido. Es si saliste sabiendo qué más puede comprarte, y si lograste que empezara a hacerlo.",
     "flip_back_text": null
   },
   {
@@ -2108,7 +2108,7 @@
     "card_order": 1,
     "card_type": "concept",
     "title": "El examen final.",
-    "body": "Este es el cliente del que te hablaron cuando entraste a ventas: hostil, escéptico, regateador — el que hace que los vendedores promedio cambien de calle.\n\nTe va a rechazar dos veces antes de escucharte. Va a objetar todo con números. Va a regatear como si le fuera la vida. Y al final se va a quedar callado, mirándote, sacando cuentas.\n\nAdentro de todo eso hay una venta real — para quien ejecute el sistema completo sin quebrarse un milímetro.\n\nOcho mundos te trajeron aquí. El vendedor no nace. Se hace — y hoy se certifica.",
+    "body": "Este es el cliente del que te hablaron cuando entraste a ventas: hostil, escéptico, regateador, el que hace que los vendedores promedio cambien de calle.\n\nTe va a rechazar antes de escucharte. Va a objetar todo con números. Va a regatear como si le fuera la vida. Y al final se va a quedar callado, mirándote, sacando cuentas.\n\nAdentro de todo eso hay una venta real, para quien ejecute el sistema completo sin quebrarse un milímetro.\n\nSeis mundos te trajeron aquí. El vendedor no nace. Se hace, y hoy se certifica.",
     "flip_back_text": null
   },
   {
