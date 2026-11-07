@@ -1,815 +1,245 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { CloserCharacter } from "@/components/closer/CloserCharacter";
+import { estiloBoton, Estrella } from "@/components/closer/piezas";
+import { Icono, estiloTitulo, estiloTexto, estiloEtiqueta } from "@/components/closer/bienvenida-ui";
 
+/**
+ * «Así funciona» (mensaje 154, nov-2026). Reemplaza el recorrido viejo (un mapa que ya no es así, un video
+ * que no existía, compromisos e insignias que no hay): tres pantallas que muestran lo que de
+ * verdad hace Closer —aprendes, practicas con tu voz, sabes qué mejorar— con una muestra de cada parte.
+ * Se ve al terminar la bienvenida y desde el menú («Cómo funciona Closer»). No guarda nada:
+ * onboarding_completed ya se guardó al terminar las preguntas.
+ */
 export const Route = createFileRoute("/onboarding/map-intro")({
   head: () => ({
     meta: [
-      { title: "Tu camino al Elite — Closer" },
-      { name: "description", content: "Conoce el mapa de entrenamiento." },
+      { title: "Así funciona — Closer" },
+      { name: "description", content: "Cómo se aprende y se practica en Closer." },
     ],
   }),
-  component: MapIntro,
+  component: AsiFunciona,
 });
 
-const BG = "var(--c-bg)";
-
-const WORLDS: Array<{
-  id: number;
-  icon: string;
-  name: string;
-  color: string;
-}> = [
-  { id: 0, icon: "🌆", name: "La Introducción", color: "#3a6a9a" },
-  { id: 1, icon: "🏕️", name: "Mentalidad", color: "#5a8a3a" },
-  { id: 2, icon: "🚪", name: "Historia Breve", color: "#3a8a5a" },
-  { id: 3, icon: "🔍", name: "Lectura del Cliente", color: "#8a7a2a" },
-  { id: 4, icon: "🏗️", name: "La Presentación", color: "#8a5a2a" },
-  { id: 5, icon: "🔥", name: "Factores de Impulso", color: "#8a2a2a" },
-  { id: 6, icon: "🎯", name: "El Cierre", color: "#8a7a1a" },
-  { id: 7, icon: "🛡️", name: "Manejo de Objeciones", color: "#6a3a8a" },
-  { id: 8, icon: "🏆", name: "Consolidación", color: "#2a7a7a" },
-  { id: 9, icon: "👑", name: "Certificación Elite", color: "var(--c-gold)" },
+const PASOS: Array<{ paso: string; titulo: string; texto: string }> = [
+  {
+    paso: "1 · Aprende",
+    titulo: "Una técnica en un par de minutos",
+    texto: "Tarjetas cortas, con ejemplos de cómo se dice bien y cómo se dice mal. Y un quiz de tres preguntas para asegurarte.",
+  },
+  {
+    paso: "2 · Practica",
+    titulo: "Dila en voz alta, con un cliente",
+    texto: "Tú hablas y el cliente te contesta, como en una visita real. Si se te va, empiezas otra vez: aquí nadie te compra ni te deja de comprar.",
+  },
+  {
+    paso: "3 · Mejora",
+    titulo: "Closer te dice qué cambiar",
+    texto: "Una calificación honesta, lo que te bajó la nota y una misión para tu próxima visita de verdad.",
+  },
 ];
 
-const COMMITMENTS = [
-  "Practicar al menos 3 veces por semana",
-  "Aplicar lo que aprendo en cada visita al campo",
-  "Llegar al nivel Closer en los próximos 60 días",
-  "Convertirme en Vendedor Elite",
-];
-
-function MapIntro() {
+function AsiFunciona() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0); // 0..4 → P20..P24
-  const [fade, setFade] = useState(true);
-  const [authReady, setAuthReady] = useState(false);
-  const [sellerId, setSellerId] = useState<string | null>(null);
-  const [name, setName] = useState("Vendedor");
-  const [declaration, setDeclaration] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const [listo, setListo] = useState(false);
+  const [i, setI] = useState(0);
+  const toque = useRef<number | null>(null);
+  // En teléfonos bajitos (iPhone SE) el cuadro de la muestra es más chico: la muestra se achica para caber entera.
+  const cuadro = useRef<HTMLDivElement | null>(null);
+  const muestra = useRef<HTMLDivElement | null>(null);
+  const [escala, setEscala] = useState(1);
+  useLayoutEffect(() => {
+    const medir = () => {
+      const c = cuadro.current, m = muestra.current;
+      if (!c || !m) return;
+      setEscala(Math.min(1, (c.clientHeight - 28) / (m.offsetHeight + 20)));
+    };
+    medir();
+    window.addEventListener("resize", medir);
+    return () => window.removeEventListener("resize", medir);
+  }, [i, listo]);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate({ to: "/login" });
-        return;
-      }
-      const [{ data: seller }, { data: profile }] = await Promise.all([
-        supabase
-          .from("sellers")
-          .select("id, full_name, declaration")
-          .eq("profile_id", session.user.id)
-          .maybeSingle(),
-        supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("id", session.user.id)
-          .maybeSingle(),
-      ]);
-      if (!active) return;
-      const resolvedName =
-        seller?.full_name?.trim() || profile?.full_name?.trim() || "";
-      if (resolvedName) setName(resolvedName.split(" ")[0]);
-      if (seller) {
-        setSellerId(seller.id);
-        if (seller.declaration) setDeclaration(seller.declaration);
-      }
-      setAuthReady(true);
-    })();
+    let vivo = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!vivo) return;
+      if (!session) navigate({ to: "/login" });
+      else setListo(true);
+    });
     return () => {
-      active = false;
+      vivo = false;
     };
   }, [navigate]);
 
-  const goto = (next: number) => {
-    setFade(false);
-    setTimeout(() => {
-      setStep(next);
-      setFade(true);
-    }, 180);
-  };
+  const ultimo = i === PASOS.length - 1;
+  const siguiente = () => (ultimo ? navigate({ to: "/mapa" }) : setI(i + 1));
+  const p = PASOS[i];
 
-  const handleActivate = async () => {
-    setSaving(true);
-    if (sellerId && declaration) {
-      await supabase
-        .from("sellers")
-        .update({ declaration, onboarding_completed: true })
-        .eq("id", sellerId);
-    }
-    navigate({ to: "/mapa" });
-  };
-
-  if (!authReady) {
-    return (
-      <main style={shell}>
-        <div style={{ color: "var(--c-text-2)", fontFamily: "'DM Sans', sans-serif" }}>
-          Cargando…
-        </div>
-      </main>
-    );
-  }
+  if (!listo) return <main style={shell} />;
 
   return (
-    <main style={shell}>
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 560,
-          opacity: fade ? 1 : 0,
-          transition: "opacity 200ms ease",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          flex: 1,
-        }}
-      >
-        {step === 0 && <SilhouetteMap onNext={() => goto(1)} />}
-        {step === 1 && <WorldsTour onNext={() => goto(2)} />}
-        {step === 2 && <VideoStep onNext={() => goto(3)} />}
-        {step === 3 && (
-          <CommitmentStep
-            value={declaration}
-            onPick={setDeclaration}
-            onNext={() => goto(4)}
-          />
-        )}
-        {step === 4 && (
-          <Activation
-            name={name}
-            declaration={declaration ?? ""}
-            saving={saving}
-            onStart={handleActivate}
-          />
-        )}
+    <main
+      style={shell}
+      // Deslizar de lado también cambia de pantalla.
+      onTouchStart={(e) => (toque.current = e.touches[0].clientX)}
+      onTouchEnd={(e) => {
+        if (toque.current == null) return;
+        const dx = e.changedTouches[0].clientX - toque.current;
+        toque.current = null;
+        if (dx < -50 && !ultimo) setI(i + 1);
+        if (dx > 50 && i > 0) setI(i - 1);
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ height: 44, display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+          {!ultimo && (
+            <button
+              type="button"
+              onClick={() => setI(PASOS.length - 1)}
+              style={{ height: 44, padding: "0 4px", border: "none", background: "transparent", color: "var(--c-text-2)", fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600, cursor: "pointer" }}
+            >
+              Saltar
+            </button>
+          )}
+        </div>
+
+        <div
+          ref={cuadro}
+          aria-hidden
+          style={{
+            height: "min(360px, 40dvh)",
+            marginTop: 8,
+            borderRadius: 28,
+            background: "radial-gradient(120% 90% at 50% 0%, rgb(var(--c-client-rgb) / 0.07) 0%, rgb(var(--c-client-rgb) / 0) 60%), var(--c-surface)",
+            border: "1px solid var(--c-elevated)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+        >
+          <div key={i} ref={muestra} style={{ animation: "asiEntra 350ms ease both", scale: `${escala}` }}>
+            {i === 0 && <MuestraAprende />}
+            {i === 1 && <MuestraPractica />}
+            {i === 2 && <MuestraMejora />}
+          </div>
+        </div>
+
+        <div key={`t${i}`} aria-live="polite" style={{ animation: "asiEntra 350ms ease both" }}>
+          <div style={{ ...estiloEtiqueta, marginTop: "min(32px, 3dvh)" }}>{p.paso}</div>
+          <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 8 }}>{p.titulo}</h1>
+          <p style={{ ...estiloTexto, marginTop: 12 }}>{p.texto}</p>
+        </div>
+
+        <div style={{ marginTop: "auto", paddingTop: 24 }}>
+          <div aria-label={`Pantalla ${i + 1} de ${PASOS.length}`} style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 20 }}>
+            {PASOS.map((_, k) => (
+              <span key={k} style={{ height: 6, borderRadius: 3, transition: "width 300ms ease, background 300ms ease", width: k === i ? 22 : 6, background: k === i ? "var(--c-primary)" : "var(--c-border-strong)" }} />
+            ))}
+          </div>
+          <button type="button" onClick={siguiente} style={estiloBoton("principal")}>
+            {ultimo ? "Ir a mi mapa" : "Siguiente"}
+          </button>
+        </div>
       </div>
+      <style>{`@keyframes asiEntra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes asiOndaA{0%,100%{transform:scale(1)}20%{transform:scale(1.05)}45%{transform:scale(1.015)}70%{transform:scale(1.07)}85%{transform:scale(1.03)}}
+@keyframes asiOndaB{0%,100%{transform:scale(1.02)}30%{transform:scale(1.09)}55%{transform:scale(1.03)}80%{transform:scale(1.11)}}
+@media (prefers-reduced-motion: reduce){.asi-onda{animation:none!important}}`}</style>
     </main>
   );
 }
 
-/* ───────────── P20 — Silhouette Map ───────────── */
+/* ---------- Las muestras: lo que se ve de verdad en cada parte ---------- */
 
-function SilhouetteMap({ onNext }: { onNext: () => void }) {
+function Tarjeta({ children, borde }: { children: ReactNode; borde?: boolean }) {
   return (
     <div
       style={{
         width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "2rem 1.2rem 7rem",
+        boxSizing: "border-box",
+        padding: "12px 14px",
+        borderRadius: 14,
+        background: "var(--c-surface)",
+        border: "1px solid var(--c-border)",
+        ...(borde ? { borderLeft: "3px solid var(--c-primary)" } : {}),
       }}
     >
-      <h1
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
-          fontSize: "1.3rem",
-          color: "var(--c-text)",
-          textAlign: "center",
-          margin: 0,
-        }}
-      >
-        Este es tu camino al Elite.
-      </h1>
-
-      <div
-        style={{
-          marginTop: "2rem",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 0,
-        }}
-      >
-        {WORLDS.map((w, idx) => {
-          const isFirst = w.id === 0;
-          const isCrown = w.id === 9;
-          return (
-            <div
-              key={w.id}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "50%",
-                  background: isFirst ? "var(--c-primary)" : "var(--c-elevated)",
-                  opacity: isFirst ? 1 : 0.3,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: isFirst ? "1.6rem" : "1.2rem",
-                  boxShadow: isFirst
-                    ? "0 0 32px 4px rgb(var(--c-primary-rgb) / 0.55)"
-                    : "none",
-                  animation: isFirst ? "breathe 2.4s ease-in-out infinite" : undefined,
-                }}
-              >
-                {isFirst ? w.icon : isCrown ? <span style={{ opacity: 0.2 }}>👑</span> : ""}
-              </div>
-              {isFirst && (
-                <div
-                  style={{
-                    marginTop: "0.5rem",
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "0.84rem",
-                    color: "var(--c-primary)",
-                    textAlign: "center",
-                  }}
-                >
-                  {w.name}
-                </div>
-              )}
-              {idx < WORLDS.length - 1 && (
-                <div
-                  style={{
-                    width: 2,
-                    height: 28,
-                    background: isFirst
-                      ? "linear-gradient(180deg, rgb(var(--c-primary-rgb) / 0.5), var(--c-elevated))"
-                      : "var(--c-elevated)",
-                    opacity: isFirst ? 1 : 0.4,
-                    margin: "0.4rem 0",
-                  }}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      <p
-        style={{
-          marginTop: "1.6rem",
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: "0.84rem",
-          color: "var(--c-text-2)",
-          textAlign: "center",
-          lineHeight: 1.5,
-        }}
-      >
-        10 mundos. 57 etapas.
-        <br />
-        Un solo destino.
-      </p>
-
-      <FixedBottomButton onClick={onNext} label="Ver el camino completo →" />
-      <style>{`
-        @keyframes breathe {
-          0%,100% { transform: scale(1); }
-          50% { transform: scale(1.06); }
-        }
-      `}</style>
+      {children}
     </div>
   );
 }
 
-/* ───────────── P21 — Worlds Tour ───────────── */
-
-function WorldsTour({ onNext }: { onNext: () => void }) {
-  const [lit, setLit] = useState<number>(-1);
-  const [done, setDone] = useState(false);
-  const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
-
-  const play = () => {
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
-    setDone(false);
-    setLit(-1);
-    WORLDS.forEach((_, i) => {
-      const delayIn = i * 500;
-      timers.current.push(setTimeout(() => setLit(i), delayIn));
-    });
-    timers.current.push(
-      setTimeout(() => {
-        setLit(WORLDS.length - 1);
-        setDone(true);
-      }, WORLDS.length * 500 + 200),
-    );
-  };
-
-  useEffect(() => {
-    play();
-    return () => {
-      timers.current.forEach(clearTimeout);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+function MuestraAprende() {
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "2rem 1.2rem 2rem",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column-reverse",
-          alignItems: "center",
-          gap: "0.5rem",
-          width: "100%",
-        }}
-      >
-        {WORLDS.map((w, idx) => {
-          const isLit = idx <= lit;
-          return (
-            <div
-              key={w.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.8rem",
-                width: "100%",
-                maxWidth: 360,
-                opacity: isLit ? 1 : 0.18,
-                transition: "opacity 240ms ease",
-              }}
-            >
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: "50%",
-                  background: isLit ? w.color : "var(--c-elevated)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.2rem",
-                  boxShadow: isLit
-                    ? `0 0 18px 2px ${w.color}88`
-                    : "none",
-                  flexShrink: 0,
-                  transition: "all 240ms ease",
-                }}
-              >
-                {w.icon}
-              </div>
-              <div
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "0.9rem",
-                  color: isLit ? "var(--c-text)" : "var(--c-text-2)",
-                }}
-              >
-                {w.name}
-              </div>
-            </div>
-          );
-        })}
+    <div style={{ width: 260, padding: 20, boxSizing: "border-box", borderRadius: 20, background: "var(--c-surface)", border: "1px solid var(--c-border)", boxShadow: "0 30px 60px -20px rgb(0 0 0 / 0.6)", fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 }}>
+        <span style={{ height: 3, borderRadius: 2, background: "var(--c-primary)" }} />
+        <span style={{ height: 3, borderRadius: 2, background: "var(--c-primary)" }} />
+        <span style={{ height: 3, borderRadius: 2, background: "var(--c-border)" }} />
       </div>
-
-      {done && (
-        <p
-          style={{
-            marginTop: "1.6rem",
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 400,
-            fontSize: "0.84rem",
-            color: "var(--c-text-2)",
-            textAlign: "center",
-            lineHeight: 1.5,
-            animation: "fadeIn 400ms ease",
-          }}
-        >
-          Cada mundo es una habilidad real.
-          <br />
-          Cada habilidad se practica, no se memoriza.
-        </p>
-      )}
-
-      {done && (
-        <>
-          <PrimaryButton onClick={onNext} label="Entendido →" />
-          <button
-            onClick={play}
-            style={{
-              marginTop: "0.8rem",
-              background: "transparent",
-              border: "none",
-              color: "var(--c-text-2)",
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 500,
-              fontSize: "0.82rem",
-              cursor: "pointer",
-              textDecoration: "underline",
-            }}
-          >
-            Ver de nuevo
-          </button>
-        </>
-      )}
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+      <div style={{ marginTop: 18, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-success)" }}>Ejemplo bueno</div>
+      <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.45, color: "var(--c-text)" }}>
+        «¡Buenos días! Oiga, se ve que aquí no para el movimiento desde temprano. ¿Siempre está así de movido?»
+      </div>
+      <div style={{ marginTop: 16, height: 40, borderRadius: 12, background: "var(--c-elevated)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 600, color: "var(--c-text-soft)" }}>
+        Descubre por qué
+      </div>
     </div>
   );
 }
 
-/* ───────────── P22 — Video opcional ───────────── */
-
-function VideoStep({ onNext }: { onNext: () => void }) {
+function MuestraPractica() {
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "2rem 1.2rem",
-      }}
-    >
-      <h2
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
-          fontSize: "1.4rem",
-          color: "var(--c-text)",
-          textAlign: "center",
-          margin: 0,
-        }}
-      >
-        ¿Cómo funciona Closer?
-      </h2>
-
-      <div
-        style={{
-          width: "100%",
-          marginTop: "1.4rem",
-          background: "var(--c-surface)",
-          borderRadius: 14,
-          aspectRatio: "16 / 9",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "0.6rem",
-        }}
-      >
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: "50%",
-            background: "rgb(var(--c-primary-rgb) / 0.12)",
-            border: "2px solid var(--c-primary)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--c-primary)",
-            fontSize: "1.3rem",
-          }}
-        >
-          ▶
-        </div>
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 400,
-            fontSize: "0.8rem",
-            color: "var(--c-text-2)",
-          }}
-        >
-          Video de 60 segundos
-        </div>
+    <div style={{ width: 270, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ position: "relative", width: 132, height: 132, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span className="asi-onda" style={{ position: "absolute", inset: 0, borderRadius: "50%", border: "2px solid rgb(var(--c-client-rgb) / 0.55)", animation: "asiOndaA 1.4s ease-in-out infinite" }} />
+        <span className="asi-onda" style={{ position: "absolute", inset: -12, borderRadius: "50%", border: "1px solid rgb(var(--c-client-rgb) / 0.22)", animation: "asiOndaB 1.7s ease-in-out infinite" }} />
+        <span style={{ width: 100, height: 100, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%, var(--c-avatar-claro) 0%, var(--c-avatar-centro) 55%, var(--c-avatar-hondo) 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 30, color: "var(--c-text)" }}>
+          DM
+        </span>
       </div>
-
-      <PrimaryButton onClick={onNext} label="Ver el video →" />
-      <button
-        onClick={onNext}
-        style={{
-          marginTop: "0.7rem",
-          width: "100%",
-          background: "transparent",
-          border: "1px solid var(--c-border)",
-          color: "var(--c-text)",
-          padding: "0.95rem 1.4rem",
-          borderRadius: 99,
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: "0.95rem",
-          cursor: "pointer",
-        }}
-      >
-        Saltar, ya entendí →
-      </button>
+      <Tarjeta>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--c-client)" }}>Don Martín</div>
+        <div style={{ marginTop: 4, fontSize: 14, lineHeight: 1.4, color: "var(--c-text-soft)" }}>Mire, ahorita ando ocupado. ¿Qué me trae?</div>
+      </Tarjeta>
+      <span style={{ width: 64, height: 64, borderRadius: "50%", background: "linear-gradient(180deg, var(--c-play-claro) 0%, var(--c-play-centro) 50%, var(--c-play-hondo) 100%)", boxShadow: "inset 0 -3px 0 rgb(var(--c-play-sombra-rgb) / 0.35), inset 0 2px 0 rgb(255 255 255 / 0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FFFFFF" }}>
+        <Icono nombre="microfono" tam={28} />
+      </span>
     </div>
   );
 }
 
-/* ───────────── P23 — Declaración ───────────── */
-
-function CommitmentStep({
-  value,
-  onPick,
-  onNext,
-}: {
-  value: string | null;
-  onPick: (v: string) => void;
-  onNext: () => void;
-}) {
+function MuestraMejora() {
+  const r = 70;
+  const c = 2 * Math.PI * r;
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "2rem 1.2rem",
-      }}
-    >
-      <CloserCharacter state="normal" size={80} />
-      <h2
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
-          fontSize: "1.3rem",
-          color: "var(--c-text)",
-          textAlign: "center",
-          margin: "1rem 0 0.4rem",
-        }}
-      >
-        Una pregunta antes de empezar.
-      </h2>
-      <p
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: "0.84rem",
-          color: "var(--c-text-2)",
-          textAlign: "center",
-          margin: 0,
-        }}
-      >
-        ¿Con qué te comprometes?
-      </p>
-
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.6rem",
-          marginTop: "1.4rem",
-        }}
-      >
-        {COMMITMENTS.map((c) => {
-          const sel = value === c;
-          return (
-            <button
-              key={c}
-              type="button"
-              onClick={() => onPick(c)}
-              style={{
-                width: "100%",
-                background: sel ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
-                border: sel ? "2px solid var(--c-primary)" : "1px solid var(--c-border)",
-                borderRadius: 14,
-                padding: sel ? "calc(1rem - 1px) calc(1.25rem - 1px)" : "1rem 1.25rem",
-                color: "var(--c-text)",
-                fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 500,
-                fontSize: "0.92rem",
-                textAlign: "center",
-                cursor: "pointer",
-                transition: "all 160ms ease",
-              }}
-            >
-              {c}
-            </button>
-          );
-        })}
+    <div style={{ width: 270, display: "flex", flexDirection: "column", alignItems: "center", gap: 16, fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ position: "relative", width: 132, height: 132 }}>
+        <svg width={132} height={132} viewBox="0 0 156 156" style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }} aria-hidden>
+          <circle cx={78} cy={78} r={r} fill="none" stroke="var(--c-elevated)" strokeWidth={8} />
+          <circle cx={78} cy={78} r={r} fill="none" stroke="var(--c-primary)" strokeWidth={8} strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * 0.16} />
+        </svg>
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 30, color: "var(--c-text)" }}>84</div>
       </div>
-
-      <PrimaryButton
-        onClick={onNext}
-        label="Me comprometo →"
-        disabled={!value}
-      />
-    </div>
-  );
-}
-
-/* ───────────── P24 — Activación ───────────── */
-
-function Activation({
-  name,
-  declaration,
-  saving,
-  onStart,
-}: {
-  name: string;
-  declaration: string;
-  saving: boolean;
-  onStart: () => void;
-}) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100dvh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2rem 1.2rem",
-        gap: "1rem",
-      }}
-    >
-      <div style={{ animation: "bounceIn 600ms ease" }}>
-        <CloserCharacter state="motivation" size={120} />
+      <div style={{ display: "flex", gap: 6 }}>
+        <Estrella ganada tam={22} />
+        <Estrella ganada tam={22} />
+        <Estrella ganada={false} tam={22} />
       </div>
-      <h1
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
-          fontSize: "2.2rem",
-          color: "var(--c-primary)",
-          textAlign: "center",
-          margin: "0.6rem 0 0",
-        }}
-      >
-        {name}.
-      </h1>
-      <div
-        style={{
-          background: "rgb(var(--c-primary-rgb) / 0.1)",
-          border: "1px solid rgb(var(--c-primary-rgb) / 0.3)",
-          borderRadius: 99,
-          padding: "0.4rem 0.9rem",
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: "0.8rem",
-          color: "var(--c-primary)",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "0.4rem",
-        }}
-      >
-        🌱 Rookie
-      </div>
-      {declaration && (
-        <p
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 400,
-            fontStyle: "italic",
-            fontSize: "0.8rem",
-            color: "var(--c-text-2)",
-            textAlign: "center",
-            margin: 0,
-            maxWidth: 320,
-            lineHeight: 1.5,
-          }}
-        >
-          “{declaration}”
-        </p>
-      )}
-
-      <button
-        type="button"
-        onClick={onStart}
-        disabled={saving}
-        style={{
-          width: "100%",
-          marginTop: "1.6rem",
-          background: "var(--c-primary)",
-          color: "var(--c-surface)",
-          border: "none",
-          borderRadius: 99,
-          padding: "1rem 2rem",
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: "1rem",
-          cursor: saving ? "wait" : "pointer",
-          boxShadow: "0 12px 36px -8px rgb(var(--c-primary-rgb) / 0.7)",
-        }}
-      >
-        {saving ? "Activando…" : "Empezar mi entrenamiento →"}
-      </button>
-
-      <style>{`
-        @keyframes bounceIn {
-          0% { transform: scale(0.6); opacity: 0; }
-          60% { transform: scale(1.08); opacity: 1; }
-          100% { transform: scale(1); }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-/* ───────────── Sub-components ───────────── */
-
-function PrimaryButton({
-  onClick,
-  label,
-  disabled,
-}: {
-  onClick: () => void;
-  label: string;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        width: "100%",
-        marginTop: "1.8rem",
-        background: disabled ? "var(--c-disabled-bg)" : "var(--c-primary)",
-        color: disabled ? "var(--c-disabled-text)" : "var(--c-surface)",
-        border: "none",
-        borderRadius: 99,
-        padding: "1rem 1.4rem",
-        fontFamily: "'Syne', sans-serif",
-        fontWeight: 700,
-        fontSize: "0.98rem",
-        cursor: disabled ? "not-allowed" : "pointer",
-        boxShadow: disabled ? "none" : "0 8px 24px -10px rgb(var(--c-primary-rgb) / 0.55)",
-        transition: "all 160ms ease",
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
-function FixedBottomButton({
-  onClick,
-  label,
-}: {
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: "1rem 1.2rem 1.4rem",
-        background:
-          "linear-gradient(180deg, rgb(var(--c-bg-rgb) / 0) 0%, rgb(var(--c-bg-rgb) / 0.95) 40%, var(--c-bg) 100%)",
-        display: "flex",
-        justifyContent: "center",
-        zIndex: 10,
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: 560 }}>
-        <button
-          type="button"
-          onClick={onClick}
-          style={{
-            width: "100%",
-            background: "var(--c-primary)",
-            color: "var(--c-surface)",
-            border: "none",
-            borderRadius: 99,
-            padding: "1rem 1.4rem",
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 700,
-            fontSize: "0.98rem",
-            cursor: "pointer",
-            boxShadow: "0 8px 24px -10px rgb(var(--c-primary-rgb) / 0.55)",
-          }}
-        >
-          {label}
-        </button>
-      </div>
+      <Tarjeta borde>
+        <div style={{ fontSize: 14, lineHeight: 1.4, color: "var(--c-text)" }}>Antes de presentar, pregúntale qué es lo que más se le mueve.</div>
+      </Tarjeta>
     </div>
   );
 }
 
 const shell: React.CSSProperties = {
   minHeight: "100dvh",
-  background: BG,
+  boxSizing: "border-box",
+  background: "var(--c-bg)",
   color: "var(--c-text)",
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "flex-start",
+  padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) calc(24px + env(safe-area-inset-bottom))",
 };

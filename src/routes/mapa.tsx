@@ -11,7 +11,7 @@ import { Lock, Check, Trophy } from "lucide-react";
 import { estiloBoton, estiloBotonPlay, IconoPlay, Estrella } from "@/components/closer/piezas";
 import { restGet } from "@/lib/supabase-rest";
 import { AppHeader } from "@/components/app/AppShell";
-import { MapTutorial } from "@/components/closer/MapTutorial";
+import { GuiaMapa } from "@/components/closer/GuiaMapa";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { consumeNodeCompletionSignal, type NodeCompletionSignal } from "@/lib/node-completion";
@@ -148,7 +148,8 @@ function MapaPage() {
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedNode, setSelectedNode] = useState<DisplayNode | null>(null);
-  const [showTutorial, setShowTutorial] = useState(false);
+  // Mensaje 154: la primera vez, un globo «Empieza aquí» sobre el nodo que toca (antes, un recorrido de 5 pasos).
+  const [guiaPrimeraVez, setGuiaPrimeraVez] = useState(false);
   const [unlockNotice, setUnlockNotice] = useState<World | null>(null);
   const prevBossCompletedRef = useRef<Set<number> | null>(null);
   const mundo0Ref = useRef<HTMLDivElement | null>(null);
@@ -218,8 +219,8 @@ function MapaPage() {
         p.forEach((r) => (map[r.node_id] = r));
         setProgress(map);
         if (!s.map_tutorial_completed) {
-          // pequeño delay para que el mapa se renderice antes
-          setTimeout(() => setShowTutorial(true), 600);
+          // Después de que el mapa se desliza hasta el nodo activo.
+          setTimeout(() => alive && setGuiaPrimeraVez(true), 900);
         }
       }
       } catch (error) {
@@ -232,18 +233,6 @@ function MapaPage() {
       alive = false;
     };
   }, [navigate]);
-
-  // «Cómo funciona el mapa» vive en el menú (Fase 3): llega por un aviso, o por una marca
-  // si el menú se abrió desde otra pantalla.
-  useEffect(() => {
-    const abrir = () => {
-      try { window.sessionStorage.removeItem("closer_ver_tutorial_mapa"); } catch {}
-      setShowTutorial(true);
-    };
-    window.addEventListener("closer:tutorial-mapa", abrir);
-    try { if (!loading && window.sessionStorage.getItem("closer_ver_tutorial_mapa") === "1") abrir(); } catch {}
-    return () => window.removeEventListener("closer:tutorial-mapa", abrir);
-  }, [loading]);
 
   // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).
   const animConsumedRef = useRef(false);
@@ -352,22 +341,17 @@ function MapaPage() {
     prevBossCompletedRef.current = bossCompleted;
   }, [progress, nodes, worlds, loading]);
 
-  const handleTutorialClose = async () => {
-    setShowTutorial(false);
+  const cerrarGuia = async () => {
+    setGuiaPrimeraVez(false);
+    // El nodo brilla un instante: «este es».
+    setGlowActive(true);
+    setTimeout(() => setGlowActive(false), 1000);
     if (seller) {
       await restMutate(`sellers?id=eq.${seller.id}`, {
         method: "PATCH",
         body: { map_tutorial_completed: true },
       });
     }
-    // Scroll suave al nodo activo + glow pulse
-    setTimeout(() => {
-      scrollToActiveNode(600);
-      setTimeout(() => {
-        setGlowActive(true);
-        setTimeout(() => setGlowActive(false), 1000);
-      }, 600);
-    }, 50);
   };
 
   // Mario Bros progression: estrictamente secuencial en orden global.
@@ -467,13 +451,6 @@ function MapaPage() {
       <div style={{ display: "flex", flexDirection: "column-reverse" }}>
         {(() => {
           const unlockedWorlds = computeUnlockedWorlds(worlds, nodes, progress);
-          // El tutorial resalta elementos reales del mapa. Los mundos cambian
-          // (ya no existe el "Mundo 0"), así que resolvemos los targets por
-          // posición y estado, nunca por un id fijo.
-          const sortedWorlds = [...worlds].sort((a, b) => a.order_index - b.order_index);
-          const firstWorldId = sortedWorlds[0]?.id;
-          const nextWorldId = sortedWorlds[1]?.id;
-          const tourTaken = new Set<string>();
           return worlds.map((world) => {
             const worldNodes = nodes
               .filter((n) => n.world_id === world.id)
@@ -488,7 +465,6 @@ function MapaPage() {
                 <section
                   key={world.id}
                   ref={world.id === 1 ? mundo0Ref : undefined}
-                  data-tour={world.id === nextWorldId ? "world-next" : undefined}
                   style={{ ...seccionMundo, paddingBottom: 32 }}
                 >
                   <WorldHeader world={world} bloqueado />
@@ -500,7 +476,6 @@ function MapaPage() {
               <section
                 key={world.id}
                 ref={isCurrent ? mundo0Ref : undefined}
-                data-tour={world.id === nextWorldId ? "world-next" : undefined}
                 style={seccionMundo}
               >
                 <WorldHeader world={world} />
@@ -577,19 +552,11 @@ function MapaPage() {
                     const x = xForIndex(i);
                     const y = yForIndex(i, worldNodes.length);
                     const size = node.is_boss ? BOSS_SIZE : NODE_SIZE;
-                    let tour: string | undefined;
-                    if (world.id === firstWorldId) {
-                      if (node.is_boss && !tourTaken.has("boss-node")) tour = "boss-node";
-                      else if (status === "active" && !tourTaken.has("active-node")) tour = "active-node";
-                      else if ((status === "locked" || status === "available") && !tourTaken.has("locked-node")) tour = "locked-node";
-                      if (tour) tourTaken.add(tour);
-                    }
 
                     return (
                       <div
                         key={node.id}
                         data-node-id={node.id}
-                        data-tour={tour}
                         data-active-node={status === "active" ? "true" : undefined}
                         style={{
                           position: "absolute",
@@ -622,7 +589,7 @@ function MapaPage() {
       </div>
 
       {/* «Sigue aquí»: un toque y estás en el nodo que sigue, con cuánto te va a tomar. */}
-      {nodoActivo && !selectedNode && !showTutorial && (
+      {nodoActivo && !selectedNode && (
         <div
           style={{
             position: "fixed",
@@ -680,7 +647,16 @@ function MapaPage() {
         onOpenChange={(o) => !o && setSelectedNode(null)}
       />
 
-      <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
+      {guiaPrimeraVez && nodoActivo && !selectedNode && (
+        <GuiaMapa
+          texto={
+            Object.keys(progress).length === 0
+              ? `Tu primer nodo: ${nodoActivo.nombre_corto || nodoActivo.name}.${nodoActivo.minutos_estimados ? ` Toma ${nodoActivo.minutos_estimados} minutos.` : ""}`
+              : `Aquí sigues: ${nodoActivo.nombre_corto || nodoActivo.name}.${nodoActivo.minutos_estimados ? ` Toma ${nodoActivo.minutos_estimados} minutos.` : ""}`
+          }
+          onCerrar={cerrarGuia}
+        />
+      )}
 
       {unlockNotice && (
         <div

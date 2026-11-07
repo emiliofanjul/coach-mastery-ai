@@ -24,7 +24,6 @@ const PERMITIDOS: Record<string, string[]> = {
   "routes/login.tsx": ["#4285F4", "#EA4335", "#FBBC05", "#34A853"], // logo de Google
   "components/app/CompartirInvitacion.tsx": ["#25D366"], // WhatsApp
   "components/VictoryScreen.tsx": ["#FF6B2B", "#F2C14E", "#FFB088"], // el confeti se dibuja en un canvas, que no lee variables
-  "routes/onboarding.map-intro.tsx": ["#3A6A9A", "#5A8A3A", "#3A8A5A", "#8A7A2A", "#8A5A2A", "#8A2A2A", "#8A7A1A", "#6A3A8A", "#2A7A7A"], // lista de mundos del recorrido: se rehace en la fase del mapa
   "routes/red.tsx": ["*"], // pantalla interna de la red de pruebas
   "lib/error-page.ts": ["*"], // página de error del servidor, fuera de la app
   "components/ui/chart.tsx": ["*"], // componente base de la librería

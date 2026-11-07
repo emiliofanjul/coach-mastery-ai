@@ -88,7 +88,7 @@ describe("todo conectado", () => {
   });
   it("la tarjeta es una ventana que se cierra con Continuar antes de poder hablar", () => {
     expect(ui).toMatch(/aria-label="Tu cliente"/);
-    expect(ui).toMatch(/!showVoiceTutorial && !fichaVista && \(/);
+    expect(ui).toMatch(/currentPhase === "you_do" && !fichaVista && \(/);
     expect(ui).toMatch(/onClick=\{\(\) => setFichaVista\(true\)\}/);
     expect(ui).toMatch(/\{LLAMADO_A_LA_ACCION\}/);
   });
