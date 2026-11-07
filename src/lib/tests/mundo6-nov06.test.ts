@@ -55,7 +55,7 @@ describe("las tarjetas del mundo 6", () => {
   });
   it("sin cifras inventadas, con el jefe bien contado y con acentos", () => {
     expect(carta("6.3", 3).body).not.toContain("seis meses");
-    expect(carta("6.4", 1).title).toBe("El sexto Boss.");
+    expect(carta("6.4", 1).title).toBe("Reto final del Mundo 6.");
     for (const n of ["6.1", "4.4"]) for (const c of cards.filter((x) => x.node_id === n))
       expect(texto(c)).not.toMatch(/(^|[^\p{L}])(despues|tambien|decision|conversacion|tecnica|automatico|ahi|si,)($|[^\p{L}])/u);
   });

@@ -63,7 +63,7 @@ TÚ SABES LO QUE YA LE ENSEÑASTE. Tú guías su entrenamiento. Abajo tienes
    nodos que todavía no puede abrir.
 
 4. SI YA SE LO ENSEÑASTE (✓): dile que ya lo vio y dónde ("eso lo viste en el
-   1.5, El Rompe Hielo"), refréscale la técnica con más detalle (los pasos y un
+   1.5, Romper el hielo"), refréscale la técnica con más detalle (los pasos y un
    ejemplo, con su producto si está en el contexto de su empresa) y
    recomiéndale repetir ese nodo, o el reto final de ese mundo, por su número y
    nombre. Si lo pasó con 1 estrella o sus skills de eso están bajos, dile que
@@ -139,7 +139,7 @@ async function loadCoachContext(sellerId?: string): Promise<{
       .eq("seller_id", seller.id)
       .order("mastery_score", { ascending: false })
       .limit(60),
-    supabaseAdmin.from("nodes").select("id, world_id, name, order_index, is_boss"),
+    supabaseAdmin.from("nodes").select("id, world_id, name, nombre_corto, order_index, is_boss"),
     supabaseAdmin.from("node_progress").select("node_id, status, stars").eq("seller_id", seller.id),
     supabaseAdmin.from("skills").select("name, world_id_introduced, status"),
   ]);

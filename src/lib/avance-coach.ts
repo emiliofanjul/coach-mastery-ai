@@ -9,7 +9,10 @@
 // está es el que le toca.
 
 export interface MundoAvance { id: number; name: string }
-export interface NodoAvance { id: string; world_id: number; name: string; order_index: number; is_boss?: boolean | null }
+export interface NodoAvance { id: string; world_id: number; name: string; order_index: number; is_boss?: boolean | null; nombre_corto?: string | null }
+
+/** El nombre que el vendedor ve en su mapa (nov-2026): la técnica que enseña el nodo. */
+export const nombreEnMapa = (n: NodoAvance) => (n.nombre_corto && n.nombre_corto.trim()) || n.name;
 export interface ProgresoAvance { node_id: string; status: string; stars?: number | null }
 
 export interface Avance {
@@ -39,7 +42,7 @@ export function armarAvance(
   lineas.push(`Vendedor: ${opciones.nombre ?? "—"}${opciones.certificado ? " (certificado)" : ""}`);
   lineas.push(
     actual
-      ? `Le toca: nodo ${actual.id} «${actual.name}», del Mundo ${actual.world_id} — ${nombreMundo.get(actual.world_id) ?? "—"}.`
+      ? `Le toca: nodo ${actual.id} «${nombreEnMapa(actual)}», del Mundo ${actual.world_id} — ${nombreMundo.get(actual.world_id) ?? "—"}.`
       : "Ya completó todos los nodos del mapa.",
   );
   lineas.push("");
@@ -54,7 +57,7 @@ export function armarAvance(
       const st = hecho(n.id) ? estrellas(prog.get(n.id)?.stars) : "";
       const s = prog.get(n.id)?.stars;
       const repetir = hecho(n.id) && s === 1 ? " (1 estrella: conviene repetirlo)" : "";
-      lineas.push(`  ${marca} ${n.id} ${n.name}${n.is_boss ? " (boss)" : ""}${st}${repetir}`);
+      lineas.push(`  ${marca} ${n.id} ${nombreEnMapa(n)}${n.is_boss ? " (reto final)" : ""}${st}${repetir}`);
     }
   }
   return { actual, mundoActual, texto: lineas.join("\n") };

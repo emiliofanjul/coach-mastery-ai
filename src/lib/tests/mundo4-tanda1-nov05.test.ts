@@ -75,7 +75,7 @@ describe("FUJPIG y la balanza", () => {
   });
   it("las balas: unas tres antes del precio, y el jefe del mundo 4 es el cuarto", () => {
     expect(t("4.6", 1).body).toContain("En la presentación, unas tres antes del precio es lo normal");
-    expect(t("4.16", 1).title).toBe("El cuarto Boss.");
+    expect(t("4.16", 1).title).toBe("Reto final del Mundo 4.");
   });
 });
 
