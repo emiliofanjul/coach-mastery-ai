@@ -2,7 +2,8 @@
 
 - [x] Mensaje 149: Paso 0, 1104/1104 en 89 archivos; 1.0 y 3.6 exactos; tres MD5 entregados coinciden.
 - [x] Mensaje 149: Paso 1, SQL íntegro en una sola ejecución mediante herramienta de datos; chequeo final pasó a la primera; consulta 1.0/3.6/4.7 exacta.
-- [ ] Mensaje 149: copia y prueba exactas, 1108/90; verificar descripción del siguiente nodo con sesión de Emilio; publicar y reportar seis hallazgos profundos.
+- [x] Mensaje 149: aplicar_149 una vez con dos MD5 exactos; tres entregas retiradas; 1108/1108 en 90 archivos; build OK.
+- [x] Mensaje 149: sesión de Emilio, siguiente nodo 4.2 muestra «…algo para él.»; cero errores de página. Publicación solicitada; seis hallazgos profundos reportados.
 
 - [x] Mensaje 148: Paso 0: 1098/1098 en 88 archivos y «El cuarto Boss.»; tres MD5 exactos.
 - [x] Mensaje 148 B: tres MD5 exactos; partes 1/2 aplicadas a la primera; parte 3 abortó por omisión del agente en la llamada, reintento íntegro pasó. Consultas finales exactas; SQL y entregas retiradas. Se usó herramienta de datos porque no hay cambios de esquema.
