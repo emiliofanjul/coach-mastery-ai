@@ -11,3 +11,4 @@
 - Render model emphasis through TextoCoach as React text and strong elements, never model HTML, so chat formatting cannot execute markup.
 - Prefer nombre_corto in coach progress context with a full-name fallback so map and coach labels stay aligned.
 - Carry optional unlock attribution in node-completion signals so map path animation distinguishes new progress from failed attempts and replays.
+- Share onboarding presentation pieces in bienvenida-ui and keep the map guide separate from the reusable map-intro route, so first-visit guidance and menu replay remain independent.
