@@ -173,3 +173,24 @@ export function IconoPlay({ tam }: { tam: number }) {
     </svg>
   );
 }
+
+/**
+ * Una estrella ganada brilla poco (Fase 4, mensaje 151): que se sienta que lo lograste, sin abaratar.
+ * Una ganada lleva --c-estrella y este brillo; una que falta, --c-border-strong y nada.
+ */
+export const BRILLO_ESTRELLA = "drop-shadow(0 0 4px rgb(var(--c-estrella-rgb) / 0.6)) drop-shadow(0 0 1px rgb(var(--c-estrella-rgb) / 0.8))";
+
+export function Estrella({ ganada, tam, style }: { ganada: boolean; tam: number; style?: CSSProperties }) {
+  return (
+    <svg
+      width={tam}
+      height={tam}
+      viewBox="0 0 24 24"
+      aria-hidden
+      fill={ganada ? "var(--c-estrella)" : "var(--c-border-strong)"}
+      style={{ overflow: "visible", filter: ganada ? BRILLO_ESTRELLA : undefined, ...style }}
+    >
+      <path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z" />
+    </svg>
+  );
+}
