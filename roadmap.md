@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Mensaje 145: Paso 0 confirmado: 1069/1069 en 85 archivos, prueba nueva ausente y huella de práctica exacta; tres entregas y 35 archivos coinciden.
+- [ ] Mensaje 145: ejecutar una vez el script exacto, instalar prueba y retirar tres entregas; comprobar 1072/86 y validación automática.
+- [ ] Mensaje 145: comprobar pantallas con sesión de Emilio y práctica completa por voz; publicar únicamente si todo sale bien.
+
 - [x] Mensaje 144: Paso 0 exacto: 1063/1064 en 84 archivos, única falla esperada de 9 frente a 10; huellas previas y entregadas correctas, Cerebro 23 y cinco guiones vigentes exactos; vendedores sin certificado: [].
 - [x] Mensaje 144: dos SQL aplicados en orden a la primera; Cerebro 23 y cinco huellas finales exactas; lista pendiente []; dos SQL retirados. Cinco entregas con MD5 exactos instaladas, snapshots exactos conservados; 1069/1069 en 85 archivos.
 - [x] Mensaje 144: solo harness-runner desplegado; red viva v3.41.0 verificada; build automático OK. P7_0_perfecto falló dos veces: base 100, abre_puerta_al_no major -30, nota 70; 63217 y 62539 ms. Juicios y citas recuperados, sin cambios correctivos.
