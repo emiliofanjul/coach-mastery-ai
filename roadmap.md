@@ -1,8 +1,9 @@
 # Roadmap
 
 - [x] Mensaje 155: Paso 0, 1145/1145 en 94 archivos y mapa MD5 51ca697e46a08e47676e2428bdb0c165; dos entregas con MD5 exactos.
-- [ ] Mensaje 155: aplicar una vez diez archivos exactos y retirar entregas; comprobar 1149/95 y tipos separados.
-- [ ] Mensaje 155: cinco pantallas, Saltar a Tu camino, regreso al mapa y lectura node_type con sesión Emilio; publicar si pasa.
+- [x] Mensaje 155: script una vez, diez archivos exactos y entregas retiradas; 1149/1149 en 95 archivos, build automático OK y oj typecheck -b --noEmit sin errores.
+- [x] Mensaje 155: sesión Emilio: cinco pantallas, Saltar a Tu camino, regreso al mapa con 49 nodos y dos lecturas node_type HTTP 200; cero errores de página. Cabe en 1280x1800, 390x700 y 514x574.
+- [ ] Mensaje 155: no publicar: en 375x568 cuatro pantallas requieren desplazarse (alturas 630, 585, 607 y 580 frente a 568). Entrega intacta; espera corrección o autorización de Emilio.
 - [ ] Mensaje 155: bienvenida completa, IA y globo en cuenta nueva: prueba de Emilio en iPhone.
 
 - [x] Mensaje 154: Paso 0, 1135/1135 en 93 archivos y MD5 de práctica exacto; dos huellas de entrega exactas.
