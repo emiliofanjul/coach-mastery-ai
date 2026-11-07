@@ -199,6 +199,19 @@ function MiPerfilPage() {
           </div>
         </div>
 
+        {isPersonal && (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/tu-negocio" })}
+            className="w-full text-left rounded-[14px] border border-[var(--c-primary)]/35 bg-[var(--c-primary)]/[0.07] p-5 mb-4"
+          >
+            <div className="font-['Syne'] font-bold text-white text-lg">Tu negocio</div>
+            <p className="mt-1 text-sm text-white/70 font-['DM_Sans']">
+              Entre más le cuentes a Closer de lo que vendes y de tus clientes, más se parece tu cliente de práctica a los tuyos. Míralo y cámbialo aquí.
+            </p>
+          </button>
+        )}
+
         {canJoin && (
           <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
             <div className="font-['Syne'] font-bold text-white text-lg">Unirme a una empresa</div>

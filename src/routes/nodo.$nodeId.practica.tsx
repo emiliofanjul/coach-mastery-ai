@@ -15,7 +15,8 @@ import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
 import RetryScreen from "@/components/RetryScreen";
 import { estiloBoton, Estrella } from "@/components/closer/piezas";
-import { GiroPersonal, tieneGiro } from "@/components/closer/GiroPersonal";
+import { GiroPersonal } from "@/components/closer/GiroPersonal";
+import { puertaPendiente, type Puerta } from "@/lib/giro-personal";
 import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, FranjaVozAgente, BotonMicrofono, PistaPrimeraVez, ALTO_PISTA, vozDelAgente, envolventeDe, PASO_ENVOLVENTE, lineaDeEstrellas, AnilloCalificacion, ListaRevision, DialogoCompleto } from "@/components/closer/practica-ui";
 
 
@@ -131,8 +132,8 @@ function PracticaPage() {
   // Mensaje 125: si el vendedor no tiene guardado que acepta la grabación, se le
   // pide una sola vez, antes de su práctica. Queda guardado por él mismo.
   const [pideConsentimiento, setPideConsentimiento] = useState<{ sellerId: string } | null>(null);
-  // Mensaje 156: quien entrena por su cuenta cuenta qué vende antes de su primera práctica.
-  const [pideGiro, setPideGiro] = useState<{ companyId: string } | null>(null);
+  // Mensajes 156-157: quien entrena por su cuenta cuenta su negocio «justo a tiempo», antes del nodo que lo usa.
+  const [pideGiro, setPideGiro] = useState<{ companyId: string; puerta: Puerta; respuestas: Record<string, string | string[]>; cerebro: unknown } | null>(null);
   const [guardandoConsentimiento, setGuardandoConsentimiento] = useState(false);
   const [errorConsentimiento, setErrorConsentimiento] = useState<string | null>(null);
   const [nodeData, setNodeData] = useState<any>(null);
@@ -362,7 +363,7 @@ function PracticaPage() {
             `v_nodes_resueltos?select=id,name,description,conversation_scope,node_type,boss_goal,field_mission,world_id,difficulty_level,is_boss,practice_script:practice_script_resuelto&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
           ),
           restGetMaybeSingle<any>(
-            `companies?select=name,company_sales_brain,permite_texto,tipos_cliente,is_personal&id=eq.${seller.company_id}&limit=1`,
+            `companies?select=name,company_sales_brain,permite_texto,tipos_cliente,is_personal,respuestas_giro&id=eq.${seller.company_id}&limit=1`,
           ),
           restGet<any>(
             `node_skills?select=relation,is_primary,weight,skill:skills(id,code,name,category,regla_id,default_allowed_concepts,default_forbidden_concepts)&node_id=eq.${encodeURIComponent(nodeId)}`,
@@ -381,11 +382,16 @@ function PracticaPage() {
         return;
 
       }
-      // Mensaje 156: sin manager no hay quien cuente cómo es su negocio. Antes de la primera práctica
-      // (y de crear la ficha del cliente) se le preguntan sus 3 datos; sin ellos, el cliente sería genérico.
-      if ((company as any)?.is_personal === true && !tieneGiro((company as any)?.company_sales_brain)) {
-        setPideGiro({ companyId: seller.company_id });
-        return;
+      // Mensajes 156-157: sin manager no hay quien cuente cómo es su negocio. Antes de practicar (y de crear
+      // la ficha del cliente) se le pide lo que este nodo necesita y todavía no contó; sin eso, el cliente
+      // sería genérico. Qué se pide y antes de qué nodo: giro-personal.ts.
+      if ((company as any)?.is_personal === true) {
+        const respuestas = ((company as any)?.respuestas_giro ?? {}) as Record<string, string | string[]>;
+        const puerta = puertaPendiente(nodeId, respuestas, (company as any)?.company_sales_brain);
+        if (puerta) {
+          setPideGiro({ companyId: seller.company_id, puerta, respuestas, cerebro: (company as any)?.company_sales_brain });
+          return;
+        }
       }
 
       // Build skillsContext
@@ -1872,6 +1878,9 @@ function PracticaPage() {
           <GiroPersonal
             key="giro"
             companyId={pideGiro.companyId}
+            puerta={pideGiro.puerta}
+            respuestas={pideGiro.respuestas}
+            cerebro={pideGiro.cerebro}
             onListo={() => {
               setPideGiro(null);
               void handleListo();
