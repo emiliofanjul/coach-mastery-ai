@@ -1,0 +1,146 @@
+{
+ "mensaje": 145,
+ "archivos": {
+  "src/components/RetryScreen.tsx": {
+   "antes": "3cf2753938ac0f8e121fdd6bc64f3528",
+   "despues": "6accc9d01bf1e692cb4f1bd91da2bd71"
+  },
+  "src/components/VictoryScreen.tsx": {
+   "antes": "201a7d061010114b9053b0cb2aa05a62",
+   "despues": "74d123c395cae3a4df4aa99be5c8f960"
+  },
+  "src/components/app/AppShell.tsx": {
+   "antes": "8b4d9f70c1b7a4e2849c2e0b58b2c50b",
+   "despues": "9cd16267be2d2c5a9d28b59a57016487"
+  },
+  "src/components/app/CompartirInvitacion.tsx": {
+   "antes": "91dbb622bba5652980845f0b3fcee047",
+   "despues": "bf72434b239cefe02c1b4539076c0c78"
+  },
+  "src/components/app/ImageUploader.tsx": {
+   "antes": "eb440a27c73c86d2310c508ce1602dee",
+   "despues": "f84425238002df9b052c3c91edbbc898"
+  },
+  "src/components/app/PitchesSection.tsx": {
+   "antes": "5bbe3db52b760b6d13ee6d77b9936267",
+   "despues": "53c5a2962d39736d9186ec02603f79c6"
+  },
+  "src/components/closer/AuthCoachBubble.tsx": {
+   "antes": "def26a14962c86629c56d51b6045a92f",
+   "despues": "b969ef956b50b038dff3033948faf384"
+  },
+  "src/components/closer/CloserCharacter.tsx": {
+   "antes": "cb6369412d63183699bd9380af59446b",
+   "despues": "3826a42e75b21f972d5e6f327e31b0eb"
+  },
+  "src/components/closer/MapTutorial.tsx": {
+   "antes": "6e31ab7f4e4e47b5b2596a3366feaa91",
+   "despues": "dccafa5c63995a8a92f84336a97fdc0e"
+  },
+  "src/components/dev/DevMenu.tsx": {
+   "antes": "81098ebbffedbf96396ae8f960c35bb8",
+   "despues": "3a6f43037377456797c3411333041320"
+  },
+  "src/components/pitch/MissingDataPanel.tsx": {
+   "antes": "4677023177a20d3520e9eefc0bf73455",
+   "despues": "8e2d7b4d0feac2c6b17a97fc322d697d"
+  },
+  "src/components/pitch/PitchViewer.tsx": {
+   "antes": "d127499792682dfcb7c91e582fb3d883",
+   "despues": "3f7ba75c9a3a9011da3b2ac547e29761"
+  },
+  "src/components/pitch/SectionChat.tsx": {
+   "antes": "a63ed586319853a586b89af7f769702d",
+   "despues": "b7f642255b7526344994d2e24208b2a2"
+  },
+  "src/routes/disputas.tsx": {
+   "antes": "bba28823ab425ea8d80a6976a5f6b430",
+   "despues": "b59ebefb530756ff8c5d984dfe91394b"
+  },
+  "src/routes/equipo.$sellerId.tsx": {
+   "antes": "0eea354edf39181522829578fef118c1",
+   "despues": "912c9533c94c79f0a3dc56666a41f85d"
+  },
+  "src/routes/equipo.index.tsx": {
+   "antes": "26547d6dcc88f5f1b0612aace54e7c85",
+   "despues": "db9be9a575f8930ac25f0953857833d6"
+  },
+  "src/routes/forgot-password.tsx": {
+   "antes": "6f3b27eef687d166bbd717617902bcfb",
+   "despues": "f33b207bee78e819feabb0868db7cf78"
+  },
+  "src/routes/index.tsx": {
+   "antes": "35712f1616a91d053a94611a5c4d0f40",
+   "despues": "af04aa4f8ec28c93de8e6d441c5f7bfb"
+  },
+  "src/routes/login.tsx": {
+   "antes": "843caea41f73bcf43ff9fa57933e4f8c",
+   "despues": "7c3fac54069381dbd0032c1065b3e305"
+  },
+  "src/routes/mapa.tsx": {
+   "antes": "02bbfcaf341b7d0edcc50b78fe4758a5",
+   "despues": "849ecc975aebdf7918664ce0e28a3a41"
+  },
+  "src/routes/mi-empresa.tsx": {
+   "antes": "0cd4e1ed5a5bee9e5ba97747ab117064",
+   "despues": "734ccf4e364b371c1e69312a0e541b97"
+  },
+  "src/routes/mi-perfil.tsx": {
+   "antes": "1a0e2e1e18c15f1b947286356325e991",
+   "despues": "0584bfd57317a8b2b199270350b3d34e"
+  },
+  "src/routes/nodo.$nodeId.practica.tsx": {
+   "antes": "82be42b4623158f1d46d5a5d5462ed2e",
+   "despues": "f340b75f817efa806bb16a979ef4259b"
+  },
+  "src/routes/nodo.$nodeId.quiz.tsx": {
+   "antes": "7b5a42c41c3222022e7ed1a85db5140e",
+   "despues": "da7caae0cfc7f89c999ef37d6fadc44e"
+  },
+  "src/routes/nodo.$nodeId.tsx": {
+   "antes": "8e507736a5faf5ce280a095c3d0d59fd",
+   "despues": "819e018db99f9674c3153b0abe39651f"
+  },
+  "src/routes/onboarding.manager.tsx": {
+   "antes": "8f2324264f5a3da7cbccc3e0db73f3de",
+   "despues": "09d8aa6a956cc55f3dd8507eb08c383b"
+  },
+  "src/routes/onboarding.map-intro.tsx": {
+   "antes": "5b06db67f5b9a9b5b9d054482b27bcdf",
+   "despues": "9774ecd0dcdc89c74a12a8772aff8cb2"
+  },
+  "src/routes/onboarding.seller.tsx": {
+   "antes": "4acfa0893f0c62c8695d010bd6e7da1e",
+   "despues": "88d7b004c689b804aaf02dde41ca08a1"
+  },
+  "src/routes/pitches.$pitchId.tsx": {
+   "antes": "1102fcf68e9c285788c1b772162f3d16",
+   "despues": "c9327dc20409d80e49256f5b4a6651e5"
+  },
+  "src/routes/pitches.index.tsx": {
+   "antes": "054daf030864a8e96a2fac51eb0b8298",
+   "despues": "ad01a775f3fcbb63f3e4d457756be146"
+  },
+  "src/routes/reset-password.tsx": {
+   "antes": "10b21107dc52c55aea728113055dc0d3",
+   "despues": "d2a742e245013411eed95660c9256568"
+  },
+  "src/routes/role.tsx": {
+   "antes": "6c3eeb6f3cabe4629f43b4fa5496e758",
+   "despues": "527ff5185d66895e0aa1deb59065cadb"
+  },
+  "src/routes/signup.tsx": {
+   "antes": "b3425721a5e19da9a8cfbb533df77403",
+   "despues": "af30074390fd430fe003c28a1a874094"
+  },
+  "src/routes/unirme.tsx": {
+   "antes": "39eb493e09003415e817a3b36abdff25",
+   "despues": "75327b9c647f0b23bce9f2e88140cf56"
+  },
+  "src/styles.css": {
+   "antes": "cc4236b3741674357becfbc62170e96c",
+   "despues": "754dfcee5e19571675c6409de49c6dcf"
+  }
+ },
+ "styles_css": "@import \"tailwindcss\" source(none);\n@import \"tw-animate-css\";\n@source \"../src\";\n\n@custom-variant dark (&:is(.dark *));\n\n/*\n * ════════════════════════════════════════\n *  CLOSER — DESIGN SYSTEM\n * ════════════════════════════════════════\n *\n *  Filosofía visual:\n *  - Oscuro siempre, con profundidad: fondo azul marino casi negro y tres\n *    niveles de superficie claramente distintos. Nada de morado.\n *  - TODOS los colores viven aquí, en :root (--c-…). Las pantallas no\n *    escriben colores a mano: usan var(--c-…), o rgb(var(--c-…-rgb) / 0.4)\n *    para transparencia. Cambiar un color = cambiar UNA línea de este archivo.\n *    (Fase 1 del rediseño, mensaje 145, nov-2026.)\n *  - Naranja #FF6B2B = ÚNICA señal de \"acción principal / avanza\".\n *    Sagrado. No usar para decoración.\n *  - Radios: 14px en cards (pro accesible), 99px en botones (acción).\n *  - Tipografías: Syne (autoridad/títulos/CTAs), DM Sans (cuerpo denso).\n *  - Mobile-first. Max-width contenido 560px. Padding lateral 1.2rem.\n */\n\n\n@theme inline {\n  /* Radios */\n  --radius-sm: 8px;\n  --radius-md: 12px;\n  --radius-lg: 14px;          /* cards — base profesional accesible */\n  --radius-xl: 18px;\n  --radius-2xl: 24px;\n  --radius-full: 99px;        /* botones — acción */\n\n  /* Colores semánticos → Tailwind utilities */\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-surface: var(--surface);\n  --color-surface-elevated: var(--surface-elevated);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-primary-glow: var(--primary-glow);\n  --color-primary-soft: var(--primary-soft);\n\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n\n  --color-success: var(--success);\n  --color-success-foreground: var(--success-foreground);\n  --color-warning: var(--warning);\n  --color-warning-foreground: var(--warning-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n\n  --color-border: var(--border);\n  --color-border-strong: var(--border-strong);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n\n  /* Niveles de score */\n  --color-score-low: var(--score-low);\n  --color-score-mid: var(--score-mid);\n  --color-score-high: var(--score-high);\n\n  /* Coach */\n  --color-coach: var(--coach);\n  --color-coach-foreground: var(--coach-foreground);\n\n  /* Gradientes y sombras */\n  --gradient-primary: var(--gradient-primary);\n  --gradient-fire: var(--gradient-fire);\n  --gradient-surface: var(--gradient-surface);\n  --shadow-orange: var(--shadow-orange);\n  --shadow-card: var(--shadow-card);\n  --shadow-elevated: var(--shadow-elevated);\n\n  /* Tipografía */\n  --font-display: \"Syne\", system-ui, sans-serif;\n  --font-sans: \"DM Sans\", system-ui, sans-serif;\n\n  /* Animaciones */\n  --animate-pulse-orange: pulse-orange 2s ease-in-out infinite;\n  --animate-fade-up: fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1);\n  --animate-slide-down: slide-down 0.35s cubic-bezier(0.22, 1, 0.36, 1);\n  --animate-score-fill: score-fill 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;\n  --animate-breathe: breathe 3.5s ease-in-out infinite;\n}\n\n/*\n * Closer es oscuro por filosofía. Los tokens viven en :root sin distinguir\n * claro/oscuro.\n */\n:root {\n  /* ═══ LA PALETA DE CLOSER — la única fuente de color de la app ═══ */\n  /* Fondos: azul marino casi negro, y tres niveles de profundidad */\n  --c-bg: #060A14;            --c-bg-rgb: 6 10 20;\n  --c-bg-glow: #0D1730;       /* resplandor sutil detrás de la entrada */\n  --c-surface: #0D1322;       --c-surface-rgb: 13 19 34;\n  --c-elevated: #151D31;      --c-elevated-rgb: 21 29 49;\n  --c-border: #212A3F;\n  --c-border-strong: #2D3852;\n  /* Texto */\n  --c-text: #F3F5F9;          --c-text-rgb: 243 245 249;\n  --c-text-soft: #C3C9D6;\n  --c-text-2: #8A93A8;        /* secundario: legible, sin morado */\n  /* Acción: el naranja de Closer. Solo para «avanza». */\n  --c-primary: #FF6B2B;       --c-primary-rgb: 255 107 43;\n  --c-primary-hover: #FF7D45;\n  /* El cliente (y la demostración): azul */\n  --c-client: #4DABF7;        --c-client-rgb: 77 171 247;\n  --c-client-soft: #9BD1FB;\n  /* Estados */\n  --c-success: #2DD4A0;       --c-success-rgb: 45 212 160;\n  --c-success-soft: #8EEBC8;\n  --c-danger: #F0506E;        --c-danger-rgb: 240 80 110;\n  --c-danger-soft: #FF9AA8;\n  --c-gold: #F2C14E;          --c-gold-rgb: 242 193 78;\n  --c-disabled-bg: #1A2236;\n  --c-disabled-text: #5E6880;\n\n  /* Tokens de los componentes base: apuntan a la paleta */\n  --background: var(--c-bg);\n  --foreground: var(--c-text);\n  --surface: var(--c-surface);\n  --surface-elevated: var(--c-elevated);\n  --card: var(--c-surface);\n  --card-foreground: var(--c-text);\n  --popover: var(--c-elevated);\n  --popover-foreground: var(--c-text);\n\n  /* Naranja Closer — #FF6B2B */\n  --primary: var(--c-primary);\n  --primary-foreground: var(--c-bg);           /* texto sobre naranja = fondo oscuro */\n  --primary-glow: oklch(0.78 0.18 45);         /* halo más cálido */\n  --primary-soft: rgb(var(--c-primary-rgb) / 0.14);  /* fondo suave para chips/avisos */\n\n  /* Secundarios neutrales */\n  --secondary: var(--c-elevated);\n  --secondary-foreground: var(--c-text);\n  --muted: var(--c-surface);\n  --muted-foreground: var(--c-text-2);\n  --accent: var(--c-elevated);\n  --accent-foreground: var(--c-text);\n\n  /* Estados */\n  --success: var(--c-success);                 /* verde score 80+ */\n  --success-foreground: var(--c-bg);\n  --warning: var(--c-gold);                    /* amarillo score 60-79 */\n  --warning-foreground: var(--c-bg);\n  --destructive: var(--c-danger);              /* rojo score <60 / errores */\n  --destructive-foreground: var(--c-text);\n\n  /* Score colors (alias semánticos del feedback) */\n  --score-low: var(--c-danger);\n  --score-mid: var(--c-gold);\n  --score-high: var(--c-success);\n\n  /* Coach — acento azulado frío para diferenciarlo del primario.\n     El coach es voz didáctica, no acción. No compite con naranja. */\n  --coach: var(--c-client);\n  --coach-foreground: var(--c-bg);\n\n  /* Bordes */\n  --border: var(--c-border);\n  --border-strong: var(--c-border-strong);\n  --input: var(--c-border);\n  --ring: rgb(var(--c-primary-rgb) / 0.6);\n\n  /* Gradientes */\n  --gradient-primary: linear-gradient(135deg, var(--c-primary) 0%, oklch(0.78 0.18 45) 100%);\n  --gradient-fire: linear-gradient(180deg, var(--c-primary) 0%, oklch(0.62 0.22 30) 100%);\n  --gradient-surface: linear-gradient(180deg, var(--c-elevated) 0%, var(--c-surface) 100%);\n\n  /* Sombras */\n  --shadow-orange: 0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45),\n                   0 4px 12px -4px rgb(var(--c-primary-rgb) / 0.3);\n  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px -12px oklch(0 0 0 / 0.5);\n  --shadow-elevated: 0 24px 60px -20px oklch(0 0 0 / 0.7);\n\n  --radius: 14px;\n\n  /* Charts */\n  --chart-1: var(--c-primary);\n  --chart-2: var(--c-success);\n  --chart-3: var(--c-gold);\n  --chart-4: var(--c-client);\n  --chart-5: var(--c-danger);\n\n  /* Sidebar (manager dashboard, fase posterior) */\n  --sidebar: var(--c-surface);\n  --sidebar-foreground: var(--c-text);\n  --sidebar-primary: var(--c-primary);\n  --sidebar-primary-foreground: var(--c-bg);\n  --sidebar-accent: var(--c-elevated);\n  --sidebar-accent-foreground: var(--c-text);\n  --sidebar-border: var(--c-border);\n  --sidebar-ring: rgb(var(--c-primary-rgb) / 0.6);\n}\n\n/* Mantenemos .dark por si shadcn lo referencia, con los mismos tokens */\n.dark {\n  color-scheme: dark;\n}\n\n@layer base {\n  * {\n    border-color: var(--color-border);\n  }\n\n  html, body {\n    background-color: var(--color-background);\n    color: var(--color-foreground);\n    font-family: var(--font-sans);\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n    text-rendering: optimizeLegibility;\n  }\n\n  /* Forzar dark scheme — Closer es dark-only */\n  html {\n    color-scheme: dark;\n  }\n\n  h1, h2, h3, h4, h5, h6,\n  .font-display {\n    font-family: var(--font-display);\n    letter-spacing: -0.02em;\n  }\n\n  /* Scrollbar discreta */\n  *::-webkit-scrollbar { width: 8px; height: 8px; }\n  *::-webkit-scrollbar-track { background: transparent; }\n  *::-webkit-scrollbar-thumb {\n    background: oklch(1 0 0 / 0.08);\n    border-radius: 99px;\n  }\n  *::-webkit-scrollbar-thumb:hover { background: oklch(1 0 0 / 0.16); }\n\n  /* Selección con naranja */\n  ::selection {\n    background: rgb(var(--c-primary-rgb) / 0.35);\n    color: var(--color-foreground);\n  }\n}\n\n/* ────────────────────────────────────────\n * Utilidades semánticas reutilizables\n * ──────────────────────────────────────── */\n@layer components {\n  /* Contenedor mobile-first canónico — max 560px, padding 1.2rem */\n  .container-closer {\n    width: 100%;\n    max-width: 560px;\n    margin-inline: auto;\n    padding-inline: 1.2rem;\n  }\n\n  /* Card base Closer — radio 14px, fondo surface, border sutil */\n  .card-closer {\n    background: var(--gradient-surface);\n    border: 1px solid var(--color-border);\n    border-radius: var(--radius-lg);\n    box-shadow: var(--shadow-card);\n  }\n\n  /* Halo naranja — para CTAs prominentes */\n  .glow-orange {\n    box-shadow: var(--shadow-orange);\n  }\n\n  /* Texto eyebrow — etiquetas de sección */\n  .eyebrow {\n    font-family: var(--font-display);\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.16em;\n    text-transform: uppercase;\n    color: var(--color-muted-foreground);\n  }\n\n  /* Texto Closer hablando — para mensajes del entrenador */\n  .closer-voice {\n    font-family: var(--font-display);\n    font-weight: 600;\n    line-height: 1.25;\n    letter-spacing: -0.015em;\n  }\n}\n\n/* ────────────────────────────────────────\n * Animaciones\n * ──────────────────────────────────────── */\n@keyframes pulse-orange {\n  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.5); }\n  50% { box-shadow: 0 0 0 12px rgb(var(--c-primary-rgb) / 0); }\n}\n\n@keyframes fade-up {\n  from { opacity: 0; transform: translateY(8px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n\n@keyframes slide-down {\n  from { opacity: 0; transform: translateY(-12px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n\n@keyframes score-fill {\n  from { stroke-dashoffset: var(--score-circumference, 283); }\n  to { stroke-dashoffset: var(--score-target, 0); }\n}\n\n@keyframes breathe {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.03); }\n}\n\n@keyframes mic-pulse {\n  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(var(--c-danger-rgb) / 0.6); }\n  50% { transform: scale(1.06); box-shadow: 0 0 0 16px rgb(var(--c-danger-rgb) / 0); }\n}\n\n.animate-mic-pulse { animation: mic-pulse 1.4s ease-in-out infinite; }\n"
+}
