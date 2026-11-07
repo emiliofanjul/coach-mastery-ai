@@ -1,46 +1,39 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { generateSellerWelcome } from "@/utils/seller-onboarding.functions";
+import { estiloBoton } from "@/components/closer/piezas";
+import { Marca, FilaIcono, Opcion, Casilla, EncabezadoPreguntas, Icono, IconoNivel, estiloTitulo, estiloTexto, estiloEtiqueta, type ICONOS } from "@/components/closer/bienvenida-ui";
 
 export const Route = createFileRoute("/onboarding/seller")({
   head: () => ({
     meta: [
       { title: "Tu entrenamiento empieza — Closer" },
       { name: "description", content: "Configura tu entrenamiento personalizado." },
+      { property: "og:title", content: "Tu entrenamiento empieza — Closer" },
+      { property: "og:description", content: "Configura tu entrenamiento personalizado." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SellerOnboarding,
 });
 
-const BG =
-  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
-
 type Experience = "nuevo" | "intermedio" | "experto";
 type Challenge = "cierre" | "objeciones" | "prospeccion" | "retencion";
 
-const EXPERIENCE_OPTS: Array<{
-  id: Experience;
-  icon: string;
-  title: string;
-  desc: string;
-}> = [
-  { id: "nuevo", icon: "🌱", title: "Soy nuevo", desc: "Menos de 6 meses" },
-  { id: "intermedio", icon: "📈", title: "Tengo algo de experiencia", desc: "6 meses a 2 años" },
-  { id: "experto", icon: "🔥", title: "Soy vendedor con experiencia", desc: "Más de 2 años en ventas" },
+// Mensaje 154 (nov-2026): íconos dibujados en lugar de emojis; el nivel, como barras de señal.
+const EXPERIENCE_OPTS: Array<{ id: Experience; nivel: 1 | 2 | 3; title: string; desc: string }> = [
+  { id: "nuevo", nivel: 1, title: "Soy nuevo", desc: "Menos de 6 meses" },
+  { id: "intermedio", nivel: 2, title: "Tengo algo de experiencia", desc: "De 6 meses a 2 años" },
+  { id: "experto", nivel: 3, title: "Tengo experiencia", desc: "Más de 2 años" },
 ];
 
-const CHALLENGE_OPTS: Array<{
-  id: Challenge;
-  icon: string;
-  title: string;
-  desc: string;
-}> = [
-  { id: "cierre", icon: "🎯", title: "Cerrar más ventas", desc: "Llego al final pero el cliente no decide" },
-  { id: "objeciones", icon: "🛡️", title: "Manejar objeciones", desc: "No sé qué responder cuando dicen no" },
-  { id: "prospeccion", icon: "🚪", title: "Conseguir clientes nuevos", desc: "Me cuesta entrar a negocios que no me conocen" },
-  { id: "retencion", icon: "🔄", title: "Retener clientes actuales", desc: "Los pierdo ante la competencia" },
+const CHALLENGE_OPTS: Array<{ id: Challenge; icono: keyof typeof ICONOS; title: string; desc: string }> = [
+  { id: "cierre", icono: "meta", title: "Cerrar más ventas", desc: "Llego al final y el cliente no decide" },
+  { id: "objeciones", icono: "escudo", title: "Manejar objeciones", desc: "No sé qué responder cuando me dicen que no" },
+  { id: "prospeccion", icono: "puerta", title: "Abrir clientes nuevos", desc: "Me cuesta entrar a negocios que no me conocen" },
+  { id: "retencion", icono: "vuelta", title: "Cuidar a mis clientes", desc: "Los pierdo ante la competencia" },
 ];
 
 function SellerOnboarding() {
@@ -202,9 +195,7 @@ function SellerOnboarding() {
   if (!authReady) {
     return (
       <main style={shellStyle}>
-        <div style={{ color: "var(--c-text-2)", fontFamily: "'DM Sans', sans-serif" }}>
-          Cargando…
-        </div>
+        <div style={{ margin: "auto", color: "var(--c-text-2)", fontFamily: "'DM Sans', sans-serif" }}>Cargando…</div>
       </main>
     );
   }
@@ -215,15 +206,19 @@ function SellerOnboarding() {
         style={{
           width: "100%",
           maxWidth: 560,
-          padding: "1.6rem 1.2rem 2.4rem",
+          margin: "0 auto",
+          flex: 1,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           opacity: fade ? 1 : 0,
-          transition: "opacity 200ms ease",
+          transform: fade ? "none" : "translateY(6px)",
+          transition: "opacity 200ms ease, transform 200ms ease",
         }}
       >
         {step === 0 && <Welcome onNext={() => goto(1)} />}
+        {step >= 1 && step <= 3 && (
+          <EncabezadoPreguntas paso={step} total={3} onRegresar={step > 1 ? () => goto(step - 1) : () => goto(0)} />
+        )}
         {step === 1 && (
           <NameStep
             name={name}
@@ -266,26 +261,24 @@ function SellerOnboarding() {
   );
 }
 
-/* ---------- Pantallas ---------- */
+/* ---------- Pantallas (mensaje 154: la bienvenida nueva) ---------- */
 
 function Welcome({ onNext }: { onNext: () => void }) {
   return (
     <>
-      <CloserCharacter state="normal" size={110} className="animate-breathe" />
-      <h1 style={{ ...h1Style, marginTop: "1.4rem" }}>Aquí no vienes a leer.</h1>
-      <p style={subtitleStyle}>
-        Vienes a entrenar. A practicar. A desarrollar las habilidades que te van
-        a cambiar los resultados en el campo.
+      <div style={{ paddingTop: 12 }}><Marca /></div>
+      <h1 style={{ ...estiloTitulo, fontSize: 32, marginTop: 36 }}>Aquí no vienes a leer. Vienes a practicar.</h1>
+      <p style={{ ...estiloTexto, marginTop: 14 }}>
+        Aprendes una técnica en un par de minutos y la practicas hablando con un cliente que te contesta.
       </p>
-      <ul style={bulletList}>
-        <BulletItem icon="🎙️" text="Practicas por voz con un cliente IA real" />
-        <BulletItem
-          icon="📊"
-          text="Tu manager ve tu progreso y puede leer el transcript de tus sesiones"
-        />
-        <BulletItem icon="📈" text="Cada sesión te hace mejor que la anterior" />
-      </ul>
-      <PrimaryButton onClick={onNext} label="Empezar mi entrenamiento →" />
+      <div style={{ marginTop: 36, display: "flex", flexDirection: "column", gap: 22 }}>
+        <FilaIcono icono="microfono" titulo="Practicas con tu voz" texto="Como en una visita real, desde tu teléfono." />
+        <FilaIcono icono="mejora" titulo="Sabes qué mejorar" texto="Una calificación honesta y qué hacer distinto." />
+        <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y escucha tus prácticas para darte coaching." />
+      </div>
+      <Abajo>
+        <button type="button" onClick={onNext} style={estiloBoton("principal")}>Empezar</button>
+      </Abajo>
     </>
   );
 }
@@ -302,12 +295,14 @@ function NameStep({
   const valid = name.trim().length >= 2;
   return (
     <>
-      <StepLabel>Pregunta 1 de 3</StepLabel>
-      <h2 style={{ ...questionStyle, fontSize: "1.8rem" }}>¿Cómo te llamas?</h2>
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Cómo te llamas?</h1>
+      <p style={{ ...estiloTexto, fontSize: 16, color: "var(--c-text-2)", marginTop: 10 }}>Así te va a llamar Closer.</p>
       <input
         type="text"
         autoFocus
+        autoComplete="given-name"
         placeholder="Tu nombre"
+        aria-label="Tu nombre"
         value={name}
         onChange={(e) => setName(e.target.value)}
         onKeyDown={(e) => {
@@ -315,25 +310,25 @@ function NameStep({
         }}
         style={{
           width: "100%",
-          marginTop: "1.4rem",
+          boxSizing: "border-box",
+          marginTop: 28,
+          height: "var(--h-campo)",
+          padding: "0 18px",
+          borderRadius: "var(--r-campo)",
+          border: "1.5px solid var(--c-border)",
           background: "var(--c-surface)",
-          border: "2px solid var(--c-border)",
-          borderRadius: 14,
-          padding: "0.88rem 1.05rem",
           color: "var(--c-text)",
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 700,
-          fontSize: "1.2rem",
-          textAlign: "center",
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 18,
           outline: "none",
+          transition: "border-color 150ms ease",
         }}
         onFocus={(e) => (e.currentTarget.style.borderColor = "var(--c-primary)")}
         onBlur={(e) => (e.currentTarget.style.borderColor = "var(--c-border)")}
       />
-      <p style={{ ...helperStyle, marginTop: "0.7rem" }}>
-        Así te va a llamar Closer.
-      </p>
-      <PrimaryButton onClick={onNext} disabled={!valid} label="Continuar →" />
+      <Abajo>
+        <button type="button" onClick={onNext} disabled={!valid} style={estiloBoton("principal", !valid)}>Continuar</button>
+      </Abajo>
     </>
   );
 }
@@ -349,25 +344,25 @@ function ExperienceStep({
   onPick: (v: Experience) => void;
   onNext: () => void;
 }) {
+  const nombre = name.trim().split(" ")[0];
   return (
     <>
-      <StepLabel>Pregunta 2 de 3</StepLabel>
-      <h2 style={questionStyle}>
-        ¿Cuánto tiempo llevas vendiendo, {name || "amig@"}?
-      </h2>
-      <div style={cardListStyle}>
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>{nombre ? `¿Cuánto llevas vendiendo, ${nombre}?` : "¿Cuánto llevas vendiendo?"}</h1>
+      <div role="radiogroup" style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
         {EXPERIENCE_OPTS.map((opt) => (
-          <SelectableCard
+          <Opcion
             key={opt.id}
-            icon={opt.icon}
-            title={opt.title}
-            desc={opt.desc}
-            selected={value === opt.id}
+            elegida={value === opt.id}
             onClick={() => onPick(opt.id)}
+            icono={<IconoNivel nivel={opt.nivel} activo={value === opt.id} />}
+            titulo={opt.title}
+            texto={opt.desc}
           />
         ))}
       </div>
-      <PrimaryButton onClick={onNext} disabled={!value} label="Continuar →" />
+      <Abajo>
+        <button type="button" onClick={onNext} disabled={!value} style={estiloBoton("principal", !value)}>Continuar</button>
+      </Abajo>
     </>
   );
 }
@@ -387,66 +382,33 @@ function ChallengeStep({
 }) {
   return (
     <>
-      <StepLabel>Pregunta 3 de 3</StepLabel>
-      <h2 style={questionStyle}>¿Cuál es tu mayor reto ahorita?</h2>
-      <div style={cardListStyle}>
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Cuál es tu mayor reto hoy?</h1>
+      <div role="radiogroup" style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
         {CHALLENGE_OPTS.map((opt) => (
-          <SelectableCard
+          <Opcion
             key={opt.id}
-            icon={opt.icon}
-            title={opt.title}
-            desc={opt.desc}
-            selected={value === opt.id}
+            elegida={value === opt.id}
             onClick={() => onPick(opt.id)}
+            icono={<Icono nombre={opt.icono} />}
+            titulo={opt.title}
+            texto={opt.desc}
           />
         ))}
       </div>
-      <label
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: "0.7rem",
-          marginTop: "1.4rem",
-          padding: "0.9rem 1rem",
-          background: "rgb(var(--c-primary-rgb) / 0.04)",
-          border: "1px solid var(--c-border)",
-          borderRadius: 14,
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={audioConsent}
-          onChange={(e) => setAudioConsent(e.target.checked)}
-          style={{
-            marginTop: 3,
-            accentColor: "var(--c-primary)",
-            width: 18,
-            height: 18,
-            cursor: "pointer",
-          }}
-        />
-        <span
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.82rem",
-            color: "var(--c-text-soft)",
-            lineHeight: 1.45,
-          }}
-        >
-          Acepto que mis prácticas de voz se graben. Closer funciona con tu voz:
-          sin grabar no se puede practicar, y tu manager usa las grabaciones para
-          darte mejor coaching.
-        </span>
-      </label>
+      <div style={{ marginTop: 18 }}>
+        <Casilla marcada={audioConsent} onCambiar={setAudioConsent}>
+          Acepto que mis prácticas se graben. Closer funciona con tu voz: sin grabar no se puede practicar, y tu manager usa las grabaciones para darte coaching.
+        </Casilla>
+      </div>
       {value && !audioConsent && (
-        <p style={{ margin: "0.8rem 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "var(--c-gold)", textAlign: "left" }}>
-          Para seguir, acepta que tus prácticas de voz se graben: sin eso no se puede practicar.
+        <p style={{ margin: "10px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45, color: "var(--c-gold)" }}>
+          Para seguir, marca la casilla: sin grabar no se puede practicar.
         </p>
       )}
       {/* Mensaje 123: aceptar la grabación es obligatorio (antes dejaba seguir sin aceptarla). */}
-      <PrimaryButton onClick={onNext} disabled={!value || !audioConsent} label="Ver mi plan →" />
+      <Abajo>
+        <button type="button" onClick={onNext} disabled={!value || !audioConsent} style={estiloBoton("principal", !value || !audioConsent)}>Continuar</button>
+      </Abajo>
     </>
   );
 }
@@ -468,320 +430,50 @@ function PersonalMessage({
   onRetry: () => void;
   onContinue: () => void;
 }) {
+  const nombre = name.trim().split(" ")[0];
   return (
     <>
-      <CloserCharacter state="motivation" size={110} />
-      <h2
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
-          fontSize: "2rem",
-          color: "var(--c-primary)",
-          margin: "1.2rem 0 0.6rem",
-          textAlign: "center",
-        }}
-      >
-        {name || "Vendedor"}.
-      </h2>
+      <div style={{ paddingTop: 12 }}><Marca /></div>
+      <div style={{ ...estiloEtiqueta, marginTop: 36 }}>Tu plan</div>
+      <h1 style={{ ...estiloTitulo, fontSize: 32, marginTop: 8 }}>{nombre ? `Hola, ${nombre}.` : "Hola."}</h1>
       {loading && (
-        <p style={{ ...helperStyle, marginTop: "0.4rem" }}>
-          Closer está preparando tu plan…
-        </p>
+        <p aria-live="polite" style={{ ...estiloTexto, marginTop: 16, color: "var(--c-text-2)" }}>Closer está preparando tu plan…</p>
       )}
       {error && !loading && (
-        <>
-          <p style={{ ...helperStyle, color: "var(--c-danger)", marginTop: "0.4rem" }}>
-            {error}
-          </p>
-          <button
-            onClick={onRetry}
-            style={{
-              marginTop: "0.8rem",
-              background: "transparent",
-              border: "1px solid var(--c-primary)",
-              color: "var(--c-primary)",
-              padding: "0.6rem 1.1rem",
-              borderRadius: 99,
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Reintentar
-          </button>
-        </>
+        <div style={{ marginTop: 16, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 12 }}>
+          <p style={{ ...estiloTexto, color: "var(--c-danger)" }}>{error}</p>
+          <button type="button" onClick={onRetry} style={{ ...estiloBoton("secundario"), width: "auto", padding: "0 24px" }}>Reintentar</button>
+        </div>
       )}
       {!loading && !error && message && (
         <>
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 400,
-              fontSize: "0.92rem",
-              color: "var(--c-text)",
-              textAlign: "center",
-              lineHeight: 1.6,
-              marginTop: "0.4rem",
-            }}
-          >
-            {message}
-          </p>
+          <p style={{ ...estiloTexto, marginTop: 16, lineHeight: 1.55 }}>{message}</p>
           {expectativa && (
-            <div
-              style={{
-                width: "100%",
-                marginTop: "1.6rem",
-                borderLeft: "3px solid var(--c-primary)",
-                background: "rgb(var(--c-primary-rgb) / 0.04)",
-                borderRadius: 14,
-                padding: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "0.6rem",
-                  color: "var(--c-primary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  marginBottom: "0.4rem",
-                }}
-              >
-                Lo que vas a construir
-              </div>
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 500,
-                  fontSize: "0.84rem",
-                  color: "var(--c-text)",
-                  lineHeight: 1.5,
-                }}
-              >
-                {expectativa}
-              </div>
+            <div style={{ marginTop: 24, padding: 18, borderRadius: "var(--r-tarjeta)", background: "rgb(var(--c-primary-rgb) / 0.07)", border: "1px solid rgb(var(--c-primary-rgb) / 0.35)" }}>
+              <div style={{ ...estiloEtiqueta, fontSize: 12, letterSpacing: "0.1em", color: "var(--c-primary)" }}>Lo que vas a construir</div>
+              <p style={{ margin: "8px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text)" }}>{expectativa}</p>
             </div>
           )}
-          <PrimaryButton onClick={onContinue} label="Ver mi mapa →" />
+          <Abajo>
+            <button type="button" onClick={onContinue} style={estiloBoton("principal")}>Ver cómo funciona</button>
+          </Abajo>
         </>
       )}
     </>
   );
 }
 
-/* ---------- Sub-componentes ---------- */
-
-function BulletItem({ icon, text }: { icon: string; text: string }) {
-  return (
-    <li
-      style={{
-        display: "flex",
-        gap: "0.7rem",
-        alignItems: "flex-start",
-        fontFamily: "'DM Sans', sans-serif",
-        fontWeight: 500,
-        fontSize: "0.84rem",
-        color: "var(--c-text)",
-        lineHeight: 1.5,
-      }}
-    >
-      <span style={{ fontSize: "1.1rem", lineHeight: 1.2 }}>{icon}</span>
-      <span>{text}</span>
-    </li>
-  );
+/** El botón principal siempre abajo, con su espacio. */
+function Abajo({ children }: { children: React.ReactNode }) {
+  return <div style={{ marginTop: "auto", paddingTop: 28 }}>{children}</div>;
 }
-
-function SelectableCard({
-  icon,
-  title,
-  desc,
-  selected,
-  onClick,
-}: {
-  icon: string;
-  title: string;
-  desc: string;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        position: "relative",
-        width: "100%",
-        textAlign: "left",
-        display: "flex",
-        gap: "0.9rem",
-        alignItems: "center",
-        background: selected ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
-        border: selected ? "2px solid var(--c-primary)" : "1px solid var(--c-border)",
-        borderRadius: 14,
-        padding: selected ? "calc(1rem - 1px) calc(1.25rem - 1px)" : "1rem 1.25rem",
-        cursor: "pointer",
-        transition: "all 160ms ease",
-      }}
-    >
-      <span style={{ fontSize: "1.6rem" }}>{icon}</span>
-      <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <span
-          style={{
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 700,
-            fontSize: "1rem",
-            color: "var(--c-text)",
-          }}
-        >
-          {title}
-        </span>
-        <span
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 400,
-            fontSize: "0.8rem",
-            color: "var(--c-text-2)",
-          }}
-        >
-          {desc}
-        </span>
-      </span>
-      {selected && (
-        <span
-          style={{
-            position: "absolute",
-            top: 10,
-            right: 12,
-            color: "var(--c-primary)",
-            fontSize: "0.95rem",
-            fontWeight: 700,
-          }}
-          aria-hidden
-        >
-          ✓
-        </span>
-      )}
-    </button>
-  );
-}
-
-function PrimaryButton({
-  onClick,
-  label,
-  disabled,
-}: {
-  onClick: () => void;
-  label: string;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        width: "100%",
-        marginTop: "1.8rem",
-        background: disabled ? "var(--c-disabled-bg)" : "var(--c-primary)",
-        color: disabled ? "var(--c-disabled-text)" : "var(--c-surface)",
-        border: "none",
-        borderRadius: 99,
-        padding: "1rem 1.4rem",
-        fontFamily: "'Syne', sans-serif",
-        fontWeight: 700,
-        fontSize: "0.98rem",
-        cursor: disabled ? "not-allowed" : "pointer",
-        boxShadow: disabled ? "none" : "0 8px 24px -10px rgb(var(--c-primary-rgb) / 0.55)",
-        transition: "all 160ms ease",
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
-function StepLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily: "'DM Sans', sans-serif",
-        fontWeight: 400,
-        fontSize: "0.76rem",
-        color: "var(--c-text-2)",
-        textAlign: "center",
-        marginBottom: "0.7rem",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-/* ---------- Estilos compartidos ---------- */
 
 const shellStyle: React.CSSProperties = {
   minHeight: "100dvh",
-  background: BG,
+  boxSizing: "border-box",
+  background: "var(--c-bg)",
   color: "var(--c-text)",
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "1.2rem",
-};
-
-const h1Style: React.CSSProperties = {
-  fontFamily: "'Syne', sans-serif",
-  fontWeight: 800,
-  fontSize: "1.6rem",
-  color: "var(--c-text)",
-  textAlign: "center",
-  margin: 0,
-};
-
-const subtitleStyle: React.CSSProperties = {
-  fontFamily: "'DM Sans', sans-serif",
-  fontWeight: 400,
-  fontSize: "0.92rem",
-  color: "var(--c-text-2)",
-  textAlign: "center",
-  marginTop: "0.75rem",
-  lineHeight: 1.5,
-};
-
-const bulletList: React.CSSProperties = {
-  listStyle: "none",
-  padding: 0,
-  margin: "1.8rem 0 0",
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.75rem",
-  width: "100%",
-};
-
-const questionStyle: React.CSSProperties = {
-  fontFamily: "'Syne', sans-serif",
-  fontWeight: 800,
-  fontSize: "1.5rem",
-  color: "var(--c-text)",
-  textAlign: "center",
-  margin: 0,
-  lineHeight: 1.25,
-};
-
-const helperStyle: React.CSSProperties = {
-  fontFamily: "'DM Sans', sans-serif",
-  fontWeight: 400,
-  fontSize: "0.76rem",
-  color: "var(--c-text-2)",
-  textAlign: "center",
-};
-
-const cardListStyle: React.CSSProperties = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.6rem",
-  marginTop: "1.4rem",
+  padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) calc(24px + env(safe-area-inset-bottom))",
 };

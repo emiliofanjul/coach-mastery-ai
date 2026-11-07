@@ -25,7 +25,8 @@ describe("Un solo reproductor, desbloqueado con el primer toque", () => {
 
 describe("La guía y el cierre dicen la verdad", () => {
   it("el vendedor empieza la práctica", () => {
-    expect(ui).toMatch(/Tú empiezas/);
+    // Mensaje 154: lo dice la primera pista bajo el micrófono («Toca y saluda a … como si llegaras a visitarlo»).
+    expect(ui).toMatch(/Toca y saluda a \$\{cliente\?\.nombre \?\? "tu cliente"\} como si llegaras a visitarlo\./);
     expect(ui).not.toMatch(/Closer habla primero/);
   });
   it("'Ejecución limpia' solo si la nota lo respalda", () => {
@@ -97,8 +98,9 @@ describe("Modo radio (sept-2026, decisión de Emilio)", () => {
     expect(ui).toMatch(/if \(turnClosed \|\| total === finalText\) return;/);
   });
   it("el tutorial enseña cómo funciona de verdad", () => {
-    expect(ui).toMatch(/Toca otra vez para enviar/);
-    expect(ui).toMatch(/nada se envía hasta que tocas/);
+    // Mensaje 154: ya no es una pantalla de tutorial sino pistas bajo el micrófono; enseñan lo mismo.
+    expect(ui).toMatch(/Cuando termines, toca otra vez para enviar\./);
+    expect(ui).toMatch(/Toca para enviar\. Puedes pausar y seguir\./);
     expect(ui).not.toMatch(/pausa de 3 segundos|Closer detecta el silencio|envía por ti/);
   });
 });

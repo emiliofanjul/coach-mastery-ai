@@ -93,8 +93,9 @@ describe("El encabezado, el coach y «Sigue aquí»", () => {
   });
   it("«¿Cómo funciona?» vive en el menú", () => {
     expect(mapa).not.toContain("¿Cómo funciona?");
-    expect(shell).toContain("Cómo funciona el mapa");
-    expect(mapa).toContain('window.addEventListener("closer:tutorial-mapa", abrir)');
+    // Mensaje 154: abre «Así funciona», las tres pantallas de la bienvenida.
+    expect(shell).toContain("Cómo funciona Closer");
+    expect(shell).toContain('navigate({ to: "/onboarding/map-intro" })');
   });
   it("«Sigue aquí» lleva al nodo que sigue y dice cuánto toma", () => {
     expect(mapa).toContain("`Sigue aquí · ${nodoActivo.minutos_estimados} min`");

@@ -15,12 +15,19 @@ import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
 import RetryScreen from "@/components/RetryScreen";
 import { estiloBoton, Estrella } from "@/components/closer/piezas";
-import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, FranjaVozAgente, BotonMicrofono, vozDelAgente, envolventeDe, PASO_ENVOLVENTE, lineaDeEstrellas, AnilloCalificacion, ListaRevision, DialogoCompleto } from "@/components/closer/practica-ui";
+import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, FranjaVozAgente, BotonMicrofono, PistaPrimeraVez, ALTO_PISTA, vozDelAgente, envolventeDe, PASO_ENVOLVENTE, lineaDeEstrellas, AnilloCalificacion, ListaRevision, DialogoCompleto } from "@/components/closer/practica-ui";
 
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
   component: PracticaPage,
-  head: () => ({ meta: [{ title: "Práctica — Closer" }] }),
+  head: () => ({ meta: [
+    { title: "Práctica — Closer" },
+    { name: "description", content: "Practica ventas con un cliente simulado y recibe tu análisis en Closer." },
+    { property: "og:title", content: "Práctica — Closer" },
+    { property: "og:description", content: "Practica ventas con un cliente simulado y recibe tu análisis en Closer." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 const BG = "var(--c-bg)";
@@ -154,7 +161,6 @@ function PracticaPage() {
   const rawEvaluationRef = useRef<any>(null);
 
   const [iDoDemoDone, setIDoDemoDone] = useState(false);
-  const [showVoiceTutorial, setShowVoiceTutorial] = useState(false);
   const [prepError, setPrepError] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "text">("voice");
   // El manager decide si su equipo puede practicar por texto. La voz es la
@@ -1416,11 +1422,7 @@ function PracticaPage() {
       youDoStartTimeRef.current = Date.now();
 
       // El vendedor (usuario) abre. Mic 100% manual: el usuario toca el botón cuando quiera hablar.
-      const seen = typeof window !== "undefined" && window.localStorage.getItem("closer_voice_tutorial_seen") === "true";
-      if (!seen) {
-        setShowVoiceTutorial(true);
-        return;
-      }
+      // Mensaje 154: la primera vez ya no hay pantalla de tutorial; VoicePhase muestra pistas bajo el micrófono.
     } catch (err) {
 
       console.error("[voice] startYouDoSession failed:", err);
@@ -1964,241 +1966,7 @@ function PracticaPage() {
                 </button>
               </div>
             )}
-            {phase === "you_do" && showVoiceTutorial && inputMode === "voice" && (
-              <div
-                style={{
-                  position: "fixed",
-                  inset: 0,
-                  background: "var(--c-bg)",
-                  zIndex: 200,
-                  overflowY: "auto",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "1.6rem 1.2rem calc(env(safe-area-inset-bottom, 0px) + 1.6rem)",
-                }}
-              >
-                <style>{`
-                  @keyframes closerBluePulse {
-                    0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-client-rgb) / 0.6), 0 0 32px rgb(var(--c-client-rgb) / 0.5); }
-                    50% { box-shadow: 0 0 0 18px rgb(var(--c-client-rgb) / 0), 0 0 48px rgb(var(--c-client-rgb) / 0.35); }
-                  }
-                `}</style>
-                <div
-                  style={{
-                    width: "100%",
-                    maxWidth: 560,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 16,
-                  }}
-                >
-                  <h2
-                    style={{
-                      color: "#fff",
-                      fontFamily: "Syne, sans-serif",
-                      fontWeight: 700,
-                      fontSize: 24,
-                      margin: "8px 0 8px",
-                      textAlign: "center",
-                    }}
-                  >
-                    Así funciona la práctica por voz
-                  </h2>
-
-                  {/* Tarjeta 1 */}
-                  <div
-                    style={{
-                      background: "var(--c-surface)",
-                      border: "1px solid rgb(var(--c-primary-rgb) / 0.3)",
-                      borderRadius: 14,
-                      padding: "1.2rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 12,
-                      textAlign: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "Syne, sans-serif",
-                        fontWeight: 700,
-                        fontSize: 16,
-                        color: "var(--c-primary)",
-                      }}
-                    >
-                      Tú empiezas
-                    </div>
-                    <div
-                      style={{
-                        width: 72,
-                        height: 72,
-                        borderRadius: "50%",
-                        background: "var(--c-client)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        animation: "closerBluePulse 1.6s ease-in-out infinite",
-                        margin: "4px 0",
-                      }}
-                    >
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                        <line x1="12" y1="19" x2="12" y2="23" />
-                        <line x1="8" y1="23" x2="16" y2="23" />
-                      </svg>
-                    </div>
-                    <div
-                      style={{
-                        color: "var(--c-text)",
-                        fontFamily: "DM Sans, sans-serif",
-                        fontSize: 14,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      Toca el micrófono y saluda a tu cliente como lo harías en una visita real. Cuando el círculo pulse en azul, es tu cliente contestando: solo escucha.
-                    </div>
-                  </div>
-
-                  {/* Tarjeta 2 */}
-                  <div
-                    style={{
-                      background: "var(--c-surface)",
-                      borderRadius: 14,
-                      padding: "1.2rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 12,
-                      textAlign: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "Syne, sans-serif",
-                        fontWeight: 700,
-                        fontSize: 16,
-                        color: "var(--c-primary)",
-                      }}
-                    >
-                      Toca para hablar
-                    </div>
-                    <div style={{ display: "flex", gap: 18, margin: "4px 0" }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-                        <div
-                          style={{
-                            width: 64,
-                            height: 64,
-                            borderRadius: "50%",
-                            background: "var(--c-primary)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                            <line x1="12" y1="19" x2="12" y2="23" />
-                            <line x1="8" y1="23" x2="16" y2="23" />
-                          </svg>
-                        </div>
-                        <div style={{ color: "var(--c-text)", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Toca</div>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", color: "var(--c-text-2)", fontSize: 20 }}>→</div>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-                        <div
-                          style={{
-                            width: 64,
-                            height: 64,
-                            borderRadius: "50%",
-                            background: "var(--c-danger)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <div style={{ width: 18, height: 18, background: "#fff", borderRadius: 3 }} />
-                        </div>
-                        <div style={{ color: "var(--c-text)", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Escuchando</div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        color: "var(--c-text)",
-                        fontFamily: "DM Sans, sans-serif",
-                        fontSize: 14,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      Toca el botón naranja: se pone rojo, las barritas se mueven con tu voz y tus palabras aparecen en la pantalla.
-                    </div>
-                  </div>
-
-                  {/* Tarjeta 3 */}
-                  <div
-                    style={{
-                      background: "var(--c-surface)",
-                      borderRadius: 14,
-                      padding: "1.2rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 12,
-                      textAlign: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "Syne, sans-serif",
-                        fontWeight: 700,
-                        fontSize: 16,
-                        color: "var(--c-primary)",
-                      }}
-                    >
-                      Toca otra vez para enviar
-                    </div>
-                    <div
-                      style={{
-                        color: "var(--c-text)",
-                        fontFamily: "DM Sans, sans-serif",
-                        fontSize: 14,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      Cuando termines, toca el botón otra vez: así le mandas tu turno al cliente. Puedes pausar para pensar; nada se envía hasta que tocas.
-                    </div>
-                    <div
-                      style={{
-                        background: "rgb(var(--c-success-rgb) / 0.12)",
-                        border: "1px solid rgb(var(--c-success-rgb) / 0.35)",
-                        borderRadius: 10,
-                        padding: "10px 12px",
-                        color: "var(--c-success-soft)",
-                        fontFamily: "DM Sans, sans-serif",
-                        fontSize: 13,
-                        lineHeight: 1.45,
-                      }}
-                    >
-                      Si te quedas callado mucho rato, Closer envía lo que llevas.
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
-                      setShowVoiceTutorial(false);
-                    }}
-                    style={{ ...estiloBoton("principal"), marginTop: 8 }}
-                  >
-                    Entendido, a practicar
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {phase === "you_do" && currentPhase === "you_do" && !showVoiceTutorial && !fichaVista && (
+            {phase === "you_do" && currentPhase === "you_do" && !fichaVista && (
               <div
                 role="dialog"
                 aria-modal="true"
@@ -2621,6 +2389,41 @@ function VoicePhase({
             : { quien: "Closer", color: "var(--c-primary)", texto: ultimo.content }
       : null;
 
+  // Mensaje 154: la primera práctica con voz, tres pistas bajo el micrófono en lugar de la pantalla de
+  // tutorial: saluda, habla con calma, escucha. Al volver a tocarte, se van para siempre.
+  // 0: aún no grabas · 1: grabando · 2: el cliente responde · 3: ya no hay pistas.
+  const [pasoGuia, setPasoGuia] = useState<0 | 1 | 2 | 3>(() => {
+    try { return window.localStorage.getItem("closer_voice_tutorial_seen") === "true" ? 3 : 0; } catch { return 3; }
+  });
+  const guiaActiva = pasoGuia < 3 && !isIDo && !isText && !connectionError;
+  // Si esta práctica empezó con pistas, el lugar bajo el micrófono conserva su alto al irse: nada brinca.
+  const [conPistas] = useState(pasoGuia < 3 && !isIDo);
+  const clienteYaHablo = useRef(false);
+  useEffect(() => {
+    if (!guiaActiva) return;
+    if (pasoGuia === 0 && isUserListening) setPasoGuia(1);
+    else if (pasoGuia === 1 && !isUserListening) { clienteYaHablo.current = false; setPasoGuia(2); }
+    else if (pasoGuia === 2 && isAgentSpeaking) clienteYaHablo.current = true;
+    else if (pasoGuia === 2 && teTocaHablar) {
+      if (clienteYaHablo.current) {
+        setPasoGuia(3);
+        try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
+        return;
+      }
+      // Entre enviar y que el cliente empiece a pensar hay un instante en que «te toca». Si sigue
+      // tocándote después de eso (no se oyó nada que enviar), la pista vuelve a «Toca y saluda».
+      const t = setTimeout(() => setPasoGuia(0), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [guiaActiva, pasoGuia, isUserListening, isAgentSpeaking, teTocaHablar]);
+  const pista = !guiaActiva
+    ? null
+    : pasoGuia === 0
+      ? `Toca y saluda a ${cliente?.nombre ?? "tu cliente"} como si llegaras a visitarlo.`
+      : pasoGuia === 1
+        ? "Habla con calma. Cuando termines, toca otra vez para enviar."
+        : "Escúchalo. Cuando termine, te toca a ti.";
+
   const micLabel = isUserListening
     ? "Toca para enviar. Puedes pausar y seguir."
     : isAgentSpeaking
@@ -2852,9 +2655,13 @@ function VoicePhase({
                   etiqueta={micLabel}
                   onClick={onMicClick}
                 />
-                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)", textAlign: "center", minHeight: 20 }}>
-                  {isIDo && !isUserListening && !isAgentSpeaking ? "Reacciona como cliente o toca «Listo, ahora yo»" : micLabel}
-                </div>
+                {pista ? (
+                  <PistaPrimeraVez texto={pista} />
+                ) : (
+                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)", textAlign: "center", minHeight: conPistas ? ALTO_PISTA : 20, boxSizing: "border-box", paddingTop: conPistas ? 16 : 0 }}>
+                    {isIDo && !isUserListening && !isAgentSpeaking ? "Reacciona como cliente o toca «Listo, ahora yo»" : micLabel}
+                  </div>
+                )}
               </>
             )}
             <button

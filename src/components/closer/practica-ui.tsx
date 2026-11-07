@@ -442,6 +442,42 @@ export function BotonMicrofono({
   );
 }
 
+/**
+ * La pista de la primera práctica (mensaje 154): una nota clara bajo el micrófono, con su flecha hacia
+ * él. Reemplaza a la pantalla de tutorial de tres tarjetas: se enseña en el momento, no antes.
+ */
+/** Lo que mide el lugar de la pista: al irse, la etiqueta del micrófono conserva ese alto y nada se mueve. */
+export const ALTO_PISTA = 80;
+
+export function PistaPrimeraVez({ texto }: { texto: string }) {
+  return (
+    <div role="status" aria-live="polite" style={{ minHeight: ALTO_PISTA, boxSizing: "border-box", display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: 16 }}>
+      <div
+        key={texto}
+        style={{
+          position: "relative",
+          maxWidth: 300,
+          padding: "11px 16px",
+          borderRadius: 14,
+          background: "var(--c-text)",
+          color: "var(--c-bg)",
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 15,
+          fontWeight: 600,
+          lineHeight: 1.4,
+          textAlign: "center",
+          boxShadow: "0 12px 30px -8px rgba(0,0,0,0.6)",
+          animation: "pistaAparece 300ms ease both",
+        }}
+      >
+        <span aria-hidden style={{ position: "absolute", left: "50%", top: -6, width: 12, height: 12, marginLeft: -6, background: "var(--c-text)", transform: "rotate(45deg)" }} />
+        <span style={{ position: "relative" }}>{texto}</span>
+      </div>
+      <style>{`@keyframes pistaAparece{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}`}</style>
+    </div>
+  );
+}
+
 // ─── El análisis y la calificación (Fase 4, mensaje 152) ───
 
 /**

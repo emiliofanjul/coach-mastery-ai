@@ -169,7 +169,8 @@ export function AppShellProvider({ children }: { children: ReactNode }) {
     <Ctx.Provider value={value}>
       {children}
       {isAuthed && <AppDrawer open={open} onClose={closeDrawer} role={role} isPersonal={profile?.isPersonal === true} />}
-      {isAuthed && headerCount === 0 && <FloatingMenuButton onOpen={openDrawer} />}
+      {/* Mensaje 154: en la bienvenida no hay menú; la persona termina primero sus preguntas. */}
+      {isAuthed && headerCount === 0 && !pathname.startsWith("/onboarding") && <FloatingMenuButton onOpen={openDrawer} />}
     </Ctx.Provider>
   );
 }
@@ -384,20 +385,19 @@ function AppDrawer({
                     </li>
                   );
                 })}
-                {/* Fase 3 (mensaje 147): «¿Cómo funciona?» salió del encabezado del mapa y vive aquí. */}
+                {/* Fase 3 (mensaje 147): «¿Cómo funciona?» salió del encabezado del mapa y vive aquí.
+                    Mensaje 154: abre «Así funciona», las mismas tres pantallas de la bienvenida. */}
                 <li>
                   <button
                     type="button"
                     onClick={() => {
                       onClose();
-                      try { window.sessionStorage.setItem("closer_ver_tutorial_mapa", "1"); } catch {}
-                      window.dispatchEvent(new CustomEvent("closer:tutorial-mapa"));
-                      if (pathname !== "/mapa") navigate({ to: "/mapa" });
+                      navigate({ to: "/onboarding/map-intro" });
                     }}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-[14px] font-['DM_Sans'] font-medium text-[0.95rem] text-white/85 hover:bg-white/5 border border-transparent transition-colors text-left"
                   >
                     <CircleHelp size={18} className="shrink-0" />
-                    <span className="truncate">Cómo funciona el mapa</span>
+                    <span className="truncate">Cómo funciona Closer</span>
                   </button>
                 </li>
               </ul>
