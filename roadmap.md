@@ -1,14 +1,15 @@
 # Roadmap
 
 - [x] Mensaje 155-B: Paso 0, 1149/1149 en 95 archivos y MD5 de seller exacto; dos entregas con MD5 exactos.
-- [ ] Mensaje 155-B: aplicar una vez los tres archivos exactos y retirar entregas.
-- [ ] Mensaje 155-B: 1150/1150 en 95 archivos, compilación automática y comprobación de tipos.
-- [ ] Mensaje 155-B: sesión Emilio, botones visibles y texto recuperable en 375x568, 390x667 y 390x844; publicar 155 y 155-B si todo pasa.
+- [x] Mensaje 155-B: script una vez: tres archivos con MD5 exacto; entregas retiradas.
+- [x] Mensaje 155-B: 1150/1150 en 95 archivos, build automático OK y oj typecheck sin errores.
+- [x] Mensaje 155-B: sesión Emilio, cinco pantallas de Así funciona y regreso real al mapa; botones visibles y texto recuperable en 375x568, 390x667 y 390x844, cero errores. Bienvenida y preguntas comprobadas con respuestas GET ajustadas solo en navegador (Emilio es manager con onboarding completo); sin escrituras ni consentimiento.
+- [ ] Mensaje 155-B: solicitar publicación de 155 y 155-B. Solo metadatos de compartir adicionales en red/disputas; entrega exacta intacta.
 
 - [x] Mensaje 155: Paso 0, 1145/1145 en 94 archivos y mapa MD5 51ca697e46a08e47676e2428bdb0c165; dos entregas con MD5 exactos.
 - [x] Mensaje 155: script una vez, diez archivos exactos y entregas retiradas; 1149/1149 en 95 archivos, build automático OK y oj typecheck -b --noEmit sin errores.
 - [x] Mensaje 155: sesión Emilio: cinco pantallas, Saltar a Tu camino, regreso al mapa con 49 nodos y dos lecturas node_type HTTP 200; cero errores de página. Cabe en 1280x1800, 390x700 y 514x574.
-- [ ] Mensaje 155: no publicar: en 375x568 cuatro pantallas requieren desplazarse (alturas 630, 585, 607 y 580 frente a 568). Entrega intacta; espera corrección o autorización de Emilio.
+- [x] Mensaje 155: problema de botones ocultos en 375x568 corregido y verificado por entrega 155-B.
 - [ ] Mensaje 155: bienvenida completa, IA y globo en cuenta nueva: prueba de Emilio en iPhone.
 
 - [x] Mensaje 154: Paso 0, 1135/1135 en 93 archivos y MD5 de práctica exacto; dos huellas de entrega exactas.

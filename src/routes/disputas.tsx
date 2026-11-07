@@ -14,7 +14,17 @@ import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { armarReporteDisputas, filtrar, vistaDeDisputa, type Disputa, type Filtro } from "@/lib/disputas-reporte";
 
-export const Route = createFileRoute("/disputas")({ component: DisputasPage });
+export const Route = createFileRoute("/disputas")({
+  head: () => ({ meta: [
+    { title: "Disputas de calificación — Closer" },
+    { name: "description", content: "Revisión de disputas de calificación del equipo de Closer." },
+    { property: "og:title", content: "Disputas de calificación — Closer" },
+    { property: "og:description", content: "Revisión de disputas de calificación del equipo de Closer." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
+  component: DisputasPage,
+});
 
 function DisputasPage() {
   const navigate = useNavigate();

@@ -18,7 +18,17 @@ const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 const RUNNER_URL = `${SUPABASE_URL}/functions/v1/harness-runner`;
 const CONCURRENCIA = 6;
 
-export const Route = createFileRoute("/red")({ component: RedPage });
+export const Route = createFileRoute("/red")({
+  head: () => ({ meta: [
+    { title: "Red de seguridad del evaluador — Closer" },
+    { name: "description", content: "Validación de los casos del evaluador de ventas de Closer." },
+    { property: "og:title", content: "Red de seguridad del evaluador — Closer" },
+    { property: "og:description", content: "Validación de los casos del evaluador de ventas de Closer." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
+  component: RedPage,
+});
 
 
 async function llamar(token: string, body: unknown): Promise<any> {
