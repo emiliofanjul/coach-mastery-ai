@@ -1,0 +1,494 @@
+[
+  {
+    "extra": "BOSS: La Primera Impresion | Un cliente ocupado y cortante. Sin ayudas.",
+    "id": "1",
+    "texto": "Los Primeros 5 Segundos",
+    "tipo": "mundo"
+  },
+  {
+    "extra": "BOSS: La Puerta Fria | Un cliente que bloquea de entrada. Atraviesalo y sigue.",
+    "id": "2",
+    "texto": "Quien Eres y Por Que Estas Aqui",
+    "tipo": "mundo"
+  },
+  {
+    "extra": "BOSS: El Diagnostico | Un cliente que no suelta su dolor facil.",
+    "id": "3",
+    "texto": "Encontrar el Dolor Real",
+    "tipo": "mundo"
+  },
+  {
+    "extra": "BOSS: Construye el Valor | Presentacion completa, sin ayudas.",
+    "id": "4",
+    "texto": "Convertir el Dolor en Valor",
+    "tipo": "mundo"
+  },
+  {
+    "extra": "BOSS: Extrae la Decision | Un cliente que pone razones. Atraviesalas y cierra.",
+    "id": "5",
+    "texto": "Extraer la Decision",
+    "tipo": "mundo"
+  },
+  {
+    "extra": "BOSS: De Cliente a Aliado | Protege lo ganado y abre la puerta siguiente.",
+    "id": "6",
+    "texto": "Donde las Ventas Se Salvan",
+    "tipo": "mundo"
+  },
+  {
+    "extra": "BOSS FINAL: El Certificado | La conversacion completa. Sin margen.",
+    "id": "7",
+    "texto": "El Examen Final",
+    "tipo": "mundo"
+  },
+  {
+    "extra": null,
+    "id": "1.0",
+    "texto": "Antes de aprender que decir, aprende como avanza una venta. Este es el mapa que vas a usar los siguientes seis mundos.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "1.1",
+    "texto": "Ya sabes como avanza una venta. Ahora lo primero: los segundos que deciden si hay conversacion o no.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "1.2",
+    "texto": "Ya viste que decide los primeros segundos. Ahora ponlo en palabras: tu primera frase.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "1.3",
+    "texto": "Tu primera frase ya esta armada. Falta la postura con la que la dices, que pesa mas que las palabras.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "1.4",
+    "texto": "Ya sabes que la autoridad se asume. Aqui lo pruebas con alguien que te va a hacer sentir que estorbas.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "1.5",
+    "texto": "Entraste con postura. Ahora baja su guardia con algo ligero y verdadero.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "1.6",
+    "texto": "Todo lo del mundo junto, y con un cliente que no te va a facilitar nada.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.0",
+    "texto": "Ganaste los primeros segundos y el cliente te esta poniendo atencion. Ahora tiene dos preguntas en la cabeza: quien es este y que quiere. Contestalas antes de que se las conteste solo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.1",
+    "texto": "Ya sabes que la historia va corta. Ahora dila.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.10",
+    "texto": "Todo el mundo junto: bloqueo de entrada, quien eres, relacion, y no soltar el control.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.2",
+    "texto": "Ya te presentaste. Lo que sigue decide si la conversacion vive o se muere: devolverle la palabra.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.3",
+    "texto": "Sabes presentarte y sabes preguntar. Falta lo que hace que te contesten de verdad.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.4",
+    "texto": "Ya sabes que necesitas crear relacion. Aqui esta de que hablar.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.5",
+    "texto": "Tienes los cinco temas. Ahora la parte dificil: entrar y REGRESAR.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.6",
+    "texto": "La conversacion va bien y de pronto te frenan. Aqui aprendes que es ese freno y por que casi nunca significa lo que parece.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.7",
+    "texto": "Ya distingues un bloqueo de una objecion. Ahora atraviesa uno.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.7b",
+    "texto": "Ya sabes pasar un bloqueo con AIR. ¿Y si el cliente te lo repite? Aquí aprendes cuándo ya no insistir.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.7c",
+    "texto": "Ya sabes qué hacer con dos «no» seguidos. Ahora hazlo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.8",
+    "texto": "Cuando el cliente ya trae una mala experiencia, no es un bloqueo: la escuchas en serio, das el motivo real de tu visita y regresas a preguntar.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "2.9",
+    "texto": "Atravesaste el bloqueo. Y ahora que? La respuesta decide si la conversacion sigue o se muere ahi.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.0",
+    "texto": "El cliente ya sabe quien eres y te esta dando conversacion. Ahora viene el paso que separa al que receta del que examina.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.1",
+    "texto": "Tienes el mapa de donde buscar. Antes de preguntar, aprende a leer con quien estas hablando.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.10",
+    "texto": "El diagnostico completo, con un cliente que no suelta su dolor facil.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.2",
+    "texto": "Ya sabes leerlo y ya tienes el mapa. Ahora la herramienta para excavar.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.3",
+    "texto": "Sabes preguntar por capas. Ahora asegurate de que cada pregunta nazca de lo que acaba de decir.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.4",
+    "texto": "Preguntas bien y escuchas bien. Falta lo que hace que te contesten de verdad, aqui donde mas importa.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.5",
+    "texto": "Ya sabes diagnosticar. Ahora decide en quien vale la pena invertir tu tiempo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.6",
+    "texto": "No todos los no son iguales. Aqui aprendes a distinguir al que no quiere del que quiere y no puede — y por que con el segundo rendirse es el error mas caro.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.7",
+    "texto": "Todo lo que aprendiste sirve para encontrar dolor. Pero un cliente contento no tiene dolor — y ahi es donde se pierde la mayor parte del dinero.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.8",
+    "texto": "Ya sabes que un cliente contento tiene huecos y no dolor. Aqui aprendes a encontrarlos.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.9",
+    "texto": "Las tres herramientas juntas, con un cliente que te va a dar el pedido de siempre y quedarse tan contento.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "3.9b",
+    "texto": "Un cliente nuevo de luz verde te pide algo en cuanto sabe quién eres. Tómale el pedido, y descubre qué más puede comprarte desde la primera visita.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.0",
+    "texto": "Ya sabes que le duele. Ahora empieza la otra mitad de la venta: convertir ese dolor en valor.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.1",
+    "texto": "Tienes la balanza. El primer movimiento es anclar tu presentacion en lo que EL te conto.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.10",
+    "texto": "La paradoja más rara de las ventas: entre menos necesitas la venta, más vendes. Hoy la practicas contra un cliente que juega a hacerse el difícil.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.11",
+    "texto": "El último acelerador — y el puente directo al cierre: avanzar asumiendo el interés, sugiriendo el paso siguiente como lo más natural del mundo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.12",
+    "texto": "Cada \"sí\" pequeño sube el impulso un escalón. Aprende a sembrarlos en tu presentación — sin que se note, sin que se sienta.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.13",
+    "texto": "Construiste valor y subiste el impulso. Llega el momento de mayor riesgo de toda la venta: el precio.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.14",
+    "texto": "Sabes armar el precio. Ahora lo mas importante: lo que pasa el segundo despues de decirlo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.15",
+    "texto": "Encontraste una familia que compra con otro. Presentar eso no es como presentar una solucion: no hay nada que resolver, hay un espacio que ocupar.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.16",
+    "texto": "Un cliente desconfiado, un dolor por excavar, y una presentación que tiene que ganarse cada gramo de interés. Todo lo aprendido, junto.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.2",
+    "texto": "Conectaste con su dolor. Ahora que todo lo que digas signifique algo para el.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.3",
+    "texto": "Ya traduces beneficios. Ahora haz que se vea a si mismo con el problema resuelto.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.4",
+    "texto": "El valor ya esta construido. Ahora la otra mitad: cuanto quiere comprar, y como se mueve eso.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.5",
+    "texto": "Sabes que el impulso sube y baja. Aqui esta con que lo subes.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.6",
+    "texto": "Tienes tu arsenal. Ahora aprende a dosificarlo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.7",
+    "texto": "Las balas son una manera de subir el impulso. Hay seis en total.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.8",
+    "texto": "Los dos primeros aceleradores: hacer visible lo que el cliente pierde HOY, y darle razones reales para decidir ahora.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "4.9",
+    "texto": "Los otros dos aceleradores: la ganancia extra que se siente ganga, y la prueba social de los que ya le entraron.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.0",
+    "texto": "Presentaste bien y el impulso esta arriba. Presentar sin cerrar es contar un cuento.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.1",
+    "texto": "La conversación ya construyó el sí. Tu único trabajo: preguntarlo sin regalarle la puerta al no.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.10",
+    "texto": "Una objecion, una vuelta completa: atraviesa, re-impulsa, cierra.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.11",
+    "texto": "Sabes girar el circulo. Aqui aprendes donde esta el limite.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.12",
+    "texto": "La segunda objeción llega justo cuando resolviste la primera. Y la tercera detrás. Dosifica tu arsenal — y no pierdas el impulso.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.13",
+    "texto": "Pediste la decisión... y el cliente se quedó callado. Ese silencio es el momento más incómodo de las ventas — y quien lo aguanta, gana.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.14",
+    "texto": "Con un cliente que ya te compra, el pedido no esta en duda. Lo que hay que cerrar es lo que se agrega.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.15",
+    "texto": "Bloqueo de entrada, objeciones de salida, y un escepticismo que no perdona una sola bala floja. La conversación completa contra el más duro del campo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.2",
+    "texto": "Ya sabes pedir la decision. Ahora aprende a leer cuando el cliente ya esta listo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.3",
+    "texto": "La señal de compra puede llegar a MITAD de tu presentación. Cuando llegue: cállate y cierra. Aunque te falte la mitad del guion.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.4",
+    "texto": "Vas a cerrar y te ponen una razon para no comprar. Buenas noticias: eso significa que te esta considerando.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.5",
+    "texto": "Sabes que una objecion es buena senal. Aqui la herramienta para las de todos los dias.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.6",
+    "texto": "Atravesar objeciones menores sin frenar la conversacion.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.7",
+    "texto": "RRR sirve para dudas de tramite. Cuando la preocupacion es de verdad, hace falta otra cosa.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.8",
+    "texto": "Tu primera objeción real. Recíbela sin pelear, entiende qué hay detrás, responde con una bala — y avanza.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "5.9",
+    "texto": "Ya sabes atravesar objeciones. Ahora arma el circuito completo, porque atravesar no basta.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "6.0",
+    "texto": "Ya dijo que si. Y aqui es donde se caen mas ventas de las que nadie cree.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "6.1",
+    "texto": "Sabes que el impulso cae despues del si. Aqui aprendes a levantarlo sin cometer el error mas peligroso de todo este paso.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "6.2",
+    "texto": "El cliente acaba de decir sí. Los siguientes tres minutos deciden si esa venta vive o se cae esta noche.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "6.3",
+    "texto": "El cliente contento es la mejor puerta a tu siguiente cliente — si sabes abrirla sin que rechine.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "6.4",
+    "texto": "La venta ya está hecha — y ese es exactamente el examen. Un comprador formal, un trato recién firmado, y tu misión: que salga blindado, claro y de tu lado.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "7.0",
+    "texto": "Los 6 pasos, de la puerta al apretón de manos. Un cliente real, sin guion, sin ayuda. Demuestra que el sistema ya vive en ti.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "7.1",
+    "texto": "No todos los clientes son tu cliente. Este examen no mide si puedes vender — mide si sabes cuándo NO intentarlo.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "7.2",
+    "texto": "A este señor le vendieron mal hace un año. Va a decirte que no dos veces: una es reflejo, la otra es cicatriz. Confundirlas es reprobar.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "7.3",
+    "texto": "Un cliente que ya te compra desde hace anos. Te va a dar su pedido y quedarse contento hagas lo que hagas. Crecer esa cuenta depende solo de ti.",
+    "tipo": "nodo"
+  },
+  {
+    "extra": null,
+    "id": "7.4",
+    "texto": "El cliente más difícil del mapa: hostil, escéptico, regateador — y con una venta real adentro para quien ejecute el sistema completo bajo presión máxima.",
+    "tipo": "nodo"
+  }
+]
