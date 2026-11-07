@@ -1,9 +1,10 @@
 # Roadmap
 
 - [x] Mensaje 156: Paso 0, 1150/1150 en 95 archivos, MD5 práctica exacto y consulta personal: manager, 1 cuenta; entregas con MD5 exactos.
-- [ ] Mensaje 156: aplicar una vez cuatro archivos exactos y retirar las dos entregas.
-- [ ] Mensaje 156: 1156 pruebas en 96 archivos, tipos y compilación sin errores.
-- [ ] Mensaje 156: abrir práctica con sesión de Emilio sin pantalla personal ni errores; publicar.
+- [x] Mensaje 156: aplicar una vez: «Listo: 4 archivos, todos con su md5 esperado.»; cuatro MD5 finales exactos y entregas retiradas.
+- [x] Mensaje 156: 1156/1156 pruebas en 96 archivos, oj typecheck sin errores y build automático OK.
+- [x] Mensaje 156: sesión Emilio, práctica 4.2: demostración completa, transición y ficha real Don Héctor, turno del vendedor; sin pantalla personal ni errores de página.
+- [ ] Mensaje 156: publicar tras revisar seguridad.
 - [ ] Mensaje 156: pantalla personal y guardado completo: prueba de Emilio con cuenta personal nueva después de publicar; no crear cuentas.
 
 - [x] Mensaje 155-B: Paso 0, 1149/1149 en 95 archivos y MD5 de seller exacto; dos entregas con MD5 exactos.
