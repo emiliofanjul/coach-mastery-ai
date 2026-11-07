@@ -1,4 +1,4 @@
-import { estiloBoton } from "@/components/closer/piezas";
+import { estiloBoton, Estrella } from "@/components/closer/piezas";
 import { useEffect, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -75,7 +75,6 @@ export default function VictoryScreen({
             display: "flex",
             justifyContent: "center",
             marginBottom: 12,
-            animation: "closerBounce 1.5s ease-in-out infinite",
           }}
         >
           <CloserCharacter state="celebration" size={86} />
@@ -83,38 +82,24 @@ export default function VictoryScreen({
         <div
           style={{
             display: "flex",
-            gap: 12,
+            gap: 14,
             justifyContent: "center",
           }}
         >
-          {[0, 1, 2].map((i) => {
-            const earned = i < stars;
-            return (
-              <motion.span
-                key={i}
-                initial={{ scale: 0 }}
-                animate={{ scale: [0, 1.2, 1] }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                style={{
-                  fontSize: 48,
-                  lineHeight: 1,
-                  color: earned ? GOLD : "rgba(255,255,255,0.15)",
-                  filter: earned
-                    ? "drop-shadow(0 0 8px var(--c-gold)) drop-shadow(0 0 16px var(--c-gold))"
-                    : undefined,
-                }}
-              >
-                ★
-              </motion.span>
-            );
-          })}
+          {[0, 1, 2].map((i) => (
+            // Fase 4 (mensaje 152): la misma estrella con brillo sutil del mapa y del resultado; aparecen una tras otra, sin rebote.
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.35, ease: "easeOut", delay: 0.15 * i }}
+              style={{ display: "inline-flex" }}
+            >
+              <Estrella ganada={i < stars} tam={48} />
+            </motion.span>
+          ))}
         </div>
-        <style>{`
-          @keyframes closerBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-          }
-        `}</style>
+
 
         <div
           style={{
