@@ -9,16 +9,19 @@ import { join } from "node:path";
 
 const leer = (p: string) => readFileSync(join(process.cwd(), p), "utf8");
 const practica = leer("src/routes/nodo.$nodeId.practica.tsx");
+const ui = leer("src/components/closer/practica-ui.tsx");
 const alta = leer("src/routes/signup.tsx");
 const onboarding = leer("src/routes/onboarding.seller.tsx");
 
 describe("El micrófono invita cuando te toca", () => {
   it("halo suave solo cuando le toca hablar, y respeta a quien no quiere animaciones", () => {
+    // Fase 4 (mensaje 151): el micrófono y su halo viven en practica-ui.tsx; la regla es la misma.
     expect(practica).toContain("const teTocaHablar = !isUserListening && !isAgentSpeaking && !isProcessing && !connectionError;");
-    expect(practica).toContain("@keyframes practica-invita");
-    expect(practica).toContain('teTocaHablar ? "practica-invita 2.4s ease-out infinite"');
-    expect(practica).toContain("@media (prefers-reduced-motion: reduce)");
-    expect(practica).toContain('"Te toca. Toca el micrófono para hablar"');
+    expect(practica).toContain('estado={isUserListening ? "grabando" : teTocaHablar ? "te_toca" : "apagado"}');
+    expect(ui).toContain("@keyframes practicaInvita");
+    expect(ui).toContain('className={toca ? "practica-mic-invita" : undefined}');
+    expect(ui).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(practica).toContain('"Te toca. Toca para hablar"');
   });
 });
 

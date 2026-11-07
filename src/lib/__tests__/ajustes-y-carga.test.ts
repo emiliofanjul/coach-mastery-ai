@@ -38,7 +38,8 @@ describe("texto: decisión del manager", () => {
   it("la práctica lee el ajuste de la empresa y esconde el botón si no se permite", () => {
     expect(ui).toMatch(/companies\?select=name,company_sales_brain,permite_texto/);
     expect(ui).toMatch(/onToggleMode=\{permiteTexto \? \(\) => setInputMode/);
-    expect(ui).toMatch(/\{onToggleMode && <ModeToggle/);
+    // Fase 4 (mensaje 151): el cambio Voz | Texto ahora es un selector con íconos; sigue escondido si no se permite.
+    expect(ui).toMatch(/\{onToggleMode && <SelectorModo/);
   });
   it("el manager lo cambia desde su panel", () => {
     expect(equipo).toMatch(/aria-label="Permitir práctica por texto"/);

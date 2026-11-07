@@ -14,6 +14,8 @@ import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
 import RetryScreen from "@/components/RetryScreen";
+import { estiloBoton } from "@/components/closer/piezas";
+import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, BotonMicrofono } from "@/components/closer/practica-ui";
 
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
@@ -124,6 +126,9 @@ function PracticaPage() {
   const [guardandoConsentimiento, setGuardandoConsentimiento] = useState(false);
   const [errorConsentimiento, setErrorConsentimiento] = useState<string | null>(null);
   const [nodeData, setNodeData] = useState<any>(null);
+  // El nombre claro del nodo y sus minutos (los del mapa, mensaje 147). Van aparte porque la vista
+  // v_nodes_resueltos no trae esas dos columnas.
+  const [infoMapa, setInfoMapa] = useState<{ nombre_corto: string | null; minutos_estimados: number | null } | null>(null);
   const [companyData, setCompanyData] = useState<any>(null);
   const [skillsContext, setSkillsContext] = useState<any>(null);
   const skillsContextRef = useRef<any>(null);
@@ -275,6 +280,10 @@ function PracticaPage() {
         );
         if (!alive) return;
         if (node) setNodeData((prev: any) => prev ?? node);
+        const info = await restGetMaybeSingle<{ nombre_corto: string | null; minutos_estimados: number | null }>(
+          `nodes?select=nombre_corto,minutos_estimados&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+        ).catch(() => null);
+        if (alive && info) setInfoMapa(info);
       } catch (err) {
         console.error("[practica] prep node load failed", err);
       }
@@ -1349,7 +1358,7 @@ function PracticaPage() {
         return;
       }
       // Roleplay: el usuario decide cuándo hablar tocando el micrófono manualmente.
-      // El botón "Listo, ahora yo →" aparece cuando Claude termina con end_session.
+      // El botón «Listo, ahora yo» aparece cuando Claude termina con end_session.
 
     } catch (err) {
       console.error("[voice] startIDoSession failed:", err);
@@ -1822,6 +1831,8 @@ function PracticaPage() {
             key="prep"
             micGranted={micGranted}
             nodeData={nodeData}
+            nodeId={nodeId}
+            infoMapa={infoMapa}
             onRetry={requestMic}
             onListo={handleListo}
             onExit={() => navigate({ to: "/mapa" })}
@@ -1834,6 +1845,8 @@ function PracticaPage() {
           <>
             <VoicePhase
               closerMsgs={closerMsgsRef.current}
+              cliente={fichaCliente}
+              nombreNodo={infoMapa?.nombre_corto || nodeData?.name || ""}
               key={phase}
               currentPhase={currentPhase}
               iDoPassive={
@@ -1906,21 +1919,9 @@ function PracticaPage() {
                     setIDoDemoDone(false);
                     setPhase("transition");
                   }}
-                  style={{
-                    background: "var(--c-primary)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 99,
-                    padding: "16px 28px",
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 16,
-                    cursor: "pointer",
-                    width: "100%",
-                    maxWidth: 560,
-                  }}
+                  style={{ ...estiloBoton("principal"), maxWidth: 560 }}
                 >
-                  Listo, ahora yo →
+                  Listo, ahora yo
                 </button>
               </div>
             )}
@@ -2150,21 +2151,9 @@ function PracticaPage() {
                       try { window.localStorage.setItem("closer_voice_tutorial_seen", "true"); } catch {}
                       setShowVoiceTutorial(false);
                     }}
-                    style={{
-                      background: "var(--c-primary)",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 99,
-                      padding: "16px 28px",
-                      fontFamily: "Syne, sans-serif",
-                      fontWeight: 700,
-                      fontSize: 16,
-                      cursor: "pointer",
-                      width: "100%",
-                      marginTop: 8,
-                    }}
+                    style={{ ...estiloBoton("principal"), marginTop: 8 }}
                   >
-                    Entendido, practicar →
+                    Entendido, a practicar
                   </button>
                 </div>
               </div>
@@ -2198,9 +2187,9 @@ function PracticaPage() {
                   <button
                     onClick={() => setFichaVista(true)}
                     disabled={!fichaCliente}
-                    style={{ width: "100%", marginTop: 18, background: "var(--c-primary)", color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, border: "none", borderRadius: 99, padding: "14px 20px", cursor: fichaCliente ? "pointer" : "default", opacity: fichaCliente ? 1 : 0.5 }}
+                    style={{ ...estiloBoton("principal", !fichaCliente), marginTop: 18 }}
                   >
-                    Continuar →
+                    Continuar
                   </button>
                 </div>
               </div>
@@ -2410,6 +2399,8 @@ function PracticaPage() {
 function PrepPhase({
   micGranted,
   nodeData,
+  nodeId,
+  infoMapa,
   onRetry,
   onListo,
   onExit,
@@ -2418,276 +2409,101 @@ function PrepPhase({
 }: {
   micGranted: boolean;
   nodeData: any;
+  nodeId: string;
+  infoMapa: { nombre_corto: string | null; minutos_estimados: number | null } | null;
   onRetry: () => void;
   onListo: () => void;
   onExit: () => void;
   inputMode: "voice" | "text";
   onToggleMode?: () => void;
 }) {
-
+  // Fase 4 (mensaje 151): el nodo grande, tu misión arriba, los pasos en una fila, y lo del micrófono
+  // en un solo renglón (antes eran tres tarjetas que ocupaban media pantalla).
   const isText = inputMode === "text";
-  const checks = isText
-    ? [
-        { ok: true, label: "Modo texto — no necesitas micrófono" },
-        { ok: true, label: "Escribe tus turnos con calma" },
-        { ok: true, label: "Presiona Enter para enviar" },
-      ]
-    : [
-        { ok: micGranted, label: micGranted ? "Micrófono listo" : "Permite el micrófono" },
-        { ok: true, label: "Sube el volumen al máximo 🔊" },
-        { ok: true, label: "Busca un lugar sin ruido" },
-      ];
   const canStart = isText || micGranted;
   const hasIDo = !!nodeData?.practice_script?.phases?.i_do;
+  const titulo = infoMapa?.nombre_corto || nodeData?.name || "";
+  const minutos = infoMapa?.minutos_estimados;
+  const mision = typeof nodeData?.field_mission === "string" && nodeData.field_mission.trim() ? nodeData.field_mission : null;
+  const etiqueta = { fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" } as const;
+  const pasos: { arriba: string; abajo: string }[] = [
+    ...(hasIDo ? [{ arriba: "Paso 1", abajo: "Closer demuestra" }, { arriba: "Paso 2", abajo: "Tú con el cliente" }] : [{ arriba: "Sin demostración", abajo: "Tú y el cliente" }]),
+    ...(minutos ? [{ arriba: "Toma", abajo: `${minutos} minutos` }] : []),
+  ];
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      style={{
-        flex: 1,
-        minHeight: 0,
-        display: "flex",
-        flexDirection: "column",
-        padding: "1.2rem",
-      }}
+      style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", padding: "max(12px, env(safe-area-inset-top)) var(--m-pantalla) 0" }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <button
-          onClick={onExit}
-          aria-label="Salir"
-          style={{ background: "transparent", border: "none", color: "#fff", fontSize: 22, cursor: "pointer", padding: 8, margin: -8 }}
-        >
-          ✕
-        </button>
-        {onToggleMode && <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />}
+      <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ marginLeft: -10 }}>
+          <BotonIcono onClick={onExit} etiqueta="Salir"><IconoCerrar /></BotonIcono>
+        </div>
+        {onToggleMode && <SelectorModo modo={inputMode} onCambiar={onToggleMode} />}
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          overflowY: "auto",
-          maxWidth: 560,
-          width: "100%",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          gap: 24,
-          paddingBlock: 16,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: 26,
-            lineHeight: 1.2,
-            textAlign: "center",
-          }}
-        >
-          Antes de empezar
-        </div>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto", maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", paddingTop: 16, paddingBottom: 16 }}>
+        <div style={{ ...etiqueta, letterSpacing: "0.08em", fontSize: 13, color: "var(--c-text-2)" }}>Práctica · {nodeId}</div>
+        <h1 style={{ margin: "8px 0 0", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 30, lineHeight: 1.15, letterSpacing: "-0.02em", color: "var(--c-text)" }}>{titulo}</h1>
+        {nodeData?.description && (
+          <p style={{ margin: "10px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text-soft)" }}>{nodeData.description}</p>
+        )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {checks.map((c, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.3, duration: 0.4 }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderRadius: 14,
-                padding: "14px 16px",
-              }}
-            >
-              <div
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 99,
-                  background: c.ok ? GREEN : ORANGE,
-                  color: "var(--c-bg)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 700,
-                  fontSize: 14,
-                  flexShrink: 0,
-                }}
-              >
-                {c.ok ? "✓" : "!"}
-              </div>
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 15,
-                  color: "rgba(255,255,255,0.9)",
-                }}
-              >
-                {c.label}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {mision && (
+          <div style={{ marginTop: 24, padding: 18, borderRadius: "var(--r-tarjeta)", background: "rgb(var(--c-primary-rgb) / 0.07)", border: "1px solid rgb(var(--c-primary-rgb) / 0.35)" }}>
+            <div style={{ ...etiqueta, color: "var(--c-primary)" }}>Tu misión</div>
+            <p style={{ margin: "8px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text)", whiteSpace: "pre-wrap" }}>{mision}</p>
+          </div>
+        )}
 
         {nodeData && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.4 }}
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 14,
-              padding: "18px 18px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: 18,
-                lineHeight: 1.3,
-                color: "#fff",
-              }}
-            >
-              {nodeData.name}
-            </div>
-            {nodeData.description && (
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 14,
-                  lineHeight: 1.55,
-                  color: "rgba(255,255,255,0.75)",
-                }}
-              >
-                <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Objetivo: </span>
-                {nodeData.description}
+          <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: `repeat(${pasos.length}, minmax(0, 1fr))`, gap: 8 }}>
+            {pasos.map((p) => (
+              <div key={p.arriba + p.abajo} style={{ padding: "14px 12px", borderRadius: 16, background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "var(--c-text-2)" }}>{p.arriba}</div>
+                <div style={{ marginTop: 4, fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 600, lineHeight: 1.3, color: "var(--c-text)" }}>{p.abajo}</div>
               </div>
-            )}
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 14,
-                lineHeight: 1.55,
-                color: "rgba(255,255,255,0.75)",
-              }}
-            >
-              <span style={{ color: "rgba(255,255,255,0.55)", fontWeight: 600 }}>Formato: </span>
-              {hasIDo ? "Closer demuestra primero y luego tú practicas." : "Sin demostración. Sin pistas. Tú y el cliente."}
-            </div>
-          </motion.div>
-        )}
-
-        {nodeData?.field_mission && typeof nodeData.field_mission === "string" && nodeData.field_mission.trim() && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.4 }}
-            style={{
-              background: "rgb(var(--c-primary-rgb) / 0.06)",
-              border: "1px solid var(--c-primary)",
-              borderRadius: 14,
-              padding: "18px 18px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: 12,
-                letterSpacing: "0.14em",
-                color: "var(--c-primary)",
-                textTransform: "uppercase",
-              }}
-            >
-              Tu misión
-            </div>
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 14,
-                lineHeight: 1.55,
-                color: "rgba(255,255,255,0.9)",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {nodeData.field_mission}
-            </div>
-          </motion.div>
-        )}
-
-
-
-        {!micGranted && !isText && (
-          <button
-            onClick={onRetry}
-            style={{ alignSelf: "center", background: "transparent", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 14, padding: "10px 18px", borderRadius: 99, cursor: "pointer" }}
-          >
-            Reintentar permiso
-          </button>
+            ))}
+          </div>
         )}
       </div>
 
       <div style={{ flexShrink: 0, maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))" }}>
-        <button
-          onClick={onListo}
-          disabled={!canStart}
-          style={{
-            width: "100%", height: 52, borderRadius: 99, border: "none", background: ORANGE, color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16,
-            cursor: canStart ? "pointer" : "not-allowed", opacity: canStart ? 1 : 0.5,
-            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-          }}
-        >
-          {hasIDo ? "Ver demostración →" : "Estoy listo →"}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 14, background: "var(--c-surface)", marginBottom: 14 }}>
+          {isText ? (
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-soft)" }}>Escribes tus turnos con calma. Enter para enviar.</span>
+          ) : micGranted ? (
+            <>
+              <span aria-hidden style={{ width: 22, height: 22, flex: "none", borderRadius: 11, background: "var(--c-success)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--c-bg)" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              </span>
+              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-soft)" }}>Micrófono listo · Sube el volumen · Busca silencio</span>
+            </>
+          ) : (
+            <>
+              <span aria-hidden style={{ width: 22, height: 22, flex: "none", borderRadius: 11, background: "var(--c-primary)", color: "var(--c-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13 }}>!</span>
+              <span style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-soft)" }}>Permite el micrófono para practicar</span>
+              <button type="button" onClick={onRetry} style={{ ...estiloBoton("texto"), height: 32, padding: "0 4px", color: "var(--c-primary)", fontSize: 14 }}>Reintentar</button>
+            </>
+          )}
+        </div>
+        <button type="button" onClick={onListo} disabled={!canStart} style={estiloBoton("principal", !canStart)}>
+          {hasIDo ? "Ver la demostración" : "Estoy listo"}
         </button>
       </div>
-
     </motion.div>
   );
 }
 
 // ───────────────────────── VOICE ─────────────────────────
 
-function ModeToggle({ inputMode, onToggle }: { inputMode: "voice" | "text"; onToggle: () => void }) {
-  const isText = inputMode === "text";
-  return (
-    <button
-      onClick={onToggle}
-      aria-label={isText ? "Cambiar a modo voz" : "Cambiar a modo texto"}
-      title={isText ? "Modo texto activo — cambiar a voz" : "Modo voz activo — cambiar a texto"}
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 6,
-        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
-        color: "#fff", padding: "6px 12px", borderRadius: 99,
-        fontFamily: "'DM Sans', sans-serif", fontSize: 12, cursor: "pointer",
-      }}
-    >
-      <span style={{ opacity: isText ? 0.35 : 1 }}>🎤</span>
-      <span style={{ fontSize: 11, opacity: 0.6 }}>↔</span>
-      <span style={{ opacity: isText ? 1 : 0.35 }}>⌨️</span>
-    </button>
-  );
-}
-
 function VoicePhase({
   fichaCliente = null,
+  cliente = null,
+  nombreNodo = "",
   closerMsgs,
   nivelVoz = 0,
   currentPhase,
@@ -2710,6 +2526,10 @@ function VoicePhase({
 }: {
   /** La tarjeta "Tu cliente": se muestra al empezar el turno del vendedor y desaparece cuando habla. */
   fichaCliente?: FichaVisible | null;
+  /** El cliente de esta práctica: va al centro de la pantalla (Fase 4). */
+  cliente?: FichaVisible | null;
+  /** El nombre claro del nodo (el del mapa), para el encabezado. */
+  nombreNodo?: string;
   /** Nivel de la voz del vendedor (0 a 1) mientras habla: mueve las barritas. */
   nivelVoz?: number;
   closerMsgs: Set<string>;
@@ -2734,26 +2554,35 @@ function VoicePhase({
   const isIDo = currentPhase === "i_do";
 
   const isText = inputMode === "text";
-  const ringColor = isAgentSpeaking
-    ? BLUE
-    : isUserListening
-      ? ORANGE
-      : "rgba(255,255,255,0.15)";
-  const animatePulse = isAgentSpeaking || isUserListening;
 
   const micDisabled = isAgentSpeaking;
-  const micBg = isUserListening ? RED : ORANGE;
   // Mensaje 123: le toca hablar al vendedor (nadie habla, nada se procesa, sin error).
   const teTocaHablar = !isUserListening && !isAgentSpeaking && !isProcessing && !connectionError;
+  // La franja de lo que se dice (Fase 4): lo último que se dijo, o lo que vas diciendo mientras grabas.
+  const ultimo = [...transcript].reverse().find((m) => (m.role === "user" || m.role === "assistant") && m.content?.trim());
+  const ultimoEsCliente = !!ultimo && ultimo.role === "assistant" && !isIDo && etiquetaAsistente(ultimo.content, closerMsgs) === "Cliente";
+  const nombreCliente = cliente?.nombre ?? "Tu cliente";
+  const franja: { quien: string; color: string; texto: string } | null = isUserListening && interimTranscript
+    ? { quien: isIDo ? "Tú, como cliente" : "Tú", color: "var(--c-primary)", texto: interimTranscript }
+    : ultimo
+      ? ultimo.role === "user"
+        ? { quien: isIDo ? "Tú, como cliente" : "Tú", color: "var(--c-primary)", texto: ultimo.content }
+        : isIDo
+          ? { quien: "Closer", color: "var(--c-primary)", texto: ultimo.content }
+          : ultimoEsCliente
+            ? { quien: nombreCliente, color: "var(--c-client)", texto: ultimo.content }
+            : { quien: "Closer", color: "var(--c-primary)", texto: ultimo.content }
+      : null;
+
   const micLabel = isUserListening
-    ? "Te escucho. Puedes pausar y seguir — toca para enviar ya."
+    ? "Toca para enviar. Puedes pausar y seguir."
     : isAgentSpeaking
-      ? "Closer está hablando…"
+      ? isIDo ? "Closer está demostrando" : ultimoEsCliente ? "Escucha a tu cliente" : "Closer está hablando"
       : isProcessing
-        ? "Pensando…"
+        ? `${nombreCliente} está pensando…`
         : isIDo
           ? "Toca para responder como cliente"
-          : "Te toca. Toca el micrófono para hablar";
+          : "Te toca. Toca para hablar";
 
 
   const [textDraft, setTextDraft] = useState("");
@@ -2781,21 +2610,7 @@ function VoicePhase({
       exit={{ opacity: 0 }}
       style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", padding: "1.2rem" }}
     >
-      <style>{`
-        @keyframes practica-pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.08); opacity: 0.6; }
-        }
-        /* Mensaje 123: cuando le toca hablar al vendedor, el micrófono lo invita
-           con un halo suave que respira. Sutil: no parpadea ni cambia de color. */
-        @keyframes practica-invita {
-          0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.45), 0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.33); }
-          50% { box-shadow: 0 0 0 12px rgb(var(--c-primary-rgb) / 0), 0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.33); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .practica-mic-invita { animation: none !important; }
-        }
-      `}</style>
+      <style>{ESTILOS_PRACTICA}</style>
 
       {fichaCliente && (
         <div style={{ border: "1px solid rgb(var(--c-primary-rgb) / 0.35)", background: "rgb(var(--c-primary-rgb) / 0.07)", borderRadius: 14, padding: "12px 14px", marginBottom: 12 }}>
@@ -2808,28 +2623,18 @@ function VoicePhase({
           <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "var(--c-text)", marginTop: 8, fontWeight: 600 }}>{LLAMADO_A_LA_ACCION}</div>
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <button
-          onClick={onExitClick}
-          aria-label="Salir"
-          style={{ background: "transparent", border: "none", color: "#fff", fontSize: 22, cursor: "pointer", padding: 8, margin: -8 }}
-        >
-          ✕
-        </button>
-        {onToggleMode && <ModeToggle inputMode={inputMode} onToggle={onToggleMode} />}
-      </div>
-
-      <div
-        style={{
-          maxWidth: 560, width: "100%", margin: "16px auto 0",
-          padding: "12px 16px", borderRadius: 14,
-          background: isIDo ? "rgb(var(--c-client-rgb) / 0.15)" : "rgb(var(--c-primary-rgb) / 0.15)",
-          border: `1px solid ${isIDo ? BLUE : ORANGE}`,
-          fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 14,
-          textAlign: "center", color: "#fff",
-        }}
-      >
-        {isIDo ? (iDoPassive ? "Closer demuestra — obsérvalo" : "Closer demuestra — reacciona como cliente") : "Tu turno — Hazlo solo."}
+      {/* Fase 4: salir, el nodo al centro y el cambio a texto. Sin contador de turnos ni letrero de fase. */}
+      <div style={{ display: "grid", gridTemplateColumns: "44px 1fr 44px", alignItems: "center", gap: 8, maxWidth: 560, width: "100%", margin: "0 auto" }}>
+        <BotonIcono onClick={onExitClick} etiqueta="Salir"><IconoCerrar /></BotonIcono>
+        <div style={{ textAlign: "center", minWidth: 0 }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600, color: "var(--c-text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{nombreNodo}</div>
+          {isIDo && <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "var(--c-text-2)", marginTop: 2 }}>Demostración</div>}
+        </div>
+        {onToggleMode ? (
+          <BotonIcono onClick={onToggleMode} etiqueta={isText ? "Cambiar a voz" : "Cambiar a texto"} color="var(--c-text-2)">
+            {isText ? <IconoMicrofono tam={22} /> : <IconoTeclado />}
+          </BotonIcono>
+        ) : <span />}
       </div>
 
       {isText ? (
@@ -2860,7 +2665,7 @@ function VoicePhase({
                         aria-label="Escuchar"
                         title="Escuchar"
                         style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 12, padding: 0 }}
-                      >🔊</button>
+                      ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M16 9a4 4 0 0 1 0 6" /></svg></button>
                     )}
                   </div>
                   <div
@@ -2920,13 +2725,13 @@ function VoicePhase({
                 aria-label="Enviar"
                 style={{
                   width: 48, height: 48, borderRadius: 99, border: "none",
-                  background: ORANGE, color: "var(--c-bg)", fontSize: 20,
+                  background: ORANGE, color: "var(--c-bg)",
                   cursor: textDisabled || !textDraft.trim() ? "not-allowed" : "pointer",
                   opacity: textDisabled || !textDraft.trim() ? 0.4 : 1,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
                 }}
-              >➤</button>
+              ><IconoEnviar /></button>
             </div>
             <button
               onClick={onReplay}
@@ -2937,77 +2742,59 @@ function VoicePhase({
 
         </>
       ) : (
-        // ───────── Modo VOZ (original) ─────────
+        // ───────── Modo VOZ (Fase 4, mensaje 151) ─────────
         <>
-          <div style={{ flex: 1, maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
-            <div style={{ position: "relative", width: 180, height: 180, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${ringColor}`, animation: animatePulse ? "practica-pulse 1.2s ease-in-out infinite" : undefined }} />
-              <CloserCharacter size={120} state="normal" />
-            </div>
-
-            {isUserListening && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: RED }}>
-                <span style={{ width: 8, height: 8, borderRadius: 99, background: RED, animation: "practica-pulse 1.2s ease-in-out infinite" }} />
-                Grabando… toma tu tiempo
-              </div>
-            )}
-
-            {interimTranscript && (
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", textAlign: "center", maxWidth: 480, minHeight: 20 }}>
-                "{interimTranscript}"
-              </div>
-            )}
-
-
-            {connectionError && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 8 }}>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>{connectionError}</p>
-                <button
-                  onClick={onRetry}
-                  style={{ background: ORANGE, color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "10px 24px", cursor: "pointer", boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)" }}
-                >Reintentar</button>
-              </div>
+          <div style={{ flex: 1, minHeight: 0, maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            {isIDo || !cliente ? (
+              <EscenarioCloser hablando={isAgentSpeaking} rol={isIDo ? (iDoPassive ? "Demuestra como vendedor" : "Hace de vendedor; tú, de cliente") : "Tu coach"} />
+            ) : (
+              <EscenarioCliente
+                nombre={cliente.nombre}
+                detalle={`${cliente.negocio} · ${cliente.tipo === "nuevo" ? "cliente nuevo" : "cliente recurrente"}`}
+                hablando={isAgentSpeaking && ultimoEsCliente}
+                atenuado={isUserListening}
+                pensando={isProcessing && !isAgentSpeaking}
+                estado={
+                  connectionError ? null
+                  : isAgentSpeaking ? (ultimoEsCliente ? "Te está hablando" : "Closer te habla")
+                  : isUserListening ? "Te escucha"
+                  : isProcessing ? "Pensando"
+                  : "Espera tu respuesta"
+                }
+              />
             )}
           </div>
 
-          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingBottom: "calc(20px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 12 }}>
+            {connectionError ? (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, padding: "8px 0" }}>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", color: "var(--c-danger)", fontSize: 15, textAlign: "center", margin: 0 }}>{connectionError}</p>
+                <button type="button" onClick={onRetry} style={{ ...estiloBoton("principal"), width: "auto", padding: "0 28px" }}>Reintentar</button>
+              </div>
+            ) : franja ? (
+              <FranjaDialogo quien={franja.quien} colorQuien={franja.color} texto={franja.texto} />
+            ) : (
+              <div style={{ height: 104, flexShrink: 0 }} />
+            )}
+          </div>
+
+          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: "min(22px, 2.5dvh)", paddingBottom: "calc(8px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: "min(12px, 1.4dvh)" }}>
             {!iDoDemoDone && !iDoPassive && (
               <>
-                {/* Barritas de voz: aparecen al instante, antes que las palabras,
-                    y le confirman al vendedor que el micrófono lo está oyendo. */}
-                <div aria-hidden style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 22, opacity: isUserListening ? 1 : 0, transition: "opacity 150ms" }}>
-                  {[0.55, 0.8, 1, 0.8, 0.55].map((peso, k) => (
-                    <div key={k} style={{ width: 5, borderRadius: 3, background: "var(--c-primary)", height: `${Math.max(3, Math.round(22 * Math.min(1, nivelVoz * 1.4 * peso)))}px`, transition: "height 80ms linear" }} />
-                  ))}
-                </div>
-                <button
+                <BotonMicrofono
+                  estado={isUserListening ? "grabando" : teTocaHablar ? "te_toca" : "apagado"}
+                  nivelVoz={nivelVoz}
+                  etiqueta={micLabel}
                   onClick={onMicClick}
-                  disabled={micDisabled}
-                  aria-label={micLabel}
-                  className={teTocaHablar ? "practica-mic-invita" : undefined}
-                  style={{
-                    width: 84, height: 84, borderRadius: 99, border: "none",
-                    background: micBg, color: "var(--c-bg)", fontSize: 32,
-                    cursor: micDisabled ? "not-allowed" : "pointer",
-                    opacity: micDisabled ? 0.4 : 1,
-                    boxShadow: `0 10px 30px -8px color-mix(in srgb, ${micBg} 33%, transparent)`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    animation: isUserListening ? "practica-pulse 1.2s ease-in-out infinite" : teTocaHablar ? "practica-invita 2.4s ease-out infinite" : undefined,
-                  }}
-                >
-                  {isUserListening ? "■" : "🎤"}
-                </button>
-                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.6)", textAlign: "center", minHeight: 18 }}>
-                  {isIDo && !isUserListening && !isAgentSpeaking
-                    ? "Reacciona como cliente o toca 'Listo, ahora yo'"
-                    : micLabel}
+                />
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)", textAlign: "center", minHeight: 20 }}>
+                  {isIDo && !isUserListening && !isAgentSpeaking ? "Reacciona como cliente o toca «Listo, ahora yo»" : micLabel}
                 </div>
               </>
             )}
-            <button
-              onClick={onReplay}
-              style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: "pointer", padding: 4 }}
-            >Reiniciar práctica</button>
+            {!(isIDo && iDoDemoDone) && (
+              <button type="button" onClick={onReplay} style={{ ...estiloBoton("texto"), height: 36, color: "var(--c-disabled-text)", fontSize: 14 }}>Reiniciar práctica</button>
+            )}
           </div>
         </>
       )}
@@ -3141,21 +2928,9 @@ function TransitionPhase({
       >
         <button
           onClick={onContinue}
-          style={{
-            width: "100%",
-            height: 52,
-            borderRadius: 99,
-            border: "none",
-            background: ORANGE,
-            color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: 16,
-            cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-          }}
+          style={estiloBoton("principal")}
         >
-          Yo soy el vendedor →
+          Ahora yo soy el vendedor
         </button>
       </div>
     </motion.div>

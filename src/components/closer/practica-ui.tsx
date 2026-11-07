@@ -1,0 +1,342 @@
+/**
+ * Las piezas de la pantalla de práctica (Fase 4 del rediseño, mensaje 151, nov-2026).
+ *
+ * Lo que Emilio aprobó en la maqueta: al centro va el cliente (sus iniciales, su nombre y su negocio),
+ * no Closer; Closer sale al centro solo cuando demuestra. El anillo se mueve con la voz de quien habla.
+ * Lo que se dice va en una franja de altura fija que siempre muestra las últimas palabras: nada brinca.
+ * El micrófono es un ícono dibujado (nunca el emoji) con tres estados: te toca, grabando y escuchando.
+ * Sin contador de turnos: la práctica puede terminar antes del máximo y no debe sentirse incompleta.
+ *
+ * Solo cambia cómo se ve. La voz, los turnos y la calificación siguen en nodo.$nodeId.practica.tsx.
+ * Colores y medidas: de src/styles.css (--c-…), como todas las pantallas.
+ */
+import type { CSSProperties, ReactNode } from "react";
+
+/** Las iniciales del cliente: la primera y la última palabra. «Don Ramón» → «DR»; «Doña Lupe Pérez» → «DP». */
+export function inicialesDe(nombre: string): string {
+  const palabras = (nombre || "").trim().split(/\s+/).filter(Boolean);
+  if (palabras.length === 0) return "?";
+  const letras = palabras.length >= 2 ? palabras[0][0] + palabras[palabras.length - 1][0] : palabras[0][0];
+  return letras.toUpperCase();
+}
+
+/**
+ * Medidas del escenario: en un teléfono alto se ve como en la maqueta (196 px); en uno bajo, o con la barra
+ * del navegador, se encoge con la altura de la pantalla para que nada se encime.
+ */
+const ESCENARIO = "min(196px, 25dvh)";
+const CIRCULO = "min(148px, 19dvh)";
+
+const TRAZO = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+export function IconoCerrar({ tam = 22 }: { tam?: number }) {
+  return (
+    <svg width={tam} height={tam} viewBox="0 0 24 24" aria-hidden {...TRAZO}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  );
+}
+
+export function IconoMicrofono({ tam = 34, color = "currentColor" }: { tam?: number; color?: string }) {
+  return (
+    <svg width={tam} height={tam} viewBox="0 0 24 24" aria-hidden {...TRAZO} stroke={color}>
+      <rect x="9" y="2.5" width="6" height="12" rx="3" />
+      <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
+    </svg>
+  );
+}
+
+export function IconoTeclado({ tam = 22 }: { tam?: number }) {
+  return (
+    <svg width={tam} height={tam} viewBox="0 0 24 24" aria-hidden {...TRAZO} strokeWidth={1.8}>
+      <rect x="3" y="6" width="18" height="12" rx="2.5" />
+      <path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10" />
+    </svg>
+  );
+}
+
+export function IconoEnviar({ tam = 20 }: { tam?: number }) {
+  return (
+    <svg width={tam} height={tam} viewBox="0 0 24 24" aria-hidden {...TRAZO} strokeWidth={2.2}>
+      <path d="M12 19V5M5.5 11.5L12 5l6.5 6.5" />
+    </svg>
+  );
+}
+
+/** Botón redondo de 44 px sin fondo (salir, cambiar a texto). */
+export function BotonIcono({ onClick, etiqueta, children, color = "var(--c-text-soft)" }: { onClick?: () => void; etiqueta: string; children: ReactNode; color?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={etiqueta}
+      title={etiqueta}
+      style={{ width: 44, height: 44, borderRadius: 22, border: "none", background: "transparent", color, display: "flex", alignItems: "center", justifyContent: "center", cursor: onClick ? "pointer" : "default", padding: 0, WebkitTapHighlightColor: "transparent" }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Voz | Texto, como dos segmentos con ícono (antes: 🎤 ↔ ⌨️). */
+export function SelectorModo({ modo, onCambiar }: { modo: "voice" | "text"; onCambiar: () => void }) {
+  const seg = (activo: boolean): CSSProperties => ({
+    height: 34,
+    padding: "0 12px",
+    border: "none",
+    borderRadius: 9,
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    fontFamily: "'DM Sans', sans-serif",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: activo ? "default" : "pointer",
+    background: activo ? "var(--c-border)" : "transparent",
+    color: activo ? "var(--c-text)" : "var(--c-text-2)",
+  });
+  return (
+    <div role="group" aria-label="Cómo practicar" style={{ display: "flex", padding: 3, borderRadius: 12, background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
+      <button type="button" aria-pressed={modo === "voice"} onClick={modo === "voice" ? undefined : onCambiar} style={seg(modo === "voice")}>
+        <IconoMicrofono tam={16} /> Voz
+      </button>
+      <button type="button" aria-pressed={modo === "text"} onClick={modo === "text" ? undefined : onCambiar} style={seg(modo === "text")}>
+        <IconoTeclado tam={16} /> Texto
+      </button>
+    </div>
+  );
+}
+
+/** Los anillos que se mueven con una voz. `activo` los enciende; el color es el de quien habla. */
+function Anillos({ activo, rgb }: { activo: boolean; rgb: string }) {
+  const base: CSSProperties = { position: "absolute", borderRadius: "50%", transition: "opacity 400ms ease, border-color 400ms ease", pointerEvents: "none" };
+  return (
+    <>
+      <div
+        className={activo ? "practica-onda-a" : undefined}
+        style={{ ...base, inset: 0, border: `2px solid ${activo ? `rgb(${rgb} / 0.55)` : "var(--c-border)"}` }}
+      />
+      <div
+        className={activo ? "practica-onda-b" : undefined}
+        style={{ ...base, inset: -14, border: `1px solid rgb(${rgb} / 0.22)`, opacity: activo ? 1 : 0 }}
+      />
+    </>
+  );
+}
+
+/** Las animaciones de esta pantalla. Pocas y suaves; respetan «reducir movimiento». */
+export const ESTILOS_PRACTICA = `
+@keyframes practicaOndaA{0%,100%{transform:scale(1)}20%{transform:scale(1.05)}45%{transform:scale(1.015)}70%{transform:scale(1.07)}85%{transform:scale(1.03)}}
+@keyframes practicaOndaB{0%,100%{transform:scale(1.02)}30%{transform:scale(1.09)}55%{transform:scale(1.03)}80%{transform:scale(1.11)}}
+@keyframes practicaInvita{0%,100%{box-shadow:0 0 0 0 rgb(var(--c-primary-rgb) / 0.42)}50%{box-shadow:0 0 0 14px rgb(var(--c-primary-rgb) / 0)}}
+@keyframes practicaPensando{0%,100%{opacity:.45}50%{opacity:1}}
+.practica-onda-a{animation:practicaOndaA 1.4s ease-in-out infinite}
+.practica-onda-b{animation:practicaOndaB 1.7s ease-in-out infinite}
+.practica-mic-invita{animation:practicaInvita 2.4s ease-out infinite}
+.practica-pensando{animation:practicaPensando 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.practica-onda-a,.practica-onda-b,.practica-mic-invita,.practica-pensando{animation:none !important}}
+`;
+
+/** El cliente al centro: iniciales en azul, su nombre, su negocio y qué está pasando. */
+export function EscenarioCliente({
+  nombre,
+  detalle,
+  hablando,
+  atenuado,
+  estado,
+  pensando,
+}: {
+  nombre: string;
+  detalle: string;
+  hablando: boolean;
+  atenuado: boolean;
+  estado: string | null;
+  pensando: boolean;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "min(18px, 2dvh)" }}>
+      <div style={{ position: "relative", width: ESCENARIO, height: ESCENARIO, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Anillos activo={hablando} rgb="var(--c-client-rgb)" />
+        <div
+          aria-hidden
+          style={{
+            width: CIRCULO,
+            height: CIRCULO,
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "radial-gradient(circle at 35% 30%, var(--c-avatar-claro) 0%, var(--c-avatar-centro) 55%, var(--c-avatar-hondo) 100%)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)",
+            opacity: atenuado ? 0.55 : 1,
+            transition: "opacity 400ms ease",
+          }}
+        >
+          <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "min(44px, 5.6dvh)", letterSpacing: "-0.02em", color: "var(--c-text)", lineHeight: 1 }}>{inicialesDe(nombre)}</span>
+        </div>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, letterSpacing: "-0.01em", color: "var(--c-text)" }}>{nombre}</div>
+        {detalle && <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)", marginTop: 4 }}>{detalle}</div>}
+      </div>
+      <div style={{ height: 28 }}>
+        {estado && (
+          <div
+            className={pensando ? "practica-pensando" : undefined}
+            style={{
+              height: 28,
+              padding: "0 12px",
+              borderRadius: 14,
+              display: "flex",
+              alignItems: "center",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              background: hablando ? "rgb(var(--c-client-rgb) / 0.12)" : "var(--c-surface)",
+              color: hablando ? "var(--c-client)" : "var(--c-text-2)",
+            }}
+          >
+            {estado}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Closer al centro: solo cuando demuestra. */
+export function EscenarioCloser({ hablando, rol }: { hablando: boolean; rol: string }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "min(18px, 2dvh)" }}>
+      <div style={{ position: "relative", width: ESCENARIO, height: ESCENARIO, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Anillos activo={hablando} rgb="var(--c-primary-rgb)" />
+        <div style={{ width: CIRCULO, height: CIRCULO, borderRadius: "50%", background: "var(--c-surface)", border: "1px solid var(--c-border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg viewBox="0 0 100 140" fill="none" aria-hidden style={{ width: "57%", height: "80%" }}>
+            <circle cx="50" cy="30" r="11" fill="var(--c-primary)" />
+            <path d="M 42 42 L 58 42 L 60 100 L 40 100 Z" fill="var(--c-primary)" />
+            <path d="M 42 54 Q 36 74 32 92" stroke="var(--c-primary)" strokeWidth="6" strokeLinecap="round" />
+            <path d="M 58 54 Q 64 74 68 92" stroke="var(--c-primary)" strokeWidth="6" strokeLinecap="round" />
+            <line x1="44" y1="100" x2="42" y2="128" stroke="var(--c-primary)" strokeWidth="6" strokeLinecap="round" />
+            <line x1="56" y1="100" x2="58" y2="128" stroke="var(--c-primary)" strokeWidth="6" strokeLinecap="round" />
+          </svg>
+        </div>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, letterSpacing: "-0.01em", color: "var(--c-text)" }}>Closer</div>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)", marginTop: 4 }}>{rol}</div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * La franja de lo que se dice: altura fija, muestra siempre las últimas palabras y desvanece las de arriba.
+ * Así el texto nunca empuja el resto de la pantalla.
+ */
+export function FranjaDialogo({ quien, colorQuien, texto }: { quien: string; colorQuien: string; texto: string }) {
+  return (
+    <div
+      aria-live="polite"
+      style={{
+        height: 104,
+        boxSizing: "border-box",
+        padding: "12px 16px 14px",
+        borderRadius: 16,
+        background: "var(--c-surface)",
+        border: "1px solid var(--c-border)",
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+        flexShrink: 0,
+      }}
+    >
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: colorQuien, minHeight: 15 }}>{quien}</div>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0, black 28px)",
+          maskImage: "linear-gradient(to bottom, transparent 0, black 28px)",
+        }}
+      >
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.45, color: "var(--c-text-soft)" }}>{texto}</div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * El micrófono: te toca (naranja con volumen, invita sin gritar), grabando (rojo con el cuadro, el anillo
+ * sigue tu voz de verdad) o apagado (mientras habla el cliente o se piensa la respuesta).
+ */
+export function BotonMicrofono({
+  estado,
+  nivelVoz,
+  etiqueta,
+  onClick,
+}: {
+  estado: "te_toca" | "grabando" | "apagado";
+  nivelVoz: number;
+  etiqueta: string;
+  onClick: () => void;
+}) {
+  const grabando = estado === "grabando";
+  const toca = estado === "te_toca";
+  const fondo: CSSProperties = grabando
+    ? { background: "var(--c-danger)" }
+    : toca
+      ? {
+          background: "linear-gradient(180deg, var(--c-play-claro) 0%, var(--c-play-centro) 50%, var(--c-play-hondo) 100%)",
+          boxShadow: "inset 0 -3px 0 rgb(var(--c-play-sombra-rgb) / 0.35), inset 0 2px 0 rgba(255,255,255,0.25)",
+        }
+      : { background: "var(--c-disabled-bg)" };
+  return (
+    <div style={{ position: "relative", width: 84, height: 84, margin: "6px 0" }}>
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: -12,
+          borderRadius: "50%",
+          border: "2px solid rgb(var(--c-danger-rgb) / 0.45)",
+          opacity: grabando ? 1 : 0,
+          transform: `scale(${1 + Math.min(1, nivelVoz * 1.4) * 0.22})`,
+          transition: "opacity 200ms ease, transform 90ms linear",
+          pointerEvents: "none",
+        }}
+      />
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={estado === "apagado"}
+        aria-label={etiqueta}
+        className={toca ? "practica-mic-invita" : undefined}
+        style={{
+          position: "relative",
+          width: 84,
+          height: 84,
+          borderRadius: "50%",
+          border: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: estado === "apagado" ? "default" : "pointer",
+          transition: "background 200ms ease",
+          WebkitTapHighlightColor: "transparent",
+          padding: 0,
+          ...fondo,
+        }}
+      >
+        {grabando ? (
+          <span style={{ width: 24, height: 24, borderRadius: 6, background: "#FFFFFF", display: "block" }} />
+        ) : (
+          <IconoMicrofono tam={34} color={toca ? "#FFFFFF" : "var(--c-disabled-text)"} />
+        )}
+      </button>
+    </div>
+  );
+}

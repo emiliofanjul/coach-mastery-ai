@@ -129,6 +129,10 @@
   --c-danger: #F0506E;        --c-danger-rgb: 240 80 110;
   --c-danger-soft: #FF9AA8;
   --c-gold: #F2C14E;          --c-gold-rgb: 242 193 78;
+  /* Estrella ganada (Fase 4, nov-2026): un dorado un poco más claro, con un brillo sutil. */
+  --c-estrella: #F5C95A;      --c-estrella-rgb: 245 201 90;
+  /* El círculo del cliente en la práctica (Fase 4): azul hondo con luz arriba, para las iniciales en blanco. */
+  --c-avatar-claro: #2E6FA8;  --c-avatar-centro: #173A5C;  --c-avatar-hondo: #0F2740;
   --c-disabled-bg: #1A2236;
   --c-disabled-text: #5E6880;
 

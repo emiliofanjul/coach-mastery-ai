@@ -8,7 +8,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Lock, Check, Trophy } from "lucide-react";
-import { estiloBoton, estiloBotonPlay, IconoPlay } from "@/components/closer/piezas";
+import { estiloBoton, estiloBotonPlay, IconoPlay, Estrella } from "@/components/closer/piezas";
 import { restGet } from "@/lib/supabase-rest";
 import { AppHeader } from "@/components/app/AppShell";
 import { MapTutorial } from "@/components/closer/MapTutorial";
@@ -1000,21 +1000,16 @@ function MapNode({
             const earned = i < stars;
             const visible = i < visibleStars;
             return (
-              <svg
+              <Estrella
                 key={i}
-                width={11}
-                height={11}
-                viewBox="0 0 24 24"
-                aria-hidden
-                fill={earned ? "var(--c-gold)" : "var(--c-border-strong)"}
+                ganada={earned}
+                tam={12}
                 style={{
                   opacity: visible ? 1 : 0,
                   transition: "opacity 250ms ease",
                   animation: isJustCompleted && i === visibleStars - 1 ? "aparece 300ms ease-out both" : undefined,
                 }}
-              >
-                <path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z" />
-              </svg>
+              />
             );
           })}
         </div>
@@ -1160,9 +1155,7 @@ function NodeSheetBody({
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "var(--c-surface)" }}>
           <span style={{ display: "flex", gap: 4 }} aria-label={`${node.stars} de 3 estrellas`}>
             {[0, 1, 2].map((i) => (
-              <svg key={i} width={20} height={20} viewBox="0 0 24 24" aria-hidden fill={i < node.stars ? "var(--c-gold)" : "var(--c-border-strong)"}>
-                <path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z" />
-              </svg>
+              <Estrella key={i} ganada={i < node.stars} tam={20} />
             ))}
           </span>
           {/* La app guarda siempre la mejor calificación (practica.tsx: Math.max). */}
