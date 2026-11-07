@@ -1,8 +1,8 @@
 # Roadmap
 
 - [x] Mensaje 145: Paso 0 confirmado: 1069/1069 en 85 archivos, prueba nueva ausente y huella de práctica exacta; tres entregas y 35 archivos coinciden.
-- [ ] Mensaje 145: ejecutar una vez el script exacto, instalar prueba y retirar tres entregas; comprobar 1072/86 y validación automática.
-- [ ] Mensaje 145: comprobar pantallas con sesión de Emilio y práctica completa por voz; publicar únicamente si todo sale bien.
+- [x] Mensaje 145: script ejecutado una vez: 35 huellas finales exactas; prueba instalada exacta y tres entregas retiradas; 1072/86 pasan y build automático OK.
+- [x] Mensaje 145: acceso sin burbuja, mapa con 49 nodos y activo/completados/bloqueados, menú abre/cierra (botón Dev intercepta el clic en preview; verificado disparando control real), reverso 1.2 y quiz verde/rojo verificados; práctica real por voz 1.2 llegó a score 80 y victoria con confeti naranja/dorado/blanco. Sin continuar al mapa ni modificar consentimiento; publicación solicitada al cierre.
 
 - [x] Mensaje 144: Paso 0 exacto: 1063/1064 en 84 archivos, única falla esperada de 9 frente a 10; huellas previas y entregadas correctas, Cerebro 23 y cinco guiones vigentes exactos; vendedores sin certificado: [].
 - [x] Mensaje 144: dos SQL aplicados en orden a la primera; Cerebro 23 y cinco huellas finales exactas; lista pendiente []; dos SQL retirados. Cinco entregas con MD5 exactos instaladas, snapshots exactos conservados; 1069/1069 en 85 archivos.
