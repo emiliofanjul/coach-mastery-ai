@@ -7,3 +7,4 @@
 - Rated practices are recorded server-side before evaluation completion; phone audio and streaks complete that event by practice_session_id, preserving server data so phone failures cannot erase history.
 - Keep the certification exam identifier in the shared certification module so practice completion and regression tests cannot drift to a retired map node.
 - Keep app palette definitions in the global stylesheet's --c-* tokens and reference them from screens; only documented brand/canvas exceptions may use literal colors, so palette changes stay centralized.
+- Keep Phase 2 shared controls in closer/piezas and their dimensions in global CSS tokens so screen sizing stays consistent.

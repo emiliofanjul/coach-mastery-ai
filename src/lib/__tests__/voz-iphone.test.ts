@@ -82,7 +82,9 @@ describe("Segunda ronda en el iPhone (sept-2026)", () => {
   });
   it("las tarjetas largas se pueden bajar", () => {
     expect(nodo).toMatch(/overflowY: "auto",/);
-    expect(nodo).toMatch(/margin: "auto 0", flexShrink: 0/);
+    // Mensaje 146 (Fase 2 del rediseño): la tarjeta va arriba, bajo la barra de avance, en lugar de
+    // centrada. Lo que esta prueba cuida sigue igual: el área se desplaza y la tarjeta no se aplasta.
+    expect(nodo).toMatch(/width: "100%", flexShrink: 0, paddingBottom: 16/);
   });
 });
 

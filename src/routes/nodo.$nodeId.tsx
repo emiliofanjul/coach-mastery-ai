@@ -1,7 +1,8 @@
 import { createFileRoute, Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, RotateCw } from "lucide-react";
+import { ChevronLeft, RotateCw, Wrench } from "lucide-react";
+import { BarraSegmentos, EncabezadoPantalla, estiloBoton, segmentosDeAvance } from "@/components/closer/piezas";
 import { motion, AnimatePresence } from "framer-motion";
 import { invokeFunctionJson, restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
@@ -312,64 +313,28 @@ function NodoCardsPage() {
         position: "fixed",
         inset: 0,
         background: "var(--c-bg)",
-        color: "#fff",
+        color: "var(--c-text)",
         display: "flex",
         flexDirection: "column",
         zIndex: 50,
       }}
     >
-      {/* Header */}
-      <div
-        style={{
-          flexShrink: 0,
-          display: "grid",
-          gridTemplateColumns: "44px 1fr 60px",
-          alignItems: "center",
-          padding: "14px 1.2rem",
-          gap: 8,
-        }}
-      >
-        <button
-          onClick={goBack}
-          aria-label="Volver al mapa"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#fff",
-            padding: 8,
-            margin: -8,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div
-          style={{
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: "1rem",
-            color: "#fff",
-            textAlign: "center",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {node?.name ?? ""}
-        </div>
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.82rem",
-            color: "rgba(255,255,255,0.5)",
-            textAlign: "right",
-          }}
-        >
-          {total > 0 ? `${index + 1} de ${total}` : ""}
-        </div>
+      {/* Encabezado: regresar, nombre del nodo y la barra de avance por tarjeta */}
+      <div style={{ flexShrink: 0, width: "100%", maxWidth: 560, margin: "0 auto", boxSizing: "border-box", padding: "12px var(--m-pantalla) 0" }}>
+        <EncabezadoPantalla
+          onRegresar={goBack}
+          etiquetaRegresar="Volver al mapa"
+          centro={
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {node?.name ?? ""}
+            </div>
+          }
+        />
+        {total > 0 && (
+          <div style={{ marginTop: 14 }}>
+            <BarraSegmentos colores={segmentosDeAvance(total, index)} />
+          </div>
+        )}
       </div>
 
       {/* Card area */}
@@ -379,7 +344,8 @@ function NodoCardsPage() {
           width: "100%",
           maxWidth: 560,
           margin: "0 auto",
-          padding: "0 1.2rem",
+          boxSizing: "border-box",
+          padding: "24px var(--m-pantalla) 0",
           display: "flex",
           flexDirection: "column",
           // Antes: centrado y con el desborde cortado — una tarjeta larga se
@@ -408,44 +374,37 @@ function NodoCardsPage() {
           />
         )}
 
-        {/* Dots */}
-        {visibleCards && visibleCards.length > 0 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 6,
-              marginTop: 24,
-              marginBottom: 8,
-            }}
-          >
-            {visibleCards.map((_, i) => (
-              <span
-                key={i}
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 99,
-                  background: i === index ? "#fff" : "rgba(255,255,255,0.2)",
-                  transition: "background 0.2s ease",
-                }}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Bottom button */}
       <div
         style={{
           flexShrink: 0,
-          padding: "16px 1.2rem calc(20px + env(safe-area-inset-bottom))",
+          padding: "16px var(--m-pantalla) calc(20px + env(safe-area-inset-bottom))",
           width: "100%",
           maxWidth: 560,
           margin: "0 auto",
-          minHeight: 84,
+          boxSizing: "border-box",
+          display: "flex",
+          gap: 12,
         }}
       >
+        {visibleCards && visibleCards.length > 0 && index > 0 && (
+          <button
+            type="button"
+            onClick={prev}
+            aria-label="Tarjeta anterior"
+            style={{ ...estiloBoton("secundario"), width: "var(--h-boton)", flexShrink: 0, color: "var(--c-text-soft)" }}
+          >
+            <ChevronLeft size={22} strokeWidth={2} aria-hidden />
+          </button>
+        )}
+        {visibleCards && visibleCards.length > 0 && !showNextButton && (
+          // Antes el botón se escondía hasta voltear la tarjeta y el vendedor no sabía qué hacer.
+          <button type="button" disabled style={estiloBoton("principal", true)}>
+            Primero descubre por qué
+          </button>
+        )}
         {visibleCards && visibleCards.length > 0 && showNextButton && (
           <BottomButton
             card={current!}
@@ -559,7 +518,7 @@ function CardSwiper({
   }
 
   return (
-    <div style={{ position: "relative", width: "100%", minHeight: 360, margin: "auto 0", flexShrink: 0, paddingBottom: 16 }}>
+    <div style={{ position: "relative", width: "100%", flexShrink: 0, paddingBottom: 16 }}>
       <AnimatePresence mode="wait" custom={direction}>
         <motion.div
           key={card.id}
@@ -587,10 +546,10 @@ function CardSwiper({
 // ───────────────────────── Card View ─────────────────────────
 
 const CARD_STYLES: Record<CardType, { border: string; bg: string }> = {
-  concept: { border: "rgba(255,255,255,0.08)", bg: "transparent" },
-  why_it_works: { border: "rgb(var(--c-client-rgb) / 0.4)", bg: "rgb(var(--c-client-rgb) / 0.04)" },
-  good_example: { border: "rgb(var(--c-success-rgb) / 0.4)", bg: "rgb(var(--c-success-rgb) / 0.04)" },
-  bad_example: { border: "rgb(var(--c-danger-rgb) / 0.4)", bg: "rgb(var(--c-danger-rgb) / 0.04)" },
+  concept: { border: "var(--c-border)", bg: "var(--c-surface)" },
+  why_it_works: { border: "rgb(var(--c-client-rgb) / 0.35)", bg: "var(--c-surface)" },
+  good_example: { border: "rgb(var(--c-success-rgb) / 0.35)", bg: "var(--c-surface)" },
+  bad_example: { border: "rgb(var(--c-danger-rgb) / 0.35)", bg: "var(--c-surface)" },
   cta: { border: "rgb(var(--c-primary-rgb) / 0.35)", bg: "linear-gradient(180deg, rgb(var(--c-primary-rgb) / 0.10) 0%, rgb(var(--c-primary-rgb) / 0.04) 100%)" },
 };
 
@@ -633,21 +592,26 @@ function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flip
         animate={{ rotateY: animateRotate }}
         transition={transition}
         style={{
-          position: "relative",
+          // Las dos caras ocupan la misma celda: la tarjeta mide lo que mida la cara más larga.
+          // Antes medía siempre 360 px (hueco en las cortas, texto encimado en las largas).
+          display: "grid",
           width: "100%",
           transformStyle: "preserve-3d",
-          minHeight: 360,
+          WebkitTransformStyle: "preserve-3d",
         }}
       >
-        <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden" }}>
+        {/* En iPhone, sin el -webkit- la cara de enfrente se transparentaba al voltear y se leía en espejo. */}
+        <div style={{ gridArea: "1 / 1", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(0deg)", display: "flex", flexDirection: "column" }}>
           <FlipFront card={card} dynamic={dynamic} />
         </div>
         <div
           style={{
-            position: "absolute",
-            inset: 0,
+            gridArea: "1 / 1",
             backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <FlipBack card={card} onFlipBack={() => setFlipped(false)} dynamic={dynamic} />
@@ -667,18 +631,17 @@ function StaticFace({ card }: { card: NodeCard }) {
       style={{
         border: `1px solid ${styles.border}`,
         background: styles.bg,
-        borderRadius: 14,
+        borderRadius: "var(--r-tarjeta)",
         padding: 24,
-        minHeight: 360,
         display: "flex",
         flexDirection: "column",
-        gap: 16,
+        gap: 14,
       }}
     >
-      {card.card_type === "concept" && <Badge label="CONCEPTO" color="rgba(255,255,255,0.4)" bg="rgba(255,255,255,0.06)" />}
-      {card.card_type === "why_it_works" && <Badge label="💡 POR QUÉ FUNCIONA" color="var(--c-client)" bg="rgb(var(--c-client-rgb) / 0.10)" />}
+      {card.card_type === "concept" && <Etiqueta texto="Concepto" />}
+      {card.card_type === "why_it_works" && <Etiqueta texto="Por qué funciona" color="var(--c-client)" />}
       {card.title && (
-        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, color: "#fff", lineHeight: 1.2 }}>
+        <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 23, color: "var(--c-text)", lineHeight: 1.25, letterSpacing: "-0.015em" }}>
           {card.title}
         </div>
       )}
@@ -686,8 +649,8 @@ function StaticFace({ card }: { card: NodeCard }) {
         style={{
           fontFamily: "'DM Sans', sans-serif",
           fontWeight: 400,
-          fontSize: 15,
-          color: "rgba(255,255,255,0.75)",
+          fontSize: 16,
+          color: "var(--c-text-soft)",
           lineHeight: 1.6,
           whiteSpace: "pre-line",
         }}
@@ -724,21 +687,16 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
       style={{
         border: `1px solid ${styles.border}`,
         background: styles.bg,
-        borderRadius: 14,
+        borderRadius: "var(--r-tarjeta)",
         padding: 24,
-        minHeight: 360,
+        flex: 1,
         display: "flex",
         flexDirection: "column",
-        gap: 16,
-        position: "relative",
+        gap: 18,
       }}
     >
       <style>{`@keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`}</style>
-      <Badge
-        label={isGood ? "✓ EJEMPLO BUENO" : "✗ EJEMPLO MALO"}
-        color={isGood ? "var(--c-success)" : "var(--c-danger)"}
-        bg={isGood ? "rgb(var(--c-success-rgb) / 0.10)" : "rgb(var(--c-danger-rgb) / 0.10)"}
-      />
+      <Pastilla texto={isGood ? "Ejemplo bueno" : "Ejemplo malo"} bueno={isGood} />
       {loading ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <Skeleton width="92%" />
@@ -750,10 +708,9 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
-            fontSize: 15,
-            color: "rgba(255,255,255,0.85)",
+            fontSize: 17,
+            color: "var(--c-text)",
             lineHeight: 1.6,
-            fontStyle: "italic",
             whiteSpace: "pre-line",
           }}
         >
@@ -761,45 +718,8 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
         </div>
       )}
       <div style={{ flex: 1 }} />
-      <style>{`@keyframes chip-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.75; transform: scale(0.96); } }`}</style>
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 16,
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          pointerEvents: "none",
-        }}
-      >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "6px 14px",
-            borderRadius: 99,
-            background: isGood ? "var(--c-success)" : "var(--c-danger)",
-            color: "var(--c-bg)",
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 800,
-            fontSize: 11,
-            letterSpacing: "0.8px",
-            animation: "chip-pulse 2s ease-in-out infinite",
-            whiteSpace: "nowrap",
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c-bg)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="7" y1="17" x2="17" y2="7" />
-            <polyline points="8 7 17 7 17 16" />
-          </svg>
-          DESCUBRE POR QUÉ
-        </div>
-      </div>
-
+      {/* Toda la tarjeta se voltea al tocarla; esto solo dice que se puede. */}
+      <PistaVoltear texto={isGood ? "¿Por qué funciona?" : "¿Por qué falla?"} bueno={isGood} />
     </div>
   );
 }
@@ -815,22 +735,17 @@ function FlipBack({ card, onFlipBack, dynamic }: { card: NodeCard; onFlipBack: (
     <div
       style={{
         border: `1px solid ${styles.border}`,
-        background: "rgba(255,255,255,0.03)",
-        borderRadius: 14,
+        background: "var(--c-elevated)",
+        borderRadius: "var(--r-tarjeta)",
         padding: 24,
-        minHeight: 360,
+        flex: 1,
         display: "flex",
         flexDirection: "column",
-        gap: 16,
-        position: "relative",
+        gap: 18,
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Badge
-          label={isGood ? "¿Por qué funciona?" : "¿Por qué falla?"}
-          color={isGood ? "var(--c-success)" : "var(--c-danger)"}
-          bg={isGood ? "rgb(var(--c-success-rgb) / 0.10)" : "rgb(var(--c-danger-rgb) / 0.10)"}
-        />
+        <Pastilla texto={isGood ? "¿Por qué funciona?" : "¿Por qué falla?"} bueno={isGood} />
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -840,13 +755,17 @@ function FlipBack({ card, onFlipBack, dynamic }: { card: NodeCard; onFlipBack: (
           style={{
             background: "transparent",
             border: "none",
-            color: "rgba(255,255,255,0.5)",
+            color: "var(--c-text-2)",
             cursor: "pointer",
-            padding: 4,
+            width: 44,
+            height: 44,
+            margin: -10,
             display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <RotateCw size={16} />
+          <RotateCw size={18} aria-hidden />
         </button>
       </div>
       {loading ? (
@@ -859,8 +778,8 @@ function FlipBack({ card, onFlipBack, dynamic }: { card: NodeCard; onFlipBack: (
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
-            fontSize: 15,
-            color: "rgba(255,255,255,0.85)",
+            fontSize: 16,
+            color: "var(--c-text-soft)",
             lineHeight: 1.6,
             whiteSpace: "pre-line",
           }}
@@ -879,9 +798,9 @@ function CtaFace({ card }: { card: NodeCard }) {
       style={{
         border: `1px solid ${styles.border}`,
         background: styles.bg,
-        borderRadius: 14,
+        borderRadius: "var(--r-tarjeta)",
         padding: 36,
-        minHeight: 400,
+        minHeight: 320,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -892,8 +811,8 @@ function CtaFace({ card }: { card: NodeCard }) {
         style={{
           fontFamily: "Syne, sans-serif",
           fontWeight: 700,
-          fontSize: 22,
-          color: "#fff",
+          fontSize: 23,
+          color: "var(--c-text)",
           lineHeight: 1.3,
           whiteSpace: "pre-line",
         }}
@@ -904,23 +823,62 @@ function CtaFace({ card }: { card: NodeCard }) {
   );
 }
 
-function Badge({ label, color, bg }: { label: string; color: string; bg: string }) {
+/** Etiqueta corta en mayúsculas (Concepto, Por qué funciona). */
+function Etiqueta({ texto, color = "var(--c-text-2)" }: { texto: string; color?: string }) {
+  return (
+    <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color }}>
+      {texto}
+    </div>
+  );
+}
+
+/** Pastilla verde (bueno) o roja (malo). */
+function Pastilla({ texto, bueno }: { texto: string; bueno: boolean }) {
   return (
     <div
       style={{
         display: "inline-flex",
         alignSelf: "flex-start",
-        background: bg,
-        color,
+        alignItems: "center",
+        height: 28,
+        padding: "0 12px",
+        borderRadius: 14,
         fontFamily: "'DM Sans', sans-serif",
         fontWeight: 600,
-        fontSize: 11,
-        letterSpacing: "1.5px",
-        borderRadius: 99,
-        padding: "4px 12px",
+        fontSize: 13,
+        color: bueno ? "var(--c-success)" : "var(--c-danger)",
+        background: bueno ? "rgb(var(--c-success-rgb) / 0.12)" : "rgb(var(--c-danger-rgb) / 0.12)",
       }}
     >
-      {label}
+      {texto}
+    </div>
+  );
+}
+
+/** Dice que la tarjeta se voltea. Es parte de la tarjeta: tocar en cualquier parte la voltea. */
+function PistaVoltear({ texto, bueno }: { texto: string; bueno: boolean }) {
+  const c = bueno ? "var(--c-success)" : "var(--c-danger)";
+  const rgb = bueno ? "var(--c-success-rgb)" : "var(--c-danger-rgb)";
+  return (
+    <div
+      aria-hidden
+      style={{
+        alignSelf: "flex-start",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        height: 44,
+        padding: "0 16px",
+        borderRadius: 12,
+        border: `1.5px solid rgb(${rgb} / 0.45)`,
+        color: c,
+        fontFamily: "'DM Sans', sans-serif",
+        fontWeight: 600,
+        fontSize: 15,
+      }}
+    >
+      <RotateCw size={16} strokeWidth={2} />
+      {texto}
     </div>
   );
 }
@@ -946,13 +904,13 @@ function BottomButton({
 }) {
   const finishConfig = useMemo(() => {
     // Prioriza destino real (quiz/practica) sobre node_type.
-    if (hasQuiz) return { label: "Ponlo a prueba →", color: "var(--c-primary)" };
+    if (hasQuiz) return { label: "Ponlo a prueba" };
     if (hasScript) {
-      if (nodeType === "boss") return { label: "Entrar →", color: "var(--c-danger)" };
-      if (nodeType === "full_sim") return { label: "Ver demostración →", color: "var(--c-primary)" };
-      return { label: "Practicar →", color: "var(--c-primary)" };
+      if (nodeType === "boss") return { label: "Entrar al examen" };
+      if (nodeType === "full_sim") return { label: "Ver demostración" };
+      return { label: "Practicar" };
     }
-    return { label: "Terminar →", color: "var(--c-primary)" };
+    return { label: "Terminar" };
   }, [nodeType, hasQuiz, hasScript]);
 
   const isCta = card.card_type === "cta";
@@ -968,21 +926,9 @@ function BottomButton({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
       onClick={isFinishButton ? onFinish : onNext}
-      style={{
-        width: "100%",
-        height: 52,
-        borderRadius: 99,
-        border: "none",
-        background: isFinishButton ? finishConfig.color : "var(--c-primary)",
-        color: "var(--c-bg)",
-        fontFamily: "Syne, sans-serif",
-        fontWeight: 700,
-        fontSize: 16,
-        cursor: "pointer",
-        boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-      }}
+      style={estiloBoton("principal")}
     >
-      {isFinishButton ? finishConfig.label : "Siguiente →"}
+      {isFinishButton ? finishConfig.label : "Siguiente"}
     </motion.button>
   );
 }
@@ -1002,11 +948,11 @@ function FallbackEmpty() {
         textAlign: "center",
       }}
     >
-      <div style={{ fontSize: 36 }}>🔧</div>
+      <Wrench size={32} strokeWidth={1.6} color="var(--c-text-2)" aria-hidden />
       <div
         style={{
           fontFamily: "'DM Sans', sans-serif",
-          color: "rgba(255,255,255,0.4)",
+          color: "var(--c-text-2)",
           fontSize: 15,
         }}
       >

@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 146: Paso 0: 1072/86, archivos nuevos ausentes y tres huellas exactas.
+- [ ] Mensaje 146: ejecutar script exacto una vez, retirar entregas y comprobar 1082/87 y compilación automática.
+- [ ] Mensaje 146: verificar acceso, tarjetas, quiz reprobado y práctica hasta victoria con sesión de Emilio; publicar solo si todo pasa.
+- [ ] Mensaje 146: reverso de ejemplo en iPhone después de publicar; requiere comprobación de Emilio.
+
 - [x] Mensaje 145: Paso 0 confirmado: 1069/1069 en 85 archivos, prueba nueva ausente y huella de práctica exacta; tres entregas y 35 archivos coinciden.
 - [x] Mensaje 145: script ejecutado una vez: 35 huellas finales exactas; prueba instalada exacta y tres entregas retiradas; 1072/86 pasan y build automático OK.
 - [x] Mensaje 145: acceso sin burbuja, mapa con 49 nodos y activo/completados/bloqueados, menú abre/cierra (botón Dev intercepta el clic en preview; verificado disparando control real), reverso 1.2 y quiz verde/rojo verificados; práctica real por voz 1.2 llegó a score 80 y victoria con confeti naranja/dorado/blanco. Sin continuar al mapa ni modificar consentimiento; publicación solicitada al cierre.

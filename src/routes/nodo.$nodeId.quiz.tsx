@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { BarraSegmentos, EncabezadoPantalla, estiloBoton } from "@/components/closer/piezas";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
@@ -29,7 +29,6 @@ interface QuizQuestion {
   explanation_wrong: string;
 }
 
-const ORANGE = "var(--c-primary)";
 const GREEN = "var(--c-success)";
 const RED = "var(--c-danger)";
 
@@ -42,6 +41,8 @@ function NodoQuizPage() {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<Letter | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
+  // Lo que contestó en cada pregunta: pinta la barra y dice cuáles falló.
+  const [respuestas, setRespuestas] = useState<(Letter | null)[]>([]);
   const [finished, setFinished] = useState(false);
   const [saving, setSaving] = useState(false);
   // Si el nodo era el primero del mundo (para texto del VictoryScreen)
@@ -79,6 +80,11 @@ function NodoQuizPage() {
   function handleSelect(letter: Letter) {
     if (selected || !current) return;
     setSelected(letter);
+    setRespuestas((r) => {
+      const n = r.slice();
+      n[index] = letter;
+      return n;
+    });
     if (letter === current.correct_option) {
       setCorrectCount((c) => c + 1);
     }
@@ -97,6 +103,7 @@ function NodoQuizPage() {
     setIndex(0);
     setSelected(null);
     setCorrectCount(0);
+    setRespuestas([]);
     setFinished(false);
   }
 
@@ -224,7 +231,14 @@ function NodoQuizPage() {
     navigate({ to: "/nodo/$nodeId", params: { nodeId } });
   }
 
-  const progress = total === 0 ? 0 : ((finished ? total : index) / total) * 100;
+  const segmentos = (questions ?? []).map((q, k) => {
+    const r = respuestas[k];
+    if (r) return r === q.correct_option ? "var(--c-success)" : "var(--c-danger)";
+    return k === index ? "var(--c-border-strong)" : "var(--c-border)";
+  });
+  const fallos = (questions ?? [])
+    .map((q, k) => ({ n: k + 1, texto: q.question_text, mal: respuestas[k] !== q.correct_option }))
+    .filter((f) => f.mal);
   const passed = finished && total > 0 && correctCount === total;
 
   // Pantallas de cierre — usan los componentes nuevos
@@ -237,7 +251,7 @@ function NodoQuizPage() {
           stars={3}
           title="¡Teoría dominada!"
           subtitle="Ahora, a practicarlo."
-          buttonText="A practicar →"
+          buttonText="A practicar"
           onContinue={() => navigate({ to: "/nodo/$nodeId/practica", params: { nodeId } })}
         />
       );
@@ -251,7 +265,7 @@ function NodoQuizPage() {
             ? "El primer paso empieza ahora."
             : "Quedó registrado. Sigue con el siguiente nodo."
         }
-        buttonText={saving ? "Guardando..." : "Siguiente →"}
+        buttonText={saving ? "Guardando..." : "Siguiente"}
         onContinue={() => {
           if (!saving) handleContinueToMap();
         }}
@@ -263,9 +277,16 @@ function NodoQuizPage() {
     return (
       <RetryScreen
         title="Casi."
-        subtitle="Repasa las tarjetas y vuelve a intentarlo."
-        primaryButtonText="Intentar de nuevo →"
+        subtitle={
+          fallos.length === 1
+            ? "Te faltó una. Repasa las tarjetas y vuelve a intentarlo."
+            : `Te faltaron ${fallos.length}. Repasa las tarjetas y vuelve a intentarlo.`
+        }
+        primaryButtonText="Intentar de nuevo"
         onPrimaryAction={resetQuiz}
+        resumen={{ aciertos: correctCount, total, fallos }}
+        secondaryButtonText="Repasar las tarjetas"
+        onSecondaryAction={backToCards}
       />
     );
   }
@@ -279,69 +300,28 @@ function NodoQuizPage() {
         position: "fixed",
         inset: 0,
         background: "var(--c-bg)",
-        color: "#fff",
+        color: "var(--c-text)",
         display: "flex",
         flexDirection: "column",
         zIndex: 50,
       }}
     >
-      {/* Header */}
-      <div
-        style={{
-          flexShrink: 0,
-          display: "grid",
-          gridTemplateColumns: "44px 1fr 44px",
-          alignItems: "center",
-          padding: "14px 1.2rem 8px",
-          gap: 8,
-        }}
-      >
-        <button
-          onClick={backToCards}
-          aria-label="Volver a las tarjetas"
-          style={{
-            background: "transparent",
-            border: "none",
-            color: "#fff",
-            padding: 8,
-            margin: -8,
-            cursor: "pointer",
-            display: "flex",
-          }}
-        >
-          <ArrowLeft size={22} />
-        </button>
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.85rem",
-            color: "rgba(255,255,255,0.5)",
-            textAlign: "center",
-          }}
-        >
-          {total > 0 ? `Pregunta ${index + 1} de ${total}` : ""}
-        </div>
-        <div />
-      </div>
-
-      {/* Progress bar */}
-      <div style={{ padding: "0 1.2rem 12px", maxWidth: 560, width: "100%", margin: "0 auto" }}>
-        <div
-          style={{
-            height: 4,
-            width: "100%",
-            background: "rgba(255,255,255,0.08)",
-            borderRadius: 99,
-            overflow: "hidden",
-          }}
-        >
-          <motion.div
-            initial={false}
-            animate={{ width: `${progress}%` }}
-            transition={{ type: "spring", stiffness: 200, damping: 28 }}
-            style={{ height: "100%", background: ORANGE, borderRadius: 99 }}
-          />
-        </div>
+      {/* Encabezado y barra: un segmento por pregunta, verde o rojo según contestó */}
+      <div style={{ flexShrink: 0, width: "100%", maxWidth: 560, margin: "0 auto", boxSizing: "border-box", padding: "12px var(--m-pantalla) 0" }}>
+        <EncabezadoPantalla
+          onRegresar={backToCards}
+          etiquetaRegresar="Volver a las tarjetas"
+          centro={
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>
+              {total > 0 ? `Pregunta ${index + 1} de ${total}` : ""}
+            </div>
+          }
+        />
+        {total > 0 && (
+          <div style={{ marginTop: 14 }}>
+            <BarraSegmentos colores={segmentos} />
+          </div>
+        )}
       </div>
 
       {/* Body */}
@@ -351,7 +331,8 @@ function NodoQuizPage() {
           width: "100%",
           maxWidth: 560,
           margin: "0 auto",
-          padding: "8px 1.2rem 1.2rem",
+          boxSizing: "border-box",
+          padding: "28px var(--m-pantalla) calc(20px + env(safe-area-inset-bottom))",
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
@@ -359,7 +340,7 @@ function NodoQuizPage() {
         }}
       >
         {questions === null ? null : !current ? (
-          <div style={{ color: "rgba(255,255,255,0.4)", textAlign: "center", paddingTop: 40 }}>
+          <div style={{ color: "var(--c-text-2)", textAlign: "center", paddingTop: 40 }}>
             Sin preguntas todavía.
           </div>
         ) : (
@@ -405,20 +386,19 @@ function QuestionView({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      style={{ display: "flex", flexDirection: "column", gap: 20 }}
+      transition={{ duration: 0.25 }}
+      style={{ display: "flex", flexDirection: "column", gap: 24, flex: 1 }}
     >
       <div
         style={{
           fontFamily: "Syne, sans-serif",
           fontWeight: 700,
-          fontSize: 20,
-          color: "#fff",
+          fontSize: 23,
+          color: "var(--c-text)",
           lineHeight: 1.3,
-          textAlign: "center",
-          padding: "8px 4px 4px",
+          letterSpacing: "-0.015em",
         }}
       >
         {question.question_text}
@@ -428,19 +408,26 @@ function QuestionView({
         {opts.map((opt) => {
           const isSelected = selected === opt.letter;
           const isCorrectOpt = opt.letter === question.correct_option;
-          let bg = "rgba(255,255,255,0.04)";
-          let border = "rgba(255,255,255,0.08)";
-          let badge: { text: string; color: string } | null = null;
+          let bg = "var(--c-surface)";
+          let border = "var(--c-border)";
+          let letraBg = "var(--c-elevated)";
+          let letraColor = "var(--c-text-soft)";
+          let texto = "var(--c-text)";
 
           if (answered) {
             if (isCorrectOpt) {
-              bg = "rgb(var(--c-success-rgb) / 0.12)";
+              bg = "rgb(var(--c-success-rgb) / 0.08)";
               border = GREEN;
-              badge = { text: "✓ Correcto", color: GREEN };
+              letraBg = GREEN;
+              letraColor = "var(--c-bg)";
             } else if (isSelected) {
-              bg = "rgb(var(--c-danger-rgb) / 0.12)";
+              bg = "rgb(var(--c-danger-rgb) / 0.08)";
               border = RED;
-              badge = { text: "✗ Incorrecto", color: RED };
+              letraBg = RED;
+              letraColor = "var(--c-bg)";
+            } else {
+              border = "var(--c-elevated)";
+              texto = "var(--c-text-2)";
             }
           }
 
@@ -449,50 +436,53 @@ function QuestionView({
               key={opt.letter}
               disabled={answered}
               onClick={() => onSelect(opt.letter)}
+              aria-label={
+                answered && isCorrectOpt
+                  ? `${opt.text}. Correcta.`
+                  : answered && isSelected
+                    ? `${opt.text}. Incorrecta.`
+                    : undefined
+              }
               style={{
                 display: "flex",
-                alignItems: "flex-start",
-                gap: 12,
+                alignItems: "center",
+                gap: 14,
                 width: "100%",
+                minHeight: 60,
                 background: bg,
-                border: `1px solid ${border}`,
-                borderRadius: 14,
-                padding: 16,
-                color: "#fff",
+                border: `1.5px solid ${border}`,
+                borderRadius: 16,
+                padding: "12px 16px",
+                color: texto,
                 textAlign: "left",
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: 15,
+                fontSize: 16,
                 lineHeight: 1.45,
                 cursor: answered ? "default" : "pointer",
-                transition: "all 0.2s ease",
+                transition: "background 200ms ease, border-color 200ms ease, color 200ms ease",
+                WebkitTapHighlightColor: "transparent",
               }}
             >
               <span
+                aria-hidden
                 style={{
-                  color: ORANGE,
-                  fontWeight: 700,
-                  fontFamily: "Syne, sans-serif",
+                  width: 30,
+                  height: 30,
                   flexShrink: 0,
-                  width: 18,
+                  borderRadius: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  background: letraBg,
+                  color: letraColor,
+                  transition: "background 200ms ease, color 200ms ease",
                 }}
               >
                 {opt.letter}
               </span>
               <span style={{ flex: 1 }}>{opt.text}</span>
-              {badge && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: "0.5px",
-                    color: badge.color,
-                    flexShrink: 0,
-                    marginTop: 2,
-                  }}
-                >
-                  {badge.text}
-                </span>
-              )}
             </button>
           );
         })}
@@ -502,49 +492,50 @@ function QuestionView({
         {answered && (
           <motion.div
             key="explanation"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.1 }}
+            transition={{ duration: 0.25, delay: 0.05 }}
+            role="status"
             style={{
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: 14,
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+              background: "var(--c-surface)",
+              border: "1px solid var(--c-border)",
+              borderRadius: 16,
               padding: 16,
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              color: "rgba(255,255,255,0.7)",
-              lineHeight: 1.55,
             }}
           >
-            {isCorrect ? question.explanation_correct : question.explanation_wrong}
+            <span style={{ fontSize: 14, fontWeight: 700, color: isCorrect ? GREEN : RED }}>
+              {isCorrect ? "Correcto" : "No es esa"}
+            </span>
+            <span style={{ fontSize: 15, color: "var(--c-text-soft)", lineHeight: 1.55 }}>
+              {isCorrect ? question.explanation_correct : question.explanation_wrong}
+            </span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {answered && (
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          onClick={onNext}
-          style={{
-            width: "100%",
-            height: 52,
-            borderRadius: 99,
-            border: "none",
-            background: ORANGE,
-            color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: 16,
-            cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-            marginTop: 4,
-          }}
+      {/* El botón se queda abajo y a la vista aunque la explicación sea larga. */}
+      <div
+        style={{
+          marginTop: "auto",
+          position: "sticky",
+          bottom: 0,
+          paddingTop: 16,
+          background: "linear-gradient(to bottom, rgb(var(--c-bg-rgb) / 0) 0px, var(--c-bg) 16px)",
+        }}
+      >
+        <button
+          type="button"
+          onClick={answered ? onNext : undefined}
+          disabled={!answered}
+          style={estiloBoton("principal", !answered)}
         >
-          {isLast ? "Ver resultado →" : "Siguiente →"}
-        </motion.button>
-      )}
+          {!answered ? "Elige una respuesta" : isLast ? "Ver resultado" : "Siguiente"}
+        </button>
+      </div>
     </motion.div>
   );
 }
