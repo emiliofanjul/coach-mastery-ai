@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 155-B: Paso 0, 1149/1149 en 95 archivos y MD5 de seller exacto; dos entregas con MD5 exactos.
+- [ ] Mensaje 155-B: aplicar una vez los tres archivos exactos y retirar entregas.
+- [ ] Mensaje 155-B: 1150/1150 en 95 archivos, compilación automática y comprobación de tipos.
+- [ ] Mensaje 155-B: sesión Emilio, botones visibles y texto recuperable en 375x568, 390x667 y 390x844; publicar 155 y 155-B si todo pasa.
+
 - [x] Mensaje 155: Paso 0, 1145/1145 en 94 archivos y mapa MD5 51ca697e46a08e47676e2428bdb0c165; dos entregas con MD5 exactos.
 - [x] Mensaje 155: script una vez, diez archivos exactos y entregas retiradas; 1149/1149 en 95 archivos, build automático OK y oj typecheck -b --noEmit sin errores.
 - [x] Mensaje 155: sesión Emilio: cinco pantallas, Saltar a Tu camino, regreso al mapa con 49 nodos y dos lecturas node_type HTTP 200; cero errores de página. Cabe en 1280x1800, 390x700 y 514x574.
