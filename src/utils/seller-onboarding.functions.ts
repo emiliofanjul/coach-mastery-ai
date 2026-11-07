@@ -21,10 +21,10 @@ const EXPERIENCE_LABELS: Record<string, string> = {
 };
 
 const CHALLENGE_LABELS: Record<string, string> = {
-  cierre: "Cerrar más ventas",
-  objeciones: "Manejar objeciones",
-  prospeccion: "Conseguir clientes nuevos",
-  retencion: "Retener clientes actuales",
+  cierre: "Cerrar la venta: al final, el cliente no se decide",
+  objeciones: "Responder objeciones: no sabe qué decir cuando le dicen que no",
+  prospeccion: "Conseguir clientes nuevos: le cuesta entrar a negocios que no lo conocen",
+  retencion: "Que le sigan comprando: sus clientes se van con la competencia",
 };
 
 // Sesión obligatoria (oct-2026): antes cualquiera podía llamarla y gastar créditos.
@@ -47,23 +47,24 @@ Nivel de experiencia: ${EXPERIENCE_LABELS[data.experience] ?? data.experience}.
 Mayor reto: ${CHALLENGE_LABELS[data.challenge] ?? data.challenge}.
 Empresa: ${data.companyName || "su empresa"}.
 
+Escribe como le hablaría en persona un buen gerente de ventas: palabras sencillas, frases cortas, nada de frases de póster ni metáforas. No empieces con su nombre: la pantalla ya lo saluda por su nombre arriba del mensaje.
+
 El mensaje tiene 2 partes:
 
-PARTE 1 — El mensaje principal (máximo 3 oraciones):
-- Oración 1: Reconoce su reto específico con honestidad. No con adulación.
-- Oración 2: Explícale que ese reto no se resuelve con un truco o una técnica aislada. Se resuelve dominando el sistema completo de ventas paso a paso.
-- Oración 3: La promesa concreta de lo que va a lograr cuando complete el camino.
+PARTE 1 — El mensaje principal (2 oraciones cortas, máximo 45 palabras en total):
+- Oración 1: Nombra su reto tal como lo vive en la calle, sin adularlo.
+- Oración 2: Dile que ese reto no se arregla con un truco: se arregla dominando toda la venta, y que aquí va a entrenar paso a paso, empezando por lo básico.
 
-PARTE 2 — La expectativa (1 oración):
-Explícale que el mapa que está a punto de ver no es una lista de tips. Es el sistema completo que va a convertir su mayor reto en su mayor fortaleza. Esta oración debe hacer que el vendedor entre al mapa con la mentalidad correcta: esto toma tiempo y esfuerzo, pero cada paso tiene una razón de ser.
+PARTE 2 — Lo que va a lograr (1 oración corta, máximo 20 palabras):
+Algo concreto que va a poder hacer en sus visitas cuando termine el camino. Habla de lo que él va a saber hacer, no de resultados que no dependen de él (no prometas más ventas ni dinero).
 
 Ejemplos del tono correcto:
 
-Para vendedor con experiencia que quiere cerrar más:
-"Carlos, llevas años llegando casi al final y perdiendo la venta en el último momento. Ese problema no se arregla solo aprendiendo a cerrar — se arregla construyendo todo lo que viene antes del cierre, que es donde realmente se gana o se pierde. El mapa que vas a ver ahora es el sistema completo: cada mundo que completes te acerca más al punto donde cerrar se vuelve la consecuencia natural de todo lo que hiciste bien antes."
+Para vendedor con experiencia cuyo reto es cerrar:
+{"mensaje":"Llegas al final de la visita y el cliente no se decide. Eso no se arregla con una frase de cierre: se arregla con todo lo que haces antes, y aquí vas a entrenar eso paso a paso.","expectativa":"Cerrar con naturalidad, porque el cliente ya vio por qué le conviene."}
 
-Para vendedor nuevo que quiere manejar objeciones:
-"Juan, las objeciones no se manejan memorizando respuestas. Se manejan entendiendo por qué el cliente las da y qué está buscando realmente cuando las dice. Para llegar ahí necesitas construir la base primero: cómo entrar, cómo leer al cliente, cómo crear valor antes de que aparezca la objeción. El mapa que vas a ver te lleva por ese camino exacto, en el orden correcto."
+Para vendedor nuevo cuyo reto son las objeciones:
+{"mensaje":"Cuando el cliente te dice que no, te quedas sin saber qué decir. Las objeciones no se responden con frases memorizadas: aquí vas a aprender paso a paso a entrar, a escuchar y a leer al cliente.","expectativa":"Entender qué hay detrás de un no y responderlo con calma."}
 
 Responde SOLO con JSON válido, sin markdown:
 {"mensaje":"texto completo de las 3 oraciones","expectativa":"la oración de expectativa"}`;
@@ -97,7 +98,7 @@ Responde SOLO con JSON válido, sin markdown:
     await logGatewayCall({
       phase: "onboarding_seller",
       model: "google/gemini-2.5-pro",
-      promptVersion: "onboarding-seller-v1",
+      promptVersion: "onboarding-seller-v2",
       usage: json?.usage ?? null,
       latencyMs: Date.now() - started,
       companyId: data.companyId ?? null,
@@ -109,9 +110,8 @@ Responde SOLO con JSON válido, sin markdown:
       parsed = JSON.parse(content);
     } catch {
       parsed = {
-        mensaje: `${data.name}, tu reto es real y no se resuelve con un truco aislado. Se resuelve dominando el sistema completo de ventas paso a paso, en el orden correcto. Cuando completes el camino, lo que hoy te cuesta se va a convertir en tu mayor fortaleza.`,
-        expectativa:
-          "El mapa que vas a ver no es una lista de tips: es el sistema completo que convierte tu mayor reto en tu mayor fortaleza.",
+        mensaje: `Lo que hoy te cuesta no se arregla con un truco: se arregla dominando toda la venta, y aquí vas a entrenarla paso a paso, empezando por lo básico.`,
+        expectativa: "Saber qué hacer en cada parte de la visita, de la entrada al cierre.",
       };
     }
     return parsed;
