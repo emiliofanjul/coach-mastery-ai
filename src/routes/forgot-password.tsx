@@ -22,7 +22,7 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 const BG =
-  "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
+  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
 
 const schema = z.object({ email: z.string().trim().email().max(255) });
 
@@ -58,7 +58,7 @@ function ForgotPasswordScreen() {
       style={{
         minHeight: "100dvh",
         background: BG,
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         fontFamily: "'DM Sans', sans-serif",
         display: "flex",
         flexDirection: "column",
@@ -88,7 +88,7 @@ function ForgotPasswordScreen() {
               invalid={!!error}
             />
             {error && (
-              <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>
+              <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--c-danger)" }}>{error}</p>
             )}
             <button type="submit" disabled={loading} style={primaryBtn(loading)}>
               {loading ? "Enviando..." : "Enviar enlace"}
@@ -96,8 +96,8 @@ function ForgotPasswordScreen() {
           </form>
         )}
 
-        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "#5A5A8A" }}>
-          <Link to="/login" style={{ color: "#FF6B2B", textDecoration: "none" }}>
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "var(--c-text-2)" }}>
+          <Link to="/login" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
             Volver a iniciar sesión
           </Link>
         </p>

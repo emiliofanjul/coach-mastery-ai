@@ -27,8 +27,8 @@ export function AuthCoachBubble() {
           width: "48px",
           height: "48px",
           borderRadius: "50%",
-          background: "#FF6B2B",
-          boxShadow: "0 4px 20px rgba(255,107,43,0.35)",
+          background: "var(--c-primary)",
+          boxShadow: "0 4px 20px rgb(var(--c-primary-rgb) / 0.35)",
           border: "none",
           display: "flex",
           alignItems: "center",
@@ -50,7 +50,7 @@ export function AuthCoachBubble() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(8,8,15,0.7)",
+            background: "rgb(var(--c-bg-rgb) / 0.7)",
             backdropFilter: "blur(8px)",
             zIndex: 50,
             display: "flex",
@@ -64,12 +64,12 @@ export function AuthCoachBubble() {
             style={{
               width: "100%",
               maxWidth: "560px",
-              background: "#111118",
-              border: "1px solid #252535",
+              background: "var(--c-surface)",
+              border: "1px solid var(--c-border)",
               borderRadius: "14px",
               padding: "1.25rem",
               fontFamily: "'DM Sans', sans-serif",
-              color: "#F0F0F5",
+              color: "var(--c-text)",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.8rem" }}>
@@ -79,12 +79,12 @@ export function AuthCoachBubble() {
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Cerrar"
-                style={{ background: "none", border: "none", color: "#5A5A8A", fontSize: "1.2rem", cursor: "pointer" }}
+                style={{ background: "none", border: "none", color: "var(--c-text-2)", fontSize: "1.2rem", cursor: "pointer" }}
               >
                 ✕
               </button>
             </div>
-            <p style={{ fontSize: "0.84rem", color: "#5A5A8A", margin: "0 0 0.8rem" }}>
+            <p style={{ fontSize: "0.84rem", color: "var(--c-text-2)", margin: "0 0 0.8rem" }}>
               Estoy aquí. Cualquier duda sobre cómo registrarte o entrar, pregúntame.
             </p>
             <input
@@ -92,11 +92,11 @@ export function AuthCoachBubble() {
               placeholder="Escribe tu pregunta..."
               style={{
                 width: "100%",
-                background: "#08080F",
-                border: "1px solid #252535",
+                background: "var(--c-bg)",
+                border: "1px solid var(--c-border)",
                 borderRadius: "99px",
                 padding: "0.7rem 1rem",
-                color: "#F0F0F5",
+                color: "var(--c-text)",
                 fontSize: "0.84rem",
                 outline: "none",
                 fontFamily: "inherit",

@@ -311,7 +311,7 @@ function NodoCardsPage() {
       style={{
         position: "fixed",
         inset: 0,
-        background: "#08080F",
+        background: "var(--c-bg)",
         color: "#fff",
         display: "flex",
         flexDirection: "column",
@@ -588,10 +588,10 @@ function CardSwiper({
 
 const CARD_STYLES: Record<CardType, { border: string; bg: string }> = {
   concept: { border: "rgba(255,255,255,0.08)", bg: "transparent" },
-  why_it_works: { border: "rgba(77,171,247,0.4)", bg: "rgba(77,171,247,0.04)" },
-  good_example: { border: "rgba(6,214,160,0.4)", bg: "rgba(6,214,160,0.04)" },
-  bad_example: { border: "rgba(239,71,111,0.4)", bg: "rgba(239,71,111,0.04)" },
-  cta: { border: "rgba(255,107,43,0.35)", bg: "linear-gradient(180deg, rgba(255,107,43,0.10) 0%, rgba(255,107,43,0.04) 100%)" },
+  why_it_works: { border: "rgb(var(--c-client-rgb) / 0.4)", bg: "rgb(var(--c-client-rgb) / 0.04)" },
+  good_example: { border: "rgb(var(--c-success-rgb) / 0.4)", bg: "rgb(var(--c-success-rgb) / 0.04)" },
+  bad_example: { border: "rgb(var(--c-danger-rgb) / 0.4)", bg: "rgb(var(--c-danger-rgb) / 0.04)" },
+  cta: { border: "rgb(var(--c-primary-rgb) / 0.35)", bg: "linear-gradient(180deg, rgb(var(--c-primary-rgb) / 0.10) 0%, rgb(var(--c-primary-rgb) / 0.04) 100%)" },
 };
 
 function CardView({ card, flipped, setFlipped, dynamic }: { card: NodeCard; flipped: boolean; setFlipped: (v: boolean) => void; dynamic?: DynamicContent }) {
@@ -676,7 +676,7 @@ function StaticFace({ card }: { card: NodeCard }) {
       }}
     >
       {card.card_type === "concept" && <Badge label="CONCEPTO" color="rgba(255,255,255,0.4)" bg="rgba(255,255,255,0.06)" />}
-      {card.card_type === "why_it_works" && <Badge label="💡 POR QUÉ FUNCIONA" color="#4DABF7" bg="rgba(77,171,247,0.10)" />}
+      {card.card_type === "why_it_works" && <Badge label="💡 POR QUÉ FUNCIONA" color="var(--c-client)" bg="rgb(var(--c-client-rgb) / 0.10)" />}
       {card.title && (
         <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, color: "#fff", lineHeight: 1.2 }}>
           {card.title}
@@ -736,8 +736,8 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
       <style>{`@keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`}</style>
       <Badge
         label={isGood ? "✓ EJEMPLO BUENO" : "✗ EJEMPLO MALO"}
-        color={isGood ? "#06D6A0" : "#EF476F"}
-        bg={isGood ? "rgba(6,214,160,0.10)" : "rgba(239,71,111,0.10)"}
+        color={isGood ? "var(--c-success)" : "var(--c-danger)"}
+        bg={isGood ? "rgb(var(--c-success-rgb) / 0.10)" : "rgb(var(--c-danger-rgb) / 0.10)"}
       />
       {loading ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -782,8 +782,8 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
             gap: 6,
             padding: "6px 14px",
             borderRadius: 99,
-            background: isGood ? "#06D6A0" : "#EF476F",
-            color: "#08080F",
+            background: isGood ? "var(--c-success)" : "var(--c-danger)",
+            color: "var(--c-bg)",
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 800,
             fontSize: 11,
@@ -792,7 +792,7 @@ function FlipFront({ card, dynamic }: { card: NodeCard; dynamic?: DynamicContent
             whiteSpace: "nowrap",
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#08080F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c-bg)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <line x1="7" y1="17" x2="17" y2="7" />
             <polyline points="8 7 17 7 17 16" />
           </svg>
@@ -828,8 +828,8 @@ function FlipBack({ card, onFlipBack, dynamic }: { card: NodeCard; onFlipBack: (
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Badge
           label={isGood ? "¿Por qué funciona?" : "¿Por qué falla?"}
-          color={isGood ? "#06D6A0" : "#EF476F"}
-          bg={isGood ? "rgba(6,214,160,0.10)" : "rgba(239,71,111,0.10)"}
+          color={isGood ? "var(--c-success)" : "var(--c-danger)"}
+          bg={isGood ? "rgb(var(--c-success-rgb) / 0.10)" : "rgb(var(--c-danger-rgb) / 0.10)"}
         />
         <button
           onClick={(e) => {
@@ -946,13 +946,13 @@ function BottomButton({
 }) {
   const finishConfig = useMemo(() => {
     // Prioriza destino real (quiz/practica) sobre node_type.
-    if (hasQuiz) return { label: "Ponlo a prueba →", color: "#FF6B2B" };
+    if (hasQuiz) return { label: "Ponlo a prueba →", color: "var(--c-primary)" };
     if (hasScript) {
-      if (nodeType === "boss") return { label: "Entrar →", color: "#EF476F" };
-      if (nodeType === "full_sim") return { label: "Ver demostración →", color: "#FF6B2B" };
-      return { label: "Practicar →", color: "#FF6B2B" };
+      if (nodeType === "boss") return { label: "Entrar →", color: "var(--c-danger)" };
+      if (nodeType === "full_sim") return { label: "Ver demostración →", color: "var(--c-primary)" };
+      return { label: "Practicar →", color: "var(--c-primary)" };
     }
-    return { label: "Terminar →", color: "#FF6B2B" };
+    return { label: "Terminar →", color: "var(--c-primary)" };
   }, [nodeType, hasQuiz, hasScript]);
 
   const isCta = card.card_type === "cta";
@@ -973,13 +973,13 @@ function BottomButton({
         height: 52,
         borderRadius: 99,
         border: "none",
-        background: isFinishButton ? finishConfig.color : "#FF6B2B",
-        color: "#08080F",
+        background: isFinishButton ? finishConfig.color : "var(--c-primary)",
+        color: "var(--c-bg)",
         fontFamily: "Syne, sans-serif",
         fontWeight: 700,
         fontSize: 16,
         cursor: "pointer",
-        boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+        boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
       }}
     >
       {isFinishButton ? finishConfig.label : "Siguiente →"}

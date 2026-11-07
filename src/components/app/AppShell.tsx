@@ -327,7 +327,7 @@ function AppDrawer({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "tween", duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-            className="absolute inset-y-0 left-0 w-[85%] max-w-[340px] bg-[#0D0D18] border-r border-white/10 shadow-2xl flex flex-col"
+            className="absolute inset-y-0 left-0 w-[85%] max-w-[340px] bg-[var(--c-surface)] border-r border-white/10 shadow-2xl flex flex-col"
             onPointerDown={(e) => {
               const startX = e.clientX;
               const el = panelRef.current;
@@ -356,7 +356,7 @@ function AppDrawer({
               >
                 <X size={22} />
               </button>
-              <div className="font-['Syne'] font-black text-[#FF6B2B] tracking-tight text-lg">
+              <div className="font-['Syne'] font-black text-[var(--c-primary)] tracking-tight text-lg">
                 CLOSER
               </div>
             </div>
@@ -374,7 +374,7 @@ function AppDrawer({
                         className={[
                           "flex items-center gap-3 px-3 py-3 rounded-[14px] font-['DM_Sans'] font-medium text-[0.95rem] transition-colors",
                           active
-                            ? "bg-[#FF6B2B]/15 text-[#FF6B2B] border border-[#FF6B2B]/30"
+                            ? "bg-[var(--c-primary)]/15 text-[var(--c-primary)] border border-[var(--c-primary)]/30"
                             : "text-white/85 hover:bg-white/5 border border-transparent",
                         ].join(" ")}
                       >
@@ -410,7 +410,7 @@ function AppDrawer({
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="flex-1 px-3 py-2 rounded-full bg-[#FF6B2B] text-white hover:bg-[#ff7d47] font-['DM_Sans'] text-[0.85rem] font-semibold transition-colors"
+                      className="flex-1 px-3 py-2 rounded-full bg-[var(--c-primary)] text-white hover:bg-[var(--c-primary-hover)] font-['DM_Sans'] text-[0.85rem] font-semibold transition-colors"
                     >
                       Sí, salir
                     </button>
@@ -447,7 +447,7 @@ export function AppHeader({ title, subtitle, back, rightExtras }: AppHeaderProps
       className="sticky top-0 z-30 flex items-start justify-between gap-3 px-4 pt-3 pb-4"
       style={{
         background:
-          "linear-gradient(180deg, #08080F 0%, #08080F 72%, transparent 100%)",
+          "linear-gradient(180deg, var(--c-bg) 0%, var(--c-bg) 72%, transparent 100%)",
       }}
     >
       <div className="flex items-center gap-1 min-w-0">
@@ -471,11 +471,11 @@ export function AppHeader({ title, subtitle, back, rightExtras }: AppHeaderProps
           </Link>
         )}
         <div className="min-w-0 pl-1">
-          <div className="font-['Syne'] font-extrabold text-[#FF6B2B] tracking-tight text-[1.25rem] leading-tight truncate">
+          <div className="font-['Syne'] font-extrabold text-[var(--c-primary)] tracking-tight text-[1.25rem] leading-tight truncate">
             {title}
           </div>
           {subtitle && (
-            <div className="font-['DM_Sans'] text-[0.68rem] uppercase tracking-[0.06em] text-[#5A5A8A] truncate">
+            <div className="font-['DM_Sans'] text-[0.68rem] uppercase tracking-[0.06em] text-[var(--c-text-2)] truncate">
               {subtitle}
             </div>
           )}

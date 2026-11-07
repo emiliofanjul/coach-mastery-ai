@@ -52,7 +52,7 @@ export function MissingDataPanel({
   }
 
   return (
-    <div className="mt-4 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-4">
+    <div className="mt-4 rounded-[14px] border border-[var(--c-primary)]/30 bg-[var(--c-primary)]/5 p-4">
       <div className="font-['Syne'] text-sm font-bold text-white">Para afinarlo, dime:</div>
       <p className="mt-0.5 text-[12px] text-white/50 font-['DM_Sans']">
         Contéstalo aquí. Se guarda en el cerebro de tu empresa y solo se regenera lo que
@@ -67,7 +67,7 @@ export function MissingDataPanel({
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-['Syne'] text-[13px] font-bold text-white">{item.tema}</span>
                 {item.prioridad === "alta" && (
-                  <span className="rounded-[99px] bg-[#FF6B2B]/15 px-2 py-0.5 text-[10px] text-[#FF6B2B] font-['DM_Sans']">
+                  <span className="rounded-[99px] bg-[var(--c-primary)]/15 px-2 py-0.5 text-[10px] text-[var(--c-primary)] font-['DM_Sans']">
                     alta
                   </span>
                 )}
@@ -83,13 +83,13 @@ export function MissingDataPanel({
                 }
                 rows={2}
                 placeholder="Tu respuesta"
-                className="mt-2 w-full resize-y rounded-[10px] border border-white/10 bg-black/40 p-2 text-[13px] text-white/90 font-['DM_Sans'] outline-none focus:border-[#FF6B2B]/50"
+                className="mt-2 w-full resize-y rounded-[10px] border border-white/10 bg-black/40 p-2 text-[13px] text-white/90 font-['DM_Sans'] outline-none focus:border-[var(--c-primary)]/50"
               />
               <div className="mt-2 flex items-center gap-2">
                 <button
                   onClick={() => save(item)}
                   disabled={saving === item.brain_key || !(answers[item.brain_key] ?? "").trim()}
-                  className="inline-flex items-center gap-1.5 rounded-[99px] bg-[#FF6B2B] px-3.5 py-1.5 text-[12px] font-['Syne'] font-bold text-black disabled:opacity-40"
+                  className="inline-flex items-center gap-1.5 rounded-[99px] bg-[var(--c-primary)] px-3.5 py-1.5 text-[12px] font-['Syne'] font-bold text-black disabled:opacity-40"
                 >
                   {saving === item.brain_key && <Loader2 className="h-3 w-3 animate-spin" />}
                   Guardar
@@ -110,7 +110,7 @@ export function MissingDataPanel({
       {resto.length > 0 && (
         <button
           onClick={() => setExpanded((v) => !v)}
-          className="mt-3 text-[12px] text-[#FF6B2B] font-['DM_Sans']"
+          className="mt-3 text-[12px] text-[var(--c-primary)] font-['DM_Sans']"
         >
           {expanded ? "Ver menos" : `Ver más (${resto.length})`}
         </button>

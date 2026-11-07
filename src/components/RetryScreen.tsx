@@ -7,8 +7,8 @@ interface RetryScreenProps {
   onPrimaryAction: () => void;
 }
 
-const ORANGE = "#FF6B2B";
-const GOLD = "#FFD166";
+const ORANGE = "var(--c-primary)";
+const GOLD = "var(--c-gold)";
 
 export default function RetryScreen({
   title,
@@ -21,7 +21,7 @@ export default function RetryScreen({
       style={{
         position: "fixed",
         inset: 0,
-        background: "#08080F",
+        background: "var(--c-bg)",
         color: "#fff",
         display: "flex",
         alignItems: "center",
@@ -93,12 +93,12 @@ export default function RetryScreen({
             borderRadius: 99,
             border: "none",
             background: ORANGE,
-            color: "#08080F",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: 16,
             cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
           }}
         >
           {primaryButtonText}

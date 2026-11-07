@@ -44,7 +44,7 @@ export const Route = createFileRoute("/onboarding/manager")({
   component: ManagerOnboarding,
 });
 
-const BG = "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
+const BG = "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
 
 type Brain = Record<string, string>;
 type Propuestas = { negativos: string[]; restricciones: string[] };
@@ -293,7 +293,7 @@ function ManagerOnboarding() {
       style={{
         minHeight: "100dvh",
         background: BG,
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         fontFamily: "'DM Sans', sans-serif",
         display: "flex",
         flexDirection: "column",
@@ -392,7 +392,7 @@ function QuestionStep({
         style={{
           background: "transparent",
           border: "none",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           fontFamily: "DM Sans",
           fontSize: "0.8rem",
           fontWeight: 600,
@@ -414,7 +414,7 @@ function QuestionStep({
           style={{
             padding: "1.2rem 0",
             textAlign: "center",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             fontSize: "0.84rem",
           }}
         >
@@ -459,8 +459,8 @@ function QuestionStep({
             onClick={() => setVerLibre(true)}
             style={{
               background: "transparent",
-              border: "1px dashed #252535",
-              color: "#A0A0C0",
+              border: "1px dashed var(--c-border)",
+              color: "var(--c-text-soft)",
               borderRadius: 12,
               width: "100%",
               padding: "0.7rem",
@@ -487,7 +487,7 @@ function QuestionStep({
           marginTop: 10,
           background: "transparent",
           border: "none",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           fontFamily: "DM Sans",
           fontSize: "0.78rem",
           cursor: "pointer",
@@ -575,9 +575,9 @@ function OpcionesInput({
                 padding: "0.5rem 0.95rem",
                 borderRadius: 99,
                 textAlign: "left",
-                background: sel ? "#FF6B2B" : "transparent",
-                color: sel ? "#08080F" : "#F0F0F5",
-                border: `1px solid ${sel ? "#FF6B2B" : "#252535"}`,
+                background: sel ? "var(--c-primary)" : "transparent",
+                color: sel ? "var(--c-bg)" : "var(--c-text)",
+                border: `1px solid ${sel ? "var(--c-primary)" : "var(--c-border)"}`,
                 fontFamily: "DM Sans",
                 fontSize: "0.8rem",
                 fontWeight: 500,
@@ -631,7 +631,7 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
           fontFamily: "Syne, sans-serif",
           fontWeight: 800,
           fontSize: "1.6rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           margin: 0,
           textAlign: "center",
           letterSpacing: "-0.02em",
@@ -643,7 +643,7 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
         style={{
           fontFamily: "DM Sans, sans-serif",
           fontSize: "0.95rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           marginTop: 14,
           marginBottom: 8,
           textAlign: "center",
@@ -656,7 +656,7 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
         style={{
           fontFamily: "DM Sans, sans-serif",
           fontSize: "0.84rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           marginTop: 4,
           marginBottom: 24,
           textAlign: "center",
@@ -666,8 +666,8 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
       </p>
       <div
         style={{
-          background: "#111118",
-          border: "1px solid #252535",
+          background: "var(--c-surface)",
+          border: "1px solid var(--c-border)",
           borderRadius: 14,
           padding: "1.25rem",
         }}
@@ -685,7 +685,7 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
               alignItems: "center",
               gap: 12,
               padding: "10px 0",
-              borderBottom: i < arr.length - 1 ? "1px solid rgba(255,107,43,0.25)" : "none",
+              borderBottom: i < arr.length - 1 ? "1px solid rgb(var(--c-primary-rgb) / 0.25)" : "none",
             }}
           >
             <span style={{ fontSize: "1.25rem" }}>{it.icon}</span>
@@ -694,7 +694,7 @@ function Welcome({ name, onNext }: { name: string; onNext: () => void }) {
                 fontFamily: "DM Sans",
                 fontWeight: 500,
                 fontSize: "0.84rem",
-                color: "#F0F0F5",
+                color: "var(--c-text)",
               }}
             >
               {it.text}
@@ -714,12 +714,12 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
   const pct = (step / total) * 100;
   return (
     <div style={{ padding: "1rem 1.2rem 0" }}>
-      <div style={{ height: 3, background: "#252535", borderRadius: 99, overflow: "hidden" }}>
+      <div style={{ height: 3, background: "var(--c-border)", borderRadius: 99, overflow: "hidden" }}>
         <div
           style={{
             width: `${pct}%`,
             height: "100%",
-            background: "#FF6B2B",
+            background: "var(--c-primary)",
             transition: "width 350ms ease",
           }}
         />
@@ -744,7 +744,7 @@ function Block({
           fontFamily: "DM Sans",
           fontWeight: 700,
           fontSize: "0.6rem",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           textTransform: "uppercase",
           letterSpacing: "0.08em",
           margin: 0,
@@ -756,7 +756,7 @@ function Block({
         style={{
           fontFamily: "DM Sans",
           fontSize: "0.76rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           marginTop: 4,
           marginBottom: 18,
         }}
@@ -784,7 +784,7 @@ function Question({
           fontFamily: "Syne, sans-serif",
           fontWeight: 800,
           fontSize: "1.3rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           margin: 0,
           letterSpacing: "-0.02em",
           lineHeight: 1.25,
@@ -793,7 +793,7 @@ function Question({
         {text}
       </h2>
       {subtext && (
-        <p style={{ fontSize: "0.8rem", color: "#5A5A8A", marginTop: 8, marginBottom: 16 }}>
+        <p style={{ fontSize: "0.8rem", color: "var(--c-text-2)", marginTop: 8, marginBottom: 16 }}>
           {subtext}
         </p>
       )}
@@ -808,7 +808,7 @@ function FieldLabel({ children, style }: { children: ReactNode; style?: React.CS
       style={{
         fontFamily: "DM Sans",
         fontSize: "0.76rem",
-        color: "#5A5A8A",
+        color: "var(--c-text-2)",
         margin: 0,
         marginBottom: 6,
         ...style,
@@ -842,9 +842,9 @@ function TextArea({
         rows={4}
         style={{
           width: "100%",
-          background: "#111118",
-          color: "#F0F0F5",
-          border: `1px solid ${len > 0 ? "#FF6B2B" : "#252535"}`,
+          background: "var(--c-surface)",
+          color: "var(--c-text)",
+          border: `1px solid ${len > 0 ? "var(--c-primary)" : "var(--c-border)"}`,
           borderRadius: 14,
           padding: "0.85rem 1rem",
           fontFamily: "DM Sans, sans-serif",
@@ -853,13 +853,13 @@ function TextArea({
           outline: "none",
           transition: "border-color 180ms",
         }}
-        onFocus={(e) => (e.currentTarget.style.borderColor = "#FF6B2B")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = len > 0 ? "#FF6B2B" : "#252535")}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--c-primary)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = len > 0 ? "var(--c-primary)" : "var(--c-border)")}
       />
       <p
         style={{
           fontSize: "0.7rem",
-          color: len < min ? "#5A5A8A" : "#06D6A0",
+          color: len < min ? "var(--c-text-2)" : "var(--c-success)",
           marginTop: 6,
           textAlign: "right",
         }}
@@ -888,17 +888,17 @@ function TextInput({
       style={{
         width: "100%",
         height: 48,
-        background: "#111118",
-        color: "#F0F0F5",
-        border: "1px solid #252535",
+        background: "var(--c-surface)",
+        color: "var(--c-text)",
+        border: "1px solid var(--c-border)",
         borderRadius: 14,
         padding: "0 1rem",
         fontFamily: "DM Sans, sans-serif",
         fontSize: "0.9rem",
         outline: "none",
       }}
-      onFocus={(e) => (e.currentTarget.style.borderColor = "#FF6B2B")}
-      onBlur={(e) => (e.currentTarget.style.borderColor = "#252535")}
+      onFocus={(e) => (e.currentTarget.style.borderColor = "var(--c-primary)")}
+      onBlur={(e) => (e.currentTarget.style.borderColor = "var(--c-border)")}
     />
   );
 }
@@ -907,16 +907,16 @@ function ImportantNote({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
-        background: "#111118",
-        borderLeft: "3px solid #FF6B2B",
-        borderTop: "1px solid #252535",
-        borderRight: "1px solid #252535",
-        borderBottom: "1px solid #252535",
+        background: "var(--c-surface)",
+        borderLeft: "3px solid var(--c-primary)",
+        borderTop: "1px solid var(--c-border)",
+        borderRight: "1px solid var(--c-border)",
+        borderBottom: "1px solid var(--c-border)",
         borderRadius: "8px",
         padding: "0.95rem 1rem",
         fontFamily: "DM Sans",
         fontSize: "0.84rem",
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         lineHeight: 1.45,
       }}
     >
@@ -946,14 +946,14 @@ function PrimaryButton({
         height: 52,
         borderRadius: 99,
         border: "none",
-        background: "#FF6B2B",
-        color: "#08080F",
+        background: "var(--c-primary)",
+        color: "var(--c-bg)",
         fontFamily: "Syne, sans-serif",
         fontWeight: 700,
         fontSize: "0.95rem",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.4 : 1,
-        boxShadow: disabled ? "none" : "0 8px 24px rgba(255,107,43,0.3)",
+        boxShadow: disabled ? "none" : "0 8px 24px rgb(var(--c-primary-rgb) / 0.3)",
         transition: "opacity 200ms",
         ...style,
       }}
@@ -983,7 +983,7 @@ function NavButtons({
         style={{
           background: "transparent",
           border: "none",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           fontFamily: "DM Sans",
           fontSize: "0.8rem",
           cursor: "pointer",
@@ -1051,7 +1051,7 @@ function RadiografiaStep({
           fontFamily: "Syne",
           fontWeight: 800,
           fontSize: "1.35rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           margin: 0,
           textAlign: "center",
           lineHeight: 1.25,
@@ -1062,7 +1062,7 @@ function RadiografiaStep({
       <p
         style={{
           fontSize: "0.84rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           marginTop: 8,
           marginBottom: 20,
           textAlign: "center",
@@ -1078,7 +1078,7 @@ function RadiografiaStep({
           style={{
             padding: "1.6rem 0",
             textAlign: "center",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             fontSize: "0.84rem",
           }}
         >
@@ -1087,14 +1087,14 @@ function RadiografiaStep({
       )}
       {error && !loading && (
         <div style={{ padding: "1rem 0", textAlign: "center" }}>
-          <p style={{ color: "#EF476F", fontSize: "0.84rem", margin: 0 }}>{error}</p>
+          <p style={{ color: "var(--c-danger)", fontSize: "0.84rem", margin: 0 }}>{error}</p>
           <button
             onClick={onRetry}
             style={{
               marginTop: 12,
               background: "transparent",
-              border: "1px solid #252535",
-              color: "#FF6B2B",
+              border: "1px solid var(--c-border)",
+              color: "var(--c-primary)",
               padding: "8px 16px",
               borderRadius: 99,
               cursor: "pointer",
@@ -1121,8 +1121,8 @@ function RadiografiaStep({
               <div
                 key={s.titulo}
                 style={{
-                  background: "#111118",
-                  border: "1px solid #252535",
+                  background: "var(--c-surface)",
+                  border: "1px solid var(--c-border)",
                   borderRadius: 14,
                   padding: "1rem",
                 }}
@@ -1132,7 +1132,7 @@ function RadiografiaStep({
                     fontFamily: "DM Sans",
                     fontWeight: 700,
                     fontSize: "0.62rem",
-                    color: "#FF6B2B",
+                    color: "var(--c-primary)",
                     textTransform: "uppercase",
                     letterSpacing: "0.08em",
                     margin: 0,
@@ -1144,7 +1144,7 @@ function RadiografiaStep({
                   style={{
                     fontFamily: "DM Sans",
                     fontSize: "0.88rem",
-                    color: "#F0F0F5",
+                    color: "var(--c-text)",
                     margin: 0,
                     marginTop: 8,
                     lineHeight: 1.5,
@@ -1173,9 +1173,9 @@ function RadiografiaStep({
                 width: "100%",
                 height: 44,
                 borderRadius: 99,
-                border: "1px solid #FF6B2B",
+                border: "1px solid var(--c-primary)",
                 background: "transparent",
-                color: "#FF6B2B",
+                color: "var(--c-primary)",
                 fontFamily: "DM Sans",
                 fontWeight: 600,
                 fontSize: "0.85rem",
@@ -1189,7 +1189,7 @@ function RadiografiaStep({
               <p
                 style={{
                   fontSize: "0.78rem",
-                  color: aviso.ok ? "#06D6A0" : "#EF476F",
+                  color: aviso.ok ? "var(--c-success)" : "var(--c-danger)",
                   marginTop: 8,
                   textAlign: "center",
                 }}
@@ -1211,7 +1211,7 @@ function RadiografiaStep({
           style={{
             background: "transparent",
             border: "none",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             fontFamily: "DM Sans",
             fontSize: "0.8rem",
             cursor: "pointer",
@@ -1288,21 +1288,21 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
           fontFamily: "Syne",
           fontWeight: 800,
           fontSize: "1.4rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           margin: 0,
         }}
       >
         Agrega tu equipo
       </h2>
-      <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: 8, marginBottom: 20 }}>
+      <p style={{ fontSize: "0.84rem", color: "var(--c-text-2)", marginTop: 8, marginBottom: 20 }}>
         Mándales la invitación por WhatsApp o por correo. Con la liga crean su cuenta y quedan en tu
         equipo.
       </p>
 
       <div
         style={{
-          background: "#111118",
-          border: "1px solid #252535",
+          background: "var(--c-surface)",
+          border: "1px solid var(--c-border)",
           borderRadius: 14,
           padding: "1.25rem",
         }}
@@ -1312,7 +1312,7 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
             fontFamily: "DM Sans",
             fontWeight: 700,
             fontSize: "0.6rem",
-            color: "#FF6B2B",
+            color: "var(--c-primary)",
             textTransform: "uppercase",
             letterSpacing: "0.08em",
             margin: 0,
@@ -1323,7 +1323,7 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
         <div
           style={{
             marginTop: 14,
-            background: "#08080F",
+            background: "var(--c-bg)",
             borderRadius: 8,
             padding: "0.85rem",
             textAlign: "center",
@@ -1334,7 +1334,7 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
               fontFamily: "Syne",
               fontWeight: 800,
               fontSize: "1.8rem",
-              color: "#F0F0F5",
+              color: "var(--c-text)",
               margin: 0,
               letterSpacing: "0.08em",
             }}
@@ -1343,7 +1343,7 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
           </p>
         </div>
         {error && (
-          <p style={{ fontSize: "0.78rem", color: "#EF476F", marginTop: 10, textAlign: "center" }}>
+          <p style={{ fontSize: "0.78rem", color: "var(--c-danger)", marginTop: 10, textAlign: "center" }}>
             {error}
           </p>
         )}
@@ -1359,8 +1359,8 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
             style={{
               flex: 1,
               background: "transparent",
-              border: "1px solid #252535",
-              color: copied ? "#06D6A0" : "#F0F0F5",
+              border: "1px solid var(--c-border)",
+              color: copied ? "var(--c-success)" : "var(--c-text)",
               padding: "0.55rem",
               borderRadius: 99,
               fontFamily: "DM Sans",
@@ -1377,8 +1377,8 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
             style={{
               flex: 1,
               background: "transparent",
-              border: "1px solid #252535",
-              color: "#F0F0F5",
+              border: "1px solid var(--c-border)",
+              color: "var(--c-text)",
               padding: "0.55rem",
               borderRadius: 99,
               fontFamily: "DM Sans",
@@ -1391,7 +1391,7 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
           </button>
         </div>
         {expires && (
-          <p style={{ fontSize: "0.68rem", color: "#5A5A8A", marginTop: 8, textAlign: "center" }}>
+          <p style={{ fontSize: "0.68rem", color: "var(--c-text-2)", marginTop: 8, textAlign: "center" }}>
             Expira: {new Date(expires).toLocaleDateString("es-MX")}
           </p>
         )}
@@ -1405,7 +1405,7 @@ function TeamStep({ empresa, onFinish }: { empresa: string; onFinish: () => void
           style={{
             background: "transparent",
             border: "none",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             fontFamily: "DM Sans",
             fontSize: "0.8rem",
             cursor: "pointer",

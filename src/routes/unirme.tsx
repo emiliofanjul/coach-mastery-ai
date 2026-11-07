@@ -26,5 +26,5 @@ function Unirme() {
       navigate({ to: "/role", replace: true });
     }
   }, [codigo, navigate]);
-  return <main style={{ minHeight: "100dvh", background: "#08080F" }} />;
+  return <main style={{ minHeight: "100dvh", background: "var(--c-bg)" }} />;
 }

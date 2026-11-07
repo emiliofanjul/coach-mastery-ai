@@ -4,7 +4,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { AuthCoachBubble } from "@/components/closer/AuthCoachBubble";
 import {
   getSelectedRole,
   passwordStrength,
@@ -33,7 +32,7 @@ export const Route = createFileRoute("/signup")({
   component: SignupScreen,
 });
 
-const BG = "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
+const BG = "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
 
 const baseSchema = z.object({
   fullName: z.string().trim().min(2).max(100),
@@ -195,7 +194,7 @@ function SignupScreen() {
       style={{
         minHeight: "100dvh",
         background: BG,
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         fontFamily: "'DM Sans', sans-serif",
         display: "flex",
         flexDirection: "column",
@@ -213,20 +212,20 @@ function SignupScreen() {
               display: "inline-flex",
               alignItems: "center",
               gap: "6px",
-              background: "rgba(255,107,43,0.1)",
-              border: "1px solid rgba(255,107,43,0.3)",
+              background: "rgb(var(--c-primary-rgb) / 0.1)",
+              border: "1px solid rgb(var(--c-primary-rgb) / 0.3)",
               borderRadius: "99px",
               padding: "0.3rem 0.8rem",
               fontWeight: 500,
               fontSize: "0.76rem",
-              color: "#FF6B2B",
+              color: "var(--c-primary)",
             }}
           >
             {roleLabel}
           </span>
           <Link
             to="/role"
-            style={{ fontSize: "0.72rem", color: "#5A5A8A", textDecoration: "underline" }}
+            style={{ fontSize: "0.72rem", color: "var(--c-text-2)", textDecoration: "underline" }}
           >
             cambiar
           </Link>
@@ -265,7 +264,7 @@ function SignupScreen() {
             />
             <StrengthBar level={strength} />
             {password.length > 0 && password.length < 8 && (
-              <p style={{ margin: "6px 0 0", fontSize: "0.74rem", color: "#FFD166" }}>
+              <p style={{ margin: "6px 0 0", fontSize: "0.74rem", color: "var(--c-gold)" }}>
                 Te faltan {8 - password.length} caracteres (mínimo 8).
               </p>
             )}
@@ -301,10 +300,10 @@ function SignupScreen() {
               }
               helperColor={
                 inviteState.status === "valid"
-                  ? "#06D6A0"
+                  ? "var(--c-success)"
                   : inviteState.status === "invalid" || inviteState.status === "locked"
-                    ? "#EF476F"
-                    : "#5A5A8A"
+                    ? "var(--c-danger)"
+                    : "var(--c-text-2)"
               }
             />
           )}
@@ -315,7 +314,7 @@ function SignupScreen() {
               alignItems: "flex-start",
               gap: "10px",
               fontSize: "0.8rem",
-              color: "#5A5A8A",
+              color: "var(--c-text-2)",
               cursor: "pointer",
             }}
           >
@@ -323,17 +322,17 @@ function SignupScreen() {
               type="checkbox"
               checked={accepted}
               onChange={(e) => setAccepted(e.target.checked)}
-              style={{ marginTop: "3px", accentColor: "#FF6B2B" }}
+              style={{ marginTop: "3px", accentColor: "var(--c-primary)" }}
             />
             <span>
-              Acepto los <span style={{ color: "#FF6B2B" }}>términos y condiciones</span>
+              Acepto los <span style={{ color: "var(--c-primary)" }}>términos y condiciones</span>
             </span>
           </label>
 
-          {error && <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>}
+          {error && <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--c-danger)" }}>{error}</p>}
 
           {!formValid && (intento || empezo) && (
-            <div role="status" style={{ fontSize: "0.76rem", color: "#FFD166", lineHeight: 1.5 }}>
+            <div role="status" style={{ fontSize: "0.76rem", color: "var(--c-gold)", lineHeight: 1.5 }}>
               <p style={{ margin: 0, fontWeight: 600 }}>Para crear tu cuenta te falta:</p>
               <ul style={{ margin: "4px 0 0", paddingLeft: "1.1rem" }}>
                 {faltantes.map((f) => <li key={f}>{f}</li>)}
@@ -356,21 +355,20 @@ function SignupScreen() {
           <GoogleIcon /> Continuar con Google
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "#5A5A8A" }}>
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "var(--c-text-2)" }}>
           ¿Ya tienes cuenta?{" "}
-          <Link to="/login" style={{ color: "#FF6B2B", textDecoration: "none" }}>
+          <Link to="/login" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
             Inicia sesión
           </Link>
         </p>
       </section>
 
-      <AuthCoachBubble />
     </main>
   );
 }
 
 function StrengthBar({ level }: { level: 0 | 1 | 2 | 3 }) {
-  const colors = ["#252535", "#EF476F", "#FFD166", "#06D6A0"];
+  const colors = ["var(--c-border)", "var(--c-danger)", "var(--c-gold)", "var(--c-success)"];
   return (
     <div style={{ display: "flex", gap: "4px", marginTop: "8px" }}>
       {[1, 2, 3].map((seg) => (
@@ -380,7 +378,7 @@ function StrengthBar({ level }: { level: 0 | 1 | 2 | 3 }) {
             flex: 1,
             height: "4px",
             borderRadius: "2px",
-            background: level >= seg ? colors[level] : "#252535",
+            background: level >= seg ? colors[level] : "var(--c-border)",
             transition: "background 200ms ease",
           }}
         />

@@ -159,14 +159,14 @@ function MiPerfilPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white flex items-center justify-center">
         <div className="text-white/60 font-['DM_Sans']">Cargando…</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader title="Mi Perfil" subtitle={profile?.email ?? undefined} />
       <div className="mx-auto w-full max-w-[560px] px-5 pt-2 pb-16">
         <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-5 mb-4">
@@ -205,7 +205,7 @@ function MiPerfilPage() {
             {!showJoin ? (
               <Button
                 onClick={() => setShowJoin(true)}
-                className="mt-4 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                className="mt-4 bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
               >
                 Tengo un código
               </Button>
@@ -219,7 +219,7 @@ function MiPerfilPage() {
                     setConfirming(false);
                   }}
                   placeholder="EMPRESA-XXXX"
-                  className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-mono"
+                  className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-mono"
                 />
                 {!preview && (
                   <Button
@@ -231,11 +231,11 @@ function MiPerfilPage() {
                   </Button>
                 )}
                 {preview && !preview.ok && (
-                  <div className="text-sm text-[#EF476F] font-['DM_Sans']">{preview.message}</div>
+                  <div className="text-sm text-[var(--c-danger)] font-['DM_Sans']">{preview.message}</div>
                 )}
                 {preview && preview.ok && !confirming && (
-                  <div className="rounded-[10px] border border-[#06D6A0]/40 bg-[#06D6A0]/10 p-3">
-                    <div className="text-sm text-[#06D6A0] font-['DM_Sans'] font-semibold">
+                  <div className="rounded-[10px] border border-[var(--c-success)]/40 bg-[var(--c-success)]/10 p-3">
+                    <div className="text-sm text-[var(--c-success)] font-['DM_Sans'] font-semibold">
                       ✓ Código válido — {preview.companyName}
                     </div>
                     <div className="mt-2 text-xs text-white/60 font-['DM_Sans']">
@@ -243,14 +243,14 @@ function MiPerfilPage() {
                     </div>
                     <Button
                       onClick={() => setConfirming(true)}
-                      className="mt-3 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                      className="mt-3 bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
                     >
                       Continuar
                     </Button>
                   </div>
                 )}
                 {confirming && (
-                  <div className="rounded-[10px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 p-3">
+                  <div className="rounded-[10px] border border-[var(--c-primary)]/40 bg-[var(--c-primary)]/10 p-3">
                     <div className="text-sm text-white font-['DM_Sans']">
                       Confirmo unirme a <b>{preview?.companyName}</b>.
                     </div>
@@ -265,7 +265,7 @@ function MiPerfilPage() {
                       <Button
                         onClick={handleJoin}
                         disabled={joining}
-                        className="flex-1 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                        className="flex-1 bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
                       >
                         {joining ? "Uniendo…" : "Sí, unirme"}
                       </Button>
@@ -287,7 +287,7 @@ function MiPerfilPage() {
             {!showCreateTeam ? (
               <Button
                 onClick={() => setShowCreateTeam(true)}
-                className="mt-4 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                className="mt-4 bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
               >
                 Crear equipo
               </Button>
@@ -297,7 +297,7 @@ function MiPerfilPage() {
                   value={teamName}
                   onChange={(e) => setTeamName(e.target.value)}
                   placeholder="Nombre del equipo o empresa"
-                  className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+                  className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans']"
                 />
                 <div className="flex gap-2">
                   <Button
@@ -313,14 +313,14 @@ function MiPerfilPage() {
                   <Button
                     onClick={() => setConfirmCreateTeam(true)}
                     disabled={teamName.trim().length < 2}
-                    className="flex-1 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                    className="flex-1 bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
                   >
                     Continuar
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="mt-4 rounded-[10px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 p-3">
+              <div className="mt-4 rounded-[10px] border border-[var(--c-primary)]/40 bg-[var(--c-primary)]/10 p-3">
                 <div className="text-sm text-white font-['DM_Sans']">
                   Vas a convertir tu cuenta en un equipo llamado <b>{teamName.trim()}</b>. Vas a poder invitar vendedores y administrar su entrenamiento. ¿Continuar?
                 </div>
@@ -335,7 +335,7 @@ function MiPerfilPage() {
                   <Button
                     onClick={handleCreateTeam}
                     disabled={creatingTeam}
-                    className="flex-1 bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                    className="flex-1 bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
                   >
                     {creatingTeam ? "Creando…" : "Sí, crear equipo"}
                   </Button>

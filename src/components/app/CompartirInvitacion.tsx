@@ -39,9 +39,9 @@ export function CompartirInvitacion({
     minWidth: 0,
     height: 44,
     borderRadius: 99,
-    border: "1px solid #252535",
+    border: "1px solid var(--c-border)",
     background: "transparent",
-    color: "#F0F0F5",
+    color: "var(--c-text)",
     fontFamily: "DM Sans",
     fontWeight: 600,
     fontSize: "0.8rem",
@@ -58,7 +58,7 @@ export function CompartirInvitacion({
         href={ligaWhatsApp(mensaje)}
         target="_blank"
         rel="noopener noreferrer"
-        style={{ ...boton, width: "100%", background: "#25D366", border: "none", color: "#08080F" }}
+        style={{ ...boton, width: "100%", background: "#25D366", border: "none", color: "var(--c-bg)" }}
       >
         Compartir por WhatsApp
       </a>
@@ -69,12 +69,12 @@ export function CompartirInvitacion({
         <button
           type="button"
           onClick={copiar}
-          style={{ ...boton, color: copiado ? "#06D6A0" : "#F0F0F5" }}
+          style={{ ...boton, color: copiado ? "var(--c-success)" : "var(--c-text)" }}
         >
           {copiado ? "✓ Copiada" : "Copiar invitación"}
         </button>
       </div>
-      <p style={{ fontSize: "0.72rem", color: "#5A5A8A", marginTop: 8, lineHeight: 1.4 }}>
+      <p style={{ fontSize: "0.72rem", color: "var(--c-text-2)", marginTop: 8, lineHeight: 1.4 }}>
         La invitación lleva una liga con el código ya puesto: tu vendedor solo crea su cuenta. El
         correo sale desde tu propia cuenta, para que lo reciba de ti.
       </p>

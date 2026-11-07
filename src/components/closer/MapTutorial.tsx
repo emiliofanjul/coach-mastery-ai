@@ -238,10 +238,10 @@ export function MapTutorial({ open, onClose }: Props) {
             rx={16}
             ry={16}
             fill="none"
-            stroke="#FF6B2B"
+            stroke="var(--c-primary)"
             strokeWidth={2}
             style={{
-              filter: "drop-shadow(0 0 12px rgba(255,107,43,0.6))",
+              filter: "drop-shadow(0 0 12px rgb(var(--c-primary-rgb) / 0.6))",
             }}
           />
         )}
@@ -257,7 +257,7 @@ export function MapTutorial({ open, onClose }: Props) {
           right: 16,
           background: "transparent",
           border: "none",
-          color: "#9090B0",
+          color: "var(--c-text-soft)",
           fontFamily: "'DM Sans', sans-serif",
           fontSize: "0.75rem",
           padding: "6px 10px",
@@ -275,8 +275,8 @@ export function MapTutorial({ open, onClose }: Props) {
           top: cardTop,
           transform: "translateX(-50%)",
           width: "min(340px, calc(100vw - 32px))",
-          background: "#1A1A26",
-          border: "1px solid #FF6B2B",
+          background: "var(--c-elevated)",
+          border: "1px solid var(--c-primary)",
           borderRadius: 14,
           padding: "1rem",
           display: "flex",
@@ -303,7 +303,7 @@ export function MapTutorial({ open, onClose }: Props) {
                   fontFamily: "'Syne', sans-serif",
                   fontWeight: 700,
                   fontSize: "1rem",
-                  color: "#FF6B2B",
+                  color: "var(--c-primary)",
                   marginBottom: 6,
                 }}
               >
@@ -315,7 +315,7 @@ export function MapTutorial({ open, onClose }: Props) {
                 fontFamily: "'DM Sans', sans-serif",
                 fontWeight: steps[step].subtext ? 500 : 400,
                 fontSize: "0.88rem",
-                color: "#F0F0F5",
+                color: "var(--c-text)",
                 lineHeight: 1.6,
                 whiteSpace: "pre-line",
               }}
@@ -328,7 +328,7 @@ export function MapTutorial({ open, onClose }: Props) {
                   fontFamily: "'DM Sans', sans-serif",
                   fontWeight: 400,
                   fontSize: "0.84rem",
-                  color: "#5A5A8A",
+                  color: "var(--c-text-2)",
                   lineHeight: 1.6,
                   marginTop: 4,
                 }}
@@ -350,7 +350,7 @@ export function MapTutorial({ open, onClose }: Props) {
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontSize: "0.68rem",
-              color: "#5A5A8A",
+              color: "var(--c-text-2)",
             }}
           >
             {step + 1} de {steps.length}
@@ -359,7 +359,7 @@ export function MapTutorial({ open, onClose }: Props) {
             type="button"
             onClick={handleNext}
             style={{
-              background: "#FF6B2B",
+              background: "var(--c-primary)",
               border: "none",
               color: "#FFFFFF",
               fontFamily: "Syne, sans-serif",

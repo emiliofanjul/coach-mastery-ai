@@ -29,9 +29,9 @@ interface QuizQuestion {
   explanation_wrong: string;
 }
 
-const ORANGE = "#FF6B2B";
-const GREEN = "#06D6A0";
-const RED = "#EF476F";
+const ORANGE = "var(--c-primary)";
+const GREEN = "var(--c-success)";
+const RED = "var(--c-danger)";
 
 function NodoQuizPage() {
   const { nodeId } = useParams({ from: "/nodo/$nodeId/quiz" });
@@ -278,7 +278,7 @@ function NodoQuizPage() {
       style={{
         position: "fixed",
         inset: 0,
-        background: "#08080F",
+        background: "var(--c-bg)",
         color: "#fff",
         display: "flex",
         flexDirection: "column",
@@ -434,11 +434,11 @@ function QuestionView({
 
           if (answered) {
             if (isCorrectOpt) {
-              bg = "rgba(6,214,160,0.12)";
+              bg = "rgb(var(--c-success-rgb) / 0.12)";
               border = GREEN;
               badge = { text: "✓ Correcto", color: GREEN };
             } else if (isSelected) {
-              bg = "rgba(239,71,111,0.12)";
+              bg = "rgb(var(--c-danger-rgb) / 0.12)";
               border = RED;
               badge = { text: "✗ Incorrecto", color: RED };
             }
@@ -533,12 +533,12 @@ function QuestionView({
             borderRadius: 99,
             border: "none",
             background: ORANGE,
-            color: "#08080F",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: 16,
             cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
             marginTop: 4,
           }}
         >

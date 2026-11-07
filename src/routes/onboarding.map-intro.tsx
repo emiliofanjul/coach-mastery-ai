@@ -13,7 +13,7 @@ export const Route = createFileRoute("/onboarding/map-intro")({
   component: MapIntro,
 });
 
-const BG = "#08080F";
+const BG = "var(--c-bg)";
 
 const WORLDS: Array<{
   id: number;
@@ -30,7 +30,7 @@ const WORLDS: Array<{
   { id: 6, icon: "🎯", name: "El Cierre", color: "#8a7a1a" },
   { id: 7, icon: "🛡️", name: "Manejo de Objeciones", color: "#6a3a8a" },
   { id: 8, icon: "🏆", name: "Consolidación", color: "#2a7a7a" },
-  { id: 9, icon: "👑", name: "Certificación Elite", color: "#ffd166" },
+  { id: 9, icon: "👑", name: "Certificación Elite", color: "var(--c-gold)" },
 ];
 
 const COMMITMENTS = [
@@ -107,7 +107,7 @@ function MapIntro() {
   if (!authReady) {
     return (
       <main style={shell}>
-        <div style={{ color: "#5A5A8A", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ color: "var(--c-text-2)", fontFamily: "'DM Sans', sans-serif" }}>
           Cargando…
         </div>
       </main>
@@ -169,7 +169,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
           fontFamily: "'Syne', sans-serif",
           fontWeight: 800,
           fontSize: "1.3rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           textAlign: "center",
           margin: 0,
         }}
@@ -203,14 +203,14 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                   width: 64,
                   height: 64,
                   borderRadius: "50%",
-                  background: isFirst ? "#FF6B2B" : "#1A1A26",
+                  background: isFirst ? "var(--c-primary)" : "var(--c-elevated)",
                   opacity: isFirst ? 1 : 0.3,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: isFirst ? "1.6rem" : "1.2rem",
                   boxShadow: isFirst
-                    ? "0 0 32px 4px rgba(255,107,43,0.55)"
+                    ? "0 0 32px 4px rgb(var(--c-primary-rgb) / 0.55)"
                     : "none",
                   animation: isFirst ? "breathe 2.4s ease-in-out infinite" : undefined,
                 }}
@@ -224,7 +224,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                     fontFamily: "'Syne', sans-serif",
                     fontWeight: 700,
                     fontSize: "0.84rem",
-                    color: "#FF6B2B",
+                    color: "var(--c-primary)",
                     textAlign: "center",
                   }}
                 >
@@ -237,8 +237,8 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
                     width: 2,
                     height: 28,
                     background: isFirst
-                      ? "linear-gradient(180deg, rgba(255,107,43,0.5), #1A1A26)"
-                      : "#1A1A26",
+                      ? "linear-gradient(180deg, rgb(var(--c-primary-rgb) / 0.5), var(--c-elevated))"
+                      : "var(--c-elevated)",
                     opacity: isFirst ? 1 : 0.4,
                     margin: "0.4rem 0",
                   }}
@@ -255,7 +255,7 @@ function SilhouetteMap({ onNext }: { onNext: () => void }) {
           fontFamily: "'DM Sans', sans-serif",
           fontWeight: 400,
           fontSize: "0.84rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           textAlign: "center",
           lineHeight: 1.5,
         }}
@@ -347,7 +347,7 @@ function WorldsTour({ onNext }: { onNext: () => void }) {
                   width: 44,
                   height: 44,
                   borderRadius: "50%",
-                  background: isLit ? w.color : "#1A1A26",
+                  background: isLit ? w.color : "var(--c-elevated)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -366,7 +366,7 @@ function WorldsTour({ onNext }: { onNext: () => void }) {
                   fontFamily: "'Syne', sans-serif",
                   fontWeight: 700,
                   fontSize: "0.9rem",
-                  color: isLit ? "#F0F0F5" : "#5A5A8A",
+                  color: isLit ? "var(--c-text)" : "var(--c-text-2)",
                 }}
               >
                 {w.name}
@@ -383,7 +383,7 @@ function WorldsTour({ onNext }: { onNext: () => void }) {
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
             fontSize: "0.84rem",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             textAlign: "center",
             lineHeight: 1.5,
             animation: "fadeIn 400ms ease",
@@ -404,7 +404,7 @@ function WorldsTour({ onNext }: { onNext: () => void }) {
               marginTop: "0.8rem",
               background: "transparent",
               border: "none",
-              color: "#5A5A8A",
+              color: "var(--c-text-2)",
               fontFamily: "'DM Sans', sans-serif",
               fontWeight: 500,
               fontSize: "0.82rem",
@@ -445,7 +445,7 @@ function VideoStep({ onNext }: { onNext: () => void }) {
           fontFamily: "'Syne', sans-serif",
           fontWeight: 800,
           fontSize: "1.4rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           textAlign: "center",
           margin: 0,
         }}
@@ -457,7 +457,7 @@ function VideoStep({ onNext }: { onNext: () => void }) {
         style={{
           width: "100%",
           marginTop: "1.4rem",
-          background: "#111118",
+          background: "var(--c-surface)",
           borderRadius: 14,
           aspectRatio: "16 / 9",
           display: "flex",
@@ -472,12 +472,12 @@ function VideoStep({ onNext }: { onNext: () => void }) {
             width: 56,
             height: 56,
             borderRadius: "50%",
-            background: "rgba(255,107,43,0.12)",
-            border: "2px solid #FF6B2B",
+            background: "rgb(var(--c-primary-rgb) / 0.12)",
+            border: "2px solid var(--c-primary)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#FF6B2B",
+            color: "var(--c-primary)",
             fontSize: "1.3rem",
           }}
         >
@@ -488,7 +488,7 @@ function VideoStep({ onNext }: { onNext: () => void }) {
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
             fontSize: "0.8rem",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
           }}
         >
           Video de 60 segundos
@@ -502,8 +502,8 @@ function VideoStep({ onNext }: { onNext: () => void }) {
           marginTop: "0.7rem",
           width: "100%",
           background: "transparent",
-          border: "1px solid #252535",
-          color: "#F0F0F5",
+          border: "1px solid var(--c-border)",
+          color: "var(--c-text)",
           padding: "0.95rem 1.4rem",
           borderRadius: 99,
           fontFamily: "'Syne', sans-serif",
@@ -545,7 +545,7 @@ function CommitmentStep({
           fontFamily: "'Syne', sans-serif",
           fontWeight: 800,
           fontSize: "1.3rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           textAlign: "center",
           margin: "1rem 0 0.4rem",
         }}
@@ -557,7 +557,7 @@ function CommitmentStep({
           fontFamily: "'DM Sans', sans-serif",
           fontWeight: 400,
           fontSize: "0.84rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           textAlign: "center",
           margin: 0,
         }}
@@ -583,11 +583,11 @@ function CommitmentStep({
               onClick={() => onPick(c)}
               style={{
                 width: "100%",
-                background: sel ? "rgba(255,107,43,0.06)" : "#111118",
-                border: sel ? "2px solid #FF6B2B" : "1px solid #252535",
+                background: sel ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
+                border: sel ? "2px solid var(--c-primary)" : "1px solid var(--c-border)",
                 borderRadius: 14,
                 padding: sel ? "calc(1rem - 1px) calc(1.25rem - 1px)" : "1rem 1.25rem",
-                color: "#F0F0F5",
+                color: "var(--c-text)",
                 fontFamily: "'DM Sans', sans-serif",
                 fontWeight: 500,
                 fontSize: "0.92rem",
@@ -645,7 +645,7 @@ function Activation({
           fontFamily: "'Syne', sans-serif",
           fontWeight: 800,
           fontSize: "2.2rem",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           textAlign: "center",
           margin: "0.6rem 0 0",
         }}
@@ -654,14 +654,14 @@ function Activation({
       </h1>
       <div
         style={{
-          background: "rgba(255,107,43,0.1)",
-          border: "1px solid rgba(255,107,43,0.3)",
+          background: "rgb(var(--c-primary-rgb) / 0.1)",
+          border: "1px solid rgb(var(--c-primary-rgb) / 0.3)",
           borderRadius: 99,
           padding: "0.4rem 0.9rem",
           fontFamily: "'Syne', sans-serif",
           fontWeight: 700,
           fontSize: "0.8rem",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           display: "inline-flex",
           alignItems: "center",
           gap: "0.4rem",
@@ -676,7 +676,7 @@ function Activation({
             fontWeight: 400,
             fontStyle: "italic",
             fontSize: "0.8rem",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             textAlign: "center",
             margin: 0,
             maxWidth: 320,
@@ -694,8 +694,8 @@ function Activation({
         style={{
           width: "100%",
           marginTop: "1.6rem",
-          background: "#FF6B2B",
-          color: "#0B0B12",
+          background: "var(--c-primary)",
+          color: "var(--c-surface)",
           border: "none",
           borderRadius: 99,
           padding: "1rem 2rem",
@@ -703,7 +703,7 @@ function Activation({
           fontWeight: 700,
           fontSize: "1rem",
           cursor: saving ? "wait" : "pointer",
-          boxShadow: "0 12px 36px -8px rgba(255,107,43,0.7)",
+          boxShadow: "0 12px 36px -8px rgb(var(--c-primary-rgb) / 0.7)",
         }}
       >
         {saving ? "Activando…" : "Empezar mi entrenamiento →"}
@@ -739,8 +739,8 @@ function PrimaryButton({
       style={{
         width: "100%",
         marginTop: "1.8rem",
-        background: disabled ? "#3a2a22" : "#FF6B2B",
-        color: disabled ? "#7a6358" : "#0B0B12",
+        background: disabled ? "var(--c-disabled-bg)" : "var(--c-primary)",
+        color: disabled ? "var(--c-disabled-text)" : "var(--c-surface)",
         border: "none",
         borderRadius: 99,
         padding: "1rem 1.4rem",
@@ -748,7 +748,7 @@ function PrimaryButton({
         fontWeight: 700,
         fontSize: "0.98rem",
         cursor: disabled ? "not-allowed" : "pointer",
-        boxShadow: disabled ? "none" : "0 8px 24px -10px rgba(255,107,43,0.55)",
+        boxShadow: disabled ? "none" : "0 8px 24px -10px rgb(var(--c-primary-rgb) / 0.55)",
         transition: "all 160ms ease",
       }}
     >
@@ -773,7 +773,7 @@ function FixedBottomButton({
         right: 0,
         padding: "1rem 1.2rem 1.4rem",
         background:
-          "linear-gradient(180deg, rgba(8,8,15,0) 0%, rgba(8,8,15,0.95) 40%, #08080F 100%)",
+          "linear-gradient(180deg, rgb(var(--c-bg-rgb) / 0) 0%, rgb(var(--c-bg-rgb) / 0.95) 40%, var(--c-bg) 100%)",
         display: "flex",
         justifyContent: "center",
         zIndex: 10,
@@ -785,8 +785,8 @@ function FixedBottomButton({
           onClick={onClick}
           style={{
             width: "100%",
-            background: "#FF6B2B",
-            color: "#0B0B12",
+            background: "var(--c-primary)",
+            color: "var(--c-surface)",
             border: "none",
             borderRadius: 99,
             padding: "1rem 1.4rem",
@@ -794,7 +794,7 @@ function FixedBottomButton({
             fontWeight: 700,
             fontSize: "0.98rem",
             cursor: "pointer",
-            boxShadow: "0 8px 24px -10px rgba(255,107,43,0.55)",
+            boxShadow: "0 8px 24px -10px rgb(var(--c-primary-rgb) / 0.55)",
           }}
         >
           {label}
@@ -807,7 +807,7 @@ function FixedBottomButton({
 const shell: React.CSSProperties = {
   minHeight: "100dvh",
   background: BG,
-  color: "#F0F0F5",
+  color: "var(--c-text)",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

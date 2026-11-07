@@ -10,7 +10,12 @@
  * ════════════════════════════════════════
  *
  *  Filosofía visual:
- *  - Dark mode siempre. Premium. Profesional. Alto rendimiento.
+ *  - Oscuro siempre, con profundidad: fondo azul marino casi negro y tres
+ *    niveles de superficie claramente distintos. Nada de morado.
+ *  - TODOS los colores viven aquí, en :root (--c-…). Las pantallas no
+ *    escriben colores a mano: usan var(--c-…), o rgb(var(--c-…-rgb) / 0.4)
+ *    para transparencia. Cambiar un color = cambiar UNA línea de este archivo.
+ *    (Fase 1 del rediseño, mensaje 145, nov-2026.)
  *  - Naranja #FF6B2B = ÚNICA señal de "acción principal / avanza".
  *    Sagrado. No usar para decoración.
  *  - Radios: 14px en cards (pro accesible), 99px en botones (acción).
@@ -92,88 +97,114 @@
 }
 
 /*
- * Closer es dark-only por filosofía. Definimos los tokens directamente
- * en :root sin distinguir light/dark. Cualquier elemento que rompa el
- * dark mode rompe la percepción de premium.
+ * Closer es oscuro por filosofía. Los tokens viven en :root sin distinguir
+ * claro/oscuro.
  */
 :root {
-  /* Fondos — negros con tinte cálido casi imperceptible */
-  --background: oklch(0.16 0.012 40);          /* #1a1612 aprox */
-  --foreground: oklch(0.97 0.005 80);          /* texto principal cálido */
-  --surface: oklch(0.20 0.014 40);             /* cards base */
-  --surface-elevated: oklch(0.235 0.016 40);   /* modales, popovers */
-  --card: oklch(0.20 0.014 40);
-  --card-foreground: oklch(0.97 0.005 80);
-  --popover: oklch(0.235 0.016 40);
-  --popover-foreground: oklch(0.97 0.005 80);
+  /* ═══ LA PALETA DE CLOSER — la única fuente de color de la app ═══ */
+  /* Fondos: azul marino casi negro, y tres niveles de profundidad */
+  --c-bg: #060A14;            --c-bg-rgb: 6 10 20;
+  --c-bg-glow: #0D1730;       /* resplandor sutil detrás de la entrada */
+  --c-surface: #0D1322;       --c-surface-rgb: 13 19 34;
+  --c-elevated: #151D31;      --c-elevated-rgb: 21 29 49;
+  --c-border: #212A3F;
+  --c-border-strong: #2D3852;
+  /* Texto */
+  --c-text: #F3F5F9;          --c-text-rgb: 243 245 249;
+  --c-text-soft: #C3C9D6;
+  --c-text-2: #8A93A8;        /* secundario: legible, sin morado */
+  /* Acción: el naranja de Closer. Solo para «avanza». */
+  --c-primary: #FF6B2B;       --c-primary-rgb: 255 107 43;
+  --c-primary-hover: #FF7D45;
+  /* El cliente (y la demostración): azul */
+  --c-client: #4DABF7;        --c-client-rgb: 77 171 247;
+  --c-client-soft: #9BD1FB;
+  /* Estados */
+  --c-success: #2DD4A0;       --c-success-rgb: 45 212 160;
+  --c-success-soft: #8EEBC8;
+  --c-danger: #F0506E;        --c-danger-rgb: 240 80 110;
+  --c-danger-soft: #FF9AA8;
+  --c-gold: #F2C14E;          --c-gold-rgb: 242 193 78;
+  --c-disabled-bg: #1A2236;
+  --c-disabled-text: #5E6880;
+
+  /* Tokens de los componentes base: apuntan a la paleta */
+  --background: var(--c-bg);
+  --foreground: var(--c-text);
+  --surface: var(--c-surface);
+  --surface-elevated: var(--c-elevated);
+  --card: var(--c-surface);
+  --card-foreground: var(--c-text);
+  --popover: var(--c-elevated);
+  --popover-foreground: var(--c-text);
 
   /* Naranja Closer — #FF6B2B */
-  --primary: oklch(0.71 0.19 38);              /* #FF6B2B */
-  --primary-foreground: oklch(0.16 0.012 40);  /* texto sobre naranja = fondo oscuro */
+  --primary: var(--c-primary);
+  --primary-foreground: var(--c-bg);           /* texto sobre naranja = fondo oscuro */
   --primary-glow: oklch(0.78 0.18 45);         /* halo más cálido */
-  --primary-soft: oklch(0.71 0.19 38 / 0.14);  /* fondo suave para chips/avisos */
+  --primary-soft: rgb(var(--c-primary-rgb) / 0.14);  /* fondo suave para chips/avisos */
 
   /* Secundarios neutrales */
-  --secondary: oklch(0.27 0.012 40);
-  --secondary-foreground: oklch(0.97 0.005 80);
-  --muted: oklch(0.24 0.010 40);
-  --muted-foreground: oklch(0.68 0.015 60);
-  --accent: oklch(0.27 0.014 40);
-  --accent-foreground: oklch(0.97 0.005 80);
+  --secondary: var(--c-elevated);
+  --secondary-foreground: var(--c-text);
+  --muted: var(--c-surface);
+  --muted-foreground: var(--c-text-2);
+  --accent: var(--c-elevated);
+  --accent-foreground: var(--c-text);
 
   /* Estados */
-  --success: oklch(0.74 0.15 150);             /* verde score 80+ */
-  --success-foreground: oklch(0.16 0.012 40);
-  --warning: oklch(0.82 0.15 80);              /* amarillo score 60-79 */
-  --warning-foreground: oklch(0.16 0.012 40);
-  --destructive: oklch(0.65 0.22 25);          /* rojo score <60 / errores */
-  --destructive-foreground: oklch(0.97 0.005 80);
+  --success: var(--c-success);                 /* verde score 80+ */
+  --success-foreground: var(--c-bg);
+  --warning: var(--c-gold);                    /* amarillo score 60-79 */
+  --warning-foreground: var(--c-bg);
+  --destructive: var(--c-danger);              /* rojo score <60 / errores */
+  --destructive-foreground: var(--c-text);
 
   /* Score colors (alias semánticos del feedback) */
-  --score-low: oklch(0.65 0.22 25);
-  --score-mid: oklch(0.82 0.15 80);
-  --score-high: oklch(0.74 0.15 150);
+  --score-low: var(--c-danger);
+  --score-mid: var(--c-gold);
+  --score-high: var(--c-success);
 
   /* Coach — acento azulado frío para diferenciarlo del primario.
      El coach es voz didáctica, no acción. No compite con naranja. */
-  --coach: oklch(0.72 0.12 230);
-  --coach-foreground: oklch(0.16 0.012 40);
+  --coach: var(--c-client);
+  --coach-foreground: var(--c-bg);
 
   /* Bordes */
-  --border: oklch(1 0 0 / 0.08);
-  --border-strong: oklch(1 0 0 / 0.16);
-  --input: oklch(1 0 0 / 0.10);
-  --ring: oklch(0.71 0.19 38 / 0.6);
+  --border: var(--c-border);
+  --border-strong: var(--c-border-strong);
+  --input: var(--c-border);
+  --ring: rgb(var(--c-primary-rgb) / 0.6);
 
   /* Gradientes */
-  --gradient-primary: linear-gradient(135deg, oklch(0.71 0.19 38) 0%, oklch(0.78 0.18 45) 100%);
-  --gradient-fire: linear-gradient(180deg, oklch(0.71 0.19 38) 0%, oklch(0.62 0.22 30) 100%);
-  --gradient-surface: linear-gradient(180deg, oklch(0.22 0.015 40) 0%, oklch(0.18 0.012 40) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--c-primary) 0%, oklch(0.78 0.18 45) 100%);
+  --gradient-fire: linear-gradient(180deg, var(--c-primary) 0%, oklch(0.62 0.22 30) 100%);
+  --gradient-surface: linear-gradient(180deg, var(--c-elevated) 0%, var(--c-surface) 100%);
 
   /* Sombras */
-  --shadow-orange: 0 10px 30px -8px oklch(0.71 0.19 38 / 0.45),
-                   0 4px 12px -4px oklch(0.71 0.19 38 / 0.3);
+  --shadow-orange: 0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45),
+                   0 4px 12px -4px rgb(var(--c-primary-rgb) / 0.3);
   --shadow-card: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px -12px oklch(0 0 0 / 0.5);
   --shadow-elevated: 0 24px 60px -20px oklch(0 0 0 / 0.7);
 
   --radius: 14px;
 
   /* Charts */
-  --chart-1: oklch(0.71 0.19 38);
-  --chart-2: oklch(0.74 0.15 150);
-  --chart-3: oklch(0.82 0.15 80);
-  --chart-4: oklch(0.72 0.12 230);
-  --chart-5: oklch(0.65 0.22 25);
+  --chart-1: var(--c-primary);
+  --chart-2: var(--c-success);
+  --chart-3: var(--c-gold);
+  --chart-4: var(--c-client);
+  --chart-5: var(--c-danger);
 
   /* Sidebar (manager dashboard, fase posterior) */
-  --sidebar: oklch(0.18 0.012 40);
-  --sidebar-foreground: oklch(0.97 0.005 80);
-  --sidebar-primary: oklch(0.71 0.19 38);
-  --sidebar-primary-foreground: oklch(0.16 0.012 40);
-  --sidebar-accent: oklch(0.24 0.014 40);
-  --sidebar-accent-foreground: oklch(0.97 0.005 80);
-  --sidebar-border: oklch(1 0 0 / 0.08);
-  --sidebar-ring: oklch(0.71 0.19 38 / 0.6);
+  --sidebar: var(--c-surface);
+  --sidebar-foreground: var(--c-text);
+  --sidebar-primary: var(--c-primary);
+  --sidebar-primary-foreground: var(--c-bg);
+  --sidebar-accent: var(--c-elevated);
+  --sidebar-accent-foreground: var(--c-text);
+  --sidebar-border: var(--c-border);
+  --sidebar-ring: rgb(var(--c-primary-rgb) / 0.6);
 }
 
 /* Mantenemos .dark por si shadcn lo referencia, con los mismos tokens */
@@ -217,7 +248,7 @@
 
   /* Selección con naranja */
   ::selection {
-    background: oklch(0.71 0.19 38 / 0.35);
+    background: rgb(var(--c-primary-rgb) / 0.35);
     color: var(--color-foreground);
   }
 }
@@ -270,8 +301,8 @@
  * Animaciones
  * ──────────────────────────────────────── */
 @keyframes pulse-orange {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.71 0.19 38 / 0.5); }
-  50% { box-shadow: 0 0 0 12px oklch(0.71 0.19 38 / 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.5); }
+  50% { box-shadow: 0 0 0 12px rgb(var(--c-primary-rgb) / 0); }
 }
 
 @keyframes fade-up {
@@ -295,8 +326,8 @@
 }
 
 @keyframes mic-pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.65 0.22 25 / 0.6); }
-  50% { transform: scale(1.06); box-shadow: 0 0 0 16px oklch(0.65 0.22 25 / 0); }
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(var(--c-danger-rgb) / 0.6); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 16px rgb(var(--c-danger-rgb) / 0); }
 }
 
 .animate-mic-pulse { animation: mic-pulse 1.4s ease-in-out infinite; }

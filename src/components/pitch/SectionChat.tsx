@@ -159,7 +159,7 @@ export function SectionChat({
               "whitespace-pre-wrap rounded-[10px] p-2.5 text-[13px] font-['DM_Sans']",
               m.role === "user"
                 ? "bg-white/[0.06] text-white/85"
-                : "bg-[#FF6B2B]/10 text-white/85",
+                : "bg-[var(--c-primary)]/10 text-white/85",
             ].join(" ")}
           >
             {m.content}
@@ -181,8 +181,8 @@ export function SectionChat({
       )}
 
       {reply?.propuesta && (
-        <div className="mt-2 rounded-[10px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3">
-          <div className="text-[11px] uppercase tracking-wide text-[#FF6B2B] font-['Syne'] font-bold">
+        <div className="mt-2 rounded-[10px] border border-[var(--c-primary)]/30 bg-[var(--c-primary)]/5 p-3">
+          <div className="text-[11px] uppercase tracking-wide text-[var(--c-primary)] font-['Syne'] font-bold">
             {reply.propuesta_label}
           </div>
           <p className="mt-1.5 whitespace-pre-wrap text-[13px] text-white/85 font-['DM_Sans']">
@@ -192,7 +192,7 @@ export function SectionChat({
             <button
               onClick={() => apply(reply.propuesta!, false)}
               disabled={applying}
-              className="rounded-[99px] bg-[#FF6B2B] px-3.5 py-1.5 text-[12px] font-['Syne'] font-bold text-black disabled:opacity-50"
+              className="rounded-[99px] bg-[var(--c-primary)] px-3.5 py-1.5 text-[12px] font-['Syne'] font-bold text-black disabled:opacity-50"
             >
               {applying
                 ? "Aplicando…"
@@ -251,12 +251,12 @@ export function SectionChat({
           }}
           rows={2}
           placeholder="Ej. quítale el descuento, o dilo con las palabras de mi gente"
-          className="min-h-[44px] flex-1 resize-y rounded-[10px] border border-white/10 bg-black/40 p-2 text-[13px] text-white/90 font-['DM_Sans'] outline-none focus:border-[#FF6B2B]/50"
+          className="min-h-[44px] flex-1 resize-y rounded-[10px] border border-white/10 bg-black/40 p-2 text-[13px] text-white/90 font-['DM_Sans'] outline-none focus:border-[var(--c-primary)]/50"
         />
         <button
           onClick={send}
           disabled={sending || !input.trim()}
-          className="rounded-[99px] bg-[#FF6B2B] p-2.5 text-black disabled:opacity-40"
+          className="rounded-[99px] bg-[var(--c-primary)] p-2.5 text-black disabled:opacity-40"
           aria-label="Enviar"
         >
           <Send className="h-4 w-4" />

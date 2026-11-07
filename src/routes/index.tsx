@@ -47,7 +47,7 @@ function SplashScreen() {
     <main
       className="fixed inset-0 flex flex-col items-center justify-center transition-opacity duration-[400ms] ease-out"
       style={{
-        backgroundColor: "#08080F",
+        backgroundColor: "var(--c-bg)",
         opacity: fadeOut ? 0 : 1,
       }}
     >
@@ -57,7 +57,7 @@ function SplashScreen() {
           fontFamily: "Syne, sans-serif",
           fontWeight: 800,
           fontSize: "2.8rem",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           letterSpacing: "-0.02em",
           opacity: logoIn ? 1 : 0,
           margin: 0,
@@ -71,7 +71,7 @@ function SplashScreen() {
           fontFamily: "'DM Sans', sans-serif",
           fontWeight: 400,
           fontSize: "0.84rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           marginTop: "8px",
           opacity: taglineIn ? 1 : 0,
         }}

@@ -91,7 +91,7 @@ function PitchesPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader title="Mis Pitches" />
       <div className="mx-auto w-full max-w-[560px] px-5 pt-2 pb-24">
         <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-6">Mis Pitches</h1>
@@ -141,7 +141,7 @@ function PitchesPage() {
                       key={p.id}
                       to="/pitches/$pitchId"
                       params={{ pitchId: p.id }}
-                      className="block rounded-[14px] border border-white/10 bg-white/[0.03] p-4 hover:border-[#FF6B2B]/50 transition-colors"
+                      className="block rounded-[14px] border border-white/10 bg-white/[0.03] p-4 hover:border-[var(--c-primary)]/50 transition-colors"
                     >
                       <div className="font-['Syne'] font-bold text-white">
                         {RELATIONSHIPS.find((r) => r.key === p.relationship)?.label ?? p.relationship}
@@ -188,7 +188,7 @@ function Selector({
             className={[
               "rounded-[99px] px-3 py-1.5 text-xs font-['DM_Sans'] border transition-colors",
               value === o.key
-                ? "border-[#FF6B2B] text-[#FF6B2B] bg-[#FF6B2B]/10"
+                ? "border-[var(--c-primary)] text-[var(--c-primary)] bg-[var(--c-primary)]/10"
                 : "border-white/10 text-white/60 hover:text-white",
             ].join(" ")}
           >

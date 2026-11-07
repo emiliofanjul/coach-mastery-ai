@@ -373,7 +373,7 @@ function MapaPage() {
       <main style={shellStyle}>
         <div
           style={{
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             fontFamily: "'DM Sans', sans-serif",
             paddingTop: "40vh",
             textAlign: "center",
@@ -394,7 +394,7 @@ function MapaPage() {
         rightExtras={
           <button
             onClick={() => setShowTutorial(true)}
-            className="rounded-full border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 px-3 py-1.5 text-[0.7rem] font-['DM_Sans'] font-semibold text-[#FF6B2B] hover:bg-[#FF6B2B]/20 transition-colors whitespace-nowrap"
+            className="rounded-full border border-[var(--c-primary)]/40 bg-[var(--c-primary)]/10 px-3 py-1.5 text-[0.7rem] font-['DM_Sans'] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-primary)]/20 transition-colors whitespace-nowrap"
           >
             ¿Cómo funciona?
           </button>
@@ -434,7 +434,7 @@ function MapaPage() {
                   position: "relative",
                   background: world.color ? `${world.color}14` : "transparent",
                   paddingBottom: 24,
-                  borderTop: "1px solid #15151F",
+                  borderTop: "1px solid var(--c-surface)",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -449,9 +449,9 @@ function MapaPage() {
                     gap: 8,
                     padding: "8px 14px",
                     borderRadius: 99,
-                    background: "rgba(26,26,38,0.9)",
-                    border: "1px solid #252535",
-                    color: "#5A5A8A",
+                    background: "rgb(var(--c-elevated-rgb) / 0.9)",
+                    border: "1px solid var(--c-border)",
+                    color: "var(--c-text-2)",
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: "0.75rem",
                   }}
@@ -474,7 +474,7 @@ function MapaPage() {
                   ? `${world.color}14`
                   : "transparent",
                 paddingBottom: 24,
-                borderTop: "1px solid #15151F",
+                borderTop: "1px solid var(--c-surface)",
               }}
             >
               <WorldHeader world={world} />
@@ -515,7 +515,7 @@ function MapaPage() {
                       <g key={`line-${node.id}`}>
                         <path
                           d={path}
-                          stroke="#252535"
+                          stroke="var(--c-border)"
                           strokeWidth={3}
                           fill="none"
                           strokeLinecap="round"
@@ -523,7 +523,7 @@ function MapaPage() {
                         {showOrangeStatic && (
                           <path
                             d={path}
-                            stroke="rgba(255,107,43,0.6)"
+                            stroke="rgb(var(--c-primary-rgb) / 0.6)"
                             strokeWidth={3}
                             fill="none"
                             strokeLinecap="round"
@@ -532,7 +532,7 @@ function MapaPage() {
                         {showOrangeAnimated && (
                           <path
                             d={path}
-                            stroke="rgba(255,107,43,0.85)"
+                            stroke="rgb(var(--c-primary-rgb) / 0.85)"
                             strokeWidth={3}
                             fill="none"
                             strokeLinecap="round"
@@ -632,8 +632,8 @@ function MapaPage() {
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 50,
-            background: "#1A1A26",
-            borderLeft: "3px solid #FF6B2B",
+            background: "var(--c-elevated)",
+            borderLeft: "3px solid var(--c-primary)",
             borderRadius: 12,
             padding: "12px 16px",
             display: "flex",
@@ -662,7 +662,7 @@ function MapaPage() {
               style={{
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "0.72rem",
-                color: "#9090B0",
+                color: "var(--c-text-soft)",
                 lineHeight: 1.3,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
@@ -678,12 +678,12 @@ function MapaPage() {
 
       <style>{`
         @keyframes pulseOrange {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.55); }
-          50% { box-shadow: 0 0 0 12px rgba(255,107,43,0); }
+          0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.55); }
+          50% { box-shadow: 0 0 0 12px rgb(var(--c-primary-rgb) / 0); }
         }
         @keyframes pulseGold {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255,209,102,0.55); }
-          50% { box-shadow: 0 0 0 14px rgba(255,209,102,0); }
+          0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-gold-rgb) / 0.55); }
+          50% { box-shadow: 0 0 0 14px rgb(var(--c-gold-rgb) / 0); }
         }
         @keyframes unlockFade {
           0% { opacity: 0; transform: translate(-50%, -8px); }
@@ -691,8 +691,8 @@ function MapaPage() {
           100% { opacity: 0; transform: translate(-50%, -8px); }
         }
         @keyframes glowPulse {
-          0% { box-shadow: 0 0 0 0 rgba(255,107,43,0.85), 0 0 24px 8px rgba(255,107,43,0.6); }
-          100% { box-shadow: 0 0 0 24px rgba(255,107,43,0), 0 0 0 0 rgba(255,107,43,0); }
+          0% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.85), 0 0 24px 8px rgb(var(--c-primary-rgb) / 0.6); }
+          100% { box-shadow: 0 0 0 24px rgb(var(--c-primary-rgb) / 0), 0 0 0 0 rgb(var(--c-primary-rgb) / 0); }
         }
         @keyframes checkBounce {
           0% { transform: scale(0); }
@@ -728,9 +728,9 @@ function MapaPage() {
           100% { transform: scale(1); }
         }
         @keyframes nextNodeGlow {
-          0% { box-shadow: 0 0 0 0 rgba(255,107,43,0); }
-          50% { box-shadow: 0 0 24px 8px rgba(255,107,43,0.7); }
-          100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.4); }
+          0% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0); }
+          50% { box-shadow: 0 0 24px 8px rgb(var(--c-primary-rgb) / 0.7); }
+          100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.4); }
         }
       `}</style>
     </main>
@@ -764,7 +764,7 @@ function WorldHeader({ world }: { world: World }) {
           fontFamily: "'DM Sans', sans-serif",
           fontWeight: 400,
           fontSize: "0.7rem",
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
           marginTop: 2,
           letterSpacing: "0.05em",
           textTransform: "uppercase",
@@ -778,7 +778,7 @@ function WorldHeader({ world }: { world: World }) {
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
             fontSize: "0.78rem",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             marginTop: 8,
             lineHeight: 1.35,
             maxWidth: 320,
@@ -844,48 +844,48 @@ function MapNode({
   };
 
   if (isBoss) {
-    styles.borderColor = "#FFD166";
+    styles.borderColor = "var(--c-gold)";
     if (status === "active") {
-      styles.background = "linear-gradient(135deg,#FF6B2B,#FFD166)";
+      styles.background = "linear-gradient(135deg,var(--c-primary),var(--c-gold))";
       styles.animation = "pulseGold 1.6s ease-in-out infinite";
     } else if (status === "completed") {
-      styles.background = "rgba(255,209,102,0.2)";
+      styles.background = "rgb(var(--c-gold-rgb) / 0.2)";
     } else if (status === "available") {
-      styles.background = "#1A1A26";
+      styles.background = "var(--c-elevated)";
       styles.opacity = 0.75;
     } else {
-      styles.background = "#111118";
+      styles.background = "var(--c-surface)";
       styles.opacity = 0.5;
     }
   } else {
     if (status === "active") {
-      styles.background = "#FF6B2B";
-      styles.borderColor = "#FF6B2B";
+      styles.background = "var(--c-primary)";
+      styles.borderColor = "var(--c-primary)";
       styles.animation = "pulseOrange 1.6s ease-in-out infinite";
     } else if (status === "completed") {
-      styles.background = "rgba(255,107,43,0.25)";
-      styles.borderColor = "#FF6B2B";
-      styles.boxShadow = "0 0 16px -4px rgba(255,107,43,0.4)";
+      styles.background = "rgb(var(--c-primary-rgb) / 0.25)";
+      styles.borderColor = "var(--c-primary)";
+      styles.boxShadow = "0 0 16px -4px rgb(var(--c-primary-rgb) / 0.4)";
     } else if (status === "available") {
-      styles.background = "#1F1F2E";
-      styles.borderColor = "#3A3A52";
+      styles.background = "var(--c-elevated)";
+      styles.borderColor = "var(--c-border-strong)";
       styles.opacity = 0.85;
     } else {
-      styles.background = "#111118";
-      styles.borderColor = "#1A1A26";
+      styles.background = "var(--c-surface)";
+      styles.borderColor = "var(--c-elevated)";
       styles.opacity = 0.5;
     }
   }
 
   // Mientras el siguiente sigue siendo "candado", lo pintamos como locked
   if (showLockOnNext) {
-    styles.background = "#111118";
-    styles.borderColor = "#1A1A26";
+    styles.background = "var(--c-surface)";
+    styles.borderColor = "var(--c-elevated)";
     styles.opacity = 0.5;
     styles.animation = undefined;
   } else if (lockShakingOut) {
-    styles.background = "#111118";
-    styles.borderColor = "#1A1A26";
+    styles.background = "var(--c-surface)";
+    styles.borderColor = "var(--c-elevated)";
     styles.animation = "lockShakeOut 0.4s ease-out forwards";
   } else if (nextNodeAppearing) {
     // Scale bounce + glow naranja + pulse activo encadenados
@@ -899,12 +899,12 @@ function MapNode({
   }
 
   let icon: React.ReactNode;
-  if (status === "locked" || showLockOnNext) icon = <Lock size={isBoss ? 22 : 18} color="#5A5A8A" />;
+  if (status === "locked" || showLockOnNext) icon = <Lock size={isBoss ? 22 : 18} color="var(--c-text-2)" />;
   else if (isBoss)
     icon = (
       <Trophy
         size={28}
-        color={status === "active" ? "#FFFFFF" : "#FFD166"}
+        color={status === "active" ? "#FFFFFF" : "var(--c-gold)"}
       />
     );
   else if (status === "completed") {
@@ -931,7 +931,7 @@ function MapNode({
     icon = (
       <Star
         size={20}
-        color={status === "active" ? "#FFFFFF" : "#5A5A8A"}
+        color={status === "active" ? "#FFFFFF" : "var(--c-text-2)"}
         fill={status === "active" ? "#FFFFFF" : "transparent"}
       />
     );
@@ -954,8 +954,8 @@ function MapNode({
             top: -14,
             left: "50%",
             transform: "translateX(-50%)",
-            background: "#FFD166",
-            color: "#08080F",
+            background: "var(--c-gold)",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
             fontSize: "0.55rem",
@@ -988,8 +988,8 @@ function MapNode({
             status === "active"
               ? "#FFFFFF"
               : status === "completed"
-                ? "#FF6B2B"
-                : "#5A5A8A",
+                ? "var(--c-primary)"
+                : "var(--c-text-2)",
           textAlign: "center",
           maxWidth: 90,
           lineHeight: 1.15,
@@ -1016,8 +1016,8 @@ function MapNode({
               <span
                 key={i}
                 style={{
-                  color: earned ? "#FFD166" : "rgba(255,255,255,0.15)",
-                  filter: earned ? "drop-shadow(0 0 4px #FFD166)" : undefined,
+                  color: earned ? "var(--c-gold)" : "rgba(255,255,255,0.15)",
+                  filter: earned ? "drop-shadow(0 0 4px var(--c-gold))" : undefined,
                   display: "inline-block",
                   opacity: visible ? 1 : 0,
                   transform: visible ? "scale(1)" : "scale(0)",
@@ -1057,8 +1057,8 @@ function NodeSheet({
       <SheetContent
         side="bottom"
         style={{
-          background: "#0B0B12",
-          border: "1px solid #252535",
+          background: "var(--c-surface)",
+          border: "1px solid var(--c-border)",
           borderBottom: "none",
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
@@ -1107,7 +1107,7 @@ function NodeSheetBody({
           <SheetDescription
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              color: "#5A5A8A",
+              color: "var(--c-text-2)",
               textAlign: "center",
             }}
           >
@@ -1125,7 +1125,7 @@ function NodeSheetBody({
     return (
       <div style={{ padding: "1rem 0.5rem", textAlign: "center" }}>
         {node.is_boss && (
-          <div style={{ fontFamily: "Syne, sans-serif", color: "#FFD166", fontWeight: 800, fontSize: "0.75rem", letterSpacing: "0.15em", marginBottom: 8 }}>
+          <div style={{ fontFamily: "Syne, sans-serif", color: "var(--c-gold)", fontWeight: 800, fontSize: "0.75rem", letterSpacing: "0.15em", marginBottom: 8 }}>
             {etiquetaBoss(worldName)}
           </div>
         )}
@@ -1143,7 +1143,7 @@ function NodeSheetBody({
           <SheetDescription
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              color: "#9090B0",
+              color: "var(--c-text-soft)",
               textAlign: "center",
               fontSize: "0.85rem",
             }}
@@ -1165,7 +1165,7 @@ function NodeSheetBody({
             <span
               key={i}
               style={{
-                color: i < node.stars ? "#FFD166" : "rgba(255,255,255,0.15)",
+                color: i < node.stars ? "var(--c-gold)" : "rgba(255,255,255,0.15)",
               }}
             >
               ★
@@ -1191,7 +1191,7 @@ function NodeSheetBody({
     ? {
         padding: "1rem 0.5rem",
         background:
-          "linear-gradient(180deg, rgba(255,209,102,0.08) 0%, transparent 100%)",
+          "linear-gradient(180deg, rgb(var(--c-gold-rgb) / 0.08) 0%, transparent 100%)",
         margin: "-24px -24px 0",
         paddingTop: 32,
         paddingLeft: 24,
@@ -1206,7 +1206,7 @@ function NodeSheetBody({
         <div
           style={{
             fontFamily: "Syne, sans-serif",
-            color: "#FFD166",
+            color: "var(--c-gold)",
             fontWeight: 800,
             fontSize: "0.75rem",
             letterSpacing: "0.15em",
@@ -1231,7 +1231,7 @@ function NodeSheetBody({
         <SheetDescription
           style={{
             fontFamily: "'DM Sans', sans-serif",
-            color: "#9090B0",
+            color: "var(--c-text-soft)",
             textAlign: "center",
             marginTop: 4,
           }}
@@ -1250,7 +1250,7 @@ function NodeSheetBody({
           style={{
             marginTop: 16,
             fontFamily: "Syne, sans-serif",
-            color: "#FFD166",
+            color: "var(--c-gold)",
             fontSize: "1rem",
             fontWeight: 600,
           }}
@@ -1272,11 +1272,11 @@ function NodeSheetBody({
 // ───────────────────────── Difficulty Meter ─────────────────────────
 
 function difficultyColor(worldId: number): string {
-  if (worldId <= 1) return "#06D6A0";
-  if (worldId <= 3) return "#FFD166";
-  if (worldId <= 5) return "#FF6B2B";
-  if (worldId <= 7) return "#EF476F";
-  return "#B57BEE";
+  if (worldId <= 1) return "var(--c-success)";
+  if (worldId <= 3) return "var(--c-gold)";
+  if (worldId <= 5) return "var(--c-primary)";
+  if (worldId <= 7) return "var(--c-danger)";
+  return "var(--c-danger)";
 }
 
 function DifficultyMeter({
@@ -1306,7 +1306,7 @@ function DifficultyMeter({
               width: 10,
               height: 10,
               borderRadius: "50%",
-              background: i <= safe ? color : "#252535",
+              background: i <= safe ? color : "var(--c-border)",
             }}
           />
         ))}
@@ -1316,7 +1316,7 @@ function DifficultyMeter({
           fontFamily: "'DM Sans', sans-serif",
           fontSize: "0.68rem",
           fontWeight: 400,
-          color: "#5A5A8A",
+          color: "var(--c-text-2)",
         }}
       >
         Dificultad {safe}/5
@@ -1329,7 +1329,7 @@ function DifficultyMeter({
 
 const shellStyle: React.CSSProperties = {
   minHeight: "100vh",
-  background: "#08080F",
+  background: "var(--c-bg)",
   color: "#FFFFFF",
   paddingBottom: "4rem",
 };

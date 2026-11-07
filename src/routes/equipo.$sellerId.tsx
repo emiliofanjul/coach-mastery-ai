@@ -247,15 +247,15 @@ function SellerDetailPage() {
 
 
   if (loading) {
-    return <div className="min-h-screen bg-[#08080F] text-white grid place-items-center"><div className="text-white/60 font-['DM_Sans']">Cargando…</div></div>;
+    return <div className="min-h-screen bg-[var(--c-bg)] text-white grid place-items-center"><div className="text-white/60 font-['DM_Sans']">Cargando…</div></div>;
   }
   if (denied || !seller) {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white grid place-items-center px-6 text-center">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white grid place-items-center px-6 text-center">
         <div>
           <div className="font-['Syne'] text-2xl font-bold mb-2">Sin acceso</div>
           <div className="text-white/60 font-['DM_Sans'] mb-4">Este vendedor no pertenece a tu empresa o no tienes rol de manager.</div>
-          <Button onClick={() => navigate({ to: "/equipo" })} className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px]">
+          <Button onClick={() => navigate({ to: "/equipo" })} className="bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px]">
             Volver al equipo
           </Button>
         </div>
@@ -267,7 +267,7 @@ function SellerDetailPage() {
   const pctMap = Math.round((doneCount / totalNodes) * 100);
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader title="Vendedor" back={{ to: "/equipo", label: "Volver a equipo" }} />
       <div className="mx-auto w-full max-w-[720px] px-5 pt-2 pb-24">
         <Link to="/equipo" className="text-white/60 hover:text-white sm:hidden flex items-center gap-2 text-sm font-['DM_Sans'] mb-4">
@@ -284,7 +284,7 @@ function SellerDetailPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="font-['Syne'] text-2xl font-black truncate">{seller.full_name ?? "Sin nombre"}</h1>
                 {seller.certified_at && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-[#FF6B2B]/20 text-[#FF6B2B] text-xs px-2 py-0.5 font-['DM_Sans']">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[var(--c-primary)]/20 text-[var(--c-primary)] text-xs px-2 py-0.5 font-['DM_Sans']">
                     <Trophy className="h-3 w-3" /> Certificado Closer
                   </span>
                 )}
@@ -295,7 +295,7 @@ function SellerDetailPage() {
               <div className="mt-3 flex items-center gap-4 text-sm font-['DM_Sans']">
                 <span className="text-white/70">{pctMap}% del mapa</span>
                 <span className="inline-flex items-center gap-1 text-white/70">
-                  <Flame className="h-4 w-4 text-[#FF6B2B]" /> {seller.streak_days} d
+                  <Flame className="h-4 w-4 text-[var(--c-primary)]" /> {seller.streak_days} d
                 </span>
               </div>
             </div>
@@ -303,11 +303,11 @@ function SellerDetailPage() {
         </section>
 
         {/* Coaching AI */}
-        <section className="rounded-[14px] border border-[#FF6B2B]/30 bg-gradient-to-br from-[#FF6B2B]/10 to-white/[0.02] p-5 mb-6">
+        <section className="rounded-[14px] border border-[var(--c-primary)]/30 bg-gradient-to-br from-[var(--c-primary)]/10 to-white/[0.02] p-5 mb-6">
           <div className="flex items-center justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#FF6B2B]" />
-              <div className="text-xs uppercase tracking-widest text-[#FF6B2B] font-['DM_Sans'] font-bold">Recomendación de coaching</div>
+              <Sparkles className="h-4 w-4 text-[var(--c-primary)]" />
+              <div className="text-xs uppercase tracking-widest text-[var(--c-primary)] font-['DM_Sans'] font-bold">Recomendación de coaching</div>
             </div>
             {coachRec ? (
               <button
@@ -323,7 +323,7 @@ function SellerDetailPage() {
               <button
                 onClick={regenerateCoach}
                 disabled={coachLoading}
-                className="inline-flex items-center gap-1 rounded-full bg-[#FF6B2B] hover:bg-[#ff7a42] px-3 py-1 text-xs font-['DM_Sans'] font-bold text-white disabled:opacity-60"
+                className="inline-flex items-center gap-1 rounded-full bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] px-3 py-1 text-xs font-['DM_Sans'] font-bold text-white disabled:opacity-60"
               >
                 <Sparkles className="h-3 w-3" />
                 {coachLoading ? "Generando…" : "Generar"}
@@ -341,7 +341,7 @@ function SellerDetailPage() {
               {coachRec.plan.length > 0 && (
                 <div>
                   <div className="text-xs uppercase tracking-widest text-white/40 font-['DM_Sans'] mb-1.5">Plan de campo</div>
-                  <ol className="flex flex-col gap-1.5 list-decimal list-inside marker:text-[#FF6B2B]">
+                  <ol className="flex flex-col gap-1.5 list-decimal list-inside marker:text-[var(--c-primary)]">
                     {coachRec.plan.map((step, i) => (
                       <li key={i} className="text-sm font-['DM_Sans'] text-white/85">{step}</li>
                     ))}
@@ -458,7 +458,7 @@ function SkillList({ title, items, tone }: { title: string; items: Array<{ id: s
 
 function SkillBar({ name, value }: { name: string; value: number }) {
   const pct = Math.max(0, Math.min(100, value));
-  const color = pct >= 80 ? "bg-green-500" : pct >= 50 ? "bg-[#FF6B2B]" : "bg-red-500";
+  const color = pct >= 80 ? "bg-green-500" : pct >= 50 ? "bg-[var(--c-primary)]" : "bg-red-500";
   return (
     <div>
       <div className="flex items-center justify-between text-xs font-['DM_Sans'] text-white/70 mb-1">
@@ -519,7 +519,7 @@ function EventItem({
           <div className="font-['Syne'] font-bold text-lg">{score ?? "—"}</div>
           <div className="flex">
             {[1, 2, 3].map((i) => (
-              <Star key={i} className={`h-3.5 w-3.5 ${i <= stars ? "text-[#FF6B2B] fill-[#FF6B2B]" : "text-white/20"}`} />
+              <Star key={i} className={`h-3.5 w-3.5 ${i <= stars ? "text-[var(--c-primary)] fill-[var(--c-primary)]" : "text-white/20"}`} />
             ))}
           </div>
           {open ? <ChevronDown className="h-4 w-4 text-white/40" /> : <ChevronRight className="h-4 w-4 text-white/40" />}
@@ -549,7 +549,7 @@ function EventItem({
                   const isSeller = /vend|seller|closer|user|me/i.test(t.role);
                   return (
                     <div key={i} className="text-xs">
-                      <div className={`uppercase tracking-widest text-[10px] mb-0.5 ${isSeller ? "text-[#FF6B2B]" : "text-white/40"}`}>
+                      <div className={`uppercase tracking-widest text-[10px] mb-0.5 ${isSeller ? "text-[var(--c-primary)]" : "text-white/40"}`}>
                         {t.role}
                       </div>
                       <div className="text-white/80 whitespace-pre-wrap">{t.text}</div>
@@ -586,7 +586,7 @@ function EventItem({
                       )}
                     </div>
                     {o.error && <div className="text-white/80 text-xs mb-1"><b className="text-red-300">Qué pasó:</b> {o.error}</div>}
-                    {o.mejora && <div className="text-white/80 text-xs mb-1"><b className="text-[#FF6B2B]">Mejora:</b> {o.mejora}</div>}
+                    {o.mejora && <div className="text-white/80 text-xs mb-1"><b className="text-[var(--c-primary)]">Mejora:</b> {o.mejora}</div>}
                     {o.ejemplo && <div className="text-white/70 text-xs italic">Ejemplo: {o.ejemplo}</div>}
                   </div>
                 ))}
@@ -610,7 +610,7 @@ function EventItem({
           {mision && (
             <div>
               <div className="text-xs uppercase tracking-widest text-white/40 mb-1">Misión</div>
-              <div className="text-white/80 text-xs bg-[#FF6B2B]/10 border border-[#FF6B2B]/20 rounded-[10px] p-3">{mision}</div>
+              <div className="text-white/80 text-xs bg-[var(--c-primary)]/10 border border-[var(--c-primary)]/20 rounded-[10px] p-3">{mision}</div>
             </div>
           )}
         </div>
@@ -666,9 +666,9 @@ function ReproductorPorTurnos({ src, turnos }: { src: string; turnos: TurnoAudio
             <button
               key={`${t.turno}-${i}`}
               onClick={() => escuchar(t)}
-              className={`text-left rounded-[10px] border px-3 py-2 flex items-start gap-2 transition-colors ${activo === t.turno ? "border-[#FF6B2B] bg-[#FF6B2B]/10" : "border-white/10 bg-black/20 hover:bg-white/[0.04]"}`}
+              className={`text-left rounded-[10px] border px-3 py-2 flex items-start gap-2 transition-colors ${activo === t.turno ? "border-[var(--c-primary)] bg-[var(--c-primary)]/10" : "border-white/10 bg-black/20 hover:bg-white/[0.04]"}`}
             >
-              <span className="text-[#FF6B2B] text-xs mt-0.5">{activo === t.turno ? "❚❚" : "▶"}</span>
+              <span className="text-[var(--c-primary)] text-xs mt-0.5">{activo === t.turno ? "❚❚" : "▶"}</span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[10px] uppercase tracking-widest text-white/40">
                   Turno {i + 1} · {mmss(t.inicio_seg)}–{mmss(t.fin_seg)}
