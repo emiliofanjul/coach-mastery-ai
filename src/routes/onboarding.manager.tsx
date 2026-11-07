@@ -39,6 +39,10 @@ export const Route = createFileRoute("/onboarding/manager")({
     meta: [
       { title: "Configura tu empresa — Closer" },
       { name: "description", content: "Cuéntale a Closer cómo es tu empresa." },
+      {"property": "og:title", "content": "Configura tu empresa — Closer"},
+      {"property": "og:description", "content": "Cuéntale a Closer cómo es tu empresa."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: ManagerOnboarding,

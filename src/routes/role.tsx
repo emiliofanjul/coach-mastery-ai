@@ -9,6 +9,10 @@ export const Route = createFileRoute("/role")({
     meta: [
       { title: "¿Cómo quieres entrar? — Closer" },
       { name: "description", content: "Elige cómo entrar a Closer: individual, manager o vendedor invitado." },
+      {"property": "og:title", "content": "¿Cómo quieres entrar? — Closer"},
+      {"property": "og:description", "content": "Elige cómo entrar a Closer: individual, manager o vendedor invitado."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: RoleScreen,

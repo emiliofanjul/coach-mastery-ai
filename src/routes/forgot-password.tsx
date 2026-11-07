@@ -16,6 +16,10 @@ export const Route = createFileRoute("/forgot-password")({
     meta: [
       { title: "Recupera tu contraseña — Closer" },
       { name: "description", content: "Te enviamos un enlace para restablecer tu contraseña." },
+      {"property": "og:title", "content": "Recupera tu contraseña — Closer"},
+      {"property": "og:description", "content": "Te enviamos un enlace para restablecer tu contraseña."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: ForgotPasswordScreen,

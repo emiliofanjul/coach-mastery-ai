@@ -126,7 +126,8 @@ function AsiFunciona() {
           ref={cuadro}
           aria-hidden
           style={{
-            height: "min(360px, 36dvh)",
+            // 155-B: más bajito en teléfonos chicos (375×568: 200 px; 667: 220 px; 844: 326 px). La muestra se achica sola.
+            height: "min(360px, max(200px, 60dvh - 180px))",
             marginTop: 8,
             borderRadius: 28,
             background: "radial-gradient(120% 90% at 50% 0%, rgb(var(--c-client-rgb) / 0.07) 0%, rgb(var(--c-client-rgb) / 0) 60%), var(--c-surface)",
@@ -152,7 +153,8 @@ function AsiFunciona() {
           <p style={{ ...estiloTexto, fontSize: "clamp(15px, 2.4dvh, 17px)", marginTop: 12 }}>{p.texto}</p>
         </div>
 
-        <div style={{ marginTop: "auto", paddingTop: 24 }}>
+        {/* 155-B: pegado abajo, como en la bienvenida: en pantallas bajitas el botón nunca se esconde. */}
+        <div style={{ position: "sticky", bottom: 0, zIndex: 2, marginTop: "auto", paddingTop: 24, paddingBottom: "calc(24px + env(safe-area-inset-bottom))", background: "linear-gradient(to top, var(--c-bg) 72%, rgb(var(--c-bg-rgb) / 0))" }}>
           <div aria-label={`Pantalla ${i + 1} de ${PASOS.length}`} style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 20 }}>
             {PASOS.map((_, k) => (
               <span key={k} style={{ height: 6, borderRadius: 3, transition: "width 300ms ease, background 300ms ease", width: k === i ? 22 : 6, background: k === i ? "var(--c-primary)" : "var(--c-border-strong)" }} />
@@ -316,5 +318,5 @@ const shell: React.CSSProperties = {
   color: "var(--c-text)",
   display: "flex",
   flexDirection: "column",
-  padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) calc(24px + env(safe-area-inset-bottom))",
+  padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) 0",
 };

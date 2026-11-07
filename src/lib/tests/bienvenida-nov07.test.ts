@@ -37,6 +37,10 @@ describe("La bienvenida (cuatro pantallas)", () => {
   it("el nombre se escribe a 16 px o más (el iPhone no hace zoom)", () => {
     expect(seller).toMatch(/aria-label="Tu nombre"[\s\S]{0,900}fontSize: 18/);
   });
+  it("en pantallas bajitas (375×568) el botón principal se queda pegado abajo, siempre visible (155-B)", () => {
+    expect(seller).toMatch(/const ESTILO_ABAJO: React\.CSSProperties = \{\s*position: "sticky",\s*bottom: 0,/);
+    expect(asi).toMatch(/<div style=\{\{ position: "sticky", bottom: 0,/);
+  });
   it("sin el menú flotante mientras se responde la bienvenida", () => {
     expect(shell).toContain('!pathname.startsWith("/onboarding")');
   });

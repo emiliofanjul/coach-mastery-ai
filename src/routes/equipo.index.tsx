@@ -7,7 +7,13 @@ import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/equipo/")({
-  head: () => ({ meta: [{ title: "Equipo — Closer" }] }),
+  head: () => ({ meta: [{ title: "Equipo — Closer" },
+      {"name": "description", "content": "Avance y entrenamiento de tu equipo de ventas en Closer."},
+      {"property": "og:title", "content": "Equipo — Closer"},
+      {"property": "og:description", "content": "Avance y entrenamiento de tu equipo de ventas en Closer."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
+    ] }),
   component: EquipoPage,
 });
 

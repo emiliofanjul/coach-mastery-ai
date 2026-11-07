@@ -13,6 +13,10 @@ export const Route = createFileRoute("/mi-perfil")({
     meta: [
       { title: "Mi Perfil — Closer" },
       { name: "description", content: "Tu cuenta en Closer y opciones para unirte a una empresa." },
+      {"property": "og:title", "content": "Mi Perfil — Closer"},
+      {"property": "og:description", "content": "Tu cuenta en Closer y opciones para unirte a una empresa."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: MiPerfilPage,

@@ -16,6 +16,10 @@ export const Route = createFileRoute("/reset-password")({
     meta: [
       { title: "Nueva contraseña — Closer" },
       { name: "description", content: "Crea una nueva contraseña para tu cuenta." },
+      {"property": "og:title", "content": "Nueva contraseña — Closer"},
+      {"property": "og:description", "content": "Crea una nueva contraseña para tu cuenta."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: ResetPasswordScreen,

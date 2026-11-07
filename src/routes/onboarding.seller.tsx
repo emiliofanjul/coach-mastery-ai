@@ -467,10 +467,23 @@ function PersonalMessage({
   );
 }
 
-/** El botón principal siempre abajo, con su espacio. */
+/**
+ * El botón principal siempre abajo, con su espacio. Mensaje 155-B: en pantallas bajitas (375×568) el
+ * contenido no cabe; el botón se queda pegado abajo, siempre visible, y el texto se desliza detrás.
+ */
 function Abajo({ children }: { children: React.ReactNode }) {
-  return <div style={{ marginTop: "auto", paddingTop: 28 }}>{children}</div>;
+  return <div style={ESTILO_ABAJO}>{children}</div>;
 }
+
+const ESTILO_ABAJO: React.CSSProperties = {
+  position: "sticky",
+  bottom: 0,
+  zIndex: 2,
+  marginTop: "auto",
+  paddingTop: 20,
+  paddingBottom: "calc(24px + env(safe-area-inset-bottom))",
+  background: "linear-gradient(to top, var(--c-bg) 72%, rgb(var(--c-bg-rgb) / 0))",
+};
 
 const shellStyle: React.CSSProperties = {
   minHeight: "100dvh",
@@ -479,5 +492,6 @@ const shellStyle: React.CSSProperties = {
   color: "var(--c-text)",
   display: "flex",
   flexDirection: "column",
-  padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) calc(24px + env(safe-area-inset-bottom))",
+  // Abajo, el espacio lo pone el botón pegado (ESTILO_ABAJO).
+  padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) 0",
 };
