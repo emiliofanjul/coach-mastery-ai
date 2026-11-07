@@ -4,7 +4,7 @@
 - [x] Mensaje 154: aplicar una vez los catorce archivos con huellas exactas y retirar las dos entregas.
 - [x] Mensaje 154: 1145 pruebas en 94 archivos y compilación automática sin errores.
 - [x] Mensaje 154: tres pantallas, regreso al mapa y acceso desde el menú comprobados con sesión Emilio en 390x700; cero errores de página.
-- [ ] Mensaje 154: publicar si pasa la comprobación final; solo información de compartir adicional a la entrega exacta.
+- [x] Mensaje 154: publicación solicitada para closerapp.ai; disponibilidad final aún no confirmada. Solo información de compartir adicional a la entrega exacta; sin cambios de base de datos ni funciones.
 - [ ] Mensaje 154: bienvenida completa, globo y pistas en cuenta nueva: comprobación de Emilio en iPhone tras publicar.
 
 - [x] Mensaje 153: Paso 0, 1130/1130 en 92 archivos y MD5 de práctica exacto.
