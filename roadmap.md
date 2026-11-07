@@ -1,8 +1,9 @@
 # Roadmap
 
 - [x] Mensaje 153: Paso 0, 1130/1130 en 92 archivos y MD5 de práctica exacto.
-- [ ] Mensaje 153: aplicar una vez los siete archivos con huellas exactas y retirar entregas.
-- [ ] Mensaje 153: 1135/93, compilación y demostración completa con sesión Emilio; publicar si pasa.
+- [x] Mensaje 153: script una vez, siete archivos con MD5 exacto; entregas retiradas.
+- [x] Mensaje 153: 1135/1135 en 93 archivos, build automático OK; demostración 4.2 completa en 390x700, franja estable y botón debajo, transición funciona, cero errores de página.
+- [ ] Mensaje 153: publicar los cambios verificados; zoom del chat y camino al fallar quedan para Emilio en iPhone.
 
 - [x] Mensaje 149: Paso 0, 1104/1104 en 89 archivos; 1.0 y 3.6 exactos; tres MD5 entregados coinciden.
 - [x] Mensaje 149: Paso 1, SQL íntegro en una sola ejecución mediante herramienta de datos; chequeo final pasó a la primera; consulta 1.0/3.6/4.7 exacta.
