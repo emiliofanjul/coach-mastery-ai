@@ -10,7 +10,7 @@
  * Solo cambia cómo se ve. La voz, los turnos y la calificación siguen en nodo.$nodeId.practica.tsx.
  * Colores y medidas: de src/styles.css (--c-…), como todas las pantallas.
  */
-import { useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 
 // ─── La voz de quien te habla (mensaje 151-B, 7-nov, Emilio en su iPhone) ───
 // Antes, el texto del cliente salía completo de golpe y los anillos «levitaban» parejo, sin seguir el audio.
@@ -204,11 +204,13 @@ export const ESTILOS_PRACTICA = `
 @keyframes practicaOndaB{0%,100%{transform:scale(1.02)}30%{transform:scale(1.09)}55%{transform:scale(1.03)}80%{transform:scale(1.11)}}
 @keyframes practicaInvita{0%,100%{box-shadow:0 0 0 0 rgb(var(--c-primary-rgb) / 0.42)}50%{box-shadow:0 0 0 14px rgb(var(--c-primary-rgb) / 0)}}
 @keyframes practicaPensando{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes practicaGira{to{transform:rotate(360deg)}}
+.practica-gira{animation:practicaGira .9s linear infinite}
 .practica-onda-a{animation:practicaOndaA 1.4s ease-in-out infinite}
 .practica-onda-b{animation:practicaOndaB 1.7s ease-in-out infinite}
 .practica-mic-invita{animation:practicaInvita 2.4s ease-out infinite}
 .practica-pensando{animation:practicaPensando 1.4s ease-in-out infinite}
-@media (prefers-reduced-motion: reduce){.practica-onda-a,.practica-onda-b,.practica-mic-invita,.practica-pensando{animation:none !important}}
+@media (prefers-reduced-motion: reduce){.practica-onda-a,.practica-onda-b,.practica-mic-invita,.practica-pensando,.practica-gira{animation:none !important}}
 `;
 
 /** El cliente al centro: iniciales en azul, su nombre, su negocio y qué está pasando. */
@@ -420,6 +422,123 @@ export function BotonMicrofono({
           <IconoMicrofono tam={34} color={toca ? "#FFFFFF" : "var(--c-disabled-text)"} />
         )}
       </button>
+    </div>
+  );
+}
+
+// ─── El análisis y la calificación (Fase 4, mensaje 152) ───
+
+/**
+ * La frase bajo las estrellas. Dice lo que el vendedor logró, no lo que «pasa solo» (Emilio, 7-nov):
+ * «desbloqueaste», no «se abre». Solo habla de desbloquear cuando de verdad desbloqueó algo hoy:
+ * no si ya lo había pasado antes, ni en la certificación (que es el final del mapa).
+ */
+export function lineaDeEstrellas(estrellas: number, o: { yaLoHabiaPasado: boolean; esReto: boolean; esElUltimo: boolean }): string {
+  const desbloquea = !o.yaLoHabiaPasado && !o.esElUltimo;
+  const siguiente = o.esReto ? "el siguiente mundo" : "el siguiente nodo";
+  if (estrellas >= 3) return desbloquea ? `Tres estrellas: lo dominaste y desbloqueaste ${siguiente}.` : "Tres estrellas: lo dominaste.";
+  if (estrellas === 2) return desbloquea ? `Dos estrellas: desbloqueaste ${siguiente}.` : "Dos estrellas.";
+  if (estrellas === 1) return o.yaLoHabiaPasado ? "Una estrella esta vez. Las que ya tenías se quedan." : `Una estrella. Con dos desbloqueas ${siguiente}.`;
+  return o.yaLoHabiaPasado ? "Sin estrellas esta vez. Las que ya tenías se quedan." : "Sin estrellas esta vez. Vuelve a intentarlo cuando quieras.";
+}
+
+/**
+ * La calificación dentro de su anillo: el número sube de 0 a la calificación (900 ms) y el anillo se llena con él.
+ * El número va solo, sin «de 100», para quedar centrado de verdad dentro del círculo.
+ */
+export function AnilloCalificacion({ calificacion, tam = 172 }: { calificacion: number; tam?: number }) {
+  const [valor, setValor] = useState(0);
+  useEffect(() => {
+    const meta = Math.max(0, Math.min(100, Math.round(calificacion)));
+    const quieto = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (quieto) { setValor(meta); return; }
+    const t0 = performance.now();
+    let raf = 0;
+    const paso = (ahora: number) => {
+      const k = Math.min(1, (ahora - t0) / 900);
+      setValor(Math.round(meta * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) raf = requestAnimationFrame(paso);
+    };
+    raf = requestAnimationFrame(paso);
+    return () => cancelAnimationFrame(raf);
+  }, [calificacion]);
+  const r = 70;
+  const largo = 2 * Math.PI * r;
+  return (
+    <div role="img" aria-label={`Calificación: ${Math.round(calificacion)} de 100`} style={{ position: "relative", width: tam, height: tam, margin: "0 auto" }}>
+      <svg width={tam} height={tam} viewBox="0 0 156 156" aria-hidden style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }}>
+        <circle cx="78" cy="78" r={r} fill="none" stroke="var(--c-elevated)" strokeWidth="7" />
+        <circle cx="78" cy="78" r={r} fill="none" stroke="var(--c-primary)" strokeWidth="7" strokeLinecap="round" strokeDasharray={largo} strokeDashoffset={largo * (1 - valor / 100)} />
+      </svg>
+      <div aria-hidden style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: Math.round(tam * 0.256), lineHeight: 1, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>{valor}</span>
+      </div>
+    </div>
+  );
+}
+
+/** Lo que se está revisando: una palomita al terminar cada cosa; la actual gira. */
+export function ListaRevision({ pasos, actual }: { pasos: string[]; actual: number }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", padding: "6px 16px", borderRadius: "var(--r-tarjeta)", background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
+      {pasos.map((texto, k) => {
+        const hecho = k < actual;
+        const ahora = k === actual;
+        return (
+          <div key={texto} style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
+            <span
+              aria-hidden
+              className={ahora ? "practica-gira" : undefined}
+              style={{
+                width: 22,
+                height: 22,
+                flex: "none",
+                borderRadius: 11,
+                boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                ...(hecho ? { background: "var(--c-success)" } : ahora ? { border: "2px solid var(--c-border)", borderTopColor: "var(--c-primary)" } : { border: "2px solid var(--c-border)" }),
+              }}
+            >
+              {hecho && (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--c-bg)" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              )}
+            </span>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.35, color: hecho ? "var(--c-text-soft)" : ahora ? "var(--c-text)" : "var(--c-disabled-text)", fontWeight: ahora ? 600 : 400 }}>{texto}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** La conversación completa como burbujas: tú a la derecha (naranja), el cliente a la izquierda (azul). */
+export function DialogoCompleto({ turnos }: { turnos: { quien: string; esTuyo: boolean; texto: string }[] }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {turnos.map((t, i) => (
+        <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: t.esTuyo ? "flex-end" : "flex-start" }}>
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, color: t.esTuyo ? "var(--c-primary)" : "var(--c-client)" }}>{t.quien}</div>
+          <div
+            style={{
+              maxWidth: "84%",
+              padding: "10px 14px",
+              borderRadius: 16,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 15,
+              lineHeight: 1.45,
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              ...(t.esTuyo
+                ? { background: "var(--c-elevated)", color: "var(--c-text)", borderTopRightRadius: 6 }
+                : { background: "var(--c-surface)", border: "1px solid var(--c-border)", color: "var(--c-text-soft)", borderTopLeftRadius: 6 }),
+            }}
+          >
+            {t.texto}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

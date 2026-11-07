@@ -14,8 +14,8 @@ import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
 import RetryScreen from "@/components/RetryScreen";
-import { estiloBoton } from "@/components/closer/piezas";
-import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, FranjaVozAgente, BotonMicrofono, vozDelAgente, envolventeDe, PASO_ENVOLVENTE } from "@/components/closer/practica-ui";
+import { estiloBoton, Estrella } from "@/components/closer/piezas";
+import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, FranjaVozAgente, BotonMicrofono, vozDelAgente, envolventeDe, PASO_ENVOLVENTE, lineaDeEstrellas, AnilloCalificacion, ListaRevision, DialogoCompleto } from "@/components/closer/practica-ui";
 
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
@@ -128,6 +128,8 @@ function PracticaPage() {
   const [nodeData, setNodeData] = useState<any>(null);
   // El nombre claro del nodo y sus minutos (los del mapa, mensaje 147). Van aparte porque la vista
   // v_nodes_resueltos no trae esas dos columnas.
+  // Si este nodo ya estaba pasado antes de esta práctica (para no decir «desbloqueaste» de algo ya abierto).
+  const [yaLoHabiaPasado, setYaLoHabiaPasado] = useState(false);
   const [infoMapa, setInfoMapa] = useState<{ nombre_corto: string | null; minutos_estimados: number | null } | null>(null);
   const [companyData, setCompanyData] = useState<any>(null);
   const [skillsContext, setSkillsContext] = useState<any>(null);
@@ -453,6 +455,7 @@ function PracticaPage() {
         const doneRows = await restGet<{ node_id: string }>(
           `node_progress?select=node_id&seller_id=eq.${seller.id}&status=eq.done`,
         );
+        setYaLoHabiaPasado((doneRows ?? []).some((r) => r.node_id === nodeId));
         const doneIds = (doneRows ?? []).map((r) => r.node_id).filter((id) => id && id !== nodeId);
         if (doneIds.length > 0) {
           const inList = doneIds.map((id) => encodeURIComponent(id)).join(",");
@@ -2250,6 +2253,9 @@ function PracticaPage() {
             feedback={feedbackResult}
             worldId={nodeData?.world_id ?? 0}
             nodeId={nodeId}
+            yaLoHabiaPasado={yaLoHabiaPasado}
+            nombreCliente={fichaCliente?.nombre ?? null}
+            esReto={nodeData?.node_type === "boss" || nodeData?.is_boss === true}
             sessionId={sessionCorrelationIdRef.current}
             practiceScript={nodeData?.practice_script ?? null}
             evaluation={rawEvaluationRef.current}
@@ -2992,15 +2998,15 @@ export function mensajesDeAnalisis(practiceScript: any, nombres: Record<string, 
 type FeedbackStep = "analyzing" | "result" | "victory" | "eval_error" | "transcript_only";
 
 function FallaCard({ falla }: { falla: FallaItem }) {
-  const texto = { fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5 } as const;
+  const texto = { fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, margin: 0 } as const;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {falla.paso && <EtiquetaPaso paso={falla.paso} />}
-      <div style={{ ...texto, color: "#fff", fontWeight: 600 }}>{falla.error}</div>
-      {falla.cita && <div style={{ ...texto, color: "rgba(255,255,255,0.7)" }}>Dijiste: "{falla.cita}"</div>}
-      <div style={{ ...texto, fontSize: 13, color: RED, fontWeight: 600 }}>{falla.efecto}</div>
-      {falla.mejora && <div style={{ ...texto, color: ORANGE, fontWeight: 600 }}>{falla.mejora}</div>}
-      {falla.ejemplo && <div style={{ ...texto, color: "rgba(255,255,255,0.6)", fontStyle: "italic" }}>"{falla.ejemplo}"</div>}
+      <p style={{ ...texto, fontSize: 16, color: "var(--c-text)", fontWeight: 600, lineHeight: 1.4 }}>{falla.error}</p>
+      {falla.cita && <p style={{ ...texto, color: "var(--c-text-soft)" }}>Dijiste: «{falla.cita}»</p>}
+      <p style={{ ...texto, fontSize: 14, color: "var(--c-danger)", fontWeight: 600 }}>{falla.efecto}</p>
+      {falla.mejora && <p style={{ ...texto, color: "var(--c-primary)", fontWeight: 600 }}>{falla.mejora}</p>}
+      {falla.ejemplo && <p style={{ ...texto, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{falla.ejemplo}»</p>}
     </div>
   );
 }
@@ -3009,7 +3015,7 @@ function FallaCard({ falla }: { falla: FallaItem }) {
 // califican habilidades de varios pasos y así el vendedor se ubica.
 function EtiquetaPaso({ paso, habilidad }: { paso: string; habilidad?: string }) {
   return (
-    <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>
+    <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--c-text-2)" }}>
       {habilidad ? `${paso} · ${habilidad}` : paso}
     </div>
   );
@@ -3018,85 +3024,59 @@ function EtiquetaPaso({ paso, habilidad }: { paso: string; habilidad?: string })
 function ObservationCard({ obs }: { obs: ObservationItem }) {
   const [open, setOpen] = useState(false);
   return (
-    <div
-      style={{
-        background: "rgba(255,255,255,0.04)",
-        border: "1px solid rgba(255,255,255,0.10)",
-        borderRadius: 12,
-        overflow: "hidden",
-      }}
-    >
+    <div style={{ borderTop: "1px solid var(--c-elevated)" }}>
       <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
-        style={{
-          width: "100%",
-          background: "transparent",
-          border: "none",
-          padding: "12px 14px",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          cursor: "pointer",
-          textAlign: "left",
-        }}
+        aria-expanded={open}
+        style={{ width: "100%", background: "transparent", border: "none", padding: "12px 18px", display: "flex", alignItems: "center", gap: 10, cursor: "pointer", textAlign: "left", color: "inherit" }}
       >
-        <span
-          style={{
-            flex: 1,
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 14,
-            lineHeight: 1.4,
-            color: "#fff",
-            fontWeight: 500,
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-          }}
-        >
+        <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.4, color: "var(--c-text)" }}>
           {obs.paso && <EtiquetaPaso paso={obs.paso} habilidad={obs.habilidad} />}
           {obs.error}
         </span>
-        <span
-          style={{
-            color: "rgba(255,255,255,0.6)",
-            fontSize: 14,
-            transform: open ? "rotate(90deg)" : "rotate(0deg)",
-            transition: "transform 0.2s ease",
-            display: "inline-block",
-          }}
-        >
-          ›
-        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden style={{ flex: "none", transition: "transform 200ms ease", transform: open ? "rotate(90deg)" : "none" }}>
+          <path d="M9 6l6 6-6 6" />
+        </svg>
       </button>
       {open && (
-        <div style={{ padding: "0 14px 14px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
-          <div
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              lineHeight: 1.5,
-              color: ORANGE,
-              fontWeight: 600,
-            }}
-          >
-            {obs.mejora}
-          </div>
-          <div
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              lineHeight: 1.5,
-              color: "rgba(255,255,255,0.6)",
-              fontStyle: "italic",
-            }}
-          >
-            "{obs.ejemplo}"
-          </div>
+        <div style={{ padding: "0 18px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+          <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-primary)", fontWeight: 600 }}>{obs.mejora}</p>
+          {obs.ejemplo && <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{obs.ejemplo}»</p>}
         </div>
       )}
     </div>
   );
 }
+
+/**
+ * «Consejo para lo que viene» (antes «Lo que viene después»): coaching fuera del alcance del nodo, que no cuenta
+ * en la calificación. Dos puntos a la vista; el resto, con su ejemplo y su porqué, detrás de «Ver más».
+ */
+function ConsejosParaLoQueViene({ consejos }: { consejos: { observacion?: string; ejemplo?: string; por_que?: string }[] }) {
+  const [todos, setTodos] = useState(false);
+  const visibles = todos ? consejos : consejos.slice(0, 2);
+  return (
+    <div style={{ width: "100%", boxSizing: "border-box", padding: 18, borderRadius: "var(--r-tarjeta)", background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-client)" }}>Consejo para lo que viene</div>
+      <div style={{ marginTop: 4, fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "var(--c-text-2)" }}>No cuenta en tu calificación.</div>
+      {visibles.map((x, i) => (
+        <div key={i} style={{ marginTop: 12, display: "flex", gap: 10 }}>
+          <span aria-hidden style={{ width: 6, height: 6, flex: "none", marginTop: 9, borderRadius: 3, background: "var(--c-client)" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-text)" }}>{x.observacion}</span>
+            {todos && x.ejemplo ? <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{x.ejemplo}»</span> : null}
+            {todos && x.por_que ? <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, lineHeight: 1.5, color: "var(--c-text-2)" }}>{x.por_que}</span> : null}
+          </div>
+        </div>
+      ))}
+      {!todos && (consejos.length > 2 || consejos.some((x) => x.ejemplo || x.por_que)) && (
+        <button type="button" onClick={() => setTodos(true)} style={{ ...estiloBoton("texto"), height: 36, padding: 0, marginTop: 10, color: "var(--c-client)", fontSize: 15 }}>Ver más</button>
+      )}
+    </div>
+  );
+}
+
 
 function ReplicaChat({
   worldId,
@@ -3386,6 +3366,9 @@ function FeedbackPhase({
   feedback,
   worldId,
   nodeId,
+  yaLoHabiaPasado = false,
+  nombreCliente = null,
+  esReto = false,
   sessionId,
   practiceScript,
   evaluation,
@@ -3403,6 +3386,12 @@ function FeedbackPhase({
   feedback: FeedbackResult | null;
   worldId: number;
   nodeId: string;
+  /** Ya estaba pasado antes de esta práctica: la frase de las estrellas no dice «desbloqueaste». */
+  yaLoHabiaPasado?: boolean;
+  /** El nombre del cliente de esta práctica, para la conversación que se relee mientras se califica. */
+  nombreCliente?: string | null;
+  /** Es un reto final: lo que desbloquea es el siguiente mundo. */
+  esReto?: boolean;
   sessionId: string;
   practiceScript: any;
   evaluation: any;
@@ -3476,12 +3465,8 @@ function FeedbackPhase({
         <VictoryScreen
           stars={stars}
           title={stars >= 2 ? "¡Práctica completada!" : "Práctica registrada."}
-          subtitle={
-            stars >= 2
-              ? "Sigue avanzando."
-              : "Con 2 estrellas se abre el siguiente nodo. Repite este cuando quieras."
-          }
-          buttonText="Volver al mapa →"
+          subtitle={lineaDeEstrellas(stars, { yaLoHabiaPasado, esReto, esElUltimo: nodeId === NODO_CERTIFICACION })}
+          buttonText="Volver al mapa"
           onContinue={() => onContinue(stars)}
         />
       </motion.div>
@@ -3489,332 +3474,98 @@ function FeedbackPhase({
   }
 
   if (step === "result") {
+    // Fase 4 (mensaje 152): la calificación centrada en su anillo, las estrellas con brillo y lo que lograste;
+    // luego lo que te bajó la nota, las observaciones, un consejo corto y tu misión. «Continuar» siempre a la mano.
+    const consejos: any[] = Array.isArray((feedback as any)?.siguiente_nivel) ? (feedback as any).siguiente_nivel : [];
+    const etiqueta = { fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" } as const;
+    const tarjeta = { width: "100%", boxSizing: "border-box", padding: 18, borderRadius: "var(--r-tarjeta)", background: "var(--c-surface)", border: "1px solid var(--c-border)" } as const;
     return (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-          padding: "1.2rem",
-          overflowY: "auto",
-        }}
+        style={{ flex: 1, minHeight: 0, position: "relative", display: "flex", flexDirection: "column" }}
       >
-        <div
-          style={{
-            maxWidth: 560,
-            width: "100%",
-            margin: "0 auto",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 20,
-            paddingTop: 16,
-            paddingBottom: 24,
-          }}
-        >
-          <CloserCharacter size={86} state="motivation" />
-          <div
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 800,
-              fontSize: 26,
-              color: "#fff",
-              textAlign: "center",
-            }}
-          >
-            Tu práctica
-          </div>
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "max(12px, env(safe-area-inset-top)) var(--m-pantalla) 120px" }}>
+          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600, color: "var(--c-text)", padding: "10px 0" }}>Tu práctica</div>
 
-          {/* Score */}
-          <div
-            style={{
-              width: "100%",
-              padding: "20px 18px",
-              borderRadius: 14,
-              background: "rgb(var(--c-primary-rgb) / 0.10)",
-              border: `1px solid color-mix(in srgb, ${ORANGE} 33%, transparent)`,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 12,
-                letterSpacing: 1,
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.6)",
-              }}
-            >
-              Score
+            <AnilloCalificacion calificacion={score} />
+            <div style={{ display: "flex", gap: 6, marginTop: 4 }} aria-label={`${stars} de 3 estrellas`}>
+              {[0, 1, 2].map((k) => <Estrella key={k} ganada={k < stars} tam={26} />)}
             </div>
-            <div
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 800,
-                fontSize: 48,
-                color: ORANGE,
-                lineHeight: 1,
-              }}
-            >
-              {score}
-            </div>
-          </div>
+            <p style={{ margin: 0, textAlign: "center", fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.45, color: "var(--c-text-soft)", maxWidth: 340 }}>
+              {lineaDeEstrellas(stars, { yaLoHabiaPasado, esReto, esElUltimo: nodeId === NODO_CERTIFICACION })}
+            </p>
 
-          {/* Lo que te bajó la nota: va primero. Disputa 3.10 (oct-2026): una
-              falla crítica dejó la nota en 30 y la pantalla no la mencionaba. */}
-          {fallas.length > 0 && (
-            <div
-              style={{
-                width: "100%",
-                padding: 16,
-                borderRadius: 14,
-                background: "rgb(var(--c-danger-rgb) / 0.08)",
-                border: "1px solid rgb(var(--c-danger-rgb) / 0.35)",
-                display: "flex",
-                flexDirection: "column",
-                gap: 12,
-              }}
-            >
-              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, color: "#fff" }}>
-                Lo que te bajó la nota
-              </div>
-              {fallas.map((f, i) => (
-                <FallaCard key={i} falla={f} />
-              ))}
-            </div>
-          )}
-
-          {/* Observaciones */}
-          {(observations.length > 0 || fallas.length === 0) && (
-          <div
-            style={{
-              width: "100%",
-              padding: 16,
-              borderRadius: 14,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: 14,
-                color: "#fff",
-              }}
-            >
-{observations.length === 0 ? (score >= 85 ? "Ejecución limpia" : "Sesión incompleta") : "Observaciones de Closer"}
-            </div>
-{observations.length === 0 ? (
-              // Cero observaciones NO es un fallo: es que ejecutó bien todos los
-              // criterios de este nodo. Antes esto se pintaba como error.
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 14,
-                  lineHeight: 1.5,
-                  color: "rgba(255,255,255,0.8)",
-                }}
-              >
-                {score >= 85
-                  ? "Cumpliste todo lo que este nodo mide. No hay nada que corregir aquí."
-                  : "La práctica terminó antes de que se viera lo que este nodo mide. Vuelve a intentarlo: esta nota no refleja lo que sabes."}
-              </div>
-            ) : (
-              observations.map((o, i) => (
-                <ObservationCard key={i} obs={o} />
-              ))
-            )}
-          </div>
-          )}
-
-          {Array.isArray((feedback as any)?.siguiente_nivel) &&
-            (feedback as any).siguiente_nivel.length > 0 && (
-              <div
-                style={{
-                  width: "100%",
-                  padding: 16,
-                  borderRadius: 14,
-                  background: "rgb(var(--c-client-rgb) / 0.08)",
-                  border: "1px solid rgb(var(--c-client-rgb) / 0.35)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "Syne, sans-serif",
-                    fontWeight: 800,
-                    fontSize: 13,
-                    color: "rgb(var(--c-client-rgb) / 0.95)",
-                    textTransform: "uppercase",
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  Lo que viene después
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: 12,
-                    color: "rgba(255,255,255,0.5)",
-                  }}
-                >
-                  Esto no cuenta en tu calificación. Es lo que sigue cuando domines este nodo.
-                </div>
-                {(feedback as any).siguiente_nivel.map((x: any, i: number) => (
-                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                    <div
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: 14,
-                        lineHeight: 1.5,
-                        color: "#fff",
-                      }}
-                    >
-                      {x.observacion}
-                    </div>
-                    {x.ejemplo ? (
-                      <div
-                        style={{
-                          fontFamily: "'DM Sans', sans-serif",
-                          fontSize: 13,
-                          lineHeight: 1.5,
-                          color: "rgba(255,255,255,0.6)",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        {x.ejemplo}
-                      </div>
-                    ) : null}
-                    {x.por_que ? (
-                      <div
-                        style={{
-                          fontFamily: "'DM Sans', sans-serif",
-                          fontSize: 12,
-                          color: "rgb(var(--c-client-rgb) / 0.75)",
-                        }}
-                      >
-                        {x.por_que}
-                      </div>
-                    ) : null}
-                  </div>
+            {/* Lo que te bajó la nota: va primero. Disputa 3.10 (oct-2026): una
+                falla crítica dejó la nota en 30 y la pantalla no la mencionaba. */}
+            {fallas.length > 0 && (
+              <div style={{ ...tarjeta, marginTop: 14, borderLeft: "3px solid var(--c-danger)", display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ ...etiqueta, color: "var(--c-danger)" }}>Lo que te bajó la nota</div>
+                {fallas.map((f, i) => (
+                  <FallaCard key={i} falla={f} />
                 ))}
               </div>
             )}
 
-          {feedback?.mision && (
-            <div
-              style={{
-                width: "100%",
-                padding: 16,
-                borderRadius: 14,
-                background: "rgb(var(--c-primary-rgb) / 0.10)",
-                border: `1px solid ${ORANGE}`,
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "Syne, sans-serif",
-                  fontWeight: 800,
-                  fontSize: 14,
-                  color: ORANGE,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.8,
-                }}
-              >
-                Tu misión
-              </div>
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 15,
-                  lineHeight: 1.5,
-                  color: "#fff",
-                }}
-              >
-                {feedback.mision}
-              </div>
-            </div>
-          )}
-
-          {feedback?.radarLines && feedback.radarLines.length > 0 && (
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                padding: "10px 4px 0 4px",
-              }}
-            >
-              {feedback.radarLines.map((line, i) => (
-                <div
-                  key={i}
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: 12,
-                    lineHeight: 1.5,
-                    color: "rgba(255,255,255,0.55)",
-                    fontStyle: "italic",
-                  }}
-                >
-                  {line}
+            {/* Observaciones */}
+            {(observations.length > 0 || fallas.length === 0) && (
+              <div style={{ ...tarjeta, padding: 0, overflow: "hidden", marginTop: fallas.length > 0 ? 0 : 14 }}>
+                <div style={{ ...etiqueta, color: "var(--c-text-2)", padding: "16px 18px 6px" }}>
+                  {observations.length === 0 ? (score >= 85 ? "Ejecución limpia" : "Sesión incompleta") : "Observaciones"}
                 </div>
-              ))}
-            </div>
-          )}
+                {observations.length === 0 ? (
+                  // Cero observaciones NO es un fallo: es que ejecutó bien todos los
+                  // criterios de este nodo. Antes esto se pintaba como error.
+                  <p style={{ margin: 0, padding: "0 18px 16px", fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-text-soft)" }}>
+                    {score >= 85
+                      ? "Cumpliste todo lo que este nodo mide. No hay nada que corregir aquí."
+                      : "La práctica terminó antes de que se viera lo que este nodo mide. Vuelve a intentarlo: esta nota no refleja lo que sabes."}
+                  </p>
+                ) : (
+                  observations.map((o, i) => <ObservationCard key={i} obs={o} />)
+                )}
+              </div>
+            )}
 
-          <ConversationTranscript conversation={conversation} closerMsgs={closerMsgs} />
+            {consejos.length > 0 && <ConsejosParaLoQueViene consejos={consejos} />}
 
-          {worldId !== 9 && evaluation && (
-            <ReplicaChat
-              worldId={worldId}
-              nodeId={nodeId}
-              sessionId={sessionId}
-              practiceScript={practiceScript}
-              evaluation={evaluation}
-              conversation={conversation}
-              companyId={companyId}
-              sellerId={sellerId}
-            />
-          )}
+            {feedback?.mision && (
+              <div style={{ ...tarjeta, background: "rgb(var(--c-primary-rgb) / 0.07)", border: "1px solid rgb(var(--c-primary-rgb) / 0.35)" }}>
+                <div style={{ ...etiqueta, letterSpacing: "0.1em", color: "var(--c-primary)" }}>Tu misión en la calle</div>
+                <p style={{ margin: "8px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text)" }}>{feedback.mision}</p>
+              </div>
+            )}
 
+            {feedback?.radarLines && feedback.radarLines.length > 0 && (
+              <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 6, padding: "4px 4px 0" }}>
+                {feedback.radarLines.map((line, i) => (
+                  <p key={i} style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 13, lineHeight: 1.5, color: "var(--c-text-2)" }}>{line}</p>
+                ))}
+              </div>
+            )}
 
+            <ConversationTranscript conversation={conversation} closerMsgs={closerMsgs} />
 
+            {worldId !== 9 && evaluation && (
+              <ReplicaChat
+                worldId={worldId}
+                nodeId={nodeId}
+                sessionId={sessionId}
+                practiceScript={practiceScript}
+                evaluation={evaluation}
+                conversation={conversation}
+                companyId={companyId}
+                sellerId={sellerId}
+              />
+            )}
+          </div>
+        </div>
 
-          <button
-            onClick={() => setStep("victory")}
-            style={{
-              width: "100%",
-              height: 52,
-              marginTop: 8,
-              borderRadius: 99,
-              border: "none",
-              background: ORANGE,
-              color: "var(--c-bg)",
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: "pointer",
-              boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-            }}
-          >
-            Ver resultado →
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px var(--m-pantalla) calc(16px + env(safe-area-inset-bottom))", background: "linear-gradient(to bottom, rgb(var(--c-bg-rgb) / 0) 0%, var(--c-bg) 30%)" }}>
+          <button type="button" onClick={() => setStep("victory")} style={{ ...estiloBoton("principal"), maxWidth: 560, margin: "0 auto" }}>
+            Continuar
           </button>
         </div>
       </motion.div>
@@ -3961,77 +3712,42 @@ function FeedbackPhase({
     );
   }
 
-  // analyzing
-
+  // analyzing — Fase 4 (mensaje 152): lo que se está revisando, con palomita al terminar cada cosa,
+  // y debajo tu conversación para releerla mientras esperas. El tiempo no cambia: deja de sentirse.
+  const turnosConversacion = conversation
+    .filter((m) => (m.role === "user" || m.role === "assistant") && m.content?.trim())
+    .map((m) => ({
+      quien: m.role === "user" ? "Tú" : etiquetaAsistente(m.content, closerMsgs) === "Closer" ? "Closer" : (nombreCliente || "Tu cliente"),
+      esTuyo: m.role === "user",
+      texto: m.content,
+    }));
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      style={{
-        flex: 1,
-        minHeight: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 24,
-        padding: "1.2rem",
-      }}
+      style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", padding: "max(12px, env(safe-area-inset-top)) var(--m-pantalla) 0" }}
     >
-      <style>{`
-        @keyframes dot-pulse {
-          0%, 100% { opacity: 0.3; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
-      <CloserCharacter size={96} state="motivation" />
-      <div
-        style={{
-          fontFamily: "Syne, sans-serif",
-          fontWeight: 700,
-          fontSize: 22,
-          color: "#fff",
-          textAlign: "center",
-        }}
-      >
-        Analizando tu práctica
-      </div>
-      <div style={{ display: "flex", gap: 8 }}>
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 99,
-              background: ORANGE,
-              animation: `dot-pulse 1s ease-in-out ${i * 0.2}s infinite`,
-            }}
-          />
-        ))}
-      </div>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={slowNotice ? "slow" : msgIdx}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.3 }}
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 14,
-            color: slowNotice ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.5)",
-            textAlign: "center",
-            maxWidth: 400,
-          }}
-        >
+      <style>{ESTILOS_PRACTICA}</style>
+      <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
+        <h1 style={{ margin: "20px 0 0", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: "var(--c-text)" }}>Revisando tu práctica</h1>
+        <p aria-live="polite" style={{ margin: "6px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.45, color: slowNotice ? "var(--c-text-soft)" : "var(--c-text-2)" }}>
           {slowNotice
-            ? "Estoy revisando tu práctica con calma: puede tardar un par de minutos. No cierres la app."
-            : mensajes[Math.min(msgIdx, mensajes.length - 1)]}
-
-        </motion.div>
-      </AnimatePresence>
+            ? "Lo estoy revisando con calma: puede tardar un par de minutos. No cierres la app."
+            : "Toma un minuto. Mientras, relee lo que dijiste."}
+        </p>
+        <div style={{ marginTop: 18 }}>
+          <ListaRevision pasos={mensajes.map((m) => m.replace(/^Revisando: /, "").replace(/…$/, ""))} actual={Math.min(msgIdx, mensajes.length - 1)} />
+        </div>
+        {turnosConversacion.length > 0 && (
+          <>
+            <div style={{ marginTop: 22, fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-text-2)" }}>Tu conversación</div>
+            <div style={{ flex: 1, minHeight: 0, overflowY: "auto", marginTop: 10, paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}>
+              <DialogoCompleto turnos={turnosConversacion} />
+            </div>
+          </>
+        )}
+      </div>
     </motion.div>
   );
 }
@@ -4149,27 +3865,8 @@ function ConversationTranscript({
 
   return (
     <div style={{ width: "100%", textAlign: "left" }}>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        style={{
-          width: "100%",
-          height: 44,
-          borderRadius: 99,
-          border: "1px solid rgba(255,255,255,0.15)",
-          background: "transparent",
-          color: "rgba(255,255,255,0.85)",
-          fontFamily: "Syne, sans-serif",
-          fontWeight: 600,
-          fontSize: 14,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-        }}
-      >
-        {open ? "Ocultar conversación" : "Ver conversación completa"}
-        <span style={{ fontSize: 12, opacity: 0.7 }}>{open ? "▲" : "▼"}</span>
+      <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} style={estiloBoton("secundario")}>
+        {open ? "Ocultar tu conversación" : "Ver tu conversación"}
       </button>
 
       {open && (
