@@ -10,7 +10,77 @@
  * Solo cambia cómo se ve. La voz, los turnos y la calificación siguen en nodo.$nodeId.practica.tsx.
  * Colores y medidas: de src/styles.css (--c-…), como todas las pantallas.
  */
-import type { CSSProperties, ReactNode } from "react";
+import { useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
+
+// ─── La voz de quien te habla (mensaje 151-B, 7-nov, Emilio en su iPhone) ───
+// Antes, el texto del cliente salía completo de golpe y los anillos «levitaban» parejo, sin seguir el audio.
+// Ahora playTTS publica aquí qué se está diciendo, cuánto va (0 a 1) y qué tan fuerte suena en este instante.
+// El nivel sale de la «envolvente» del audio: se decodifica una copia aparte y se mide su volumen cada 50 ms.
+// La reproducción NO pasa por el procesador de audio: el iPhone suena exactamente igual que antes.
+// Solo la franja y los anillos escuchan esta señal, así la pantalla no se vuelve a dibujar 60 veces por segundo.
+
+export type EstadoVozAgente = { texto: string; progreso: number; nivel: number; conEnvolvente: boolean; activa: boolean };
+let estadoVoz: EstadoVozAgente = { texto: "", progreso: 0, nivel: 0, conEnvolvente: false, activa: false };
+const oyentesVoz = new Set<() => void>();
+export const vozDelAgente = {
+  leer: () => estadoVoz,
+  poner: (p: Partial<EstadoVozAgente>) => {
+    estadoVoz = { ...estadoVoz, ...p };
+    oyentesVoz.forEach((f) => f());
+  },
+  escuchar: (f: () => void) => {
+    oyentesVoz.add(f);
+    return () => { oyentesVoz.delete(f); };
+  },
+};
+export function useVozDelAgente(): EstadoVozAgente {
+  return useSyncExternalStore(vozDelAgente.escuchar, vozDelAgente.leer, vozDelAgente.leer);
+}
+
+/** Cada cuánto se mide el volumen del audio, en segundos. */
+export const PASO_ENVOLVENTE = 0.05;
+
+/**
+ * El volumen del audio cada 50 ms, de 0 a 1. Decodifica una copia del audio en un contexto fuera de línea
+ * (no toca la reproducción). Si el teléfono no puede, devuelve null y los anillos usan su movimiento suave.
+ */
+export async function envolventeDe(blob: Blob): Promise<number[] | null> {
+  try {
+    const w = window as any;
+    const AC = w.OfflineAudioContext || w.webkitOfflineAudioContext;
+    if (!AC) return null;
+    const datos = await blob.arrayBuffer();
+    const ctx = new AC(1, 44100, 44100);
+    const buf: AudioBuffer = await new Promise((ok, mal) => {
+      const r = ctx.decodeAudioData(datos, ok, mal);
+      if (r && typeof r.then === "function") r.then(ok, mal);
+    });
+    const canal = buf.getChannelData(0);
+    const tam = Math.max(1, Math.round(buf.sampleRate * PASO_ENVOLVENTE));
+    const rms: number[] = [];
+    for (let i = 0; i < canal.length; i += tam) {
+      let suma = 0;
+      const fin = Math.min(canal.length, i + tam);
+      for (let j = i; j < fin; j++) suma += canal[j] * canal[j];
+      rms.push(Math.sqrt(suma / (fin - i)));
+    }
+    const max = Math.max(...rms, 1e-6);
+    // Raíz para que las sílabas suaves también se noten; y un suavizado corto para que no tiemble.
+    const crudo = rms.map((v) => Math.sqrt(v / max));
+    return crudo.map((v, i) => (v + (crudo[i - 1] ?? v) + (crudo[i + 1] ?? v)) / 3);
+  } catch {
+    return null;
+  }
+}
+
+/** Lo que ya se dijo: el texto hasta donde va el audio, cortado al final de una palabra. */
+export function textoHastaProgreso(texto: string, progreso: number): string {
+  if (progreso >= 1) return texto;
+  if (progreso <= 0) return "";
+  let n = Math.round(texto.length * progreso);
+  while (n < texto.length && !/\s/.test(texto[n])) n++;
+  return texto.slice(0, n);
+}
 
 /** Las iniciales del cliente: la primera y la última palabra. «Don Ramón» → «DR»; «Doña Lupe Pérez» → «DP». */
 export function inicialesDe(nombre: string): string {
@@ -24,8 +94,8 @@ export function inicialesDe(nombre: string): string {
  * Medidas del escenario: en un teléfono alto se ve como en la maqueta (196 px); en uno bajo, o con la barra
  * del navegador, se encoge con la altura de la pantalla para que nada se encime.
  */
-const ESCENARIO = "min(196px, 25dvh)";
-const CIRCULO = "min(148px, 19dvh)";
+const ESCENARIO = "min(196px, 20dvh)";
+const CIRCULO = "min(148px, 15dvh)";
 
 const TRAZO = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
@@ -109,16 +179,20 @@ export function SelectorModo({ modo, onCambiar }: { modo: "voice" | "text"; onCa
 
 /** Los anillos que se mueven con una voz. `activo` los enciende; el color es el de quien habla. */
 function Anillos({ activo, rgb }: { activo: boolean; rgb: string }) {
-  const base: CSSProperties = { position: "absolute", borderRadius: "50%", transition: "opacity 400ms ease, border-color 400ms ease", pointerEvents: "none" };
+  const voz = useVozDelAgente();
+  // Con la envolvente, el anillo crece con la voz real. Sin ella (teléfono que no decodifica), el movimiento suave de antes.
+  const sigueLaVoz = activo && voz.activa && voz.conEnvolvente;
+  const n = sigueLaVoz ? voz.nivel : 0;
+  const base: CSSProperties = { position: "absolute", borderRadius: "50%", transition: "opacity 400ms ease, border-color 400ms ease, transform 90ms linear", pointerEvents: "none" };
   return (
     <>
       <div
-        className={activo ? "practica-onda-a" : undefined}
-        style={{ ...base, inset: 0, border: `2px solid ${activo ? `rgb(${rgb} / 0.55)` : "var(--c-border)"}` }}
+        className={activo && !sigueLaVoz ? "practica-onda-a" : undefined}
+        style={{ ...base, inset: 0, border: `2px solid ${activo ? `rgb(${rgb} / ${0.35 + n * 0.45})` : "var(--c-border)"}`, transform: sigueLaVoz ? `scale(${1 + n * 0.09})` : undefined }}
       />
       <div
-        className={activo ? "practica-onda-b" : undefined}
-        style={{ ...base, inset: -14, border: `1px solid rgb(${rgb} / 0.22)`, opacity: activo ? 1 : 0 }}
+        className={activo && !sigueLaVoz ? "practica-onda-b" : undefined}
+        style={{ ...base, inset: -14, border: `1px solid rgb(${rgb} / 0.22)`, opacity: activo ? (sigueLaVoz ? 0.25 + n * 0.75 : 1) : 0, transform: sigueLaVoz ? `scale(${1 + n * 0.16})` : undefined }}
       />
     </>
   );
@@ -267,6 +341,15 @@ export function FranjaDialogo({ quien, colorQuien, texto }: { quien: string; col
       </div>
     </div>
   );
+}
+
+/**
+ * La franja mientras habla el cliente o Closer: las palabras aparecen al ritmo del audio, no de golpe.
+ * Mientras llega el audio (antes de que suene) queda vacía.
+ */
+export function FranjaVozAgente({ quien, colorQuien }: { quien: string; colorQuien: string }) {
+  const voz = useVozDelAgente();
+  return <FranjaDialogo quien={quien} colorQuien={colorQuien} texto={textoHastaProgreso(voz.texto, voz.progreso)} />;
 }
 
 /**

@@ -38,7 +38,7 @@ describe("La conversación", () => {
     expect(practica).not.toContain("Tu turno — Hazlo solo.");
   });
   it("el escenario se encoge en pantallas bajas para que nada se encime", () => {
-    expect(ui).toContain('const ESCENARIO = "min(196px, 25dvh)";');
+    expect(ui).toContain('const ESCENARIO = "min(196px, 20dvh)";');
   });
 });
 
@@ -66,5 +66,31 @@ describe("Las estrellas", () => {
     expect(piezas).toContain("export function Estrella");
     expect(piezas).toContain("--c-estrella-rgb");
     expect(leer("routes/mapa.tsx")).toContain("<Estrella key={i} ganada={i < node.stars} tam={20} />");
+  });
+});
+
+// Mensaje 151-B (7-nov-2026) · Lo que Emilio vio en su iPhone: el texto del cliente salía completo de golpe,
+// los anillos «levitaban» parejo sin seguir el audio, y el cliente quedaba pegado al título.
+describe("La voz de quien te habla (151-B)", () => {
+  it("las palabras aparecen al ritmo del audio, no de golpe", async () => {
+    const { textoHastaProgreso } = await import("../../components/closer/practica-ui");
+    const t = "Mire, la calidad la tienen todos.";
+    expect(textoHastaProgreso(t, 0)).toBe("");
+    expect(textoHastaProgreso(t, 0.3)).toBe("Mire, la calidad");
+    expect(textoHastaProgreso(t, 1)).toBe(t);
+    expect(practica).toContain("<FranjaVozAgente");
+  });
+  it("los anillos siguen el volumen real del audio, medido en una copia aparte (la reproducción no cambia)", () => {
+    expect(ui).toContain("export async function envolventeDe(blob: Blob)");
+    expect(ui).toContain("OfflineAudioContext");
+    expect(practica).toContain("void envolventeDe(blob).then(");
+    expect(practica).not.toContain("createMediaElementSource");
+    expect(ui).toContain("const sigueLaVoz = activo && voz.activa && voz.conEnvolvente;");
+  });
+  it("si el teléfono no sabe cuánto dura el audio, el texto no se queda vacío", () => {
+    expect(practica).toContain("const progreso = Number.isFinite(d) ? Math.min(1, t / d) : 1;");
+  });
+  it("el cliente tiene aire debajo del título", () => {
+    expect(practica).toContain('padding: "min(28px, 3dvh) 0 min(16px, 2dvh)"');
   });
 });
