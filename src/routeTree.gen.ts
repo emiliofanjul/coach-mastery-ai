@@ -20,6 +20,7 @@ import { Route as RedRouteImport } from './routes/red'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RoleRouteImport } from './routes/role'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as TuNegocioRouteImport } from './routes/tu-negocio'
 import { Route as UnirmeRouteImport } from './routes/unirme'
 import { Route as ApiSttTokenRouteImport } from './routes/api/stt-token'
 import { Route as EquipoIndexRouteImport } from './routes/equipo.index'
@@ -86,6 +87,11 @@ const RoleRoute = RoleRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TuNegocioRoute = TuNegocioRouteImport.update({
+  id: '/tu-negocio',
+  path: '/tu-negocio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnirmeRoute = UnirmeRouteImport.update({
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/tu-negocio': typeof TuNegocioRoute
   '/unirme': typeof UnirmeRoute
   '/api/stt-token': typeof ApiSttTokenRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/tu-negocio': typeof TuNegocioRoute
   '/unirme': typeof UnirmeRoute
   '/api/stt-token': typeof ApiSttTokenRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
   '/signup': typeof SignupRoute
+  '/tu-negocio': typeof TuNegocioRoute
   '/unirme': typeof UnirmeRoute
   '/api/stt-token': typeof ApiSttTokenRoute
   '/equipo/$sellerId': typeof EquipoSellerIdRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/role'
     | '/signup'
+    | '/tu-negocio'
     | '/unirme'
     | '/api/stt-token'
     | '/equipo/$sellerId'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/role'
     | '/signup'
+    | '/tu-negocio'
     | '/unirme'
     | '/api/stt-token'
     | '/equipo/$sellerId'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/role'
     | '/signup'
+    | '/tu-negocio'
     | '/unirme'
     | '/api/stt-token'
     | '/equipo/$sellerId'
@@ -315,6 +327,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoleRoute: typeof RoleRoute
   SignupRoute: typeof SignupRoute
+  TuNegocioRoute: typeof TuNegocioRoute
   UnirmeRoute: typeof UnirmeRoute
   ApiSttTokenRoute: typeof ApiSttTokenRoute
   EquipoSellerIdRoute: typeof EquipoSellerIdRoute
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tu-negocio': {
+      id: '/tu-negocio'
+      path: '/tu-negocio'
+      fullPath: '/tu-negocio'
+      preLoaderRoute: typeof TuNegocioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unirme': {
@@ -519,6 +539,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RoleRoute: RoleRoute,
   SignupRoute: SignupRoute,
+  TuNegocioRoute: TuNegocioRoute,
   UnirmeRoute: UnirmeRoute,
   ApiSttTokenRoute: ApiSttTokenRoute,
   EquipoSellerIdRoute: EquipoSellerIdRoute,

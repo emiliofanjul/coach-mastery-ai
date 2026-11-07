@@ -101,17 +101,17 @@ export function Opcion({ elegida, onClick, icono, titulo, texto }: { elegida: bo
   );
 }
 
-/** Una casilla que se marca, con su texto. */
-export function Casilla({ marcada, onCambiar, children }: { marcada: boolean; onCambiar: (v: boolean) => void; children: ReactNode }) {
+/** Una casilla que se marca, con su texto. «redonda»: una opción entre varias (se comporta como radio). */
+export function Casilla({ marcada, onCambiar, children, redonda = false }: { marcada: boolean; onCambiar: (v: boolean) => void; children: ReactNode; redonda?: boolean }) {
   return (
     <button
       type="button"
-      role="checkbox"
+      role={redonda ? "radio" : "checkbox"}
       aria-checked={marcada}
       onClick={() => onCambiar(!marcada)}
       style={{ width: "100%", display: "flex", gap: 12, alignItems: "flex-start", padding: "14px 16px", borderRadius: 16, border: "1px solid var(--c-border)", background: "transparent", color: "var(--c-text-soft)", textAlign: "left", cursor: "pointer", WebkitTapHighlightColor: "transparent" }}
     >
-      <span aria-hidden style={{ width: 22, height: 22, flex: "none", marginTop: 1, borderRadius: 7, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 150ms ease", ...(marcada ? { background: "var(--c-primary)" } : { border: "1.5px solid var(--c-border-strong)" }) }}>
+      <span aria-hidden style={{ width: 22, height: 22, flex: "none", marginTop: 1, borderRadius: redonda ? 11 : 7, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 150ms ease", ...(marcada ? { background: "var(--c-primary)" } : { border: "1.5px solid var(--c-border-strong)" }) }}>
         {marcada && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--c-bg)" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>}
       </span>
       <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45 }}>{children}</span>

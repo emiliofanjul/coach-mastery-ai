@@ -206,6 +206,8 @@ const MANAGER_ITEMS: NavItem[] = [
 ];
 
 const PROFILE_ITEM: NavItem = { to: "/mi-perfil", label: "Mi Perfil", icon: UserIcon };
+// Mensaje 157: quien entrena por su cuenta le cuenta su negocio a Closer aquí (los equipos, en «Mi Empresa»).
+const PERSONAL_ITEM: NavItem = { to: "/tu-negocio", label: "Tu negocio", icon: Store };
 
 // Robust logout: purge local session synchronously, then navigate.
 // Any hang in supabase.auth.signOut() cannot block the user.
@@ -303,6 +305,7 @@ function AppDrawer({
   const items: NavItem[] = [
     ...COMMON_ITEMS,
     ...(role === "manager" && !isPersonal ? MANAGER_ITEMS : []),
+    ...(isPersonal ? [PERSONAL_ITEM] : []),
     PROFILE_ITEM,
   ];
 

@@ -349,6 +349,7 @@ export type Database = {
           onboarding_completed: boolean
           permite_texto: boolean
           plan: string
+          respuestas_giro: Json
           slug: string | null
           tipos_cliente: string
         }
@@ -365,6 +366,7 @@ export type Database = {
           onboarding_completed?: boolean
           permite_texto?: boolean
           plan?: string
+          respuestas_giro?: Json
           slug?: string | null
           tipos_cliente?: string
         }
@@ -381,6 +383,7 @@ export type Database = {
           onboarding_completed?: boolean
           permite_texto?: boolean
           plan?: string
+          respuestas_giro?: Json
           slug?: string | null
           tipos_cliente?: string
         }
@@ -2555,6 +2558,7 @@ export type Database = {
         Args: { _last_practiced_at: string; _mastery_score: number }
         Returns: number
       }
+      guardar_giro: { Args: { _brain: Json; _respuestas: Json }; Returns: Json }
       is_manager: { Args: never; Returns: boolean }
       join_company_with_code: { Args: { _code: string }; Returns: Json }
       llm_call_usd: {

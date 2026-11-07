@@ -32,7 +32,7 @@ describe("La bienvenida (cuatro pantallas)", () => {
     expect(emoji.test(seller)).toBe(false);
     expect(emoji.test(piezas)).toBe(false);
     expect(piezas).toContain('role="radio"');
-    expect(piezas).toContain('role="checkbox"');
+    expect(piezas).toContain('role={redonda ? "radio" : "checkbox"}'); // 157: la casilla también sirve para una opción entre varias
   });
   it("el nombre se escribe a 16 px o más (el iPhone no hace zoom)", () => {
     expect(seller).toMatch(/aria-label="Tu nombre"[\s\S]{0,900}fontSize: 18/);

@@ -160,3 +160,6 @@
 - [ ] Harden the introduction prompt for a genuine ice breaker and conversational opening.
 - [ ] Regenerate the complete `nuevo` pitch and report validation retries and section lengths.
 - [ ] Verify build and final database output.
+
+- [x] Mensaje 157: giro_157.sql tal cual (respuestas_giro, guardar_giro, bloques 1-4); 12 archivos instalados; 1164/1164 en 96; menú de equipo sin «Tu negocio», /tu-negocio redirige al mapa, práctica 4.2 igual; publicado.
+- [ ] Emilio: probar pantallas de giro y «Tu negocio» con cuenta personal nueva. Bloqueador: no crear cuentas para probar.
