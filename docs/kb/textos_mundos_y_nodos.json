@@ -44,31 +44,31 @@
   {
     "extra": null,
     "id": "1.0",
-    "texto": "Antes de aprender que decir, aprende como avanza una venta. Este es el mapa que vas a usar los siguientes seis mundos.",
+    "texto": "Antes de aprender qué decir, aprende cómo avanza una venta. Este es el mapa que vas a usar los siguientes seis mundos.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "1.1",
-    "texto": "Ya sabes como avanza una venta. Ahora lo primero: los segundos que deciden si hay conversacion o no.",
+    "texto": "Ya sabes cómo avanza una venta. Ahora lo primero: los segundos que deciden si hay conversación o no.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "1.2",
-    "texto": "Ya viste que decide los primeros segundos. Ahora ponlo en palabras: tu primera frase.",
+    "texto": "Ya viste qué decide los primeros segundos. Ahora ponlo en palabras: tu primera frase.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "1.3",
-    "texto": "Tu primera frase ya esta armada. Falta la postura con la que la dices, que pesa mas que las palabras.",
+    "texto": "Tu primera frase ya está armada. Falta la postura con la que la dices, que pesa más que las palabras.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "1.4",
-    "texto": "Ya sabes que la autoridad se asume. Aqui lo pruebas con alguien que te va a hacer sentir que estorbas.",
+    "texto": "Ya sabes que la autoridad se asume. Aquí lo pruebas con alguien que te va a hacer sentir que estorbas.",
     "tipo": "nodo"
   },
   {
@@ -86,7 +86,7 @@
   {
     "extra": null,
     "id": "2.0",
-    "texto": "Ganaste los primeros segundos y el cliente te esta poniendo atencion. Ahora tiene dos preguntas en la cabeza: quien es este y que quiere. Contestalas antes de que se las conteste solo.",
+    "texto": "Ganaste los primeros segundos y el cliente te está poniendo atención. Ahora tiene dos preguntas en la cabeza: quién es este y qué quiere. Contéstalas antes de que se las conteste solo.",
     "tipo": "nodo"
   },
   {
@@ -98,13 +98,13 @@
   {
     "extra": null,
     "id": "2.10",
-    "texto": "Todo el mundo junto: bloqueo de entrada, quien eres, relacion, y no soltar el control.",
+    "texto": "Todo el mundo junto: bloqueo de entrada, quién eres, relación, y no soltar el control.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "2.2",
-    "texto": "Ya te presentaste. Lo que sigue decide si la conversacion vive o se muere: devolverle la palabra.",
+    "texto": "Ya te presentaste. Lo que sigue decide si la conversación vive o se muere: devolverle la palabra.",
     "tipo": "nodo"
   },
   {
@@ -116,25 +116,25 @@
   {
     "extra": null,
     "id": "2.4",
-    "texto": "Ya sabes que necesitas crear relacion. Aqui esta de que hablar.",
+    "texto": "Ya sabes que necesitas crear relación. Aquí está de qué hablar.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "2.5",
-    "texto": "Tienes los cinco temas. Ahora la parte dificil: entrar y REGRESAR.",
+    "texto": "Tienes los cinco temas. Ahora la parte difícil: entrar y REGRESAR.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "2.6",
-    "texto": "La conversacion va bien y de pronto te frenan. Aqui aprendes que es ese freno y por que casi nunca significa lo que parece.",
+    "texto": "La conversación va bien y de pronto te frenan. Aquí aprendes qué es ese freno y por qué casi nunca significa lo que parece.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "2.7",
-    "texto": "Ya distingues un bloqueo de una objecion. Ahora atraviesa uno.",
+    "texto": "Ya distingues un bloqueo de una objeción. Ahora atraviesa uno.",
     "tipo": "nodo"
   },
   {
@@ -158,25 +158,25 @@
   {
     "extra": null,
     "id": "2.9",
-    "texto": "Atravesaste el bloqueo. Y ahora que? La respuesta decide si la conversacion sigue o se muere ahi.",
+    "texto": "Atravesaste el bloqueo. ¿Y ahora qué? La respuesta decide si la conversación sigue o se muere ahí.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.0",
-    "texto": "El cliente ya sabe quien eres y te esta dando conversacion. Ahora viene el paso que separa al que receta del que examina.",
+    "texto": "El cliente ya sabe quién eres y te está dando conversación. Ahora viene el paso que separa al que receta del que examina.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.1",
-    "texto": "Tienes el mapa de donde buscar. Antes de preguntar, aprende a leer con quien estas hablando.",
+    "texto": "Tienes el mapa de dónde buscar. Antes de preguntar, aprende a leer con quién estás hablando.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.10",
-    "texto": "El diagnostico completo, con un cliente que no suelta su dolor facil.",
+    "texto": "El diagnóstico completo, con un cliente que no suelta su dolor fácil.",
     "tipo": "nodo"
   },
   {
@@ -188,37 +188,37 @@
   {
     "extra": null,
     "id": "3.3",
-    "texto": "Sabes preguntar por capas. Ahora asegurate de que cada pregunta nazca de lo que acaba de decir.",
+    "texto": "Sabes preguntar por capas. Ahora asegúrate de que cada pregunta nazca de lo que acaba de decir.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.4",
-    "texto": "Preguntas bien y escuchas bien. Falta lo que hace que te contesten de verdad, aqui donde mas importa.",
+    "texto": "Preguntas bien y escuchas bien. Falta lo que hace que te contesten de verdad, aquí donde más importa.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.5",
-    "texto": "Ya sabes diagnosticar. Ahora decide en quien vale la pena invertir tu tiempo.",
+    "texto": "Ya sabes diagnosticar. Ahora decide en quién vale la pena invertir tu tiempo.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.6",
-    "texto": "No todos los no son iguales. Aqui aprendes a distinguir al que no quiere del que quiere y no puede — y por que con el segundo rendirse es el error mas caro.",
+    "texto": "No todos los no son iguales. Aquí aprendes a reconocer al que hoy no te puede comprar, aunque te reciba con gusto, y a irte rápido dejando la puerta abierta.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.7",
-    "texto": "Todo lo que aprendiste sirve para encontrar dolor. Pero un cliente contento no tiene dolor — y ahi es donde se pierde la mayor parte del dinero.",
+    "texto": "Todo lo que aprendiste sirve para encontrar dolor. Pero un cliente contento no tiene dolor — y ahí es donde se pierde la mayor parte del dinero.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "3.8",
-    "texto": "Ya sabes que un cliente contento tiene huecos y no dolor. Aqui aprendes a encontrarlos.",
+    "texto": "Ya sabes que un cliente contento tiene huecos y no dolor. Aquí aprendes a encontrarlos.",
     "tipo": "nodo"
   },
   {
@@ -236,13 +236,13 @@
   {
     "extra": null,
     "id": "4.0",
-    "texto": "Ya sabes que le duele. Ahora empieza la otra mitad de la venta: convertir ese dolor en valor.",
+    "texto": "Ya sabes qué le duele. Ahora empieza la otra mitad de la venta: convertir ese dolor en valor.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "4.1",
-    "texto": "Tienes la balanza. El primer movimiento es anclar tu presentacion en lo que EL te conto.",
+    "texto": "Tienes la balanza. El primer movimiento es anclar tu presentación en lo que ÉL te contó.",
     "tipo": "nodo"
   },
   {
@@ -272,13 +272,13 @@
   {
     "extra": null,
     "id": "4.14",
-    "texto": "Sabes armar el precio. Ahora lo mas importante: lo que pasa el segundo despues de decirlo.",
+    "texto": "Sabes armar el precio. Ahora lo más importante: lo que pasa el segundo después de decirlo.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "4.15",
-    "texto": "Encontraste una familia que compra con otro. Presentar eso no es como presentar una solucion: no hay nada que resolver, hay un espacio que ocupar.",
+    "texto": "Encontraste una familia que compra con otro. Presentar eso no es como presentar una solución: no hay nada que resolver, hay un espacio que ocupar.",
     "tipo": "nodo"
   },
   {
@@ -290,25 +290,25 @@
   {
     "extra": null,
     "id": "4.2",
-    "texto": "Conectaste con su dolor. Ahora que todo lo que digas signifique algo para el.",
+    "texto": "Conectaste con su dolor. Ahora que todo lo que digas signifique algo para él.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "4.3",
-    "texto": "Ya traduces beneficios. Ahora haz que se vea a si mismo con el problema resuelto.",
+    "texto": "Ya traduces beneficios. Ahora haz que se vea a sí mismo con el problema resuelto.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "4.4",
-    "texto": "El valor ya esta construido. Ahora la otra mitad: cuanto quiere comprar, y como se mueve eso.",
+    "texto": "El valor ya está construido. Ahora la otra mitad: cuánto quiere comprar, y cómo se mueve eso.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "4.5",
-    "texto": "Sabes que el impulso sube y baja. Aqui esta con que lo subes.",
+    "texto": "Sabes que el impulso sube y baja. Aquí está con qué lo subes.",
     "tipo": "nodo"
   },
   {
@@ -320,7 +320,7 @@
   {
     "extra": null,
     "id": "4.7",
-    "texto": "Las balas son una manera de subir el impulso. Hay seis en total.",
+    "texto": "Las balas son una manera de subir el impulso. Pero hay seis factores que lo mueven: FUJPIG.",
     "tipo": "nodo"
   },
   {
@@ -338,7 +338,7 @@
   {
     "extra": null,
     "id": "5.0",
-    "texto": "Presentaste bien y el impulso esta arriba. Presentar sin cerrar es contar un cuento.",
+    "texto": "Presentaste bien y el impulso está arriba. Presentar sin cerrar es contar un cuento.",
     "tipo": "nodo"
   },
   {
@@ -350,13 +350,13 @@
   {
     "extra": null,
     "id": "5.10",
-    "texto": "Una objecion, una vuelta completa: atraviesa, re-impulsa, cierra.",
+    "texto": "Una objeción, una vuelta completa: atraviesa, re-impulsa, cierra.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "5.11",
-    "texto": "Sabes girar el circulo. Aqui aprendes donde esta el limite.",
+    "texto": "Sabes girar el círculo. Aquí aprendes dónde está el límite.",
     "tipo": "nodo"
   },
   {
@@ -374,7 +374,7 @@
   {
     "extra": null,
     "id": "5.14",
-    "texto": "Con un cliente que ya te compra, el pedido no esta en duda. Lo que hay que cerrar es lo que se agrega.",
+    "texto": "Con un cliente que ya te compra, el pedido no está en duda. Lo que hay que cerrar es lo que se agrega.",
     "tipo": "nodo"
   },
   {
@@ -386,7 +386,7 @@
   {
     "extra": null,
     "id": "5.2",
-    "texto": "Ya sabes pedir la decision. Ahora aprende a leer cuando el cliente ya esta listo.",
+    "texto": "Ya sabes pedir la decisión. Ahora aprende a leer cuándo el cliente ya está listo.",
     "tipo": "nodo"
   },
   {
@@ -398,25 +398,25 @@
   {
     "extra": null,
     "id": "5.4",
-    "texto": "Vas a cerrar y te ponen una razon para no comprar. Buenas noticias: eso significa que te esta considerando.",
+    "texto": "Vas a cerrar y te ponen una razón para no comprar. Buenas noticias: eso significa que te está considerando.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "5.5",
-    "texto": "Sabes que una objecion es buena senal. Aqui la herramienta para las de todos los dias.",
+    "texto": "Sabes que una objeción es buena señal. Aquí la herramienta para las de todos los días.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "5.6",
-    "texto": "Atravesar objeciones menores sin frenar la conversacion.",
+    "texto": "Atravesar objeciones menores sin frenar la conversación.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "5.7",
-    "texto": "RRR sirve para dudas de tramite. Cuando la preocupacion es de verdad, hace falta otra cosa.",
+    "texto": "RRR sirve para dudas de trámite. Cuando la preocupación es de verdad, hace falta otra cosa.",
     "tipo": "nodo"
   },
   {
@@ -434,13 +434,13 @@
   {
     "extra": null,
     "id": "6.0",
-    "texto": "Ya dijo que si. Y aqui es donde se caen mas ventas de las que nadie cree.",
+    "texto": "Ya dijo que sí. Y aquí es donde se caen más ventas de las que nadie cree.",
     "tipo": "nodo"
   },
   {
     "extra": null,
     "id": "6.1",
-    "texto": "Sabes que el impulso cae despues del si. Aqui aprendes a levantarlo sin cometer el error mas peligroso de todo este paso.",
+    "texto": "Sabes que el impulso cae después del sí. Aquí aprendes a levantarlo sin cometer el error más peligroso de todo este paso.",
     "tipo": "nodo"
   },
   {
@@ -458,7 +458,7 @@
   {
     "extra": null,
     "id": "6.4",
-    "texto": "La venta ya está hecha — y ese es exactamente el examen. Un comprador formal, un trato recién firmado, y tu misión: que salga blindado, claro y de tu lado.",
+    "texto": "La venta ya está hecha — y ese es exactamente el reto. Un comprador formal, un trato recién firmado, y tu misión: que salga blindado, claro y de tu lado.",
     "tipo": "nodo"
   },
   {
@@ -482,7 +482,7 @@
   {
     "extra": null,
     "id": "7.3",
-    "texto": "Un cliente que ya te compra desde hace anos. Te va a dar su pedido y quedarse contento hagas lo que hagas. Crecer esa cuenta depende solo de ti.",
+    "texto": "Un cliente que ya te compra desde hace años. Te va a dar su pedido y quedarse contento hagas lo que hagas. Crecer esa cuenta depende solo de ti.",
     "tipo": "nodo"
   },
   {

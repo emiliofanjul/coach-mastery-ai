@@ -1,12 +1,17 @@
 # Roadmap
 
+- [x] Mensaje 149: Paso 0, 1104/1104 en 89 archivos; 1.0 y 3.6 exactos; tres MD5 entregados coinciden.
+- [x] Mensaje 149: Paso 1, SQL íntegro en una sola ejecución mediante herramienta de datos; chequeo final pasó a la primera; consulta 1.0/3.6/4.7 exacta.
+- [x] Mensaje 149: aplicar_149 una vez con dos MD5 exactos; tres entregas retiradas; 1108/1108 en 90 archivos; build OK.
+- [x] Mensaje 149: sesión de Emilio, siguiente nodo 4.2 muestra «…algo para él.»; cero errores de página. Publicación solicitada; seis hallazgos profundos reportados.
+
 - [x] Mensaje 148: Paso 0: 1098/1098 en 88 archivos y «El cuarto Boss.»; tres MD5 exactos.
 - [x] Mensaje 148 B: tres MD5 exactos; partes 1/2 aplicadas a la primera; parte 3 abortó por omisión del agente en la llamada, reintento íntegro pasó. Consultas finales exactas; SQL y entregas retiradas. Se usó herramienta de datos porque no hay cambios de esquema.
 - [x] Mensaje 148 B: script una vez, diez MD5 finales exactos; 1104/1104 en 89 archivos; build automático OK, comprobación separada de tipos no disponible en resultados automáticos.
 - [x] Mensaje 148 B: consulta literal guardada en docs/kb/textos_mundos_y_nodos.json: 82 objetos (75 nodos, 7 mundos).
 - [x] Mensaje 148 B: sesión de Emilio, teléfono 393x574: siete lemas con acentos, Repasar las tarjetas 3.0 y las dos tarjetas exactas; coach responde con nombre corto y negritas reales sin asteriscos; cero errores de página.
 - [x] Mensaje 148 B: publicación solicitada para closerapp.ai; escaneo básico nuevo posterior sin hallazgos nuevos ni críticos.
-- [ ] Mensaje 148 B: escaneo profundo iniciado; esperando notificación externa con resultados. Publicación solicitada, disponibilidad final no confirmada.
+- [x] Mensaje 148 B: escaneo profundo terminado y resultados recuperados: cuatro errores (avance, saltar aprendizaje, audio sin filtro, invitaciones) y dos avisos (certificado, decisiones ajenas). Sin cambios de seguridad.
 
 - [x] Mensaje 147: Paso 0 exacto: 1082/1082 en 87 archivos, 75 nodos, columnas nuevas ausentes y tres huellas exactas.
 - [x] Mensaje 147: mapa_147.sql aplicado como migración a la primera; 1.5/4.1/7.4 con nombre, nombre corto y minutos exactos; lemas de mundos entregados a Emilio; SQL retirado.
