@@ -1,7 +1,7 @@
 # Roadmap
 
 - [x] Mensaje 148: Paso 0: 1098/1098 en 88 archivos y «El cuarto Boss.»; tres MD5 exactos.
-- [ ] Mensaje 148: ejecutar SQL íntegro, verificar textos y retirar entrega.
+- [ ] Mensaje 148: ejecutar SQL íntegro, verificar textos y retirar entrega; bloqueado: SQL de 76 535 bytes no cabe íntegro en la llamada disponible, esperando entrega dividida de Emilio sin reescribirlo.
 - [ ] Mensaje 148: aplicar diez archivos una vez; 1104/89 y comprobaciones automáticas sin errores.
 - [ ] Mensaje 148: guardar consulta de mundos y nodos como JSON exacto.
 - [ ] Mensaje 148: verificar mapa, tarjetas 3.0 y coach con sesión de Emilio; publicar y escanear seguridad.
