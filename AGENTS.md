@@ -8,3 +8,5 @@
 - Keep the certification exam identifier in the shared certification module so practice completion and regression tests cannot drift to a retired map node.
 - Keep app palette definitions in the global stylesheet's --c-* tokens and reference them from screens; only documented brand/canvas exceptions may use literal colors, so palette changes stay centralized.
 - Keep Phase 2 shared controls in closer/piezas and their dimensions in global CSS tokens so screen sizing stays consistent.
+- Render model emphasis through TextoCoach as React text and strong elements, never model HTML, so chat formatting cannot execute markup.
+- Prefer nombre_corto in coach progress context with a full-name fallback so map and coach labels stay aligned.
