@@ -13,3 +13,4 @@
 - Carry optional unlock attribution in node-completion signals so map path animation distinguishes new progress from failed attempts and replays.
 - Share onboarding presentation pieces in bienvenida-ui and keep the map guide separate from the reusable map-intro route, so first-visit guidance and menu replay remain independent.
 - Derive map-guide node type and voice-practice distance in the shared guia-mapa helper from ordered map data, so guidance stays accurate when content changes.
+- Reuse manager onboarding questions, direct brain mapping and existing save functions for personal practice setup, so commercial data stays grounded and both flows remain aligned.
