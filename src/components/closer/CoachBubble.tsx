@@ -7,6 +7,21 @@ import { coachChat } from "@/lib/coach-chat.functions";
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
 /**
+ * El coach escribe con negritas (**así**). Antes se veían los asteriscos tal cual (nov-2026):
+ * aquí se convierten en negritas de verdad, y una viñeta "* " o "- " al inicio de línea en "• ".
+ * Sin HTML: solo texto y <strong>, así nada que escriba el modelo se interpreta como código.
+ */
+export function TextoCoach({ texto }: { texto: string }) {
+  const limpio = texto.replace(/^[ \t]*[*-][ \t]+/gm, "• ");
+  const partes = limpio.split(/\*\*([^*]+?)\*\*/g);
+  return (
+    <>
+      {partes.map((p, i) => (i % 2 === 1 ? <strong key={i} style={{ fontWeight: 700 }}>{p}</strong> : p.replace(/\*\*/g, "")))}
+    </>
+  );
+}
+
+/**
  * CoachBubble — botón flotante del coach.
  *
  * Filosofía:
@@ -140,7 +155,7 @@ export function CoachBubble({ hidden = false, context, sellerId }: CoachBubblePr
                         : "bg-primary text-primary-foreground rounded-tr-sm"
                     )}
                   >
-                    {m.content}
+                    {m.role === "assistant" ? <TextoCoach texto={m.content} /> : m.content}
                   </div>
                 </div>
               ))}

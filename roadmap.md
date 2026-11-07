@@ -1,10 +1,12 @@
 # Roadmap
 
 - [x] Mensaje 148: Paso 0: 1098/1098 en 88 archivos y «El cuarto Boss.»; tres MD5 exactos.
-- [ ] Mensaje 148: ejecutar SQL íntegro, verificar textos y retirar entrega; bloqueado: SQL de 76 535 bytes no cabe íntegro en la llamada disponible, esperando entrega dividida de Emilio sin reescribirlo.
-- [ ] Mensaje 148: aplicar diez archivos una vez; 1104/89 y comprobaciones automáticas sin errores.
-- [ ] Mensaje 148: guardar consulta de mundos y nodos como JSON exacto.
-- [ ] Mensaje 148: verificar mapa, tarjetas 3.0 y coach con sesión de Emilio; publicar y escanear seguridad.
+- [x] Mensaje 148 B: tres MD5 exactos; partes 1/2 aplicadas a la primera; parte 3 abortó por omisión del agente en la llamada, reintento íntegro pasó. Consultas finales exactas; SQL y entregas retiradas. Se usó herramienta de datos porque no hay cambios de esquema.
+- [x] Mensaje 148 B: script una vez, diez MD5 finales exactos; 1104/1104 en 89 archivos; build automático OK, comprobación separada de tipos no disponible en resultados automáticos.
+- [x] Mensaje 148 B: consulta literal guardada en docs/kb/textos_mundos_y_nodos.json: 82 objetos (75 nodos, 7 mundos).
+- [x] Mensaje 148 B: sesión de Emilio, teléfono 393x574: siete lemas con acentos, Repasar las tarjetas 3.0 y las dos tarjetas exactas; coach responde con nombre corto y negritas reales sin asteriscos; cero errores de página.
+- [x] Mensaje 148 B: publicación solicitada para closerapp.ai; escaneo básico nuevo posterior sin hallazgos nuevos ni críticos.
+- [ ] Mensaje 148 B: escaneo profundo iniciado; esperando notificación externa con resultados. Publicación solicitada, disponibilidad final no confirmada.
 
 - [x] Mensaje 147: Paso 0 exacto: 1082/1082 en 87 archivos, 75 nodos, columnas nuevas ausentes y tres huellas exactas.
 - [x] Mensaje 147: mapa_147.sql aplicado como migración a la primera; 1.5/4.1/7.4 con nombre, nombre corto y minutos exactos; lemas de mundos entregados a Emilio; SQL retirado.

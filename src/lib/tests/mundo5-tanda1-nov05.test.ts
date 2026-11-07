@@ -81,7 +81,7 @@ describe("las lecciones del mundo 5 tienen su quiz", () => {
 describe("detalles del mundo 5", () => {
   it("la señal más fuerte es la del Cerebro, y el jefe es el quinto", () => {
     expect(t("5.2", 3).body).toContain("\"¿Y cuándo me lo entregan?\" es de las señales más fuertes que hay.");
-    expect(t("5.15", 1).title).toBe("El quinto Boss.");
+    expect(t("5.15", 1).title).toBe("Reto final del Mundo 5.");
     expect(t("5.9", 4).body).not.toContain("el siguiente nodo");
   });
   it("con acentos", () => {

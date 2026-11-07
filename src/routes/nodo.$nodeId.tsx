@@ -906,7 +906,7 @@ function BottomButton({
     // Prioriza destino real (quiz/practica) sobre node_type.
     if (hasQuiz) return { label: "Ponlo a prueba" };
     if (hasScript) {
-      if (nodeType === "boss") return { label: "Entrar al examen" };
+      if (nodeType === "boss") return { label: "Entrar al reto" };
       if (nodeType === "full_sim") return { label: "Ver demostración" };
       return { label: "Practicar" };
     }
