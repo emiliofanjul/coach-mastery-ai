@@ -4,7 +4,7 @@
 - [x] Mensaje 155-B: script una vez: tres archivos con MD5 exacto; entregas retiradas.
 - [x] Mensaje 155-B: 1150/1150 en 95 archivos, build automático OK y oj typecheck sin errores.
 - [x] Mensaje 155-B: sesión Emilio, cinco pantallas de Así funciona y regreso real al mapa; botones visibles y texto recuperable en 375x568, 390x667 y 390x844, cero errores. Bienvenida y preguntas comprobadas con respuestas GET ajustadas solo en navegador (Emilio es manager con onboarding completo); sin escrituras ni consentimiento.
-- [ ] Mensaje 155-B: solicitar publicación de 155 y 155-B. Solo metadatos de compartir adicionales en red/disputas; entrega exacta intacta.
+- [x] Mensaje 155-B: publicación de 155 y 155-B solicitada para closerapp.ai; disponibilidad final no confirmada. Escaneo básico nuevo sin críticos; publicación advierte resultados antiguos para último commit. Metadatos de compartir obligatorios completados en otras rutas, entrega exacta intacta.
 
 - [x] Mensaje 155: Paso 0, 1145/1145 en 94 archivos y mapa MD5 51ca697e46a08e47676e2428bdb0c165; dos entregas con MD5 exactos.
 - [x] Mensaje 155: script una vez, diez archivos exactos y entregas retiradas; 1149/1149 en 95 archivos, build automático OK y oj typecheck -b --noEmit sin errores.
