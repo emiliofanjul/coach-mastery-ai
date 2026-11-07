@@ -11,7 +11,7 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
  *
  * Filosofía:
  *  - Siempre disponible pero nunca compitiendo por atención.
- *  - Esquina inferior derecha. Pequeño cuando cerrado.
+ *  - En el encabezado del mapa, chico y discreto (Fase 3 del rediseño).
  *  - Modal de chat sobre la pantalla actual cuando se abre.
  *  - NO ocupa espacio en el flujo. NO es una sección del Home.
  *  - Color azul Coach (no naranja) — el coach es voz didáctica,
@@ -69,17 +69,17 @@ export function CoachBubble({ hidden = false, context, sellerId }: CoachBubblePr
         onClick={() => setOpen(true)}
         aria-label="Hablar con tu coach"
         data-tour="coach-bubble"
+        // Fase 3 (mensaje 147): un botón discreto en el encabezado, no una burbuja naranja
+        // flotante que competía con el nodo activo (el naranja es para avanzar).
         className={cn(
-          "fixed bottom-5 right-5 z-40",
-          "h-14 w-14 rounded-full",
-          "bg-primary text-primary-foreground",
-          "glow-orange",
+          "h-11 w-11 rounded-full",
+          "bg-[var(--c-surface)] text-[var(--c-text-soft)]",
           "flex items-center justify-center",
-          "transition-transform duration-200 hover:scale-105 active:scale-95",
+          "transition-colors duration-200 hover:text-white",
           open && "opacity-0 pointer-events-none",
         )}
       >
-        <MessageCircle className="h-6 w-6" strokeWidth={2.2} />
+        <MessageCircle className="h-5 w-5" strokeWidth={1.9} />
       </button>
 
       {/* Modal */}

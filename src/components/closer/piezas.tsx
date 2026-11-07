@@ -143,3 +143,33 @@ export function EncabezadoPantalla({
     </div>
   );
 }
+
+/**
+ * El botón de play del mapa (Fase 3, mensaje 147): naranja con volumen —más claro arriba,
+ * borde inferior más hondo— para que se vea como algo que se aprieta.
+ * Regla: el texto sobre naranja va oscuro (se lee al sol); los íconos grandes van blancos.
+ */
+export const estiloBotonPlay: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  background: "linear-gradient(180deg, var(--c-play-claro) 0%, var(--c-play-centro) 50%, var(--c-play-hondo) 100%)",
+  boxShadow: "inset 0 -3px 0 rgb(var(--c-play-sombra-rgb) / 0.35), inset 0 2px 0 rgba(255,255,255,0.25)",
+};
+
+/** Triángulo de play blanco, centrado por su peso visual (no por su caja). */
+export function IconoPlay({ tam }: { tam: number }) {
+  return (
+    <svg
+      width={tam}
+      height={tam}
+      viewBox="0 0 24 24"
+      fill="#FFFFFF"
+      aria-hidden
+      style={{ display: "block", filter: "drop-shadow(0 1px 1px rgb(var(--c-play-sombra-rgb) / 0.35))" }}
+    >
+      <path d="M8 4.8c0-.9 1-1.5 1.8-1l10 6.7c.7.5.7 1.5 0 2l-10 6.7c-.8.5-1.8-.1-1.8-1z" transform="translate(-0.2 0)" />
+    </svg>
+  );
+}

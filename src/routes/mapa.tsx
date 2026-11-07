@@ -7,8 +7,9 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Lock, Check, Star, Trophy, Play } from "lucide-react";
+import { Lock, Check, Trophy } from "lucide-react";
+import { estiloBoton, estiloBotonPlay, IconoPlay } from "@/components/closer/piezas";
+import { restGet } from "@/lib/supabase-rest";
 import { AppHeader } from "@/components/app/AppShell";
 import { MapTutorial } from "@/components/closer/MapTutorial";
 import { CoachBubble } from "@/components/closer/CoachBubble";
@@ -44,6 +45,10 @@ type NodeRow = {
   order_index: number;
   is_boss: boolean;
   difficulty_level: number;
+  /** Fase 3 (mensaje 147): el nombre de dos o tres palabras que va bajo el nodo. */
+  nombre_corto: string | null;
+  /** Fase 3: cuánto toma el nodo completo (tarjetas, quiz, demostración, práctica y análisis). */
+  minutos_estimados: number | null;
 };
 
 type ProgressRow = {
@@ -59,6 +64,8 @@ type DisplayNode = NodeRow & {
   status: NodeStatus;
   score: number | null;
   stars: number;
+  /** 1 = el primero del mundo. */
+  posicion: number;
 };
 
 // Regla genérica basada en datos:
@@ -90,16 +97,17 @@ function computeUnlockedWorlds(
   }
   return unlocked;
 }
-const NODE_RADIUS = 28; // 56 px
-const BOSS_RADIUS = 36; // 72 px
-const MAP_WIDTH = 320;
-const ROW_HEIGHT = 110;
-const PADDING_TOP = 32;
+// Fase 3 (mensaje 147): todos los nodos miden igual; el siguiente destaca por su color y su anillo.
+const NODE_SIZE = 52;
+const BOSS_SIZE = 56;
+const MAP_WIDTH = 340;
+const ROW_HEIGHT = 124;
+const PADDING_TOP = 48;
 const SUPABASE_REST_URL = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1`;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-// zigzag horizontal positions: izq, centro, der, centro, izq, centro, der...
-const X_PATTERN = [0.18, 0.5, 0.82, 0.5];
+// Zigzag con curvas: centro, derecha, centro, izquierda…
+const X_PATTERN = [0.5, 0.78, 0.5, 0.22];
 
 function xForIndex(i: number) {
   return X_PATTERN[i % X_PATTERN.length] * MAP_WIDTH;
@@ -185,7 +193,7 @@ function MapaPage() {
 
       const [w, n, sellerRows] = await Promise.all([
         restSelect<World[]>("worlds?select=*&order=order_index.asc", accessToken),
-        restSelect<NodeRow[]>("nodes?select=id,world_id,name,description,order_index,is_boss,difficulty_level&order=order_index.asc", accessToken),
+        restSelect<NodeRow[]>("nodes?select=id,world_id,name,description,order_index,is_boss,difficulty_level,nombre_corto,minutos_estimados&order=order_index.asc", accessToken),
         restSelect<Array<NonNullable<typeof seller>>>(
           `sellers?select=id,current_world,current_node,map_tutorial_completed&profile_id=eq.${encodeURIComponent(userId)}&limit=1`,
           accessToken,
@@ -224,6 +232,18 @@ function MapaPage() {
       alive = false;
     };
   }, [navigate]);
+
+  // «Cómo funciona el mapa» vive en el menú (Fase 3): llega por un aviso, o por una marca
+  // si el menú se abrió desde otra pantalla.
+  useEffect(() => {
+    const abrir = () => {
+      try { window.sessionStorage.removeItem("closer_ver_tutorial_mapa"); } catch {}
+      setShowTutorial(true);
+    };
+    window.addEventListener("closer:tutorial-mapa", abrir);
+    try { if (!loading && window.sessionStorage.getItem("closer_ver_tutorial_mapa") === "1") abrir(); } catch {}
+    return () => window.removeEventListener("closer:tutorial-mapa", abrir);
+  }, [loading]);
 
   // Scroll inicial al nodo activo (o secuencia de animación si venimos del quiz).
   const animConsumedRef = useRef(false);
@@ -368,6 +388,20 @@ function MapaPage() {
     return "locked";
   };
 
+  const totalNodos = orderedNodes.length;
+  const hechos = orderedNodes.filter((n) => progress[n.id]?.status === "done").length;
+  const nodoActivo = activeId ? orderedNodes.find((n) => n.id === activeId) ?? null : null;
+  const mundoActual = worlds.find((w) => w.id === (nodoActivo?.world_id ?? orderedNodes[orderedNodes.length - 1]?.world_id));
+
+  const abrirNodo = (node: NodeRow, status: NodeStatus, posicion: number) =>
+    setSelectedNode({
+      ...node,
+      status,
+      posicion,
+      score: progress[node.id]?.consistency_score ?? null,
+      stars: (progress[node.id]?.stars as number | null) ?? 0,
+    });
+
   if (loading) {
     return (
       <main style={shellStyle}>
@@ -387,21 +421,47 @@ function MapaPage() {
 
   return (
     <main style={shellStyle}>
-      {/* Header fijo */}
+      {/* Encabezado: menú, en qué mundo vas y cuánto llevas, y el coach. */}
       <AppHeader
-        title="MAPA"
-        subtitle="Camino al Vendedor Elite"
-        rightExtras={
-          <button
-            onClick={() => setShowTutorial(true)}
-            className="rounded-full border border-[var(--c-primary)]/40 bg-[var(--c-primary)]/10 px-3 py-1.5 text-[0.7rem] font-['DM_Sans'] font-semibold text-[var(--c-primary)] hover:bg-[var(--c-primary)]/20 transition-colors whitespace-nowrap"
-          >
-            ¿Cómo funciona?
-          </button>
+        center={
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <span
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 15,
+                fontWeight: 600,
+                color: "var(--c-text)",
+                maxWidth: "100%",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {mundoActual ? `Mundo ${mundoActual.id} · ${mundoActual.name}` : "Tu mapa"}
+            </span>
+            {totalNodos > 0 && (
+              <span style={{ display: "flex", alignItems: "center", gap: 8 }} aria-label={`${hechos} de ${totalNodos} nodos completados`}>
+                <span style={{ width: 96, height: 4, borderRadius: 2, background: "var(--c-disabled-bg)", overflow: "hidden", display: "block" }}>
+                  <span
+                    style={{
+                      display: "block",
+                      height: 4,
+                      borderRadius: 2,
+                      background: "var(--c-primary)",
+                      width: `${Math.round((hechos / totalNodos) * 100)}%`,
+                      transition: "width 600ms ease",
+                    }}
+                  />
+                </span>
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "var(--c-text-2)" }}>
+                  {hechos} de {totalNodos}
+                </span>
+              </span>
+            )}
+          </div>
         }
+        rightExtras={<CoachBubble context="mapa" sellerId={seller?.id} />}
       />
-
-
 
       {/* Apilados de abajo hacia arriba: render reverso */}
       <div style={{ display: "flex", flexDirection: "column-reverse" }}>
@@ -415,204 +475,201 @@ function MapaPage() {
           const nextWorldId = sortedWorlds[1]?.id;
           const tourTaken = new Set<string>();
           return worlds.map((world) => {
-          const worldNodes = nodes
-            .filter((n) => n.world_id === world.id)
-            .sort((a, b) => a.order_index - b.order_index);
-          const isUnlocked = unlockedWorlds.has(world.id);
-          const isCurrent = world.id === 0; // anchor
-          const sectionHeight =
-            PADDING_TOP + worldNodes.length * ROW_HEIGHT + 40;
+            const worldNodes = nodes
+              .filter((n) => n.world_id === world.id)
+              .sort((a, b) => a.order_index - b.order_index);
+            const isUnlocked = unlockedWorlds.has(world.id);
+            const isCurrent = world.id === 0; // anchor
+            const sectionHeight = PADDING_TOP + worldNodes.length * ROW_HEIGHT + 24;
 
-          // Mundos bloqueados: solo header + badge "Bloqueado". Sin contenedor de nodos.
-          if (!isUnlocked) {
+            // Mundos bloqueados: solo su encabezado y «Bloqueado». Sin nodos.
+            if (!isUnlocked) {
+              return (
+                <section
+                  key={world.id}
+                  ref={world.id === 1 ? mundo0Ref : undefined}
+                  data-tour={world.id === nextWorldId ? "world-next" : undefined}
+                  style={{ ...seccionMundo, paddingBottom: 32 }}
+                >
+                  <WorldHeader world={world} bloqueado />
+                </section>
+              );
+            }
+
             return (
               <section
                 key={world.id}
-                ref={world.id === 1 ? mundo0Ref : undefined}
+                ref={isCurrent ? mundo0Ref : undefined}
                 data-tour={world.id === nextWorldId ? "world-next" : undefined}
-                style={{
-                  position: "relative",
-                  background: world.color ? `${world.color}14` : "transparent",
-                  paddingBottom: 24,
-                  borderTop: "1px solid var(--c-surface)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
+                style={seccionMundo}
               >
                 <WorldHeader world={world} />
+
                 <div
                   style={{
-                    marginTop: 16,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "8px 14px",
-                    borderRadius: 99,
-                    background: "rgb(var(--c-elevated-rgb) / 0.9)",
-                    border: "1px solid var(--c-border)",
-                    color: "var(--c-text-2)",
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "0.75rem",
+                    position: "relative",
+                    width: MAP_WIDTH,
+                    maxWidth: "100%",
+                    height: sectionHeight,
+                    margin: "0 auto",
                   }}
                 >
-                  <Lock size={14} /> Bloqueado
+                  {/* El camino: curvas suaves; naranja donde ya pasaste, apagado lo que falta. */}
+                  <svg
+                    width={MAP_WIDTH}
+                    height={sectionHeight}
+                    style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "visible" }}
+                    aria-hidden
+                  >
+                    {worldNodes.map((node, i) => {
+                      if (i === 0) return null;
+                      const prev = worldNodes[i - 1];
+                      const x1 = xForIndex(i - 1);
+                      const y1 = yForIndex(i - 1, worldNodes.length);
+                      const x2 = xForIndex(i);
+                      const y2 = yForIndex(i, worldNodes.length);
+                      const my = (y1 + y2) / 2;
+                      const path = `M ${x1} ${y1} C ${x1} ${my} ${x2} ${my} ${x2} ${y2}`;
+                      const recorrido = computeStatus(prev) === "completed" && computeStatus(node) !== "locked";
+                      const isAnimLine = !!animSignal && prev.id === animSignal.nodeId && node.id === animNextNodeId;
+                      const naranjaFijo = recorrido && !isAnimLine;
+                      const naranjaAnimado = isAnimLine && animPhase >= 5;
+                      return (
+                        <g key={`line-${node.id}`}>
+                          <path d={path} stroke="var(--c-disabled-bg)" strokeWidth={5} fill="none" strokeLinecap="round" />
+                          {(naranjaFijo || naranjaAnimado) && (
+                            <>
+                              {/* Un resplandor muy sutil bajo lo recorrido. */}
+                              <path
+                                d={path}
+                                stroke="rgb(var(--c-primary-rgb) / 0.07)"
+                                strokeWidth={12}
+                                fill="none"
+                                strokeLinecap="round"
+                                pathLength={1}
+                                style={{
+                                  filter: "blur(5px)",
+                                  ...(naranjaAnimado ? { strokeDasharray: 1, strokeDashoffset: 1, animation: "caminoSeIlumina 0.8s ease-in-out forwards" } : {}),
+                                }}
+                              />
+                              <path
+                                d={path}
+                                stroke="var(--c-primary)"
+                                strokeWidth={5}
+                                fill="none"
+                                strokeLinecap="round"
+                                pathLength={1}
+                                style={naranjaAnimado ? { strokeDasharray: 1, strokeDashoffset: 1, animation: "caminoSeIlumina 0.8s ease-in-out forwards" } : undefined}
+                              />
+                            </>
+                          )}
+                        </g>
+                      );
+                    })}
+                  </svg>
+
+                  {/* Nodos */}
+                  {worldNodes.map((node, i) => {
+                    const status = computeStatus(node);
+                    const x = xForIndex(i);
+                    const y = yForIndex(i, worldNodes.length);
+                    const size = node.is_boss ? BOSS_SIZE : NODE_SIZE;
+                    let tour: string | undefined;
+                    if (world.id === firstWorldId) {
+                      if (node.is_boss && !tourTaken.has("boss-node")) tour = "boss-node";
+                      else if (status === "active" && !tourTaken.has("active-node")) tour = "active-node";
+                      else if ((status === "locked" || status === "available") && !tourTaken.has("locked-node")) tour = "locked-node";
+                      if (tour) tourTaken.add(tour);
+                    }
+
+                    return (
+                      <div
+                        key={node.id}
+                        data-node-id={node.id}
+                        data-tour={tour}
+                        data-active-node={status === "active" ? "true" : undefined}
+                        style={{
+                          position: "absolute",
+                          left: x - 70,
+                          top: y - size / 2,
+                          width: 140,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        <MapNode
+                          node={node}
+                          status={status}
+                          stars={(progress[node.id]?.stars as number | null) ?? 0}
+                          animationPhase={animPhase}
+                          isJustCompleted={animSignal?.nodeId === node.id}
+                          isNewlyActive={animNextNodeId === node.id}
+                          brillo={status === "active" && glowActive}
+                          onClick={() => abrirNodo(node, status, i + 1)}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             );
-          }
-
-          return (
-            <section
-              key={world.id}
-              ref={isCurrent ? mundo0Ref : undefined}
-              data-tour={world.id === nextWorldId ? "world-next" : undefined}
-
-              style={{
-                position: "relative",
-                background: world.color
-                  ? `${world.color}14`
-                  : "transparent",
-                paddingBottom: 24,
-                borderTop: "1px solid var(--c-surface)",
-              }}
-            >
-              <WorldHeader world={world} />
-
-              <div
-                style={{
-                  position: "relative",
-                  width: MAP_WIDTH,
-                  height: sectionHeight,
-                  margin: "0 auto",
-                }}
-              >
-                {/* Líneas SVG */}
-                <svg
-                  width={MAP_WIDTH}
-                  height={sectionHeight}
-                  style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-                >
-                  {worldNodes.map((node, i) => {
-                    if (i === 0) return null;
-                    const prev = worldNodes[i - 1];
-                    const x1 = xForIndex(i - 1);
-                    const y1 = yForIndex(i - 1, worldNodes.length);
-                    const x2 = xForIndex(i);
-                    const y2 = yForIndex(i, worldNodes.length);
-                    const cx = (x1 + x2) / 2;
-                    const path = `M ${x1} ${y1} Q ${cx} ${y1 + (y2 - y1) / 2} ${x2} ${y2}`;
-                    const prevDone =
-                      computeStatus(prev) === "completed" &&
-                      computeStatus(node) !== "locked";
-                    const isAnimLine =
-                      !!animSignal &&
-                      prev.id === animSignal.nodeId &&
-                      node.id === animNextNodeId;
-                    const showOrangeStatic = prevDone && !isAnimLine;
-                    const showOrangeAnimated = isAnimLine && animPhase >= 5;
-                    return (
-                      <g key={`line-${node.id}`}>
-                        <path
-                          d={path}
-                          stroke="var(--c-border)"
-                          strokeWidth={3}
-                          fill="none"
-                          strokeLinecap="round"
-                        />
-                        {showOrangeStatic && (
-                          <path
-                            d={path}
-                            stroke="rgb(var(--c-primary-rgb) / 0.6)"
-                            strokeWidth={3}
-                            fill="none"
-                            strokeLinecap="round"
-                          />
-                        )}
-                        {showOrangeAnimated && (
-                          <path
-                            d={path}
-                            stroke="rgb(var(--c-primary-rgb) / 0.85)"
-                            strokeWidth={3}
-                            fill="none"
-                            strokeLinecap="round"
-                            style={{
-                              strokeDasharray: 260,
-                              strokeDashoffset: 260,
-                              animation: "lineDraw 0.8s ease-in-out forwards",
-                            }}
-                          />
-                        )}
-                      </g>
-                    );
-                  })}
-                </svg>
-
-                {/* Nodos */}
-                {worldNodes.map((node, i) => {
-                  const status = computeStatus(node);
-                  const x = xForIndex(i);
-                  const y = yForIndex(i, worldNodes.length);
-                  const r = node.is_boss ? BOSS_RADIUS : NODE_RADIUS;
-                  let tour: string | undefined;
-                  if (world.id === firstWorldId) {
-                    if (node.is_boss && !tourTaken.has("boss-node")) tour = "boss-node";
-                    else if (status === "active" && !tourTaken.has("active-node"))
-                      tour = "active-node";
-                    else if (
-                      (status === "locked" || status === "available") &&
-                      !tourTaken.has("locked-node")
-                    )
-                      tour = "locked-node";
-                    if (tour) tourTaken.add(tour);
-                  }
-
-                  return (
-                    <div
-                      key={node.id}
-                      data-node-id={node.id}
-                      data-tour={tour}
-                      data-active-node={status === "active" ? "true" : undefined}
-                      style={{
-                        position: "absolute",
-                        left: x - r,
-                        top: y - r,
-                        width: r * 2,
-                        height: r * 2 + 28,
-                        borderRadius: "50%",
-                        animation:
-                          status === "active" && glowActive
-                            ? "glowPulse 1s ease-out"
-                            : undefined,
-                      }}
-                    >
-                      <MapNode
-                        node={node}
-                        status={status}
-                        stars={(progress[node.id]?.stars as number | null) ?? 0}
-                        animationPhase={animPhase}
-                        isJustCompleted={animSignal?.nodeId === node.id}
-                        isNewlyActive={animNextNodeId === node.id}
-                        onClick={() =>
-                          setSelectedNode({
-                            ...node,
-                            status,
-                            score: progress[node.id]?.consistency_score ?? null,
-                            stars: (progress[node.id]?.stars as number | null) ?? 0,
-                          })
-                        }
-                      />
-                    </div>
-                  );
-                })}
-
-              </div>
-            </section>
-          );
           });
         })()}
-
       </div>
+
+      {/* «Sigue aquí»: un toque y estás en el nodo que sigue, con cuánto te va a tomar. */}
+      {nodoActivo && !selectedNode && !showTutorial && (
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 20,
+            padding: "32px var(--m-pantalla) calc(20px + env(safe-area-inset-bottom))",
+            background: "linear-gradient(to top, var(--c-bg) 68%, rgb(var(--c-bg-rgb) / 0))",
+            pointerEvents: "none",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              const w = nodes.filter((n) => n.world_id === nodoActivo.world_id).sort((a, b) => a.order_index - b.order_index);
+              abrirNodo(nodoActivo, "active", w.findIndex((n) => n.id === nodoActivo.id) + 1);
+            }}
+            style={{
+              pointerEvents: "auto",
+              width: "100%",
+              maxWidth: 560,
+              margin: "0 auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "12px 12px 12px 16px",
+              borderRadius: "var(--r-tarjeta)",
+              border: "1px solid var(--c-border)",
+              background: "var(--c-surface)",
+              color: "var(--c-text)",
+              textAlign: "left",
+              cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif",
+            }}
+          >
+            <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
+              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-text-2)" }}>
+                {nodoActivo.minutos_estimados ? `Sigue aquí · ${nodoActivo.minutos_estimados} min` : "Sigue aquí"}
+              </span>
+              <span style={{ fontSize: 16, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {nodoActivo.nombre_corto || nodoActivo.name}
+              </span>
+            </span>
+            <span style={{ ...botonPlay, width: 52, height: 52, borderRadius: 16 }} aria-hidden>
+              <IconoPlay tam={22} />
+            </span>
+          </button>
+        </div>
+      )}
 
       <NodeSheet
         node={selectedNode}
@@ -620,21 +677,20 @@ function MapaPage() {
         onOpenChange={(o) => !o && setSelectedNode(null)}
       />
 
-      <CoachBubble context="mapa" sellerId={seller?.id} />
-
       <MapTutorial open={showTutorial} onClose={handleTutorialClose} />
 
       {unlockNotice && (
         <div
+          role="status"
           style={{
             position: "fixed",
-            top: 80,
+            top: 88,
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 50,
             background: "var(--c-elevated)",
-            borderLeft: "3px solid var(--c-primary)",
-            borderRadius: 12,
+            border: "1px solid var(--c-border-strong)",
+            borderRadius: 16,
             padding: "12px 16px",
             display: "flex",
             alignItems: "center",
@@ -647,23 +703,15 @@ function MapaPage() {
         >
           <CloserCharacter state="celebration" size={48} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 700,
-                fontSize: "0.85rem",
-                color: "#FFFFFF",
-                marginBottom: 2,
-              }}
-            >
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: 15, color: "var(--c-text)", marginBottom: 2 }}>
               {unlockNotice.name} desbloqueado
             </div>
             <div
               style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: "0.72rem",
+                fontSize: 13,
                 color: "var(--c-text-soft)",
-                lineHeight: 1.3,
+                lineHeight: 1.35,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
@@ -676,123 +724,113 @@ function MapaPage() {
         </div>
       )}
 
+      {/* Animaciones (Fase 3): pocas, suaves y con propósito. Nada rebota ni vibra. */}
       <style>{`
-        @keyframes pulseOrange {
-          0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.55); }
-          50% { box-shadow: 0 0 0 12px rgb(var(--c-primary-rgb) / 0); }
+        @keyframes respira {
+          0%, 100% { transform: scale(1); opacity: 0.6; }
+          50% { transform: scale(1.08); opacity: 0.15; }
         }
-        @keyframes pulseGold {
-          0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-gold-rgb) / 0.55); }
-          50% { box-shadow: 0 0 0 14px rgb(var(--c-gold-rgb) / 0); }
+        @keyframes aparece {
+          from { opacity: 0; transform: scale(0.85); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes candadoFuera {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+        @keyframes caminoSeIlumina {
+          from { stroke-dashoffset: 1; }
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes brilloActivo {
+          0% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.6); }
+          100% { box-shadow: 0 0 0 20px rgb(var(--c-primary-rgb) / 0); }
         }
         @keyframes unlockFade {
           0% { opacity: 0; transform: translate(-50%, -8px); }
           15%, 85% { opacity: 1; transform: translate(-50%, 0); }
           100% { opacity: 0; transform: translate(-50%, -8px); }
         }
-        @keyframes glowPulse {
-          0% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.85), 0 0 24px 8px rgb(var(--c-primary-rgb) / 0.6); }
-          100% { box-shadow: 0 0 0 24px rgb(var(--c-primary-rgb) / 0), 0 0 0 0 rgb(var(--c-primary-rgb) / 0); }
-        }
-        @keyframes checkBounce {
-          0% { transform: scale(0); }
-          60% { transform: scale(1.3); }
-          100% { transform: scale(1); }
-        }
-        @keyframes starPop {
-          0% { transform: scale(0); opacity: 0; }
-          60% { transform: scale(1.2); opacity: 1; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes nodeShake {
-          0%, 100% { transform: translateX(0); }
-          15% { transform: translateX(-3px); }
-          30% { transform: translateX(3px); }
-          45% { transform: translateX(-3px); }
-          60% { transform: translateX(3px); }
-          75% { transform: translateX(-2px); }
-        }
-        @keyframes lineDraw {
-          from { stroke-dashoffset: 260; }
-          to { stroke-dashoffset: 0; }
-        }
-        @keyframes lockShakeOut {
-          0% { transform: rotate(0); opacity: 1; }
-          25% { transform: rotate(-10deg); opacity: 1; }
-          75% { transform: rotate(10deg); opacity: 0.5; }
-          100% { transform: rotate(0); opacity: 0; }
-        }
-        @keyframes nodeScaleIn {
-          0% { transform: scale(0); }
-          60% { transform: scale(1.2); }
-          100% { transform: scale(1); }
-        }
-        @keyframes nextNodeGlow {
-          0% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0); }
-          50% { box-shadow: 0 0 24px 8px rgb(var(--c-primary-rgb) / 0.7); }
-          100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.4); }
+        @media (prefers-reduced-motion: reduce) {
+          [data-anillo-activo] { animation: none !important; }
         }
       `}</style>
     </main>
   );
 }
 
+// ───────────────────────── Estilos compartidos ─────────────────────────
+
+// Todos los mundos con el mismo tono: el color de cada mundo ya no se usa en el mapa
+// (decisión de Emilio, nov-2026: cambiar de color por mundo altera la marca).
+const seccionMundo: React.CSSProperties = {
+  position: "relative",
+  background: "linear-gradient(to bottom, rgb(var(--c-client-rgb) / 0) 0%, rgb(var(--c-client-rgb) / 0.04) 45%, rgb(var(--c-client-rgb) / 0) 100%)",
+  paddingBottom: 16,
+};
+
+const botonPlay = estiloBotonPlay;
+
 // ───────────────────────── World Header ─────────────────────────
 
-function WorldHeader({ world }: { world: World }) {
+function WorldHeader({ world, bloqueado = false }: { world: World; bloqueado?: boolean }) {
   return (
     <div
       style={{
-        textAlign: "center",
-        padding: "1.4rem 1.2rem 0.6rem",
+        maxWidth: 560,
+        margin: "0 auto",
+        padding: "28px var(--m-pantalla) 4px",
+        boxSizing: "border-box",
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        borderTop: "1px solid var(--c-disabled-bg)",
       }}
     >
-      <div style={{ fontSize: "2rem", lineHeight: 1 }}>{world.icon ?? "•"}</div>
-      <div
+      <span
+        aria-hidden
         style={{
           fontFamily: "Syne, sans-serif",
-          fontWeight: 700,
-          fontSize: "1rem",
-          color: world.color ?? "#FFFFFF",
-          marginTop: 6,
+          fontWeight: 800,
+          fontSize: 44,
+          lineHeight: 1,
+          letterSpacing: "-0.03em",
+          color: "var(--c-border-strong)",
+          flexShrink: 0,
         }}
       >
-        {world.name}
-      </div>
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          fontSize: "0.7rem",
-          color: "var(--c-text-2)",
-          marginTop: 2,
-          letterSpacing: "0.05em",
-          textTransform: "uppercase",
-        }}
-      >
-        Mundo {world.id}
-      </div>
-      {world.description && (
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontWeight: 400,
-            fontSize: "0.78rem",
-            color: "var(--c-text-2)",
-            marginTop: 8,
-            lineHeight: 1.35,
-            maxWidth: 320,
-            marginLeft: "auto",
-            marginRight: "auto",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {world.description}
-        </div>
-      )}
+        {String(world.id).padStart(2, "0")}
+      </span>
+      <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-text-2)", display: "flex", alignItems: "center", gap: 6 }}>
+          Mundo {world.id}
+          {bloqueado && (
+            <>
+              <span aria-hidden>·</span>
+              <Lock size={12} aria-hidden /> Bloqueado
+            </>
+          )}
+        </span>
+        <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 20, letterSpacing: "-0.01em", color: bloqueado ? "var(--c-text-2)" : "var(--c-text)" }}>
+          {world.name}
+        </span>
+        {world.description && (
+          <span
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 13,
+              lineHeight: 1.4,
+              color: "var(--c-text-2)",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {world.description}
+          </span>
+        )}
+      </span>
     </div>
   );
 }
@@ -806,6 +844,7 @@ function MapNode({
   animationPhase,
   isJustCompleted,
   isNewlyActive,
+  brillo,
   onClick,
 }: {
   node: NodeRow;
@@ -814,228 +853,173 @@ function MapNode({
   animationPhase: number;
   isJustCompleted: boolean;
   isNewlyActive: boolean;
+  brillo: boolean;
   onClick: () => void;
 }) {
   const isBoss = node.is_boss;
-  const size = isBoss ? 72 : 56;
+  const size = isBoss ? BOSS_SIZE : NODE_SIZE;
+  const radius = isBoss ? 18 : size / 2;
 
-  // Animación del nodo siguiente:
-  // phase < 6 → candado visible; phase === 6 → lockShakeOut; phase >= 7 → nodo aparece con scale-bounce + glow
+  // Al regresar de un nodo: el siguiente sigue con candado hasta la fase 6, el candado se
+  // desvanece en la 6 y el nodo aparece en la 7. Sin rebotes.
   const animatingNext = isNewlyActive && status === "active";
   const showLockOnNext = animatingNext && animationPhase < 6;
-  const lockShakingOut = animatingNext && animationPhase === 6;
+  const lockFadingOut = animatingNext && animationPhase === 6;
   const nextNodeAppearing = animatingNext && animationPhase >= 7;
-
-  // Animación del nodo recién completado:
-  // phase >= 1 → check con bounce; phase === 4 → vibración del nodo
   const justCompletedAnim = isJustCompleted && status === "completed";
-  const completedShake = justCompletedAnim && animationPhase === 4;
 
-  const styles: React.CSSProperties = {
+  const bloqueado = status === "locked" || showLockOnNext || lockFadingOut;
+  const activo = status === "active" && !bloqueado;
+  const hecho = status === "completed";
+
+  const circulo: React.CSSProperties = {
     width: size,
     height: size,
-    borderRadius: "50%",
+    borderRadius: radius,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    cursor: status === "locked" ? "not-allowed" : "pointer",
-    transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease",
-    border: "2px solid",
+    position: "relative",
+    padding: 0,
+    cursor: bloqueado ? "default" : "pointer",
+    border: "2px solid transparent",
+    WebkitTapHighlightColor: "transparent",
+    transition: "background 300ms ease, border-color 300ms ease",
   };
-
-  if (isBoss) {
-    styles.borderColor = "var(--c-gold)";
-    if (status === "active") {
-      styles.background = "linear-gradient(135deg,var(--c-primary),var(--c-gold))";
-      styles.animation = "pulseGold 1.6s ease-in-out infinite";
-    } else if (status === "completed") {
-      styles.background = "rgb(var(--c-gold-rgb) / 0.2)";
-    } else if (status === "available") {
-      styles.background = "var(--c-elevated)";
-      styles.opacity = 0.75;
-    } else {
-      styles.background = "var(--c-surface)";
-      styles.opacity = 0.5;
-    }
+  if (activo) {
+    Object.assign(circulo, botonPlay, { border: "none", boxShadow: `${estiloBotonPlay.boxShadow}, 0 6px 20px rgb(var(--c-primary-rgb) / 0.35)` });
+    if (nextNodeAppearing) circulo.animation = "aparece 400ms ease-out both";
+    if (brillo) circulo.animation = "brilloActivo 1s ease-out";
+  } else if (hecho) {
+    // Relleno tenue (Emilio, 7-nov): lo recorrido queda «pintado», muy distinto del play macizo.
+    // Tinte encima de un fondo opaco, para que el camino no se vea a través del nodo.
+    const rgb = isBoss ? "var(--c-gold-rgb)" : "var(--c-primary-rgb)";
+    circulo.background = `linear-gradient(180deg, rgb(${rgb} / 0.34) 0%, rgb(${rgb} / 0.12) 100%), var(--c-bg)`;
+    circulo.borderColor = isBoss ? "var(--c-gold)" : "var(--c-primary)";
   } else {
-    if (status === "active") {
-      styles.background = "var(--c-primary)";
-      styles.borderColor = "var(--c-primary)";
-      styles.animation = "pulseOrange 1.6s ease-in-out infinite";
-    } else if (status === "completed") {
-      styles.background = "rgb(var(--c-primary-rgb) / 0.25)";
-      styles.borderColor = "var(--c-primary)";
-      styles.boxShadow = "0 0 16px -4px rgb(var(--c-primary-rgb) / 0.4)";
-    } else if (status === "available") {
-      styles.background = "var(--c-elevated)";
-      styles.borderColor = "var(--c-border-strong)";
-      styles.opacity = 0.85;
-    } else {
-      styles.background = "var(--c-surface)";
-      styles.borderColor = "var(--c-elevated)";
-      styles.opacity = 0.5;
-    }
-  }
-
-  // Mientras el siguiente sigue siendo "candado", lo pintamos como locked
-  if (showLockOnNext) {
-    styles.background = "var(--c-surface)";
-    styles.borderColor = "var(--c-elevated)";
-    styles.opacity = 0.5;
-    styles.animation = undefined;
-  } else if (lockShakingOut) {
-    styles.background = "var(--c-surface)";
-    styles.borderColor = "var(--c-elevated)";
-    styles.animation = "lockShakeOut 0.4s ease-out forwards";
-  } else if (nextNodeAppearing) {
-    // Scale bounce + glow naranja + pulse activo encadenados
-    styles.animation =
-      "nodeScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both, nextNodeGlow 0.8s ease-out 0.3s both, pulseOrange 1.6s ease-in-out 1.1s infinite";
-  }
-
-  // Vibración del nodo recién completado en fase 4
-  if (completedShake) {
-    styles.animation = "nodeShake 0.4s ease-in-out";
+    circulo.background = "var(--c-surface)";
+    circulo.borderColor = "var(--c-disabled-bg)";
+    circulo.borderWidth = 1.5;
+    if (lockFadingOut) circulo.animation = "candadoFuera 300ms ease-out forwards";
   }
 
   let icon: React.ReactNode;
-  if (status === "locked" || showLockOnNext) icon = <Lock size={isBoss ? 22 : 18} color="var(--c-text-2)" />;
-  else if (isBoss)
-    icon = (
-      <Trophy
-        size={28}
-        color={status === "active" ? "#FFFFFF" : "var(--c-gold)"}
-      />
-    );
-  else if (status === "completed") {
-    const checkInner = (
-      <Check size={22} color="#FFFFFF" strokeWidth={3} />
-    );
+  if (bloqueado) icon = <Lock size={18} strokeWidth={2} color="var(--c-border-strong)" aria-hidden />;
+  else if (activo) icon = isBoss ? <Trophy size={24} strokeWidth={1.9} color="#FFFFFF" aria-hidden /> : <IconoPlay tam={22} />;
+  else if (isBoss) icon = <Trophy size={24} strokeWidth={1.9} color="var(--c-gold)" aria-hidden />;
+  else {
+    const check = <Check size={22} color="var(--c-text)" strokeWidth={2.6} aria-hidden />;
     icon = justCompletedAnim ? (
       <span
         style={{
           display: "inline-flex",
-          transform: animationPhase < 1 ? "scale(0)" : undefined,
-          animation:
-            animationPhase >= 1
-              ? "checkBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) both"
-              : undefined,
+          opacity: animationPhase < 1 ? 0 : undefined,
+          animation: animationPhase >= 1 ? "aparece 300ms ease-out both" : undefined,
         }}
       >
-        {checkInner}
+        {check}
       </span>
     ) : (
-      checkInner
+      check
     );
-  } else
-    icon = (
-      <Star
-        size={20}
-        color={status === "active" ? "#FFFFFF" : "var(--c-text-2)"}
-        fill={status === "active" ? "#FFFFFF" : "transparent"}
-      />
-    );
+  }
 
-  // Estrellas debajo del nombre — para todos los nodos completados, incluidos Boss
-  // Las estrellas se ven en cuanto se ganan, aunque el nodo siga en curso:
-  // antes con una estrella el nodo quedaba "en curso" y la estrella no se pintaba.
+  // Estrellas: se pintan en cuanto se ganan. Las del nodo recién completado aparecen una por una.
   const showStars = stars > 0;
-  // Si es el nodo recién completado y estamos animando: phase 2→1, phase 3→2, phase>=4→3
-  const animStars =
-    animationPhase >= 4 ? 3 : Math.max(0, animationPhase - 1);
+  const animStars = animationPhase >= 4 ? 3 : Math.max(0, animationPhase - 1);
   const visibleStars = isJustCompleted ? Math.min(stars, animStars) : stars;
+  const nombre = node.nombre_corto || node.name;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {isBoss && status !== "locked" && (
-        <div
-          style={{
-            position: "absolute",
-            top: -14,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "var(--c-gold)",
-            color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 800,
-            fontSize: "0.55rem",
-            letterSpacing: "0.1em",
-            padding: "2px 8px",
-            borderRadius: 99,
-            zIndex: 2,
-          }}
-        >
-          BOSS
-        </div>
-      )}
+    <>
       <button
         type="button"
-        onClick={status === "locked" ? undefined : onClick}
-        disabled={status === "locked" || showLockOnNext}
-        style={styles}
-        aria-label={node.name}
+        onClick={bloqueado ? undefined : onClick}
+        disabled={bloqueado}
+        style={circulo}
+        aria-label={
+          bloqueado
+            ? `${nombre}, bloqueado`
+            : activo
+              ? `${nombre}, siguiente`
+              : `${nombre}, completado: tócalo para practicarlo otra vez`
+        }
       >
+        {activo && (
+          <span
+            data-anillo-activo
+            aria-hidden
+            style={{
+              position: "absolute",
+              width: size + 12,
+              height: size + 12,
+              left: -6,
+              top: -6,
+              boxSizing: "border-box",
+              borderRadius: isBoss ? radius + 6 : (size + 12) / 2,
+              border: "2px solid var(--c-primary)",
+              animation: "respira 2.4s ease-in-out infinite",
+              pointerEvents: "none",
+            }}
+          />
+        )}
         {icon}
       </button>
       <div
         style={{
-          marginTop: 6,
+          marginTop: 10,
           fontFamily: "'DM Sans', sans-serif",
-          fontSize: status === "locked" ? "0.72rem" : "0.62rem",
-          fontWeight:
-            status === "locked" ? 400 : status === "active" ? 600 : 500,
-          color:
-            status === "active"
-              ? "#FFFFFF"
-              : status === "completed"
-                ? "var(--c-primary)"
-                : "var(--c-text-2)",
+          fontSize: activo ? 14 : 13,
+          fontWeight: activo ? 700 : 500,
+          color: bloqueado ? "var(--c-disabled-text)" : "var(--c-text)",
           textAlign: "center",
-          maxWidth: 90,
-          lineHeight: 1.15,
+          lineHeight: 1.25,
+          maxWidth: 130,
         }}
       >
-        {node.name}
+        {nombre}
       </div>
-      {showStars && (
+      {isBoss && (
         <div
           style={{
-            marginTop: 3,
-            display: "flex",
-            gap: 1,
-            fontSize: 10,
-            lineHeight: 1,
+            marginTop: 4,
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: bloqueado ? "var(--c-disabled-text)" : "var(--c-gold)",
           }}
         >
+          Reto final
+        </div>
+      )}
+      {showStars && (
+        <div style={{ marginTop: 4, display: "flex", gap: 3 }} aria-label={`${stars} de 3 estrellas`}>
           {[0, 1, 2].map((i) => {
             const earned = i < stars;
             const visible = i < visibleStars;
-            const justAppeared =
-              isJustCompleted && i === visibleStars - 1 && visibleStars > 0;
             return (
-              <span
+              <svg
                 key={i}
+                width={11}
+                height={11}
+                viewBox="0 0 24 24"
+                aria-hidden
+                fill={earned ? "var(--c-gold)" : "var(--c-border-strong)"}
                 style={{
-                  color: earned ? "var(--c-gold)" : "rgba(255,255,255,0.15)",
-                  filter: earned ? "drop-shadow(0 0 4px var(--c-gold))" : undefined,
-                  display: "inline-block",
                   opacity: visible ? 1 : 0,
-                  transform: visible ? "scale(1)" : "scale(0)",
-                  animation: justAppeared
-                    ? "starPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both"
-                    : undefined,
-                  transition: justAppeared
-                    ? undefined
-                    : "opacity 0.2s ease, transform 0.25s ease",
+                  transition: "opacity 250ms ease",
+                  animation: isJustCompleted && i === visibleStars - 1 ? "aparece 300ms ease-out both" : undefined,
                 }}
               >
-                ★
-              </span>
+                <path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z" />
+              </svg>
             );
           })}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -1056,13 +1040,16 @@ function NodeSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
+        // Sin foco automático en la equis: el aro de foco la pintaba de naranja al abrir.
+        onOpenAutoFocus={(e) => e.preventDefault()}
         style={{
-          background: "var(--c-surface)",
-          border: "1px solid var(--c-border)",
+          background: "var(--c-elevated)",
+          border: "1px solid var(--c-border-strong)",
           borderBottom: "none",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
           maxHeight: "85vh",
+          padding: "24px var(--m-pantalla) calc(24px + env(safe-area-inset-bottom))",
         }}
       >
         {node && <NodeSheetBody node={node} worldName={worldName} onClose={() => onOpenChange(false)} />}
@@ -1071,12 +1058,14 @@ function NodeSheet({
   );
 }
 
-/** "BOSS DE LA PRESENTACIÓN", "BOSS DEL DESCUBRIMIENTO" (de + el = del). */
+/** «Reto final de la Presentación», «Reto final del Descubrimiento» (de + el = del). */
 function etiquetaBoss(worldName: string | null): string {
-  if (!worldName) return "BOSS LEVEL";
+  if (!worldName) return "Reto final";
   const n = worldName.trim();
-  return /^el\s/i.test(n) ? `BOSS DEL ${n.slice(3).toUpperCase()}` : `BOSS DE ${n.toUpperCase()}`;
+  return /^el\s/i.test(n) ? `Reto final del ${n.slice(3)}` : `Reto final de ${n.charAt(0).toLowerCase() === n.charAt(0) ? n : n.charAt(0).toLowerCase() + n.slice(1)}`;
 }
+
+type ContenidoNodo = { tarjetas: number; preguntas: number; practica: boolean };
 
 function NodeSheetBody({
   node,
@@ -1089,239 +1078,165 @@ function NodeSheetBody({
 }) {
   const navigate = useNavigate();
   const isBoss = node.is_boss;
+  // Qué trae el nodo (para los números de la ventana y a dónde lleva «Practicar otra vez»).
+  const [contenido, setContenido] = useState<ContenidoNodo | null>(null);
+  useEffect(() => {
+    if (node.status === "locked") return;
+    let vivo = true;
+    const id = encodeURIComponent(node.id);
+    Promise.all([
+      restGet<{ id: string }>(`node_cards?select=id&node_id=eq.${id}`),
+      restGet<{ id: string }>(`node_quiz_questions?select=id&node_id=eq.${id}`),
+      restGet<{ limites: unknown }>(`nodes?select=limites:practice_script->limits&id=eq.${id}&limit=1`),
+    ])
+      .then(([c, q, p]) => {
+        if (vivo) setContenido({ tarjetas: c.length, preguntas: q.length, practica: !!p[0]?.limites });
+      })
+      .catch((err) => console.error("[mapa] contenido del nodo", err));
+    return () => {
+      vivo = false;
+    };
+  }, [node.id, node.status]);
+
+  const titulo: React.CSSProperties = {
+    margin: 0,
+    fontFamily: "Syne, sans-serif",
+    fontWeight: 700,
+    fontSize: 26,
+    lineHeight: 1.15,
+    letterSpacing: "-0.02em",
+    color: "var(--c-text)",
+    textAlign: "left",
+  };
+  const texto: React.CSSProperties = {
+    margin: 0,
+    fontFamily: "'DM Sans', sans-serif",
+    fontSize: 16,
+    lineHeight: 1.55,
+    color: "var(--c-text-soft)",
+    textAlign: "left",
+  };
+  const etiqueta: React.CSSProperties = {
+    fontFamily: "'DM Sans', sans-serif",
+    fontSize: 12,
+    fontWeight: 600,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: isBoss ? "var(--c-gold)" : "var(--c-text-2)",
+  };
 
   if (node.status === "locked") {
     return (
-      <div style={{ padding: "1rem 0.5rem", textAlign: "center" }}>
-        <SheetHeader>
-          <SheetTitle
-            style={{
-              fontFamily: "Syne, sans-serif",
-              color: "#FFFFFF",
-              textAlign: "center",
-            }}
-          >
-            <Lock size={32} style={{ margin: "0 auto 8px" }} />
-            <div>Bloqueado</div>
-          </SheetTitle>
-          <SheetDescription
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              color: "var(--c-text-2)",
-              textAlign: "center",
-            }}
-          >
-            Completa los nodos anteriores para desbloquear este nivel.
-          </SheetDescription>
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <SheetHeader style={{ textAlign: "left", gap: 8 }}>
+          <span style={{ ...etiqueta, color: "var(--c-text-2)", display: "flex", alignItems: "center", gap: 6 }}>
+            <Lock size={13} aria-hidden /> Todavía no
+          </span>
+          <SheetTitle style={titulo}>{node.nombre_corto || node.name}</SheetTitle>
+          <SheetDescription style={texto}>Termina los nodos anteriores para abrir este.</SheetDescription>
         </SheetHeader>
-        <Button block onClick={onClose} style={{ marginTop: 24 }}>
+        <button type="button" onClick={onClose} style={estiloBoton("secundario")}>
           Entendido
-        </Button>
+        </button>
       </div>
     );
   }
 
   if (node.status === "completed") {
+    const destino = contenido?.practica
+      ? ("/nodo/$nodeId/practica" as const)
+      : contenido && contenido.preguntas > 0
+        ? ("/nodo/$nodeId/quiz" as const)
+        : ("/nodo/$nodeId" as const);
     return (
-      <div style={{ padding: "1rem 0.5rem", textAlign: "center" }}>
-        {node.is_boss && (
-          <div style={{ fontFamily: "Syne, sans-serif", color: "var(--c-gold)", fontWeight: 800, fontSize: "0.75rem", letterSpacing: "0.15em", marginBottom: 8 }}>
-            {etiquetaBoss(worldName)}
-          </div>
-        )}
-        <SheetHeader>
-          <SheetTitle
-            style={{
-              fontFamily: "Syne, sans-serif",
-              color: "#FFFFFF",
-              textAlign: "center",
-              fontSize: "1.2rem",
-            }}
-          >
-            {node.name}
-          </SheetTitle>
-          <SheetDescription
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              color: "var(--c-text-soft)",
-              textAlign: "center",
-              fontSize: "0.85rem",
-            }}
-          >
-            Completado
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <SheetHeader style={{ textAlign: "left", gap: 8 }}>
+          <span style={etiqueta}>{isBoss ? `${etiquetaBoss(worldName)} · completado` : "Completado"}</span>
+          <SheetTitle style={titulo}>{node.nombre_corto || node.name}</SheetTitle>
+          <SheetDescription style={texto}>
+            Ya lo pasaste. Puedes practicarlo otra vez cuando quieras: para repasarlo antes de una visita o para subir tus estrellas.
           </SheetDescription>
         </SheetHeader>
-        <div
-          style={{
-            marginTop: 18,
-            display: "flex",
-            justifyContent: "center",
-            gap: 8,
-            fontSize: 32,
-            lineHeight: 1,
-          }}
-        >
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              style={{
-                color: i < node.stars ? "var(--c-gold)" : "rgba(255,255,255,0.15)",
-              }}
-            >
-              ★
-            </span>
-          ))}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "var(--c-surface)" }}>
+          <span style={{ display: "flex", gap: 4 }} aria-label={`${node.stars} de 3 estrellas`}>
+            {[0, 1, 2].map((i) => (
+              <svg key={i} width={20} height={20} viewBox="0 0 24 24" aria-hidden fill={i < node.stars ? "var(--c-gold)" : "var(--c-border-strong)"}>
+                <path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z" />
+              </svg>
+            ))}
+          </span>
+          {/* La app guarda siempre la mejor calificación (practica.tsx: Math.max). */}
+          <span style={{ flex: 1, fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.4, color: "var(--c-text-soft)" }}>
+            {node.stars >= 3
+              ? "Tienes las tres estrellas. Practicarlo otra vez no te las quita."
+              : `Llevas ${node.stars} de 3. Si sacas más, se quedan las nuevas.`}
+          </span>
         </div>
-        <Button
-          block
-          onClick={() => {
-            onClose();
-            navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } });
-          }}
-          style={{ marginTop: 24 }}
-        >
-          Mejorar →
-        </Button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              navigate({ to: destino, params: { nodeId: node.id } });
+            }}
+            style={estiloBoton("principal")}
+          >
+            Practicar otra vez
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } });
+            }}
+            style={estiloBoton("secundario")}
+          >
+            Repasar las tarjetas
+          </button>
+        </div>
       </div>
     );
   }
 
-  // active or available
-  const containerStyle: React.CSSProperties = isBoss
-    ? {
-        padding: "1rem 0.5rem",
-        background:
-          "linear-gradient(180deg, rgb(var(--c-gold-rgb) / 0.08) 0%, transparent 100%)",
-        margin: "-24px -24px 0",
-        paddingTop: 32,
-        paddingLeft: 24,
-        paddingRight: 24,
-        textAlign: "center",
-      }
-    : { padding: "1rem 0.5rem", textAlign: "center" };
-
+  // Activo
+  const segundo = contenido?.practica
+    ? { valor: "1", texto: "práctica de voz" }
+    : contenido && contenido.preguntas > 0
+      ? { valor: String(contenido.preguntas), texto: contenido.preguntas === 1 ? "pregunta" : "preguntas" }
+      : null;
   return (
-    <div style={containerStyle}>
-      {isBoss && (
-        <div
-          style={{
-            fontFamily: "Syne, sans-serif",
-            color: "var(--c-gold)",
-            fontWeight: 800,
-            fontSize: "0.75rem",
-            letterSpacing: "0.15em",
-            marginBottom: 8,
-          }}
-        >
-          {/* El paso al que pertenece el boss (oct-2026): "BOSS DE LA PRESENTACIÓN". */}
-          {etiquetaBoss(worldName)}
-        </div>
-      )}
-      <SheetHeader>
-        <SheetTitle
-          style={{
-            fontFamily: "Syne, sans-serif",
-            color: "#FFFFFF",
-            textAlign: "center",
-            fontSize: "1.3rem",
-          }}
-        >
-          {node.name}
-        </SheetTitle>
-        <SheetDescription
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            color: "var(--c-text-soft)",
-            textAlign: "center",
-            marginTop: 4,
-          }}
-        >
-          {node.description ?? ""}
-        </SheetDescription>
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      <SheetHeader style={{ textAlign: "left", gap: 8 }}>
+        {/* El paso al que pertenece el reto (oct-2026): «Reto final de la presentación». */}
+        <span style={etiqueta}>{isBoss ? etiquetaBoss(worldName) : `Mundo ${node.world_id} · Nodo ${node.posicion}`}</span>
+        <SheetTitle style={titulo}>{node.nombre_corto || node.name}</SheetTitle>
+        {node.description && <SheetDescription style={texto}>{node.description}</SheetDescription>}
       </SheetHeader>
-
-      <DifficultyMeter
-        level={node.difficulty_level}
-        worldId={node.world_id}
-      />
-
-      {isBoss && (
-        <div
-          style={{
-            marginTop: 16,
-            fontFamily: "Syne, sans-serif",
-            color: "var(--c-gold)",
-            fontSize: "1rem",
-            fontWeight: 600,
-          }}
-        >
-          ¿Estás listo?
-        </div>
-      )}
-
-      <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
-        <Button block size="lg" onClick={() => navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } })}>
-          <Play size={18} />
-          {isBoss ? "Entrar al Boss" : "Empezar →"}
-        </Button>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+        <Dato valor={contenido ? String(contenido.tarjetas) : "…"} texto={contenido?.tarjetas === 1 ? "tarjeta" : "tarjetas"} />
+        {segundo ? <Dato valor={segundo.valor} texto={segundo.texto} /> : <Dato valor={contenido ? "—" : "…"} texto="sin práctica" />}
+        <Dato valor={node.minutos_estimados ? `${node.minutos_estimados} min` : "—"} texto="en total" />
       </div>
+      <button
+        type="button"
+        onClick={() => {
+          onClose();
+          navigate({ to: "/nodo/$nodeId", params: { nodeId: node.id } });
+        }}
+        style={estiloBoton("principal")}
+      >
+        {isBoss ? "Entrar al reto" : "Empezar"}
+      </button>
     </div>
   );
 }
 
-// ───────────────────────── Difficulty Meter ─────────────────────────
-
-function difficultyColor(worldId: number): string {
-  if (worldId <= 1) return "var(--c-success)";
-  if (worldId <= 3) return "var(--c-gold)";
-  if (worldId <= 5) return "var(--c-primary)";
-  if (worldId <= 7) return "var(--c-danger)";
-  return "var(--c-danger)";
-}
-
-function DifficultyMeter({
-  level,
-  worldId,
-}: {
-  level: number;
-  worldId: number;
-}) {
-  const color = difficultyColor(worldId);
-  const safe = Math.max(1, Math.min(5, level || 1));
+function Dato({ valor, texto }: { valor: string; texto: string }) {
   return (
-    <div
-      style={{
-        marginTop: 16,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 6,
-      }}
-    >
-      <div style={{ display: "flex", gap: 6 }}>
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: i <= safe ? color : "var(--c-border)",
-            }}
-          />
-        ))}
-      </div>
-      <div
-        style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontSize: "0.68rem",
-          fontWeight: 400,
-          color: "var(--c-text-2)",
-        }}
-      >
-        Dificultad {safe}/5
-      </div>
-    </div>
+    <span style={{ display: "flex", flexDirection: "column", gap: 2, padding: 12, borderRadius: 14, background: "var(--c-surface)", fontFamily: "'DM Sans', sans-serif" }}>
+      <span style={{ fontSize: 16, fontWeight: 700, color: "var(--c-text)" }}>{valor}</span>
+      <span style={{ fontSize: 13, color: "var(--c-text-2)" }}>{texto}</span>
+    </span>
   );
 }
 
@@ -1330,6 +1245,7 @@ function DifficultyMeter({
 const shellStyle: React.CSSProperties = {
   minHeight: "100vh",
   background: "var(--c-bg)",
-  color: "#FFFFFF",
-  paddingBottom: "4rem",
+  color: "var(--c-text)",
+  // Deja libre el espacio de «Sigue aquí» al fondo.
+  paddingBottom: "calc(140px + env(safe-area-inset-bottom))",
 };
