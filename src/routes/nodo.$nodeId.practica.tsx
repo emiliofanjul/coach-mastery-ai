@@ -15,7 +15,7 @@ import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
 import RetryScreen from "@/components/RetryScreen";
 import { estiloBoton } from "@/components/closer/piezas";
-import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, BotonMicrofono } from "@/components/closer/practica-ui";
+import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, SelectorModo, IconoMicrofono, EscenarioCliente, EscenarioCloser, FranjaDialogo, FranjaVozAgente, BotonMicrofono, vozDelAgente, envolventeDe, PASO_ENVOLVENTE } from "@/components/closer/practica-ui";
 
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
@@ -645,6 +645,9 @@ function PracticaPage() {
     stopAudio();
 
     setIsAgentSpeaking(true);
+    // Mensaje 151-B: la franja y los anillos siguen este audio (qué se dice, cuánto va, qué tan fuerte).
+    vozDelAgente.poner({ texto: text, progreso: 0, nivel: 0, conEnvolvente: false, activa: true });
+    let raf = 0;
     // AbortController local — hardStop() dispara abort para desbloquear tanto
     // el fetch como el await del audio.
     const ctrl = new AbortController();
@@ -676,6 +679,28 @@ function PracticaPage() {
       reproductorRef.current = audio;
       audio.src = url;
       audioRef.current = audio;
+      // El volumen cada 50 ms, medido en una copia aparte: la reproducción no pasa por ahí.
+      let envolvente: number[] | null = null;
+      void envolventeDe(blob).then((e) => {
+        if (e && audioRef.current === audio) {
+          envolvente = e;
+          vozDelAgente.poner({ conEnvolvente: true });
+        }
+      });
+      const seguirAudio = () => {
+        if (audio.paused || audio.ended) { raf = 0; return; }
+        // Si el teléfono no sabe cuánto dura el audio, se toma de la envolvente; si tampoco hay, el texto sale completo.
+        const d = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : envolvente ? envolvente.length * PASO_ENVOLVENTE : NaN;
+        const t = audio.currentTime;
+        const progreso = Number.isFinite(d) ? Math.min(1, t / d) : 1;
+        const nivel = envolvente ? (envolvente[Math.min(envolvente.length - 1, Math.floor(t / PASO_ENVOLVENTE))] ?? 0) : 0;
+        vozDelAgente.poner({ progreso, nivel });
+        raf = requestAnimationFrame(seguirAudio);
+      };
+      audio.onplaying = () => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(seguirAudio);
+      };
       await new Promise<void>((resolve, reject) => {
         // stopAudio() dispara este resolver cuando pausamos externamente,
         // así el caller que hace `await playTTS(...)` no queda colgado.
@@ -714,6 +739,9 @@ function PracticaPage() {
       }
     } finally {
       if (ttsFetchAbortRef.current === ctrl) ttsFetchAbortRef.current = null;
+      cancelAnimationFrame(raf);
+      if (reproductorRef.current) reproductorRef.current.onplaying = null;
+      vozDelAgente.poner({ activa: false, progreso: 1, nivel: 0 });
       setIsAgentSpeaking(false);
       audioRef.current = null;
     }
@@ -2744,7 +2772,7 @@ function VoicePhase({
       ) : (
         // ───────── Modo VOZ (Fase 4, mensaje 151) ─────────
         <>
-          <div style={{ flex: 1, minHeight: 0, maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ flex: 1, minHeight: 0, maxWidth: 560, width: "100%", margin: "0 auto", padding: "min(28px, 3dvh) 0 min(16px, 2dvh)", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             {isIDo || !cliente ? (
               <EscenarioCloser hablando={isAgentSpeaking} rol={isIDo ? (iDoPassive ? "Demuestra como vendedor" : "Hace de vendedor; tú, de cliente") : "Tu coach"} />
             ) : (
@@ -2771,6 +2799,11 @@ function VoicePhase({
                 <p style={{ fontFamily: "'DM Sans', sans-serif", color: "var(--c-danger)", fontSize: 15, textAlign: "center", margin: 0 }}>{connectionError}</p>
                 <button type="button" onClick={onRetry} style={{ ...estiloBoton("principal"), width: "auto", padding: "0 28px" }}>Reintentar</button>
               </div>
+            ) : isAgentSpeaking ? (
+              <FranjaVozAgente
+                quien={isIDo || !cliente || etiquetaAsistente(vozDelAgente.leer().texto, closerMsgs) === "Closer" ? "Closer" : nombreCliente}
+                colorQuien={isIDo || !cliente || etiquetaAsistente(vozDelAgente.leer().texto, closerMsgs) === "Closer" ? "var(--c-primary)" : "var(--c-client)"}
+              />
             ) : franja ? (
               <FranjaDialogo quien={franja.quien} colorQuien={franja.color} texto={franja.texto} />
             ) : (
@@ -2778,7 +2811,7 @@ function VoicePhase({
             )}
           </div>
 
-          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: "min(22px, 2.5dvh)", paddingBottom: "calc(8px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: "min(12px, 1.4dvh)" }}>
+          <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: "min(30px, 3.2dvh)", paddingBottom: "calc(8px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: "min(12px, 1.4dvh)" }}>
             {!iDoDemoDone && !iDoPassive && (
               <>
                 <BotonMicrofono
