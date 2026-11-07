@@ -1,5 +1,12 @@
 # Roadmap
 
+- [x] Mensaje 156: Paso 0, 1150/1150 en 95 archivos, MD5 práctica exacto y consulta personal: manager, 1 cuenta; entregas con MD5 exactos.
+- [x] Mensaje 156: aplicar una vez: «Listo: 4 archivos, todos con su md5 esperado.»; cuatro MD5 finales exactos y entregas retiradas.
+- [x] Mensaje 156: 1156/1156 pruebas en 96 archivos, oj typecheck sin errores y build automático OK.
+- [x] Mensaje 156: sesión Emilio, práctica 4.2: demostración completa, transición y ficha real Don Héctor, turno del vendedor; sin pantalla personal ni errores de página.
+- [x] Mensaje 156: publicación solicitada para closerapp.ai; disponibilidad final no confirmada. Escaneo básico nuevo: sin críticos, un aviso activo sobre descarga de archivos de marca; escaneos profundos previos desactualizados. Sin cambios de datos ni despliegue de funciones.
+- [ ] Mensaje 156: pantalla personal y guardado completo: prueba de Emilio con cuenta personal nueva después de publicar; no crear cuentas.
+
 - [x] Mensaje 155-B: Paso 0, 1149/1149 en 95 archivos y MD5 de seller exacto; dos entregas con MD5 exactos.
 - [x] Mensaje 155-B: script una vez: tres archivos con MD5 exacto; entregas retiradas.
 - [x] Mensaje 155-B: 1150/1150 en 95 archivos, build automático OK y oj typecheck sin errores.

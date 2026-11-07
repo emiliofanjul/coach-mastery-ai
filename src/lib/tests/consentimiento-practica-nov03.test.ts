@@ -22,6 +22,7 @@ describe("Consentimiento antes de practicar", () => {
     expect(practica).not.toMatch(/>\s*Ahora no\s*</);
     expect(practica).toContain("body: { audio_consent: true },");
     expect(practica).toContain('if (filas?.[0]?.audio_consent !== true) throw new Error("no quedó guardado");');
-    expect(practica).toContain("{phase === \"prep\" && !pideConsentimiento && (");
+    // Mensaje 156: la preparación tampoco se ve mientras se pregunta el giro (cuentas personales).
+    expect(practica).toContain("{phase === \"prep\" && !pideConsentimiento && !pideGiro && (");
   });
 });
