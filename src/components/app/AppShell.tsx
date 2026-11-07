@@ -10,7 +10,7 @@ import {
 } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon, FileText } from "lucide-react";
+import { Menu, X, Map as MapIcon, Store, Users, LogOut, ArrowLeft, User as UserIcon, FileText, CircleHelp } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
@@ -384,6 +384,22 @@ function AppDrawer({
                     </li>
                   );
                 })}
+                {/* Fase 3 (mensaje 147): «¿Cómo funciona?» salió del encabezado del mapa y vive aquí. */}
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      try { window.sessionStorage.setItem("closer_ver_tutorial_mapa", "1"); } catch {}
+                      window.dispatchEvent(new CustomEvent("closer:tutorial-mapa"));
+                      if (pathname !== "/mapa") navigate({ to: "/mapa" });
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-[14px] font-['DM_Sans'] font-medium text-[0.95rem] text-white/85 hover:bg-white/5 border border-transparent transition-colors text-left"
+                  >
+                    <CircleHelp size={18} className="shrink-0" />
+                    <span className="truncate">Cómo funciona el mapa</span>
+                  </button>
+                </li>
               </ul>
             </nav>
 
@@ -428,19 +444,51 @@ function AppDrawer({
 // ─────────────────────────── Header ───────────────────────────
 
 type AppHeaderProps = {
-  title: ReactNode;
+  title?: ReactNode;
   subtitle?: ReactNode;
   back?: { to: string; label?: string };
   rightExtras?: ReactNode;
+  /** Fase 3 (mensaje 147): contenido centrado en lugar del título a la izquierda (el mapa). */
+  center?: ReactNode;
 };
 
-export function AppHeader({ title, subtitle, back, rightExtras }: AppHeaderProps) {
+export function AppHeader({ title, subtitle, back, rightExtras, center }: AppHeaderProps) {
   const { isAuthed, openDrawer, registerHeader } = useAppShell();
 
   useEffect(() => {
     const unregister = registerHeader();
     return unregister;
   }, [registerHeader]);
+
+  if (center) {
+    return (
+      <header
+        className="sticky top-0 z-30 px-4 pt-3 pb-5"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "44px 1fr 44px",
+          alignItems: "center",
+          gap: 8,
+          background: "linear-gradient(180deg, var(--c-bg) 0%, var(--c-bg) 72%, transparent 100%)",
+        }}
+      >
+        {isAuthed ? (
+          <button
+            onClick={openDrawer}
+            aria-label="Abrir menú"
+            aria-haspopup="dialog"
+            className="h-11 w-11 grid place-items-center rounded-full text-[var(--c-text-soft)] hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <Menu size={22} />
+          </button>
+        ) : (
+          <span />
+        )}
+        <div className="min-w-0 text-center">{center}</div>
+        <div className="flex items-center justify-end">{rightExtras}</div>
+      </header>
+    );
+  }
 
   return (
     <header

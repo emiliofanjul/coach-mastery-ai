@@ -48,7 +48,7 @@ export function MapTutorial({ open, onClose }: Props) {
     {
       target: { selector: "[data-tour='boss-node']" },
       text:
-        "Al completar todos los nodos del mundo enfrentas el Boss Level. Es la prueba de que dominaste lo aprendido.",
+        "Al completar los nodos de un mundo enfrentas su reto final: la prueba de que dominaste lo aprendido.",
       state: "correction",
     },
     {

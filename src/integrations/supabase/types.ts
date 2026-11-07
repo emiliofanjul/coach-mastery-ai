@@ -1309,8 +1309,10 @@ export type Database = {
           field_mission: string | null
           id: string
           is_boss: boolean
+          minutos_estimados: number | null
           name: string
           node_type: string
+          nombre_corto: string | null
           order_index: number
           practice_script: Json | null
           reps_required: number
@@ -1328,8 +1330,10 @@ export type Database = {
           field_mission?: string | null
           id: string
           is_boss?: boolean
+          minutos_estimados?: number | null
           name: string
           node_type?: string
+          nombre_corto?: string | null
           order_index: number
           practice_script?: Json | null
           reps_required?: number
@@ -1347,8 +1351,10 @@ export type Database = {
           field_mission?: string | null
           id?: string
           is_boss?: boolean
+          minutos_estimados?: number | null
           name?: string
           node_type?: string
+          nombre_corto?: string | null
           order_index?: number
           practice_script?: Json | null
           reps_required?: number

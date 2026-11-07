@@ -54,17 +54,18 @@ describe("el paso de la visita en cada cosa que se marca", () => {
 });
 
 describe("los boss dicen de qué paso son", () => {
-  it("el mapa pone 'BOSS DE <paso>' y los nombres ya no repiten 'BOSS:'", () => {
+  it("el mapa pone 'Reto final de <paso>' y los nombres ya no repiten 'BOSS:'", () => {
     const mapa = leer("src/routes/mapa.tsx");
-    // "de" + "el" = "del": "BOSS DEL DESCUBRIMIENTO", nunca "BOSS DE EL…".
-    const cuerpo = mapa.slice(mapa.indexOf("function etiquetaBoss"), mapa.indexOf("function NodeSheetBody"));
+    // Mensaje 147 (nov-2026): Emilio cambió «BOSS» por «Reto final» (en español, sin sonar a curso).
+    // "de" + "el" = "del": "Reto final del Descubrimiento", nunca "de El…".
+    const cuerpo = mapa.slice(mapa.indexOf("function etiquetaBoss"), mapa.indexOf("type ContenidoNodo"));
     const etiquetaBoss = new Function("worldName", cuerpo.slice(cuerpo.indexOf("{") + 1, cuerpo.lastIndexOf("}")).replace(/: string \| null/g, "")) as (w: string | null) => string;
-    expect(etiquetaBoss("El Descubrimiento")).toBe("BOSS DEL DESCUBRIMIENTO");
-    expect(etiquetaBoss("El Cierre")).toBe("BOSS DEL CIERRE");
-    expect(etiquetaBoss("La Presentación")).toBe("BOSS DE LA PRESENTACIÓN");
-    expect(etiquetaBoss("Certificación")).toBe("BOSS DE CERTIFICACIÓN");
-    // También en un boss ya completado.
-    expect(mapa.match(/\{etiquetaBoss\(worldName\)\}/g)?.length).toBe(2);
+    expect(etiquetaBoss("El Descubrimiento")).toBe("Reto final del Descubrimiento");
+    expect(etiquetaBoss("El Cierre")).toBe("Reto final del Cierre");
+    expect(etiquetaBoss("La Presentación")).toBe("Reto final de la Presentación");
+    expect(etiquetaBoss("Certificación")).toBe("Reto final de certificación");
+    // También en un reto ya completado.
+    expect(mapa.match(/etiquetaBoss\(worldName\)/g)?.length).toBe(2);
     const malos = nodos.filter((n) => n.node_type === "boss" && /^BOSS:/i.test(n.name)).map((n) => n.id);
     expect(malos).toEqual([]);
   });

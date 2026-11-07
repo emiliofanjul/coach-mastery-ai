@@ -2,7 +2,7 @@
   {
     "id": "1.0",
     "world_id": 1,
-    "name": "La Linea Recta",
+    "name": "La Línea Recta",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -190,7 +190,7 @@
   {
     "id": "1.5",
     "world_id": 1,
-    "name": "El Ice Breaker",
+    "name": "El Rompe Hielo",
     "node_type": "skill_drill",
     "practice_script": {
       "notes": "v2.0.0 Nodo nuevo. El espejo tiene TRES estados y esa es la ensenanza: plano no abre, genuino abre, falso cierra mas que al inicio. Doctrina universal: el ice breaker puede ser sobre la persona, el entorno o algo en comun. No esta atado a ningun tipo de negocio. v2.0.1 (oct-2026, Emilio): el Director puede cortar desde el primer turno; la apertura se demuestra en una frase y el vendedor no tiene que seguir improvisando lo que todavía no aprende. Decir quién eres o de qué empresa vienes no es pitch prematuro.",
@@ -373,7 +373,7 @@
   {
     "id": "2.0",
     "world_id": 2,
-    "name": "Quien Eres en 15 Segundos",
+    "name": "Quién Eres en 15 Segundos",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -557,7 +557,7 @@
   {
     "id": "2.5",
     "world_id": 2,
-    "name": "El Desvio con Regreso",
+    "name": "El Desvío con Regreso",
     "node_type": "skill_drill",
     "practice_script": {
       "notes": "v2.0.0 Nodo nuevo. El espejo mide LAS DOS MITADES: ignorar enfria, quedarse flotando estanca. Es la misma mecanica de espejo doble del 3.2. El dato personal sale al azar de los cinco territorios de FORMS.",
@@ -1542,7 +1542,7 @@
   {
     "id": "3.5",
     "world_id": 3,
-    "name": "Luz Verde: A Quien Le Dedicas Tu Tiempo",
+    "name": "Luz Verde: A Quién Le Dedicas Tu Tiempo",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -2167,7 +2167,7 @@
   {
     "id": "4.2",
     "world_id": 4,
-    "name": "Beneficio, No Caracteristica",
+    "name": "Beneficio, No Característica",
     "node_type": "skill_drill",
     "practice_script": {
       "notes": "v2.0.0 Nodo nuevo. El espejo usa la pregunta que el vendedor promedio teme (y eso a mi de que me sirve?) como consecuencia automatica de no traducir. Ensena sin regano. v2.0.2 (mensaje 135, Emilio 5-nov): sin promesa_sin_ancla; las promesas sin sustento se enseñan en las balas (4.5 y 4.6) y ahí se califican.",
@@ -2475,7 +2475,7 @@
   {
     "id": "4.9",
     "world_id": 4,
-    "name": "Mas por Menos y el Efecto Jones",
+    "name": "Más por Menos y el Efecto Jones",
     "node_type": "skill_drill",
     "practice_script": {
       "notes": "El Actor valida especificidad: hace cuentas ante números creíbles, reconoce referencias reales de zona, y ataca lo vago con ¿como quiénes? — la pregunta que desnuda el Jones vacío. El company_brain provee las referencias reales de cada empresa (clientes existentes de la zona) para que el ejemplo dinámico sea verificable. v1.0.2 (mensaje 135): la avaricia es la brecha entre lo que vale y lo que cuesta (impulse.avaricia); sin perdida_generica, que castigaba dos veces lo que el criterio ya cuenta a medias, y con la regla de otro factor.",
@@ -3624,7 +3624,7 @@
   {
     "id": "5.11",
     "world_id": 5,
-    "name": "Cuando Soltar",
+    "name": "Cuándo Soltar",
     "node_type": "knowledge",
     "practice_script": null
   },
@@ -4390,7 +4390,7 @@
   {
     "id": "7.0",
     "world_id": 7,
-    "name": "Examen: La Conversación Completa",
+    "name": "La Conversación Completa",
     "node_type": "boss",
     "practice_script": {
       "notes": "EXAMEN 1 de la Certificación. Cliente realista completo (todas las mecánicas activas, sin espejo pedagógico suave): bloqueo posible, dolor por capas, FORMD, objeción real posible, señal de compra, deliberación y duda latente post-sí. Los 6 pasos pesan en el score. Sin i_do: el mundo 7 no enseña, examina. v1.2.0 (mensaje 144, Emilio 6-nov): ligado a la doctrina de los mundos 1-6. La objeción se atiende con RRR o FFF, una bala y vuelve a cerrar, como se enseña en el mundo 5; nueva falla salta_la_bala; celebra_y_corre se califica con consolidation.siguientes_pasos.",
@@ -4555,7 +4555,7 @@
   {
     "id": "7.1",
     "world_id": 7,
-    "name": "Examen: La Luz Roja",
+    "name": "La Luz Roja",
     "node_type": "boss",
     "practice_script": {
       "notes": "EXAMEN 2 — el conceptualmente más difícil: vender es FALLAR. El boss_goal es detectar la luz roja y salir con calidad. El Actor es genuinamente encantador y genuinamente no comprable — su razón sale por preguntas decentes en la primera o segunda capa. Los failures critical son persigue_luz_roja (seguir vendiendo tras conocer la razón) y no_califica (nunca preguntar). Sin i_do. v1.0.2 (mensaje 144, Emilio 6-nov): ligado a la doctrina de los mundos 1-6. El referido no es obligatorio: se pide amarrado a lo que el cliente dijo.",
@@ -4649,7 +4649,7 @@
   {
     "id": "7.2",
     "world_id": 7,
-    "name": "Examen: El Indiferente",
+    "name": "El Indiferente",
     "node_type": "boss",
     "practice_script": {
       "notes": "EXAMEN 3 contra el arquetipo cicatriz_emocional d5. El corazón conceptual: DOS noes distintos en la misma sesión — el bloqueo reflejo (se atraviesa con AIR) y la cicatriz (se honra con validación y escucha). Confundirlos es el fallo critical distintivo (air_a_la_cicatriz). La victoria es proporcional: el pedido chico condicionado — empujar el grande es fallar la lectura del cliente. v1.1.0 (mensaje 144, Emilio 6-nov): ligado a la doctrina de los mundos 1-6. La cicatriz trae su razón: es objeción, no un segundo no (no cuenta para los dos no seguidos). El vendedor no pide que pruebe ni ofrece salida (Cerebro 4.4): propone con convicción un pedido chico; si el cliente pone su condición, la acepta (rechazarla es presionar, como en el 5.15). Nuevas fallas: pide_que_pruebe, anuncia_plan_b y pelea_la_condicion; sale promesa_grandilocuente, que castigaba lo mismo que bala_se_cae con la misma regla (el jefe cabe en 10 fallas).",
@@ -4799,7 +4799,7 @@
   {
     "id": "7.3",
     "world_id": 7,
-    "name": "Examen: La Visita de Ruta",
+    "name": "La Visita de Ruta",
     "node_type": "boss",
     "practice_script": {
       "notes": "v2.0.0 EXAMEN de desarrollo de cuenta (CAMPO, Emilio). Sin ayudas. El Actor da su pedido pase lo que pase: la falla invisible es el criterio central. Se puede terminar con el pedido en la mano y reprobar. v2.0.4 (mensaje 122, 2-nov-2026): el argumento del hueco depende del caso; la consolidacion no es universal (Cerebro 4.3). v2.0.5 (mensaje 135, Emilio 5-nov): el hueco se presenta con balas de producto, servicio o precio escogidas para su caso; «un proveedor menos» solo cuando el cliente deja ver que le pesa tratar con tantos proveedores. El cliente decide al azar si le pesa o si prefiere tener dos. v2.0.6 (mensaje 144, Emilio 6-nov): ligado a la doctrina de los mundos 1-6. Ejemplo sin huecos por llenar y con acentos; garantizar es lo que no controla.",
@@ -4942,7 +4942,7 @@
   {
     "id": "7.4",
     "world_id": 7,
-    "name": "Boss Final: El Certificado",
+    "name": "El Certificado",
     "node_type": "boss",
     "practice_script": {
       "notes": "BOSS FINAL — arquetipo agresivo/hostil d5, sin restricciones: bloqueo de entrada + objeciones encadenadas + regateo + silencio, la conversación más larga y dura del mapa (22 turnos). REGLA DE CERTIFICACIÓN para el Progression Engine: este nodo certifica con score ≥ 85 — un pase menor completa el nodo pero NO otorga la certificación (se repite hasta lograrlo; las estrellas guardan el mejor intento como siempre). Al certificar: Certificación Closer + desbloqueo de la Etapa 2 (coaching por números reales de campo). v1.1.0 (mensaje 144, Emilio 6-nov): ligado a la doctrina de los mundos 1-6. Las objeciones se atienden con RRR o FFF, una bala y vuelve a cerrar; nueva falla salta_la_bala.",

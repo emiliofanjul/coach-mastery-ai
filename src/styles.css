@@ -116,6 +116,10 @@
   /* Acción: el naranja de Closer. Solo para «avanza». */
   --c-primary: #FF6B2B;       --c-primary-rgb: 255 107 43;
   --c-primary-hover: #FF7D45;
+  /* El botón de play (Fase 3): naranja con volumen. El centro va un poco más hondo
+     que la marca para que el ícono blanco pase el contraste (3.2 a 1). */
+  --c-play-claro: #FF8A50;  --c-play-centro: #F4601F;  --c-play-hondo: #E8540F;
+  --c-play-sombra-rgb: 160 50 0;
   /* El cliente (y la demostración): azul */
   --c-client: #4DABF7;        --c-client-rgb: 77 171 247;
   --c-client-soft: #9BD1FB;

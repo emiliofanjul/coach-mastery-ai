@@ -50,6 +50,13 @@
       "when": 1793736179568,
       "tag": "0006_historial_129",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794035607229,
+      "tag": "0007_mapa_147_nombre_corto_minutos",
+      "breakpoints": true
     }
   ]
 }

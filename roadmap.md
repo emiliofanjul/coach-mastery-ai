@@ -1,8 +1,12 @@
 # Roadmap
 
+- [x] Mensaje 147: Paso 0 exacto: 1082/1082 en 87 archivos, 75 nodos, columnas nuevas ausentes y tres huellas exactas.
+- [x] Mensaje 147: mapa_147.sql aplicado como migración a la primera; 1.5/4.1/7.4 con nombre, nombre corto y minutos exactos; lemas de mundos entregados a Emilio; SQL retirado.
+- [x] Mensaje 147: aplicar_147.mjs una vez: «Listo: 10 archivos, todos con su md5 esperado»; ambos archivos retirados; 1098/1098 en 88 archivos, tipos y build OK.
+- [x] Mensaje 147: mapa verificado con sesión de Emilio: nodo siguiente naranja con play y anillo, recorrido naranja con palomitas y estrellas, candados, nombres cortos, «Mundo 4 · La Presentación», «34 de 75», coach discreto que responde, «Sigue aquí · 6 min» que abre la ventana del nodo, «Empezar» entra al nodo, completado con «Practicar otra vez» (entra a /nodo/4.1/practica) y «Repasar las tarjetas», «RETO FINAL» en dorado, sin «BOSS», menú con «Cómo funciona el mapa» que abre el tutorial, quiz 1.1 completado (3/3) con «¡Nodo completado!» y regreso al mapa. Publicación solicitada para closerapp.ai.
+
 - [x] Mensaje 146: Paso 0: 1072/86, archivos nuevos ausentes y tres huellas exactas.
-- [ ] Mensaje 146: ejecutar script exacto una vez, retirar entregas y comprobar 1082/87 y compilación automática.
-- [ ] Mensaje 146: verificar acceso, tarjetas, quiz reprobado y práctica hasta victoria con sesión de Emilio; publicar solo si todo pasa.
+- [x] Mensaje 146: script ejecutado una vez, entregas retiradas, 1082/87 y compilación OK; verificación en app con sesión de Emilio; publicado (el 147 lo da por aplicado y publicado).
 - [ ] Mensaje 146: reverso de ejemplo en iPhone después de publicar; requiere comprobación de Emilio.
 
 - [x] Mensaje 145: Paso 0 confirmado: 1069/1069 en 85 archivos, prueba nueva ausente y huella de práctica exacta; tres entregas y 35 archivos coinciden.
