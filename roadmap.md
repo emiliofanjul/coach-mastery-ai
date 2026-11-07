@@ -1,5 +1,11 @@
 # Roadmap
 
+- [x] Mensaje 148: Paso 0: 1098/1098 en 88 archivos y «El cuarto Boss.»; tres MD5 exactos.
+- [ ] Mensaje 148: ejecutar SQL íntegro, verificar textos y retirar entrega.
+- [ ] Mensaje 148: aplicar diez archivos una vez; 1104/89 y comprobaciones automáticas sin errores.
+- [ ] Mensaje 148: guardar consulta de mundos y nodos como JSON exacto.
+- [ ] Mensaje 148: verificar mapa, tarjetas 3.0 y coach con sesión de Emilio; publicar y escanear seguridad.
+
 - [x] Mensaje 147: Paso 0 exacto: 1082/1082 en 87 archivos, 75 nodos, columnas nuevas ausentes y tres huellas exactas.
 - [x] Mensaje 147: mapa_147.sql aplicado como migración a la primera; 1.5/4.1/7.4 con nombre, nombre corto y minutos exactos; lemas de mundos entregados a Emilio; SQL retirado.
 - [x] Mensaje 147: aplicar_147.mjs una vez: «Listo: 10 archivos, todos con su md5 esperado»; ambos archivos retirados; 1098/1098 en 88 archivos, tipos y build OK.
