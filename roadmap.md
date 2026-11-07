@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 155: Paso 0, 1145/1145 en 94 archivos y mapa MD5 51ca697e46a08e47676e2428bdb0c165; dos entregas con MD5 exactos.
+- [ ] Mensaje 155: aplicar una vez diez archivos exactos y retirar entregas; comprobar 1149/95 y tipos separados.
+- [ ] Mensaje 155: cinco pantallas, Saltar a Tu camino, regreso al mapa y lectura node_type con sesión Emilio; publicar si pasa.
+- [ ] Mensaje 155: bienvenida completa, IA y globo en cuenta nueva: prueba de Emilio en iPhone.
+
 - [x] Mensaje 154: Paso 0, 1135/1135 en 93 archivos y MD5 de práctica exacto; dos huellas de entrega exactas.
 - [x] Mensaje 154: aplicar una vez los catorce archivos con huellas exactas y retirar las dos entregas.
 - [x] Mensaje 154: 1145 pruebas en 94 archivos y compilación automática sin errores.
