@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { getSelectedRole } from "@/lib/closer-auth";
 import { tomarAvisoDeSesionTerminada } from "@/lib/sesion-viva";
+import { Eye, EyeOff, ChevronLeft } from "lucide-react";
+import { estiloBoton } from "@/components/closer/piezas";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -17,7 +19,7 @@ export const Route = createFileRoute("/login")({
 });
 
 const BG =
-  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
+  "radial-gradient(120% 60% at 50% 0%, var(--c-bg-glow) 0%, var(--c-bg) 60%)";
 
 const loginSchema = z.object({
   email: z.string().trim().email().max(255),
@@ -105,23 +107,23 @@ function LoginScreen() {
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
                 aria-label={showPw ? "Ocultar contraseña" : "Mostrar contraseña"}
-                style={{ background: "none", border: "none", color: "var(--c-text-2)", cursor: "pointer", padding: 0, fontSize: "1rem" }}
+                style={{ background: "none", border: "none", color: "var(--c-text-2)", cursor: "pointer", width: 44, height: 44, margin: "-10px -12px -10px 0", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
               >
-                {showPw ? "🙈" : "👁"}
+                {showPw ? <EyeOff size={20} strokeWidth={1.8} aria-hidden /> : <Eye size={20} strokeWidth={1.8} aria-hidden />}
               </button>
             }
           />
 
           {aviso && !error && (
-            <p style={{ margin: 0, fontSize: "0.82rem", color: "#FFFFFF", opacity: 0.85 }}>{aviso}</p>
+            <p style={{ margin: 0, fontSize: 14, lineHeight: 1.45, color: "var(--c-text-soft)" }}>{aviso}</p>
           )}
           {error && (
-            <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--c-danger)" }}>{error}</p>
+            <p role="alert" style={{ margin: 0, fontSize: 14, lineHeight: 1.45, color: "var(--c-danger)" }}>{error}</p>
           )}
 
           <Link
             to="/forgot-password"
-            style={{ alignSelf: "flex-end", fontSize: "0.76rem", color: "var(--c-primary)", textDecoration: "none" }}
+            style={{ alignSelf: "flex-end", fontSize: 14, fontWeight: 600, color: "var(--c-text-soft)", textDecoration: "none", padding: "10px 0" }}
           >
             ¿Olvidaste tu contraseña?
           </Link>
@@ -137,9 +139,9 @@ function LoginScreen() {
           <GoogleIcon /> Continuar con Google
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "var(--c-text-2)" }}>
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: 14, color: "var(--c-text-2)" }}>
           ¿No tienes cuenta?{" "}
-          <Link to="/signup" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
+          <Link to="/signup" style={{ color: "var(--c-primary)", textDecoration: "none", fontWeight: 600 }}>
             Regístrate
           </Link>
         </p>
@@ -155,38 +157,41 @@ export function Topbar() {
   return (
     <header
       style={{
-        padding: "1.2rem",
+        padding: "12px var(--m-pantalla) 0",
         display: "grid",
-        gridTemplateColumns: "32px 1fr 32px",
+        gridTemplateColumns: "44px 1fr 44px",
         alignItems: "center",
+        maxWidth: 560,
+        width: "100%",
+        margin: "0 auto",
+        boxSizing: "border-box",
       }}
     >
       <Link
         to="/role"
         aria-label="Atrás"
         style={{
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
+          width: 44,
+          height: 44,
+          borderRadius: 22,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "var(--c-text)",
+          color: "var(--c-text-soft)",
           textDecoration: "none",
-          fontSize: "1.1rem",
         }}
       >
-        ←
+        <ChevronLeft size={24} strokeWidth={2} aria-hidden />
       </Link>
       <h1
         style={{
           fontFamily: "Syne, sans-serif",
-          fontWeight: 700,
-          fontSize: "1.1rem",
+          fontWeight: 800,
+          fontSize: 17,
           color: "var(--c-primary)",
           margin: 0,
           textAlign: "center",
-          letterSpacing: "-0.01em",
+          letterSpacing: "0.06em",
         }}
       >
         CLOSER
@@ -201,22 +206,25 @@ export const containerStyle: React.CSSProperties = {
   maxWidth: "560px",
   width: "100%",
   margin: "0 auto",
-  padding: "1.5rem 1.2rem 4rem",
+  padding: "40px var(--m-pantalla) 48px",
+  boxSizing: "border-box",
 };
 
 export const titleStyle: React.CSSProperties = {
   fontFamily: "Syne, sans-serif",
-  fontWeight: 800,
-  fontSize: "1.4rem",
+  fontWeight: 700,
+  fontSize: 30,
+  lineHeight: 1.15,
   color: "var(--c-text)",
   margin: 0,
   letterSpacing: "-0.02em",
 };
 
 export const subtitleStyle: React.CSSProperties = {
-  fontSize: "0.84rem",
+  fontSize: 15,
+  lineHeight: 1.5,
   color: "var(--c-text-2)",
-  marginTop: "8px",
+  marginTop: "10px",
   marginBottom: 0,
 };
 
@@ -249,7 +257,7 @@ export function Field({
 }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ display: "block", fontSize: "0.76rem", color: "var(--c-text-2)", marginBottom: "6px" }}>
+      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "var(--c-text-soft)", marginBottom: "8px" }}>
         {label}
       </span>
       <span
@@ -257,16 +265,24 @@ export function Field({
           display: "flex",
           alignItems: "center",
           background: "var(--c-surface)",
-          border: invalid ? "2px solid var(--c-danger)" : "2px solid var(--c-border)",
-          borderRadius: "14px",
-          padding: "0.88rem 1.05rem",
-          transition: "border-color 150ms ease",
+          border: invalid ? "1.5px solid var(--c-danger)" : "1.5px solid var(--c-border)",
+          borderRadius: "var(--r-campo)",
+          minHeight: "var(--h-campo)",
+          boxSizing: "border-box",
+          padding: "0 16px",
+          transition: "border-color 150ms ease, box-shadow 150ms ease",
         }}
         onFocus={(e) => {
-          if (!invalid) (e.currentTarget as HTMLElement).style.borderColor = "var(--c-primary)";
+          if (invalid) return;
+          const el = e.currentTarget as HTMLElement;
+          el.style.borderColor = "var(--c-primary)";
+          el.style.boxShadow = "0 0 0 4px rgb(var(--c-primary-rgb) / 0.14)";
         }}
         onBlur={(e) => {
-          if (!invalid) (e.currentTarget as HTMLElement).style.borderColor = "var(--c-border)";
+          if (invalid) return;
+          const el = e.currentTarget as HTMLElement;
+          el.style.borderColor = "var(--c-border)";
+          el.style.boxShadow = "none";
         }}
       >
         <input
@@ -283,8 +299,11 @@ export function Field({
             border: "none",
             outline: "none",
             color: "var(--c-text)",
-            fontSize: "0.92rem",
+            // 16 px: con menos, el iPhone hace zoom al tocar el campo.
+            fontSize: 16,
             fontFamily: "inherit",
+            minWidth: 0,
+            height: "calc(var(--h-campo) - 3px)",
           }}
         />
         {rightIcon}
@@ -293,9 +312,10 @@ export function Field({
         <span
           style={{
             display: "block",
-            fontSize: "0.68rem",
+            fontSize: 13,
+            lineHeight: 1.45,
             color: helperColor ?? "var(--c-text-2)",
-            marginTop: "6px",
+            marginTop: "8px",
           }}
         >
           {helper}
@@ -307,39 +327,10 @@ export function Field({
 
 export function primaryBtn(loading: boolean, disabled = false): React.CSSProperties {
   const off = disabled || loading;
-  return {
-    width: "100%",
-    height: "52px",
-    borderRadius: "99px",
-    border: "none",
-    background: "var(--c-primary)",
-    color: "var(--c-bg)",
-    fontFamily: "Syne, sans-serif",
-    fontWeight: 700,
-    fontSize: "0.95rem",
-    cursor: off ? "not-allowed" : "pointer",
-    opacity: off ? 0.5 : 1,
-    transition: "opacity 200ms ease",
-    marginTop: "8px",
-  };
+  return { ...estiloBoton("principal", off), marginTop: "8px" };
 }
 
-export const googleBtn: React.CSSProperties = {
-  width: "100%",
-  height: "52px",
-  borderRadius: "99px",
-  background: "var(--c-surface)",
-  color: "var(--c-text)",
-  border: "1px solid var(--c-border)",
-  fontFamily: "'DM Sans', sans-serif",
-  fontWeight: 500,
-  fontSize: "0.9rem",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "10px",
-};
+export const googleBtn: React.CSSProperties = estiloBoton("secundario");
 
 export function Divider() {
   return (
@@ -349,7 +340,7 @@ export function Divider() {
         alignItems: "center",
         gap: "12px",
         margin: "24px 0 16px",
-        fontSize: "0.76rem",
+        fontSize: 13,
         color: "var(--c-text-2)",
       }}
     >

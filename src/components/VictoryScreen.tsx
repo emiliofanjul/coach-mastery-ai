@@ -1,3 +1,4 @@
+import { estiloBoton } from "@/components/closer/piezas";
 import { useEffect, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -144,24 +145,8 @@ export default function VictoryScreen({
 
         {extra ? <div style={{ width: "100%", marginTop: 24 }}>{extra}</div> : null}
 
-        <button
-          onClick={onContinue}
-          style={{
-            width: "100%",
-            height: 52,
-            marginTop: extra ? 24 : 40,
-            borderRadius: 99,
-            border: "none",
-            background: ORANGE,
-            color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: 16,
-            cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-          }}
-        >
-          {buttonText}
+        <button type="button" onClick={onContinue} style={{ ...estiloBoton("principal"), marginTop: extra ? 24 : 40 }}>
+          {buttonText.replace(/\s*→\s*$/, "")}
         </button>
       </div>
     </div>

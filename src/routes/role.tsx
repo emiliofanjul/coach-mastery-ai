@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { Check, KeyRound, Star, Users } from "lucide-react";
+import { CuadroIcono, estiloBoton } from "@/components/closer/piezas";
 import { setSelectedRole, type CloserRole } from "@/lib/closer-auth";
 
 export const Route = createFileRoute("/role")({
@@ -13,7 +15,7 @@ export const Route = createFileRoute("/role")({
 });
 
 const BG_GRADIENT =
-  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
+  "radial-gradient(120% 60% at 50% 0%, var(--c-bg-glow) 0%, var(--c-bg) 60%)";
 
 function RoleScreen() {
   const navigate = useNavigate();
@@ -36,66 +38,66 @@ function RoleScreen() {
         flexDirection: "column",
       }}
     >
-      <header style={{ padding: "1.2rem 1.2rem 0", textAlign: "center" }}>
-        <h1
-          style={{
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: "1.1rem",
-            color: "var(--c-primary)",
-            margin: 0,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          CLOSER
-        </h1>
-      </header>
-
       <section
         style={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           maxWidth: "560px",
           width: "100%",
           margin: "0 auto",
-          padding: "2rem 1.2rem",
+          boxSizing: "border-box",
+          padding: "24px var(--m-pantalla) calc(32px + env(safe-area-inset-bottom))",
         }}
       >
-        <h2
+        <h1
           style={{
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
-            fontSize: "1.5rem",
-            color: "var(--c-text)",
+            fontSize: 17,
+            color: "var(--c-primary)",
             margin: 0,
+            letterSpacing: "0.06em",
+            textAlign: "center",
+          }}
+        >
+          CLOSER
+        </h1>
+
+        <h2
+          style={{
+            fontFamily: "Syne, sans-serif",
+            fontWeight: 700,
+            fontSize: 30,
+            lineHeight: 1.15,
+            color: "var(--c-text)",
+            margin: "56px 0 0",
             letterSpacing: "-0.02em",
           }}
         >
           ¿Cómo quieres entrar?
         </h2>
-        <p style={{ fontSize: "0.84rem", color: "var(--c-text-2)", marginTop: "16px", marginBottom: 0 }}>
+        <p style={{ fontSize: 15, lineHeight: 1.5, color: "var(--c-text-2)", margin: "10px 0 0" }}>
           Puedes cambiar de modo después.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "28px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 32 }}>
           <RoleCard
-            icon="🚀"
-            title="Entrenar yo solo"
-            description="Sin equipo. Empiezo a practicar ya mismo."
+            icon={<Star size={22} strokeWidth={1.8} />}
+            title="Entrenar por mi cuenta"
+            description="Sin equipo. Empiezo a practicar hoy."
             selected={role === "individual"}
             onClick={() => setRole("individual")}
           />
           <RoleCard
-            icon="💼"
+            icon={<Users size={22} strokeWidth={1.8} />}
             title="Tengo un equipo"
-            description="Voy a invitar vendedores a mi empresa."
+            description="Voy a invitar a mis vendedores."
             selected={role === "manager"}
             onClick={() => setRole("manager")}
           />
           <RoleCard
-            icon="🎯"
+            icon={<KeyRound size={22} strokeWidth={1.8} />}
             title="Me invitaron con un código"
             description="Mi manager me compartió un código."
             selected={role === "vendedor"}
@@ -103,46 +105,19 @@ function RoleScreen() {
           />
         </div>
 
-        <button
-          type="button"
-          onClick={handleContinue}
-          disabled={!role}
-          style={{
-            marginTop: "28px",
-            width: "100%",
-            height: "52px",
-            borderRadius: "99px",
-            border: "none",
-            background: "var(--c-primary)",
-            color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: "0.95rem",
-            letterSpacing: "0.01em",
-            cursor: role ? "pointer" : "not-allowed",
-            opacity: role ? 1 : 0.5,
-            transition: "opacity 200ms ease, transform 150ms ease",
-            boxShadow: role ? "0 8px 24px rgb(var(--c-primary-rgb) / 0.3)" : "none",
-          }}
-        >
-          Continuar →
+        <div style={{ flex: 1, minHeight: 32 }} />
+
+        <button type="button" onClick={handleContinue} disabled={!role} style={estiloBoton("principal", !role)}>
+          Continuar
         </button>
 
-        <Link
-          to="/login"
-          style={{
-            display: "block",
-            textAlign: "center",
-            marginTop: "20px",
-            fontSize: "0.8rem",
-            color: "var(--c-primary)",
-            textDecoration: "none",
-          }}
-        >
-          ¿Ya tienes cuenta? Iniciar sesión
-        </Link>
+        <p style={{ textAlign: "center", margin: "18px 0 0", fontSize: 14, color: "var(--c-text-2)" }}>
+          ¿Ya tienes cuenta?{" "}
+          <Link to="/login" style={{ color: "var(--c-primary)", textDecoration: "none", fontWeight: 600 }}>
+            Iniciar sesión
+          </Link>
+        </p>
       </section>
-
     </main>
   );
 }
@@ -154,7 +129,7 @@ function RoleCard({
   selected,
   onClick,
 }: {
-  icon: string;
+  icon: ReactNode;
   title: string;
   description: string;
   selected: boolean;
@@ -166,67 +141,45 @@ function RoleCard({
       onClick={onClick}
       aria-pressed={selected}
       style={{
-        position: "relative",
-        background: selected ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
-        border: selected ? "2px solid var(--c-primary)" : "1px solid var(--c-border)",
-        borderRadius: "14px",
-        padding: selected ? "calc(1.1rem - 1px)" : "1.1rem",
         display: "flex",
         alignItems: "center",
-        gap: "1rem",
+        gap: 14,
+        width: "100%",
+        padding: 16,
+        borderRadius: 18,
+        background: selected ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
+        border: selected ? "1.5px solid var(--c-primary)" : "1.5px solid var(--c-border)",
         textAlign: "left",
         cursor: "pointer",
         color: "inherit",
         fontFamily: "inherit",
-        transition: "background 180ms ease, border-color 180ms ease",
+        transition: "background 200ms ease, border-color 200ms ease",
+        WebkitTapHighlightColor: "transparent",
       }}
     >
-      <span style={{ fontSize: "1.8rem", lineHeight: 1, flexShrink: 0 }}>{icon}</span>
-      <span style={{ flex: 1 }}>
-        <span
-          style={{
-            display: "block",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: "1rem",
-            color: "var(--c-text)",
-          }}
-        >
-          {title}
-        </span>
-        <span
-          style={{
-            display: "block",
-            fontSize: "0.78rem",
-            color: "var(--c-text-2)",
-            marginTop: "4px",
-          }}
-        >
-          {description}
-        </span>
+      <CuadroIcono activo={selected}>{icon}</CuadroIcono>
+      <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ fontSize: 16, fontWeight: 600, color: "var(--c-text)" }}>{title}</span>
+        <span style={{ fontSize: 14, lineHeight: 1.4, color: "var(--c-text-2)" }}>{description}</span>
       </span>
-      {selected && (
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: "12px",
-            right: "12px",
-            width: "22px",
-            height: "22px",
-            borderRadius: "50%",
-            background: "var(--c-primary)",
-            color: "var(--c-bg)",
-            fontSize: "0.75rem",
-            fontWeight: 800,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          ✓
-        </span>
-      )}
+      <span
+        aria-hidden
+        style={{
+          width: 22,
+          height: 22,
+          flexShrink: 0,
+          borderRadius: 11,
+          background: "var(--c-primary)",
+          color: "var(--c-bg)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: selected ? 1 : 0,
+          transition: "opacity 200ms ease",
+        }}
+      >
+        <Check size={14} strokeWidth={3} />
+      </span>
     </button>
   );
 }

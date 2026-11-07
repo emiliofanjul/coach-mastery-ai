@@ -128,6 +128,16 @@
   --c-disabled-bg: #1A2236;
   --c-disabled-text: #5E6880;
 
+  /* ═══ LAS MEDIDAS DE CLOSER (Fase 2, mensaje 146) ═══ */
+  /* Botones: todos iguales en toda la app */
+  --h-boton: 56px;  --r-boton: 16px;
+  /* Campos de texto */
+  --h-campo: 52px;  --r-campo: 14px;
+  /* Tarjetas y cuadros de ícono */
+  --r-tarjeta: 20px;  --r-icono: 12px;
+  /* Margen lateral de pantalla */
+  --m-pantalla: 20px;
+
   /* Tokens de los componentes base: apuntan a la paleta */
   --background: var(--c-bg);
   --foreground: var(--c-text);

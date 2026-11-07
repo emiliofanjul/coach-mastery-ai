@@ -1,13 +1,17 @@
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
+import { estiloBoton } from "@/components/closer/piezas";
 
 interface RetryScreenProps {
   title: string;
   subtitle: string;
   primaryButtonText: string;
   onPrimaryAction: () => void;
+  /** Quiz (mensaje 146): cuántas acertó y cuáles falló, en lugar de solo «Casi». */
+  resumen?: { aciertos: number; total: number; fallos: { n: number; texto: string }[] };
+  secondaryButtonText?: string;
+  onSecondaryAction?: () => void;
 }
 
-const ORANGE = "var(--c-primary)";
 const GOLD = "var(--c-gold)";
 
 export default function RetryScreen({
@@ -15,6 +19,9 @@ export default function RetryScreen({
   subtitle,
   primaryButtonText,
   onPrimaryAction,
+  resumen,
+  secondaryButtonText,
+  onSecondaryAction,
 }: RetryScreenProps) {
   return (
     <div
@@ -22,11 +29,12 @@ export default function RetryScreen({
         position: "fixed",
         inset: 0,
         background: "var(--c-bg)",
-        color: "#fff",
+        color: "var(--c-text)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "1.2rem",
+        padding: "var(--m-pantalla)",
+        overflowY: "auto",
         zIndex: 60,
       }}
     >
@@ -48,7 +56,14 @@ export default function RetryScreen({
             animation: "closerSway 2s ease-in-out infinite",
           }}
         >
-          <CloserCharacter state="motivation" size={86} />
+          {resumen ? (
+            <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 64, lineHeight: 1, letterSpacing: "-0.03em" }}>
+              {resumen.aciertos}
+              <span style={{ color: "var(--c-disabled-text)" }}> / {resumen.total}</span>
+            </div>
+          ) : (
+            <CloserCharacter state="motivation" size={86} />
+          )}
         </div>
         <style>{`
           @keyframes closerSway {
@@ -62,7 +77,7 @@ export default function RetryScreen({
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
             fontSize: 28,
-            color: "#fff",
+            color: "var(--c-text)",
             marginTop: 20,
             lineHeight: 1.2,
           }}
@@ -75,7 +90,7 @@ export default function RetryScreen({
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
             fontSize: 15,
-            color: "rgba(255,255,255,0.6)",
+            color: "var(--c-text-soft)",
             marginTop: 8,
             lineHeight: 1.5,
             maxWidth: 400,
@@ -84,25 +99,52 @@ export default function RetryScreen({
           {subtitle}
         </div>
 
-        <button
-          onClick={onPrimaryAction}
-          style={{
-            width: "100%",
-            height: 52,
-            marginTop: 40,
-            borderRadius: 99,
-            border: "none",
-            background: ORANGE,
-            color: "var(--c-bg)",
-            fontFamily: "Syne, sans-serif",
-            fontWeight: 700,
-            fontSize: 16,
-            cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
-          }}
-        >
+        {resumen && resumen.fallos.length > 0 && (
+          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 10, marginTop: 28, textAlign: "left" }}>
+            {resumen.fallos.map((f) => (
+              <div
+                key={f.n}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                  padding: "14px 16px",
+                  borderRadius: 16,
+                  background: "var(--c-surface)",
+                  border: "1px solid var(--c-border)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    flexShrink: 0,
+                    borderRadius: 14,
+                    background: "rgb(var(--c-danger-rgb) / 0.14)",
+                    color: "var(--c-danger)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}
+                >
+                  {f.n}
+                </span>
+                <span style={{ flex: 1, fontSize: 15, lineHeight: 1.45, color: "var(--c-text-soft)" }}>{f.texto}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button type="button" onClick={onPrimaryAction} style={{ ...estiloBoton("principal"), marginTop: 32 }}>
           {primaryButtonText}
         </button>
+        {secondaryButtonText && onSecondaryAction && (
+          <button type="button" onClick={onSecondaryAction} style={{ ...estiloBoton("secundario"), marginTop: 12 }}>
+            {secondaryButtonText}
+          </button>
+        )}
       </div>
     </div>
   );

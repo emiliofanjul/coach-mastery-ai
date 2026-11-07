@@ -22,7 +22,7 @@ export const Route = createFileRoute("/reset-password")({
 });
 
 const BG =
-  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
+  "radial-gradient(120% 60% at 50% 0%, var(--c-bg-glow) 0%, var(--c-bg) 60%)";
 
 const schema = z
   .object({
@@ -157,7 +157,7 @@ function ResetPasswordScreen() {
         </p>
 
         {!ready && !done && error && (
-          <p style={{ marginTop: "16px", fontSize: "0.84rem", color: "var(--c-danger)" }}>
+          <p style={{ marginTop: "16px", fontSize: 15, color: "var(--c-danger)" }}>
             {error}{" "}
             <Link to="/forgot-password" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
               Solicitar otro
@@ -189,7 +189,7 @@ function ResetPasswordScreen() {
               invalid={!!error}
             />
             {error && (
-              <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--c-danger)" }}>{error}</p>
+              <p style={{ margin: 0, fontSize: 14, color: "var(--c-danger)" }}>{error}</p>
             )}
             <button type="submit" disabled={loading} style={primaryBtn(loading)}>
               {loading ? "Actualizando..." : "Actualizar contraseña"}
@@ -197,7 +197,7 @@ function ResetPasswordScreen() {
           </form>
         )}
 
-        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "var(--c-text-2)" }}>
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: 14, color: "var(--c-text-2)" }}>
           <Link to="/login" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
             Volver a iniciar sesión
           </Link>

@@ -32,7 +32,8 @@ export const Route = createFileRoute("/signup")({
   component: SignupScreen,
 });
 
-const BG = "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
+const BG =
+  "radial-gradient(120% 60% at 50% 0%, var(--c-bg-glow) 0%, var(--c-bg) 60%)";
 
 const baseSchema = z.object({
   fullName: z.string().trim().min(2).max(100),
@@ -182,7 +183,7 @@ function SignupScreen() {
     if (result.error) setError("No pudimos continuar con Google.");
   };
 
-  const roleLabel = isIndividual ? "🚀 Individual" : isManager ? "💼 Manager" : "🎯 Vendedor";
+  const roleLabel = isIndividual ? "Por mi cuenta" : isManager ? "Manager" : "Vendedor";
   const titleText = isIndividual
     ? "Empieza a entrenar"
     : isManager
@@ -215,9 +216,9 @@ function SignupScreen() {
               background: "rgb(var(--c-primary-rgb) / 0.1)",
               border: "1px solid rgb(var(--c-primary-rgb) / 0.3)",
               borderRadius: "99px",
-              padding: "0.3rem 0.8rem",
-              fontWeight: 500,
-              fontSize: "0.76rem",
+              padding: "6px 12px",
+              fontWeight: 600,
+              fontSize: 14,
               color: "var(--c-primary)",
             }}
           >
@@ -225,7 +226,7 @@ function SignupScreen() {
           </span>
           <Link
             to="/role"
-            style={{ fontSize: "0.72rem", color: "var(--c-text-2)", textDecoration: "underline" }}
+            style={{ fontSize: 13, color: "var(--c-text-2)", textDecoration: "underline" }}
           >
             cambiar
           </Link>
@@ -264,7 +265,7 @@ function SignupScreen() {
             />
             <StrengthBar level={strength} />
             {password.length > 0 && password.length < 8 && (
-              <p style={{ margin: "6px 0 0", fontSize: "0.74rem", color: "var(--c-gold)" }}>
+              <p style={{ margin: "6px 0 0", fontSize: 13, color: "var(--c-gold)" }}>
                 Te faltan {8 - password.length} caracteres (mínimo 8).
               </p>
             )}
@@ -313,7 +314,7 @@ function SignupScreen() {
               display: "flex",
               alignItems: "flex-start",
               gap: "10px",
-              fontSize: "0.8rem",
+              fontSize: 14,
               color: "var(--c-text-2)",
               cursor: "pointer",
             }}
@@ -329,10 +330,10 @@ function SignupScreen() {
             </span>
           </label>
 
-          {error && <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--c-danger)" }}>{error}</p>}
+          {error && <p style={{ margin: 0, fontSize: 14, color: "var(--c-danger)" }}>{error}</p>}
 
           {!formValid && (intento || empezo) && (
-            <div role="status" style={{ fontSize: "0.76rem", color: "var(--c-gold)", lineHeight: 1.5 }}>
+            <div role="status" style={{ fontSize: 14, color: "var(--c-gold)", lineHeight: 1.5 }}>
               <p style={{ margin: 0, fontWeight: 600 }}>Para crear tu cuenta te falta:</p>
               <ul style={{ margin: "4px 0 0", paddingLeft: "1.1rem" }}>
                 {faltantes.map((f) => <li key={f}>{f}</li>)}
@@ -355,7 +356,7 @@ function SignupScreen() {
           <GoogleIcon /> Continuar con Google
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "var(--c-text-2)" }}>
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: 14, color: "var(--c-text-2)" }}>
           ¿Ya tienes cuenta?{" "}
           <Link to="/login" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
             Inicia sesión
