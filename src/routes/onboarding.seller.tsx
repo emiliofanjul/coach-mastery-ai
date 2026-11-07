@@ -10,6 +10,10 @@ export const Route = createFileRoute("/onboarding/seller")({
     meta: [
       { title: "Tu entrenamiento empieza — Closer" },
       { name: "description", content: "Configura tu entrenamiento personalizado." },
+      { property: "og:title", content: "Tu entrenamiento empieza — Closer" },
+      { property: "og:description", content: "Configura tu entrenamiento personalizado." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SellerOnboarding,

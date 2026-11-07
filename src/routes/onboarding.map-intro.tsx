@@ -16,6 +16,10 @@ export const Route = createFileRoute("/onboarding/map-intro")({
     meta: [
       { title: "Así funciona — Closer" },
       { name: "description", content: "Cómo se aprende y se practica en Closer." },
+      { property: "og:title", content: "Así funciona — Closer" },
+      { property: "og:description", content: "Cómo se aprende y se practica en Closer." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AsiFunciona,

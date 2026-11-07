@@ -20,7 +20,14 @@ import { ESTILOS_PRACTICA, BotonIcono, IconoCerrar, IconoTeclado, IconoEnviar, S
 
 export const Route = createFileRoute("/nodo/$nodeId/practica")({
   component: PracticaPage,
-  head: () => ({ meta: [{ title: "Práctica — Closer" }] }),
+  head: () => ({ meta: [
+    { title: "Práctica — Closer" },
+    { name: "description", content: "Practica ventas con un cliente simulado y recibe tu análisis en Closer." },
+    { property: "og:title", content: "Práctica — Closer" },
+    { property: "og:description", content: "Practica ventas con un cliente simulado y recibe tu análisis en Closer." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
 });
 
 const BG = "var(--c-bg)";

@@ -20,7 +20,14 @@ import { restMutate } from "@/lib/supabase-rest";
 
 export const Route = createFileRoute("/mapa")({
   head: () => ({
-    meta: [{ title: "Mapa — Closer" }],
+    meta: [
+      { title: "Mapa — Closer" },
+      { name: "description", content: "Tu camino de entrenamiento y progreso en ventas con Closer." },
+      { property: "og:title", content: "Mapa — Closer" },
+      { property: "og:description", content: "Tu camino de entrenamiento y progreso en ventas con Closer." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
   component: MapaPage,
 });

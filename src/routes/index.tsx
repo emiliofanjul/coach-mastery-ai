@@ -12,6 +12,8 @@ export const Route = createFileRoute("/")({
           "El mejor entrenador de ventas del mundo, disponible 24/7. Closer convierte vendedores en cerradores.",
       },
       { property: "og:title", content: "Closer — The world’s sales practice ground." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         property: "og:description",
         content: "Entrenamiento de ventas con IA. Diagnostica, practica, cierra.",

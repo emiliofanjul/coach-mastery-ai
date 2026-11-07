@@ -1,9 +1,10 @@
 # Roadmap
 
 - [x] Mensaje 154: Paso 0, 1135/1135 en 93 archivos y MD5 de práctica exacto; dos huellas de entrega exactas.
-- [ ] Mensaje 154: aplicar una vez los catorce archivos y retirar las dos entregas.
-- [ ] Mensaje 154: 1145 pruebas en 94 archivos y compilación automática sin errores.
-- [ ] Mensaje 154: verificar las tres pantallas, regreso al mapa y acceso desde el menú; publicar si pasa.
+- [x] Mensaje 154: aplicar una vez los catorce archivos con huellas exactas y retirar las dos entregas.
+- [x] Mensaje 154: 1145 pruebas en 94 archivos y compilación automática sin errores.
+- [x] Mensaje 154: tres pantallas, regreso al mapa y acceso desde el menú comprobados con sesión Emilio en 390x700; cero errores de página.
+- [ ] Mensaje 154: publicar si pasa la comprobación final; solo información de compartir adicional a la entrega exacta.
 - [ ] Mensaje 154: bienvenida completa, globo y pistas en cuenta nueva: comprobación de Emilio en iPhone tras publicar.
 
 - [x] Mensaje 153: Paso 0, 1130/1130 en 92 archivos y MD5 de práctica exacto.
