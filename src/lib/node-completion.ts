@@ -10,6 +10,8 @@ export interface NodeCompletionSignal {
   stars: 1 | 2 | 3;
   isReplay: boolean;
   improved: boolean;
+  /** Esta práctica abrió el siguiente nodo (antes no estaba abierto). Solo entonces se anima el camino. */
+  desbloqueoAhora?: boolean;
   timestamp: number;
 }
 
