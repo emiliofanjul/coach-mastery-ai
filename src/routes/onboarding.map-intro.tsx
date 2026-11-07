@@ -25,21 +25,36 @@ export const Route = createFileRoute("/onboarding/map-intro")({
   component: AsiFunciona,
 });
 
+// Mensaje 155 (Emilio, 7-nov): la historia explica cómo funciona y POR QUÉ funciona, y el impulso sube:
+// por qué funciona (el sistema) → aprende → practica → la calificación (por qué es distinta a un chat de IA)
+// → qué esperar (los 2 primeros nodos son teoría: quien llega por la voz no se lleva una sorpresa).
 const PASOS: Array<{ paso: string; titulo: string; texto: string }> = [
   {
+    paso: "Por qué funciona",
+    titulo: "Un sistema, no consejos sueltos",
+    texto: "Toda venta pasa por los mismos 6 pasos. Closer te entrena en cada uno, en orden, con un sistema creado por entrenadores con años vendiendo en la calle y formando equipos de venta.",
+  },
+  {
     paso: "1 · Aprende",
-    titulo: "Una técnica en un par de minutos",
-    texto: "Tarjetas cortas, con ejemplos de cómo se dice bien y cómo se dice mal. Y un quiz de tres preguntas para asegurarte.",
+    titulo: "Una técnica a la vez",
+    texto: "Cada nodo de tu mapa enseña una técnica: tarjetas cortas, con ejemplos de cómo decirla bien y cómo no, y un quiz de 3 preguntas.",
   },
   {
     paso: "2 · Practica",
-    titulo: "Dila en voz alta, con un cliente",
-    texto: "Tú hablas y el cliente te contesta, como en una visita real. Si se te va, empiezas otra vez: aquí nadie te compra ni te deja de comprar.",
+    titulo: "En voz alta, como en la calle",
+    texto: "Lo que no practicas en voz alta no te sale en la visita. Aquí le hablas a un cliente que te contesta. Si te equivocas, lo intentas otra vez.",
   },
   {
     paso: "3 · Mejora",
-    titulo: "Closer te dice qué cambiar",
-    texto: "Una calificación honesta, lo que te bajó la nota y una misión para tu próxima visita de verdad.",
+    titulo: "Una calificación que no adivina",
+    texto: "Un chat de IA te da su opinión. Closer te califica contra el sistema, con reglas claras para cada técnica, y te dice qué cambiar. Nunca te califica algo que no te ha enseñado.",
+  },
+  // Los 2 primeros nodos son teoría (1.0 y 1.1, unos 7 min) y el tercero (1.2) es la primera práctica con voz.
+  // 50 de los 75 nodos tienen práctica.
+  {
+    paso: "Tu camino",
+    titulo: "Empiezas con la teoría",
+    texto: "Los 2 primeros nodos son de teoría. En el tercero haces tu primera práctica con voz, en menos de 10 minutos. Desde ahí, la mayoría de los nodos terminan con una práctica.",
   },
 ];
 
@@ -111,7 +126,7 @@ function AsiFunciona() {
           ref={cuadro}
           aria-hidden
           style={{
-            height: "min(360px, 40dvh)",
+            height: "min(360px, 36dvh)",
             marginTop: 8,
             borderRadius: 28,
             background: "radial-gradient(120% 90% at 50% 0%, rgb(var(--c-client-rgb) / 0.07) 0%, rgb(var(--c-client-rgb) / 0) 60%), var(--c-surface)",
@@ -123,16 +138,18 @@ function AsiFunciona() {
           }}
         >
           <div key={i} ref={muestra} style={{ animation: "asiEntra 350ms ease both", scale: `${escala}` }}>
-            {i === 0 && <MuestraAprende />}
-            {i === 1 && <MuestraPractica />}
-            {i === 2 && <MuestraMejora />}
+            {i === 0 && <MuestraSistema />}
+            {i === 1 && <MuestraAprende />}
+            {i === 2 && <MuestraPractica />}
+            {i === 3 && <MuestraMejora />}
+            {i === 4 && <MuestraCamino />}
           </div>
         </div>
 
         <div key={`t${i}`} aria-live="polite" style={{ animation: "asiEntra 350ms ease both" }}>
           <div style={{ ...estiloEtiqueta, marginTop: "min(32px, 3dvh)" }}>{p.paso}</div>
-          <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 8 }}>{p.titulo}</h1>
-          <p style={{ ...estiloTexto, marginTop: 12 }}>{p.texto}</p>
+          <h1 style={{ ...estiloTitulo, fontSize: "clamp(24px, 3.4dvh, 28px)", marginTop: 8 }}>{p.titulo}</h1>
+          <p style={{ ...estiloTexto, fontSize: "clamp(15px, 2.4dvh, 17px)", marginTop: 12 }}>{p.texto}</p>
         </div>
 
         <div style={{ marginTop: "auto", paddingTop: 24 }}>
@@ -170,6 +187,21 @@ function Tarjeta({ children, borde }: { children: ReactNode; borde?: boolean }) 
       }}
     >
       {children}
+    </div>
+  );
+}
+
+/** Los 6 pasos de la venta del Cerebro (los mismos que enseña el primer nodo). */
+function MuestraSistema() {
+  const pasos = ["Introducción", "Historia breve", "Descubrimiento", "Presentación", "Cierre", "Consolidación"];
+  return (
+    <div style={{ width: 270, display: "flex", flexDirection: "column", gap: 8, fontFamily: "'DM Sans', sans-serif" }}>
+      {pasos.map((p, k) => (
+        <div key={p} style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 12px", borderRadius: 12, background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
+          <span style={{ width: 26, height: 26, flex: "none", borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 13, ...(k === 0 ? { background: "var(--c-primary)", color: "var(--c-bg)" } : { background: "var(--c-elevated)", color: "var(--c-text-soft)" }) }}>{k + 1}</span>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>{p}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -234,6 +266,45 @@ function MuestraMejora() {
       <Tarjeta borde>
         <div style={{ fontSize: 14, lineHeight: 1.4, color: "var(--c-text)" }}>Antes de presentar, pregúntale qué es lo que más se le mueve.</div>
       </Tarjeta>
+    </div>
+  );
+}
+
+function MuestraCamino() {
+  const nodos = [
+    { n: "Nodo 1", tipo: "Teoría", voz: false },
+    { n: "Nodo 2", tipo: "Teoría", voz: false },
+    { n: "Nodo 3", tipo: "Tu primera práctica con voz", voz: true },
+  ];
+  return (
+    <div style={{ width: 270, display: "flex", flexDirection: "column", fontFamily: "'DM Sans', sans-serif" }}>
+      {nodos.map((x, k) => (
+        <div key={x.n} style={{ display: "flex", gap: 14 }}>
+          <div style={{ width: 52, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <span
+              style={{
+                width: 52,
+                height: 52,
+                borderRadius: 26,
+                boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                ...(x.voz
+                  ? { background: "linear-gradient(180deg, var(--c-play-claro) 0%, var(--c-play-centro) 50%, var(--c-play-hondo) 100%)", boxShadow: "inset 0 -3px 0 rgb(var(--c-play-sombra-rgb) / 0.35), inset 0 2px 0 rgb(255 255 255 / 0.25)", color: "#FFFFFF" }
+                  : { background: "var(--c-elevated)", border: "2px solid var(--c-border-strong)", color: "var(--c-text-soft)" }),
+              }}
+            >
+              <Icono nombre={x.voz ? "microfono" : "libro"} tam={22} />
+            </span>
+            {k < nodos.length - 1 && <span style={{ width: 3, height: 22, borderRadius: 2, background: "var(--c-border-strong)" }} />}
+          </div>
+          <div style={{ paddingTop: 7, display: "flex", flexDirection: "column", gap: 2 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-text-2)" }}>{x.n}</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: x.voz ? "var(--c-primary)" : "var(--c-text)" }}>{x.tipo}</span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

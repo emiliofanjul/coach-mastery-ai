@@ -28,7 +28,8 @@ describe("El micrófono invita cuando te toca", () => {
 describe("La grabación es obligatoria", () => {
   it("no se puede seguir sin aceptarla, y se dice por qué", () => {
     expect(onboarding).toContain("disabled={!value || !audioConsent}");
-    expect(onboarding).toContain("sin grabar no se puede practicar");
+    // Mensaje 155: el mismo porqué, en palabras más directas.
+    expect(onboarding).toContain("Sin grabación no se puede practicar con voz.");
     expect(onboarding).not.toContain("Puedes cambiar esto después.");
   });
 });

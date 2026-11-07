@@ -12,6 +12,7 @@ import { estiloBoton, estiloBotonPlay, IconoPlay, Estrella } from "@/components/
 import { restGet } from "@/lib/supabase-rest";
 import { AppHeader } from "@/components/app/AppShell";
 import { GuiaMapa } from "@/components/closer/GuiaMapa";
+import { textoGuiaMapa } from "@/lib/guia-mapa";
 import { CoachBubble } from "@/components/closer/CoachBubble";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import { consumeNodeCompletionSignal, type NodeCompletionSignal } from "@/lib/node-completion";
@@ -56,6 +57,8 @@ type NodeRow = {
   nombre_corto: string | null;
   /** Fase 3: cuánto toma el nodo completo (tarjetas, quiz, demostración, práctica y análisis). */
   minutos_estimados: number | null;
+  /** Mensaje 155: para que el globo de la primera vez diga si el nodo es de teoría o tiene práctica con voz. */
+  node_type?: string | null;
 };
 
 type ProgressRow = {
@@ -201,7 +204,7 @@ function MapaPage() {
 
       const [w, n, sellerRows] = await Promise.all([
         restSelect<World[]>("worlds?select=*&order=order_index.asc", accessToken),
-        restSelect<NodeRow[]>("nodes?select=id,world_id,name,description,order_index,is_boss,difficulty_level,nombre_corto,minutos_estimados&order=order_index.asc", accessToken),
+        restSelect<NodeRow[]>("nodes?select=id,world_id,name,description,order_index,is_boss,difficulty_level,nombre_corto,minutos_estimados,node_type&order=order_index.asc", accessToken),
         restSelect<Array<NonNullable<typeof seller>>>(
           `sellers?select=id,current_world,current_node,map_tutorial_completed&profile_id=eq.${encodeURIComponent(userId)}&limit=1`,
           accessToken,
@@ -656,11 +659,8 @@ function MapaPage() {
 
       {guiaPrimeraVez && nodoActivo && !selectedNode && (
         <GuiaMapa
-          texto={
-            Object.keys(progress).length === 0
-              ? `Tu primer nodo: ${nodoActivo.nombre_corto || nodoActivo.name}.${nodoActivo.minutos_estimados ? ` Toma ${nodoActivo.minutos_estimados} minutos.` : ""}`
-              : `Aquí sigues: ${nodoActivo.nombre_corto || nodoActivo.name}.${nodoActivo.minutos_estimados ? ` Toma ${nodoActivo.minutos_estimados} minutos.` : ""}`
-          }
+          titulo={Object.keys(progress).length === 0 ? "Empieza aquí" : "Sigue aquí"}
+          texto={textoGuiaMapa(orderedNodes, activeIdx, Object.keys(progress).length === 0)}
           onCerrar={cerrarGuia}
         />
       )}

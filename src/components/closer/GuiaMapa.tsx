@@ -7,7 +7,7 @@ import { useLayoutEffect, useRef, useState } from "react";
  *
  * Se coloca midiendo el nodo activo ([data-active-node]) y sigue al nodo si la persona desliza el mapa.
  */
-export function GuiaMapa({ texto, onCerrar }: { texto: string; onCerrar: () => void }) {
+export function GuiaMapa({ titulo = "Empieza aquí", texto, onCerrar }: { titulo?: string; texto: string; onCerrar: () => void }) {
   const [pos, setPos] = useState<{ abajo: number; flecha: number } | null>(null);
   const caja = useRef<HTMLDivElement | null>(null);
 
@@ -62,7 +62,7 @@ export function GuiaMapa({ texto, onCerrar }: { texto: string; onCerrar: () => v
           color: "var(--c-text)",
         }}
       >
-        <div style={{ fontSize: 16, fontWeight: 700 }}>Empieza aquí</div>
+        <div style={{ fontSize: 16, fontWeight: 700 }}>{titulo}</div>
         <div style={{ marginTop: 4, fontSize: 15, lineHeight: 1.45, color: "var(--c-text-soft)" }}>{texto}</div>
         <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end" }}>
           <button

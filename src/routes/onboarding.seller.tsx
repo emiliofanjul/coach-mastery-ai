@@ -23,17 +23,18 @@ type Experience = "nuevo" | "intermedio" | "experto";
 type Challenge = "cierre" | "objeciones" | "prospeccion" | "retencion";
 
 // Mensaje 154 (nov-2026): íconos dibujados en lugar de emojis; el nivel, como barras de señal.
+// Mensaje 155: palabras directas (Emilio, 7-nov). Primero el tiempo, que es lo que se pregunta.
 const EXPERIENCE_OPTS: Array<{ id: Experience; nivel: 1 | 2 | 3; title: string; desc: string }> = [
-  { id: "nuevo", nivel: 1, title: "Soy nuevo", desc: "Menos de 6 meses" },
-  { id: "intermedio", nivel: 2, title: "Tengo algo de experiencia", desc: "De 6 meses a 2 años" },
-  { id: "experto", nivel: 3, title: "Tengo experiencia", desc: "Más de 2 años" },
+  { id: "nuevo", nivel: 1, title: "Menos de 6 meses", desc: "Estoy empezando" },
+  { id: "intermedio", nivel: 2, title: "De 6 meses a 2 años", desc: "Ya tengo algo de experiencia" },
+  { id: "experto", nivel: 3, title: "Más de 2 años", desc: "Tengo experiencia" },
 ];
 
 const CHALLENGE_OPTS: Array<{ id: Challenge; icono: keyof typeof ICONOS; title: string; desc: string }> = [
-  { id: "cierre", icono: "meta", title: "Cerrar más ventas", desc: "Llego al final y el cliente no decide" },
-  { id: "objeciones", icono: "escudo", title: "Manejar objeciones", desc: "No sé qué responder cuando me dicen que no" },
-  { id: "prospeccion", icono: "puerta", title: "Abrir clientes nuevos", desc: "Me cuesta entrar a negocios que no me conocen" },
-  { id: "retencion", icono: "vuelta", title: "Cuidar a mis clientes", desc: "Los pierdo ante la competencia" },
+  { id: "cierre", icono: "meta", title: "Cerrar la venta", desc: "Al final, el cliente no se decide" },
+  { id: "objeciones", icono: "escudo", title: "Responder objeciones", desc: "No sé qué decir cuando me dicen que no" },
+  { id: "prospeccion", icono: "puerta", title: "Conseguir clientes nuevos", desc: "Me cuesta entrar a negocios que no me conocen" },
+  { id: "retencion", icono: "vuelta", title: "Que me sigan comprando", desc: "Mis clientes se van con la competencia" },
 ];
 
 function SellerOnboarding() {
@@ -267,17 +268,20 @@ function Welcome({ onNext }: { onNext: () => void }) {
   return (
     <>
       <div style={{ paddingTop: 12 }}><Marca /></div>
-      <h1 style={{ ...estiloTitulo, fontSize: 32, marginTop: 36 }}>Aquí no vienes a leer. Vienes a practicar.</h1>
+      {/* Mensaje 155 (Emilio, 7-nov): la pantalla que ven todos es un statement: por qué Closer es distinto.
+          «Ha generado millones» lo confirmó Emilio como un hecho comprobado del sistema de ventas de Closer. */}
+      <h1 style={{ ...estiloTitulo, fontSize: "clamp(26px, 3.8dvh, 32px)", marginTop: "min(36px, 3dvh)" }}>Entrena con un sistema de ventas que ha generado millones.</h1>
       <p style={{ ...estiloTexto, marginTop: 14 }}>
-        Aprendes una técnica en un par de minutos y la practicas hablando con un cliente que te contesta.
+        Closer es tu entrenador personal: aprendes el sistema, lo practicas en voz alta y te califica como un entrenador experto.
       </p>
-      <div style={{ marginTop: 36, display: "flex", flexDirection: "column", gap: 22 }}>
-        <FilaIcono icono="microfono" titulo="Practicas con tu voz" texto="Como en una visita real, desde tu teléfono." />
-        <FilaIcono icono="mejora" titulo="Sabes qué mejorar" texto="Una calificación honesta y qué hacer distinto." />
-        <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y escucha tus prácticas para darte coaching." />
+      <div style={{ marginTop: "min(32px, 3.6dvh)", display: "flex", flexDirection: "column", gap: "min(20px, 2.4dvh)" }}>
+        <FilaIcono icono="libro" titulo="Un sistema completo" texto="De la entrada al cierre, no consejos sueltos." />
+        <FilaIcono icono="microfono" titulo="Práctica de verdad" texto="Hablas con un cliente que te contesta, como en una visita." />
+        <FilaIcono icono="mejora" titulo="Una calificación que no adivina" texto="Con reglas claras para cada técnica, no opiniones." />
+        <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y puede escuchar tus prácticas para ayudarte." />
       </div>
       <Abajo>
-        <button type="button" onClick={onNext} style={estiloBoton("principal")}>Empezar</button>
+        <button type="button" onClick={onNext} style={estiloBoton("principal")}>Empezar mi entrenamiento</button>
       </Abajo>
     </>
   );
@@ -296,7 +300,7 @@ function NameStep({
   return (
     <>
       <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Cómo te llamas?</h1>
-      <p style={{ ...estiloTexto, fontSize: 16, color: "var(--c-text-2)", marginTop: 10 }}>Así te va a llamar Closer.</p>
+      <p style={{ ...estiloTexto, fontSize: 16, color: "var(--c-text-2)", marginTop: 10 }}>Así te vamos a llamar en Closer.</p>
       <input
         type="text"
         autoFocus
@@ -347,7 +351,7 @@ function ExperienceStep({
   const nombre = name.trim().split(" ")[0];
   return (
     <>
-      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>{nombre ? `¿Cuánto llevas vendiendo, ${nombre}?` : "¿Cuánto llevas vendiendo?"}</h1>
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>{nombre ? `¿Cuánto tiempo llevas en ventas, ${nombre}?` : "¿Cuánto tiempo llevas en ventas?"}</h1>
       <div role="radiogroup" style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
         {EXPERIENCE_OPTS.map((opt) => (
           <Opcion
@@ -382,7 +386,7 @@ function ChallengeStep({
 }) {
   return (
     <>
-      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Cuál es tu mayor reto hoy?</h1>
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Qué se te dificulta más?</h1>
       <div role="radiogroup" style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
         {CHALLENGE_OPTS.map((opt) => (
           <Opcion
@@ -397,12 +401,12 @@ function ChallengeStep({
       </div>
       <div style={{ marginTop: 18 }}>
         <Casilla marcada={audioConsent} onCambiar={setAudioConsent}>
-          Acepto que mis prácticas se graben. Closer funciona con tu voz: sin grabar no se puede practicar, y tu manager usa las grabaciones para darte coaching.
+          Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz. Tu manager puede escucharlas para ayudarte a mejorar.
         </Casilla>
       </div>
       {value && !audioConsent && (
         <p style={{ margin: "10px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45, color: "var(--c-gold)" }}>
-          Para seguir, marca la casilla: sin grabar no se puede practicar.
+          Para seguir, marca la casilla: sin grabación no se puede practicar.
         </p>
       )}
       {/* Mensaje 123: aceptar la grabación es obligatorio (antes dejaba seguir sin aceptarla). */}
@@ -450,7 +454,7 @@ function PersonalMessage({
           <p style={{ ...estiloTexto, marginTop: 16, lineHeight: 1.55 }}>{message}</p>
           {expectativa && (
             <div style={{ marginTop: 24, padding: 18, borderRadius: "var(--r-tarjeta)", background: "rgb(var(--c-primary-rgb) / 0.07)", border: "1px solid rgb(var(--c-primary-rgb) / 0.35)" }}>
-              <div style={{ ...estiloEtiqueta, fontSize: 12, letterSpacing: "0.1em", color: "var(--c-primary)" }}>Lo que vas a construir</div>
+              <div style={{ ...estiloEtiqueta, fontSize: 12, letterSpacing: "0.1em", color: "var(--c-primary)" }}>Lo que vas a lograr</div>
               <p style={{ margin: "8px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text)" }}>{expectativa}</p>
             </div>
           )}

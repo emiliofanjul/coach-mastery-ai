@@ -18,8 +18,12 @@ const emoji = /\p{Extended_Pictographic}/u;
 
 describe("La bienvenida (cuatro pantallas)", () => {
   it("dice lo que Closer hace de verdad", () => {
-    expect(seller).toContain("Aquí no vienes a leer. Vienes a practicar.");
-    for (const t of ["Practicas con tu voz", "Sabes qué mejorar", "Tu manager te acompaña"]) expect(seller).toContain(t);
+    // Mensaje 155: palabras directas. Antes decía «Aquí no vienes a leer», y lo primero que hace es leer.
+    // y la primera pantalla, que ven todos, dice por qué Closer es distinto (Emilio, 7-nov).
+    expect(seller).toContain("Entrena con un sistema de ventas que ha generado millones.");
+    expect(seller).not.toContain("Aquí no vienes a leer");
+    expect(seller).not.toContain("desde tu teléfono"); // Closer también se usa en la computadora
+    for (const t of ["Un sistema completo", "Práctica de verdad", "Una calificación que no adivina", "Tu manager te acompaña"]) expect(seller).toContain(t);
     expect(seller).toContain("Ver cómo funciona");
   });
   it("las preguntas: barra de avance, regresar y opciones con íconos dibujados, sin emojis", () => {
@@ -46,7 +50,10 @@ describe("«Así funciona» (tres pantallas)", () => {
     expect(emoji.test(asi)).toBe(false);
   });
   it("aprende, practica, mejora; y termina en el mapa", () => {
-    for (const t of ["1 · Aprende", "2 · Practica", "3 · Mejora", "Saltar", "Ir a mi mapa"]) expect(asi).toContain(t);
+    for (const t of ["Por qué funciona", "1 · Aprende", "2 · Practica", "3 · Mejora", "Tu camino", "Saltar", "Ir a mi mapa"]) expect(asi).toContain(t);
+    expect(asi).toContain("Nunca te califica algo que no te ha enseñado.");
+    // Mensaje 155: dice antes que se empieza con teoría y cuándo llega la primera práctica con voz.
+    expect(asi).toContain("En el tercero haces tu primera práctica con voz");
     expect(asi).toContain('navigate({ to: "/mapa" })');
   });
   it("no guarda nada: la bienvenida ya marcó onboarding_completed", () => {

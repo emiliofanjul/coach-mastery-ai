@@ -12,3 +12,4 @@
 - Prefer nombre_corto in coach progress context with a full-name fallback so map and coach labels stay aligned.
 - Carry optional unlock attribution in node-completion signals so map path animation distinguishes new progress from failed attempts and replays.
 - Share onboarding presentation pieces in bienvenida-ui and keep the map guide separate from the reusable map-intro route, so first-visit guidance and menu replay remain independent.
+- Derive map-guide node type and voice-practice distance in the shared guia-mapa helper from ordered map data, so guidance stays accurate when content changes.

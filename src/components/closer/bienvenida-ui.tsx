@@ -11,6 +11,7 @@ const TRAZO = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLi
 
 /** Los íconos de la bienvenida, dibujados a 24 px. */
 export const ICONOS = {
+  libro: <><path d="M12 6.5C10.5 5 8 4.5 4 4.5v13c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-13c-4 0-6.5.5-8 2z" /><path d="M12 6.5v13" /></>,
   microfono: <><rect x="9" y="2.5" width="6" height="12" rx="3" /><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" /></>,
   mejora: <><circle cx="12" cy="12" r="8.5" /><path d="M9 12.5l2 2 4-4.5" /></>,
   equipo: <><circle cx="9" cy="8" r="3.2" /><path d="M3.5 19c.7-3 3-4.6 5.5-4.6s4.8 1.6 5.5 4.6" /><circle cx="17" cy="9" r="2.5" /><path d="M16 14.6c2.2.1 3.9 1.5 4.5 4.4" /></>,
