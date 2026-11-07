@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  *  - support:      relajado, mano extendida ofreciendo ayuda
  *
  * Construido en SVG con primitivas geométricas — círculos, líneas y
- * polígonos simples. Naranja #FF6B2B siempre. Sin imágenes raster.
+ * polígonos simples. Naranja var(--c-primary) siempre. Sin imágenes raster.
  */
 export type CloserState =
   | "normal"

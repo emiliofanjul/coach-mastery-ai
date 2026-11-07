@@ -314,7 +314,7 @@ function MiEmpresaPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white flex items-center justify-center">
         <div className="text-white/60 font-['DM_Sans']">Cargando…</div>
       </div>
     );
@@ -322,7 +322,7 @@ function MiEmpresaPage() {
 
   if (denied) {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white flex flex-col items-center justify-center px-6 gap-4 text-center">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white flex flex-col items-center justify-center px-6 gap-4 text-center">
         <div className="font-['Syne'] text-2xl font-bold">Solo para managers</div>
         <div className="text-white/60 font-['DM_Sans'] max-w-sm">
           Esta sección edita el conocimiento de tu empresa que alimenta a Closer. Requiere rol de
@@ -330,7 +330,7 @@ function MiEmpresaPage() {
         </div>
         <Button
           onClick={() => navigate({ to: "/mapa" })}
-          className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px]"
+          className="bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px]"
         >
           Ir al mapa
         </Button>
@@ -343,7 +343,7 @@ function MiEmpresaPage() {
     : "nunca";
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader title="Mi Empresa" subtitle={companyName || undefined} />
       <div className="mx-auto w-full max-w-[720px] px-5 pt-2 pb-32">
         <h1 className="font-['Syne'] text-3xl font-black tracking-tight mb-6">Mi Empresa</h1>
@@ -351,7 +351,7 @@ function MiEmpresaPage() {
         {/* 1. IDENTIDAD */}
         <section className="mb-6 rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Building2 className="h-4 w-4 text-[#FF6B2B]" />
+            <Building2 className="h-4 w-4 text-[var(--c-primary)]" />
             <h2 className="font-['Syne'] font-bold text-white text-lg">Identidad</h2>
           </div>
           <div className="grid grid-cols-1 gap-3">
@@ -362,7 +362,7 @@ function MiEmpresaPage() {
               <input
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans']"
               />
             </div>
             <div>
@@ -373,7 +373,7 @@ function MiEmpresaPage() {
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
                 placeholder="Ej. Refacciones automotrices"
-                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+                className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans']"
               />
             </div>
             <ImageUploader
@@ -431,7 +431,7 @@ function MiEmpresaPage() {
                       toast.error("No se pudo guardar. Intenta de nuevo.");
                     }
                   }}
-                  className={`rounded-full px-3 py-1.5 text-sm border ${tiposCliente === valor ? "border-[#FF6B2B] bg-[#FF6B2B]/15" : "border-white/15"}`}
+                  className={`rounded-full px-3 py-1.5 text-sm border ${tiposCliente === valor ? "border-[var(--c-primary)] bg-[var(--c-primary)]/15" : "border-white/15"}`}
                 >
                   {texto}
                 </button>
@@ -444,7 +444,7 @@ function MiEmpresaPage() {
         {!isPersonal && companyId && (
           <section className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <Users className="h-4 w-4 text-[#FF6B2B]" />
+              <Users className="h-4 w-4 text-[var(--c-primary)]" />
               <h2 className="font-['Syne'] font-bold text-white text-lg">Equipo</h2>
             </div>
             <InviteCard companyId={companyId} empresa={companyName} />
@@ -458,7 +458,7 @@ function MiEmpresaPage() {
             onClick={() => setBrainOpen((v) => !v)}
             className="w-full flex items-center gap-3 p-5 text-left"
           >
-            <Brain className="h-4 w-4 text-[#FF6B2B] shrink-0" />
+            <Brain className="h-4 w-4 text-[var(--c-primary)] shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="font-['Syne'] font-bold text-white text-lg">Cerebro de ventas</div>
               <div className="text-xs text-white/50 font-['DM_Sans'] mt-0.5">
@@ -475,7 +475,7 @@ function MiEmpresaPage() {
 
           {brainOpen && (
             <div className="border-t border-white/10 p-5">
-              <div className="mb-4 flex items-start gap-2 rounded-[10px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/10 p-3 text-[#FF6B2B]">
+              <div className="mb-4 flex items-start gap-2 rounded-[10px] border border-[var(--c-primary)]/30 bg-[var(--c-primary)]/10 p-3 text-[var(--c-primary)]">
                 <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                 <div className="text-xs font-['DM_Sans'] leading-relaxed">
                   Estos cambios afectan las prácticas de todo tu equipo a partir de ahora.
@@ -508,7 +508,7 @@ function MiEmpresaPage() {
                             value={e.key}
                             onChange={(ev) => updateExtra(i, { key: ev.target.value })}
                             placeholder="LLAVE"
-                            className="flex-1 bg-black/40 border border-white/10 rounded-[8px] px-3 py-1.5 text-xs font-mono text-white outline-none focus:border-[#FF6B2B]"
+                            className="flex-1 bg-black/40 border border-white/10 rounded-[8px] px-3 py-1.5 text-xs font-mono text-white outline-none focus:border-[var(--c-primary)]"
                           />
                           <button
                             onClick={() => removeExtra(i)}
@@ -522,7 +522,7 @@ function MiEmpresaPage() {
                           value={e.value}
                           onChange={(ev) => updateExtra(i, { value: ev.target.value })}
                           rows={3}
-                          className="w-full bg-black/40 border border-white/10 rounded-[8px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+                          className="w-full bg-black/40 border border-white/10 rounded-[8px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans']"
                         />
                       </div>
                     ))}
@@ -555,7 +555,7 @@ function MiEmpresaPage() {
         </section>
 
         {brainOpen && (
-          <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-[#08080F]/95 backdrop-blur px-5 py-3">
+          <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-[var(--c-bg)]/95 backdrop-blur px-5 py-3">
             <div className="mx-auto flex w-full max-w-[720px] items-center justify-between gap-3">
               <div className="text-[11px] text-white/50 font-['DM_Sans']">
                 Estos cambios afectan las prácticas de todo tu equipo.
@@ -563,7 +563,7 @@ function MiEmpresaPage() {
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+                className="bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
               >
                 <Save className="h-4 w-4 mr-2" />
                 {saving ? "Guardando…" : "Guardar cerebro"}
@@ -594,7 +594,7 @@ function FieldBlock({
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
           placeholder={field.placeholder}
-          className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+          className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans']"
         />
       )}
       {field.kind === "textarea" && (
@@ -603,7 +603,7 @@ function FieldBlock({
           onChange={(e) => onChange(e.target.value)}
           rows={4}
           placeholder={field.placeholder}
-          className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans'] leading-relaxed"
+          className="w-full bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans'] leading-relaxed"
         />
       )}
       {field.kind === "list" && (
@@ -638,7 +638,7 @@ function ListEditor({
               onChange(next);
             }}
             placeholder={placeholder}
-            className="flex-1 bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[#FF6B2B] font-['DM_Sans']"
+            className="flex-1 bg-black/40 border border-white/10 rounded-[10px] px-3 py-2 text-sm text-white outline-none focus:border-[var(--c-primary)] font-['DM_Sans']"
           />
           <button
             onClick={() => {
@@ -753,9 +753,9 @@ function InviteCard({ companyId: _companyId, empresa }: { companyId: string; emp
         <div className="mt-4 text-sm text-white/50 font-['DM_Sans']">Cargando…</div>
       ) : active ? (
         <div className="mt-4">
-          <div className="rounded-[10px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 p-3 flex items-center gap-3">
+          <div className="rounded-[10px] border border-[var(--c-primary)]/40 bg-[var(--c-primary)]/10 p-3 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <div className="font-mono text-lg tracking-wider text-[#FF6B2B] truncate">
+              <div className="font-mono text-lg tracking-wider text-[var(--c-primary)] truncate">
                 {active.code}
               </div>
               <div className="mt-0.5 text-[11px] text-white/60 font-['DM_Sans']">
@@ -805,7 +805,7 @@ function InviteCard({ companyId: _companyId, empresa }: { companyId: string; emp
                 className={[
                   "flex-1 h-10 rounded-[99px] text-xs font-['DM_Sans'] font-semibold border transition-colors",
                   duration === opt.v
-                    ? "bg-[#FF6B2B]/15 border-[#FF6B2B]/50 text-[#FF6B2B]"
+                    ? "bg-[var(--c-primary)]/15 border-[var(--c-primary)]/50 text-[var(--c-primary)]"
                     : "bg-white/[0.02] border-white/10 text-white/70 hover:text-white",
                 ].join(" ")}
               >
@@ -816,7 +816,7 @@ function InviteCard({ companyId: _companyId, empresa }: { companyId: string; emp
           <Button
             onClick={generate}
             disabled={generating}
-            className="w-full bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px] font-['Syne'] font-bold text-black"
+            className="w-full bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px] font-['Syne'] font-bold text-black"
           >
             {generating ? "Generando…" : "Generar código"}
           </Button>
@@ -926,7 +926,7 @@ function MembersList({ companyId }: { companyId: string }) {
                 type="checkbox"
                 checked={m.is_active}
                 onChange={() => toggle(m)}
-                style={{ accentColor: "#FF6B2B" }}
+                style={{ accentColor: "var(--c-primary)" }}
               />
               {m.is_active ? "Activo" : "Inactivo"}
             </label>

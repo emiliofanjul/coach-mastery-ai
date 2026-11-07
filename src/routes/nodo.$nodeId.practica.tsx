@@ -21,11 +21,11 @@ export const Route = createFileRoute("/nodo/$nodeId/practica")({
   head: () => ({ meta: [{ title: "Práctica — Closer" }] }),
 });
 
-const BG = "#08080F";
-const ORANGE = "#FF6B2B";
-const BLUE = "#4DABF7";
-const GREEN = "#06D6A0";
-const RED = "#EF476F";
+const BG = "var(--c-bg)";
+const ORANGE = "var(--c-primary)";
+const BLUE = "var(--c-client)";
+const GREEN = "var(--c-success)";
+const RED = "var(--c-danger)";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
@@ -1907,7 +1907,7 @@ function PracticaPage() {
                     setPhase("transition");
                   }}
                   style={{
-                    background: "#FF6B2B",
+                    background: "var(--c-primary)",
                     color: "#fff",
                     border: "none",
                     borderRadius: 99,
@@ -1929,7 +1929,7 @@ function PracticaPage() {
                 style={{
                   position: "fixed",
                   inset: 0,
-                  background: "#08080F",
+                  background: "var(--c-bg)",
                   zIndex: 200,
                   overflowY: "auto",
                   display: "flex",
@@ -1940,8 +1940,8 @@ function PracticaPage() {
               >
                 <style>{`
                   @keyframes closerBluePulse {
-                    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6), 0 0 32px rgba(59,130,246,0.5); }
-                    50% { box-shadow: 0 0 0 18px rgba(59,130,246,0), 0 0 48px rgba(59,130,246,0.35); }
+                    0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-client-rgb) / 0.6), 0 0 32px rgb(var(--c-client-rgb) / 0.5); }
+                    50% { box-shadow: 0 0 0 18px rgb(var(--c-client-rgb) / 0), 0 0 48px rgb(var(--c-client-rgb) / 0.35); }
                   }
                 `}</style>
                 <div
@@ -1969,8 +1969,8 @@ function PracticaPage() {
                   {/* Tarjeta 1 */}
                   <div
                     style={{
-                      background: "#14141C",
-                      border: "1px solid rgba(255,107,43,0.3)",
+                      background: "var(--c-surface)",
+                      border: "1px solid rgb(var(--c-primary-rgb) / 0.3)",
                       borderRadius: 14,
                       padding: "1.2rem",
                       display: "flex",
@@ -1985,7 +1985,7 @@ function PracticaPage() {
                         fontFamily: "Syne, sans-serif",
                         fontWeight: 700,
                         fontSize: 16,
-                        color: "#FF6B2B",
+                        color: "var(--c-primary)",
                       }}
                     >
                       Tú empiezas
@@ -1995,7 +1995,7 @@ function PracticaPage() {
                         width: 72,
                         height: 72,
                         borderRadius: "50%",
-                        background: "#3B82F6",
+                        background: "var(--c-client)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -2012,7 +2012,7 @@ function PracticaPage() {
                     </div>
                     <div
                       style={{
-                        color: "#F0F0F5",
+                        color: "var(--c-text)",
                         fontFamily: "DM Sans, sans-serif",
                         fontSize: 14,
                         lineHeight: 1.5,
@@ -2025,7 +2025,7 @@ function PracticaPage() {
                   {/* Tarjeta 2 */}
                   <div
                     style={{
-                      background: "#14141C",
+                      background: "var(--c-surface)",
                       borderRadius: 14,
                       padding: "1.2rem",
                       display: "flex",
@@ -2040,7 +2040,7 @@ function PracticaPage() {
                         fontFamily: "Syne, sans-serif",
                         fontWeight: 700,
                         fontSize: 16,
-                        color: "#FF6B2B",
+                        color: "var(--c-primary)",
                       }}
                     >
                       Toca para hablar
@@ -2052,7 +2052,7 @@ function PracticaPage() {
                             width: 64,
                             height: 64,
                             borderRadius: "50%",
-                            background: "#FF6B2B",
+                            background: "var(--c-primary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -2065,16 +2065,16 @@ function PracticaPage() {
                             <line x1="8" y1="23" x2="16" y2="23" />
                           </svg>
                         </div>
-                        <div style={{ color: "#F0F0F5", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Toca</div>
+                        <div style={{ color: "var(--c-text)", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Toca</div>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", color: "#5A5A8A", fontSize: 20 }}>→</div>
+                      <div style={{ display: "flex", alignItems: "center", color: "var(--c-text-2)", fontSize: 20 }}>→</div>
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                         <div
                           style={{
                             width: 64,
                             height: 64,
                             borderRadius: "50%",
-                            background: "#E0322B",
+                            background: "var(--c-danger)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -2082,12 +2082,12 @@ function PracticaPage() {
                         >
                           <div style={{ width: 18, height: 18, background: "#fff", borderRadius: 3 }} />
                         </div>
-                        <div style={{ color: "#F0F0F5", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Escuchando</div>
+                        <div style={{ color: "var(--c-text)", fontFamily: "DM Sans, sans-serif", fontSize: 12 }}>Escuchando</div>
                       </div>
                     </div>
                     <div
                       style={{
-                        color: "#F0F0F5",
+                        color: "var(--c-text)",
                         fontFamily: "DM Sans, sans-serif",
                         fontSize: 14,
                         lineHeight: 1.5,
@@ -2100,7 +2100,7 @@ function PracticaPage() {
                   {/* Tarjeta 3 */}
                   <div
                     style={{
-                      background: "#14141C",
+                      background: "var(--c-surface)",
                       borderRadius: 14,
                       padding: "1.2rem",
                       display: "flex",
@@ -2114,14 +2114,14 @@ function PracticaPage() {
                         fontFamily: "Syne, sans-serif",
                         fontWeight: 700,
                         fontSize: 16,
-                        color: "#FF6B2B",
+                        color: "var(--c-primary)",
                       }}
                     >
                       Toca otra vez para enviar
                     </div>
                     <div
                       style={{
-                        color: "#F0F0F5",
+                        color: "var(--c-text)",
                         fontFamily: "DM Sans, sans-serif",
                         fontSize: 14,
                         lineHeight: 1.5,
@@ -2131,11 +2131,11 @@ function PracticaPage() {
                     </div>
                     <div
                       style={{
-                        background: "rgba(34,197,94,0.12)",
-                        border: "1px solid rgba(34,197,94,0.35)",
+                        background: "rgb(var(--c-success-rgb) / 0.12)",
+                        border: "1px solid rgb(var(--c-success-rgb) / 0.35)",
                         borderRadius: 10,
                         padding: "10px 12px",
-                        color: "#86EFAC",
+                        color: "var(--c-success-soft)",
                         fontFamily: "DM Sans, sans-serif",
                         fontSize: 13,
                         lineHeight: 1.45,
@@ -2151,7 +2151,7 @@ function PracticaPage() {
                       setShowVoiceTutorial(false);
                     }}
                     style={{
-                      background: "#FF6B2B",
+                      background: "var(--c-primary)",
                       color: "#fff",
                       border: "none",
                       borderRadius: 99,
@@ -2175,30 +2175,30 @@ function PracticaPage() {
                 role="dialog"
                 aria-modal="true"
                 aria-label="Tu cliente"
-                style={{ position: "fixed", inset: 0, zIndex: 210, background: "rgba(8,8,15,0.82)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "1.2rem" }}
+                style={{ position: "fixed", inset: 0, zIndex: 210, background: "rgb(var(--c-bg-rgb) / 0.82)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "1.2rem" }}
               >
-                <div style={{ width: "100%", maxWidth: 420, background: "#12121C", border: "1px solid rgba(255,107,43,0.35)", borderRadius: 20, padding: "1.4rem 1.3rem", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}>
-                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "#FF6B2B", marginBottom: 10 }}>Tu cliente</div>
+                <div style={{ width: "100%", maxWidth: 420, background: "var(--c-surface)", border: "1px solid rgb(var(--c-primary-rgb) / 0.35)", borderRadius: 20, padding: "1.4rem 1.3rem", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}>
+                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--c-primary)", marginBottom: 10 }}>Tu cliente</div>
                   {fichaCliente ? (
                     <>
-                      <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 22, color: "#F0F0F5", lineHeight: 1.2 }}>{fichaCliente.nombre}</div>
-                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.65)", marginBottom: 12 }}>{fichaCliente.negocio}</div>
-                      <div style={{ display: "inline-block", fontFamily: "DM Sans, sans-serif", fontSize: 12, fontWeight: 700, color: "#08080F", background: fichaCliente.tipo === "nuevo" ? "#7DD3FC" : "#FFD166", borderRadius: 99, padding: "4px 10px", marginBottom: 10 }}>
+                      <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 22, color: "var(--c-text)", lineHeight: 1.2 }}>{fichaCliente.nombre}</div>
+                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.65)", marginBottom: 12 }}>{fichaCliente.negocio}</div>
+                      <div style={{ display: "inline-block", fontFamily: "DM Sans, sans-serif", fontSize: 12, fontWeight: 700, color: "var(--c-bg)", background: fichaCliente.tipo === "nuevo" ? "var(--c-client-soft)" : "var(--c-gold)", borderRadius: 99, padding: "4px 10px", marginBottom: 10 }}>
                         {fichaCliente.tipo === "nuevo" ? "Cliente nuevo" : "Cliente recurrente"}
                       </div>
-                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.85)", lineHeight: 1.5 }}>{lineaDelCliente(fichaCliente)}</div>
+                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.85)", lineHeight: 1.5 }}>{lineaDelCliente(fichaCliente)}</div>
                       {contextoDelCliente(fichaCliente).map((t) => (
-                        <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.85)", lineHeight: 1.5, marginTop: 6 }}>• {t}</div>
+                        <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.85)", lineHeight: 1.5, marginTop: 6 }}>• {t}</div>
                       ))}
-                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "#F0F0F5", fontWeight: 600, lineHeight: 1.5, marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.08)" }}>{LLAMADO_A_LA_ACCION}</div>
+                      <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "var(--c-text)", fontWeight: 600, lineHeight: 1.5, marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.08)" }}>{LLAMADO_A_LA_ACCION}</div>
                     </>
                   ) : (
-                    <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.7)", padding: "1rem 0" }}>Preparando a tu cliente…</div>
+                    <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.7)", padding: "1rem 0" }}>Preparando a tu cliente…</div>
                   )}
                   <button
                     onClick={() => setFichaVista(true)}
                     disabled={!fichaCliente}
-                    style={{ width: "100%", marginTop: 18, background: "#FF6B2B", color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, border: "none", borderRadius: 99, padding: "14px 20px", cursor: fichaCliente ? "pointer" : "default", opacity: fichaCliente ? 1 : 0.5 }}
+                    style={{ width: "100%", marginTop: 18, background: "var(--c-primary)", color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, border: "none", borderRadius: 99, padding: "14px 20px", cursor: fichaCliente ? "pointer" : "default", opacity: fichaCliente ? 1 : 0.5 }}
                   >
                     Continuar →
                   </button>
@@ -2350,7 +2350,7 @@ function PracticaPage() {
             position: "fixed",
             inset: 0,
             zIndex: 900,
-            background: "rgba(8,8,15,0.94)",
+            background: "rgb(var(--c-bg-rgb) / 0.94)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -2363,12 +2363,12 @@ function PracticaPage() {
             style={{
               width: "100%",
               maxWidth: 560,
-              background: "#12121C",
-              border: "1px solid rgba(255,107,43,0.35)",
+              background: "var(--c-surface)",
+              border: "1px solid rgb(var(--c-primary-rgb) / 0.35)",
               borderRadius: 14,
               padding: "1.5rem",
               fontFamily: "'DM Sans', sans-serif",
-              color: "#F0F0F5",
+              color: "var(--c-text)",
               fontSize: "1rem",
               lineHeight: 1.6,
             }}
@@ -2379,7 +2379,7 @@ function PracticaPage() {
             type="button"
             onClick={() => closingGateResolveRef.current?.()}
             style={{
-              background: "#FF6B2B",
+              background: "var(--c-primary)",
               border: "none",
               color: "#FFFFFF",
               fontFamily: "Syne, sans-serif",
@@ -2514,7 +2514,7 @@ function PrepPhase({
                   height: 28,
                   borderRadius: 99,
                   background: c.ok ? GREEN : ORANGE,
-                  color: "#08080F",
+                  color: "var(--c-bg)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -2597,8 +2597,8 @@ function PrepPhase({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0, duration: 0.4 }}
             style={{
-              background: "rgba(255,107,43,0.06)",
-              border: "1px solid #FF6B2B",
+              background: "rgb(var(--c-primary-rgb) / 0.06)",
+              border: "1px solid var(--c-primary)",
               borderRadius: 14,
               padding: "18px 18px",
               display: "flex",
@@ -2612,7 +2612,7 @@ function PrepPhase({
                 fontWeight: 700,
                 fontSize: 12,
                 letterSpacing: "0.14em",
-                color: "#FF6B2B",
+                color: "var(--c-primary)",
                 textTransform: "uppercase",
               }}
             >
@@ -2649,10 +2649,10 @@ function PrepPhase({
           onClick={onListo}
           disabled={!canStart}
           style={{
-            width: "100%", height: 52, borderRadius: 99, border: "none", background: ORANGE, color: "#08080F",
+            width: "100%", height: 52, borderRadius: 99, border: "none", background: ORANGE, color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16,
             cursor: canStart ? "pointer" : "not-allowed", opacity: canStart ? 1 : 0.5,
-            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
           }}
         >
           {hasIDo ? "Ver demostración →" : "Estoy listo →"}
@@ -2789,8 +2789,8 @@ function VoicePhase({
         /* Mensaje 123: cuando le toca hablar al vendedor, el micrófono lo invita
            con un halo suave que respira. Sutil: no parpadea ni cambia de color. */
         @keyframes practica-invita {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,43,0.45), 0 10px 30px -8px rgba(255,107,43,0.33); }
-          50% { box-shadow: 0 0 0 12px rgba(255,107,43,0), 0 10px 30px -8px rgba(255,107,43,0.33); }
+          0%, 100% { box-shadow: 0 0 0 0 rgb(var(--c-primary-rgb) / 0.45), 0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.33); }
+          50% { box-shadow: 0 0 0 12px rgb(var(--c-primary-rgb) / 0), 0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.33); }
         }
         @media (prefers-reduced-motion: reduce) {
           .practica-mic-invita { animation: none !important; }
@@ -2798,14 +2798,14 @@ function VoicePhase({
       `}</style>
 
       {fichaCliente && (
-        <div style={{ border: "1px solid rgba(255,107,43,0.35)", background: "rgba(255,107,43,0.07)", borderRadius: 14, padding: "12px 14px", marginBottom: 12 }}>
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#FF6B2B", marginBottom: 4 }}>Tu cliente</div>
-          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, color: "#F0F0F5" }}>{fichaCliente.nombre} · {fichaCliente.negocio}</div>
-          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgba(240,240,245,0.8)", marginTop: 2 }}>{lineaDelCliente(fichaCliente)}</div>
+        <div style={{ border: "1px solid rgb(var(--c-primary-rgb) / 0.35)", background: "rgb(var(--c-primary-rgb) / 0.07)", borderRadius: 14, padding: "12px 14px", marginBottom: 12 }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--c-primary)", marginBottom: 4 }}>Tu cliente</div>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, color: "var(--c-text)" }}>{fichaCliente.nombre} · {fichaCliente.negocio}</div>
+          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgb(var(--c-text-rgb) / 0.8)", marginTop: 2 }}>{lineaDelCliente(fichaCliente)}</div>
           {contextoDelCliente(fichaCliente).map((t) => (
-            <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgba(240,240,245,0.8)", marginTop: 2 }}>• {t}</div>
+            <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgb(var(--c-text-rgb) / 0.8)", marginTop: 2 }}>• {t}</div>
           ))}
-          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "#F0F0F5", marginTop: 8, fontWeight: 600 }}>{LLAMADO_A_LA_ACCION}</div>
+          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "var(--c-text)", marginTop: 8, fontWeight: 600 }}>{LLAMADO_A_LA_ACCION}</div>
         </div>
       )}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -2823,7 +2823,7 @@ function VoicePhase({
         style={{
           maxWidth: 560, width: "100%", margin: "16px auto 0",
           padding: "12px 16px", borderRadius: 14,
-          background: isIDo ? "rgba(77,171,247,0.15)" : "rgba(255,107,43,0.15)",
+          background: isIDo ? "rgb(var(--c-client-rgb) / 0.15)" : "rgb(var(--c-primary-rgb) / 0.15)",
           border: `1px solid ${isIDo ? BLUE : ORANGE}`,
           fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 14,
           textAlign: "center", color: "#fff",
@@ -2866,7 +2866,7 @@ function VoicePhase({
                   <div
                     style={{
                       maxWidth: "85%", padding: "10px 14px", borderRadius: 14,
-                      background: isAgent ? "rgba(255,107,43,0.12)" : "rgba(255,255,255,0.08)",
+                      background: isAgent ? "rgb(var(--c-primary-rgb) / 0.12)" : "rgba(255,255,255,0.08)",
                       color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5,
                       whiteSpace: "pre-wrap", wordBreak: "break-word", textAlign: "left",
                     }}
@@ -2886,7 +2886,7 @@ function VoicePhase({
                 <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>{connectionError}</p>
                 <button
                   onClick={onRetry}
-                  style={{ background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "8px 20px", cursor: "pointer" }}
+                  style={{ background: ORANGE, color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "8px 20px", cursor: "pointer" }}
                 >Reintentar</button>
               </div>
             )}
@@ -2920,11 +2920,11 @@ function VoicePhase({
                 aria-label="Enviar"
                 style={{
                   width: 48, height: 48, borderRadius: 99, border: "none",
-                  background: ORANGE, color: "#08080F", fontSize: 20,
+                  background: ORANGE, color: "var(--c-bg)", fontSize: 20,
                   cursor: textDisabled || !textDraft.trim() ? "not-allowed" : "pointer",
                   opacity: textDisabled || !textDraft.trim() ? 0.4 : 1,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+                  boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
                 }}
               >➤</button>
             </div>
@@ -2964,7 +2964,7 @@ function VoicePhase({
                 <p style={{ fontFamily: "'DM Sans', sans-serif", color: RED, fontSize: 14, textAlign: "center" }}>{connectionError}</p>
                 <button
                   onClick={onRetry}
-                  style={{ background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "10px 24px", cursor: "pointer", boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)" }}
+                  style={{ background: ORANGE, color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, border: "none", borderRadius: 99, padding: "10px 24px", cursor: "pointer", boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)" }}
                 >Reintentar</button>
               </div>
             )}
@@ -2977,7 +2977,7 @@ function VoicePhase({
                     y le confirman al vendedor que el micrófono lo está oyendo. */}
                 <div aria-hidden style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 22, opacity: isUserListening ? 1 : 0, transition: "opacity 150ms" }}>
                   {[0.55, 0.8, 1, 0.8, 0.55].map((peso, k) => (
-                    <div key={k} style={{ width: 5, borderRadius: 3, background: "#FF6B2B", height: `${Math.max(3, Math.round(22 * Math.min(1, nivelVoz * 1.4 * peso)))}px`, transition: "height 80ms linear" }} />
+                    <div key={k} style={{ width: 5, borderRadius: 3, background: "var(--c-primary)", height: `${Math.max(3, Math.round(22 * Math.min(1, nivelVoz * 1.4 * peso)))}px`, transition: "height 80ms linear" }} />
                   ))}
                 </div>
                 <button
@@ -2987,10 +2987,10 @@ function VoicePhase({
                   className={teTocaHablar ? "practica-mic-invita" : undefined}
                   style={{
                     width: 84, height: 84, borderRadius: 99, border: "none",
-                    background: micBg, color: "#08080F", fontSize: 32,
+                    background: micBg, color: "var(--c-bg)", fontSize: 32,
                     cursor: micDisabled ? "not-allowed" : "pointer",
                     opacity: micDisabled ? 0.4 : 1,
-                    boxShadow: `0 10px 30px -8px ${micBg}55`,
+                    boxShadow: `0 10px 30px -8px color-mix(in srgb, ${micBg} 33%, transparent)`,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     animation: isUserListening ? "practica-pulse 1.2s ease-in-out infinite" : teTocaHablar ? "practica-invita 2.4s ease-out infinite" : undefined,
                   }}
@@ -3039,15 +3039,15 @@ function ConsentimientoGrabacion({
       style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "1.5rem", textAlign: "center", gap: 16 }}
     >
       <CloserCharacter size={96} state="normal" />
-      <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: 0, color: "#F0F0F5" }}>Antes de practicar</h2>
-      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "rgba(240,240,245,0.8)", maxWidth: 380, margin: 0 }}>
+      <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: 0, color: "var(--c-text)" }}>Antes de practicar</h2>
+      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "rgb(var(--c-text-rgb) / 0.8)", maxWidth: 380, margin: 0 }}>
         Closer funciona con tu voz. Para practicar, tus prácticas se graban: así recibes tu calificación y tu manager te puede dar mejor coaching.
       </p>
       {error && <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: RED, margin: 0 }}>{error}</p>}
       <button
         onClick={onAceptar}
         disabled={guardando}
-        style={{ background: ORANGE, color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, border: "none", borderRadius: 99, padding: "14px 28px", cursor: guardando ? "wait" : "pointer", opacity: guardando ? 0.6 : 1, boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)" }}
+        style={{ background: ORANGE, color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, border: "none", borderRadius: 99, padding: "14px 28px", cursor: guardando ? "wait" : "pointer", opacity: guardando ? 0.6 : 1, boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)" }}
       >
         {guardando ? "Guardando…" : "Acepto que se graben mis prácticas"}
       </button>
@@ -3147,12 +3147,12 @@ function TransitionPhase({
             borderRadius: 99,
             border: "none",
             background: ORANGE,
-            color: "#08080F",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: 16,
             cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
           }}
         >
           Yo soy el vendedor →
@@ -3463,7 +3463,7 @@ function ReplicaChat({
               padding: "10px 12px",
               borderRadius: 12,
               background:
-                m.role === "user" ? "rgba(255,107,43,0.18)" : "rgba(255,255,255,0.06)",
+                m.role === "user" ? "rgb(var(--c-primary-rgb) / 0.18)" : "rgba(255,255,255,0.06)",
               color: "#fff",
               fontFamily: "'DM Sans', sans-serif",
               fontSize: 14,
@@ -3494,7 +3494,7 @@ function ReplicaChat({
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 12,
-            color: "rgba(255,180,180,0.9)",
+            color: "rgb(var(--c-danger-rgb) / 0.9)",
           }}
         >
           {error}
@@ -3553,7 +3553,7 @@ function ReplicaChat({
               borderRadius: 99,
               border: "none",
               background: ORANGE,
-              color: "#08080F",
+              color: "var(--c-bg)",
               fontFamily: "Syne, sans-serif",
               fontWeight: 700,
               fontSize: 13,
@@ -3655,11 +3655,11 @@ function FeedbackPhase({
     if (stars === 0) {
       return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, textAlign: "center" }}>
-          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 24, color: "#F0F0F5", marginBottom: 10 }}>Esta vez no salió.</div>
-          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgba(240,240,245,0.7)", maxWidth: 360, lineHeight: 1.5, marginBottom: 24 }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 24, color: "var(--c-text)", marginBottom: 10 }}>Esta vez no salió.</div>
+          <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.7)", maxWidth: 360, lineHeight: 1.5, marginBottom: 24 }}>
             No ganaste estrella en este intento, y las que ya tenías se conservan. Repite el nodo cuando quieras.
           </div>
-          <button onClick={() => onContinue(0)} style={{ background: "#FF6B2B", color: "#08080F", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, border: "none", borderRadius: 99, padding: "14px 28px", cursor: "pointer" }}>Volver al mapa →</button>
+          <button onClick={() => onContinue(0)} style={{ background: "var(--c-primary)", color: "var(--c-bg)", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, border: "none", borderRadius: 99, padding: "14px 28px", cursor: "pointer" }}>Volver al mapa →</button>
         </motion.div>
       );
     }
@@ -3727,8 +3727,8 @@ function FeedbackPhase({
               width: "100%",
               padding: "20px 18px",
               borderRadius: 14,
-              background: "rgba(255,107,43,0.10)",
-              border: `1px solid ${ORANGE}55`,
+              background: "rgb(var(--c-primary-rgb) / 0.10)",
+              border: `1px solid color-mix(in srgb, ${ORANGE} 33%, transparent)`,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -3767,8 +3767,8 @@ function FeedbackPhase({
                 width: "100%",
                 padding: 16,
                 borderRadius: 14,
-                background: "rgba(239,71,111,0.08)",
-                border: "1px solid rgba(239,71,111,0.35)",
+                background: "rgb(var(--c-danger-rgb) / 0.08)",
+                border: "1px solid rgb(var(--c-danger-rgb) / 0.35)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
@@ -3837,8 +3837,8 @@ function FeedbackPhase({
                   width: "100%",
                   padding: 16,
                   borderRadius: 14,
-                  background: "rgba(120,180,255,0.08)",
-                  border: "1px solid rgba(120,180,255,0.35)",
+                  background: "rgb(var(--c-client-rgb) / 0.08)",
+                  border: "1px solid rgb(var(--c-client-rgb) / 0.35)",
                   display: "flex",
                   flexDirection: "column",
                   gap: 10,
@@ -3849,7 +3849,7 @@ function FeedbackPhase({
                     fontFamily: "Syne, sans-serif",
                     fontWeight: 800,
                     fontSize: 13,
-                    color: "rgba(160,200,255,0.95)",
+                    color: "rgb(var(--c-client-rgb) / 0.95)",
                     textTransform: "uppercase",
                     letterSpacing: 0.8,
                   }}
@@ -3895,7 +3895,7 @@ function FeedbackPhase({
                         style={{
                           fontFamily: "'DM Sans', sans-serif",
                           fontSize: 12,
-                          color: "rgba(160,200,255,0.75)",
+                          color: "rgb(var(--c-client-rgb) / 0.75)",
                         }}
                       >
                         {x.por_que}
@@ -3912,7 +3912,7 @@ function FeedbackPhase({
                 width: "100%",
                 padding: 16,
                 borderRadius: 14,
-                background: "rgba(255,107,43,0.10)",
+                background: "rgb(var(--c-primary-rgb) / 0.10)",
                 border: `1px solid ${ORANGE}`,
                 display: "flex",
                 flexDirection: "column",
@@ -3998,12 +3998,12 @@ function FeedbackPhase({
               borderRadius: 99,
               border: "none",
               background: ORANGE,
-              color: "#08080F",
+              color: "var(--c-bg)",
               fontFamily: "Syne, sans-serif",
               fontWeight: 700,
               fontSize: 16,
               cursor: "pointer",
-              boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+              boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
             }}
           >
             Ver resultado →
@@ -4064,12 +4064,12 @@ function FeedbackPhase({
             borderRadius: 99,
             border: "none",
             background: ORANGE,
-            color: "#08080F",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: 16,
             cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
           }}
         >
           Reintentar análisis
@@ -4119,7 +4119,7 @@ function FeedbackPhase({
               borderRadius: 99,
               border: "none",
               background: ORANGE,
-              color: "#08080F",
+              color: "var(--c-bg)",
               fontFamily: "Syne, sans-serif",
               fontWeight: 700,
               fontSize: 16,
@@ -4253,7 +4253,7 @@ function ExitDialog({
     >
       <div
         style={{
-          background: "#14141C",
+          background: "var(--c-surface)",
           borderRadius: 14,
           padding: 24,
           maxWidth: 360,
@@ -4409,7 +4409,7 @@ function ConversationTranscript({
                     padding: "10px 14px",
                     borderRadius: 14,
                     background: isAgent
-                      ? "rgba(255,107,43,0.12)"
+                      ? "rgb(var(--c-primary-rgb) / 0.12)"
                       : "rgba(255,255,255,0.08)",
                     color: "#fff",
                     fontFamily: "'DM Sans', sans-serif",

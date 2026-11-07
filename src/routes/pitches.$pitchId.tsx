@@ -72,7 +72,7 @@ function PitchDetailPage() {
   const ch = CHANNELS.find((c) => c.key === pitch?.channel);
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader title="Pitch" back={{ to: "/pitches", label: "Mis Pitches" }} />
       <div className="mx-auto w-full max-w-[560px] px-5 pt-2 pb-24">
         {loading ? (

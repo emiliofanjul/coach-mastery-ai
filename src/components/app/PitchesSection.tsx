@@ -288,11 +288,11 @@ export function PitchesSection({
   return (
     <section className="mb-6 rounded-[14px] border border-white/10 bg-white/[0.03] p-5">
       <div className="flex items-center gap-2 mb-1">
-        <FileText className="h-4 w-4 text-[#FF6B2B]" />
+        <FileText className="h-4 w-4 text-[var(--c-primary)]" />
         <h2 className="font-['Syne'] font-bold text-white text-lg">Pitches</h2>
       </div>
       {esMovil && (
-        <div className="mb-3 rounded-[10px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/[0.06] px-3 py-2 text-xs text-white/75 font-['DM_Sans']">
+        <div className="mb-3 rounded-[10px] border border-[var(--c-primary)]/30 bg-[var(--c-primary)]/[0.06] px-3 py-2 text-xs text-white/75 font-['DM_Sans']">
           Te recomendamos generar los pitches desde una computadora: ahí puedes cambiar de pestaña y Closer sigue escribiendo. En el teléfono, si sales de la app o se bloquea la pantalla, la generación se pausa.
         </div>
       )}
@@ -334,7 +334,7 @@ export function PitchesSection({
                     className={[
                       "shrink-0 rounded-[99px] px-2.5 py-1 text-[11px] font-['DM_Sans']",
                       pitch?.status === "published"
-                        ? "bg-[#FF6B2B]/15 text-[#FF6B2B]"
+                        ? "bg-[var(--c-primary)]/15 text-[var(--c-primary)]"
                         : pitch
                           ? "bg-white/10 text-white/70"
                           : "bg-white/5 text-white/40",
@@ -353,7 +353,7 @@ export function PitchesSection({
                         className={[
                           "rounded-[99px] px-3 py-1.5 text-xs font-['DM_Sans'] border transition-colors",
                           ch === c.key
-                            ? "border-[#FF6B2B] text-[#FF6B2B] bg-[#FF6B2B]/10"
+                            ? "border-[var(--c-primary)] text-[var(--c-primary)] bg-[var(--c-primary)]/10"
                             : "border-white/10 text-white/60 hover:text-white",
                         ].join(" ")}
                       >
@@ -379,7 +379,7 @@ export function PitchesSection({
                           }
                         }}
                         disabled={(generating !== null && !(generating === pitch.id && progress?.pausa)) || regenStep !== null}
-                        className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold disabled:opacity-60"
+                        className="ml-auto rounded-[99px] bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] text-black font-['Syne'] font-bold disabled:opacity-60"
                       >
                         {generating === pitch.id && !progress?.pausa ? (
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -412,7 +412,7 @@ export function PitchesSection({
                     <Button
                       onClick={() => handleActivate(rel.key, t.key, ch)}
                       disabled={busy === key}
-                      className="ml-auto rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold"
+                      className="ml-auto rounded-[99px] bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] text-black font-['Syne'] font-bold"
                     >
                       {busy === key ? (
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -423,14 +423,14 @@ export function PitchesSection({
                 </div>
 
                 {pitch && generating === pitch.id && (
-                  <div className="mt-3 rounded-[14px] border border-[#FF6B2B]/30 bg-[#FF6B2B]/5 p-3 text-xs text-white/70 font-['DM_Sans']">
+                  <div className="mt-3 rounded-[14px] border border-[var(--c-primary)]/30 bg-[var(--c-primary)]/5 p-3 text-xs text-white/70 font-['DM_Sans']">
                     {progress?.pausa
                       ? <>En pausa en «{progress.label}». Toca «Seguir generando» para continuar desde ahí; lo ya escrito no se pierde.</>
                       : <>Escribiendo la sección «{progress?.label ?? PITCH_STEPS[0]?.label}»…{" "}
                     ({Math.min((progress?.done ?? 0) + 1, PITCH_STEPS.length)} de {PITCH_STEPS.length})</>}
                     <div className="mt-2 h-1 w-full overflow-hidden rounded-[99px] bg-white/10">
                       <div
-                        className="h-full bg-[#FF6B2B] transition-all"
+                        className="h-full bg-[var(--c-primary)] transition-all"
                         style={{
                           width: `${((progress?.done ?? 0) / PITCH_STEPS.length) * 100}%`,
                         }}
@@ -457,7 +457,7 @@ export function PitchesSection({
                             if (step) handleRegenerateSection(pitch.id, step);
                           }}
                           disabled={regenStep !== null || generating !== null}
-                          className="rounded-[99px] bg-[#FF6B2B] hover:bg-[#ff7a42] text-black font-['Syne'] font-bold"
+                          className="rounded-[99px] bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] text-black font-['Syne'] font-bold"
                         >
                           Regenerar esa sección
                         </Button>

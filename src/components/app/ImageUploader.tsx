@@ -74,7 +74,7 @@ export function ImageUploader({
             type="button"
             disabled={busy}
             onClick={() => inputRef.current?.click()}
-            className="rounded-[99px] border border-[#FF6B2B]/40 bg-[#FF6B2B]/10 px-4 py-2 text-sm font-['Syne'] font-bold text-[#FF6B2B] hover:bg-[#FF6B2B]/20 disabled:opacity-50"
+            className="rounded-[99px] border border-[var(--c-primary)]/40 bg-[var(--c-primary)]/10 px-4 py-2 text-sm font-['Syne'] font-bold text-[var(--c-primary)] hover:bg-[var(--c-primary)]/20 disabled:opacity-50"
           >
             {busy ? "Subiendo…" : preview ? "Cambiar imagen" : "Subir imagen"}
           </button>

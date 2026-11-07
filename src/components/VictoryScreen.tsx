@@ -12,8 +12,8 @@ interface VictoryScreenProps {
   extra?: ReactNode;
 }
 
-const ORANGE = "#FF6B2B";
-const GOLD = "#FFD166";
+const ORANGE = "var(--c-primary)";
+const GOLD = "var(--c-gold)";
 
 export default function VictoryScreen({
   stars,
@@ -24,7 +24,7 @@ export default function VictoryScreen({
   extra,
 }: VictoryScreenProps) {
   useEffect(() => {
-    const colors = ["#FF6B2B", "#FFD166", "#06D6A0", "#B57BEE", "#ffffff"];
+    const colors = ["#FF6B2B", "#F2C14E", "#FFFFFF", "#FFB088"]; // canvas: sin variables
     confetti({
       particleCount: 120,
       spread: 80,
@@ -47,7 +47,7 @@ export default function VictoryScreen({
       style={{
         position: "fixed",
         inset: 0,
-        background: "#08080F",
+        background: "var(--c-bg)",
         color: "#fff",
         display: "flex",
         alignItems: extra ? "flex-start" : "center",
@@ -99,7 +99,7 @@ export default function VictoryScreen({
                   lineHeight: 1,
                   color: earned ? GOLD : "rgba(255,255,255,0.15)",
                   filter: earned
-                    ? "drop-shadow(0 0 8px #FFD166) drop-shadow(0 0 16px #FFD166)"
+                    ? "drop-shadow(0 0 8px var(--c-gold)) drop-shadow(0 0 16px var(--c-gold))"
                     : undefined,
                 }}
               >
@@ -153,12 +153,12 @@ export default function VictoryScreen({
             borderRadius: 99,
             border: "none",
             background: ORANGE,
-            color: "#08080F",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: 16,
             cursor: "pointer",
-            boxShadow: "0 10px 30px -8px rgba(255,107,43,0.45)",
+            boxShadow: "0 10px 30px -8px rgb(var(--c-primary-rgb) / 0.45)",
           }}
         >
           {buttonText}

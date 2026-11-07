@@ -23,9 +23,9 @@ export function DevMenu() {
       <button
         onClick={() => setOpen((v) => !v)}
         style={{
-          background: "rgba(255,107,43,0.15)",
-          border: "1px solid rgba(255,107,43,0.5)",
-          color: "#FF6B2B",
+          background: "rgb(var(--c-primary-rgb) / 0.15)",
+          border: "1px solid rgb(var(--c-primary-rgb) / 0.5)",
+          color: "var(--c-primary)",
           fontFamily: "'DM Sans', sans-serif",
           fontWeight: 600,
           fontSize: "0.65rem",
@@ -42,8 +42,8 @@ export function DevMenu() {
         <div
           style={{
             marginTop: 6,
-            background: "#0B0B12",
-            border: "1px solid #252535",
+            background: "var(--c-surface)",
+            border: "1px solid var(--c-border)",
             borderRadius: 10,
             padding: "0.6rem",
             minWidth: 220,
@@ -63,14 +63,14 @@ export function DevMenu() {
                 padding: "0.4rem 0.55rem",
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "0.78rem",
-                color: "#F0F0F5",
+                color: "var(--c-text)",
                 textDecoration: "none",
                 borderRadius: 6,
               }}
               activeProps={{
                 style: {
-                  background: "rgba(255,107,43,0.1)",
-                  color: "#FF6B2B",
+                  background: "rgb(var(--c-primary-rgb) / 0.1)",
+                  color: "var(--c-primary)",
                 },
               }}
             >

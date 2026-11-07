@@ -98,7 +98,7 @@ export function PitchViewer({
           aria-label="Modo vendedor"
           className={[
             "relative h-6 w-11 rounded-[99px] transition-colors",
-            sellerMode ? "bg-[#FF6B2B]" : "bg-white/15",
+            sellerMode ? "bg-[var(--c-primary)]" : "bg-white/15",
           ].join(" ")}
         >
           <span
@@ -111,14 +111,14 @@ export function PitchViewer({
       </div>
 
       {/* Capa 1: barra de la línea recta */}
-      <div className="sticky top-0 z-10 -mx-1 mb-4 flex gap-1 bg-[#08080F]/90 px-1 py-2 backdrop-blur">
+      <div className="sticky top-0 z-10 -mx-1 mb-4 flex gap-1 bg-[var(--c-bg)]/90 px-1 py-2 backdrop-blur">
         {PITCH_STEPS.map((s) => (
           <div
             key={s.key}
             title={s.label}
             className={[
               "h-1 flex-1 rounded-[99px] transition-colors",
-              s.step === activeStep ? "bg-[#FF6B2B]" : "bg-white/12",
+              s.step === activeStep ? "bg-[var(--c-primary)]" : "bg-white/12",
             ].join(" ")}
           />
         ))}
@@ -286,7 +286,7 @@ export function PitchViewer({
                           )}
                           <button
                             onClick={() => setReadMore((p) => ({ ...p, [s.id]: !p[s.id] }))}
-                            className="mt-2 text-[12px] text-[#FF6B2B] font-['DM_Sans']"
+                            className="mt-2 text-[12px] text-[var(--c-primary)] font-['DM_Sans']"
                           >
                             {readMore[s.id] ? "Menos" : "Leer más"}
                           </button>
@@ -307,7 +307,7 @@ export function PitchViewer({
                             key={id}
                             to="/nodo/$nodeId"
                             params={{ nodeId: sk.node_id }}
-                            className="flex items-center gap-1.5 text-[13px] text-white/75 font-['DM_Sans'] hover:text-[#FF6B2B]"
+                            className="flex items-center gap-1.5 text-[13px] text-white/75 font-['DM_Sans'] hover:text-[var(--c-primary)]"
                           >
                             {text}
                             <ArrowRight className="h-3 w-3" />
@@ -335,7 +335,7 @@ export function PitchViewer({
                                 #{a.rank} · {a.label}
                               </span>
                               {(inUse || (a.rank === 1 && !s.edited_by_manager)) && (
-                                <span className="inline-flex items-center gap-1 rounded-[99px] bg-[#FF6B2B]/15 px-2 py-0.5 text-[10px] text-[#FF6B2B] font-['DM_Sans']">
+                                <span className="inline-flex items-center gap-1 rounded-[99px] bg-[var(--c-primary)]/15 px-2 py-0.5 text-[10px] text-[var(--c-primary)] font-['DM_Sans']">
                                   <Check className="h-3 w-3" /> en uso
                                 </span>
                               )}
@@ -352,7 +352,7 @@ export function PitchViewer({
                               <button
                                 onClick={() => chooseAlternative(s, a.content)}
                                 disabled={applying === s.id}
-                                className="mt-2 rounded-[99px] border border-[#FF6B2B]/50 px-3 py-1 text-[12px] text-[#FF6B2B] font-['DM_Sans'] disabled:opacity-50"
+                                className="mt-2 rounded-[99px] border border-[var(--c-primary)]/50 px-3 py-1 text-[12px] text-[var(--c-primary)] font-['DM_Sans'] disabled:opacity-50"
                               >
                                 {applying === s.id ? "Aplicando…" : "Usar esta"}
                               </button>
@@ -404,7 +404,7 @@ function Indicator({
   return (
     <button
       onClick={onClick}
-      className={active ? "text-[#FF6B2B]" : "hover:text-white transition-colors"}
+      className={active ? "text-[var(--c-primary)]" : "hover:text-white transition-colors"}
     >
       {children}
     </button>

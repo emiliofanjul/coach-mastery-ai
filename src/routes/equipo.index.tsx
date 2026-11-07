@@ -176,7 +176,7 @@ function EquipoPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white flex items-center justify-center">
         <div className="text-white/60 font-['DM_Sans']">Cargando equipo…</div>
       </div>
     );
@@ -184,12 +184,12 @@ function EquipoPage() {
 
   if (denied) {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white flex flex-col items-center justify-center px-6 gap-4 text-center">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white flex flex-col items-center justify-center px-6 gap-4 text-center">
         <div className="font-['Syne'] text-2xl font-bold">Solo para managers</div>
         <div className="text-white/60 font-['DM_Sans'] max-w-sm">
           Esta sección es del panel del manager. Tu cuenta no tiene ese rol.
         </div>
-        <Button onClick={() => navigate({ to: "/mapa" })} className="bg-[#FF6B2B] hover:bg-[#ff7a42] rounded-[99px]">
+        <Button onClick={() => navigate({ to: "/mapa" })} className="bg-[var(--c-primary)] hover:bg-[var(--c-primary-hover)] rounded-[99px]">
           Ir al mapa
         </Button>
       </div>
@@ -197,7 +197,7 @@ function EquipoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader
         title="Mi Equipo"
         subtitle={`${cards.length} vendedor${cards.length === 1 ? "" : "es"}`}
@@ -241,7 +241,7 @@ function EquipoPage() {
                   setGuardandoTexto(false);
                 }
               }}
-              className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${permiteTexto ? "bg-[#FF6B2B]" : "bg-white/15"} ${guardandoTexto ? "opacity-60" : ""}`}
+              className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${permiteTexto ? "bg-[var(--c-primary)]" : "bg-white/15"} ${guardandoTexto ? "opacity-60" : ""}`}
             >
               <span className={`absolute top-1 h-5 w-5 rounded-full bg-white transition-all ${permiteTexto ? "left-6" : "left-1"}`} />
             </button>
@@ -270,7 +270,7 @@ function SellerCard({ card }: { card: Card }) {
     attention === "red"
       ? "bg-red-500"
       : attention === "orange"
-      ? "bg-[#FF6B2B]"
+      ? "bg-[var(--c-primary)]"
       : "bg-transparent";
   return (
     <Link
@@ -284,14 +284,14 @@ function SellerCard({ card }: { card: Card }) {
             {initial(seller.full_name)}
           </div>
           {attention && (
-            <span className={`absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-[#08080F] ${dot}`} />
+            <span className={`absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-[var(--c-bg)] ${dot}`} />
           )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <div className="font-['Syne'] font-bold truncate">{seller.full_name ?? "Sin nombre"}</div>
             {seller.certified_at && (
-              <span className="shrink-0 rounded-full bg-[#FF6B2B]/20 text-[#FF6B2B] text-[10px] px-2 py-0.5 font-['DM_Sans']">
+              <span className="shrink-0 rounded-full bg-[var(--c-primary)]/20 text-[var(--c-primary)] text-[10px] px-2 py-0.5 font-['DM_Sans']">
                 Certificado
               </span>
             )}

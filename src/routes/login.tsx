@@ -3,7 +3,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { AuthCoachBubble } from "@/components/closer/AuthCoachBubble";
 import { getSelectedRole } from "@/lib/closer-auth";
 import { tomarAvisoDeSesionTerminada } from "@/lib/sesion-viva";
 
@@ -18,7 +17,7 @@ export const Route = createFileRoute("/login")({
 });
 
 const BG =
-  "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
+  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
 
 const loginSchema = z.object({
   email: z.string().trim().email().max(255),
@@ -71,7 +70,7 @@ function LoginScreen() {
       style={{
         minHeight: "100dvh",
         background: BG,
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         fontFamily: "'DM Sans', sans-serif",
         display: "flex",
         flexDirection: "column",
@@ -106,7 +105,7 @@ function LoginScreen() {
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
                 aria-label={showPw ? "Ocultar contraseña" : "Mostrar contraseña"}
-                style={{ background: "none", border: "none", color: "#5A5A8A", cursor: "pointer", padding: 0, fontSize: "1rem" }}
+                style={{ background: "none", border: "none", color: "var(--c-text-2)", cursor: "pointer", padding: 0, fontSize: "1rem" }}
               >
                 {showPw ? "🙈" : "👁"}
               </button>
@@ -117,12 +116,12 @@ function LoginScreen() {
             <p style={{ margin: 0, fontSize: "0.82rem", color: "#FFFFFF", opacity: 0.85 }}>{aviso}</p>
           )}
           {error && (
-            <p style={{ margin: 0, fontSize: "0.76rem", color: "#EF476F" }}>{error}</p>
+            <p style={{ margin: 0, fontSize: "0.76rem", color: "var(--c-danger)" }}>{error}</p>
           )}
 
           <Link
             to="/forgot-password"
-            style={{ alignSelf: "flex-end", fontSize: "0.76rem", color: "#FF6B2B", textDecoration: "none" }}
+            style={{ alignSelf: "flex-end", fontSize: "0.76rem", color: "var(--c-primary)", textDecoration: "none" }}
           >
             ¿Olvidaste tu contraseña?
           </Link>
@@ -138,15 +137,14 @@ function LoginScreen() {
           <GoogleIcon /> Continuar con Google
         </button>
 
-        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "#5A5A8A" }}>
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "0.8rem", color: "var(--c-text-2)" }}>
           ¿No tienes cuenta?{" "}
-          <Link to="/signup" style={{ color: "#FF6B2B", textDecoration: "none" }}>
+          <Link to="/signup" style={{ color: "var(--c-primary)", textDecoration: "none" }}>
             Regístrate
           </Link>
         </p>
       </section>
 
-      <AuthCoachBubble />
     </main>
   );
 }
@@ -173,7 +171,7 @@ export function Topbar() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           textDecoration: "none",
           fontSize: "1.1rem",
         }}
@@ -185,7 +183,7 @@ export function Topbar() {
           fontFamily: "Syne, sans-serif",
           fontWeight: 700,
           fontSize: "1.1rem",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           margin: 0,
           textAlign: "center",
           letterSpacing: "-0.01em",
@@ -210,14 +208,14 @@ export const titleStyle: React.CSSProperties = {
   fontFamily: "Syne, sans-serif",
   fontWeight: 800,
   fontSize: "1.4rem",
-  color: "#F0F0F5",
+  color: "var(--c-text)",
   margin: 0,
   letterSpacing: "-0.02em",
 };
 
 export const subtitleStyle: React.CSSProperties = {
   fontSize: "0.84rem",
-  color: "#5A5A8A",
+  color: "var(--c-text-2)",
   marginTop: "8px",
   marginBottom: 0,
 };
@@ -251,24 +249,24 @@ export function Field({
 }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ display: "block", fontSize: "0.76rem", color: "#5A5A8A", marginBottom: "6px" }}>
+      <span style={{ display: "block", fontSize: "0.76rem", color: "var(--c-text-2)", marginBottom: "6px" }}>
         {label}
       </span>
       <span
         style={{
           display: "flex",
           alignItems: "center",
-          background: "#111118",
-          border: invalid ? "2px solid #EF476F" : "2px solid #252535",
+          background: "var(--c-surface)",
+          border: invalid ? "2px solid var(--c-danger)" : "2px solid var(--c-border)",
           borderRadius: "14px",
           padding: "0.88rem 1.05rem",
           transition: "border-color 150ms ease",
         }}
         onFocus={(e) => {
-          if (!invalid) (e.currentTarget as HTMLElement).style.borderColor = "#FF6B2B";
+          if (!invalid) (e.currentTarget as HTMLElement).style.borderColor = "var(--c-primary)";
         }}
         onBlur={(e) => {
-          if (!invalid) (e.currentTarget as HTMLElement).style.borderColor = "#252535";
+          if (!invalid) (e.currentTarget as HTMLElement).style.borderColor = "var(--c-border)";
         }}
       >
         <input
@@ -284,7 +282,7 @@ export function Field({
             background: "transparent",
             border: "none",
             outline: "none",
-            color: "#F0F0F5",
+            color: "var(--c-text)",
             fontSize: "0.92rem",
             fontFamily: "inherit",
           }}
@@ -296,7 +294,7 @@ export function Field({
           style={{
             display: "block",
             fontSize: "0.68rem",
-            color: helperColor ?? "#5A5A8A",
+            color: helperColor ?? "var(--c-text-2)",
             marginTop: "6px",
           }}
         >
@@ -314,8 +312,8 @@ export function primaryBtn(loading: boolean, disabled = false): React.CSSPropert
     height: "52px",
     borderRadius: "99px",
     border: "none",
-    background: "#FF6B2B",
-    color: "#08080F",
+    background: "var(--c-primary)",
+    color: "var(--c-bg)",
     fontFamily: "Syne, sans-serif",
     fontWeight: 700,
     fontSize: "0.95rem",
@@ -330,9 +328,9 @@ export const googleBtn: React.CSSProperties = {
   width: "100%",
   height: "52px",
   borderRadius: "99px",
-  background: "#111118",
-  color: "#F0F0F5",
-  border: "1px solid #252535",
+  background: "var(--c-surface)",
+  color: "var(--c-text)",
+  border: "1px solid var(--c-border)",
   fontFamily: "'DM Sans', sans-serif",
   fontWeight: 500,
   fontSize: "0.9rem",
@@ -352,12 +350,12 @@ export function Divider() {
         gap: "12px",
         margin: "24px 0 16px",
         fontSize: "0.76rem",
-        color: "#5A5A8A",
+        color: "var(--c-text-2)",
       }}
     >
-      <span style={{ flex: 1, height: "1px", background: "#252535" }} />
+      <span style={{ flex: 1, height: "1px", background: "var(--c-border)" }} />
       o continúa con
-      <span style={{ flex: 1, height: "1px", background: "#252535" }} />
+      <span style={{ flex: 1, height: "1px", background: "var(--c-border)" }} />
     </div>
   );
 }

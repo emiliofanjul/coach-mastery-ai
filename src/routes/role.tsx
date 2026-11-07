@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { AuthCoachBubble } from "@/components/closer/AuthCoachBubble";
 import { setSelectedRole, type CloserRole } from "@/lib/closer-auth";
 
 export const Route = createFileRoute("/role")({
@@ -14,7 +13,7 @@ export const Route = createFileRoute("/role")({
 });
 
 const BG_GRADIENT =
-  "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
+  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
 
 function RoleScreen() {
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ function RoleScreen() {
       style={{
         minHeight: "100dvh",
         background: BG_GRADIENT,
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         fontFamily: "'DM Sans', sans-serif",
         display: "flex",
         flexDirection: "column",
@@ -43,7 +42,7 @@ function RoleScreen() {
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: "1.1rem",
-            color: "#FF6B2B",
+            color: "var(--c-primary)",
             margin: 0,
             letterSpacing: "-0.01em",
           }}
@@ -69,14 +68,14 @@ function RoleScreen() {
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
             fontSize: "1.5rem",
-            color: "#F0F0F5",
+            color: "var(--c-text)",
             margin: 0,
             letterSpacing: "-0.02em",
           }}
         >
           ¿Cómo quieres entrar?
         </h2>
-        <p style={{ fontSize: "0.84rem", color: "#5A5A8A", marginTop: "16px", marginBottom: 0 }}>
+        <p style={{ fontSize: "0.84rem", color: "var(--c-text-2)", marginTop: "16px", marginBottom: 0 }}>
           Puedes cambiar de modo después.
         </p>
 
@@ -114,8 +113,8 @@ function RoleScreen() {
             height: "52px",
             borderRadius: "99px",
             border: "none",
-            background: "#FF6B2B",
-            color: "#08080F",
+            background: "var(--c-primary)",
+            color: "var(--c-bg)",
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: "0.95rem",
@@ -123,7 +122,7 @@ function RoleScreen() {
             cursor: role ? "pointer" : "not-allowed",
             opacity: role ? 1 : 0.5,
             transition: "opacity 200ms ease, transform 150ms ease",
-            boxShadow: role ? "0 8px 24px rgba(255,107,43,0.3)" : "none",
+            boxShadow: role ? "0 8px 24px rgb(var(--c-primary-rgb) / 0.3)" : "none",
           }}
         >
           Continuar →
@@ -136,7 +135,7 @@ function RoleScreen() {
             textAlign: "center",
             marginTop: "20px",
             fontSize: "0.8rem",
-            color: "#FF6B2B",
+            color: "var(--c-primary)",
             textDecoration: "none",
           }}
         >
@@ -144,7 +143,6 @@ function RoleScreen() {
         </Link>
       </section>
 
-      <AuthCoachBubble />
     </main>
   );
 }
@@ -169,8 +167,8 @@ function RoleCard({
       aria-pressed={selected}
       style={{
         position: "relative",
-        background: selected ? "rgba(255,107,43,0.06)" : "#111118",
-        border: selected ? "2px solid #FF6B2B" : "1px solid #252535",
+        background: selected ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
+        border: selected ? "2px solid var(--c-primary)" : "1px solid var(--c-border)",
         borderRadius: "14px",
         padding: selected ? "calc(1.1rem - 1px)" : "1.1rem",
         display: "flex",
@@ -191,7 +189,7 @@ function RoleCard({
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: "1rem",
-            color: "#F0F0F5",
+            color: "var(--c-text)",
           }}
         >
           {title}
@@ -200,7 +198,7 @@ function RoleCard({
           style={{
             display: "block",
             fontSize: "0.78rem",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
             marginTop: "4px",
           }}
         >
@@ -217,8 +215,8 @@ function RoleCard({
             width: "22px",
             height: "22px",
             borderRadius: "50%",
-            background: "#FF6B2B",
-            color: "#08080F",
+            background: "var(--c-primary)",
+            color: "var(--c-bg)",
             fontSize: "0.75rem",
             fontWeight: 800,
             display: "flex",

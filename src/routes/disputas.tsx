@@ -64,7 +64,7 @@ function DisputasPage() {
 
   if (estado === "denegado") {
     return (
-      <div className="min-h-screen bg-[#08080F] text-white">
+      <div className="min-h-screen bg-[var(--c-bg)] text-white">
         <AppHeader title="Disputas" />
         <div className="mx-auto max-w-2xl p-6 font-['Syne'] text-2xl font-bold">Solo para el equipo de Closer</div>
       </div>
@@ -72,7 +72,7 @@ function DisputasPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#08080F] text-white">
+    <div className="min-h-screen bg-[var(--c-bg)] text-white">
       <AppHeader title="Disputas" />
       <div className="mx-auto max-w-4xl p-4 md:p-6">
         <h1 className="font-['Syne'] text-3xl font-bold mb-1">Disputas</h1>
@@ -85,7 +85,7 @@ function DisputasPage() {
             <button
               key={f}
               onClick={() => setFiltro(f)}
-              className={`rounded-full px-3 py-1.5 text-sm border ${filtro === f ? "border-[#FF6B2B] bg-[#FF6B2B]/15" : "border-white/15"}`}
+              className={`rounded-full px-3 py-1.5 text-sm border ${filtro === f ? "border-[var(--c-primary)] bg-[var(--c-primary)]/15" : "border-white/15"}`}
             >
               {f === "concedidas" ? "Concedidas" : f === "sin_revisar" ? "Sin revisar" : "Todas"}
             </button>
@@ -94,7 +94,7 @@ function DisputasPage() {
             <option value="">Todos los nodos</option>
             {nodos.map((n) => <option key={n} value={n}>{n}</option>)}
           </select>
-          <Button onClick={copiar} disabled={visibles.length === 0} className="ml-auto rounded-full bg-[#FF6B2B] text-black font-['Syne'] font-bold">
+          <Button onClick={copiar} disabled={visibles.length === 0} className="ml-auto rounded-full bg-[var(--c-primary)] text-black font-['Syne'] font-bold">
             Copiar {visibles.length} para Claude
           </Button>
         </div>
@@ -109,7 +109,7 @@ function DisputasPage() {
                 <span className="font-bold text-white/80">Nodo {d.node_id ?? "?"}</span>
                 <span>· {d.created_at.slice(0, 16).replace("T", " ")}</span>
                 <span>· nota {d.nota_original ?? "?"}</span>
-                <span className={`rounded-full px-2 py-0.5 ${d.concede === true ? "bg-[#FF6B2B]/20 text-[#FF6B2B]" : "bg-white/10"}`}>
+                <span className={`rounded-full px-2 py-0.5 ${d.concede === true ? "bg-[var(--c-primary)]/20 text-[var(--c-primary)]" : "bg-white/10"}`}>
                   {d.concede === true ? "Concedida" : d.concede === false ? "Sostenida" : "Sin dato"}
                 </span>
                 {d.criterio_id && <span>· {d.criterio_id}</span>}
@@ -150,7 +150,7 @@ function ConversacionDeDisputa({ d }: { d: Disputa }) {
   }
   return (
     <details className="mt-3 rounded-xl border border-white/10 bg-black/30">
-      <summary className="cursor-pointer select-none px-3 py-2 text-sm text-[#FF6B2B]">
+      <summary className="cursor-pointer select-none px-3 py-2 text-sm text-[var(--c-primary)]">
         Ver conversación y calificación ({v.turnos.length} turnos)
       </summary>
       <div className="px-3 pb-3 text-sm">
@@ -164,7 +164,7 @@ function ConversacionDeDisputa({ d }: { d: Disputa }) {
         )}
         <ol className="flex flex-col gap-2">
           {v.turnos.map((t) => (
-            <li key={t.n} className={`rounded-lg px-3 py-2 ${t.quien === "Vendedor" ? "bg-[#FF6B2B]/10" : "bg-white/[0.05]"}`}>
+            <li key={t.n} className={`rounded-lg px-3 py-2 ${t.quien === "Vendedor" ? "bg-[var(--c-primary)]/10" : "bg-white/[0.05]"}`}>
               <div className="mb-0.5 text-[11px] font-bold uppercase tracking-wide text-white/45">
                 Turno {t.n} · {t.quien}
               </div>

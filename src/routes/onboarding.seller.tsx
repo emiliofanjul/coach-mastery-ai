@@ -15,7 +15,7 @@ export const Route = createFileRoute("/onboarding/seller")({
 });
 
 const BG =
-  "radial-gradient(ellipse at 30% 70%, #1e0a30 0%, transparent 55%), #08080F";
+  "radial-gradient(ellipse at 30% 70%, var(--c-bg-glow) 0%, transparent 55%), var(--c-bg)";
 
 type Experience = "nuevo" | "intermedio" | "experto";
 type Challenge = "cierre" | "objeciones" | "prospeccion" | "retencion";
@@ -202,7 +202,7 @@ function SellerOnboarding() {
   if (!authReady) {
     return (
       <main style={shellStyle}>
-        <div style={{ color: "#5A5A8A", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ color: "var(--c-text-2)", fontFamily: "'DM Sans', sans-serif" }}>
           Cargando…
         </div>
       </main>
@@ -316,19 +316,19 @@ function NameStep({
         style={{
           width: "100%",
           marginTop: "1.4rem",
-          background: "#111118",
-          border: "2px solid #252535",
+          background: "var(--c-surface)",
+          border: "2px solid var(--c-border)",
           borderRadius: 14,
           padding: "0.88rem 1.05rem",
-          color: "#F0F0F5",
+          color: "var(--c-text)",
           fontFamily: "'Syne', sans-serif",
           fontWeight: 700,
           fontSize: "1.2rem",
           textAlign: "center",
           outline: "none",
         }}
-        onFocus={(e) => (e.currentTarget.style.borderColor = "#FF6B2B")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = "#252535")}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--c-primary)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--c-border)")}
       />
       <p style={{ ...helperStyle, marginTop: "0.7rem" }}>
         Así te va a llamar Closer.
@@ -408,8 +408,8 @@ function ChallengeStep({
           gap: "0.7rem",
           marginTop: "1.4rem",
           padding: "0.9rem 1rem",
-          background: "rgba(255,107,43,0.04)",
-          border: "1px solid #252535",
+          background: "rgb(var(--c-primary-rgb) / 0.04)",
+          border: "1px solid var(--c-border)",
           borderRadius: 14,
           cursor: "pointer",
           textAlign: "left",
@@ -421,7 +421,7 @@ function ChallengeStep({
           onChange={(e) => setAudioConsent(e.target.checked)}
           style={{
             marginTop: 3,
-            accentColor: "#FF6B2B",
+            accentColor: "var(--c-primary)",
             width: 18,
             height: 18,
             cursor: "pointer",
@@ -431,7 +431,7 @@ function ChallengeStep({
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "0.82rem",
-            color: "#C8C8D8",
+            color: "var(--c-text-soft)",
             lineHeight: 1.45,
           }}
         >
@@ -441,7 +441,7 @@ function ChallengeStep({
         </span>
       </label>
       {value && !audioConsent && (
-        <p style={{ margin: "0.8rem 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "#FFD166", textAlign: "left" }}>
+        <p style={{ margin: "0.8rem 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "var(--c-gold)", textAlign: "left" }}>
           Para seguir, acepta que tus prácticas de voz se graben: sin eso no se puede practicar.
         </p>
       )}
@@ -476,7 +476,7 @@ function PersonalMessage({
           fontFamily: "'Syne', sans-serif",
           fontWeight: 800,
           fontSize: "2rem",
-          color: "#FF6B2B",
+          color: "var(--c-primary)",
           margin: "1.2rem 0 0.6rem",
           textAlign: "center",
         }}
@@ -490,7 +490,7 @@ function PersonalMessage({
       )}
       {error && !loading && (
         <>
-          <p style={{ ...helperStyle, color: "#FF6B6B", marginTop: "0.4rem" }}>
+          <p style={{ ...helperStyle, color: "var(--c-danger)", marginTop: "0.4rem" }}>
             {error}
           </p>
           <button
@@ -498,8 +498,8 @@ function PersonalMessage({
             style={{
               marginTop: "0.8rem",
               background: "transparent",
-              border: "1px solid #FF6B2B",
-              color: "#FF6B2B",
+              border: "1px solid var(--c-primary)",
+              color: "var(--c-primary)",
               padding: "0.6rem 1.1rem",
               borderRadius: 99,
               fontFamily: "'DM Sans', sans-serif",
@@ -518,7 +518,7 @@ function PersonalMessage({
               fontFamily: "'DM Sans', sans-serif",
               fontWeight: 400,
               fontSize: "0.92rem",
-              color: "#F0F0F5",
+              color: "var(--c-text)",
               textAlign: "center",
               lineHeight: 1.6,
               marginTop: "0.4rem",
@@ -531,8 +531,8 @@ function PersonalMessage({
               style={{
                 width: "100%",
                 marginTop: "1.6rem",
-                borderLeft: "3px solid #FF6B2B",
-                background: "rgba(255,107,43,0.04)",
+                borderLeft: "3px solid var(--c-primary)",
+                background: "rgb(var(--c-primary-rgb) / 0.04)",
                 borderRadius: 14,
                 padding: "1rem",
               }}
@@ -542,7 +542,7 @@ function PersonalMessage({
                   fontFamily: "'DM Sans', sans-serif",
                   fontWeight: 700,
                   fontSize: "0.6rem",
-                  color: "#FF6B2B",
+                  color: "var(--c-primary)",
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   marginBottom: "0.4rem",
@@ -555,7 +555,7 @@ function PersonalMessage({
                   fontFamily: "'DM Sans', sans-serif",
                   fontWeight: 500,
                   fontSize: "0.84rem",
-                  color: "#F0F0F5",
+                  color: "var(--c-text)",
                   lineHeight: 1.5,
                 }}
               >
@@ -582,7 +582,7 @@ function BulletItem({ icon, text }: { icon: string; text: string }) {
         fontFamily: "'DM Sans', sans-serif",
         fontWeight: 500,
         fontSize: "0.84rem",
-        color: "#F0F0F5",
+        color: "var(--c-text)",
         lineHeight: 1.5,
       }}
     >
@@ -616,8 +616,8 @@ function SelectableCard({
         display: "flex",
         gap: "0.9rem",
         alignItems: "center",
-        background: selected ? "rgba(255,107,43,0.06)" : "#111118",
-        border: selected ? "2px solid #FF6B2B" : "1px solid #252535",
+        background: selected ? "rgb(var(--c-primary-rgb) / 0.06)" : "var(--c-surface)",
+        border: selected ? "2px solid var(--c-primary)" : "1px solid var(--c-border)",
         borderRadius: 14,
         padding: selected ? "calc(1rem - 1px) calc(1.25rem - 1px)" : "1rem 1.25rem",
         cursor: "pointer",
@@ -631,7 +631,7 @@ function SelectableCard({
             fontFamily: "'Syne', sans-serif",
             fontWeight: 700,
             fontSize: "1rem",
-            color: "#F0F0F5",
+            color: "var(--c-text)",
           }}
         >
           {title}
@@ -641,7 +641,7 @@ function SelectableCard({
             fontFamily: "'DM Sans', sans-serif",
             fontWeight: 400,
             fontSize: "0.8rem",
-            color: "#5A5A8A",
+            color: "var(--c-text-2)",
           }}
         >
           {desc}
@@ -653,7 +653,7 @@ function SelectableCard({
             position: "absolute",
             top: 10,
             right: 12,
-            color: "#FF6B2B",
+            color: "var(--c-primary)",
             fontSize: "0.95rem",
             fontWeight: 700,
           }}
@@ -683,8 +683,8 @@ function PrimaryButton({
       style={{
         width: "100%",
         marginTop: "1.8rem",
-        background: disabled ? "#3a2a22" : "#FF6B2B",
-        color: disabled ? "#7a6358" : "#0B0B12",
+        background: disabled ? "var(--c-disabled-bg)" : "var(--c-primary)",
+        color: disabled ? "var(--c-disabled-text)" : "var(--c-surface)",
         border: "none",
         borderRadius: 99,
         padding: "1rem 1.4rem",
@@ -692,7 +692,7 @@ function PrimaryButton({
         fontWeight: 700,
         fontSize: "0.98rem",
         cursor: disabled ? "not-allowed" : "pointer",
-        boxShadow: disabled ? "none" : "0 8px 24px -10px rgba(255,107,43,0.55)",
+        boxShadow: disabled ? "none" : "0 8px 24px -10px rgb(var(--c-primary-rgb) / 0.55)",
         transition: "all 160ms ease",
       }}
     >
@@ -708,7 +708,7 @@ function StepLabel({ children }: { children: React.ReactNode }) {
         fontFamily: "'DM Sans', sans-serif",
         fontWeight: 400,
         fontSize: "0.76rem",
-        color: "#5A5A8A",
+        color: "var(--c-text-2)",
         textAlign: "center",
         marginBottom: "0.7rem",
       }}
@@ -723,7 +723,7 @@ function StepLabel({ children }: { children: React.ReactNode }) {
 const shellStyle: React.CSSProperties = {
   minHeight: "100dvh",
   background: BG,
-  color: "#F0F0F5",
+  color: "var(--c-text)",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -735,7 +735,7 @@ const h1Style: React.CSSProperties = {
   fontFamily: "'Syne', sans-serif",
   fontWeight: 800,
   fontSize: "1.6rem",
-  color: "#F0F0F5",
+  color: "var(--c-text)",
   textAlign: "center",
   margin: 0,
 };
@@ -744,7 +744,7 @@ const subtitleStyle: React.CSSProperties = {
   fontFamily: "'DM Sans', sans-serif",
   fontWeight: 400,
   fontSize: "0.92rem",
-  color: "#5A5A8A",
+  color: "var(--c-text-2)",
   textAlign: "center",
   marginTop: "0.75rem",
   lineHeight: 1.5,
@@ -764,7 +764,7 @@ const questionStyle: React.CSSProperties = {
   fontFamily: "'Syne', sans-serif",
   fontWeight: 800,
   fontSize: "1.5rem",
-  color: "#F0F0F5",
+  color: "var(--c-text)",
   textAlign: "center",
   margin: 0,
   lineHeight: 1.25,
@@ -774,7 +774,7 @@ const helperStyle: React.CSSProperties = {
   fontFamily: "'DM Sans', sans-serif",
   fontWeight: 400,
   fontSize: "0.76rem",
-  color: "#5A5A8A",
+  color: "var(--c-text-2)",
   textAlign: "center",
 };
 
