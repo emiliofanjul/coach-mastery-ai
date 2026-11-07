@@ -11,7 +11,13 @@ import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 export const Route = createFileRoute("/nodo/$nodeId")({
   component: NodoCardsPage,
   head: () => ({
-    meta: [{ title: "Tarjetas — Closer" }],
+    meta: [{ title: "Tarjetas — Closer" },
+      {"name": "description", "content": "Aprende cada técnica de ventas con las tarjetas de Closer."},
+      {"property": "og:title", "content": "Tarjetas — Closer"},
+      {"property": "og:description", "content": "Aprende cada técnica de ventas con las tarjetas de Closer."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
+    ],
   }),
 });
 

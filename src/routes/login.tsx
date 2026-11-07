@@ -13,6 +13,10 @@ export const Route = createFileRoute("/login")({
     meta: [
       { title: "Iniciar sesión — Closer" },
       { name: "description", content: "Vuelve a tu entrenamiento de ventas." },
+      {"property": "og:title", "content": "Iniciar sesión — Closer"},
+      {"property": "og:description", "content": "Vuelve a tu entrenamiento de ventas."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: LoginScreen,

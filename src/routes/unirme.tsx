@@ -9,7 +9,13 @@ export const Route = createFileRoute("/unirme")({
   validateSearch: (s: Record<string, unknown>) => ({
     codigo: typeof s.codigo === "string" ? s.codigo : "",
   }),
-  head: () => ({ meta: [{ title: "Únete a tu equipo — Closer" }] }),
+  head: () => ({ meta: [{ title: "Únete a tu equipo — Closer" },
+      {"name": "description", "content": "Accede al entrenamiento de ventas de tu equipo en Closer."},
+      {"property": "og:title", "content": "Únete a tu equipo — Closer"},
+      {"property": "og:description", "content": "Accede al entrenamiento de ventas de tu equipo en Closer."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
+    ] }),
   component: Unirme,
 });
 

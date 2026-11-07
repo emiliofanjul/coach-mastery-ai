@@ -11,7 +11,13 @@ import { setNodeCompletionSignal } from "@/lib/node-completion";
 
 export const Route = createFileRoute("/nodo/$nodeId/quiz")({
   component: NodoQuizPage,
-  head: () => ({ meta: [{ title: "Quiz — Closer" }] }),
+  head: () => ({ meta: [{ title: "Quiz — Closer" },
+      {"name": "description", "content": "Comprueba lo aprendido en tu entrenamiento de ventas con Closer."},
+      {"property": "og:title", "content": "Quiz — Closer"},
+      {"property": "og:description", "content": "Comprueba lo aprendido en tu entrenamiento de ventas con Closer."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
+    ] }),
 });
 
 type Letter = "A" | "B" | "C" | "D";

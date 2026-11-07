@@ -27,6 +27,10 @@ export const Route = createFileRoute("/signup")({
     meta: [
       { title: "Crea tu cuenta — Closer" },
       { name: "description", content: "Empieza a entrenar con Closer." },
+      {"property": "og:title", "content": "Crea tu cuenta — Closer"},
+      {"property": "og:description", "content": "Empieza a entrenar con Closer."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: SignupScreen,

@@ -33,6 +33,10 @@ export const Route = createFileRoute("/mi-empresa")({
         content:
           "Edita el conocimiento que tu Closer usa para entrenar a tu equipo: productos, cliente típico, objeciones, argumentos y restricciones.",
       },
+      {"property": "og:title", "content": "Mi Empresa — Closer"},
+      {"property": "og:description", "content": "Edita el conocimiento que tu Closer usa para entrenar a tu equipo: productos, cliente típico, objeciones, argumentos y restricciones."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
     ],
   }),
   component: MiEmpresaPage,

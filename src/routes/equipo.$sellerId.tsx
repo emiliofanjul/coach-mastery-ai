@@ -18,7 +18,13 @@ type CoachRec = {
 };
 
 export const Route = createFileRoute("/equipo/$sellerId")({
-  head: () => ({ meta: [{ title: "Vendedor — Closer" }] }),
+  head: () => ({ meta: [{ title: "Vendedor — Closer" },
+      {"name": "description", "content": "Progreso y prácticas del vendedor en Closer."},
+      {"property": "og:title", "content": "Vendedor — Closer"},
+      {"property": "og:description", "content": "Progreso y prácticas del vendedor en Closer."},
+      {"property": "og:type", "content": "website"},
+      {"name": "twitter:card", "content": "summary"},
+    ] }),
   component: SellerDetailPage,
 });
 
