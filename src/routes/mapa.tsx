@@ -531,7 +531,10 @@ function MapaPage() {
                       const my = (y1 + y2) / 2;
                       const path = `M ${x1} ${y1} C ${x1} ${my} ${x2} ${my} ${x2} ${y2}`;
                       const recorrido = computeStatus(prev) === "completed" && computeStatus(node) !== "locked";
-                      const isAnimLine = !!animSignal && prev.id === animSignal.nodeId && node.id === animNextNodeId;
+                      // 151-C: el camino se anima solo si esta práctica abrió el siguiente nodo. Antes se encendía
+                      // también al fallar (y se apagaba enseguida), como si lo hubieras pasado.
+                      const isAnimLine = !!animSignal && prev.id === animSignal.nodeId && node.id === animNextNodeId
+                        && animSignal.desbloqueoAhora !== false && computeStatus(node) !== "locked";
                       const naranjaFijo = recorrido && !isAnimLine;
                       const naranjaAnimado = isAnimLine && animPhase >= 5;
                       return (

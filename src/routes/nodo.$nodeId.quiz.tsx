@@ -219,6 +219,7 @@ function NodoQuizPage() {
         stars: newStars as 1 | 2 | 3,
         isReplay: wasCompleted,
         improved,
+        desbloqueoAhora: !wasCompleted,
       });
 
       navigate({ to: "/mapa" });

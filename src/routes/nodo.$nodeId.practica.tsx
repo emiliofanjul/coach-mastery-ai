@@ -1926,11 +1926,19 @@ function PracticaPage() {
                 void sendToCloser(t);
               }}
               onPlayAgentAudio={(txt: string) => { void playTTS(txt, { force: true }); }}
+              onListoDemo={() => {
+                stopAudio();
+                stopRecognition();
+                setIDoDemoDone(false);
+                setPhase("transition");
+              }}
 
             />
 
 
-            {phase === "i_do" && iDoDemoDone && (
+            {/* En voz, «Listo, ahora yo» va dentro de la pantalla, en el lugar del micrófono (151-C).
+                Aquí queda solo para el modo texto. */}
+            {phase === "i_do" && iDoDemoDone && inputMode === "text" && (
               <div
                 style={{
                   position: "fixed",
@@ -2359,6 +2367,8 @@ function PracticaPage() {
                 stars: bestStars as 1 | 2 | 3,
                 isReplay: previousStars > 0,
                 improved: stars > previousStars,
+                // 151-C: el camino al siguiente nodo solo se ilumina si esta práctica lo desbloqueó.
+                desbloqueoAhora: unlocks && existingProgress?.status !== "done",
               });
               navigate({ to: "/mapa" });
             }}
@@ -2557,6 +2567,7 @@ function VoicePhase({
   transcript,
   onTextSubmit,
   onPlayAgentAudio,
+  onListoDemo,
 }: {
   /** La tarjeta "Tu cliente": se muestra al empezar el turno del vendedor y desaparece cuando habla. */
   fichaCliente?: FichaVisible | null;
@@ -2584,6 +2595,8 @@ function VoicePhase({
   transcript: { role: string; content: string }[];
   onTextSubmit: (txt: string) => void;
   onPlayAgentAudio: (txt: string) => void;
+  /** Al terminar la demostración: pasar al turno del vendedor. */
+  onListoDemo?: () => void;
 }) {
   const isIDo = currentPhase === "i_do";
 
@@ -2749,7 +2762,7 @@ function VoicePhase({
                 style={{
                   flex: 1, resize: "none", padding: "10px 14px", borderRadius: 14,
                   background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)",
-                  color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.4,
+                  color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.4,
                   outline: "none",
                 }}
               />
@@ -2818,7 +2831,20 @@ function VoicePhase({
           </div>
 
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", paddingTop: "min(30px, 3.2dvh)", paddingBottom: "calc(8px + env(safe-area-inset-bottom))", display: "flex", flexDirection: "column", alignItems: "center", gap: "min(12px, 1.4dvh)" }}>
-            {!iDoDemoDone && !iDoPassive && (
+            {/* 151-C: el lugar del micrófono siempre ocupa lo mismo (96 px), con o sin micrófono, para que la
+                franja no se mueva cuando termina la demostración y aparece «Listo, ahora yo». */}
+            {isIDo && (iDoDemoDone || iDoPassive) ? (
+              <>
+                <div style={{ height: 96, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {iDoDemoDone && onListoDemo && (
+                    <button type="button" onClick={onListoDemo} style={estiloBoton("principal")}>Listo, ahora yo</button>
+                  )}
+                </div>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)", textAlign: "center", minHeight: 20 }}>
+                  {iDoDemoDone ? "Ahora te toca a ti con el cliente." : "Escucha cómo lo hace Closer."}
+                </div>
+              </>
+            ) : (
               <>
                 <BotonMicrofono
                   estado={isUserListening ? "grabando" : teTocaHablar ? "te_toca" : "apagado"}
@@ -2831,9 +2857,12 @@ function VoicePhase({
                 </div>
               </>
             )}
-            {!(isIDo && iDoDemoDone) && (
-              <button type="button" onClick={onReplay} style={{ ...estiloBoton("texto"), height: 36, color: "var(--c-disabled-text)", fontSize: 14 }}>Reiniciar práctica</button>
-            )}
+            <button
+              type="button"
+              onClick={onReplay}
+              disabled={isIDo && iDoDemoDone}
+              style={{ ...estiloBoton("texto"), height: 36, color: "var(--c-disabled-text)", fontSize: 14, visibility: isIDo && iDoDemoDone ? "hidden" : "visible" }}
+            >Reiniciar práctica</button>
           </div>
         </>
       )}

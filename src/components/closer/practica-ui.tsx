@@ -369,8 +369,24 @@ export function BotonMicrofono({
   etiqueta: string;
   onClick: () => void;
 }) {
-  const grabando = estado === "grabando";
-  const toca = estado === "te_toca";
+  // 151-C: al tocar para enviar, el micrófono pasaba de rojo a naranja un instante antes de apagarse
+  // (entre que se cierra tu turno y empieza a pensar el cliente). Al salir de «grabando», el naranja
+  // espera 400 ms: si en ese tiempo el cliente empieza, se va directo a apagado.
+  const [retener, setRetener] = useState(false);
+  const [anterior, setAnterior] = useState(estado);
+  if (anterior !== estado) {
+    setAnterior(estado);
+    if (anterior === "grabando" && estado === "te_toca") setRetener(true);
+    else if (estado !== "te_toca") setRetener(false);
+  }
+  useEffect(() => {
+    if (!retener) return;
+    const t = setTimeout(() => setRetener(false), 400);
+    return () => clearTimeout(t);
+  }, [retener]);
+  const visible = retener && estado === "te_toca" ? "apagado" : estado;
+  const grabando = visible === "grabando";
+  const toca = visible === "te_toca";
   const fondo: CSSProperties = grabando
     ? { background: "var(--c-danger)" }
     : toca
@@ -397,7 +413,7 @@ export function BotonMicrofono({
       <button
         type="button"
         onClick={onClick}
-        disabled={estado === "apagado"}
+        disabled={visible === "apagado"}
         aria-label={etiqueta}
         className={toca ? "practica-mic-invita" : undefined}
         style={{
@@ -409,7 +425,7 @@ export function BotonMicrofono({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          cursor: estado === "apagado" ? "default" : "pointer",
+          cursor: visible === "apagado" ? "default" : "pointer",
           transition: "background 200ms ease",
           WebkitTapHighlightColor: "transparent",
           padding: 0,
@@ -471,7 +487,8 @@ export function AnilloCalificacion({ calificacion, tam = 172 }: { calificacion: 
         <circle cx="78" cy="78" r={r} fill="none" stroke="var(--c-primary)" strokeWidth="7" strokeLinecap="round" strokeDasharray={largo} strokeDashoffset={largo * (1 - valor / 100)} />
       </svg>
       <div aria-hidden style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: Math.round(tam * 0.256), lineHeight: 1, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>{valor}</span>
+        {/* Syne es ancha: con tres cifras («100») el número se achica para dejar aire dentro del anillo (151-C). */}
+        <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: Math.round(tam * (Math.round(calificacion) >= 100 ? 0.19 : 0.22)), lineHeight: 1, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums", color: "var(--c-text)" }}>{valor}</span>
       </div>
     </div>
   );

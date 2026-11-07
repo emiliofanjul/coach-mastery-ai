@@ -176,12 +176,13 @@ export function CoachBubble({ hidden = false, context, sellerId }: CoachBubblePr
               className="flex items-center gap-2 px-4 py-3 border-t border-border bg-surface-elevated"
               onSubmit={handleSubmit}
             >
+              {/* 16 px: con menos, el iPhone hace zoom al escribir (151-C). */}
               <input
                 type="text"
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Escribe tu pregunta..."
-                className="flex-1 h-11 rounded-full bg-input border border-border px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex-1 h-11 rounded-full bg-input border border-border px-4 text-[16px] focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <Button
                 type="submit"
