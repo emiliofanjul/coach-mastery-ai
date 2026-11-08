@@ -8,7 +8,7 @@ import { conReintentos, registrarFallaApp } from "@/lib/guardado-practica";
 import { iniciarTurnoVoz, desbloquearContextoAudio, GrabacionSesion, UMBRAL_VOZ, ErrorTokenVoz, type ControlTurno } from "@/lib/voz/turno-voz";
 import { sesionFresca } from "@/lib/sesion-viva";
 import { avisoDeFallaVoz, avisoDeArranque } from "@/lib/voz/avisos-voz";
-import { resolverTipoCliente, lineaDelCliente, contextoDelCliente, fichaRespaldoVisible, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
+import { resolverTipoCliente, lineaDelCliente, contextoDelCliente, nombreVisible, fichaRespaldoVisible, LLAMADO_A_LA_ACCION, type FichaVisible } from "@/lib/cliente-practica";
 import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -2007,10 +2007,10 @@ function PracticaPage() {
                   <div style={{ fontFamily: "Syne, sans-serif", fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--c-primary)", marginBottom: 10 }}>Tu cliente</div>
                   {fichaCliente ? (
                     <>
-                      <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 22, color: "var(--c-text)", lineHeight: 1.2 }}>{fichaCliente.nombre}</div>
+                      <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 22, color: "var(--c-text)", lineHeight: 1.2 }}>{nombreVisible(fichaCliente)}</div>
                       <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.65)", marginBottom: 12 }}>{fichaCliente.negocio}</div>
                       <div style={{ display: "inline-block", fontFamily: "DM Sans, sans-serif", fontSize: 12, fontWeight: 700, color: "var(--c-bg)", background: fichaCliente.tipo === "nuevo" ? "var(--c-client-soft)" : "var(--c-gold)", borderRadius: 99, padding: "4px 10px", marginBottom: 10 }}>
-                        {fichaCliente.tipo === "nuevo" ? "Cliente nuevo" : "Cliente recurrente"}
+                        {fichaCliente.tipo === "nuevo" ? "Primera visita" : "Cliente recurrente"}
                       </div>
                       <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 15, color: "rgb(var(--c-text-rgb) / 0.85)", lineHeight: 1.5 }}>{lineaDelCliente(fichaCliente)}</div>
                       {contextoDelCliente(fichaCliente).map((t) => (
@@ -2060,7 +2060,7 @@ function PracticaPage() {
             worldId={nodeData?.world_id ?? 0}
             nodeId={nodeId}
             yaLoHabiaPasado={yaLoHabiaPasado}
-            nombreCliente={fichaCliente?.nombre ?? null}
+            nombreCliente={fichaCliente ? nombreVisible(fichaCliente) : null}
             esReto={nodeData?.node_type === "boss" || nodeData?.is_boss === true}
             sessionId={sessionCorrelationIdRef.current}
             practiceScript={nodeData?.practice_script ?? null}
@@ -2406,7 +2406,7 @@ function VoicePhase({
   // La franja de lo que se dice (Fase 4): lo último que se dijo, o lo que vas diciendo mientras grabas.
   const ultimo = [...transcript].reverse().find((m) => (m.role === "user" || m.role === "assistant") && m.content?.trim());
   const ultimoEsCliente = !!ultimo && ultimo.role === "assistant" && !isIDo && etiquetaAsistente(ultimo.content, closerMsgs) === "Cliente";
-  const nombreCliente = cliente?.nombre ?? "Tu cliente";
+  const nombreCliente = cliente ? nombreVisible(cliente) : "Tu cliente";
   const franja: { quien: string; color: string; texto: string } | null = isUserListening && interimTranscript
     ? { quien: isIDo ? "Tú, como cliente" : "Tú", color: "var(--c-primary)", texto: interimTranscript }
     : ultimo
@@ -2449,7 +2449,7 @@ function VoicePhase({
   const pista = !guiaActiva
     ? null
     : pasoGuia === 0
-      ? `Toca y saluda a ${cliente?.nombre ?? "tu cliente"} como si llegaras a visitarlo.`
+      ? `Toca y saluda a ${cliente?.tipo === "recurrente" ? cliente.nombre : "tu cliente"} como si llegaras a visitarlo.`
       : pasoGuia === 1
         ? "Habla con calma. Cuando termines, toca otra vez para enviar."
         : "Escúchalo. Cuando termine, te toca a ti.";
@@ -2495,7 +2495,7 @@ function VoicePhase({
       {fichaCliente && (
         <div style={{ border: "1px solid rgb(var(--c-primary-rgb) / 0.35)", background: "rgb(var(--c-primary-rgb) / 0.07)", borderRadius: 14, padding: "12px 14px", marginBottom: 12 }}>
           <div style={{ fontFamily: "Syne, sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--c-primary)", marginBottom: 4 }}>Tu cliente</div>
-          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, color: "var(--c-text)" }}>{fichaCliente.nombre} · {fichaCliente.negocio}</div>
+          <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 16, color: "var(--c-text)" }}>{nombreVisible(fichaCliente)} · {fichaCliente.negocio}</div>
           <div style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgb(var(--c-text-rgb) / 0.8)", marginTop: 2 }}>{lineaDelCliente(fichaCliente)}</div>
           {contextoDelCliente(fichaCliente).map((t) => (
             <div key={t} style={{ fontFamily: "DM Sans, sans-serif", fontSize: 14, color: "rgb(var(--c-text-rgb) / 0.8)", marginTop: 2 }}>• {t}</div>
@@ -2629,8 +2629,9 @@ function VoicePhase({
               <EscenarioCloser hablando={isAgentSpeaking} rol={isIDo ? (iDoPassive ? "Demuestra como vendedor" : "Hace de vendedor; tú, de cliente") : "Tu coach"} />
             ) : (
               <EscenarioCliente
-                nombre={cliente.nombre}
-                detalle={`${cliente.negocio} · ${cliente.tipo === "nuevo" ? "cliente nuevo" : "cliente recurrente"}`}
+                nombre={nombreVisible(cliente)}
+                sinNombre={cliente.tipo === "nuevo"}
+                detalle={`${cliente.negocio} · ${cliente.tipo === "nuevo" ? "primera visita" : "cliente recurrente"}`}
                 hablando={isAgentSpeaking && ultimoEsCliente}
                 atenuado={isUserListening}
                 pensando={isProcessing && !isAgentSpeaking}

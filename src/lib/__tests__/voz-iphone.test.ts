@@ -26,7 +26,8 @@ describe("Un solo reproductor, desbloqueado con el primer toque", () => {
 describe("La guía y el cierre dicen la verdad", () => {
   it("el vendedor empieza la práctica", () => {
     // Mensaje 154: lo dice la primera pista bajo el micrófono («Toca y saluda a … como si llegaras a visitarlo»).
-    expect(ui).toMatch(/Toca y saluda a \$\{cliente\?\.nombre \?\? "tu cliente"\} como si llegaras a visitarlo\./);
+    // Mensaje 160: al cliente nuevo no le sabes el nombre; al recurrente, sí.
+    expect(ui).toMatch(/Toca y saluda a \$\{cliente\?\.tipo === "recurrente" \? cliente\.nombre : "tu cliente"\} como si llegaras a visitarlo\./);
     expect(ui).not.toMatch(/Closer habla primero/);
   });
   it("'Ejecución limpia' solo si la nota lo respalda", () => {

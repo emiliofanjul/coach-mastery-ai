@@ -85,8 +85,10 @@ export function GiroPersonal({
   const opciones = propia === "negativos" ? propuestas?.negativos ?? null : propia === "restricciones" ? propuestas?.restricciones ?? null : undefined;
 
   return (
-    <div style={{ minHeight: "100dvh", boxSizing: "border-box", display: "flex", flexDirection: "column", padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) 0", background: "var(--c-bg)", color: "var(--c-text)" }}>
-      <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", flex: 1, display: "flex", flexDirection: "column" }}>
+    // Mensaje 160: vive dentro de la práctica, que ocupa la pantalla fija y no se desliza. Esta pantalla es su
+    // propio espacio con scroll (antes no se podía bajar a las opciones de abajo en un teléfono).
+    <div style={{ flex: 1, minHeight: 0, height: "100dvh", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", background: "var(--c-bg)", color: "var(--c-text)" }}>
+      <div style={{ minHeight: "100%", boxSizing: "border-box", width: "100%", maxWidth: 560, margin: "0 auto", padding: "max(20px, env(safe-area-inset-top)) var(--m-pantalla) 0", display: "flex", flexDirection: "column" }}>
         {paso === 0 && (
           <>
             <div style={{ height: 44, display: "flex", alignItems: "center" }}>
