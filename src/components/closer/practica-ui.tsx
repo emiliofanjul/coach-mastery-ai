@@ -221,8 +221,11 @@ export function EscenarioCliente({
   atenuado,
   estado,
   pensando,
+  sinNombre = false,
 }: {
   nombre: string;
+  /** Cliente nuevo: no sabes cómo se llama; en lugar de iniciales, una silueta. */
+  sinNombre?: boolean;
   detalle: string;
   hablando: boolean;
   atenuado: boolean;
@@ -248,7 +251,14 @@ export function EscenarioCliente({
             transition: "opacity 400ms ease",
           }}
         >
-          <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "min(44px, 5.6dvh)", letterSpacing: "-0.02em", color: "var(--c-text)", lineHeight: 1 }}>{inicialesDe(nombre)}</span>
+          {sinNombre ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--c-text)" strokeWidth="1.6" strokeLinecap="round" aria-hidden style={{ width: "46%", height: "46%", opacity: 0.9 }}>
+              <circle cx="12" cy="8.5" r="4" />
+              <path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6" />
+            </svg>
+          ) : (
+            <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "min(44px, 5.6dvh)", letterSpacing: "-0.02em", color: "var(--c-text)", lineHeight: 1 }}>{inicialesDe(nombre)}</span>
+          )}
         </div>
       </div>
       <div style={{ textAlign: "center" }}>

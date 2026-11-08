@@ -21,9 +21,17 @@ export function resolverTipoCliente(nodo: unknown, empresa: unknown, azar: numbe
 export interface FichaVisible { tipo: TipoCliente; nombre: string; negocio: string; ya_te_compra?: string; ultima_visita?: string; su_pedido?: string; algo_personal?: string }
 
 /** La línea de la tarjeta. Nunca revela lo que el cliente le compra a otro: eso se descubre. */
+/**
+ * Cómo se le nombra en pantalla (nov-2026, Emilio): a un cliente nuevo no le sabes el nombre, como en la
+ * calle; si se lo preguntas, te lo dice. Al recurrente sí lo conoces.
+ */
+export function nombreVisible(f: Pick<FichaVisible, "tipo" | "nombre">): string {
+  return f.tipo === "nuevo" ? "Cliente nuevo" : f.nombre;
+}
+
 export function lineaDelCliente(f: FichaVisible): string {
   return f.tipo === "nuevo"
-    ? "Cliente nuevo: es la primera vez que lo visitas."
+    ? "Es la primera vez que lo visitas y no sabes cómo se llama. Es quien decide la compra: el dueño o el encargado de compras."
     : `Cliente recurrente: ya te compra ${f.ya_te_compra ?? "sus productos de siempre"}. Tu última visita fue ${f.ultima_visita ?? "hace poco"}.`;
 }
 
