@@ -22,6 +22,10 @@ export const Route = createFileRoute("/tu-negocio")({
     meta: [
       { title: "Tu negocio — Closer" },
       { name: "description", content: "Lo que le has contado a Closer de tu negocio, para que tu cliente de práctica se parezca al tuyo." },
+      { property: "og:title", content: "Tu negocio — Closer" },
+      { property: "og:description", content: "Lo que le has contado a Closer de tu negocio, para que tu cliente de práctica se parezca al tuyo." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: TuNegocio,
