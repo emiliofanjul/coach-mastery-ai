@@ -112,7 +112,10 @@ NO inventes historial de pedidos, productos específicos, ni contexto que el ven
 Reacciona SOLO a lo que el vendedor diga en esta conversación.`;
   }
   if (f.tipo === "nuevo") {
-    return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Es la PRIMERA vez que este vendedor te visita: no lo conoces ni a él ni a su empresa. Nunca hables de "lo de siempre", de "la vez pasada" ni de una visita anterior.
+    // Nov-2026 (Emilio): como en la calle, el vendedor no sabe cómo se llama un cliente nuevo; lo sabe si se lo
+    // pregunta. Para practicar el ciclo completo se asume que hablas con quien decide (dueño o encargado de
+    // compras). Conseguir al que decide (un contacto, una cita) es otro cierre que todavía no se practica.
+    return `TU PERSONAJE: ${f.nombre}, ${f.negocio}. Eres el dueño o el encargado de compras: tú decides qué se compra en tu negocio. Es la PRIMERA vez que este vendedor te visita: no lo conoces ni a él ni a su empresa, y él tampoco sabe cómo te llamas. Si te pregunta tu nombre, se lo dices con naturalidad; si no, no lo menciones tú. Nunca hables de "lo de siempre", de "la vez pasada" ni de una visita anterior.
 NO inventes historial de pedidos ni contexto que el vendedor no haya mencionado. Reacciona SOLO a lo que diga en esta conversación.
 ${PRECEDENCIA_FICHA}`;
   }
@@ -124,7 +127,7 @@ ${PRECEDENCIA_FICHA}`;
 /** Lo que recibe el evaluador (y el auditor): los hechos del cliente que SÍ existen. */
 export function bloqueEvaluador(f: FichaCliente | null): string {
   if (!f || f.tipo === "nuevo") {
-    return `CLIENTE DE ESTA PRÁCTICA: nuevo${f ? ` (${f.nombre}, ${f.negocio})` : ""}. Es la primera visita: ningún consejo puede citar una visita anterior. Si un criterio habla de "lo que ya le vende" o "su pedido de siempre", léelo como "lo que el cliente ya pidió hoy".`;
+    return `CLIENTE DE ESTA PRÁCTICA: nuevo${f ? ` (${f.negocio}; es quien decide la compra: el dueño o el encargado de compras)` : ""}. Es la primera visita: ningún consejo puede citar una visita anterior. El vendedor NO sabe el nombre del cliente: no usarlo nunca es un error, y solo lo puede usar si el cliente se lo dijo en esta conversación. Si un criterio habla de "lo que ya le vende" o "su pedido de siempre", léelo como "lo que el cliente ya pidió hoy".`;
   }
   return `CLIENTE DE ESTA PRÁCTICA: RECURRENTE — ${f.nombre}, ${f.negocio}. Hechos que SÍ existen y el vendedor conoce: ya le compra ${f.ya_te_compra}; última visita ${f.ultima_visita}${f.su_pedido ? `; normalmente le pide ${f.su_pedido}` : ""}${f.algo_personal ? `; algo personal que el vendedor ya sabe: ${f.algo_personal}` : ""}.${f.le_compra_a_otro ? ` (Oculto para el vendedor: ${f.le_compra_a_otro} se lo compra a otro proveedor.)` : ""}
 Recordar un hecho de esta lista es legítimo y es el escalón 3 de la especificidad. Retomar con interés genuino lo personal que ya sabe de él (FORMS) es hacer CPR. Cualquier recuerdo que NO esté en esta lista es inventado.`;
