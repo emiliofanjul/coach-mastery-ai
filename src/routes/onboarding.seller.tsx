@@ -55,6 +55,8 @@ function SellerOnboarding() {
   const [welcomeMsg, setWelcomeMsg] = useState<string>("");
   const [expectativa, setExpectativa] = useState<string>("");
   const [fade, setFade] = useState(true);
+  // Mensaje 158: quien entrena por su cuenta no tiene manager: la bienvenida no se lo promete.
+  const [esPersonal, setEsPersonal] = useState(false);
 
   // Verificar auth + cargar seller
   useEffect(() => {
@@ -71,20 +73,30 @@ function SellerOnboarding() {
         .eq("id", session.user.id)
         .single();
       if (!active) return;
-      if (!profile || profile.role !== "vendedor") {
+      if (!profile) {
         navigate({ to: "/" });
         return;
       }
       if (profile.full_name) setName(profile.full_name.split(" ")[0] ?? "");
+      let personal = false;
       if (profile.company_id) {
         setCompanyId(profile.company_id);
         const { data: comp } = await supabase
           .from("companies")
-          .select("name")
+          .select("name, is_personal")
           .eq("id", profile.company_id)
           .single();
         if (comp) setCompanyName(comp.name);
+        personal = comp?.is_personal === true;
       }
+      // Mensaje 158: quien entrena por su cuenta es «manager» de su empresa personal, y esta pantalla lo
+      // mandaba al mapa: nunca veía la bienvenida. Pasan los vendedores y las cuentas personales.
+      if (profile.role !== "vendedor" && !personal) {
+        navigate({ to: "/" });
+        return;
+      }
+      if (!active) return;
+      setEsPersonal(personal);
       const { data: seller } = await supabase
         .from("sellers")
         .select("id, onboarding_completed, full_name")
@@ -216,7 +228,7 @@ function SellerOnboarding() {
           transition: "opacity 200ms ease, transform 200ms ease",
         }}
       >
-        {step === 0 && <Welcome onNext={() => goto(1)} />}
+        {step === 0 && <Welcome esPersonal={esPersonal} onNext={() => goto(1)} />}
         {step >= 1 && step <= 3 && (
           <EncabezadoPreguntas paso={step} total={3} onRegresar={step > 1 ? () => goto(step - 1) : () => goto(0)} />
         )}
@@ -241,6 +253,7 @@ function SellerOnboarding() {
             onPick={setChallenge}
             audioConsent={audioConsent}
             setAudioConsent={setAudioConsent}
+            esPersonal={esPersonal}
             onNext={() => {
               if (experience && challenge) handleSubmitFinal(experience, challenge);
             }}
@@ -264,7 +277,7 @@ function SellerOnboarding() {
 
 /* ---------- Pantallas (mensaje 154: la bienvenida nueva) ---------- */
 
-function Welcome({ onNext }: { onNext: () => void }) {
+function Welcome({ onNext, esPersonal }: { onNext: () => void; esPersonal: boolean }) {
   return (
     <>
       <div style={{ paddingTop: 12 }}><Marca /></div>
@@ -278,7 +291,11 @@ function Welcome({ onNext }: { onNext: () => void }) {
         <FilaIcono icono="libro" titulo="Un sistema completo" texto="De la entrada al cierre, no consejos sueltos." />
         <FilaIcono icono="microfono" titulo="Práctica de verdad" texto="Hablas con un cliente que te contesta, como en una visita." />
         <FilaIcono icono="mejora" titulo="Una calificación que no adivina" texto="Con reglas claras para cada técnica, no opiniones." />
-        <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y puede escuchar tus prácticas para ayudarte." />
+        {esPersonal ? (
+          <FilaIcono icono="vuelta" titulo="Hecho para tus clientes" texto="Le cuentas a Closer qué vendes, y tus clientes de práctica se parecen a los tuyos." />
+        ) : (
+          <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y puede escuchar tus prácticas para ayudarte." />
+        )}
       </div>
       <Abajo>
         <button type="button" onClick={onNext} style={estiloBoton("principal")}>Empezar mi entrenamiento</button>
@@ -376,12 +393,14 @@ function ChallengeStep({
   onPick,
   audioConsent,
   setAudioConsent,
+  esPersonal,
   onNext,
 }: {
   value: Challenge | null;
   onPick: (v: Challenge) => void;
   audioConsent: boolean;
   setAudioConsent: (v: boolean) => void;
+  esPersonal: boolean;
   onNext: () => void;
 }) {
   return (
@@ -401,7 +420,9 @@ function ChallengeStep({
       </div>
       <div style={{ marginTop: 18 }}>
         <Casilla marcada={audioConsent} onCambiar={setAudioConsent}>
-          Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz. Tu manager puede escucharlas para ayudarte a mejorar.
+          {esPersonal
+            ? "Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz."
+            : "Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz. Tu manager puede escucharlas para ayudarte a mejorar."}
         </Casilla>
       </div>
       {value && !audioConsent && (

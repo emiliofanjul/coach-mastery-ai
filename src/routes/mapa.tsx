@@ -206,7 +206,7 @@ function MapaPage() {
         restSelect<World[]>("worlds?select=*&order=order_index.asc", accessToken),
         restSelect<NodeRow[]>("nodes?select=id,world_id,name,description,order_index,is_boss,difficulty_level,nombre_corto,minutos_estimados,node_type&order=order_index.asc", accessToken),
         restSelect<Array<NonNullable<typeof seller>>>(
-          `sellers?select=id,current_world,current_node,map_tutorial_completed&profile_id=eq.${encodeURIComponent(userId)}&limit=1`,
+          `sellers?select=id,current_world,current_node,map_tutorial_completed,onboarding_completed&profile_id=eq.${encodeURIComponent(userId)}&limit=1`,
           accessToken,
         ),
       ]);
@@ -216,6 +216,17 @@ function MapaPage() {
 
       setWorlds(w ?? []);
       setNodes(n ?? []);
+
+      // Mensaje 158: quien no ha hecho la bienvenida (p. ej. cerró la app a la mitad, o una cuenta personal
+      // que antes se la saltaba) va a ella. Una vez por sesión, para que nunca haya un ir y venir.
+      if (s && (s as { onboarding_completed?: boolean }).onboarding_completed === false) {
+        let yaFue = false;
+        try { yaFue = window.sessionStorage.getItem("closer_a_bienvenida") === "1"; window.sessionStorage.setItem("closer_a_bienvenida", "1"); } catch { /* sin almacenamiento: no se redirige */ yaFue = true; }
+        if (!yaFue) {
+          navigate({ to: "/onboarding/seller", replace: true });
+          return;
+        }
+      }
 
       if (s) {
         if (!alive) return;
