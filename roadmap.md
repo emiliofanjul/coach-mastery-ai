@@ -1,8 +1,9 @@
 # Roadmap
 
 - [x] Mensaje 158: Paso 0, 1164/1164 en 96 archivos, MD5 mapa y tres entregas exactos; consulta inicial completada.
-- [ ] Mensaje 158: SQL exacto y consulta posterior; instalar una vez y retirar entregas.
-- [ ] Mensaje 158: 1167/1167, comprobaciones automáticas y mapa con sesión Emilio sin redirección ni errores; publicar.
+- [x] Mensaje 158: SQL exacto MD5 62ef656808a61b6306403a5698df8ae5 y chequeo final sin error; consulta posterior: dos personales con bienvenida pendiente, 15 de equipo intactas; instalador una vez, tres huellas finales exactas y entregas retiradas.
+- [x] Mensaje 158: 1167/1167 en 96 archivos; build automático OK; sesión Emilio en /mapa, 49 nodos y activo 4.2, sin redirección ni errores de página.
+- [ ] Mensaje 158: solicitar publicación tras comprobaciones finales.
 - [ ] Mensaje 158: bienvenida personal completa: Emilio prueba con cuenta nueva; no crear cuentas.
 
 - [x] Mensaje 156: Paso 0, 1150/1150 en 95 archivos, MD5 práctica exacto y consulta personal: manager, 1 cuenta; entregas con MD5 exactos.
