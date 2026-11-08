@@ -29,7 +29,9 @@ describe("La grabación es obligatoria", () => {
   it("no se puede seguir sin aceptarla, y se dice por qué", () => {
     expect(onboarding).toContain("disabled={!value || !audioConsent}");
     // Mensaje 155: el mismo porqué, en palabras más directas.
-    expect(onboarding).toContain("Sin grabación no se puede practicar con voz.");
+    // Mensaje 159: el porqué, en palabras aún más simples (y el aviso si no la marca).
+    expect(onboarding).toContain("Así puedo practicar con mi voz");
+    expect(onboarding).toContain("sin grabación no se puede practicar con voz.");
     expect(onboarding).not.toContain("Puedes cambiar esto después.");
   });
 });

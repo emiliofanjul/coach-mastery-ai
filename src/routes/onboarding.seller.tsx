@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { generateSellerWelcome } from "@/utils/seller-onboarding.functions";
 import { estiloBoton } from "@/components/closer/piezas";
-import { Marca, FilaIcono, Opcion, Casilla, EncabezadoPreguntas, Icono, IconoNivel, estiloTitulo, estiloTexto, estiloEtiqueta, type ICONOS } from "@/components/closer/bienvenida-ui";
+import { Marca, FilaIcono, Opcion, Casilla, EncabezadoPreguntas, Icono, IconoNivel, PasoBienvenida, estiloTitulo, estiloTexto, estiloEtiqueta, type ICONOS } from "@/components/closer/bienvenida-ui";
 
 export const Route = createFileRoute("/onboarding/seller")({
   head: () => ({
@@ -31,10 +31,10 @@ const EXPERIENCE_OPTS: Array<{ id: Experience; nivel: 1 | 2 | 3; title: string; 
 ];
 
 const CHALLENGE_OPTS: Array<{ id: Challenge; icono: keyof typeof ICONOS; title: string; desc: string }> = [
-  { id: "cierre", icono: "meta", title: "Cerrar la venta", desc: "Al final, el cliente no se decide" },
-  { id: "objeciones", icono: "escudo", title: "Responder objeciones", desc: "No sé qué decir cuando me dicen que no" },
-  { id: "prospeccion", icono: "puerta", title: "Conseguir clientes nuevos", desc: "Me cuesta entrar a negocios que no me conocen" },
-  { id: "retencion", icono: "vuelta", title: "Que me sigan comprando", desc: "Mis clientes se van con la competencia" },
+  { id: "cierre", icono: "meta", title: "Cerrar más ventas", desc: "Que al final el cliente diga que sí" },
+  { id: "objeciones", icono: "escudo", title: "Responder objeciones", desc: "Saber qué decir cuando te dicen que no" },
+  { id: "prospeccion", icono: "puerta", title: "Conseguir clientes nuevos", desc: "Entrar a negocios que no te conocen" },
+  { id: "retencion", icono: "vuelta", title: "Que te sigan comprando", desc: "Que tus clientes no se vayan con otro" },
 ];
 
 function SellerOnboarding() {
@@ -267,7 +267,7 @@ function SellerOnboarding() {
             message={welcomeMsg}
             expectativa={expectativa}
             onRetry={() => experience && challenge && handleSubmitFinal(experience, challenge)}
-            onContinue={() => navigate({ to: "/onboarding/map-intro" })}
+            onContinue={() => navigate({ to: "/onboarding/map-intro", search: { bienvenida: 1 } })}
           />
         )}
       </div>
@@ -283,22 +283,21 @@ function Welcome({ onNext, esPersonal }: { onNext: () => void; esPersonal: boole
       <div style={{ paddingTop: 12 }}><Marca /></div>
       {/* Mensaje 155 (Emilio, 7-nov): la pantalla que ven todos es un statement: por qué Closer es distinto.
           «Ha generado millones» lo confirmó Emilio como un hecho comprobado del sistema de ventas de Closer. */}
-      <h1 style={{ ...estiloTitulo, fontSize: "clamp(26px, 3.8dvh, 32px)", marginTop: "min(36px, 3dvh)" }}>Entrena con un sistema de ventas que ha generado millones.</h1>
-      <p style={{ ...estiloTexto, marginTop: 14 }}>
-        Closer es tu entrenador personal: aprendes el sistema, lo practicas en voz alta y te califica como un entrenador experto.
-      </p>
+      <PasoBienvenida paso={1} style={{ marginTop: "min(32px, 3dvh)" }} />
+      <h1 style={{ ...estiloTitulo, fontSize: "clamp(26px, 3.8dvh, 32px)", marginTop: 8 }}>Entrena con el sistema de ventas que ha generado millones</h1>
+      <p style={{ ...estiloTexto, marginTop: 12 }}>En 2 minutos empiezas a entrenar.</p>
       <div style={{ marginTop: "min(32px, 3.6dvh)", display: "flex", flexDirection: "column", gap: "min(20px, 2.4dvh)" }}>
-        <FilaIcono icono="libro" titulo="Un sistema completo" texto="De la entrada al cierre, no consejos sueltos." />
-        <FilaIcono icono="microfono" titulo="Práctica de verdad" texto="Hablas con un cliente que te contesta, como en una visita." />
-        <FilaIcono icono="mejora" titulo="Una calificación que no adivina" texto="Con reglas claras para cada técnica, no opiniones." />
+        <FilaIcono icono="libro" titulo="Un sistema probado" texto="Lo crearon expertos que venden y entrenan equipos en la calle." />
+        <FilaIcono icono="microfono" titulo="Practicas hablando" texto="Un cliente te contesta, como en una visita real." />
+        <FilaIcono icono="mejora" titulo="Te califica como un experto" texto="Sabes qué hiciste bien y qué cambiar." />
         {esPersonal ? (
-          <FilaIcono icono="vuelta" titulo="Hecho para tus clientes" texto="Le cuentas a Closer qué vendes, y tus clientes de práctica se parecen a los tuyos." />
+          <FilaIcono icono="vuelta" titulo="Clientes como los tuyos" texto="Se parecen a los clientes que tú visitas." />
         ) : (
-          <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y puede escuchar tus prácticas para ayudarte." />
+          <FilaIcono icono="equipo" titulo="Tu manager te acompaña" texto="Ve tu avance y te ayuda a mejorar." />
         )}
       </div>
       <Abajo>
-        <button type="button" onClick={onNext} style={estiloBoton("principal")}>Empezar mi entrenamiento</button>
+        <button type="button" onClick={onNext} style={estiloBoton("principal")}>Empezar</button>
       </Abajo>
     </>
   );
@@ -316,8 +315,9 @@ function NameStep({
   const valid = name.trim().length >= 2;
   return (
     <>
-      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Cómo te llamas?</h1>
-      <p style={{ ...estiloTexto, fontSize: 16, color: "var(--c-text-2)", marginTop: 10 }}>Así te vamos a llamar en Closer.</p>
+      <PasoBienvenida paso={2} style={{ marginTop: 28 }} />
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 8 }}>¿Cómo te llamas?</h1>
+      <p style={{ ...estiloTexto, fontSize: 16, color: "var(--c-text-2)", marginTop: 10 }}>Así te va a llamar tu entrenador.</p>
       <input
         type="text"
         autoFocus
@@ -368,7 +368,8 @@ function ExperienceStep({
   const nombre = name.trim().split(" ")[0];
   return (
     <>
-      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>{nombre ? `¿Cuánto tiempo llevas en ventas, ${nombre}?` : "¿Cuánto tiempo llevas en ventas?"}</h1>
+      <PasoBienvenida paso={2} style={{ marginTop: 28 }} />
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 8 }}>{nombre ? `¿Cuánto tiempo llevas en ventas, ${nombre}?` : "¿Cuánto tiempo llevas en ventas?"}</h1>
       <div role="radiogroup" style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 10 }}>
         {EXPERIENCE_OPTS.map((opt) => (
           <Opcion
@@ -405,7 +406,8 @@ function ChallengeStep({
 }) {
   return (
     <>
-      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 40 }}>¿Qué se te dificulta más?</h1>
+      <PasoBienvenida paso={2} style={{ marginTop: 28 }} />
+      <h1 style={{ ...estiloTitulo, fontSize: 28, marginTop: 8 }}>¿Qué quieres mejorar primero?</h1>
       <div role="radiogroup" style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10 }}>
         {CHALLENGE_OPTS.map((opt) => (
           <Opcion
@@ -421,13 +423,13 @@ function ChallengeStep({
       <div style={{ marginTop: 18 }}>
         <Casilla marcada={audioConsent} onCambiar={setAudioConsent}>
           {esPersonal
-            ? "Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz."
-            : "Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz. Tu manager puede escucharlas para ayudarte a mejorar."}
+            ? "Acepto que se graben mis prácticas. Así puedo practicar con mi voz."
+            : "Acepto que se graben mis prácticas. Así puedo practicar con mi voz, y mi manager puede escucharlas para ayudarme."}
         </Casilla>
       </div>
       {value && !audioConsent && (
         <p style={{ margin: "10px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45, color: "var(--c-gold)" }}>
-          Para seguir, marca la casilla: sin grabación no se puede practicar.
+          Marca la casilla para seguir: sin grabación no se puede practicar con voz.
         </p>
       )}
       {/* Mensaje 123: aceptar la grabación es obligatorio (antes dejaba seguir sin aceptarla). */}
@@ -459,7 +461,7 @@ function PersonalMessage({
   return (
     <>
       <div style={{ paddingTop: 12 }}><Marca /></div>
-      <div style={{ ...estiloEtiqueta, marginTop: 36 }}>Tu plan</div>
+      <PasoBienvenida paso={3} style={{ marginTop: 36 }} />
       <h1 style={{ ...estiloTitulo, fontSize: 32, marginTop: 8 }}>{nombre ? `Hola, ${nombre}.` : "Hola."}</h1>
       {loading && (
         <p aria-live="polite" style={{ ...estiloTexto, marginTop: 16, color: "var(--c-text-2)" }}>Closer está preparando tu plan…</p>
@@ -480,7 +482,7 @@ function PersonalMessage({
             </div>
           )}
           <Abajo>
-            <button type="button" onClick={onContinue} style={estiloBoton("principal")}>Ver cómo funciona</button>
+            <button type="button" onClick={onContinue} style={estiloBoton("principal")}>Continuar</button>
           </Abajo>
         </>
       )}

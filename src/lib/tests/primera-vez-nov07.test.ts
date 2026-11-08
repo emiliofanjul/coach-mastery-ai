@@ -15,20 +15,20 @@ describe("El globo «Empieza aquí»", () => {
   it("en el primer nodo de hoy (1.0, teoría): dice que es teoría y que la voz llega en el tercero (1.2)", () => {
     expect(snap[0].id).toBe("1.0");
     expect(textoGuiaMapa(mapa, 0, true)).toBe(
-      "Tu primer nodo es de teoría: tarjetas y un quiz. Toma 3 minutos. Tu primera práctica con voz es el tercer nodo.",
+      "Teoría corta: 3 minutos. En el tercer nodo practicas con tu primer cliente.",
     );
   });
   it("un nodo con práctica lo dice", () => {
     expect(textoGuiaMapa([{ node_type: "skill_drill", minutos_estimados: 5 }], 0, false)).toBe(
-      "Este nodo termina con una práctica con voz. Toma 5 minutos.",
+      "Aquí practicas con un cliente. Toma 5 minutos.",
     );
   });
   it("si la práctica es el que sigue, o está más lejos, lo dice sin ordinales raros", () => {
     const t = (tipos: string[], i: number, nuevo: boolean) =>
       textoGuiaMapa(tipos.map((node_type) => ({ node_type, minutos_estimados: null })), i, nuevo);
-    expect(t(["knowledge", "skill_drill"], 0, false)).toBe("Este nodo es de teoría: tarjetas y un quiz. Tu siguiente práctica con voz es el siguiente nodo.");
-    expect(t(["skill_drill", "knowledge", "knowledge", "knowledge", "boss"], 1, false)).toBe("Este nodo es de teoría: tarjetas y un quiz. Tu siguiente práctica con voz llega en 3 nodos.");
-    expect(t(["knowledge"], 0, true)).toBe("Tu primer nodo es de teoría: tarjetas y un quiz.");
+    expect(t(["knowledge", "skill_drill"], 0, false)).toBe("Teoría corta: tarjetas y un quiz. En el siguiente nodo practicas con un cliente.");
+    expect(t(["skill_drill", "knowledge", "knowledge", "knowledge", "boss"], 1, false)).toBe("Teoría corta: tarjetas y un quiz. En 3 nodos practicas con un cliente.");
+    expect(t(["knowledge"], 0, true)).toBe("Teoría corta: tarjetas y un quiz.");
   });
   it("el mapa pide node_type para poder decirlo", () => {
     const m = fs.readFileSync(path.resolve(__dirname, "../../routes/mapa.tsx"), "utf8");
