@@ -66,7 +66,7 @@ function TuNegocio() {
       <AppHeader title="Tu negocio" />
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "4px var(--m-pantalla) calc(40px + env(safe-area-inset-bottom))" }}>
         <p style={{ ...estiloTexto, marginTop: 4 }}>
-          Entre más le cuentes a Closer, más se parece tu cliente de práctica a los tuyos: su negocio, lo que te compra, cómo te habla y lo que te dice. Puedes cambiarlo cuando quieras.
+          Entre más le cuentes a Closer, más se parecen tus clientes de práctica a los tuyos. Cámbialo cuando quieras.
         </p>
         {aviso && (
           <p role="status" style={{ margin: "16px 0 0", padding: "12px 14px", borderRadius: 14, background: "rgb(var(--c-success-rgb) / 0.08)", border: "1px solid rgb(var(--c-success-rgb) / 0.35)", fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: "var(--c-text)" }}>

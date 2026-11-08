@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { estiloBoton, Estrella } from "@/components/closer/piezas";
-import { Icono, estiloTitulo, estiloTexto, estiloEtiqueta } from "@/components/closer/bienvenida-ui";
+import { Icono, PasoBienvenida, estiloTitulo, estiloTexto, estiloEtiqueta } from "@/components/closer/bienvenida-ui";
 
 /**
  * «Así funciona» (mensaje 154, nov-2026). Reemplaza el recorrido viejo (un mapa que ya no es así, un video
@@ -22,44 +22,50 @@ export const Route = createFileRoute("/onboarding/map-intro")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  // Mensaje 159: ?bienvenida=1 cuando viene de la bienvenida (es su paso 4 de 4); desde el menú, sin paso.
+  validateSearch: (s: Record<string, unknown>): { bienvenida?: number } => (s.bienvenida ? { bienvenida: 1 } : {}),
   component: AsiFunciona,
 });
 
 // Mensaje 155 (Emilio, 7-nov): la historia explica cómo funciona y POR QUÉ funciona, y el impulso sube:
 // por qué funciona (el sistema) → aprende → practica → la calificación (por qué es distinta a un chat de IA)
 // → qué esperar (los 2 primeros nodos son teoría: quien llega por la voz no se lleva una sorpresa).
+// Mensaje 159 (Emilio): pocas palabras, fáciles para cualquiera, y cada línea suma valor. Se asume que viene a
+// entrenar («vas a…»). Primero lo que hace especial a Closer; al final, cuándo llega su primera práctica.
 const PASOS: Array<{ paso: string; titulo: string; texto: string }> = [
   {
-    paso: "Por qué funciona",
-    titulo: "Un sistema, no consejos sueltos",
-    texto: "Toda venta pasa por los mismos 6 pasos. Closer te entrena en cada uno, en orden, con un sistema creado por entrenadores con años vendiendo en la calle y formando equipos de venta.",
+    paso: "Lo que hace especial a Closer",
+    titulo: "Un sistema que ya ha generado millones",
+    texto: "Lo crearon expertos que venden y entrenan equipos de venta en la calle. Ahora lo vas a dominar tú, paso a paso.",
   },
   {
-    paso: "1 · Aprende",
+    paso: "1 · Aprendes",
     titulo: "Una técnica a la vez",
-    texto: "Cada nodo de tu mapa enseña una técnica: tarjetas cortas, con ejemplos de cómo decirla bien y cómo no, y un quiz de 3 preguntas.",
+    texto: "Tarjetas cortas, con ejemplos de cómo decirlo bien y cómo no. Al final, 3 preguntas para asegurarte.",
   },
   {
-    paso: "2 · Practica",
-    titulo: "En voz alta, como en la calle",
-    texto: "Lo que no practicas en voz alta no te sale en la visita. Aquí le hablas a un cliente que te contesta. Si te equivocas, lo intentas otra vez.",
+    paso: "2 · Practicas",
+    titulo: "Hablas con un cliente que te contesta",
+    texto: "Como en una visita real. Cuando llegues con tu cliente de verdad, ya lo practicaste.",
   },
   {
-    paso: "3 · Mejora",
-    titulo: "Una calificación que no adivina",
-    texto: "Un chat de IA te da su opinión. Closer te califica contra el sistema, con reglas claras para cada técnica, y te dice qué cambiar. Nunca te califica algo que no te ha enseñado.",
+    paso: "3 · Mejoras",
+    titulo: "Te califica como un experto",
+    texto: "Con las reglas del sistema, no con opiniones como un chat de IA. Y solo te califica lo que ya te enseñó.",
   },
+  // Por qué el mapa va en orden, para todos (Emilio, 159), con la doctrina (Cerebro 1.2 y tarjetas del 1.0):
+  // toda venta sigue los 6 pasos en línea recta, cada paso prepara el siguiente, y cada paso es un mundo del mapa.
   // Los 2 primeros nodos son teoría (1.0 y 1.1, unos 7 min) y el tercero (1.2) es la primera práctica con voz.
-  // 50 de los 75 nodos tienen práctica.
   {
-    paso: "Tu camino",
-    titulo: "Empiezas con la teoría",
-    texto: "Los 2 primeros nodos son de teoría. En el tercero haces tu primera práctica con voz, en menos de 10 minutos. Desde ahí, la mayoría de los nodos terminan con una práctica.",
+    paso: "Tu mapa",
+    titulo: "Un mundo por cada paso de la venta",
+    texto: "Toda venta sigue estos 6 pasos en línea recta, y cada uno prepara el siguiente: sin descubrimiento, no sabes qué ofrecer. Por eso tu mapa va en orden. En el tercer nodo ya practicas con tu primer cliente.",
   },
 ];
 
 function AsiFunciona() {
   const navigate = useNavigate();
+  const { bienvenida } = Route.useSearch();
   const [listo, setListo] = useState(false);
   const [i, setI] = useState(0);
   const toque = useRef<number | null>(null);
@@ -110,7 +116,8 @@ function AsiFunciona() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", flex: 1, display: "flex", flexDirection: "column" }}>
-        <div style={{ height: 44, display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+        <div style={{ height: 44, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          {bienvenida ? <PasoBienvenida paso={4} /> : <span />}
           {!ultimo && (
             <button
               type="button"
@@ -143,7 +150,7 @@ function AsiFunciona() {
             {i === 1 && <MuestraAprende />}
             {i === 2 && <MuestraPractica />}
             {i === 3 && <MuestraMejora />}
-            {i === 4 && <MuestraCamino />}
+            {i === 4 && <MuestraMapa />}
           </div>
         </div>
 
@@ -161,7 +168,7 @@ function AsiFunciona() {
             ))}
           </div>
           <button type="button" onClick={siguiente} style={estiloBoton("principal")}>
-            {ultimo ? "Ir a mi mapa" : "Siguiente"}
+            {ultimo ? (bienvenida ? "Empezar a entrenar" : "Ir a mi mapa") : "Siguiente"}
           </button>
         </div>
       </div>
@@ -194,14 +201,21 @@ function Tarjeta({ children, borde }: { children: ReactNode; borde?: boolean }) 
 }
 
 /** Los 6 pasos de la venta del Cerebro (los mismos que enseña el primer nodo). */
+/** Lo que respalda al sistema (lo que Emilio confirmó como cierto). */
 function MuestraSistema() {
-  const pasos = ["Introducción", "Historia breve", "Descubrimiento", "Presentación", "Cierre", "Consolidación"];
+  const sellos: Array<{ icono: "meta" | "equipo" | "mejora"; texto: string }> = [
+    { icono: "meta", texto: "Ha generado millones en ventas" },
+    { icono: "equipo", texto: "Creado por expertos de campo" },
+    { icono: "mejora", texto: "Probado en la calle" },
+  ];
   return (
-    <div style={{ width: 270, display: "flex", flexDirection: "column", gap: 8, fontFamily: "'DM Sans', sans-serif" }}>
-      {pasos.map((p, k) => (
-        <div key={p} style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 12px", borderRadius: 12, background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
-          <span style={{ width: 26, height: 26, flex: "none", borderRadius: 13, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 13, ...(k === 0 ? { background: "var(--c-primary)", color: "var(--c-bg)" } : { background: "var(--c-elevated)", color: "var(--c-text-soft)" }) }}>{k + 1}</span>
-          <span style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>{p}</span>
+    <div style={{ width: 270, display: "flex", flexDirection: "column", gap: 10, fontFamily: "'DM Sans', sans-serif" }}>
+      {sellos.map((x) => (
+        <div key={x.texto} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 16, background: "var(--c-surface)", border: "1px solid var(--c-border)" }}>
+          <span style={{ width: 40, height: 40, flex: "none", borderRadius: "var(--r-icono)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgb(var(--c-primary-rgb) / 0.12)", color: "var(--c-primary)" }}>
+            <Icono nombre={x.icono} />
+          </span>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "var(--c-text)" }}>{x.texto}</span>
         </div>
       ))}
     </div>
@@ -266,47 +280,35 @@ function MuestraMejora() {
         <Estrella ganada={false} tam={22} />
       </div>
       <Tarjeta borde>
-        <div style={{ fontSize: 14, lineHeight: 1.4, color: "var(--c-text)" }}>Antes de presentar, pregúntale qué es lo que más se le mueve.</div>
+        <div style={{ fontSize: 14, lineHeight: 1.4, color: "var(--c-text)" }}>Antes de presentar, pregúntale qué productos tienen más rotación en su negocio.</div>
       </Tarjeta>
     </div>
   );
 }
 
-function MuestraCamino() {
-  const nodos = [
-    { n: "Nodo 1", tipo: "Teoría", voz: false },
-    { n: "Nodo 2", tipo: "Teoría", voz: false },
-    { n: "Nodo 3", tipo: "Tu primera práctica con voz", voz: true },
-  ];
+/** El mapa: un mundo por cada uno de los 6 pasos (tarjeta 2 del nodo 1.0), en línea recta, y el examen final. */
+function MuestraMapa() {
+  const mundos = ["Introducción", "Historia breve", "Descubrimiento", "Presentación", "Cierre", "Consolidación", "Examen final"];
   return (
     <div style={{ width: 270, display: "flex", flexDirection: "column", fontFamily: "'DM Sans', sans-serif" }}>
-      {nodos.map((x, k) => (
-        <div key={x.n} style={{ display: "flex", gap: 14 }}>
-          <div style={{ width: 52, display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <span
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: 26,
-                boxSizing: "border-box",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                ...(x.voz
-                  ? { background: "linear-gradient(180deg, var(--c-play-claro) 0%, var(--c-play-centro) 50%, var(--c-play-hondo) 100%)", boxShadow: "inset 0 -3px 0 rgb(var(--c-play-sombra-rgb) / 0.35), inset 0 2px 0 rgb(255 255 255 / 0.25)", color: "#FFFFFF" }
-                  : { background: "var(--c-elevated)", border: "2px solid var(--c-border-strong)", color: "var(--c-text-soft)" }),
-              }}
-            >
-              <Icono nombre={x.voz ? "microfono" : "libro"} tam={22} />
-            </span>
-            {k < nodos.length - 1 && <span style={{ width: 3, height: 22, borderRadius: 2, background: "var(--c-border-strong)" }} />}
+      {mundos.map((m, k) => {
+        const primero = k === 0;
+        const examen = k === mundos.length - 1;
+        return (
+          <div key={m} style={{ display: "flex", gap: 12 }}>
+            <div style={{ width: 30, display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <span style={{ width: 30, height: 30, borderRadius: 15, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 13, ...(primero ? { background: "var(--c-primary)", color: "var(--c-bg)" } : { background: "var(--c-elevated)", border: "2px solid var(--c-border-strong)", color: "var(--c-text-soft)" }) }}>
+                {examen ? <Icono nombre="meta" tam={15} /> : k + 1}
+              </span>
+              {!examen && <span style={{ width: 3, height: 8, borderRadius: 2, background: "var(--c-border-strong)" }} />}
+            </div>
+            <div style={{ height: 30, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: examen ? "var(--c-text-soft)" : "var(--c-text)" }}>{m}</span>
+              {primero && <span style={{ fontSize: 12, fontWeight: 700, color: "var(--c-primary)" }}>Empiezas aquí</span>}
+            </div>
           </div>
-          <div style={{ paddingTop: 7, display: "flex", flexDirection: "column", gap: 2 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-text-2)" }}>{x.n}</span>
-            <span style={{ fontSize: 15, fontWeight: 600, color: x.voz ? "var(--c-primary)" : "var(--c-text)" }}>{x.tipo}</span>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -141,3 +141,17 @@ export function EncabezadoPreguntas({ paso, total, onRegresar }: { paso: number;
     </div>
   );
 }
+
+/**
+ * Dónde va en la bienvenida (mensaje 159, Emilio): que siempre sepa en qué parte está y cuánto falta para
+ * practicar. Son 4 partes; al terminar la 4ª, ya está en su mapa.
+ */
+export const PASOS_BIENVENIDA = ["Bienvenida", "Tu perfil", "Tu plan", "Cómo entrenas"] as const;
+
+export function PasoBienvenida({ paso, style }: { paso: 1 | 2 | 3 | 4; style?: CSSProperties }) {
+  return (
+    <div style={{ ...estiloEtiqueta, ...style }}>
+      Paso {paso} de {PASOS_BIENVENIDA.length} · {PASOS_BIENVENIDA[paso - 1]}
+    </div>
+  );
+}

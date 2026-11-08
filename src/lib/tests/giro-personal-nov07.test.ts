@@ -94,7 +94,7 @@ describe("«Tu negocio»: lo ve y lo edita", () => {
   const shell = leer("src/components/app/AppShell.tsx");
   const perfil = leer("src/routes/mi-perfil.tsx");
   it("le dice que él le da forma a su cliente, y que lo puede cambiar", () => {
-    expect(pagina).toContain("Entre más le cuentes a Closer, más se parece tu cliente de práctica a los tuyos");
+    expect(pagina).toContain("Entre más le cuentes a Closer, más se parecen tus clientes de práctica a los tuyos");
     expect(pagina).toContain("Listo. Tu cliente de práctica ya usa esto desde tu siguiente práctica.");
   });
   it("lo que aún no le pide aparece con el nodo antes del cual se lo pedirá, y lo puede contestar ya", () => {

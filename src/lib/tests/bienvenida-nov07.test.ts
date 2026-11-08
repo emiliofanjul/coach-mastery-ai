@@ -20,11 +20,14 @@ describe("La bienvenida (cuatro pantallas)", () => {
   it("dice lo que Closer hace de verdad", () => {
     // Mensaje 155: palabras directas. Antes decía «Aquí no vienes a leer», y lo primero que hace es leer.
     // y la primera pantalla, que ven todos, dice por qué Closer es distinto (Emilio, 7-nov).
-    expect(seller).toContain("Entrena con un sistema de ventas que ha generado millones.");
+    expect(seller).toContain("Entrena con el sistema de ventas que ha generado millones");
+    // 159: dónde va y cuánto falta.
+    expect(seller).toContain("En 2 minutos empiezas a entrenar.");
+    expect(seller).toContain("<PasoBienvenida paso={1}");
     expect(seller).not.toContain("Aquí no vienes a leer");
     expect(seller).not.toContain("desde tu teléfono"); // Closer también se usa en la computadora
-    for (const t of ["Un sistema completo", "Práctica de verdad", "Una calificación que no adivina", "Tu manager te acompaña"]) expect(seller).toContain(t);
-    expect(seller).toContain("Ver cómo funciona");
+    for (const t of ["Un sistema probado", "Practicas hablando", "Te califica como un experto", "Tu manager te acompaña"]) expect(seller).toContain(t);
+    expect(seller).toContain('navigate({ to: "/onboarding/map-intro", search: { bienvenida: 1 } })');
   });
   it("las preguntas: barra de avance, regresar y opciones con íconos dibujados, sin emojis", () => {
     expect(seller).toContain("<EncabezadoPreguntas paso={step} total={3}");
@@ -54,10 +57,18 @@ describe("«Así funciona» (tres pantallas)", () => {
     expect(emoji.test(asi)).toBe(false);
   });
   it("aprende, practica, mejora; y termina en el mapa", () => {
-    for (const t of ["Por qué funciona", "1 · Aprende", "2 · Practica", "3 · Mejora", "Tu camino", "Saltar", "Ir a mi mapa"]) expect(asi).toContain(t);
-    expect(asi).toContain("Nunca te califica algo que no te ha enseñado.");
+    for (const t of ["Lo que hace especial a Closer", "1 · Aprendes", "2 · Practicas", "3 · Mejoras", "Tu mapa", "Saltar", "Ir a mi mapa"]) expect(asi).toContain(t);
+    expect(asi).toContain("Y solo te califica lo que ya te enseñó.");
+    // 159: desde la bienvenida es su paso 4 de 4 y termina en «Empezar a entrenar».
+    expect(asi).toContain('{bienvenida ? <PasoBienvenida paso={4} /> : <span />}');
+    expect(asi).toContain('(bienvenida ? "Empezar a entrenar" : "Ir a mi mapa")');
     // Mensaje 155: dice antes que se empieza con teoría y cuándo llega la primera práctica con voz.
-    expect(asi).toContain("En el tercero haces tu primera práctica con voz");
+    expect(asi).toContain("En el tercer nodo ya practicas con tu primer cliente.");
+    // 159: por qué todos empiezan desde la introducción, aunque ya tengan experiencia.
+    expect(asi).toContain("Un mundo por cada paso de la venta");
+    expect(asi).toContain("Toda venta sigue estos 6 pasos en línea recta, y cada uno prepara el siguiente");
+    // Los 6 pasos de la doctrina, con sus nombres, y un mundo por paso (tarjeta 2 del nodo 1.0).
+    expect(asi).toContain('const mundos = ["Introducción", "Historia breve", "Descubrimiento", "Presentación", "Cierre", "Consolidación", "Examen final"];');
     expect(asi).toContain('navigate({ to: "/mapa" })');
   });
   it("no guarda nada: la bienvenida ya marcó onboarding_completed", () => {
@@ -98,8 +109,8 @@ describe("Las cuentas personales también ven la bienvenida (158)", () => {
     expect(seller).toContain('.select("name, is_personal")');
   });
   it("sin manager, no se le promete un manager", () => {
-    expect(seller).toMatch(/esPersonal \? \(\s*<FilaIcono icono="vuelta" titulo="Hecho para tus clientes"/);
-    expect(seller).toContain('"Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz."');
+    expect(seller).toMatch(/esPersonal \? \(\s*<FilaIcono icono="vuelta" titulo="Clientes como los tuyos"/);
+    expect(seller).toContain('"Acepto que se graben mis prácticas. Así puedo practicar con mi voz."');
   });
   it("quien no ha hecho la bienvenida va a ella desde el mapa, una vez por sesión", () => {
     expect(mapaTxt).toContain("map_tutorial_completed,onboarding_completed&profile_id");

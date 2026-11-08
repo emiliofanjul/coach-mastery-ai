@@ -99,13 +99,13 @@ export function GiroPersonal({
             <p style={{ ...estiloTexto, marginTop: 14 }}>{puerta.texto}</p>
             {puerta.id === "cliente" && (
               <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 20 }}>
-                <FilaIcono icono="puerta" titulo="Su negocio" texto="Del mismo giro que tus clientes." />
-                <FilaIcono icono="libro" titulo="Tus productos" texto="Solo habla de lo que tú vendes." />
-                <FilaIcono icono="microfono" titulo="Su forma de hablar" texto="De tú o de usted, como los tuyos." />
+                <FilaIcono icono="puerta" titulo="Su negocio" texto="Como el de tus clientes." />
+                <FilaIcono icono="libro" titulo="Lo que te compra" texto="Solo lo que tú vendes." />
+                <FilaIcono icono="microfono" titulo="Cómo te habla" texto="De tú o de usted, como los tuyos." />
               </div>
             )}
             <p style={{ margin: "24px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "var(--c-text-2)" }}>
-              {total === 1 ? "Es 1 pregunta." : `Son ${total} preguntas.`} Toma un minuto, se hace una sola vez y la puedes cambiar cuando quieras en «Tu negocio».
+              {total === 1 ? "1 pregunta" : `${total} preguntas`} · menos de 1 minuto. Lo puedes cambiar en «Tu negocio».
             </p>
             <Abajo>
               <button type="button" onClick={() => setPaso(1)} style={estiloBoton("principal")}>Empezar</button>

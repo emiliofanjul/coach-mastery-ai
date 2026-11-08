@@ -14,18 +14,17 @@ const ORDINAL = ["", "primer", "segundo", "tercer", "cuarto", "quinto", "sexto",
 export const esTeoria = (n: NodoGuia) => n.node_type === "knowledge";
 
 export function textoGuiaMapa(ordenados: NodoGuia[], activo: number, esNuevo: boolean): string {
+  // Mensaje 159: frases cortas y fáciles. Qué es este nodo, cuánto toma y cuándo practica con un cliente.
   const n = ordenados[activo];
   if (!n) return "";
-  const minutos = n.minutos_estimados ? ` Toma ${n.minutos_estimados} minutos.` : "";
-  const cual = esNuevo ? "Tu primer nodo" : "Este nodo";
-  if (!esTeoria(n)) return `${cual} termina con una práctica con voz.${minutos}`;
-  let texto = `${cual} es de teoría: tarjetas y un quiz.${minutos}`;
+  const min = n.minutos_estimados ? ` ${n.minutos_estimados} minutos.` : "";
+  if (!esTeoria(n)) return `Aquí practicas con un cliente.${min ? ` Toma${min}` : ""}`;
+  let texto = `Teoría corta:${min || " tarjetas y un quiz."}`;
   const siguiente = ordenados.findIndex((x, k) => k > activo && !esTeoria(x));
   if (siguiente < 0) return texto;
-  const practica = esNuevo ? "Tu primera práctica con voz" : "Tu siguiente práctica con voz";
   const posicion = siguiente + 1; // en el mapa completo, contando desde 1
-  if (siguiente === activo + 1) texto += ` ${practica} es el siguiente nodo.`;
-  else if (esNuevo && posicion < ORDINAL.length) texto += ` ${practica} es el ${ORDINAL[posicion]} nodo.`;
-  else texto += ` ${practica} llega en ${siguiente - activo} nodos.`;
+  if (siguiente === activo + 1) texto += esNuevo ? " En el siguiente nodo practicas con tu primer cliente." : " En el siguiente nodo practicas con un cliente.";
+  else if (esNuevo && posicion < ORDINAL.length) texto += ` En el ${ORDINAL[posicion]} nodo practicas con tu primer cliente.`;
+  else texto += ` En ${siguiente - activo} nodos practicas con un cliente.`;
   return texto;
 }
