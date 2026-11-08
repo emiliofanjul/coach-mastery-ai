@@ -1,5 +1,11 @@
 # Roadmap
 
+- [x] Mensaje 158: Paso 0, 1164/1164 en 96 archivos, MD5 mapa y tres entregas exactos; consulta inicial completada.
+- [x] Mensaje 158: SQL exacto MD5 62ef656808a61b6306403a5698df8ae5 y chequeo final sin error; consulta posterior: dos personales con bienvenida pendiente, 15 de equipo intactas; instalador una vez, tres huellas finales exactas y entregas retiradas.
+- [x] Mensaje 158: 1167/1167 en 96 archivos; build automático OK; sesión Emilio en /mapa, 49 nodos y activo 4.2, sin redirección ni errores de página.
+- [x] Mensaje 158: publicación solicitada para https://closerapp.ai; despliegue final aún no confirmado, escaneos antiguos advertidos. Metadatos de compartir completados en Tu negocio; tres archivos entregados conservan MD5 exactos. Revisión de tipos separada no ejecutada; compilación automática OK.
+- [ ] Mensaje 158: bienvenida personal completa: Emilio prueba con cuenta nueva; no crear cuentas.
+
 - [x] Mensaje 156: Paso 0, 1150/1150 en 95 archivos, MD5 práctica exacto y consulta personal: manager, 1 cuenta; entregas con MD5 exactos.
 - [x] Mensaje 156: aplicar una vez: «Listo: 4 archivos, todos con su md5 esperado.»; cuatro MD5 finales exactos y entregas retiradas.
 - [x] Mensaje 156: 1156/1156 pruebas en 96 archivos, oj typecheck sin errores y build automático OK.

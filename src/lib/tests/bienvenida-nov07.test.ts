@@ -90,3 +90,20 @@ describe("La primera práctica con voz", () => {
     expect(practica).toMatch(/if \(clienteYaHablo\.current\) \{\s*setPasoGuia\(3\);/);
   });
 });
+
+describe("Las cuentas personales también ven la bienvenida (158)", () => {
+  const mapaTxt = leer("src/routes/mapa.tsx");
+  it("la bienvenida deja pasar a quien entrena por su cuenta (es «manager» de su empresa personal)", () => {
+    expect(seller).toContain('if (profile.role !== "vendedor" && !personal) {');
+    expect(seller).toContain('.select("name, is_personal")');
+  });
+  it("sin manager, no se le promete un manager", () => {
+    expect(seller).toMatch(/esPersonal \? \(\s*<FilaIcono icono="vuelta" titulo="Hecho para tus clientes"/);
+    expect(seller).toContain('"Acepto que se graben mis prácticas. Sin grabación no se puede practicar con voz."');
+  });
+  it("quien no ha hecho la bienvenida va a ella desde el mapa, una vez por sesión", () => {
+    expect(mapaTxt).toContain("map_tutorial_completed,onboarding_completed&profile_id");
+    expect(mapaTxt).toContain('navigate({ to: "/onboarding/seller", replace: true });');
+    expect(mapaTxt).toContain('window.sessionStorage.getItem("closer_a_bienvenida") === "1"');
+  });
+});
