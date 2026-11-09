@@ -71,6 +71,20 @@
       "when": 1794097938804,
       "tag": "0009_bienvenida_personal_158",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794187965831,
+      "tag": "0010_panel_practicas_162",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794187981342,
+      "tag": "0011_panel_practicas_162_fix",
+      "breakpoints": true
     }
   ]
 }

@@ -37,7 +37,7 @@ BEGIN
          coalesce(ARRAY(
            SELECT DISTINCT x FROM (
              SELECT f->>'id' AS x FROM jsonb_array_elements(CASE WHEN jsonb_typeof(ev.payload->'evaluation'->'fallas') = 'array' THEN ev.payload->'evaluation'->'fallas' ELSE '[]'::jsonb END) f
-             UNION ALL
+              UNION ALL
              SELECT jsonb_array_elements_text(CASE WHEN jsonb_typeof(ev.payload->'evaluation'->'flags_detected') = 'array' THEN ev.payload->'evaluation'->'flags_detected' ELSE '[]'::jsonb END)
            ) t WHERE x IS NOT NULL AND x <> ''
          ), '{}'),
@@ -66,7 +66,7 @@ BEGIN
     RAISE EXCEPTION 'Solo administradores de la plataforma';
   END IF;
   SELECT jsonb_build_object(
-    'id', e.id, 'created_at', e.created_at, 'node_id', e.node_id, 'payload', e.payload,
+    'id', e.id, 'created_at', e.created_at, e.node_id, e.node_id, 'payload', e.payload,
     'audio_url', e.audio_url, 'prompt_version', e.prompt_version, 'model', e.model,
     'vendedor', s.full_name, 'audio_consent', coalesce(s.audio_consent, false),
     'empresa', c.name, 'personal', coalesce(c.is_personal, false),

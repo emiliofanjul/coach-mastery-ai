@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as MiEmpresaRouteImport } from './routes/mi-empresa'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
+import { Route as PracticasRouteImport } from './routes/practicas'
 import { Route as RedRouteImport } from './routes/red'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RoleRouteImport } from './routes/role'
@@ -67,6 +68,11 @@ const MiEmpresaRoute = MiEmpresaRouteImport.update({
 const MiPerfilRoute = MiPerfilRouteImport.update({
   id: '/mi-perfil',
   path: '/mi-perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PracticasRoute = PracticasRouteImport.update({
+  id: '/practicas',
+  path: '/practicas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RedRoute = RedRouteImport.update({
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/mapa': typeof MapaRoute
   '/mi-empresa': typeof MiEmpresaRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/practicas': typeof PracticasRoute
   '/red': typeof RedRoute
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/mapa': typeof MapaRoute
   '/mi-empresa': typeof MiEmpresaRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/practicas': typeof PracticasRoute
   '/red': typeof RedRoute
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/mapa': typeof MapaRoute
   '/mi-empresa': typeof MiEmpresaRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/practicas': typeof PracticasRoute
   '/red': typeof RedRoute
   '/reset-password': typeof ResetPasswordRoute
   '/role': typeof RoleRoute
@@ -244,6 +253,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/mi-empresa'
     | '/mi-perfil'
+    | '/practicas'
     | '/red'
     | '/reset-password'
     | '/role'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/mi-empresa'
     | '/mi-perfil'
+    | '/practicas'
     | '/red'
     | '/reset-password'
     | '/role'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/mi-empresa'
     | '/mi-perfil'
+    | '/practicas'
     | '/red'
     | '/reset-password'
     | '/role'
@@ -323,6 +335,7 @@ export interface RootRouteChildren {
   MapaRoute: typeof MapaRoute
   MiEmpresaRoute: typeof MiEmpresaRoute
   MiPerfilRoute: typeof MiPerfilRoute
+  PracticasRoute: typeof PracticasRoute
   RedRoute: typeof RedRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RoleRoute: typeof RoleRoute
@@ -389,6 +402,13 @@ declare module '@tanstack/react-router' {
       path: '/mi-perfil'
       fullPath: '/mi-perfil'
       preLoaderRoute: typeof MiPerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/practicas': {
+      id: '/practicas'
+      path: '/practicas'
+      fullPath: '/practicas'
+      preLoaderRoute: typeof PracticasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/red': {
@@ -535,6 +555,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapaRoute: MapaRoute,
   MiEmpresaRoute: MiEmpresaRoute,
   MiPerfilRoute: MiPerfilRoute,
+  PracticasRoute: PracticasRoute,
   RedRoute: RedRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RoleRoute: RoleRoute,

@@ -13,7 +13,7 @@ describe("Consentimiento antes de practicar", () => {
     const pide = practica.indexOf("if (seller.audio_consent !== true) {");
     expect(pide).toBeGreaterThan(0);
     expect(pide).toBeLessThan(practica.indexOf("setSellerData(seller);"));
-    expect(practica).toContain("setPideConsentimiento({ sellerId: seller.id });");
+    expect(practica).toContain("setPideConsentimiento({ sellerId: seller.id, personal: emp?.is_personal === true });");
   });
   it("una pantalla, un botón; se guarda y se comprueba antes de seguir", () => {
     expect(practica).toContain('"Acepto que se graben mis prácticas"');

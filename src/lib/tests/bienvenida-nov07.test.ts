@@ -110,7 +110,7 @@ describe("Las cuentas personales también ven la bienvenida (158)", () => {
   });
   it("sin manager, no se le promete un manager", () => {
     expect(seller).toMatch(/esPersonal \? \(\s*<FilaIcono icono="vuelta" titulo="Clientes como los tuyos"/);
-    expect(seller).toContain('"Acepto que se graben mis prácticas. Así puedo practicar con mi voz."');
+    expect(seller).toContain('"Acepto que se graben mis prácticas. Así puedo practicar con mi voz. El equipo de Closer puede revisarlas para mejorar la app."');
   });
   it("quien no ha hecho la bienvenida va a ella desde el mapa, una vez por sesión", () => {
     expect(mapaTxt).toContain("map_tutorial_completed,onboarding_completed&profile_id");

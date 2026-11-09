@@ -2541,6 +2541,26 @@ export type Database = {
     Functions: {
       _company_prefix: { Args: { _name: string }; Returns: string }
       _gen_invite_suffix: { Args: never; Returns: string }
+      admin_practica: { Args: { _id: string }; Returns: Json }
+      admin_practicas: {
+        Args: { _desde: string; _hasta: string; _limite?: number }
+        Returns: {
+          company_id: string
+          created_at: string
+          criticas: number
+          empresa: string
+          fallas: string[]
+          id: string
+          intento: number
+          node_id: string
+          personal: boolean
+          score: number
+          seller_id: string
+          stars: number
+          tiene_audio: boolean
+          vendedor: string
+        }[]
+      }
       apply_invite_code: { Args: { _code: string }; Returns: Json }
       consume_credits: {
         Args: { _seller_id: string; _session_type: string }
@@ -2552,6 +2572,7 @@ export type Database = {
       create_team_company: { Args: { _name: string }; Returns: Json }
       current_company_id: { Args: never; Returns: string }
       current_role: { Args: never; Returns: string }
+      es_admin_plataforma: { Args: never; Returns: boolean }
       generate_company_invite: { Args: { _hours?: number }; Returns: Json }
       get_active_company_invite: { Args: never; Returns: Json }
       get_current_mastery: {
