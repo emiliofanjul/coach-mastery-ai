@@ -131,7 +131,7 @@ function PracticaPage() {
   const [sellerData, setSellerData] = useState<any>(null);
   // Mensaje 125: si el vendedor no tiene guardado que acepta la grabación, se le
   // pide una sola vez, antes de su práctica. Queda guardado por él mismo.
-  const [pideConsentimiento, setPideConsentimiento] = useState<{ sellerId: string } | null>(null);
+  const [pideConsentimiento, setPideConsentimiento] = useState<{ sellerId: string; personal: boolean } | null>(null);
   // Mensajes 156-157: quien entrena por su cuenta cuenta su negocio «justo a tiempo», antes del nodo que lo usa.
   const [pideGiro, setPideGiro] = useState<{ companyId: string; puerta: Puerta; respuestas: Record<string, string | string[]>; cerebro: unknown } | null>(null);
   const [guardandoConsentimiento, setGuardandoConsentimiento] = useState(false);
@@ -350,7 +350,11 @@ function PracticaPage() {
         return;
       }
       if (seller.audio_consent !== true) {
-        setPideConsentimiento({ sellerId: seller.id });
+        // Mensaje 162: quien entrena por su cuenta no tiene manager; no se le promete uno.
+        const emp = await restGetMaybeSingle<{ is_personal: boolean | null }>(
+          `companies?select=is_personal&id=eq.${seller.company_id}&limit=1`,
+        ).catch(() => null);
+        setPideConsentimiento({ sellerId: seller.id, personal: emp?.is_personal === true });
         return;
       }
       let node: any = null;
@@ -1849,6 +1853,7 @@ function PracticaPage() {
         {phase === "prep" && pideConsentimiento && (
           <ConsentimientoGrabacion
             key="consentimiento"
+            personal={pideConsentimiento.personal}
             guardando={guardandoConsentimiento}
             error={errorConsentimiento}
             onAceptar={async () => {
@@ -2714,11 +2719,13 @@ function VoicePhase({
 // tiene guardado que acepta la grabación, y no se vuelve a pedir.
 
 function ConsentimientoGrabacion({
+  personal,
   guardando,
   error,
   onAceptar,
   onSalir,
 }: {
+  personal: boolean;
   guardando: boolean;
   error: string | null;
   onAceptar: () => void;
@@ -2734,7 +2741,9 @@ function ConsentimientoGrabacion({
       <CloserCharacter size={96} state="normal" />
       <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: 0, color: "var(--c-text)" }}>Antes de practicar</h2>
       <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "rgb(var(--c-text-rgb) / 0.8)", maxWidth: 380, margin: 0 }}>
-        Closer funciona con tu voz. Para practicar, tus prácticas se graban: así recibes tu calificación y tu manager te puede dar mejor coaching.
+        {personal
+          ? "Closer funciona con tu voz. Para practicar, tus prácticas se graban: así recibes tu calificación. El equipo de Closer puede revisarlas para mejorar la app."
+          : "Closer funciona con tu voz. Para practicar, tus prácticas se graban: así recibes tu calificación y tu manager te puede dar mejor coaching. El equipo de Closer puede revisarlas para mejorar la app."}
       </p>
       {error && <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: RED, margin: 0 }}>{error}</p>}
       <button

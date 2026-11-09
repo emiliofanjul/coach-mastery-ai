@@ -423,8 +423,8 @@ function ChallengeStep({
       <div style={{ marginTop: 18 }}>
         <Casilla marcada={audioConsent} onCambiar={setAudioConsent}>
           {esPersonal
-            ? "Acepto que se graben mis prácticas. Así puedo practicar con mi voz."
-            : "Acepto que se graben mis prácticas. Así puedo practicar con mi voz, y mi manager puede escucharlas para ayudarme."}
+            ? "Acepto que se graben mis prácticas. Así puedo practicar con mi voz. El equipo de Closer puede revisarlas para mejorar la app."
+            : "Acepto que se graben mis prácticas. Así puedo practicar con mi voz, y mi manager puede escucharlas para ayudarme. El equipo de Closer puede revisarlas para mejorar la app."}
         </Casilla>
       </div>
       {value && !audioConsent && (

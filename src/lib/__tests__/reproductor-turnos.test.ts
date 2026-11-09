@@ -6,6 +6,8 @@ import { turnosValidos, mmss } from "../voz/turnos-audio";
 import { GrabacionSesion } from "../voz/turno-voz";
 
 const panel = readFileSync(join(process.cwd(), "src/routes/equipo.$sellerId.tsx"), "utf8");
+// Mensaje 162: el reproductor vive en su propio archivo; lo usan el manager y el panel «Prácticas».
+const reproductor = readFileSync(join(process.cwd(), "src/components/closer/reproductor-turnos.tsx"), "utf8");
 const ui = readFileSync(join(process.cwd(), "src/routes/nodo.$nodeId.practica.tsx"), "utf8");
 
 describe("la grabación guarda qué dijo el vendedor en cada turno", () => {
@@ -37,7 +39,8 @@ describe("el panel del manager", () => {
   });
   it("cada turno se escucha solo: salta al inicio y se detiene al final", () => {
     expect(panel).toMatch(/<ReproductorPorTurnos src=\{audioUrl\} turnos=\{turnosValidos\(evalBlock\.audio_turnos\)\} \/>/);
-    expect(panel).toMatch(/a\.currentTime = t\.inicio_seg;/);
-    expect(panel).toMatch(/if \(finRef\.current !== null && a\.currentTime >= finRef\.current\)/);
+    expect(panel).toContain('import { ReproductorPorTurnos } from "@/components/closer/reproductor-turnos";');
+    expect(reproductor).toMatch(/a\.currentTime = t\.inicio_seg;/);
+    expect(reproductor).toMatch(/if \(finRef\.current !== null && a\.currentTime >= finRef\.current\)/);
   });
 });
