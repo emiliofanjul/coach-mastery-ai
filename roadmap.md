@@ -1,5 +1,11 @@
 # Roadmap
 
+- [x] Mensaje 163: Paso 0, 1183/1183 pruebas en 98 archivos y cinco MD5 exactos; siete entregas verificadas sin instalar.
+- [x] Mensaje 163: línea base v3.41.1 completa el 10-nov-2026: primera corrida 144 pass, 3 fail, 5 skipped; repeticiones G57 y P7_4 pass, G60 fail nuevamente; promedio 28623 ms. Tabla e informes guardados en docs/kb/linea_base_163.{json,md}.
+- [ ] Mensaje 163: instalar cinco entregas y ejecutar instalador una vez; verificar 1207/99 y retirar siete entregas. Bloqueador: vara_ejemplos entregado introduce aserciones no nulas prohibidas por las instrucciones del entorno; corregirlas cambiaría el MD5 exacto exigido. Requiere entrega revisada con huellas nuevas; funciones y src sin cambios.
+- [ ] Mensaje 163: desplegar solo closer-voice y harness-runner; red completa v3.42.0, repetir fallas, comparación y logs.
+- [ ] Mensaje 163: publicar únicamente si cumple la regla del Paso 6; en caso contrario restaurar y desplegar las versiones originales.
+
 - [x] Mensaje 158: Paso 0, 1164/1164 en 96 archivos, MD5 mapa y tres entregas exactos; consulta inicial completada.
 - [x] Mensaje 158: SQL exacto MD5 62ef656808a61b6306403a5698df8ae5 y chequeo final sin error; consulta posterior: dos personales con bienvenida pendiente, 15 de equipo intactas; instalador una vez, tres huellas finales exactas y entregas retiradas.
 - [x] Mensaje 158: 1167/1167 en 96 archivos; build automático OK; sesión Emilio en /mapa, 49 nodos y activo 4.2, sin redirección ni errores de página.
