@@ -2899,17 +2899,6 @@ function EtiquetaPaso({ paso, habilidad }: { paso: string; habilidad?: string })
 
 function ObservationCard({ obs }: { obs: ObservationItem }) {
   const [open, setOpen] = useState(false);
-  // Mensaje 163: una observación puede venir sin mejora ni ejemplo (salió de la rúbrica, o su texto no pasó
-  // la vara del nodo). Entonces no hay nada que abrir: se muestra lo que pasó, sin flecha.
-  const hayMas = Boolean(obs.mejora?.trim() || obs.ejemplo?.trim());
-  if (!hayMas) {
-    return (
-      <div style={{ borderTop: "1px solid var(--c-elevated)", padding: "12px 18px", display: "flex", flexDirection: "column", gap: 4, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.4, color: "var(--c-text)" }}>
-        {obs.paso && <EtiquetaPaso paso={obs.paso} habilidad={obs.habilidad} />}
-        {obs.error}
-      </div>
-    );
-  }
   return (
     <div style={{ borderTop: "1px solid var(--c-elevated)" }}>
       <button
@@ -2928,7 +2917,7 @@ function ObservationCard({ obs }: { obs: ObservationItem }) {
       </button>
       {open && (
         <div style={{ padding: "0 18px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
-          {obs.mejora?.trim() && <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-primary)", fontWeight: 600 }}>{obs.mejora}</p>}
+          <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-primary)", fontWeight: 600 }}>{obs.mejora}</p>
           {obs.ejemplo && <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{obs.ejemplo}»</p>}
         </div>
       )}

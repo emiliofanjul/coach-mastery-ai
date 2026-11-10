@@ -35,8 +35,6 @@ import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta, corregirPregunta
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, presupuestoJuez, TOPE_MAXIMO_JUEZ, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, juiciosConCitasValidas, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
-import { PROMPT_VARA, HERRAMIENTA_VARA, presupuestoVara, revisionesDeRespuesta, pasarPorLaVara, type RevisionVara } from "../_shared/vara_ejemplos.ts";
-import { completarYOrdenarObservaciones } from "../_shared/observaciones_rubrica.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
 import { quienLlama, respuestaNoAutorizado, type Llamante } from "../_shared/quien_llama.ts";
@@ -593,16 +591,6 @@ async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama, ac
     if (tope >= TOPE_MAXIMO_JUEZ) throw new Error(`al juez se le acabó el tope de ${tope} tokens`);
     tope = Math.min(TOPE_MAXIMO_JUEZ, tope * 2);
   }
-}
-
-/** La misma vara (mensaje 163): lo que el coach propone decir pasa por las pruebas de las fallas del nodo. */
-async function llamarVara(apiKey: string, entrada: string, quien: QuienLlama, textos: number): Promise<RevisionVara[] | null> {
-  return revisionesDeRespuesta(await llamarModelo(apiKey, {
-    max_tokens: presupuestoVara(textos), temperature: 0, system: PROMPT_VARA,
-    messages: [{ role: "user", content: entrada }],
-    tools: [HERRAMIENTA_VARA],
-    tool_choice: { type: "tool", name: HERRAMIENTA_VARA.name },
-  }, "vara", quien));
 }
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
@@ -1494,28 +1482,6 @@ async function atender(body: ReqBody): Promise<Response> {
       if (fichaDePeticion((body as any).ficha_cliente)?.tipo !== "recurrente") {
         auditoria.recuerdos_quitados = sanearRecuerdos(evaluation, MISION_DE_RESPALDO);
       }
-      // LA MISMA VARA (mensaje 163): lo que Closer le propone decir al vendedor
-      // en este nodo —ejemplos, mejoras y misión, ya como van a salir— pasa por
-      // las pruebas de las fallas del nodo, las mismas con que se le califica.
-      // Lo que reprueba se corrige y se vuelve a medir; si no pasa, no llega.
-      // Al final de las revisiones, para medir el texto que de verdad sale.
-      // En la evaluación solo van conteos: los ids y las frases van al log (la
-      // red busca los ids de las fallas en toda la respuesta).
-      {
-        const tVara = Date.now();
-        const quienVara = { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null };
-        const vara = await pasarPorLaVara({
-          ev: evaluation,
-          guion: practice_script,
-          paso: pasoNodo ?? pasoPorMundo(node_id),
-          conversacion: fullHistory,
-          llamar: (entrada, textos) => llamarVara(apiKey, entrada, quienVara, textos),
-        });
-        const { detalle, ...conteos } = vara;
-        auditoria.vara = { ...conteos, latencia_ms: Date.now() - tVara };
-        if (vara.error) console.error("[closer-voice] la vara no pudo correr: los ejemplos de este nodo no salen", { session_id, node_id, ejemplos_quitados: vara.ejemplos_quitados });
-        if (detalle.length > 0) console.warn("[closer-voice] la misma vara: textos del coach que reprobaron una prueba del nodo", { session_id, node_id, detalle });
-      }
       (evaluation as any).auditoria = auditoria;
 
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
@@ -1573,17 +1539,6 @@ async function atender(body: ReqBody): Promise<Response> {
         evaluation.observations = (evaluation.observations ?? []).filter((o: any) => !completos.has(o?.criterio_id));
         if (evaluation.observations.length < antes) {
           console.warn("[closer-voice] observaciones sobre criterios cumplidos descartadas", { session_id, node_id, descartadas: antes - evaluation.observations.length });
-        }
-      }
-      // Mensaje 163: lo que bajó la nota se ve, y va primero. Todo criterio sin
-      // crédito completo tiene su observación (si el evaluador no la escribió,
-      // sale del motivo de su propio veredicto), y van ordenadas por los puntos
-      // que costó cada una. La pantalla muestra las tres primeras.
-      if (rubrica.valido) {
-        const { agregadas } = completarYOrdenarObservaciones(evaluation, rubrica.desglose);
-        if (agregadas.length > 0) {
-          (evaluation as any).auditoria.observaciones_de_la_rubrica = agregadas.length;
-          console.warn("[closer-voice] criterios que bajaron la nota sin observación del evaluador: se agregó la de la rúbrica", { session_id, node_id, agregadas });
         }
       }
       // Cada falla detectada, con lo que dijo el vendedor y cuánto costó: la
