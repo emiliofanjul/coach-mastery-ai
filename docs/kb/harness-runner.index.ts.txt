@@ -246,7 +246,8 @@ function evaluateCase(c: Case, response: any): CaseResult {
     for (const pat of exp.ejemplos_must_not_match) {
       let re: RegExp | null = null;
       try { re = new RegExp(String(pat), "i"); } catch { reasons.push(`patrón inválido: ${pat}`); }
-      const malo = re ? delNodo.find((e) => re!.test(e)) : undefined;
+      const patron = re;
+      const malo = patron ? delNodo.find((e) => patron.test(e)) : undefined;
       if (malo) reasons.push(`ejemplo de Closer que reprueba la vara del nodo: /${pat}/ en «${malo.slice(0, 160)}»`);
     }
   }

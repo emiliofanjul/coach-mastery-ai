@@ -192,24 +192,30 @@ export async function pasarPorLaVara(args: {
     out.ejemplos_quitados = quitarEjemplosSinVara(args.ev);
     return out;
   }
-  const reprobados = primera.filter((r) => r.conducta === "reprueba" && textos.some((t) => t.id === r.id));
+  // Cada reprobado con su texto original. Una revisión cuyo id no corresponde a ningún texto se ignora.
+  const tipoDe = new Map(textos.map((t) => [t.id, t.tipo]));
+  const textoDe = new Map(textos.map((t) => [t.id, t.texto]));
+  const reprobados = primera.filter((r) => r.conducta === "reprueba" && tipoDe.has(r.id));
   out.reprobados = reprobados.length;
   if (reprobados.length === 0) return out;
 
   // La corrección también pasa por la vara: no se da por buena sin medirla.
-  const propuestas = reprobados
-    .map((r) => ({ id: r.id, tipo: textos.find((t) => t.id === r.id)!.tipo, texto: r.corregido ?? "" }))
-    .filter((p) => p.texto && p.texto !== textos.find((t) => t.id === p.id)!.texto);
+  const propuestas: { id: string; tipo: string; texto: string }[] = [];
+  for (const r of reprobados) {
+    const texto = r.corregido ?? "";
+    if (texto && texto !== textoDe.get(r.id)) propuestas.push({ id: r.id, tipo: tipoDe.get(r.id) ?? "", texto });
+  }
   const segunda = propuestas.length > 0
     ? await conReintento(args.llamar, armarEntradaVara({ paso: args.paso, fallas, textos: propuestas, conversacion: args.conversacion }), propuestas, intentos)
     : [];
   const pasaron = new Set((segunda ?? []).filter((r) => r.conducta === "pasa").map((r) => r.id));
+  const propuestaDe = new Map(propuestas.map((p) => [p.id, p.texto]));
 
   const veredictos: VeredictoAuditor[] = reprobados.map((r) => {
-    const propuesta = propuestas.find((p) => p.id === r.id);
-    const sirve = !!propuesta && pasaron.has(r.id);
-    out.detalle.push({ id: r.id, tipo: textos.find((t) => t.id === r.id)!.tipo, falla: r.falla ?? "", frase: r.frase, por_que: r.respuesta, quedo: sirve ? "corregido" : "descartado" });
-    return { id: r.id, ok: false, viola: r.falla ? [r.falla] : [], corregido: sirve ? propuesta!.texto : null };
+    const propuesta = propuestaDe.get(r.id);
+    const corregido = propuesta !== undefined && pasaron.has(r.id) ? propuesta : null;
+    out.detalle.push({ id: r.id, tipo: tipoDe.get(r.id) ?? "", falla: r.falla ?? "", frase: r.frase, por_que: r.respuesta, quedo: corregido !== null ? "corregido" : "descartado" });
+    return { id: r.id, ok: false, viola: r.falla ? [r.falla] : [], corregido };
   });
   const r = aplicarAuditoria(args.ev, veredictos);
   out.corregidos = r.corregidos;
