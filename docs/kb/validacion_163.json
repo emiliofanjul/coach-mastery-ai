@@ -1,0 +1,2167 @@
+{
+  "fecha": "2026-11-10T20:02:10.025Z",
+  "harness_version": "v3.42.0",
+  "metodo": "Mismo runner y evaluador en vivo; sesión Emilio, respuestas completas conservadas",
+  "results": [
+    {
+      "id": "G01_sce_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G05_usuario_callado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G06_fuera_de_scope_discovery",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G40_apertura_sin_pregunta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G07_sacar_del_personaje",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G03_disculpa_inicial",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G09_scope_cubierto_corte_temprano",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G02_pitch_prematuro",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G04_sin_nombre_sin_entorno",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G08_max_turns_alcanzado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G17_turno_larguisimo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G11_actor_no_suelta_bloqueos_sin_air",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G10_energia_texto_no_evaluada",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G13a_ayuda_dentro_de_scope",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G12_groseria_del_usuario",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G15_scope_perfecto_mas_producto_al_final",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G16_transcript_vacio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G13b_ayuda_fuera_de_scope",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G18_dos_sesiones_mismo_usuario",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G21_ejecucion_limpia_sin_observaciones",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G20_json_de_salida_valido",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G19_criterios_citados_por_id",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G23_curiosidad_abierta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G14_apertura_en_ingles",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G27_buen_ice_breaker_cliente_frio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G28_especifica_suena_a_inspeccion",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_1_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G35_insiste_tras_dos_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_5_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G25_pregunta_de_cortesia_cuenta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G26_especifica_pero_plana",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G36_se_va_al_primer_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G38_no_pero_nada_mas_no_es_discutir",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G37_de_volada_no_es_permiso",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_7c_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_9_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_8_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G39_de_rapido_no_es_hacerse_menos",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G43_practica_real_2_7c_texto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_10_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G24_pitch_prematuro_sin_ejemplo_listado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_7_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_1_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G22_pregunta_hablada_sin_signo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_3_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_8_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G29_regla_de_los_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_10_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_6_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_9_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_9b_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G31_falla_critica_se_explica",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G45_vago_no_es_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G41_pregunta_sin_hueco",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G30_corte_del_director_no_es_falta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G34_identificarse_no_es_pitch",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G32_mapeo_con_pregunta_abierta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G44_sale_al_segundo_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G47_jones_vago_a_medias",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G33_intencion_en_voz_alta_no_es_pregunta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G49_jones_sostenido",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G51_escasez_sin_razon",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G48_jones_se_cae",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G46_jones_imaginado_concreto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G42_intenta_de_verdad_sin_hueco",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G54_conviccion_sin_garantia",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G50_urgencia_con_razon",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G57_balas_poco_a_poco",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G55_garantiza",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G59_promesa_sin_ancla",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G52_desglose_imaginado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G56_que_lo_pruebe",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G61_de_volada_no_es_disculpa",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G62_si_o_no_que_invita",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G58_vacia_las_balas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G53_escalon_sin_motivo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G63_pregunta_que_da_salida",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G66_historia_con_curriculum",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G60_no_le_quito_mucho",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G67_interes_de_compromiso",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G68_monologo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G65_porque_es_parte_de_la_pieza",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G64_se_encoge",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G75_opciones_no_es_interrogatorio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G72_precio_por_hechos",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G76_interrogatorio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G77_cerradas_en_capa_tres",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G70_dolor_sin_devolverlo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G79_hueco_con_jones",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G80_hueco_que_contradice",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G78_una_cerrada_suelta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G74_receta_en_diagnostico",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G82_contrato_que_deja_algo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G69_historia_que_da_vueltas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G73_nombrar_familia_no_es_receta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G81_rojo_encantador_sale_bien",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G84_presiona_no_asume",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G87_senal_contesta_y_cierra",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G85_alternativa_asumida",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G88_senal_un_beneficio_mas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G71_opinion_del_precio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G92_descuento_de_panico",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G91_descuento_a_cambio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G94_bala_ya_dicha_conectada",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G95_bala_repetida_tal_cual",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G89_llena_el_silencio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G90_contestar_no_es_llenar",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G93_una_bala_y_cierra",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G86_se_lo_mando",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G97_discute_la_objecion",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G98_responde_sin_discutir",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G100_sigue_vendiendo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G102_referido_amarrado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G106_suelta_la_pista_sin_el_dolor",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G99_siguientes_pasos_claros",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G101_festeja_de_mas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G104_argumento_segun_el_caso",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G109_bala_de_servicio_que_sirve",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_1_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G105_espejo_no_contradice_su_criterio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G107_no_que_invita",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G83_se_va_sin_averiguar",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G103_referido_en_frio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_10_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_12_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_3_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G108_proveedor_menos_sin_que_aplique",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G96_apila_balas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G111_responde_y_espera",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_11_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_16_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G110_decide_por_el",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_8_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G113_objecion_despues_de_aguantar",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G114_reabre_lo_de_siempre",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_15_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P6_3_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P6_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G112_fff_sin_bala",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_12_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P6_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G116_sin_referido",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_6_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G115_anuncia_plan_b",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P7_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P7_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G118_se_venden_mucho_es_trabajo_comercial",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G117_ejemplo_no_ensena_la_falla",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_14_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P7_0_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    }
+  ],
+  "repeticiones": [
+    {
+      "id": "G01_sce_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G05_usuario_callado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G06_fuera_de_scope_discovery",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G40_apertura_sin_pregunta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G07_sacar_del_personaje",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G03_disculpa_inicial",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G09_scope_cubierto_corte_temprano",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G02_pitch_prematuro",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G04_sin_nombre_sin_entorno",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G08_max_turns_alcanzado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G17_turno_larguisimo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G11_actor_no_suelta_bloqueos_sin_air",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G10_energia_texto_no_evaluada",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G13a_ayuda_dentro_de_scope",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G12_groseria_del_usuario",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G15_scope_perfecto_mas_producto_al_final",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G16_transcript_vacio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G13b_ayuda_fuera_de_scope",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G18_dos_sesiones_mismo_usuario",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G21_ejecucion_limpia_sin_observaciones",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G20_json_de_salida_valido",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G19_criterios_citados_por_id",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G23_curiosidad_abierta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G14_apertura_en_ingles",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G27_buen_ice_breaker_cliente_frio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G28_especifica_suena_a_inspeccion",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_1_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G35_insiste_tras_dos_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_5_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G25_pregunta_de_cortesia_cuenta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G26_especifica_pero_plana",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G36_se_va_al_primer_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G38_no_pero_nada_mas_no_es_discutir",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G37_de_volada_no_es_permiso",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_7c_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_9_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_8_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G39_de_rapido_no_es_hacerse_menos",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G43_practica_real_2_7c_texto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_10_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G24_pitch_prematuro_sin_ejemplo_listado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P2_7_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_1_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G22_pregunta_hablada_sin_signo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_3_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_8_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G29_regla_de_los_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_10_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_6_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_9_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_9b_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G31_falla_critica_se_explica",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G45_vago_no_es_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P3_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G41_pregunta_sin_hueco",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G30_corte_del_director_no_es_falta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G34_identificarse_no_es_pitch",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G32_mapeo_con_pregunta_abierta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G44_sale_al_segundo_no",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G47_jones_vago_a_medias",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G33_intencion_en_voz_alta_no_es_pregunta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G49_jones_sostenido",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G51_escasez_sin_razon",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G48_jones_se_cae",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G46_jones_imaginado_concreto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G42_intenta_de_verdad_sin_hueco",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G54_conviccion_sin_garantia",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G50_urgencia_con_razon",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G57_balas_poco_a_poco",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G55_garantiza",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G59_promesa_sin_ancla",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G52_desglose_imaginado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G56_que_lo_pruebe",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G61_de_volada_no_es_disculpa",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G62_si_o_no_que_invita",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G58_vacia_las_balas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G53_escalon_sin_motivo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G63_pregunta_que_da_salida",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G66_historia_con_curriculum",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G60_no_le_quito_mucho",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G67_interes_de_compromiso",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G68_monologo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G65_porque_es_parte_de_la_pieza",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G64_se_encoge",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G75_opciones_no_es_interrogatorio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G72_precio_por_hechos",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G76_interrogatorio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G77_cerradas_en_capa_tres",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G70_dolor_sin_devolverlo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G79_hueco_con_jones",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G80_hueco_que_contradice",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G78_una_cerrada_suelta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G74_receta_en_diagnostico",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G82_contrato_que_deja_algo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G69_historia_que_da_vueltas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G73_nombrar_familia_no_es_receta",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G81_rojo_encantador_sale_bien",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G84_presiona_no_asume",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G87_senal_contesta_y_cierra",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G85_alternativa_asumida",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G88_senal_un_beneficio_mas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G71_opinion_del_precio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G92_descuento_de_panico",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G91_descuento_a_cambio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G94_bala_ya_dicha_conectada",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G95_bala_repetida_tal_cual",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G89_llena_el_silencio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G90_contestar_no_es_llenar",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G93_una_bala_y_cierra",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G86_se_lo_mando",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G97_discute_la_objecion",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G98_responde_sin_discutir",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G100_sigue_vendiendo",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G102_referido_amarrado",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G106_suelta_la_pista_sin_el_dolor",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G99_siguientes_pasos_claros",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G101_festeja_de_mas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G104_argumento_segun_el_caso",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G109_bala_de_servicio_que_sirve",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_1_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G105_espejo_no_contradice_su_criterio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G107_no_que_invita",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G83_se_va_sin_averiguar",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G103_referido_en_frio",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_10_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_12_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_3_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G108_proveedor_menos_sin_que_aplique",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G96_apila_balas",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G111_responde_y_espera",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_11_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P4_16_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G110_decide_por_el",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_8_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G113_objecion_despues_de_aguantar",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G114_reabre_lo_de_siempre",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_15_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P6_3_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P6_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G112_fff_sin_bala",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_12_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P6_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G116_sin_referido",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_6_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G115_anuncia_plan_b",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P7_2_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P7_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G118_se_venden_mucho_es_trabajo_comercial",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "G117_ejemplo_no_ensena_la_falla",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P5_14_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    },
+    {
+      "id": "P7_0_perfecto",
+      "status": "fail",
+      "reasons": [
+        "{\"error\":\"forbidden\",\"detail\":\"solo el equipo de Closer puede correr la red de seguridad\"}"
+      ]
+    }
+  ],
+  "raws": {},
+  "fin": "2026-11-10T20:02:12.652Z"
+}
