@@ -2397,6 +2397,56 @@
       "session_ids": [
         "3454d679-511a-4358-9d9b-f5c9600a5a27"
       ]
+    },
+    {
+      "id": "G42_intenta_de_verdad_sin_hueco",
+      "status": "fail",
+      "reasons": [
+        "closer-voice error (status 502): {\"error\":\"Claude API error\",\"status\":400,\"detail\":\"{\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011CgurENDohnnfxjp5mAZrY\\\"}\"}"
+      ],
+      "session_ids": [
+        "9c1ac050-e436-49d5-9011-d3f1acac6f93"
+      ]
+    },
+    {
+      "id": "G49_jones_sostenido",
+      "status": "fail",
+      "reasons": [
+        "closer-voice error (status 502): {\"error\":\"Claude API error\",\"status\":400,\"detail\":\"{\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011CgurETxqVmvGezEh2EPkQ\\\"}\"}"
+      ],
+      "session_ids": [
+        "b3d93034-e213-490a-afe8-135d3b7cc4fa"
+      ]
+    },
+    {
+      "id": "G34_identificarse_no_es_pitch",
+      "status": "fail",
+      "reasons": [
+        "closer-voice error (status 502): {\"error\":\"Claude API error\",\"status\":400,\"detail\":\"{\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011CgurEZbvEznA997zSwMLH\\\"}\"}"
+      ],
+      "session_ids": [
+        "bec889bf-2174-4982-b005-dc6a066bd414"
+      ]
+    },
+    {
+      "id": "G50_urgencia_con_razon",
+      "status": "fail",
+      "reasons": [
+        "closer-voice error (status 502): {\"error\":\"Claude API error\",\"status\":400,\"detail\":\"{\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011CgurEf6Jy2j7HrF3EVukr\\\"}\"}"
+      ],
+      "session_ids": [
+        "cc5db6dd-9c01-4d10-92c3-2c9f3e5e70d0"
+      ]
+    },
+    {
+      "id": "G46_jones_imaginado_concreto",
+      "status": "fail",
+      "reasons": [
+        "closer-voice error (status 502): {\"error\":\"Claude API error\",\"status\":400,\"detail\":\"{\\\"type\\\":\\\"error\\\",\\\"error\\\":{\\\"type\\\":\\\"invalid_request_error\\\",\\\"message\\\":\\\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\\\"},\\\"request_id\\\":\\\"req_011CgurEkt58CtdvAfEq3Nrs\\\"}\"}"
+      ],
+      "session_ids": [
+        "e6aa6b9c-b79c-4ade-a48a-4edaba269688"
+      ]
     }
   ],
   "raws": {
@@ -6549,6 +6599,31 @@
       "error": "Claude API error",
       "status": 400,
       "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurEGBv6Ugw8Qvuz6Zup\"}"
+    },
+    "9c1ac050-e436-49d5-9011-d3f1acac6f93": {
+      "error": "Claude API error",
+      "status": 400,
+      "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurENDohnnfxjp5mAZrY\"}"
+    },
+    "b3d93034-e213-490a-afe8-135d3b7cc4fa": {
+      "error": "Claude API error",
+      "status": 400,
+      "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurETxqVmvGezEh2EPkQ\"}"
+    },
+    "bec889bf-2174-4982-b005-dc6a066bd414": {
+      "error": "Claude API error",
+      "status": 400,
+      "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurEZbvEznA997zSwMLH\"}"
+    },
+    "cc5db6dd-9c01-4d10-92c3-2c9f3e5e70d0": {
+      "error": "Claude API error",
+      "status": 400,
+      "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurEf6Jy2j7HrF3EVukr\"}"
+    },
+    "e6aa6b9c-b79c-4ade-a48a-4edaba269688": {
+      "error": "Claude API error",
+      "status": 400,
+      "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurEkt58CtdvAfEq3Nrs\"}"
     }
   }
 }
