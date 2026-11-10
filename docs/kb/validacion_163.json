@@ -6625,5 +6625,25 @@
       "status": 400,
       "detail": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgurEkt58CtdvAfEq3Nrs\"}"
     }
+  },
+  "estado": "Interrumpida por saldo insuficiente; restauración completa",
+  "tiempos_parciales": {
+    "casos_medidos": 22,
+    "promedio_ms": 38414,
+    "mas_lentos": [
+      {
+        "id": "G03_disculpa_inicial",
+        "ms": 67357
+      },
+      {
+        "id": "G12_groseria_del_usuario",
+        "ms": 55552
+      },
+      {
+        "id": "G02_pitch_prematuro",
+        "ms": 53226
+      }
+    ],
+    "sobre_90s": 0
   }
 }
