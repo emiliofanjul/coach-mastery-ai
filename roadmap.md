@@ -1,8 +1,8 @@
 # Roadmap
 
 - [x] Mensaje 163: Paso 0, 1183/1183 pruebas en 98 archivos y cinco MD5 exactos; siete entregas verificadas sin instalar.
-- [ ] Mensaje 163: línea base completa v3.41.1 (152 casos), informe y tiempos.
-- [ ] Mensaje 163: instalar cinco entregas y ejecutar instalador una vez; verificar 1207/99 y retirar siete entregas.
+- [x] Mensaje 163: línea base v3.41.1 completa el 10-nov-2026: primera corrida 144 pass, 3 fail, 5 skipped; repeticiones G57 y P7_4 pass, G60 fail nuevamente; promedio 28623 ms. Tabla e informes guardados en docs/kb/linea_base_163.{json,md}.
+- [ ] Mensaje 163: instalar cinco entregas y ejecutar instalador una vez; verificar 1207/99 y retirar siete entregas. Bloqueador: vara_ejemplos entregado introduce aserciones no nulas prohibidas por las instrucciones del entorno; corregirlas cambiaría el MD5 exacto exigido. Requiere entrega revisada con huellas nuevas; funciones y src sin cambios.
 - [ ] Mensaje 163: desplegar solo closer-voice y harness-runner; red completa v3.42.0, repetir fallas, comparación y logs.
 - [ ] Mensaje 163: publicar únicamente si cumple la regla del Paso 6; en caso contrario restaurar y desplegar las versiones originales.
 
