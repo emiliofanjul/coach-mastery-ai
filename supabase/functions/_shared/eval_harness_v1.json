@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.41.1",
+  "harness_version": "v3.42.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -6821,6 +6821,71 @@
           "insiste_tras_dos"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
+      }
+    },
+    {
+      "id": "G117_ejemplo_no_ensena_la_falla",
+      "node_id": "1.2",
+      "description": "Mensaje 163, LA MISMA VARA. Caso real (8-nov-2026): la vendedora abrió con una observación genérica y «¿qué es?». Closer le puso de ejemplo «…¿esos son los que más se mueven?»: una pregunta sobre su operación comercial, que en la apertura es la falla crítica. En el siguiente intento ella preguntó «¿se venden mucho?» y se le marcó esa falla. La calificación estuvo bien; lo que falló fue el ejemplo. Ningún ejemplo de Closer en este nodo puede preguntar por lo que el cliente vende, mueve o compra.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¿Me hubo escuchado? Hola, ¿qué tal? Buenos días, ¿cómo está? Soy Gabriela. Ay, oiga, qué bonito tiene ahí su estante este con el producto ese azul. ¿Qué es?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, gracias. Ah, esos son los limpiaparabrisas, los azules."
+        }
+      ],
+      "expected": {
+        "ejemplos_must_not_match": [
+          "los que m[aá]s se (mueven|venden|piden)",
+          "se (le |les )?venden? (mucho|bien|m[aá]s)",
+          "qu[eé] (es lo que )?m[aá]s (se )?(le |les )?(vende|mueve|piden|sale)",
+          "rotaci[oó]n",
+          "proveedor",
+          "qui[eé]n (le|les) surte"
+        ],
+        "niveles_esperados": {
+          "opening.curiosidad_abierta": "no_cumple"
+        },
+        "rationale": "Lo que Closer propone decir pasa por las mismas pruebas con que se califica al vendedor. Y se presentó con su nombre: ese criterio baja la nota y tiene que salir en las observaciones (lo revisa un chequeo universal)."
+      }
+    },
+    {
+      "id": "G118_se_venden_mucho_es_trabajo_comercial",
+      "node_id": "1.2",
+      "description": "Mensaje 163. El intento que siguió al G117: la vendedora hizo lo que el ejemplo de Closer le enseñó y preguntó «¿se venden mucho?». Preguntar por sus ventas en la apertura es trabajo comercial antes de tiempo: la falla se marca. Y el ejemplo que ahora se le da no puede volver a enseñársela.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, ¿qué tal? Buenos días. ¿Cómo está? Me da mucho gusto saludarlo. Ay, qué bonito se ve el estante este con el producto azul que tiene ahí. ¿Se venden mucho?"
+        },
+        {
+          "role": "assistant",
+          "text": "Bien, gracias. Pues ahí va, depende del mes."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pitch_prematuro"
+        ],
+        "score_range": [
+          0,
+          30
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "ejemplos_must_not_match": [
+          "los que m[aá]s se (mueven|venden|piden)",
+          "se (le |les )?venden? (mucho|bien|m[aá]s)",
+          "qu[eé] (es lo que )?m[aá]s (se )?(le |les )?(vende|mueve|piden|sale)",
+          "rotaci[oó]n",
+          "proveedor",
+          "qui[eé]n (le|les) surte"
+        ],
+        "rationale": "La calificación de este intento ya era correcta. Lo que se protege es que la corrección no repita la falla."
       }
     }
   ]

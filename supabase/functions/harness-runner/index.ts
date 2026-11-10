@@ -232,6 +232,26 @@ function evaluateCase(c: Case, response: any): CaseResult {
     }
   }
 
+  // ejemplos_must_not_match (mensaje 163, la misma vara): patrones que NO
+  // pueden aparecer en lo que Closer le pone de EJEMPLO al vendedor en este
+  // nodo (observaciones y fallas). Solo los ejemplos: son lo que el vendedor va
+  // a repetir. No se busca en toda la respuesta, porque ahí también está la
+  // cita de lo que él dijo, y una mejora puede nombrar el error para evitarlo.
+  if (Array.isArray(exp.ejemplos_must_not_match)) {
+    const delNodo: string[] = [
+      ...(Array.isArray(parsed.observations) ? parsed.observations : []),
+      ...(Array.isArray(parsed.fallas) ? parsed.fallas : []),
+      ...(Array.isArray(parsed.evidencia_flags) ? parsed.evidencia_flags : []),
+    ].map((x: any) => String(x?.ejemplo ?? "")).filter((s) => s.trim());
+    for (const pat of exp.ejemplos_must_not_match) {
+      let re: RegExp | null = null;
+      try { re = new RegExp(String(pat), "i"); } catch { reasons.push(`patrón inválido: ${pat}`); }
+      const patron = re;
+      const malo = patron ? delNodo.find((e) => patron.test(e)) : undefined;
+      if (malo) reasons.push(`ejemplo de Closer que reprueba la vara del nodo: /${pat}/ en «${malo.slice(0, 160)}»`);
+    }
+  }
+
 
   // must_not_contain / feedback_must_not_contain / must_not_include_in_response
   // (must_not_flag ya se revisó arriba, contra las fallas marcadas).
@@ -313,6 +333,11 @@ function evaluateCase(c: Case, response: any): CaseResult {
   const aud = parsed.auditoria;
   if (!aud || typeof aud !== "object") reasons.push("UNIVERSAL: el auditor del feedback no corrió");
   else if (aud.error) reasons.push("UNIVERSAL: el auditor del feedback falló (fail-open)");
+  // La misma vara (mensaje 163): lo que el coach propone decir pasó por las pruebas del nodo.
+  if (aud && typeof aud === "object") {
+    if (!aud.vara || typeof aud.vara !== "object") reasons.push("UNIVERSAL: los textos del coach no pasaron por la vara del nodo");
+    else if (aud.vara.error) reasons.push("UNIVERSAL: la vara no pudo correr (se quitaron los ejemplos)");
+  }
   // "Lo que viene después" debe citar una regla del paso del nodo.
   for (const x of Array.isArray(parsed.siguiente_nivel) ? parsed.siguiente_nivel : []) {
     if (!x || typeof x.regla_id !== "string" || !x.regla_id) { reasons.push("UNIVERSAL: 'lo que viene después' sin regla de la doctrina"); break; }
@@ -327,6 +352,18 @@ function evaluateCase(c: Case, response: any): CaseResult {
   // Un criterio que salió "cumple" no puede aparecer como error (G31, oct-2026).
   for (const o of Array.isArray(parsed.observations) ? parsed.observations : []) {
     if (nivelPorCriterio.get(String(o?.criterio_id)) === "cumple") { reasons.push(`UNIVERSAL: observación sobre ${o.criterio_id}, que salió "cumple"`); break; }
+  }
+  // Lo que bajó la nota se ve (mensaje 163): un criterio que quedó en parcial
+  // o no_cumple, con su motivo, tiene su observación. Si no, el vendedor pierde
+  // puntos y la pantalla no le dice por qué.
+  {
+    const conObservacion = new Set((Array.isArray(parsed.observations) ? parsed.observations : []).map((o: any) => String(o?.criterio_id ?? "")));
+    for (const d of Array.isArray(parsed.desglose?.criterios) ? parsed.desglose.criterios : []) {
+      if ((d?.nivel === "parcial" || d?.nivel === "no_cumple") && typeof d?.falta === "string" && d.falta.trim() && !conObservacion.has(String(d.criterio_id))) {
+        reasons.push(`UNIVERSAL: ${d.criterio_id} bajó la nota (${d.nivel}) y no tiene observación`);
+        break;
+      }
+    }
   }
   // El estimado del modelo no es la nota: no sale de la función.
   if ("score_del_modelo" in parsed) reasons.push("UNIVERSAL: la respuesta trae score_del_modelo (no debe llegar al vendedor)");
