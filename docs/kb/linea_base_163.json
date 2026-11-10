@@ -1,0 +1,4573 @@
+{
+  "fecha": "2026-11-10T18:00:18.094704+00:00",
+  "harness_version": "v3.41.1",
+  "summary": {
+    "pass": 144,
+    "fail": 3,
+    "skipped": 5,
+    "total": 152,
+    "tiempos": {
+      "casos_medidos": 146,
+      "promedio_ms": 28623,
+      "mas_lentos": [
+        {
+          "id": "G105_espejo_no_contradice_su_criterio",
+          "ms": 76712
+        },
+        {
+          "id": "G106_suelta_la_pista_sin_el_dolor",
+          "ms": 62693
+        },
+        {
+          "id": "G76_interrogatorio",
+          "ms": 60493
+        }
+      ],
+      "sobre_90s": 0
+    }
+  },
+  "results": [
+    {
+      "id": "G01_sce_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 22468,
+      "ms_revision": 3690,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "ice_breaker:cumple",
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:cumple",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "7fb4c33f-e506-43b6-b4d5-b397e35f4c91"
+      ]
+    },
+    {
+      "id": "G02_pitch_prematuro",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 32318,
+      "ms_revision": 10894,
+      "juez": {
+        "acusaciones": 5,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 5,
+        "intentos": 1,
+        "latencia_ms": 10892,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "pitch_prematuro (critical): -30",
+        "sin_pregunta (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:no_cumple(falta: No hay observación ni pregunta: solo saludo e identificación con oferta)",
+        "personalizacion:no_cumple(falta: No hay observación ni pregunta específica del cliente o su entorno)",
+        "curiosidad_abierta:no_cumple(falta: Se identifica de entrada diciendo de qué empresa viene)"
+      ],
+      "session_ids": [
+        "e3a0b2f6-d70e-4992-a0bf-2e3dd2d96442"
+      ]
+    },
+    {
+      "id": "G03_disculpa_inicial",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 36729,
+      "ms_revision": 8520,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 8519,
+        "descartados_por_cita": 1
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "se_disculpa (critical): -30",
+        "pide_permiso (critical): -30"
+      ],
+      "veredictos": [
+        "arranque_sin_disculpa:no_cumple(falta: Se disculpa dos veces ('disculpe que lo moleste, perdón') y promete no quitarle tiempo ('no le quito mucho tiempo, se lo)",
+        "regla_10_por_ciento:no_cumple(falta: La energía verbal es de disculpa y minimización desde el inicio: no hay postura ni seguridad en ninguna frase del turno.)",
+        "estructura_apertura:no_cumple(falta: No hay saludo, no hay observación, y la pregunta va en medio del turno: el turno termina con una promesa de no quitarle )"
+      ],
+      "session_ids": [
+        "b038e116-852d-4ede-8a34-915559c418aa"
+      ]
+    },
+    {
+      "id": "G04_sin_nombre_sin_entorno",
+      "status": "pass",
+      "reasons": [],
+      "score": 53,
+      "ms_total": 23030,
+      "ms_revision": 3404,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 53,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: Falta la observación y que la pregunta cierre el turno)",
+        "personalizacion:e1(falta: La pregunta es de cortesía genérica (escalón 1))",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "9a7e7e16-4ca1-4303-85cf-a0156c98a1ea"
+      ]
+    },
+    {
+      "id": "G05_usuario_callado",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 23168,
+      "ms_revision": 5226,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5224,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 20,
+      "restas": [
+        "sin_pregunta (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:no_cumple(falta: No hay observación ni pregunta: solo saluda dos veces)",
+        "personalizacion:no_cumple(falta: El saludo genérico es escalón 1, pero sin pregunta no hay nada que medir en especificidad)",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "c95df883-c90e-4ff7-bb47-ea02325a38cc"
+      ]
+    },
+    {
+      "id": "G06_fuera_de_scope_discovery",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 25179,
+      "ms_revision": 3385,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3384,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 80,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta va en medio del turno; el turno termina con un comentario en lugar de terminar con la pregunta.)",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "98e40727-e67a-40c6-aeb0-e83ad4894190"
+      ]
+    },
+    {
+      "id": "G07_sacar_del_personaje",
+      "status": "skipped",
+      "reasons": [
+        "known runner limitation: requires phase=you_do execution (Actor behavior). Runner extension pending."
+      ]
+    },
+    {
+      "id": "G08_max_turns_alcanzado",
+      "status": "skipped",
+      "reasons": [
+        "manual case (transcript_note): Requiere ejecutar al Director (corte por max_turns); este runner solo evalúa. Antes tenía un transcript falso ('[turno 20 de conversación divagante]') y contaba como aprobado sin probar nada."
+      ]
+    },
+    {
+      "id": "G09_scope_cubierto_corte_temprano",
+      "status": "pass",
+      "reasons": [],
+      "score": 80,
+      "ms_total": 24332,
+      "ms_revision": 4194,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 80,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta va en medio del turno; falta que la pregunta cierre y le devuelva la palabra al cliente)",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "56ed7cea-edef-4ddd-b69f-fe89de581338"
+      ]
+    },
+    {
+      "id": "G40_apertura_sin_pregunta",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 20274,
+      "ms_revision": 5998,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5997,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 80,
+      "restas": [
+        "sin_pregunta (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta que cierre el turno y le devuelva la palabra al cliente.)",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "97581c54-35a8-4715-b75e-16ea26b4bf2e"
+      ]
+    },
+    {
+      "id": "G10_energia_texto_no_evaluada",
+      "status": "pass",
+      "reasons": [],
+      "score": 53,
+      "ms_total": 23432,
+      "ms_revision": 2706,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 53,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta no cierra el turno: va en medio y el turno termina con un comentario.)",
+        "personalizacion:e1(falta: Tanto la pregunta como la observación son de cortesía genérica: se las dirías a cualquiera. No nombran nada específico d)",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "301aa704-7dd8-4753-8056-7e2242ddfacc"
+      ]
+    },
+    {
+      "id": "G11_actor_no_suelta_bloqueos_sin_air",
+      "status": "skipped",
+      "reasons": [
+        "manual case (transcript_note): Correr 5 sesiones del nodo 0.1 y verificar los mensajes del Actor"
+      ]
+    },
+    {
+      "id": "G12_groseria_del_usuario",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 28525,
+      "ms_revision": 9219,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 6221,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 20,
+      "restas": [
+        "sin_pregunta (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:no_cumple(falta: No hay saludo, no hay observación, no hay pregunta. No existe ninguna de las tres piezas de la apertura.)",
+        "personalizacion:no_cumple(falta: No hay observación ni pregunta. El único comentario es un insulto que destruye la relación.)",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "ab456911-9fa1-407e-98fe-184b6bd94cfb"
+      ]
+    },
+    {
+      "id": "G13a_ayuda_dentro_de_scope",
+      "status": "pass",
+      "reasons": [],
+      "score": 20,
+      "ms_total": 19330,
+      "ms_revision": 8597,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8596,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 20,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:no_cumple(falta: No hay conversación de ventas: el vendedor pregunta cómo hacer el ejercicio en lugar de ejecutarlo)",
+        "personalizacion:no_cumple(falta: No hay conversación de ventas: el vendedor pregunta cómo hacer el ejercicio en lugar de ejecutarlo)",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "4bab038c-6816-459a-a77d-8364bbbc91c7"
+      ]
+    },
+    {
+      "id": "G13b_ayuda_fuera_de_scope",
+      "status": "skipped",
+      "reasons": [
+        "known runner limitation: requires phase=you_do execution (Actor behavior). Runner extension pending."
+      ]
+    },
+    {
+      "id": "G14_apertura_en_ingles",
+      "status": "pass",
+      "reasons": [],
+      "score": 53,
+      "ms_total": 23919,
+      "ms_revision": 3038,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 53,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta no cierra el turno: va en medio y el turno termina con un comentario)",
+        "personalizacion:e1(falta: La pregunta es de cortesía genérica (¿cómo estás?) y la observación es un adjetivo genérico (se lo dirías a cualquiera):)",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "ef886b8a-d8b9-47c7-8b23-81f04f0b9058"
+      ]
+    },
+    {
+      "id": "G15_scope_perfecto_mas_producto_al_final",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 27254,
+      "ms_revision": 7959,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 4664,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 80,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta no cierra el turno: termina con un comentario sobre producto)",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "8f41a34a-4c02-40e7-9abb-e50d483d3b19"
+      ]
+    },
+    {
+      "id": "G16_transcript_vacio",
+      "status": "skipped",
+      "reasons": [
+        "empty transcript — evaluator not invoked (frontend responsibility)"
+      ]
+    },
+    {
+      "id": "G17_turno_larguisimo",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 50746,
+      "ms_revision": 17126,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 17124,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 60,
+      "restas": [
+        "pitch_prematuro (critical): -30",
+        "sin_pregunta (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:no_cumple(falta: La apertura se convierte en presentación comercial completa: después del saludo y la observación viene la identificación)",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "b7823bbf-f350-4e54-a308-0c5c4e60bbe7"
+      ]
+    },
+    {
+      "id": "G18_dos_sesiones_mismo_usuario",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "session_ids": [
+        "a255fe47-2f97-4b70-9b94-7f55477f47b4",
+        "4d02f106-9fd2-4370-a269-8969b0128d7c"
+      ]
+    },
+    {
+      "id": "G19_criterios_citados_por_id",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 31366,
+      "ms_revision": 11105,
+      "juez": {
+        "acusaciones": 5,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 5,
+        "intentos": 1,
+        "latencia_ms": 11102,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "pitch_prematuro (critical): -30",
+        "sin_pregunta (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:no_cumple(falta: No hay observación ni pregunta: solo saludo e identificación con oferta)",
+        "personalizacion:no_cumple(falta: No hay observación ni pregunta específica del cliente o su negocio)",
+        "curiosidad_abierta:no_cumple(falta: Se identifica de entrada diciendo de qué empresa viene)"
+      ],
+      "session_ids": [
+        "5a049d72-9b0d-430b-921e-3e97c3059dbe"
+      ]
+    },
+    {
+      "id": "G20_json_de_salida_valido",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20150,
+      "ms_revision": 3852,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "bc54b01a-7654-4b20-9da1-e810179dd4d1"
+      ]
+    },
+    {
+      "id": "G21_ejecucion_limpia_sin_observaciones",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20224,
+      "ms_revision": 3387,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "70f11766-4498-4d4c-8bd1-f85028d5045f"
+      ]
+    },
+    {
+      "id": "G22_pregunta_hablada_sin_signo",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20171,
+      "ms_revision": 3424,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "afbfce3f-0bfa-4667-b958-c5071a139caf"
+      ]
+    },
+    {
+      "id": "G23_curiosidad_abierta",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 17457,
+      "ms_revision": 2615,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "8d949296-d9ce-4d5d-832f-af4c7df38243"
+      ]
+    },
+    {
+      "id": "G24_pitch_prematuro_sin_ejemplo_listado",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 16340,
+      "ms_revision": 3631,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 2817,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "d7270566-c628-448f-b145-1387be698e14"
+      ]
+    },
+    {
+      "id": "G25_pregunta_de_cortesia_cuenta",
+      "status": "pass",
+      "reasons": [],
+      "score": 53,
+      "ms_total": 20121,
+      "ms_revision": 3490,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 2661,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 53,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: Falta la observación: solo tiene saludo y pregunta)",
+        "personalizacion:e1(falta: La pregunta es de cortesía genérica (escalón 1); falta observación específica del lugar o la persona)",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "67410922-6dbf-4e2e-a96f-4588ceb0d92d"
+      ]
+    },
+    {
+      "id": "G26_especifica_pero_plana",
+      "status": "pass",
+      "reasons": [],
+      "score": 89,
+      "ms_total": 19496,
+      "ms_revision": 2756,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 89,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:parcial(falta: La pregunta no cierra el turno: va en medio y el turno termina con un comentario ('veo que no paran').)",
+        "personalizacion:e2",
+        "ice_breaker:cumple",
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:no_aplica",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "75ac3bc9-c31e-48d0-a5c5-5489e7f2dd11"
+      ]
+    },
+    {
+      "id": "G27_buen_ice_breaker_cliente_frio",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 19039,
+      "ms_revision": 3363,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "ice_breaker:cumple",
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:cumple",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "9f53a578-798e-4bf0-9e49-e88313d18526"
+      ]
+    },
+    {
+      "id": "G28_especifica_suena_a_inspeccion",
+      "status": "pass",
+      "reasons": [],
+      "score": 83,
+      "ms_total": 20922,
+      "ms_revision": 3180,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3180,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 83,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "ice_breaker:no_cumple(falta: La observación es descriptiva y suena a inspección, sin ligereza ni calidez)",
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:no_aplica",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "858124fe-b8ce-4c6d-8089-afe0503e736d"
+      ]
+    },
+    {
+      "id": "P2_1_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 19649,
+      "ms_revision": 2654,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "historia_breve:cumple",
+        "brevedad:cumple",
+        "relevancia_cliente:cumple"
+      ],
+      "session_ids": [
+        "a5af849d-4e8c-4576-acbe-3b882236cc58"
+      ]
+    },
+    {
+      "id": "P2_2_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 17906,
+      "ms_revision": 2775,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "relevancia_cliente:cumple"
+      ],
+      "session_ids": [
+        "1e0f3458-2d73-4f14-a189-ea35e1e883a7"
+      ]
+    },
+    {
+      "id": "P2_5_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 16043,
+      "ms_revision": 2336,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "cpr:cumple",
+        "forms:cumple"
+      ],
+      "session_ids": [
+        "3767f053-1da6-4db7-aa55-35786086fa23"
+      ]
+    },
+    {
+      "id": "P2_7_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 13121,
+      "ms_revision": 2336,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple"
+      ],
+      "session_ids": [
+        "dbf1eaf6-1256-4426-abc4-5cc18fd0a7ce"
+      ]
+    },
+    {
+      "id": "P2_7c_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 17630,
+      "ms_revision": 2424,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "dos_no_seguidos:cumple"
+      ],
+      "session_ids": [
+        "e56a51c6-c4ac-4fff-b9e9-76a456208961"
+      ]
+    },
+    {
+      "id": "G35_insiste_tras_dos_no",
+      "status": "pass",
+      "reasons": [],
+      "score": 10,
+      "ms_total": 28213,
+      "ms_revision": 7646,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 7645,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 40,
+      "restas": [
+        "insiste_tras_dos (critical): -30"
+      ],
+      "veredictos": [
+        "air:cumple",
+        "dos_no_seguidos:no_cumple(falta: Después del segundo bloqueo seguido insiste en vez de quedar de regresar o despedirse)"
+      ],
+      "session_ids": [
+        "8da68a92-cfe8-4788-8d36-7d65c6e9db78"
+      ]
+    },
+    {
+      "id": "G36_se_va_al_primer_no",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 26244,
+      "ms_revision": 6127,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 6126,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "se_va_al_primero (critical): -30",
+        "se_va_con_disculpa (minor): -15"
+      ],
+      "veredictos": [
+        "air:no_cumple(falta: No ejecutó ninguno de los tres movimientos: se disculpó y se fue sin aceptar, sin ignorar y sin retomar)",
+        "dos_no_seguidos:no_aplica"
+      ],
+      "session_ids": [
+        "e78ae4ef-b71d-4bdb-b53e-969c68805f52"
+      ]
+    },
+    {
+      "id": "G37_de_volada_no_es_permiso",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 15370,
+      "ms_revision": 2377,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "dos_no_seguidos:cumple"
+      ],
+      "session_ids": [
+        "397b8455-c91e-4cbe-9479-e820a6074552"
+      ]
+    },
+    {
+      "id": "G38_no_pero_nada_mas_no_es_discutir",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 16579,
+      "ms_revision": 2264,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "dos_no_seguidos:cumple"
+      ],
+      "session_ids": [
+        "9ec9fe1d-277f-43f2-8aa8-369c2f59d693"
+      ]
+    },
+    {
+      "id": "G43_practica_real_2_7c_texto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 17720,
+      "ms_revision": 2405,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "dos_no_seguidos:cumple"
+      ],
+      "session_ids": [
+        "597821b3-de4b-4588-905b-098ba9601ea9"
+      ]
+    },
+    {
+      "id": "G39_de_rapido_no_es_hacerse_menos",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20482,
+      "ms_revision": 3544,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:cumple",
+        "estructura_apertura:cumple"
+      ],
+      "session_ids": [
+        "f9913702-9f5a-45a1-930c-293d6da0f3db"
+      ]
+    },
+    {
+      "id": "P2_8_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20189,
+      "ms_revision": 3304,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "mala_experiencia:cumple"
+      ],
+      "session_ids": [
+        "ad8483ba-bfd0-490b-aa3e-d3ed54d30aa6"
+      ]
+    },
+    {
+      "id": "P2_9_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 22370,
+      "ms_revision": 6386,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 4291,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "close_with_action:cumple",
+        "air:cumple"
+      ],
+      "session_ids": [
+        "dabe5c6a-106f-4797-825b-119c39f812aa"
+      ]
+    },
+    {
+      "id": "P2_10_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 27220,
+      "ms_revision": 2809,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "historia_breve:cumple",
+        "brevedad:cumple",
+        "cpr:cumple",
+        "close_with_action:cumple",
+        "relevancia_cliente:cumple"
+      ],
+      "session_ids": [
+        "fadcbb97-aff8-4135-bcbc-44af86ccb78c"
+      ]
+    },
+    {
+      "id": "P3_1_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20948,
+      "ms_revision": 3237,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "rrr:cumple",
+        "escucha_activa:cumple"
+      ],
+      "session_ids": [
+        "e10ec396-1531-4af3-9331-f40a2606b835"
+      ]
+    },
+    {
+      "id": "P3_2_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 36261,
+      "ms_revision": 4474,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:cumple",
+        "pregunta_especifica:cumple",
+        "dolor_real:cumple",
+        "suggestive_language:cumple"
+      ],
+      "session_ids": [
+        "42cc17b2-5506-40d6-9212-8aab11a2dd3a"
+      ]
+    },
+    {
+      "id": "P3_3_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 24219,
+      "ms_revision": 3605,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "escucha_activa:cumple",
+        "preguntas_capas:cumple"
+      ],
+      "session_ids": [
+        "ef75f27a-ff40-42be-a2bd-4947d721da7f"
+      ]
+    },
+    {
+      "id": "P3_4_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 28311,
+      "ms_revision": 4288,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "cpr:cumple",
+        "preguntas_capas:cumple"
+      ],
+      "session_ids": [
+        "21bc2aa2-4efe-4a98-82ae-47570da7c890"
+      ]
+    },
+    {
+      "id": "P3_6_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 22662,
+      "ms_revision": 3764,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "luz_verde:cumple",
+        "preguntas_capas:cumple"
+      ],
+      "session_ids": [
+        "155a336c-78af-4b24-99c5-c21da6a8cecb"
+      ]
+    },
+    {
+      "id": "P3_8_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20071,
+      "ms_revision": 3560,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "lee_el_lugar:cumple",
+        "hueco:cumple"
+      ],
+      "session_ids": [
+        "87e419bf-027b-42a9-9559-6192903e9d33"
+      ]
+    },
+    {
+      "id": "P3_9_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 29135,
+      "ms_revision": 3685,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "hueco:cumple",
+        "lee_el_lugar:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "fcfeb67e-7508-49d3-9663-4a5ea5639314"
+      ]
+    },
+    {
+      "id": "P3_10_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 39762,
+      "ms_revision": 9816,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 6167,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 1
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:cumple",
+        "dolor_real:cumple",
+        "escucha_activa:cumple",
+        "rrr:cumple",
+        "air:cumple",
+        "historia_breve:cumple"
+      ],
+      "session_ids": [
+        "277b667a-9841-49bb-a8b6-8c14c797afd9"
+      ]
+    },
+    {
+      "id": "G29_regla_de_los_no",
+      "status": "pass",
+      "reasons": [],
+      "score": 70,
+      "ms_total": 33790,
+      "ms_revision": 4401,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 4401,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "insiste_tras_dos (major): -30"
+      ],
+      "veredictos": [
+        "preguntas_capas:no_aplica",
+        "dolor_real:no_aplica",
+        "escucha_activa:cumple",
+        "rrr:cumple",
+        "air:cumple",
+        "historia_breve:cumple"
+      ],
+      "session_ids": [
+        "33986e87-0c0d-40b0-b87e-cd8b0005795e"
+      ]
+    },
+    {
+      "id": "G44_sale_al_segundo_no",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 35832,
+      "ms_revision": 6842,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3878,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:no_aplica",
+        "dolor_real:no_aplica",
+        "escucha_activa:cumple",
+        "rrr:cumple",
+        "air:cumple",
+        "historia_breve:cumple"
+      ],
+      "session_ids": [
+        "9b7b419e-be96-413a-877c-99f664403647"
+      ]
+    },
+    {
+      "id": "G45_vago_no_es_no",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 31744,
+      "ms_revision": 3890,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:no_aplica",
+        "dolor_real:no_aplica",
+        "escucha_activa:cumple",
+        "rrr:cumple",
+        "air:cumple",
+        "historia_breve:cumple"
+      ],
+      "session_ids": [
+        "8ee7893c-8c0b-4721-a6e7-d1a073c8142e"
+      ]
+    },
+    {
+      "id": "G30_corte_del_director_no_es_falta",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 28551,
+      "ms_revision": 3723,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "hueco:cumple",
+        "lee_el_lugar:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "1fc1fd31-e2cb-4010-8682-1e840ccdde12"
+      ]
+    },
+    {
+      "id": "P3_9b_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 35910,
+      "ms_revision": 6038,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "hueco:cumple",
+        "lee_el_lugar:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "c941a5d4-5100-49a9-8dba-671f9aa7e322"
+      ]
+    },
+    {
+      "id": "G31_falla_critica_se_explica",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 59046,
+      "ms_revision": 7162,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 7161,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 95,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "preguntas_capas:cumple",
+        "dolor_real:cumple",
+        "escucha_activa:cumple",
+        "rrr:cumple",
+        "air:cumple",
+        "historia_breve:parcial(falta: Dice quién es y de dónde viene, pero no dice por qué está ahí en términos humanos)"
+      ],
+      "session_ids": [
+        "4f6b66ab-7857-4c6b-a43b-e4ddb919b603"
+      ]
+    },
+    {
+      "id": "G32_mapeo_con_pregunta_abierta",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 30659,
+      "ms_revision": 2186,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "hueco:cumple",
+        "lee_el_lugar:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "5b20028e-df37-46a0-9ec8-ac7b97d1abb4"
+      ]
+    },
+    {
+      "id": "G41_pregunta_sin_hueco",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 41457,
+      "ms_revision": 10735,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 10732,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 22,
+      "restas": [
+        "solo_levanta_pedido (critical): -30"
+      ],
+      "veredictos": [
+        "hueco:no_cumple(falta: No apareció ningún hueco concreto y el vendedor no buscó de verdad: después de la respuesta vaga del cliente ('de todo u)",
+        "lee_el_lugar:parcial(falta: Preguntó qué otras líneas maneja (herramienta correcta), pero se fue después de una respuesta vaga sin conseguir ninguna)",
+        "efecto_jones:no_aplica"
+      ],
+      "session_ids": [
+        "21f21515-0154-4933-8c1e-1833eb3a98ca"
+      ]
+    },
+    {
+      "id": "G42_intenta_de_verdad_sin_hueco",
+      "status": "pass",
+      "reasons": [],
+      "score": 64,
+      "ms_total": 45619,
+      "ms_revision": 14560,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 9750,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 64,
+      "restas": [],
+      "veredictos": [
+        "hueco:no_aplica",
+        "lee_el_lugar:cumple",
+        "efecto_jones:no_cumple(falta: No ancló ninguna familia en negocios similares)"
+      ],
+      "session_ids": [
+        "7c39354b-a857-4b22-a40b-ea81444d921c"
+      ]
+    },
+    {
+      "id": "G33_intencion_en_voz_alta_no_es_pregunta",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 32917,
+      "ms_revision": 11280,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 7604,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "relevancia_cliente:no_cumple(falta: Ningún turno termina con una pregunta que le devuelva la palabra al cliente.)"
+      ],
+      "session_ids": [
+        "c2cdb1ad-ebe4-4e42-a124-1c497c387792"
+      ]
+    },
+    {
+      "id": "G34_identificarse_no_es_pitch",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 18663,
+      "ms_revision": 2626,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "ice_breaker:cumple",
+        "personalizacion:e2"
+      ],
+      "session_ids": [
+        "1a97987c-c89a-46c2-b723-78b74e541902"
+      ]
+    },
+    {
+      "id": "G46_jones_imaginado_concreto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 16836,
+      "ms_revision": 2605,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "avaricia:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "57a2da90-2ed6-4ffd-8970-f344b513a22f"
+      ]
+    },
+    {
+      "id": "G47_jones_vago_a_medias",
+      "status": "pass",
+      "reasons": [],
+      "score": 75,
+      "ms_total": 20447,
+      "ms_revision": 3599,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3598,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 75,
+      "restas": [],
+      "veredictos": [
+        "avaricia:cumple",
+        "efecto_jones:parcial(falta: Falta negocio con nombre o ubicación reconocible y resultado concreto; se quedó en todos los talleres de la zona.)"
+      ],
+      "session_ids": [
+        "5347ed2c-5f1b-4b33-abce-0b742be418f4"
+      ]
+    },
+    {
+      "id": "G48_jones_se_cae",
+      "status": "pass",
+      "reasons": [],
+      "score": 20,
+      "ms_total": 22285,
+      "ms_revision": 5612,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5612,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "jones_se_cae (major): -30"
+      ],
+      "veredictos": [
+        "avaricia:cumple",
+        "efecto_jones:no_cumple(falta: No da prueba social específica: ni negocio con nombre, ni ubicación reconocible, ni tiempo, ni resultado concreto — y cu)"
+      ],
+      "session_ids": [
+        "3a07a41e-fe58-48df-b0d0-90fc8ae056eb"
+      ]
+    },
+    {
+      "id": "G49_jones_sostenido",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 24687,
+      "ms_revision": 6544,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 4176,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "avaricia:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "80f10e80-aa0c-43ef-a181-35513a9da4f4"
+      ]
+    },
+    {
+      "id": "G50_urgencia_con_razon",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 15577,
+      "ms_revision": 1439,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "miedo_perdida:cumple",
+        "urgencia:cumple"
+      ],
+      "session_ids": [
+        "bc716c9a-0930-47ed-8e81-51f0c3ebd5d5"
+      ]
+    },
+    {
+      "id": "G51_escasez_sin_razon",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 36532,
+      "ms_revision": 11653,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 11651,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "presion_directa (major): -30",
+        "monologo (minor): -15"
+      ],
+      "veredictos": [
+        "miedo_perdida:no_cumple(falta: No hace tangible ninguna pérdida concreta del cliente: no cuantifica, no nombra destino de la pérdida, no ancla en el pr)",
+        "urgencia:no_cumple(falta: No da ninguna razón concreta para decidir ahora: ni su ruta, ni tiempos de entrega, ni ciclo del negocio del cliente; so)"
+      ],
+      "session_ids": [
+        "bf526d16-8ae7-49a2-b84d-8e5dfb9ca05e"
+      ]
+    },
+    {
+      "id": "G52_desglose_imaginado",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 26923,
+      "ms_revision": 2806,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "price_breakdown:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "d3300024-9fc5-46eb-9229-c45831a584d3"
+      ]
+    },
+    {
+      "id": "G53_escalon_sin_motivo",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 31260,
+      "ms_revision": 8325,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8324,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "precio_sin_escalones (major): -30",
+        "escalon_sin_motivo (major): -30"
+      ],
+      "veredictos": [
+        "price_breakdown:no_cumple(falta: No dio precio regular ni motivos para las bajadas; solo números descendentes sin escalera construida)",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "7dc0cb40-bb80-49c7-8c95-98e601050f67"
+      ]
+    },
+    {
+      "id": "G54_conviccion_sin_garantia",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 27900,
+      "ms_revision": 2163,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "consolidacion_proveedor:cumple",
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "d4295140-0899-4d12-9a6e-3d20a1242595"
+      ]
+    },
+    {
+      "id": "G55_garantiza",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 25902,
+      "ms_revision": 3039,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3039,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "garantiza (critical): -30"
+      ],
+      "veredictos": [
+        "consolidacion_proveedor:cumple",
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "38f51a2c-2e42-41c5-bb22-c439340d5344"
+      ]
+    },
+    {
+      "id": "G56_que_lo_pruebe",
+      "status": "pass",
+      "reasons": [],
+      "score": 70,
+      "ms_total": 36171,
+      "ms_revision": 9006,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5249,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "pide_que_pruebe (major): -30"
+      ],
+      "veredictos": [
+        "consolidacion_proveedor:cumple",
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "614d8b12-4c93-4cea-857b-7165bf857aba"
+      ]
+    },
+    {
+      "id": "G57_balas_poco_a_poco",
+      "status": "fail",
+      "reasons": [
+        "forbidden flag present: vacia_las_balas",
+        "nivel de objections.bullet_theory: esperaba cumple, decidió parcial"
+      ],
+      "score": 20,
+      "ms_total": 34277,
+      "ms_revision": 8262,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 8261,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "vacia_las_balas (major): -30"
+      ],
+      "veredictos": [
+        "bullet_theory:parcial(falta: Dosificación: suelta tres balas de jalón sin dejar reaccionar al cliente, sin que haga falta. Las balas son concretas, p)"
+      ],
+      "session_ids": [
+        "81a0c7d1-efa9-4fd0-9d0d-567e35f728ec"
+      ]
+    },
+    {
+      "id": "G58_vacia_las_balas",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 24889,
+      "ms_revision": 5995,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5991,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "vacia_las_balas (major): -30"
+      ],
+      "veredictos": [
+        "bullet_theory:no_cumple(falta: Vacía todas las balas en el primer turno, sin dosificar ni dejar reaccionar al cliente)"
+      ],
+      "session_ids": [
+        "b3d25d23-ddc7-4a2d-bfb0-e1bf9f73c11f"
+      ]
+    },
+    {
+      "id": "G59_promesa_sin_ancla",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 29332,
+      "ms_revision": 7288,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 7287,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "bala_inflada (critical): -30"
+      ],
+      "veredictos": [
+        "bullet_theory:no_cumple(falta: No disparó ninguna bala concreta: solo promesas infladas que cualquier competidor diría igual)"
+      ],
+      "session_ids": [
+        "e9831bf8-e669-41c0-87cd-7c361b2d996c"
+      ]
+    },
+    {
+      "id": "G60_no_le_quito_mucho",
+      "status": "fail",
+      "reasons": [
+        "missing expected flag: se_disculpa"
+      ],
+      "score": 77,
+      "ms_total": 20149,
+      "ms_revision": 4152,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 2841,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 77,
+      "restas": [],
+      "veredictos": [
+        "arranque_sin_disculpa:parcial(falta: Dice 'no le quito mucho': promete que no le va a quitar tiempo, lo que minimiza su presencia)",
+        "regla_10_por_ciento:cumple",
+        "estructura_apertura:cumple"
+      ],
+      "session_ids": [
+        "e505a71b-30f8-4f83-b6d8-ca322c752f73"
+      ]
+    },
+    {
+      "id": "G61_de_volada_no_es_disculpa",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 15840,
+      "ms_revision": 3380,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:cumple",
+        "estructura_apertura:cumple"
+      ],
+      "session_ids": [
+        "1afc449b-2886-4d31-9f64-505edcb8249b"
+      ]
+    },
+    {
+      "id": "G62_si_o_no_que_invita",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20701,
+      "ms_revision": 3336,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "e1d6445d-a22b-41b4-a406-6bb192e90fda"
+      ]
+    },
+    {
+      "id": "G63_pregunta_que_da_salida",
+      "status": "pass",
+      "reasons": [],
+      "score": 70,
+      "ms_total": 16849,
+      "ms_revision": 3136,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3134,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "pregunta_cerrada (major): -30"
+      ],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "personalizacion:e2",
+        "curiosidad_abierta:cumple"
+      ],
+      "session_ids": [
+        "26d67ed7-eed7-4ed6-a62d-e5e865b8a09c"
+      ]
+    },
+    {
+      "id": "G64_se_encoge",
+      "status": "pass",
+      "reasons": [],
+      "score": 75,
+      "ms_total": 27846,
+      "ms_revision": 5428,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5425,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 75,
+      "restas": [],
+      "veredictos": [
+        "arranque_sin_disculpa:cumple",
+        "regla_10_por_ciento:no_cumple(falta: Ante la sequedad del cliente, se desinflaron las frases y empezó a despedirse)",
+        "estructura_apertura:cumple"
+      ],
+      "session_ids": [
+        "6b347525-ec40-4cf3-8a92-7eae11ee16e6"
+      ]
+    },
+    {
+      "id": "G65_porque_es_parte_de_la_pieza",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 17701,
+      "ms_revision": 2486,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "historia_breve:cumple",
+        "brevedad:cumple",
+        "relevancia_cliente:cumple"
+      ],
+      "session_ids": [
+        "38496037-2d24-438e-a50d-323674a4febc"
+      ]
+    },
+    {
+      "id": "G66_historia_con_curriculum",
+      "status": "pass",
+      "reasons": [],
+      "score": 15,
+      "ms_total": 34307,
+      "ms_revision": 12366,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 10042,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 45,
+      "restas": [
+        "curriculum (major): -30"
+      ],
+      "veredictos": [
+        "historia_breve:parcial(falta: No dice por qué está ahí, solo quién es)",
+        "brevedad:no_cumple(falta: Mete años de la empresa, cantidad de productos, certificación ISO y número de bodegas: nada de eso contesta quién es él )",
+        "relevancia_cliente:cumple"
+      ],
+      "session_ids": [
+        "301570e2-e608-4751-96c7-801d6ab04457"
+      ]
+    },
+    {
+      "id": "G67_interes_de_compromiso",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 32801,
+      "ms_revision": 8124,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8123,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "interes_de_compromiso (minor): -15"
+      ],
+      "veredictos": [
+        "cpr:no_cumple(falta: No le entra con interés genuino al dato personal que el cliente dejó caer (su hija estudia diseño en Xalapa). Lo reconoc)",
+        "forms:no_cumple(falta: No toca ninguno de los cinco caminos con interés genuino. Reconoce el dato de familia que el cliente ofreció pero no le )"
+      ],
+      "session_ids": [
+        "49edbf69-7fe0-4b11-89c2-1f164df1f834"
+      ]
+    },
+    {
+      "id": "G68_monologo",
+      "status": "pass",
+      "reasons": [],
+      "score": 15,
+      "ms_total": 33272,
+      "ms_revision": 9365,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 9364,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "monologo (minor): -15"
+      ],
+      "veredictos": [
+        "rrr:parcial(falta: Lee la prisa («se ve que hoy está a tope») pero no relaja: le mete cuatro preguntas seguidas en un solo turno, lo contra)",
+        "escucha_activa:no_cumple(falta: Ninguna pregunta nace de lo que el cliente acaba de decir: en el turno 2 ignora la respuesta vaga («pues varios, ¿no?») )"
+      ],
+      "session_ids": [
+        "d357b2cc-8e42-4171-a40d-4b853cf0d72b"
+      ]
+    },
+    {
+      "id": "G69_historia_que_da_vueltas",
+      "status": "pass",
+      "reasons": [],
+      "score": 53,
+      "ms_total": 25934,
+      "ms_revision": 7398,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 7396,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 83,
+      "restas": [
+        "historia_larga (major): -30"
+      ],
+      "veredictos": [
+        "historia_breve:cumple",
+        "brevedad:parcial(falta: Mete frases que no contestan quién es ni por qué está ahí: cómo se reparten las rutas en la oficina, qué zona le tocó ay)",
+        "relevancia_cliente:cumple"
+      ],
+      "session_ids": [
+        "3ebb8886-24fc-4254-92bb-baa17017674d"
+      ]
+    },
+    {
+      "id": "G70_dolor_sin_devolverlo",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 29565,
+      "ms_revision": 4345,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:cumple",
+        "pregunta_especifica:cumple",
+        "dolor_real:cumple",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "58f6b7e5-4d25-43db-b8c0-06086174dcae"
+      ]
+    },
+    {
+      "id": "G71_opinion_del_precio",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 38503,
+      "ms_revision": 10062,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 10061,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "pide_opinion_precio (critical): -30"
+      ],
+      "veredictos": [
+        "preguntas_capas:no_cumple(falta: No subió a capa 2 con preguntas que abran la puerta; se quedó en hechos de capa 1 y saltó a pedir opinión de precio)",
+        "pregunta_especifica:cumple",
+        "dolor_real:no_cumple(falta: No apareció ninguna pista del dolor porque no llegó a capa 2)",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "8ebc0414-a2ae-4ece-b928-c8fe3634acdf"
+      ]
+    },
+    {
+      "id": "G72_precio_por_hechos",
+      "status": "pass",
+      "reasons": [],
+      "score": 81,
+      "ms_total": 30118,
+      "ms_revision": 4992,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 4991,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 81,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:parcial(falta: No sube a capa 2 (preguntas que abren la puerta al dolor): se queda en hechos de capa 1)",
+        "pregunta_especifica:cumple",
+        "dolor_real:no_aplica",
+        "suggestive_language:cumple"
+      ],
+      "session_ids": [
+        "62d1e462-b3a9-4829-879a-dc9e8e1db9ee"
+      ]
+    },
+    {
+      "id": "G73_nombrar_familia_no_es_receta",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 23071,
+      "ms_revision": 4586,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "lee_el_lugar:cumple",
+        "hueco:cumple"
+      ],
+      "session_ids": [
+        "5dfced29-9301-4918-9fd0-6db829764221"
+      ]
+    },
+    {
+      "id": "G74_receta_en_diagnostico",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 45127,
+      "ms_revision": 13851,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 13850,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "preguntas_capas:no_cumple(falta: El cliente soltó una pista clara (a veces se tarda en surtir) y el vendedor la pasó de largo: no la excavó con preguntas)",
+        "pregunta_especifica:cumple",
+        "dolor_real:no_cumple(falta: Apareció la pista del dolor (a veces se tarda en surtir) pero el vendedor no la excavó: presentó producto en lugar de pr)",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "1cb2a06d-8e58-40f2-b75f-62c552cebd18"
+      ]
+    },
+    {
+      "id": "G75_opciones_no_es_interrogatorio",
+      "status": "pass",
+      "reasons": [],
+      "score": 72,
+      "ms_total": 33319,
+      "ms_revision": 7995,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 7993,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 72,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:parcial(falta: Apareció la pista (a veces se me acaba antes de que me surtan) pero el vendedor no la excavó con preguntas abiertas para)",
+        "pregunta_especifica:cumple",
+        "dolor_real:parcial(falta: La pista apareció pero no se excavó: falta que el cliente cuente qué le pasa cuando se le acaba y qué le cuesta)",
+        "suggestive_language:cumple"
+      ],
+      "session_ids": [
+        "74f9db35-c25c-42ee-b066-9acc8a33d7c4"
+      ]
+    },
+    {
+      "id": "G76_interrogatorio",
+      "status": "pass",
+      "reasons": [],
+      "score": 15,
+      "ms_total": 60493,
+      "ms_revision": 16311,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 16309,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "interrogatorio (minor): -15"
+      ],
+      "veredictos": [
+        "preguntas_capas:no_cumple(falta: No sube de capa 1 a capa 2, y cuando aparecen pistas (bastante movido, ando corto de espacio) las pasa de largo sin exca)",
+        "pregunta_especifica:cumple",
+        "dolor_real:no_cumple(falta: No detecta ni excava las pistas que el cliente deja, se queda en hechos sin llegar al dolor)",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "b3b8137e-32c1-44b5-a554-45871a778445"
+      ]
+    },
+    {
+      "id": "G77_cerradas_en_capa_tres",
+      "status": "pass",
+      "reasons": [],
+      "score": 33,
+      "ms_total": 46279,
+      "ms_revision": 13604,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 13600,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 48,
+      "restas": [
+        "pregunta_cerrada_en_capa_profunda (minor): -15"
+      ],
+      "veredictos": [
+        "preguntas_capas:parcial(falta: Apareció la pista (a veces se tarda) pero no la excavó con preguntas abiertas hasta que el cliente contara el dolor comp)",
+        "pregunta_especifica:cumple",
+        "dolor_real:no_cumple(falta: El cliente nunca contó el dolor completo: qué le pasa y qué le cuesta cuando se tarda el surtido)",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "287af40f-5558-45ce-b88d-2609c7e1ad9e"
+      ]
+    },
+    {
+      "id": "G78_una_cerrada_suelta",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 29996,
+      "ms_revision": 3477,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "preguntas_capas:cumple",
+        "pregunta_especifica:cumple",
+        "dolor_real:cumple",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "82eb975b-3fea-48f9-9e69-d53e89638179"
+      ]
+    },
+    {
+      "id": "G79_hueco_con_jones",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 25660,
+      "ms_revision": 4785,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "hueco:cumple",
+        "lee_el_lugar:cumple",
+        "efecto_jones:cumple"
+      ],
+      "session_ids": [
+        "072452f7-93af-45a7-ad67-320605f980d8"
+      ]
+    },
+    {
+      "id": "G80_hueco_que_contradice",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 35956,
+      "ms_revision": 11547,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 7840,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "hueco_inventado (critical): -30"
+      ],
+      "veredictos": [
+        "hueco:cumple",
+        "lee_el_lugar:cumple",
+        "efecto_jones:no_aplica"
+      ],
+      "session_ids": [
+        "35a767fe-a524-4cd9-ab93-e01ea70be9be"
+      ]
+    },
+    {
+      "id": "G81_rojo_encantador_sale_bien",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 23147,
+      "ms_revision": 3701,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "luz_verde:cumple",
+        "preguntas_capas:cumple",
+        "siguiente_oportunidad:cumple"
+      ],
+      "session_ids": [
+        "49134b1d-7f4b-4152-a253-f310ccff1227"
+      ]
+    },
+    {
+      "id": "G82_contrato_que_deja_algo",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 25704,
+      "ms_revision": 2391,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "luz_verde:cumple",
+        "preguntas_capas:cumple"
+      ],
+      "session_ids": [
+        "595314a4-039c-48c3-95a4-19f1bfe5dc8d"
+      ]
+    },
+    {
+      "id": "G83_se_va_sin_averiguar",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 32347,
+      "ms_revision": 10606,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 10605,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "suelta_un_amarillo (critical): -30",
+        "no_investiga_limites (major): -30"
+      ],
+      "veredictos": [
+        "luz_verde:no_cumple(falta: Nunca averiguó si algo sí puede comprar hoy; se fue al primer impedimento sin calificar)",
+        "preguntas_capas:no_cumple(falta: No llegó a la razón real: se fue sin investigar qué cubre el contrato ni qué queda fuera)"
+      ],
+      "session_ids": [
+        "368e82e1-94b8-4e0a-adff-e765ad7b239a"
+      ]
+    },
+    {
+      "id": "G84_presiona_no_asume",
+      "status": "pass",
+      "reasons": [],
+      "score": 70,
+      "ms_total": 38827,
+      "ms_revision": 10643,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 2,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 7313,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [
+        "atropello (major): -30"
+      ],
+      "veredictos": [
+        "cierre_asumido:cumple",
+        "poder_asumir:cumple"
+      ],
+      "session_ids": [
+        "6ad76125-ab52-4dcf-9520-a0d776461dc5"
+      ]
+    },
+    {
+      "id": "G85_alternativa_asumida",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 21316,
+      "ms_revision": 4122,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "cierre_asumido:cumple",
+        "poder_asumir:cumple"
+      ],
+      "session_ids": [
+        "52d5d875-128d-4b61-95f3-54ada4caf9a4"
+      ]
+    },
+    {
+      "id": "G86_se_lo_mando",
+      "status": "pass",
+      "reasons": [],
+      "score": 10,
+      "ms_total": 26298,
+      "ms_revision": 5537,
+      "juez": {
+        "acusaciones": 2,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 2,
+        "intentos": 1,
+        "latencia_ms": 5537,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 40,
+      "restas": [
+        "abre_puerta_al_no (critical): -30"
+      ],
+      "veredictos": [
+        "cierre_asumido:no_cumple(falta: No cierra con alternativa asumida; usa pregunta de sí o no que invita al no.)",
+        "poder_asumir:cumple"
+      ],
+      "session_ids": [
+        "01871d54-29b7-4c5b-8f69-bc64e508b8ee"
+      ]
+    },
+    {
+      "id": "G87_senal_contesta_y_cierra",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 18350,
+      "ms_revision": 3070,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "lectura_senales:cumple",
+        "cierre_asumido:cumple",
+        "senales_compra:cumple"
+      ],
+      "session_ids": [
+        "5e9f4792-5082-44d3-a88b-5fd410350b60"
+      ]
+    },
+    {
+      "id": "G88_senal_un_beneficio_mas",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 35129,
+      "ms_revision": 9842,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 9840,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "sigue_presentando (critical): -30"
+      ],
+      "veredictos": [
+        "lectura_senales:no_cumple(falta: Recibe la señal de compra (cuándo me lo entregan) pero no cierra en ese turno: contesta el dato y sigue presentando bene)",
+        "cierre_asumido:no_cumple(falta: No cierra con alternativa asumida tras la señal: solo contesta el dato y agrega más beneficios)",
+        "senales_compra:no_cumple(falta: Trata la pregunta del cliente como interrupción: la despacha con el dato y vuelve a presentar, en vez de capitalizarla c)"
+      ],
+      "session_ids": [
+        "22be9919-2b9f-4fd3-909d-580ab0fbc829"
+      ]
+    },
+    {
+      "id": "G89_llena_el_silencio",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 37610,
+      "ms_revision": 8808,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8806,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "llena_el_silencio (critical): -30"
+      ],
+      "veredictos": [
+        "sin_miedo:no_cumple(falta: Después de pedir la decisión, llena el silencio: se retracta con una cantidad menor y propone dejarlo para después, ante)",
+        "indiferencia:no_cumple(falta: Ante la deliberación del cliente muestra ansiedad textual: retrocede en la oferta y propone él mismo posponer la decisió)"
+      ],
+      "session_ids": [
+        "7cdba4c4-c161-43d8-9a31-c8e2c0252a2f"
+      ]
+    },
+    {
+      "id": "G90_contestar_no_es_llenar",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 21676,
+      "ms_revision": 3474,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "sin_miedo:cumple",
+        "indiferencia:cumple"
+      ],
+      "session_ids": [
+        "1b51be21-ad36-4430-af55-e97b16968e15"
+      ]
+    },
+    {
+      "id": "G91_descuento_a_cambio",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 22066,
+      "ms_revision": 3964,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "no_defensivo:cumple",
+        "bullet_theory:cumple"
+      ],
+      "session_ids": [
+        "71b0889f-ca7b-4f86-b563-99a114cf8091"
+      ]
+    },
+    {
+      "id": "G92_descuento_de_panico",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 48090,
+      "ms_revision": 8280,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 6887,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "descuento_de_panico (major): -30",
+        "salta_la_bala (major): -30"
+      ],
+      "veredictos": [
+        "reframe:no_cumple(falta: No valida la objeción, no dice que otros sintieron lo mismo, no menciona lo que encontraron, no da bala ni cierra con ac)",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: No da ninguna bala concreta que suba el valor o baje el costo antes de ceder precio.)"
+      ],
+      "session_ids": [
+        "acf3bab2-3ab4-49a4-bf02-e35e89d7d68b"
+      ]
+    },
+    {
+      "id": "G93_una_bala_y_cierra",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20960,
+      "ms_revision": 3404,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "circulo_cierre:cumple",
+        "bullet_theory:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "8c79685b-fa4b-4bda-8b91-6bb02aafaf2c"
+      ]
+    },
+    {
+      "id": "G94_bala_ya_dicha_conectada",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 19062,
+      "ms_revision": 3208,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "circulo_cierre:cumple",
+        "bullet_theory:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "e9757e9d-89fa-40c8-88ba-5ae8e19265cb"
+      ]
+    },
+    {
+      "id": "G95_bala_repetida_tal_cual",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 39940,
+      "ms_revision": 14631,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 2,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 10930,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "circulo_cierre:cumple",
+        "bullet_theory:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "a93632a3-82bc-4c1b-be1e-17e011139e4d"
+      ]
+    },
+    {
+      "id": "G96_apila_balas",
+      "status": "pass",
+      "reasons": [],
+      "score": 20,
+      "ms_total": 35564,
+      "ms_revision": 8235,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8234,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "vacia_el_cargador (major): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: Falta el cierre con acción después de la tercera F. Dice las tres F pero no avanza: termina en una lista de argumentos, )",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: Suelta seis argumentos de jalón en vez de una sola bala concreta antes de cerrar.)"
+      ],
+      "session_ids": [
+        "7c8f2b5c-425b-4882-9196-aa4ff226dc5d"
+      ]
+    },
+    {
+      "id": "G97_discute_la_objecion",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 37281,
+      "ms_revision": 9158,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 9157,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "se_pone_defensivo (critical): -30"
+      ],
+      "veredictos": [
+        "reframe:no_cumple(falta: No valida la preocupación, no dice que otros sintieron lo mismo, no menciona lo que encontraron, no re-impulsa con bala )",
+        "no_defensivo:no_cumple(falta: Contradice al cliente directamente (no, no está caro) y lo corrige (usted no está haciendo bien la cuenta))",
+        "bullet_theory:no_cumple(falta: No da ninguna bala concreta después de la objeción, solo contradice)"
+      ],
+      "session_ids": [
+        "e7a3ca09-2c2b-4d2f-9864-48f5b6276720"
+      ]
+    },
+    {
+      "id": "G98_responde_sin_discutir",
+      "status": "pass",
+      "reasons": [],
+      "score": 20,
+      "ms_total": 30839,
+      "ms_revision": 7445,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 7444,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "salta_la_bala (major): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: Le falta el paso de re-impulso con una bala después de FFF y antes del cierre)",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: No da ninguna bala después de FFF: cierra directo sin subir el impulso)"
+      ],
+      "session_ids": [
+        "f76df71d-9825-421a-b498-a77ee5cdde3d"
+      ]
+    },
+    {
+      "id": "G99_siguientes_pasos_claros",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 21118,
+      "ms_revision": 2294,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "proteger_venta:cumple",
+        "cpr:no_aplica"
+      ],
+      "session_ids": [
+        "9e544058-2a1a-4874-bfff-9d3edc4d7229"
+      ]
+    },
+    {
+      "id": "G100_sigue_vendiendo",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 47350,
+      "ms_revision": 17662,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 12004,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "reabre_la_venta (major): -30"
+      ],
+      "veredictos": [
+        "proteger_venta:parcial(falta: No repite el monto ni la forma de pago, y no pregunta si le quedó alguna duda ni le deja claro que lo puede contactar)",
+        "cpr:no_cumple(falta: No retoma nada personal que el cliente haya mencionado en la conversación)"
+      ],
+      "session_ids": [
+        "87435559-b16a-48b0-a652-65baad711061"
+      ]
+    },
+    {
+      "id": "G101_festeja_de_mas",
+      "status": "pass",
+      "reasons": [],
+      "score": 15,
+      "ms_total": 41628,
+      "ms_revision": 13870,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 8815,
+        "descartados_por_cita": 1
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "sobre_celebra (minor): -15"
+      ],
+      "veredictos": [
+        "proteger_venta:parcial(falta: No verifica comprensión (no pregunta si le quedó alguna duda) ni deja claro que lo puede contactar en cualquier momento)",
+        "cpr:no_cumple(falta: No retoma nada personal que el cliente haya mencionado en la conversación)"
+      ],
+      "session_ids": [
+        "ec9ed704-037a-41ae-ac4a-ed6363f4c747"
+      ]
+    },
+    {
+      "id": "G102_referido_amarrado",
+      "status": "pass",
+      "reasons": [],
+      "score": 70,
+      "ms_total": 22637,
+      "ms_revision": 3641,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3640,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 70,
+      "restas": [],
+      "veredictos": [
+        "siguiente_oportunidad:parcial(falta: No deja acordada la siguiente visita con día y razón útil; solo pide el referido amarrado)",
+        "cpr:cumple"
+      ],
+      "session_ids": [
+        "a3bc2a40-775f-4546-887a-861d75b93666"
+      ]
+    },
+    {
+      "id": "G103_referido_en_frio",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 38901,
+      "ms_revision": 11761,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8449,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "referido_en_frio (critical): -30"
+      ],
+      "veredictos": [
+        "siguiente_oportunidad:no_cumple(falta: No deja acordada la siguiente visita con día y razón útil, ni pide referido amarrado a algo que el cliente mencionó)",
+        "cpr:no_aplica"
+      ],
+      "session_ids": [
+        "e01ca83a-047f-4df3-ab52-529dac9bde29"
+      ]
+    },
+    {
+      "id": "G104_argumento_segun_el_caso",
+      "status": "pass",
+      "reasons": [],
+      "score": 85,
+      "ms_total": 35046,
+      "ms_revision": 3815,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 3813,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 85,
+      "restas": [],
+      "veredictos": [
+        "lee_el_lugar:cumple",
+        "hueco:cumple",
+        "consolidacion_proveedor:cumple",
+        "cerrar_incremento:cumple",
+        "rehash:no_cumple(falta: No deja puesta la siguiente visita ni pide referido después del sí)"
+      ],
+      "session_ids": [
+        "0c145b82-d345-42f8-99b4-c26334ff539b"
+      ]
+    },
+    {
+      "id": "G105_espejo_no_contradice_su_criterio",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 76712,
+      "ms_revision": 22255,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 1,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 17568,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 93,
+      "restas": [
+        "pitch_prematuro (critical): -30"
+      ],
+      "veredictos": [
+        "preguntas_capas:cumple",
+        "dolor_real:cumple",
+        "escucha_activa:cumple",
+        "rrr:parcial(falta: Lee y reconoce la prisa inicial, pero cuando el cliente muestra molestia clara en el turno 6 (ya le dijo las presentacio)",
+        "air:cumple",
+        "historia_breve:cumple"
+      ],
+      "session_ids": [
+        "fa471db2-09df-4d5b-8e30-16d6c7320823"
+      ]
+    },
+    {
+      "id": "G106_suelta_la_pista_sin_el_dolor",
+      "status": "pass",
+      "reasons": [],
+      "score": 15,
+      "ms_total": 62693,
+      "ms_revision": 17918,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 17915,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "interrogatorio (minor): -15"
+      ],
+      "veredictos": [
+        "preguntas_capas:no_cumple(falta: El cliente soltó dos pistas claras (se tarda en surtir, el de las grasas me falla) y el vendedor las pasó de largo sin e)",
+        "pregunta_especifica:cumple",
+        "dolor_real:no_cumple(falta: El cliente dejó caer dos pistas del dolor y el vendedor no las excavó: nunca llegó a que el cliente contara el dolor com)",
+        "suggestive_language:no_aplica"
+      ],
+      "session_ids": [
+        "7a7bd30c-610f-42f1-87a8-439ae0e4bb98"
+      ]
+    },
+    {
+      "id": "G107_no_que_invita",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 16462,
+      "ms_revision": 2042,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "dos_no_seguidos:no_aplica"
+      ],
+      "session_ids": [
+        "fca9961a-5ce3-4269-8564-9f16a80a7396"
+      ]
+    },
+    {
+      "id": "G108_proveedor_menos_sin_que_aplique",
+      "status": "pass",
+      "reasons": [],
+      "score": 30,
+      "ms_total": 41735,
+      "ms_revision": 8951,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8950,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [],
+      "veredictos": [
+        "consolidacion_proveedor:parcial(falta: La bala que usa ('un proveedor menos') no corresponde al caso del cliente: él acaba de decir que le gusta tener dos prov)",
+        "beneficio_no_caracteristica:no_cumple(falta: Menciona que la grasa de litio es de lo que más sale, pero no traduce eso a algo concreto que el cliente gane: menos tie)"
+      ],
+      "session_ids": [
+        "417ca26c-df6d-432b-ae38-7f213c6f26c1"
+      ]
+    },
+    {
+      "id": "G109_bala_de_servicio_que_sirve",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 25849,
+      "ms_revision": 4353,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "consolidacion_proveedor:cumple",
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "c81b12b1-ee9e-46f4-8ba1-8ad47012c4ca"
+      ]
+    },
+    {
+      "id": "P4_1_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 25851,
+      "ms_revision": 3031,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "conectar_dolor:cumple",
+        "valor_personalizado:cumple",
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "5622641c-d4c7-41ba-b457-1a9006312521"
+      ]
+    },
+    {
+      "id": "P4_2_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 24559,
+      "ms_revision": 3265,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "6c3750ea-10ed-42d9-ab6d-a972f7d06410"
+      ]
+    },
+    {
+      "id": "P4_3_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 22897,
+      "ms_revision": 3657,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "pintar_imagenes:cumple",
+        "conectar_dolor:cumple"
+      ],
+      "session_ids": [
+        "bc8581db-fa9d-494b-be01-47d48665bc87"
+      ]
+    },
+    {
+      "id": "P4_10_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 15200,
+      "ms_revision": 2585,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "indiferencia:cumple",
+        "kilt:cumple"
+      ],
+      "session_ids": [
+        "9ba83773-1ffe-4595-a431-d6ec61fc0076"
+      ]
+    },
+    {
+      "id": "P4_11_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 18626,
+      "ms_revision": 2543,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "poder_asumir:cumple",
+        "tren_si_si:cumple"
+      ],
+      "session_ids": [
+        "3bb54687-02ce-4186-a883-cd1d2287ef22"
+      ]
+    },
+    {
+      "id": "G110_decide_por_el",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 30498,
+      "ms_revision": 9367,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 9366,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "asume_con_presion (critical): -30"
+      ],
+      "veredictos": [
+        "poder_asumir:no_cumple(falta: No sugiere el siguiente paso con alternativas donde las dos sean un sí; decide la cantidad sin darle a escoger al client)",
+        "tren_si_si:no_cumple(falta: No siembra ningún sí genuino antes de sugerir la cantidad; va directo a la decisión sin preparar el terreno.)"
+      ],
+      "session_ids": [
+        "574dba0c-0e8e-4e7a-bb30-049d74e7bec5"
+      ]
+    },
+    {
+      "id": "P4_12_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 24051,
+      "ms_revision": 3877,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "tren_si_si:cumple",
+        "beneficio_no_caracteristica:cumple"
+      ],
+      "session_ids": [
+        "02a483f4-884a-425d-a0b0-a85ce1e54031"
+      ]
+    },
+    {
+      "id": "P4_16_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 42447,
+      "ms_revision": 3131,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "conectar_dolor:cumple",
+        "beneficio_no_caracteristica:cumple",
+        "pintar_imagenes:cumple",
+        "tren_si_si:cumple",
+        "factores_impulso:cumple",
+        "price_breakdown:cumple",
+        "cpr:cumple"
+      ],
+      "session_ids": [
+        "2b39bac5-4dc0-4c60-9282-92592aa907a7"
+      ]
+    },
+    {
+      "id": "P5_6_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 13134,
+      "ms_revision": 3030,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "rrr_objeciones:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "7e336f20-d27f-473c-8136-36229525be58"
+      ]
+    },
+    {
+      "id": "G111_responde_y_espera",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 27460,
+      "ms_revision": 8295,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8293,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "responde_y_espera (critical): -30"
+      ],
+      "veredictos": [
+        "rrr_objeciones:parcial(falta: Falta la tercera R (Resume): repite y responde bien, pero no retoma en el mismo turno)",
+        "close_with_action:no_cumple(falta: Después de responder cada objeción, termina sin avanzar: no pregunta nada del siguiente paso ni retoma donde iba)"
+      ],
+      "session_ids": [
+        "798874a3-e60a-4eab-8a26-6058748de7dd"
+      ]
+    },
+    {
+      "id": "P5_8_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 22345,
+      "ms_revision": 2920,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "no_defensivo:cumple",
+        "bullet_theory:cumple"
+      ],
+      "session_ids": [
+        "d2a68093-827c-4b6f-858d-9031d75dceaf"
+      ]
+    },
+    {
+      "id": "G112_fff_sin_bala",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 39956,
+      "ms_revision": 10656,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 10654,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "salta_la_bala (major): -30",
+        "bala_se_cae (critical): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: La tercera F ('lo que encontraron') es aire genérico sin nada concreto, y falta la bala antes de cerrar)",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: No da ninguna bala concreta después de FFF)"
+      ],
+      "session_ids": [
+        "c0b06ee1-5c8f-46c0-8bfc-296d7b14ff58"
+      ]
+    },
+    {
+      "id": "P5_12_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 23856,
+      "ms_revision": 3098,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "bullet_theory:cumple",
+        "indiferencia:cumple",
+        "circulo_cierre:cumple"
+      ],
+      "session_ids": [
+        "021e1b56-3e49-42cc-8b9c-76609bb35ead"
+      ]
+    },
+    {
+      "id": "G113_objecion_despues_de_aguantar",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20845,
+      "ms_revision": 2901,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "sin_miedo:cumple",
+        "indiferencia:cumple"
+      ],
+      "session_ids": [
+        "d1305eb5-9d54-4849-a6ef-87b74ccc77f0"
+      ]
+    },
+    {
+      "id": "P5_14_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 21077,
+      "ms_revision": 2156,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "cerrar_incremento:cumple",
+        "cierre_asumido:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "a297b635-aabe-4f28-9fdc-d1c96dbd99b1"
+      ]
+    },
+    {
+      "id": "G114_reabre_lo_de_siempre",
+      "status": "pass",
+      "reasons": [],
+      "score": 0,
+      "ms_total": 35813,
+      "ms_revision": 14650,
+      "juez": {
+        "acusaciones": 5,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 5,
+        "intentos": 1,
+        "latencia_ms": 14649,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 0,
+      "restas": [
+        "pregunta_si_quiere (critical): -30",
+        "reabre_el_pedido_base (major): -30"
+      ],
+      "veredictos": [
+        "cerrar_incremento:no_cumple(falta: Reabre el pedido base en el cierre: pregunta por lo de siempre más el incremento, cuando lo de siempre ya estaba resuelt)",
+        "cierre_asumido:no_cumple(falta: Pide la decisión con una pregunta de sí o no sobre la compra: el cliente puede contestar con un no o un déjeme pensarlo)",
+        "close_with_action:no_cumple(falta: No avanza con una pregunta del siguiente paso: pide confirmación explícita en vez de asumir con una alternativa)"
+      ],
+      "session_ids": [
+        "aed73d6f-62cc-44ed-b769-84ddcfdb908f"
+      ]
+    },
+    {
+      "id": "P5_15_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 45924,
+      "ms_revision": 5855,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "rrr_objeciones:cumple",
+        "reframe:cumple",
+        "bullet_theory:cumple",
+        "circulo_cierre:cumple",
+        "dolor_real:cumple",
+        "cierre_asumido:cumple"
+      ],
+      "session_ids": [
+        "5eb94287-ce8c-4f12-9ab1-1514aa2bbf63"
+      ]
+    },
+    {
+      "id": "G115_anuncia_plan_b",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 23563,
+      "ms_revision": 7417,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 7413,
+        "descartados_por_cita": 1
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 30,
+      "restas": [
+        "anuncia_plan_b (major): -30"
+      ],
+      "veredictos": [
+        "proteger_venta:parcial(falta: No verifica comprensión (preguntarle si le quedó alguna duda) ni le deja claro que lo puede contactar en cualquier momen)",
+        "cpr:no_cumple(falta: No retoma nada personal del cliente en la despedida)"
+      ],
+      "session_ids": [
+        "1baa8616-180c-41ee-ba9b-ec9d04ddf45d"
+      ]
+    },
+    {
+      "id": "P6_2_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 23212,
+      "ms_revision": 2715,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "proteger_venta:cumple",
+        "cpr:cumple"
+      ],
+      "session_ids": [
+        "7df87f3c-63c7-4a5d-8130-be7b13cfd876"
+      ]
+    },
+    {
+      "id": "P6_3_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 20376,
+      "ms_revision": 1748,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "siguiente_oportunidad:cumple",
+        "cpr:cumple"
+      ],
+      "session_ids": [
+        "f0114ff8-bcee-48d9-9ee6-1063f05f30ff"
+      ]
+    },
+    {
+      "id": "G116_sin_referido",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 18281,
+      "ms_revision": 1622,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "siguiente_oportunidad:cumple",
+        "cpr:cumple"
+      ],
+      "session_ids": [
+        "9726de88-f158-4c87-b8af-5a92c757ed9a"
+      ]
+    },
+    {
+      "id": "P6_4_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 31025,
+      "ms_revision": 2689,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "proteger_venta:cumple",
+        "relacion_largo_plazo:cumple",
+        "cpr:cumple",
+        "siguiente_oportunidad:cumple"
+      ],
+      "session_ids": [
+        "065ad220-3abb-4532-8944-ddccfaac8a2b"
+      ]
+    },
+    {
+      "id": "P7_0_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 52942,
+      "ms_revision": 9653,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 6083,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "historia_breve:cumple",
+        "air:cumple",
+        "close_with_action:cumple",
+        "dolor_real:cumple",
+        "conectar_dolor:cumple",
+        "cierre_asumido:cumple",
+        "proteger_venta:cumple"
+      ],
+      "session_ids": [
+        "d0e8966d-d759-4e11-b1ac-1fa5bef05e6f"
+      ]
+    },
+    {
+      "id": "P7_2_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 37763,
+      "ms_revision": 2956,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "miedo_perdida:cumple",
+        "efecto_jones:cumple",
+        "poder_asumir:cumple",
+        "indiferencia:cumple",
+        "conectar_dolor:cumple"
+      ],
+      "session_ids": [
+        "f79073d0-d0c0-43ef-b4ec-1ec4e46e45be"
+      ]
+    },
+    {
+      "id": "P7_4_perfecto",
+      "status": "fail",
+      "reasons": [
+        "nivel de objections.reframe: esperaba cumple, decidió parcial"
+      ],
+      "score": 93,
+      "ms_total": 56167,
+      "ms_revision": 6678,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 6124,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 93,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "dolor_real:cumple",
+        "conectar_dolor:cumple",
+        "reframe:parcial(falta: En la primera objeción (precio) no usa FFF: repite la objeción pero no valida el sentimiento ni menciona otros clientes)",
+        "cierre_asumido:cumple",
+        "sin_miedo:cumple",
+        "indiferencia:cumple",
+        "proteger_venta:cumple"
+      ],
+      "session_ids": [
+        "63448225-98ae-42bb-b512-a50d05050f47"
+      ]
+    }
+  ]
+}
