@@ -1,0 +1,62 @@
+{
+ "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia": [
+  200,
+  {
+   "harness_version": "v3.43.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+     "status": "fail",
+     "reasons": [
+      "texto 1 debía quedar igual y salió: «»"
+     ],
+     "raw": {
+      "vara": {
+       "revisados": 2,
+       "sospechosos": 2,
+       "confirmados": 2,
+       "absueltos": 0,
+       "corregidos": 0,
+       "descartados": 2,
+       "detalle": [
+        {
+         "id": "obs0.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "vacia_el_cargador",
+         "frase": "Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que con la entrega cada martes nunca más perdieron una venta por falta de aceite. Y el primer pedido se lo dejo en mil cincuenta en vez de mil doscientos. ¿Se la traigo este martes o el siguiente?",
+         "sospecha": "Suelta dos balas: la entrega cada martes y el descuento del primer pedido, antes de cerrar. Vacía el cargador.",
+         "juez": "reprueba",
+         "razon_juez": "Sí, suelta dos balas: (1) entrega cada martes evita perder ventas, (2) descuento en primer pedido. Ambas en la misma respuesta antes de cerrar.",
+         "quedo": "descartado"
+        },
+        {
+         "id": "obs1.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "vacia_el_cargador",
+         "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+         "sospecha": "Suelta cinco balas (crédito, empaque, duración, exhibidor, precio mayoreo) en la misma respuesta. Vacía el cargador completamente.",
+         "juez": "reprueba",
+         "razon_juez": "Sí, suelta cinco balas (crédito, empaque, duración, exhibidor, precio mayoreo) en la misma respuesta a la objeción, sin cerrar entre ellas.",
+         "quedo": "descartado"
+        }
+       ]
+      },
+      "ms": 18068
+     },
+     "session_ids": [
+      "02718542-ee2b-454f-a95b-0f1dbf523af2"
+     ]
+    }
+   ]
+  }
+ ]
+}

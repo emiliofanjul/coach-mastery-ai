@@ -177,3 +177,5 @@
 - [x] Mensaje 157: giro_157.sql tal cual (respuestas_giro, guardar_giro, bloques 1-4); 12 archivos instalados; 1164/1164 en 96; menú de equipo sin «Tu negocio», /tu-negocio redirige al mapa, práctica 4.2 igual; publicado.
 - [ ] Emilio: probar pantallas de giro y «Tu negocio» con cuenta personal nueva. Bloqueador: no crear cuentas para probar.
 - [x] Mensaje 162: panel «Prácticas» (/practicas) solo administradores; SQL tal cual (es_admin_plataforma, admin_practicas, admin_practica, regla de audio); 11 archivos; 1183/1183 en 98; verificado con sesión admin (tabla, audio por turnos, copiar) y sin privilegios (bloqueo en pantalla y en base); publicado.
+
+- 164: V2 (FFF con una bala) falló dos veces; todo regresado y redesplegado, sin publicar. Espera nueva versión de Emilio.
