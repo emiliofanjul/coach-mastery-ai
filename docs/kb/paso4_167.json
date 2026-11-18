@@ -1,0 +1,735 @@
+{
+ "p4_G112_fff_sin_bala.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 39376,
+     "mas_lentos": [
+      {
+       "id": "G112_fff_sin_bala",
+       "ms": 39376
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G112_fff_sin_bala",
+     "status": "pass",
+     "reasons": [],
+     "score": 20,
+     "ms_total": 39376,
+     "ms_revision": 6965,
+     "juez": {
+      "acusaciones": 3,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 3,
+      "intentos": 1,
+      "latencia_ms": 6964,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 50,
+     "restas": [
+      "salta_la_bala (major): -30"
+     ],
+     "veredictos": [
+      "reframe:parcial(falta: Completa las tres F pero no sigue con bala ni cierre con acción: se detiene en 'lo que encontraron fue que les convino' )",
+      "no_defensivo:cumple",
+      "bullet_theory:no_cumple(falta: No da ninguna bala después de FFF: va directo al cierre sin re-impulsar)"
+     ],
+     "session_ids": [
+      "e0c51594-9af2-4453-a3cd-2d4f67c58daf"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G119_dos_balas_que_apuntan.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 23229,
+     "mas_lentos": [
+      {
+       "id": "G119_dos_balas_que_apuntan",
+       "ms": 23229
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G119_dos_balas_que_apuntan",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 23229,
+     "ms_revision": 2996,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "reframe:cumple",
+      "no_defensivo:cumple",
+      "bullet_theory:cumple"
+     ],
+     "session_ids": [
+      "f7ec9bfd-7ac5-4484-bd9c-b5a4b15685ee"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G120_tres_balas_que_apuntan.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 25970,
+     "mas_lentos": [
+      {
+       "id": "G120_tres_balas_que_apuntan",
+       "ms": 25970
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G120_tres_balas_que_apuntan",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 25970,
+     "ms_revision": 3556,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "reframe:cumple",
+      "no_defensivo:cumple",
+      "bullet_theory:cumple"
+     ],
+     "session_ids": [
+      "8f4bfade-b779-48ff-a3c3-9632204a3fba"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G121_rep.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 55308,
+     "mas_lentos": [
+      {
+       "id": "G121_se_queda_desarmado",
+       "ms": 55308
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G121_se_queda_desarmado",
+     "status": "fail",
+     "reasons": [
+      "missing expected flag: vacia_el_cargador"
+     ],
+     "score": 60,
+     "ms_total": 55308,
+     "ms_revision": 12267,
+     "juez": {
+      "acusaciones": 3,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 3,
+      "intentos": 1,
+      "latencia_ms": 12265,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 60,
+     "restas": [],
+     "veredictos": [
+      "reframe:parcial(falta: La segunda objeción (lealtad al proveedor) solo se reconoce, no se atraviesa con FFF ni con RRR: falta validar que otros)",
+      "bullet_theory:parcial(falta: En la segunda objeción suelta aire ('de verdad le conviene', 'ya le dije todo') en vez de balas concretas que respondan )",
+      "indiferencia:cumple",
+      "circulo_cierre:parcial(falta: En la segunda objeción no re-impulsa con bala concreta antes de volver a cerrar: 'ya le dije todo' no es bala)"
+     ],
+     "session_ids": [
+      "557bee39-8dea-41e3-89a9-bb3ae23b6274"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G121_se_queda_desarmado.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 60058,
+     "mas_lentos": [
+      {
+       "id": "G121_se_queda_desarmado",
+       "ms": 60058
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G121_se_queda_desarmado",
+     "status": "fail",
+     "reasons": [
+      "missing expected flag: vacia_el_cargador"
+     ],
+     "score": 30,
+     "ms_total": 60058,
+     "ms_revision": 14732,
+     "juez": {
+      "acusaciones": 4,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 4,
+      "intentos": 1,
+      "latencia_ms": 14731,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 60,
+     "restas": [
+      "bala_se_cae (critical): -30"
+     ],
+     "veredictos": [
+      "reframe:parcial(falta: En la segunda objeción valida pero no atraviesa: falta repetir la objeción o conectar con FFF completo)",
+      "bullet_theory:parcial(falta: En la segunda objeción las balas son aire genérico ('de verdad le conviene', 'todo lo que le damos'), no hechos concreto)",
+      "indiferencia:cumple",
+      "circulo_cierre:parcial(falta: En la segunda objeción no re-impulsa con bala concreta antes de volver a cerrar)"
+     ],
+     "session_ids": [
+      "61b5f426-01d9-48a2-abe1-90b22fa02a75"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G122_cuatro_que_apuntan_y_le_quedan.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 27192,
+     "mas_lentos": [
+      {
+       "id": "G122_cuatro_que_apuntan_y_le_quedan",
+       "ms": 27192
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G122_cuatro_que_apuntan_y_le_quedan",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 27192,
+     "ms_revision": 3855,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "reframe:cumple",
+      "bullet_theory:cumple",
+      "indiferencia:cumple",
+      "circulo_cierre:cumple"
+     ],
+     "session_ids": [
+      "d5766466-ee27-4e5a-ad35-52442883137c"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G123_precio_con_su_motivo_es_bala.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 40380,
+     "mas_lentos": [
+      {
+       "id": "G123_precio_con_su_motivo_es_bala",
+       "ms": 40380
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G123_precio_con_su_motivo_es_bala",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 40380,
+     "ms_revision": 15034,
+     "juez": {
+      "acusaciones": 3,
+      "fallas_quitadas": 1,
+      "criterios_corregidos": 2,
+      "juzgadas": 3,
+      "intentos": 1,
+      "latencia_ms": 11410,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "circulo_cierre:cumple",
+      "bullet_theory:cumple",
+      "close_with_action:cumple"
+     ],
+     "session_ids": [
+      "22afefab-b1ca-4be0-a73b-220ef30e29ff"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G94_bala_ya_dicha_conectada.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 23710,
+     "mas_lentos": [
+      {
+       "id": "G94_bala_ya_dicha_conectada",
+       "ms": 23710
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G94_bala_ya_dicha_conectada",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 23710,
+     "ms_revision": 4659,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "circulo_cierre:cumple",
+      "bullet_theory:cumple",
+      "close_with_action:cumple"
+     ],
+     "session_ids": [
+      "d8e9ebfd-303b-4812-bab0-050bccfc6d02"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G96_apila_balas.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 50753,
+     "mas_lentos": [
+      {
+       "id": "G96_apila_balas",
+       "ms": 50753
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G96_apila_balas",
+     "status": "pass",
+     "reasons": [],
+     "score": 20,
+     "ms_total": 50753,
+     "ms_revision": 8898,
+     "juez": {
+      "acusaciones": 3,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 3,
+      "intentos": 1,
+      "latencia_ms": 8897,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 50,
+     "restas": [
+      "vacia_el_cargador (major): -30"
+     ],
+     "veredictos": [
+      "reframe:parcial(falta: La tercera F ('lo que encontraron fue que les convino') no trae bala concreta suya, y no cierra con acción después de re)",
+      "no_defensivo:cumple",
+      "bullet_theory:no_cumple(falta: Suelta seis balas de jalón sin escoger cuáles responden a 'está caro': crédito, empaque, duración, exhibidor, mayoreo, m)"
+     ],
+     "session_ids": [
+      "65e50ad6-c784-44c7-a22d-4dac4bb3198d"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G98_responde_sin_discutir.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 52166,
+     "mas_lentos": [
+      {
+       "id": "G98_responde_sin_discutir",
+       "ms": 52166
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G98_responde_sin_discutir",
+     "status": "pass",
+     "reasons": [],
+     "score": 20,
+     "ms_total": 52166,
+     "ms_revision": 7285,
+     "juez": {
+      "acusaciones": 3,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 3,
+      "intentos": 1,
+      "latencia_ms": 7284,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 50,
+     "restas": [
+      "salta_la_bala (major): -30"
+     ],
+     "veredictos": [
+      "reframe:parcial(falta: Falta el re-impulso con bala después de la tercera F y antes del cierre)",
+      "no_defensivo:cumple",
+      "bullet_theory:no_cumple(falta: No da ninguna bala concreta después de FFF: «lo que encontraron» solo nombra el resultado, no algo concreto del producto)"
+     ],
+     "session_ids": [
+      "43a1c839-a77e-4196-af68-72d0167544c6"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V1_4_15_conviccion_se_queda_prueba_cambia.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V1_4_15_conviccion_se_queda_prueba_cambia",
+     "status": "pass",
+     "reasons": [],
+     "raw": {
+      "vara": {
+       "revisados": 2,
+       "sospechosos": 1,
+       "confirmados": 1,
+       "absueltos": 0,
+       "corregidos": 1,
+       "descartados": 0,
+       "detalle": [
+        {
+         "id": "obs1.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "pide_que_pruebe",
+         "frase": "Le dejo unas poquitas para que las pruebe, a ver si se le mueven.",
+         "sospecha": "Presenta la compra como experimento: «para que las pruebe, a ver si se le mueven». Le pasa el riesgo al cliente.",
+         "juez": "reprueba",
+         "razon_juez": "Sí. El vendedor presenta la compra como experimento: «para que las pruebe, a ver si se le mueven» encuadra la oferta como prueba incierta.",
+         "quedo": "corregido"
+        }
+       ]
+      },
+      "ms": 13448
+     },
+     "session_ids": [
+      "ce83d612-1460-4c4e-822d-18b915a0ce36"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V2_5_8_fff_con_una_bala_se_queda_cargador_cambia.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+     "status": "pass",
+     "reasons": [],
+     "raw": {
+      "vara": {
+       "revisados": 2,
+       "sospechosos": 1,
+       "confirmados": 1,
+       "absueltos": 0,
+       "corregidos": 1,
+       "descartados": 0,
+       "detalle": [
+        {
+         "id": "obs1.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "vacia_el_cargador",
+         "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+         "sospecha": "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger las que responden a la objeción del cliente. Vacía el cargador.",
+         "juez": "reprueba",
+         "razon_juez": "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger las que responden a la objeción de lealtad. Es lista completa, no apuntan.",
+         "quedo": "corregido"
+        }
+       ]
+      },
+      "ms": 15607
+     },
+     "session_ids": [
+      "b7d64ee6-1c12-4741-a001-2993b3ca48d1"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan.json": [
+  200,
+  {
+   "harness_version": "v3.45.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan",
+     "status": "pass",
+     "reasons": [],
+     "raw": {
+      "vara": {
+       "revisados": 3,
+       "sospechosos": 1,
+       "confirmados": 1,
+       "absueltos": 0,
+       "corregidos": 0,
+       "descartados": 1,
+       "detalle": [
+        {
+         "id": "obs0.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "pitch_prematuro",
+         "frase": "Oiga, veo que tiene el estante lleno de limpiaparabrisas azules, ¿esos son los que más se mueven?",
+         "sospecha": "Pregunta por qué productos se mueven más, información de su operación comercial.",
+         "juez": "reprueba",
+         "razon_juez": "Sí. La frase pregunta por su inventario (qué tiene en el estante) y qué productos se mueven más: información de su operación comercial.",
+         "quedo": "descartado"
+        }
+       ]
+      },
+      "ms": 17780
+     },
+     "session_ids": [
+      "d27498aa-3fb2-4e83-8789-ee00cb42e067"
+     ]
+    }
+   ]
+  }
+ ]
+}
