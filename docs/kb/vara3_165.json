@@ -1,0 +1,122 @@
+[
+  200,
+  {
+    "harness_version": "v3.43.0",
+    "prompt_version_expected": "v2",
+    "node_id": "1.2",
+    "summary": {
+      "total": 3,
+      "pass": 2,
+      "fail": 1,
+      "skipped": 0,
+      "tiempos": null
+    },
+    "results": [
+      {
+        "id": "V1_4_15_conviccion_se_queda_prueba_cambia",
+        "status": "pass",
+        "reasons": [],
+        "raw": {
+          "vara": {
+            "revisados": 2,
+            "sospechosos": 1,
+            "confirmados": 1,
+            "absueltos": 0,
+            "corregidos": 1,
+            "descartados": 0,
+            "detalle": [
+              {
+                "id": "obs1.ejemplo",
+                "tipo": "ejemplo",
+                "falla": "pide_que_pruebe",
+                "frase": "Le dejo unas poquitas para que las pruebe, a ver si se le mueven.",
+                "sospecha": "Presenta la compra como experimento: 'para que las pruebe, a ver si se le mueven'. Le pasa el riesgo al cliente.",
+                "juez": "reprueba",
+                "razon_juez": "Sí. El vendedor presenta la compra como experimento: «para que las pruebe, a ver si se le mueven» encaja exactamente en lo que la prueba prohíbe.",
+                "quedo": "corregido"
+              }
+            ]
+          },
+          "ms": 15597
+        },
+        "session_ids": [
+          "ae756331-6cf0-4698-9f31-0cf06e1d1610"
+        ]
+      },
+      {
+        "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+        "status": "fail",
+        "reasons": [
+          "texto 1 debía quedar igual y salió: «»"
+        ],
+        "raw": {
+          "vara": {
+            "revisados": 2,
+            "sospechosos": 2,
+            "confirmados": 2,
+            "absueltos": 0,
+            "corregidos": 0,
+            "descartados": 2,
+            "detalle": [
+              {
+                "id": "obs0.ejemplo",
+                "tipo": "ejemplo",
+                "falla": "vacia_el_cargador",
+                "frase": "Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que con la entrega cada martes nunca más perdieron una venta por falta de aceite. Y el primer pedido se lo dejo en mil cincuenta en vez de mil doscientos. ¿Se la traigo este martes o el siguiente?",
+                "sospecha": "Suelta dos balas: 'entrega cada martes nunca más perdieron venta' y 'primer pedido mil cincuenta en vez de mil doscientos', antes de cerrar.",
+                "juez": "reprueba",
+                "razon_juez": "Sí, suelta dos balas: «entrega cada martes nunca más perdieron venta» y «primer pedido en mil cincuenta». FFF no cuenta como bala.",
+                "quedo": "descartado"
+              },
+              {
+                "id": "obs1.ejemplo",
+                "tipo": "ejemplo",
+                "falla": "vacia_el_cargador",
+                "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+                "sospecha": "Suelta cinco balas: crédito 30 días, empaque reforzado, dura el doble, exhibidor gratis, precio mayoreo por veinte. Abruma sin cerrar.",
+                "juez": "reprueba",
+                "razon_juez": "Sí. Después de FFF, suelta cinco balas: crédito, empaque, duración, exhibidor y precio mayoreo. Son dos o más en la misma respuesta.",
+                "quedo": "descartado"
+              }
+            ]
+          },
+          "ms": 21675
+        },
+        "session_ids": [
+          "1c02345e-ffd5-4359-ae42-d8aa537bd293"
+        ]
+      },
+      {
+        "id": "V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan",
+        "status": "pass",
+        "reasons": [],
+        "raw": {
+          "vara": {
+            "revisados": 3,
+            "sospechosos": 1,
+            "confirmados": 1,
+            "absueltos": 0,
+            "corregidos": 0,
+            "descartados": 1,
+            "detalle": [
+              {
+                "id": "obs0.ejemplo",
+                "tipo": "ejemplo",
+                "falla": "pitch_prematuro",
+                "frase": "Oiga, veo que tiene el estante lleno de limpiaparabrisas azules, ¿esos son los que más se mueven?",
+                "sospecha": "Pregunta por qué productos se mueven más, información de su operación comercial.",
+                "juez": "reprueba",
+                "razon_juez": "Sí. La frase pregunta por su inventario (qué tiene en el estante) y qué productos se mueven más: información de su operación comercial.",
+                "quedo": "descartado"
+              }
+            ]
+          },
+          "ms": 17011
+        },
+        "session_ids": [
+          "8422e757-99ed-4f98-b322-eaa0e4fd5188"
+        ]
+      }
+    ]
+  }
+]

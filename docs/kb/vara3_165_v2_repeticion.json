@@ -1,0 +1,60 @@
+[
+  200,
+  {
+    "harness_version": "v3.43.0",
+    "prompt_version_expected": "v2",
+    "node_id": "1.2",
+    "summary": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skipped": 0,
+      "tiempos": null
+    },
+    "results": [
+      {
+        "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+        "status": "fail",
+        "reasons": [
+          "texto 1 debía quedar igual y salió: «»"
+        ],
+        "raw": {
+          "vara": {
+            "revisados": 2,
+            "sospechosos": 2,
+            "confirmados": 2,
+            "absueltos": 0,
+            "corregidos": 1,
+            "descartados": 1,
+            "detalle": [
+              {
+                "id": "obs0.ejemplo",
+                "tipo": "ejemplo",
+                "falla": "vacia_el_cargador",
+                "frase": "Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que con la entrega cada martes nunca más perdieron una venta por falta de aceite. Y el primer pedido se lo dejo en mil cincuenta en vez de mil doscientos. ¿Se la traigo este martes o el siguiente?",
+                "sospecha": "Suelta dos balas: la entrega cada martes y el descuento del primer pedido, antes de cerrar. Debería dar una sola bala antes de pedir la decisión.",
+                "juez": "reprueba",
+                "razon_juez": "Sí, suelta dos balas: (1) entrega cada martes para no perder ventas, (2) descuento en primer pedido. La regla aclara que «lo que encontraron» no cuenta como bala.",
+                "quedo": "descartado"
+              },
+              {
+                "id": "obs1.ejemplo",
+                "tipo": "ejemplo",
+                "falla": "vacia_el_cargador",
+                "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+                "sospecha": "Suelta cinco balas en una respuesta: crédito, empaque, duración, exhibidor y precio de mayoreo. Abruma al cliente y se queda sin munición.",
+                "juez": "reprueba",
+                "razon_juez": "Sí. Después de FFF, suelta cinco balas: crédito, empaque, duración, exhibidor y precio mayoreo. Son dos o más en la misma respuesta.",
+                "quedo": "corregido"
+              }
+            ]
+          },
+          "ms": 20643
+        },
+        "session_ids": [
+          "1770e939-b004-49cf-8189-73c3cfda9965"
+        ]
+      }
+    ]
+  }
+]

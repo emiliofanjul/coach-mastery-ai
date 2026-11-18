@@ -1,5 +1,13 @@
 # Roadmap
 
+- [x] Mensaje 165: Paso 0, 1183/1183 en 98 archivos, ocho MD5 vigentes y regla objection.vacia_el_cargador f4298c98… exactos.
+- [x] Mensaje 165: Paso 1, nueve entregas exactas; cinco funciones idénticas byte por byte; instalador una vez: 6 archivos exactos; regla_165.sql tal cual con huella final 39c501676…; entregas temporales retiradas y regla_165_regresar.sql conservado.
+- [x] Mensaje 165: Paso 2, 1215/1215 en 99 archivos y build automático OK; no hay un registro separado de la revisión de tipos.
+- [x] Mensaje 165: Paso 3, desplegadas únicamente closer-voice y harness-runner.
+- [x] Mensaje 165: Paso 4, V1 y V3 pasan; V2 falla dos veces porque el juez sigue contando la entrega de la tercera F como bala. Raw y juicios guardados en docs/kb/vara3_165.json y vara3_165_v2_repeticion.json.
+- [x] Mensaje 165: Paso 5 no ejecutado por la condición de parada de V2; no se corrió la red completa.
+- [x] Mensaje 165: Paso 6, sin publicar ni correr la red completa. Ocho MD5 restaurados, tres archivos nuevos eliminados, regla regresada a f4298c98…, 1183/1183 en 98 archivos y build OK; closer-voice y harness-runner redesplegadas, red viva v3.41.1 con 152 casos. Espera revisión de Emilio.
+
 - [x] Mensaje 163: Paso 0, 1183/1183 pruebas en 98 archivos y cinco MD5 exactos; siete entregas verificadas sin instalar.
 - [x] Mensaje 163: línea base v3.41.1 completa el 10-nov-2026: primera corrida 144 pass, 3 fail, 5 skipped; repeticiones G57 y P7_4 pass, G60 fail nuevamente; promedio 28623 ms. Tabla e informes guardados en docs/kb/linea_base_163.{json,md}.
 - [x] Mensaje 163-B: cinco entregas exactas e instalador una vez; 1207/1207 en 99 archivos; desplegadas solo closer-voice y harness-runner en el turno anterior.
@@ -178,4 +186,4 @@
 - [ ] Emilio: probar pantallas de giro y «Tu negocio» con cuenta personal nueva. Bloqueador: no crear cuentas para probar.
 - [x] Mensaje 162: panel «Prácticas» (/practicas) solo administradores; SQL tal cual (es_admin_plataforma, admin_practicas, admin_practica, regla de audio); 11 archivos; 1183/1183 en 98; verificado con sesión admin (tabla, audio por turnos, copiar) y sin privilegios (bloqueo en pantalla y en base); publicado.
 
-- 164: V2 (FFF con una bala) falló dos veces; todo regresado y redesplegado, sin publicar. Espera nueva versión de Emilio.
+- 164 y 165: V2 (FFF con una bala) falló dos veces en cada intento; en 165 el juez siguió contando la entrega de la tercera F como bala pese a la aclaración. Todo regresado y redesplegado, sin publicar. Espera nueva versión de Emilio.
