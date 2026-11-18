@@ -1,0 +1,203 @@
+2026-11-18T22:40:41Z INFO [closer-voice] nota {
+  session_id: "ea8b8857-c4ef-48be-8672-e4b206e14744",
+  node_id: "5.12",
+  score: 15,
+  score_del_modelo: 45,
+  fallas: [ "vacia_el_cargador" ]
+}
+2026-11-18T22:40:27Z INFO [closer-voice] juez de las pruebas {
+  session_id: "ea8b8857-c4ef-48be-8672-e4b206e14744",
+  node_id: "5.12",
+  acusaciones: [
+    {
+      id: "vacia_el_cargador",
+      tipo: "falla",
+      senalado: "Esta caja le rinde once servicios contra ocho de la que trae, se la dejo a treinta días para que la pague con lo que ya le dejó, el primer pedido le queda en mil cincuenta, y le respeto ese precio tres meses aunque suba la lista."
+    },
+    {
+      id: "objections.reframe",
+      tipo: "criterio",
+      senalado: "En la segunda objeción (proveedor de años) no usa FFF ni RRR: solo dice 'lo entiendo' y repite que le conviene"
+    },
+    {
+      id: "objections.bullet_theory",
+      tipo: "criterio",
+      senalado: "Vacía el cargador en la primera objeción (cinco balas de jalón) y en la segunda ya no tiene munición concreta que responda a la lealtad al proveedor"
+    },
+    {
+      id: "objections.circulo_cierre",
+      tipo: "criterio",
+      senalado: "En la primera objeción sí atraviesa y cierra, pero en la segunda no re-impulsa con bala: solo repite el cierre sin subir el impulso"
+    }
+  ],
+  juicios: [
+    {
+      id: "vacia_el_cargador",
+      tipo: "falla",
+      conducta: "reprueba",
+      razon: "Suelta cinco balas en turno 3 ante precio. En turno 5, ante lealtad al proveedor, no tiene bala concreta: se gastó las balas antes.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy: se ve alto. A don Aurelio, el de la San José, le pasaba igual, y lo que encontró fue que sacando la cuenta por servicio le salía más barato. Esta caja le rinde once servicios contra ocho de la que trae, se la dejo a treinta días para que la pague con lo que ya le dejó, el primer pedido le queda en mil cincuenta, y le respeto ese precio tres meses aunque suba la lista. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          turno: 4,
+          quien: "cliente",
+          dijo: "Bueno, eso sí... pero es que además ya tengo proveedor de años, y cambiarle me da cosa."
+        },
+        {
+          turno: 5,
+          quien: "vendedor",
+          dijo: "Lo entiendo, don Chuy. Pues de verdad le conviene, ya le dije todo lo que le damos. ¿Se la traigo este martes o el siguiente?"
+        }
+      ]
+    },
+    {
+      id: "objections.reframe",
+      tipo: "criterio",
+      conducta: "reprueba",
+      razon: "Turno 3: FFF completo. Turno 5: solo valida («lo entiendo»), no dice que otros sintieron lo mismo ni lo que encontraron. Falta FFF.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy: se ve alto. A don Aurelio, el de la San José, le pasaba igual, y lo que encontró fue que sacando la cuenta por servicio le salía más barato. Esta caja le rinde once servicios contra ocho de la que trae, se la dejo a treinta días para que la pague con lo que ya le dejó, el primer pedido le queda en mil cincuenta, y le respeto ese precio tres meses aunque suba la lista. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          turno: 4,
+          quien: "cliente",
+          dijo: "Bueno, eso sí... pero es que además ya tengo proveedor de años, y cambiarle me da cosa."
+        },
+        {
+          turno: 5,
+          quien: "vendedor",
+          dijo: "Lo entiendo, don Chuy. Pues de verdad le conviene, ya le dije todo lo que le damos. ¿Se la traigo este martes o el siguiente?"
+        }
+      ]
+    },
+    {
+      id: "objections.bullet_theory",
+      tipo: "criterio",
+      conducta: "reprueba",
+      razon: "Turno 3: cinco balas de jalón. Turno 5: no tiene bala concreta para lealtad al proveedor. No dosificó: se quedó sin munición.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy: se ve alto. A don Aurelio, el de la San José, le pasaba igual, y lo que encontró fue que sacando la cuenta por servicio le salía más barato. Esta caja le rinde once servicios contra ocho de la que trae, se la dejo a treinta días para que la pague con lo que ya le dejó, el primer pedido le queda en mil cincuenta, y le respeto ese precio tres meses aunque suba la lista. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          turno: 4,
+          quien: "cliente",
+          dijo: "Bueno, eso sí... pero es que además ya tengo proveedor de años, y cambiarle me da cosa."
+        },
+        {
+          turno: 5,
+          quien: "vendedor",
+          dijo: "Lo entiendo, don Chuy. Pues de verdad le conviene, ya le dije todo lo que le damos. ¿Se la traigo este martes o el siguiente?"
+        }
+      ]
+    },
+    {
+      id: "objections.circulo_cierre",
+      tipo: "criterio",
+      conducta: "reprueba",
+      razon: "Turno 3: atraviesa, re-impulsa con balas y cierra. Turno 5: atraviesa y cierra, pero no re-impulsa con bala concreta antes de cerrar.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy: se ve alto. A don Aurelio, el de la San José, le pasaba igual, y lo que encontró fue que sacando la cuenta por servicio le salía más barato. Esta caja le rinde once servicios contra ocho de la que trae, se la dejo a treinta días para que la pague con lo que ya le dejó, el primer pedido le queda en mil cincuenta, y le respeto ese precio tres meses aunque suba la lista. ¿Se la traigo este martes o el siguiente?"
+        },
+        {
+          turno: 4,
+          quien: "cliente",
+          dijo: "Bueno, eso sí... pero es que además ya tengo proveedor de años, y cambiarle me da cosa."
+        },
+        {
+          turno: 5,
+          quien: "vendedor",
+          dijo: "Lo entiendo, don Chuy. Pues de verdad le conviene, ya le dije todo lo que le damos. ¿Se la traigo este martes o el siguiente?"
+        }
+      ]
+    }
+  ]
+}
+2026-11-18T22:40:07Z INFO [closer-voice] nota {
+  session_id: "b643caad-3873-4352-95a8-55952c2eae85",
+  node_id: "5.8",
+  score: 20,
+  score_del_modelo: 35,
+  fallas: [ "vacia_el_cargador" ]
+}
+2026-11-18T22:39:59Z INFO [closer-voice] juez de las pruebas {
+  session_id: "b643caad-3873-4352-95a8-55952c2eae85",
+  node_id: "5.8",
+  acusaciones: [
+    {
+      id: "vacia_el_cargador",
+      tipo: "falla",
+      senalado: "Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo."
+    },
+    {
+      id: "objections.reframe",
+      tipo: "criterio",
+      senalado: "La tercera F (lo que encontraron) es aire: 'les convino' no dice nada concreto. Y no cierra con acción después de la bala."
+    },
+    {
+      id: "objections.bullet_theory",
+      tipo: "criterio",
+      senalado: "Ninguna bala apunta a lo caro: crédito, empaque, duración, exhibidor y mayoreo no responden por qué vale 1,250 la cubeta."
+    }
+  ],
+  juicios: [
+    {
+      id: "vacia_el_cargador",
+      tipo: "falla",
+      conducta: "reprueba",
+      razon: "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, mayoreo) sin escoger las que responden a 'está caro'. Es lista de todo lo que trae.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo."
+        }
+      ]
+    },
+    {
+      id: "objections.reframe",
+      tipo: "criterio",
+      conducta: "reprueba",
+      razon: "Tiene las tres F (entiende cómo se siente, varios sintieron, encontraron que convino) y suelta balas. No cierra con acción: falta el siguiente paso concreto.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo."
+        }
+      ]
+    },
+    {
+      id: "objections.bullet_theory",
+      tipo: "criterio",
+      conducta: "reprueba",
+      razon: "Suelta cinco elementos (crédito, empaque, duración, exhibidor, mayoreo). Ninguno responde directamente a 'está caro': no justifican el precio de 1,250.",
+      citas: [
+        { turno: 2, quien: "cliente", dijo: "Está caro, joven." },
+        {
+          turno: 3,
+          quien: "vendedor",
+          dijo: "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo."
+        }
+      ]
+    }
+  ]
+}

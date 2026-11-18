@@ -1,0 +1,511 @@
+{
+ "p4_G119_dos_balas_que_apuntan": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 23609,
+     "mas_lentos": [
+      {
+       "id": "G119_dos_balas_que_apuntan",
+       "ms": 23609
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G119_dos_balas_que_apuntan",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 23609,
+     "ms_revision": 3312,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "reframe:cumple",
+      "no_defensivo:cumple",
+      "bullet_theory:cumple"
+     ],
+     "session_ids": [
+      "7665c6b5-4f55-41bd-95f6-03b5659496e5"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G120_tres_balas_que_apuntan": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 21789,
+     "mas_lentos": [
+      {
+       "id": "G120_tres_balas_que_apuntan",
+       "ms": 21789
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G120_tres_balas_que_apuntan",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 21789,
+     "ms_revision": 2841,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "reframe:cumple",
+      "no_defensivo:cumple",
+      "bullet_theory:cumple"
+     ],
+     "session_ids": [
+      "5bf6b001-e6f4-42e0-bb2f-c4bf286497c4"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G121_se_queda_desarmado": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 74534,
+     "mas_lentos": [
+      {
+       "id": "G121_se_queda_desarmado",
+       "ms": 74534
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G121_se_queda_desarmado",
+     "status": "pass",
+     "reasons": [],
+     "score": 15,
+     "ms_total": 74534,
+     "ms_revision": 16540,
+     "juez": {
+      "acusaciones": 4,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 4,
+      "intentos": 1,
+      "latencia_ms": 16538,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 45,
+     "restas": [
+      "vacia_el_cargador (major): -30"
+     ],
+     "veredictos": [
+      "reframe:parcial(falta: En la segunda objeción (proveedor de años) no usa FFF ni RRR: solo dice 'lo entiendo' y repite que le conviene)",
+      "bullet_theory:no_cumple(falta: Vacía el cargador en la primera objeción (cinco balas de jalón) y en la segunda ya no tiene munición concreta que respon)",
+      "indiferencia:cumple",
+      "circulo_cierre:parcial(falta: En la primera objeción sí atraviesa y cierra, pero en la segunda no re-impulsa con bala: solo repite el cierre sin subir)"
+     ],
+     "session_ids": [
+      "ea8b8857-c4ef-48be-8672-e4b206e14744"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G122_cuatro_que_apuntan_y_le_quedan": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 33551,
+     "mas_lentos": [
+      {
+       "id": "G122_cuatro_que_apuntan_y_le_quedan",
+       "ms": 33551
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G122_cuatro_que_apuntan_y_le_quedan",
+     "status": "pass",
+     "reasons": [],
+     "score": 85,
+     "ms_total": 33551,
+     "ms_revision": 4171,
+     "juez": {
+      "acusaciones": 1,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 1,
+      "intentos": 1,
+      "latencia_ms": 4170,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 85,
+     "restas": [],
+     "veredictos": [
+      "reframe:cumple",
+      "bullet_theory:parcial(falta: En el turno 2 suelta cuatro balas de jalón sin dosificar: rendimiento, crédito, precio de entrada y garantía de precio. )",
+      "indiferencia:cumple",
+      "circulo_cierre:cumple"
+     ],
+     "session_ids": [
+      "15e5ed34-0178-43eb-a9ef-a0d15987df35"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_G96_apila_balas": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 41164,
+     "mas_lentos": [
+      {
+       "id": "G96_apila_balas",
+       "ms": 41164
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G96_apila_balas",
+     "status": "pass",
+     "reasons": [],
+     "score": 20,
+     "ms_total": 41164,
+     "ms_revision": 9340,
+     "juez": {
+      "acusaciones": 3,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "juzgadas": 3,
+      "intentos": 1,
+      "latencia_ms": 9338,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 50,
+     "restas": [
+      "vacia_el_cargador (major): -30"
+     ],
+     "veredictos": [
+      "reframe:parcial(falta: La tercera F (lo que encontraron) es aire: 'les convino' no dice nada concreto. Y no cierra con acción después de la bal)",
+      "no_defensivo:cumple",
+      "bullet_theory:no_cumple(falta: Ninguna bala apunta a lo caro: crédito, empaque, duración, exhibidor y mayoreo no responden por qué vale 1,250 la cubeta)"
+     ],
+     "session_ids": [
+      "b643caad-3873-4352-95a8-55952c2eae85"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V1_4_15_conviccion_se_queda_prueba_cambia": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V1_4_15_conviccion_se_queda_prueba_cambia",
+     "status": "pass",
+     "reasons": [],
+     "raw": {
+      "vara": {
+       "revisados": 2,
+       "sospechosos": 1,
+       "confirmados": 1,
+       "absueltos": 0,
+       "corregidos": 1,
+       "descartados": 0,
+       "detalle": [
+        {
+         "id": "obs1.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "pide_que_pruebe",
+         "frase": "Le dejo unas poquitas para que las pruebe, a ver si se le mueven.",
+         "sospecha": "Presenta la compra como experimento: 'para que las pruebe, a ver si se le mueven' pasa el riesgo al cliente.",
+         "juez": "reprueba",
+         "razon_juez": "Sí. El vendedor presenta la compra como experimento: «para que las pruebe, a ver si se le mueven» encaja exactamente en lo que la prueba prohíbe.",
+         "quedo": "corregido"
+        }
+       ]
+      },
+      "ms": 11818
+     },
+     "session_ids": [
+      "63d81c7d-3f73-4bd7-bc09-0ca1270f37ca"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V2_5_8_fff_con_una_bala_se_queda_cargador_cambia": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+     "status": "fail",
+     "reasons": [
+      "texto 1 debía quedar igual y salió: «»"
+     ],
+     "raw": {
+      "vara": {
+       "revisados": 2,
+       "sospechosos": 2,
+       "confirmados": 2,
+       "absueltos": 0,
+       "corregidos": 0,
+       "descartados": 2,
+       "detalle": [
+        {
+         "id": "obs0.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "salta_la_bala",
+         "frase": "Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que con la entrega cada martes nunca más perdieron una venta por falta de aceite. Y el primer pedido se lo dejo en mil cincuenta en vez de mil doscientos. ¿Se la traigo este martes o el siguiente?",
+         "sospecha": "Después de atender la objeción con FFF, cierra sin dar ninguna bala nueva que suba el impulso. 'Lo que encontraron' no cuenta como bala.",
+         "juez": "reprueba",
+         "razon_juez": "Después de FFF, pide decisión sin dar bala. El descuento no cuenta como bala que suba impulso. Reprueba.",
+         "quedo": "descartado"
+        },
+        {
+         "id": "obs1.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "vacia_el_cargador",
+         "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+         "sospecha": "Suelta una lista de seis elementos (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger. Ninguna apunta a la objeción del cliente sobre cambiar de proveedor. Es lista completa.",
+         "juez": "reprueba",
+         "razon_juez": "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger las que responden a la objeción de lealtad. Es lista completa, no apuntan.",
+         "quedo": "descartado"
+        }
+       ]
+      },
+      "ms": 23708
+     },
+     "session_ids": [
+      "c870d7c8-7ea5-473f-b7e0-80571b15bf4e"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V2_rep": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+     "status": "fail",
+     "reasons": [
+      "texto 1 debía quedar igual y salió: «Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que con la entrega cada martes nunca más perdieron una venta por »"
+     ],
+     "raw": {
+      "vara": {
+       "revisados": 2,
+       "sospechosos": 2,
+       "confirmados": 2,
+       "absueltos": 0,
+       "corregidos": 2,
+       "descartados": 0,
+       "detalle": [
+        {
+         "id": "obs0.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "salta_la_bala",
+         "frase": "Entiendo cómo se siente, don Chuy. Otros clientes sintieron lo mismo, y lo que encontraron fue que con la entrega cada martes nunca más perdieron una venta por falta de aceite. Y el primer pedido se lo dejo en mil cincuenta en vez de mil doscientos. ¿Se la traigo este martes o el siguiente?",
+         "sospecha": "Después de atender la objeción con FFF, cierra sin dar ninguna bala nueva que suba el impulso. La bala de la entrega ya estaba en FFF.",
+         "juez": "reprueba",
+         "razon_juez": "Después de FFF, pide decisión sin dar bala. El descuento no cuenta como bala que suba impulso. Reprueba.",
+         "quedo": "corregido"
+        },
+        {
+         "id": "obs1.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "vacia_el_cargador",
+         "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+         "sospecha": "Suelta una lista de seis elementos sin escoger: crédito, empaque, duración, exhibidor, precio mayoreo. Ninguna apunta específicamente a la objeción del cliente sobre cambiar de proveedor.",
+         "juez": "reprueba",
+         "razon_juez": "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger las que responden a la objeción de lealtad. Es lista completa, no apuntan.",
+         "quedo": "corregido"
+        }
+       ]
+      },
+      "ms": 17758
+     },
+     "session_ids": [
+      "9ea8dda2-23d8-489e-b54d-3282d47b2799"
+     ]
+    }
+   ]
+  }
+ ],
+ "p4_V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan": [
+  200,
+  {
+   "harness_version": "v3.44.0",
+   "prompt_version_expected": "v2",
+   "node_id": "1.2",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": null
+   },
+   "results": [
+    {
+     "id": "V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan",
+     "status": "pass",
+     "reasons": [],
+     "raw": {
+      "vara": {
+       "revisados": 3,
+       "sospechosos": 1,
+       "confirmados": 1,
+       "absueltos": 0,
+       "corregidos": 0,
+       "descartados": 1,
+       "detalle": [
+        {
+         "id": "obs0.ejemplo",
+         "tipo": "ejemplo",
+         "falla": "pitch_prematuro",
+         "frase": "Oiga, veo que tiene el estante lleno de limpiaparabrisas azules, ¿esos son los que más se mueven?",
+         "sospecha": "Pregunta por qué productos se mueven más, información de su operación comercial.",
+         "juez": "reprueba",
+         "razon_juez": "Sí. La frase pregunta por su inventario (qué tiene en el estante) y qué productos se mueven más: información de su operación comercial.",
+         "quedo": "descartado"
+        }
+       ]
+      },
+      "ms": 16517
+     },
+     "session_ids": [
+      "3c23a27b-78e6-4544-8638-f133ff8b2949"
+     ]
+    }
+   ]
+  }
+ ]
+}
