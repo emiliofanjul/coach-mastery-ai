@@ -2562,6 +2562,10 @@ export type Database = {
         }[]
       }
       apply_invite_code: { Args: { _code: string }; Returns: Json }
+      avanzar_nodo: {
+        Args: { _node_id: string; _prueba?: Json }
+        Returns: Json
+      }
       consume_credits: {
         Args: { _seller_id: string; _session_type: string }
         Returns: Json
