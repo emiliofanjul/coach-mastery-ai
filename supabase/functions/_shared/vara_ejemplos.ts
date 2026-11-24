@@ -35,7 +35,7 @@
 //      cambia. Ahora sí es la misma vara.
 //
 // Sin imports de Deno: funciona en Deno y en Node (se prueba ejecutándolo).
-import { LARGO_REGLA_JUEZ, armarEntradaJuez, type Juicio } from "./juez_pruebas.ts";
+import { LARGO_REGLA_JUEZ, armarEntradaJuez, citaEnConversacion, type Juicio } from "./juez_pruebas.ts";
 import { aplicarAuditoria, textosDeEvaluacion, type TextoAuditable, type VeredictoAuditor } from "./auditar_coaching.ts";
 
 export interface FallaConPrueba { id: string; regla: string; en_este_nodo: string; severidad: string }
@@ -219,6 +219,17 @@ export function conversacionConLaFrase(conversacion: Turno[] | undefined, origin
   return [...turnos.slice(0, mejor), { role: "user", content: frase }];
 }
 
+/**
+ * ¿El juicio se apoya en la frase del coach? La frase es el último turno de la
+ * conversación que recibe el juez (conversacionConLaFrase), con el número de
+ * turno con que el juez la ve (armarEntradaJuez numera los últimos 40).
+ */
+export function citaLaFrase(j: Juicio, conv: Turno[]): boolean {
+  const turno = Math.min(conv.length, 40);
+  const citas = Array.isArray(j.citas) ? j.citas : [];
+  return citas.some((c) => Number(c?.turno) === turno && c?.quien === "vendedor" && citaEnConversacion(c, conv));
+}
+
 interface Sospecha { id: string; tipo: string; original: string; frase: string; falla: string; sospecha: string; corregido?: string }
 
 /**
@@ -234,15 +245,25 @@ async function confirmar(
     // Una sospecha con una falla que el nodo no tiene no se sostiene: no hay prueba contra la cual medirla.
     if (!falla) { out.set(s.id, { conducta: "pasa", razon: `la falla «${s.falla}» no es de este nodo` }); return; }
     const frase = s.frase.trim() || s.original;
+    const conv = conversacionConLaFrase(conversacion, s.original, frase);
     const entrada = armarEntradaJuez(
       [{ id: falla.id, tipo: "falla", regla: falla.regla, en_este_nodo: falla.en_este_nodo, senalado: frase }],
-      conversacionConLaFrase(conversacion, s.original, frase),
+      conv,
     );
     for (let i = 1; i <= intentos; i++) {
       try {
         const juicios = await juez(entrada, 1);
         const j = Array.isArray(juicios) ? juicios.find((x) => x.id === falla.id) : undefined;
-        if (j) { out.set(s.id, { conducta: j.conducta === "reprueba" ? "reprueba" : "pasa", razon: String(j.razon ?? "") }); return; }
+        if (j) {
+          const razon = String(j.razon ?? "");
+          if (j.conducta !== "reprueba") { out.set(s.id, { conducta: "pasa", razon }); return; }
+          // Mensaje 169: se juzga el texto del coach, no la práctica. Un «reprueba»
+          // que no cita la frase del coach (el último turno) juzgó otros turnos del
+          // vendedor: no confirma nada sobre el texto. P4_12, red del 168.
+          if (citaLaFrase(j, conv)) { out.set(s.id, { conducta: "reprueba", razon }); return; }
+          out.set(s.id, { conducta: "pasa", razon: "el juez reprobó por otros turnos, no por el texto del coach: " + razon });
+          return;
+        }
       } catch (e) {
         console.error(`[vara] juez, intento ${i}:`, e);
       }

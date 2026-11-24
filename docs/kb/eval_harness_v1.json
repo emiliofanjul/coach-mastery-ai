@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.46.0",
+  "harness_version": "v3.47.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -7186,6 +7186,56 @@
           "no_cierra"
         ],
         "rationale": "Un precio con su motivo es bala de precio, aunque ya se haya dicho (objection.cierra_sin_bala, mensaje 167)."
+      }
+    },
+    {
+      "id": "V4_4_12_mision_se_juzga_por_su_texto",
+      "node_id": "4.12",
+      "description": "Mensaje 169. En la red del 168, la vara sospechó de una misión del 4.12 que proponía cerrar las preguntas con «¿verdad?» o «¿no le ha pasado?», y el juez la reprobó citando otros turnos del vendedor de la práctica, no el texto de la misión: la misión salió cambiada en un caso perfecto. Ahora un «reprueba» solo confirma si cita la frase del coach. (1) La misión que ancla las preguntas en lo que dijo el cliente debe quedar igual. (2) «¿Verdad que a usted también le gustaría ganar más?» es la obviedad capciosa que la prueba nombra: no puede salir igual.",
+      "transcript": [
+        {
+          "role": "assistant",
+          "text": "Pues lo que más coraje me da es mandar clientes a la competencia cuando me falta el aceite."
+        },
+        {
+          "role": "user",
+          "text": "Usted me decía que lo que más coraje le da es mandar clientes a la competencia, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, la verdad sí."
+        },
+        {
+          "role": "user",
+          "text": "Yo paso cada martes por esta zona, así que lo que se le acaba en la semana lo tiene el martes siguiente. Y un cliente que se va por un faltante, a veces ya no regresa, ¿no le ha pasado?"
+        },
+        {
+          "role": "assistant",
+          "text": "Sí, me ha pasado. El de las combis ya no volvió."
+        },
+        {
+          "role": "user",
+          "text": "Por eso: con la entrega de cada martes, el de las combis y los demás encuentran su aceite aquí. Tener el producto cuando se lo piden le cuida justo eso, ¿verdad?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues sí, eso es lo que necesito."
+        }
+      ],
+      "vara_textos": [
+        {
+          "tipo": "mision",
+          "debe": "quedar_igual",
+          "texto": "Tu tren va bien: en tu siguiente intento, sigue anclando cada pregunta en algo que el cliente te contó, y ciérrala con un «¿verdad?» o un «¿no le ha pasado?»."
+        },
+        {
+          "tipo": "ejemplo",
+          "debe": "cambiar",
+          "texto": "¿Verdad que a usted también le gustaría ganar más?"
+        }
+      ],
+      "expected": {
+        "rationale": "La vara juzga el texto del coach, no los turnos de la práctica (mensaje 169)."
       }
     }
   ]

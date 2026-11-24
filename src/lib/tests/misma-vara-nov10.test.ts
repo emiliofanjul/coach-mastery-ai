@@ -114,7 +114,10 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
       const a = e.acusaciones[0];
       const c = decide(a.frase_que_cito_el_evaluador, e);
       if (c === null) throw new Error("modelo HTTP 529");
-      return [{ id: a.id, tipo: "falla", conducta: c, razon: c === "reprueba" ? "Le pide su operación comercial." : "No le pide nada de su operación." }];
+      // Como el juez real: cita la frase en que se apoya, con su turno (la del vendedor, la última).
+      const ultimo = e.conversacion[e.conversacion.length - 1];
+      return [{ id: a.id, tipo: "falla", conducta: c, razon: c === "reprueba" ? "Le pide su operación comercial." : "No le pide nada de su operación.",
+        citas: [{ turno: ultimo.turno, quien: ultimo.quien, dijo: ultimo.dijo }] }];
     };
     return { juez, entradas };
   }
@@ -138,6 +141,33 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
     expect(r).toMatchObject({ sospechosos: 1, confirmados: 0, absueltos: 1, corregidos: 0, descartados: 0 });
     expect(JSON.stringify(ev)).toBe(antes);
     expect(r.detalle[0]).toMatchObject({ id: "obs0.ejemplo", juez: "pasa", quedo: "igual" });
+  });
+
+  it("mensaje 169: un «reprueba» que no cita la frase del coach no confirma nada (P4_12: el juez juzgó otros turnos)", async () => {
+    const larga = [
+      { role: "user", content: "Buenos días, don Beto. ¿Cuántos años lleva con el negocio, oiga?" },
+      { role: "assistant", content: "Ya van para veinte." },
+      { role: "user", content: "Oiga, veo que tiene el estante lleno de limpiaparabrisas azules. ¿Qué es?" },
+      { role: "assistant", content: "Los limpiaparabrisas." },
+    ];
+    const ev = evaluacion(), antes = JSON.stringify(ev);
+    const m = modelo((ts) => ts.map((t) => (t.id === "obs0.ejemplo" ? sospecha({ corregido }) : pasa(t.id))));
+    // Reprueba, pero cita el turno 1 (de la práctica), no la frase del coach.
+    const juezOtroTurno = async (entrada: string) => {
+      const e = JSON.parse(entrada);
+      return [{ id: e.acusaciones[0].id, tipo: "falla", conducta: "reprueba" as const, razon: "Pregunta qué se mueve más.",
+        citas: [{ turno: 1, quien: "vendedor", dijo: "¿Cuántos años lleva con el negocio, oiga?" }] }];
+    };
+    const r = await pasarPorLaVara({ ev, guion: guionDe("1.2"), paso: 1, conversacion: larga, llamar: m.llamar, juez: juezOtroTurno });
+    expect(r).toMatchObject({ sospechosos: 1, confirmados: 0, absueltos: 1, corregidos: 0, descartados: 0 });
+    expect(JSON.stringify(ev)).toBe(antes);
+    expect(r.detalle[0].razon_juez).toContain("el juez reprobó por otros turnos, no por el texto del coach");
+    // Y sin citas tampoco.
+    const ev2 = evaluacion(), antes2 = JSON.stringify(ev2);
+    const sinCitas = async (entrada: string) => [{ id: JSON.parse(entrada).acusaciones[0].id, tipo: "falla", conducta: "reprueba" as const, razon: "x" }];
+    const r2 = await pasarPorLaVara({ ev: ev2, guion: guionDe("1.2"), paso: 1, conversacion: larga, llamar: m.llamar, juez: sinCitas });
+    expect(r2).toMatchObject({ confirmados: 0, absueltos: 1 });
+    expect(JSON.stringify(ev2)).toBe(antes2);
   });
 
   it("el juez recibe la regla completa y una conversación donde el vendedor dice la frase en su momento", async () => {
@@ -371,10 +401,12 @@ describe("la red de pruebas lo protege", () => {
     const vara = red.cases.filter((c: any) => Array.isArray(c.vara_textos));
     expect(vara.map((c: any) => c.id)).toEqual([
       "V1_4_15_conviccion_se_queda_prueba_cambia", "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia", "V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan",
+      // Mensaje 169: la misión se juzga por su texto, no por los turnos de la práctica.
+      "V4_4_12_mision_se_juzga_por_su_texto",
     ]);
     const debe = vara.flatMap((c: any) => c.vara_textos.map((t: any) => t.debe));
-    expect(debe.filter((d: string) => d === "quedar_igual")).toHaveLength(4);
-    expect(debe.filter((d: string) => d === "cambiar")).toHaveLength(3);
+    expect(debe.filter((d: string) => d === "quedar_igual")).toHaveLength(5);
+    expect(debe.filter((d: string) => d === "cambiar")).toHaveLength(4);
     // Cada caso tiene un turno del vendedor que la frase reemplaza.
     for (const c of vara) expect(c.transcript.some((t: any) => t.role === "user"), c.id).toBe(true);
     expect(corredor).toContain("async function casoDeVara(");
