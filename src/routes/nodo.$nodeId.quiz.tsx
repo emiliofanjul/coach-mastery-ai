@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { BarraSegmentos, EncabezadoPantalla, estiloBoton } from "@/components/closer/piezas";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
-import { restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
+import { restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { avanzarNodo, textoDeRechazo } from "@/lib/avanzar-nodo";
 import VictoryScreen from "@/components/VictoryScreen";
 import RetryScreen from "@/components/RetryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
@@ -125,107 +125,24 @@ function NodoQuizPage() {
       setSaving(false);
     };
     try {
-      const stars: 1 | 2 | 3 = 3;
-      // Auth: leemos del localStorage — el SDK deadlockea en navigator.locks
-      // (auth.getUser + lecturas en el mismo tick se quedan colgados).
-      const session = getStoredSupabaseSession();
-      if (!session) {
-        return fail("session", "no stored session");
+      // Mensaje 170: el servidor revisa las respuestas contra las correctas de la
+      // base, guarda el avance y abre el siguiente nodo. La app ya no escribe
+      // node_progress ni sellers directo.
+      const r = await avanzarNodo(nodeId, { tipo: "quiz", respuestas: respuestas.map((x) => String(x ?? "")) });
+      console.log("[quiz→mapa] avanzar_nodo:", r);
+      if (!r.ok) {
+        toast.error(textoDeRechazo(r.reason));
+        setSaving(false);
+        return;
       }
-      const userId = session.userId;
-
-      console.log("[quiz→mapa] userId:", userId);
-
-      const seller = await restGetMaybeSingle<{ id: string; company_id: string }>(
-        `sellers?select=id,company_id&profile_id=eq.${userId}&limit=1`,
-      );
-      if (!seller) return fail("seller no encontrado", { userId });
-      console.log("[quiz→mapa] seller:", seller);
-
-      const existing = await restGetMaybeSingle<{ id: string; status: string; stars: number | null }>(
-        `node_progress?select=id,status,stars&seller_id=eq.${seller.id}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-      );
-      console.log("[quiz→mapa] node_progress existing:", existing);
-
-      const wasCompleted = existing?.status === "done";
-      const previousStars = (existing?.stars as number | null) ?? 0;
-      const improved = stars > previousStars;
-      const newStars = Math.max(stars, previousStars);
-
-      if (existing) {
-        await restMutate(`node_progress?id=eq.${existing.id}`, {
-          method: "PATCH",
-          body: {
-            status: "done",
-            stars: newStars,
-            last_practiced_at: new Date().toISOString(),
-          },
-        });
-      } else {
-        await restMutate("node_progress", { method: "POST", body: {
-          seller_id: seller.id,
-          company_id: seller.company_id,
-          node_id: nodeId,
-          status: "done",
-          stars: newStars,
-          last_practiced_at: new Date().toISOString(),
-        }});
-      }
-
-      if (!wasCompleted) {
-        const currentNode = await restGetMaybeSingle<{ world_id: number; order_index: number }>(
-          `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-        );
-
-        let nextNodeId: string | null = null;
-        if (currentNode) {
-          const nextSame = await restGetMaybeSingle<{ id: string }>(
-            `nodes?select=id&world_id=eq.${currentNode.world_id}&order_index=gt.${currentNode.order_index}&order=order_index.asc&limit=1`,
-          );
-          if (nextSame) {
-            nextNodeId = nextSame.id;
-          } else {
-            const nextWorld = await restGetMaybeSingle<{ id: string }>(
-              `nodes?select=id&world_id=gt.${currentNode.world_id}&order=world_id.asc,order_index.asc&limit=1`,
-            );
-            if (nextWorld) nextNodeId = nextWorld.id;
-          }
-        }
-
-        if (nextNodeId) {
-          const nextProg = await restGetMaybeSingle<{ id: string; status: string }>(
-            `node_progress?select=id,status&seller_id=eq.${seller.id}&node_id=eq.${encodeURIComponent(nextNodeId)}&limit=1`,
-          );
-
-          if (nextProg) {
-            if (nextProg.status === "locked") {
-              await restMutate(`node_progress?id=eq.${nextProg.id}`, {
-                method: "PATCH",
-                body: { status: "current" },
-              });
-            }
-          } else {
-            await restMutate("node_progress", { method: "POST", body: {
-              seller_id: seller.id,
-              company_id: seller.company_id,
-              node_id: nextNodeId,
-              status: "current",
-            }});
-          }
-
-          await restMutate(`sellers?id=eq.${seller.id}`, {
-            method: "PATCH",
-            body: { current_node: nextNodeId },
-          });
-        }
-      }
-
+      const previousStars = r.previous_stars ?? 0;
+      const newStars = Math.max(1, Math.min(3, r.best_stars ?? 3));
       setNodeCompletionSignal({
         nodeId,
         stars: newStars as 1 | 2 | 3,
-        isReplay: wasCompleted,
-        improved,
-        desbloqueoAhora: !wasCompleted,
+        isReplay: r.was_completed === true,
+        improved: (r.stars ?? 0) > previousStars,
+        desbloqueoAhora: r.desbloqueo_ahora === true,
       });
 
       navigate({ to: "/mapa" });

@@ -378,6 +378,8 @@ function reasonToText(reason?: string): string {
       return "Este código está bloqueado temporalmente.";
     case "already_in_company":
       return "Ya perteneces a una empresa.";
+    case "rate_limited":
+      return "Demasiados intentos. Espera una hora y vuelve a intentarlo.";
     default:
       return "Código no válido.";
   }

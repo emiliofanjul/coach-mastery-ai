@@ -852,6 +852,10 @@ async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessio
   if (quien.tipo === "usuario" && practica.seller_id !== quien.sellerId) {
     return respuestaJson(403, { error: "Esta práctica no es tuya" });
   }
+  // Mensaje 170 (seguridad): se califica con el nodo de la práctica guardada, no
+  // con el que diga el cuerpo. La calificación guardada es la prueba con la que
+  // avanzar_nodo da el nodo por dominado y certifica: tiene que ser la de ese nodo.
+  body.node_id = (practica as { node_id?: string | null }).node_id ?? null;
 
   const { data: fila, error: errFila } = await admin
     .from("evaluaciones_practica")

@@ -13,6 +13,8 @@ import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
+import { avanzarNodo, textoDeRechazo, type ResultadoAvance } from "@/lib/avanzar-nodo";
+import { toast } from "sonner";
 import RetryScreen from "@/components/RetryScreen";
 import { estiloBoton, Estrella } from "@/components/closer/piezas";
 import { GiroPersonal } from "@/components/closer/GiroPersonal";
@@ -2076,102 +2078,40 @@ function PracticaPage() {
             onContinue={async (stars) => {
               setSaving(true);
 
-              const existingProgress = await restGetMaybeSingle<{ id: string; stars: number | null; status: string | null }>(
-                `node_progress?select=id,stars,status&seller_id=eq.${sellerData.id}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-              );
-
-              const previousStars = (existingProgress?.stars as number | null) ?? 0;
-              const bestStars = Math.max(previousStars, stars);
-              // Umbral de progresión: se necesitan 2 estrellas (score ≥ 70)
-              // para dar el nodo por dominado y abrir el siguiente. Con 1
-              // estrella el nodo queda en curso y se puede repetir.
-              // Lo ganado no se pierde: un nodo ya terminado nunca vuelve a "en
-              // curso". (Sept-2026: al subir el umbral de 1 a 2 estrellas, repetir
-              // un nodo de 1 estrella lo bajaba y volvía a cerrar el siguiente.)
-              const unlocks = bestStars >= 2 || existingProgress?.status === "done";
-              const progressStatus = unlocks ? "done" : "current";
-
-              if (existingProgress?.id) {
-                await restMutate(`node_progress?id=eq.${existingProgress.id}`, {
-                  method: "PATCH",
-                  body: {
-                    status: progressStatus,
-                    stars: bestStars,
-                    last_practiced_at: new Date().toISOString(),
-                  },
-                });
-              } else {
-                await restMutate("node_progress", {
-                  method: "POST",
-                  body: {
-                  seller_id: sellerData.id,
-                  company_id: sellerData.company_id,
-                  node_id: nodeId,
-                  status: progressStatus,
-                  stars: bestStars,
-                  last_practiced_at: new Date().toISOString(),
-                  },
-                });
+              // Mensaje 170: el servidor guarda el avance con la calificación que él
+              // mismo guardó para esta práctica (evaluaciones_practica): estrellas,
+              // nodo dominado con 2 o más, el siguiente nodo y la certificación del
+              // 7.4 con 85 o más. La app ya no escribe node_progress ni sellers.
+              void stars;
+              const practiceSessionId = savedSessionRef.current?.id ?? null;
+              if (!practiceSessionId) {
+                toast.error("No encontramos tu práctica guardada. Vuelve a intentarlo.");
+                setSaving(false);
+                return;
               }
-
-              // Certificación Closer: pasar el examen final (7.4) con score >= 85 sella la certificación.
-              // Un pase menor completa el nodo pero no certifica (se puede repetir).
-              // Nov-2026 (mensaje 144): decía "9.3", un id del mapa viejo que ya no existe, y nadie se certificaba.
-              const finalScore = feedbackResult?.score ?? 0;
-              if (nodeId === NODO_CERTIFICACION && finalScore >= 85 && !sellerData.certified_at) {
-                await restMutate(`sellers?id=eq.${sellerData.id}`, {
-                  method: "PATCH",
-                  body: { certified_at: new Date().toISOString() },
-                });
+              let r: ResultadoAvance;
+              try {
+                r = await avanzarNodo(nodeId, { tipo: "practica", practice_session_id: practiceSessionId });
+              } catch (err) {
+                console.error("[practica] no se pudo guardar el avance:", err);
+                toast.error("No pudimos guardar tu avance. Toca «Continuar» otra vez.");
+                setSaving(false);
+                return;
               }
-
-              const currentNodeRow = unlocks
-                ? await restGetMaybeSingle<{ world_id: number; order_index: number }>(
-                    `nodes?select=world_id,order_index&id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-                  )
-                : null;
-
-              if (currentNodeRow) {
-                const nextNode = await restGetMaybeSingle<{ id: string }>(
-                  `nodes?select=id&world_id=eq.${currentNodeRow.world_id}&order_index=gt.${currentNodeRow.order_index}&order=order_index.asc&limit=1`,
-                );
-
-                if (nextNode) {
-                  const nextProgress = await restGetMaybeSingle<{ id: string; status: string }>(
-                    `node_progress?select=id,status&seller_id=eq.${sellerData.id}&node_id=eq.${encodeURIComponent(nextNode.id)}&limit=1`,
-                  );
-                  if (nextProgress?.id) {
-                    if (nextProgress.status === "locked") {
-                      await restMutate(`node_progress?id=eq.${nextProgress.id}`, {
-                        method: "PATCH",
-                        body: { status: "current" },
-                      });
-                    }
-                  } else {
-                    await restMutate("node_progress", {
-                      method: "POST",
-                      body: {
-                      seller_id: sellerData.id,
-                      company_id: sellerData.company_id,
-                      node_id: nextNode.id,
-                      status: "current",
-                      },
-                    });
-                  }
-                  await restMutate(`sellers?id=eq.${sellerData.id}`, {
-                    method: "PATCH",
-                    body: { current_node: nextNode.id },
-                  });
-                }
+              if (!r.ok) {
+                console.error("[practica] el servidor no guardó el avance:", r.reason);
+                toast.error(textoDeRechazo(r.reason));
+                setSaving(false);
+                return;
               }
 
               setNodeCompletionSignal({
                 nodeId,
-                stars: bestStars as 1 | 2 | 3,
-                isReplay: previousStars > 0,
-                improved: stars > previousStars,
+                stars: (r.best_stars ?? 0) as 1 | 2 | 3,
+                isReplay: (r.previous_stars ?? 0) > 0,
+                improved: (r.stars ?? 0) > (r.previous_stars ?? 0),
                 // 151-C: el camino al siguiente nodo solo se ilumina si esta práctica lo desbloqueó.
-                desbloqueoAhora: unlocks && existingProgress?.status !== "done",
+                desbloqueoAhora: r.desbloqueo_ahora === true,
               });
               navigate({ to: "/mapa" });
             }}

@@ -9,9 +9,10 @@ describe("cerrar un nodo de lectura", () => {
   it("la base no acepta estrellas vacías en node_progress", () => {
     expect(esquema).toMatch(/stars integer NOT NULL DEFAULT 0/);
   });
-  it("por eso el guardado no manda stars, y nunca manda la empresa vacía", () => {
+  it("por eso el guardado no manda stars ni la empresa: lo cierra el servidor (mensaje 170)", () => {
     expect(nodo).not.toMatch(/stars: null/);
-    expect(nodo).toMatch(/if \(!companyId\) throw new Error\("vendedor sin empresa"\);/);
+    expect(nodo).toContain('const r = await avanzarNodo(nodeId, { tipo: "lectura" });');
+    expect(nodo).not.toContain('restMutate("node_progress"');
   });
   it("si no se guarda, el vendedor lo sabe y no lo manda al mapa", () => {
     expect(nodo).toMatch(/toast\.error\("No pudimos guardar tu avance\. Toca «Terminar» otra vez\."\);\s*return;/);

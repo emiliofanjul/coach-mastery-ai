@@ -68,7 +68,8 @@ describe("Un solo dueño del micrófono (sept-2026)", () => {
     expect(fnToken).toMatch(/single-use-token\/realtime_scribe/);
   });
   it("el archivo guardado lleva la extensión de su tipo real", () => {
-    expect(guardado).toMatch(/tipo\.includes\("wav"\) \? "wav"/);
+    // Mensaje 170: el tipo real sale de los bytes (tipo_audio.ts), no de lo que diga el teléfono.
+    expect(guardado).toContain("path = `${seller.id}/${eventId}.${detectado.ext}`;");
   });
 });
 
@@ -79,8 +80,10 @@ describe("Segunda ronda en el iPhone (sept-2026)", () => {
     expect(voz).toMatch(/if \(contextoCompartido!\.state !== "running"\) void contextoCompartido!\.resume\(\);/);
     expect(voz).toMatch(/if \(ctx\.state !== "running"\) \{/);
   });
-  it("lo ganado no se pierde: un nodo terminado nunca vuelve a 'en curso'", () => {
-    expect(ui).toMatch(/const unlocks = bestStars >= 2 \|\| existingProgress\?\.status === "done";/);
+  it("lo ganado no se pierde: un nodo terminado nunca vuelve a 'en curso' (en el servidor desde el mensaje 170)", () => {
+    const sql = readFileSync(join(process.cwd(), "docs/kb/seguridad_170.sql"), "utf8");
+    expect(sql).toContain("_status := CASE WHEN greatest(_stars, _prev_stars) >= 2 OR _prog_status = 'done' THEN 'done' ELSE 'current' END;");
+    expect(sql).toContain("IF _prog_status = 'done' THEN _status := 'done'; END IF;");
   });
   it("las tarjetas largas se pueden bajar", () => {
     expect(nodo).toMatch(/overflowY: "auto",/);

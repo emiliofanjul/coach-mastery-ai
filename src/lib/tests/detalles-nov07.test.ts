@@ -25,8 +25,9 @@ describe("Detalles de la Fase 4 en el iPhone", () => {
     expect(practica).toContain('visibility: isIDo && iDoDemoDone ? "hidden" : "visible"');
   });
   it("el camino al siguiente nodo se anima solo si la práctica lo desbloqueó", () => {
-    expect(practica).toContain('desbloqueoAhora: unlocks && existingProgress?.status !== "done",');
-    expect(leer("routes/nodo.$nodeId.quiz.tsx")).toContain("desbloqueoAhora: !wasCompleted,");
+    // Mensaje 170: lo decide el servidor (avanzar_nodo) y la app lo usa tal cual.
+    expect(practica).toContain("desbloqueoAhora: r.desbloqueo_ahora === true,");
+    expect(leer("routes/nodo.$nodeId.quiz.tsx")).toContain("desbloqueoAhora: r.desbloqueo_ahora === true,");
     expect(leer("routes/mapa.tsx")).toContain('&& animSignal.desbloqueoAhora !== false && computeStatus(node) !== "locked";');
   });
   it("al enviar, el micrófono no parpadea en naranja", () => {

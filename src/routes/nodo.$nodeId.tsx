@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, RotateCw, Wrench } from "lucide-react";
 import { BarraSegmentos, EncabezadoPantalla, estiloBoton, segmentosDeAvance } from "@/components/closer/piezas";
 import { motion, AnimatePresence } from "framer-motion";
-import { invokeFunctionJson, restGet, restGetMaybeSingle, restMutate } from "@/lib/supabase-rest";
+import { invokeFunctionJson, restGet, restGetMaybeSingle } from "@/lib/supabase-rest";
+import { avanzarNodo, textoDeRechazo } from "@/lib/avanzar-nodo";
 import { getStoredSupabaseSession } from "@/lib/browser-auth-session";
 
 
@@ -432,20 +433,12 @@ function NodoCardsPage() {
                 // vendedor se quedaba atorado ahí (p. ej. el 3.7).
                 void (async () => {
                   try {
-                    const sellerId = attributionRef.current?.seller_id;
-                    if (sellerId) {
-                      const previo = await restGetMaybeSingle<{ id: string; status: string }>(
-                        `node_progress?select=id,status&seller_id=eq.${sellerId}&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
-                      );
-                      if (previo?.id) {
-                        if (previo.status !== "done") await restMutate(`node_progress?id=eq.${previo.id}`, { method: "PATCH", body: { status: "done" } });
-                      } else {
-                        // Sin "stars": la base pone 0 (la columna no acepta vacío; oct-2026,
-                        // con las estrellas en vacío el guardado fallaba y el vendedor se quedaba atorado).
-                        const companyId = attributionRef.current?.company_id;
-                        if (!companyId) throw new Error("vendedor sin empresa");
-                        await restMutate("node_progress", { method: "POST", body: { seller_id: sellerId, company_id: companyId, node_id: nodeId, status: "done" } });
-                      }
+                    // Mensaje 170: el servidor comprueba que es de lectura y que le toca,
+                    // guarda el avance y abre el siguiente. La app ya no escribe node_progress.
+                    const r = await avanzarNodo(nodeId, { tipo: "lectura" });
+                    if (!r.ok) {
+                      toast.error(textoDeRechazo(r.reason));
+                      return;
                     }
                   } catch (err) {
                     // Nunca en silencio: si no se guardó, el vendedor lo sabe y puede reintentar.

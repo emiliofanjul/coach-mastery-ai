@@ -21,7 +21,10 @@ describe("la certificación", () => {
     expect(NODO_CERTIFICACION).toBe("7.4");
     expect(nodos.find((n) => n.id === NODO_CERTIFICACION)?.node_type).toBe("boss");
     const ui = leer("src/routes/nodo.$nodeId.practica.tsx");
-    expect(ui).toContain("if (nodeId === NODO_CERTIFICACION && finalScore >= 85 && !sellerData.certified_at) {");
+    // Mensaje 170: la certificación la sella el servidor (avanzar_nodo), no la app.
+    const sql = leer("docs/kb/seguridad_170.sql");
+    expect(sql).toContain("_certifica := _node_id = '7.4' AND _score >= 85 AND _certified_at IS NULL;");
+    expect(ui).not.toContain("certified_at: new Date()");
     expect(ui).not.toContain('nodeId === "9.3"');
   });
 });

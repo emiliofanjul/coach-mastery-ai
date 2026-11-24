@@ -13,6 +13,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 import { recomputeSellerSkillState } from "../_shared/skill_state.ts";
 import { buscarEventoDePractica, combinarPayload } from "../_shared/evento_practica.ts";
+import { MAX_AUDIO_BYTES, tipoDeAudio } from "../_shared/tipo_audio.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -117,17 +118,28 @@ Deno.serve(async (req) => {
     const audio = form.get("audio");
     let audioUrl: string | null = null;
     if (audio && audio instanceof File && seller.audio_consent === true) {
-      // La extensión sigue al tipo real: la práctica de voz ahora graba WAV.
-      const tipo = String(audio.type || "audio/webm");
-      const ext = tipo.includes("wav") ? "wav" : tipo.includes("mp4") || tipo.includes("m4a") ? "m4a" : "webm";
-      const path = `${seller.id}/${eventId}.${ext}`;
-      const bytes = new Uint8Array(await audio.arrayBuffer());
-      const { error: upErr } = await admin.storage
-        .from("practice-audio")
-        .upload(path, bytes, {
-          contentType: audio.type || "audio/webm",
-          upsert: true,
-        });
+      // Mensaje 170 (seguridad): el tamaño se revisa antes de leer, y el tipo sale de
+      // los bytes, no de lo que diga el teléfono. Si no es audio, no se guarda.
+      let upErr: unknown = null;
+      let path = "";
+      if (audio.size > MAX_AUDIO_BYTES) {
+        upErr = `audio de ${audio.size} bytes: pasa el tope de ${MAX_AUDIO_BYTES}`;
+      } else {
+        const bytes = new Uint8Array(await audio.arrayBuffer());
+        const detectado = tipoDeAudio(bytes);
+        if (!detectado) {
+          upErr = `no es un audio reconocido (el teléfono dijo «${String(audio.type || "sin tipo").slice(0, 60)}»)`;
+        } else {
+          path = `${seller.id}/${eventId}.${detectado.ext}`;
+          const { error } = await admin.storage
+            .from("practice-audio")
+            .upload(path, bytes, {
+              contentType: detectado.tipo,
+              upsert: true,
+            });
+          upErr = error;
+        }
+      }
       if (upErr) {
         console.error("[save-practice-event] upload failed:", upErr);
       } else {
