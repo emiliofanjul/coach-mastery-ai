@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 168: Paso 0, 1183/1183 en 98 archivos, quince MD5 y base exactos; conservar harness-coherencia en src/lib/__tests__/ por confirmación de Emilio.
+- [x] Mensaje 168: nueve archivos de entrega con MD5 exactos, todavía sin instalar.
+- [ ] Mensaje 168: instalar en el orden solicitado, SQL íntegro, conservar espejo y doctrina_168_regresar.sql; pendiente autorización para copia exacta de los cinco archivos mediante terminal.
+- [ ] Mensaje 168: validar 1235 pruebas y compilación, desplegar solo closer-voice y harness-runner, entregar Paso 4 con repeticiones y reversión si corresponde; no publicar.
+
 - [x] Mensaje 165: Paso 0, 1183/1183 en 98 archivos, ocho MD5 vigentes y regla objection.vacia_el_cargador f4298c98… exactos.
 - [x] Mensaje 165: Paso 1, nueve entregas exactas; cinco funciones idénticas byte por byte; instalador una vez: 6 archivos exactos; regla_165.sql tal cual con huella final 39c501676…; entregas temporales retiradas y regla_165_regresar.sql conservado.
 - [x] Mensaje 165: Paso 2, 1215/1215 en 99 archivos y build automático OK; no hay un registro separado de la revisión de tipos.
