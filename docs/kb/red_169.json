@@ -4885,7 +4885,79 @@
       ]
     }
   ],
-  "repeticiones": [],
+  "repeticiones": [
+    {
+      "id": "G60_no_le_quito_mucho",
+      "status": "fail",
+      "reasons": [
+        "missing expected flag: se_disculpa"
+      ],
+      "score": 77,
+      "ms_total": 23126,
+      "ms_revision": 4517,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 2665,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 77,
+      "restas": [],
+      "veredictos": [
+        "arranque_sin_disculpa:parcial(falta: Dice 'no le quito mucho': promete que no le va a quitar tiempo, lo que minimiza su presencia y comunica que sabe que est)",
+        "regla_10_por_ciento:cumple",
+        "estructura_apertura:cumple"
+      ],
+      "session_ids": [
+        "de904ebb-a324-4f38-bd55-da18032b0467"
+      ]
+    },
+    {
+      "id": "P7_0_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 54636,
+      "ms_revision": 13058,
+      "juez": {
+        "acusaciones": 1,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 0,
+        "juzgadas": 1,
+        "intentos": 1,
+        "latencia_ms": 5453,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "estructura_apertura:cumple",
+        "historia_breve:cumple",
+        "air:cumple",
+        "close_with_action:cumple",
+        "dolor_real:cumple",
+        "conectar_dolor:cumple",
+        "cierre_asumido:cumple",
+        "proteger_venta:cumple"
+      ],
+      "session_ids": [
+        "cb0b69e1-f830-4819-bd16-13b38c8835a5"
+      ]
+    }
+  ],
   "errores_http": [],
   "finished_at": "2026-11-24T17:14:07.273441+00:00"
 }
