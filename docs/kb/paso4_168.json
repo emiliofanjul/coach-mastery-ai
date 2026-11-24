@@ -1,0 +1,445 @@
+{
+  "paso": 4,
+  "harness_version": "v3.46.0",
+  "primera": [
+    {
+      "id": "G94_bala_ya_dicha_conectada",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 23209,
+      "ms_revision": 3538,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "circulo_cierre:cumple",
+        "bullet_theory:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "ddfa47ed-445c-43e8-b94f-575c7a0dad57"
+      ]
+    },
+    {
+      "id": "G98_responde_sin_discutir",
+      "status": "pass",
+      "reasons": [],
+      "score": 20,
+      "ms_total": 41132,
+      "ms_revision": 7840,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 7839,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "salta_la_bala (major): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: Falta el re-impulso con bala después de la tercera F y antes del cierre)",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: No da ninguna bala concreta después de FFF: «lo que encontraron» solo nombra el resultado, no algo concreto del producto)"
+      ],
+      "session_ids": [
+        "6ec5d721-4e9e-4e86-89c8-7acd393c1403"
+      ]
+    },
+    {
+      "id": "G96_apila_balas",
+      "status": "pass",
+      "reasons": [],
+      "score": 5,
+      "ms_total": 48207,
+      "ms_revision": 10530,
+      "juez": {
+        "acusaciones": 4,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 4,
+        "intentos": 1,
+        "latencia_ms": 10528,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "vacia_el_cargador (major): -30",
+        "bala_se_cae (critical): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: La tercera F ('lo que encontraron') no trae bala concreta: 'les convino' es genérico, no dice qué encontraron de su prod)",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: Vacía el cargador: suelta seis cosas de jalón (crédito, empaque, duración, exhibidor, precio de mayoreo) sin escoger las)"
+      ],
+      "session_ids": [
+        "8a55e0ef-30ee-478c-8e3c-fb9eccb10c64"
+      ]
+    },
+    {
+      "id": "G112_fff_sin_bala",
+      "status": "pass",
+      "reasons": [],
+      "score": 20,
+      "ms_total": 39028,
+      "ms_revision": 6629,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 6628,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 50,
+      "restas": [
+        "salta_la_bala (major): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: Completa las tres F pero no sigue con bala ni cierre con acción: se detiene en 'lo que encontraron fue que les convino' )",
+        "no_defensivo:cumple",
+        "bullet_theory:no_cumple(falta: No da ninguna bala después de FFF: va directo al cierre sin re-impulsar)"
+      ],
+      "session_ids": [
+        "0e2881b2-7eee-4cc8-b0b8-6b67c74a265e"
+      ]
+    },
+    {
+      "id": "P5_12_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 24609,
+      "ms_revision": 2958,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "bullet_theory:cumple",
+        "indiferencia:cumple",
+        "circulo_cierre:cumple"
+      ],
+      "session_ids": [
+        "62d7beaa-14b1-40ba-a886-14192807c358"
+      ]
+    },
+    {
+      "id": "V1_4_15_conviccion_se_queda_prueba_cambia",
+      "status": "pass",
+      "reasons": [],
+      "raw": {
+        "vara": {
+          "revisados": 2,
+          "sospechosos": 1,
+          "confirmados": 1,
+          "absueltos": 0,
+          "corregidos": 1,
+          "descartados": 0,
+          "detalle": [
+            {
+              "id": "obs1.ejemplo",
+              "tipo": "ejemplo",
+              "falla": "pide_que_pruebe",
+              "frase": "Le dejo unas poquitas para que las pruebe, a ver si se le mueven.",
+              "sospecha": "Presenta la compra como experimento: «para que las pruebe, a ver si se le mueven». Le pasa el riesgo al cliente.",
+              "juez": "reprueba",
+              "razon_juez": "Sí. El vendedor presenta la compra como experimento: «para que las pruebe, a ver si se le mueven» encuadra la oferta como prueba incierta.",
+              "quedo": "corregido"
+            }
+          ]
+        },
+        "ms": 11845
+      },
+      "session_ids": [
+        "a19e4fc1-b5ef-499d-9595-2ca115afa7f3"
+      ]
+    },
+    {
+      "id": "V2_5_8_fff_con_una_bala_se_queda_cargador_cambia",
+      "status": "pass",
+      "reasons": [],
+      "raw": {
+        "vara": {
+          "revisados": 2,
+          "sospechosos": 1,
+          "confirmados": 1,
+          "absueltos": 0,
+          "corregidos": 1,
+          "descartados": 0,
+          "detalle": [
+            {
+              "id": "obs1.ejemplo",
+              "tipo": "ejemplo",
+              "falla": "vacia_el_cargador",
+              "frase": "Entiendo cómo se siente, don Chuy. Varios sintieron lo mismo, y lo que encontraron fue que les convino. Además le damos 30 días de crédito, la cubeta trae empaque reforzado, el aceite le dura el doble, le regalamos un exhibidor, y si se lleva veinte le hago precio de mayoreo.",
+              "sospecha": "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger las que responden a la objeción del cliente sobre cambiar de proveedor. Es una lista de todo.",
+              "juez": "reprueba",
+              "razon_juez": "Suelta cinco balas de jalón (crédito, empaque, duración, exhibidor, precio mayoreo) sin escoger las que responden a la objeción de lealtad. Es lista de todo lo que trae.",
+              "quedo": "corregido"
+            }
+          ]
+        },
+        "ms": 15308
+      },
+      "session_ids": [
+        "7a5a1a12-af16-4ee9-9ca8-4092c890b09d"
+      ]
+    },
+    {
+      "id": "P5_15_perfecto",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 43542,
+      "ms_revision": 4224,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "air:cumple",
+        "rrr_objeciones:cumple",
+        "reframe:cumple",
+        "bullet_theory:cumple",
+        "circulo_cierre:cumple",
+        "dolor_real:cumple",
+        "cierre_asumido:cumple"
+      ],
+      "session_ids": [
+        "dbf4e8fe-0511-4664-bf99-7b236423410a"
+      ]
+    },
+    {
+      "id": "V3_1_2_ejemplo_que_ensena_la_falla_cambia_aperturas_buenas_se_quedan",
+      "status": "pass",
+      "reasons": [],
+      "raw": {
+        "vara": {
+          "revisados": 3,
+          "sospechosos": 1,
+          "confirmados": 1,
+          "absueltos": 0,
+          "corregidos": 0,
+          "descartados": 1,
+          "detalle": [
+            {
+              "id": "obs0.ejemplo",
+              "tipo": "ejemplo",
+              "falla": "pitch_prematuro",
+              "frase": "Oiga, veo que tiene el estante lleno de limpiaparabrisas azules, ¿esos son los que más se mueven?",
+              "sospecha": "Pregunta por qué productos se mueven más, información de su operación comercial.",
+              "juez": "reprueba",
+              "razon_juez": "Sí. La frase pregunta por su inventario (qué tiene en el estante) y qué productos se mueven más: información de su operación comercial.",
+              "quedo": "descartado"
+            }
+          ]
+        },
+        "ms": 16102
+      },
+      "session_ids": [
+        "e73cc2de-5a0d-4357-8e2a-489d78879894"
+      ]
+    },
+    {
+      "id": "G119_dos_balas_que_apuntan",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 25433,
+      "ms_revision": 3627,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "no_defensivo:cumple",
+        "bullet_theory:cumple"
+      ],
+      "session_ids": [
+        "ebf357c5-a4f7-4cf3-9aee-49da3d9cf04f"
+      ]
+    },
+    {
+      "id": "G120_tres_balas_que_apuntan",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 26273,
+      "ms_revision": 4583,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "no_defensivo:cumple",
+        "bullet_theory:cumple"
+      ],
+      "session_ids": [
+        "df087e96-393a-4bdc-9ec4-ad7c5e2c8c81"
+      ]
+    },
+    {
+      "id": "G122_cuatro_que_apuntan_y_le_quedan",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 27373,
+      "ms_revision": 4386,
+      "juez": {
+        "acusaciones": 0,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "reframe:cumple",
+        "bullet_theory:cumple",
+        "indiferencia:cumple",
+        "circulo_cierre:cumple"
+      ],
+      "session_ids": [
+        "752e8039-ac2f-44d4-8267-5376180d8f03"
+      ]
+    },
+    {
+      "id": "G121_se_queda_desarmado",
+      "status": "pass",
+      "reasons": [],
+      "score": 45,
+      "ms_total": 45487,
+      "ms_revision": 6808,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 0,
+        "criterios_corregidos": 0,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 6807,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 75,
+      "restas": [
+        "salta_la_bala (major): -30"
+      ],
+      "veredictos": [
+        "reframe:parcial(falta: La segunda objeción se valida pero no se completa: falta la segunda F (otros sintieron lo mismo) y la tercera F (lo que )",
+        "bullet_theory:cumple",
+        "indiferencia:cumple",
+        "circulo_cierre:parcial(falta: En la segunda objeción atraviesa pero no re-impulsa: cierra sin dar ninguna bala)"
+      ],
+      "session_ids": [
+        "3861a85b-b8bd-435d-8ec9-eb040d6f20da"
+      ]
+    },
+    {
+      "id": "G123_precio_con_su_motivo_es_bala",
+      "status": "pass",
+      "reasons": [],
+      "score": 100,
+      "ms_total": 40867,
+      "ms_revision": 12951,
+      "juez": {
+        "acusaciones": 3,
+        "fallas_quitadas": 1,
+        "criterios_corregidos": 2,
+        "juzgadas": 3,
+        "intentos": 1,
+        "latencia_ms": 8490,
+        "descartados_por_cita": 0
+      },
+      "espejos_quitados": 0,
+      "por_hecho": {
+        "pregunta": 0,
+        "no": 0
+      },
+      "base": 100,
+      "restas": [],
+      "veredictos": [
+        "circulo_cierre:cumple",
+        "bullet_theory:cumple",
+        "close_with_action:cumple"
+      ],
+      "session_ids": [
+        "4f52386e-6f53-4774-b534-3abc33a5684d"
+      ]
+    }
+  ],
+  "repeticiones": [],
+  "errores_http": []
+}
