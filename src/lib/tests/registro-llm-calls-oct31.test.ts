@@ -38,7 +38,9 @@ describe("Mensaje 115: todas las llamadas al modelo quedan guardadas", () => {
     expect(voz.slice(i, i + 1500)).toContain("enSegundoPlano(logLlmCall({");
   });
   it("el juez, el auditor, la ficha y la reescritura pasan por llamarModelo con su fase", () => {
-    expect(voz).toContain('}, "juez", quien);');
+    // Mensaje 164: el juez lleva su fase como parámetro; «juez» al calificar, «vara_juez» al confirmar la vara.
+    expect(voz).toContain('acusaciones: number, fase: "juez" | "vara_juez" = "juez"): Promise<Juicio[] | null> {');
+    expect(voz).toContain('}, fase, quien);');
     expect(voz).toContain('}, "auditor", quien));');
     expect(voz).toContain('400, 0.9, "ficha_cliente", {');
     expect(voz).toContain('"reescritura",');

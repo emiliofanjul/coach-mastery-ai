@@ -27,7 +27,9 @@ const TANDA = [
 
 describe("Primero el Cerebro (v16)", () => {
   it("las decisiones están escritas", () => {
-    expect(cerebro).toContain("4. **Re-impulsa con una bala** `CAMPO`: una sola, y cierras.");
+    // Emilio, 18-nov (mensaje 166): una o dos balas, a veces tres, que respondan a lo que dijo el cliente.
+    expect(cerebro).toContain("4. **Re-impulsa con la bala o las balas que respondan a lo que te dijo** `CAMPO`, y cierras. Una o dos es lo normal; a veces tres.");
+    expect(cerebro).not.toContain("una sola, y cierras");
     expect(cerebro).not.toContain("**Inserta 3 balas**");
     // Emilio, 6-nov (mensaje 138): la bala la escoge el vendedor; una ya dicha también se vale, aun tal cual.
     expect(cerebro).toContain("**La bala la escoges tú** `CAMPO`");
@@ -47,7 +49,8 @@ describe("Las reglas de las tandas son prueba y su cita está en el Cerebro", ()
     });
   }
   it("lo que decidió Emilio, en las reglas", () => {
-    expect(regla("objection.vacia_el_cargador").resumen).toContain("dos o más balas en la misma respuesta");
+    expect(regla("objection.vacia_el_cargador").resumen).toContain("Una, dos o tres balas que apuntan a lo que dijo el cliente no son falla.");
+    expect(regla("objection.vacia_el_cargador").resumen).not.toContain("dos o más balas en la misma respuesta");
     expect(regla("objection.bala_repetida").resumen).toContain("también re-impulsa");
     expect(regla("objection.bala_repetida").tipo).toBe("principio");
     expect(regla("objection.circulo_de_cierre").resumen).toContain("una bala —la que escoja: una que no había dicho, o una ya dicha, aunque la repita tal cual—");
@@ -56,11 +59,11 @@ describe("Las reglas de las tandas son prueba y su cita está en el Cerebro", ()
 });
 
 describe("Guiones y tarjetas", () => {
-  it("una sola bala, también en las tarjetas", () => {
-    expect(carta("5.7", 4).body).toContain("PASO 4 — UNA BALA.");
-    expect(carta("5.8", 2).body).toContain("4. UNA BALA");
+  it("una o dos balas, a veces tres, también en las tarjetas (mensaje 166)", () => {
+    expect(carta("5.7", 4).body).toContain("PASO 4 — RE-IMPULSA CON BALAS.");
+    expect(carta("5.8", 2).body).toContain("4. LA BALA — uno o dos hechos positivos, a veces tres");
     expect(carta("5.10", 3).title).toBe("La bala la escoges tú");
-    for (const n of ["5.8", "5.12", "5.15"]) expect(ps(n).failure_criteria.find((f: any) => f.id === "vacia_el_cargador").description).toContain("dos o mas balas");
+    for (const n of ["5.8", "5.12", "5.15"]) expect(ps(n).failure_criteria.find((f: any) => f.id === "vacia_el_cargador").description).not.toContain("dos o mas balas");
   });
 });
 

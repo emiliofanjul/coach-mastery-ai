@@ -104,7 +104,9 @@ describe("Harness: cada caso es evaluable contra un nodo vivo", () => {
     const vistos = new Map<string, string>();
     const repetidos: string[] = [];
     for (const c of casos.filter((x) => Array.isArray(x.transcript) && x.transcript.length > 0)) {
-      const k = `${c.node_id}|${JSON.stringify(c.transcript)}`;
+      // Mensaje 164: un caso de la vara (vara_textos) prueba textos de Closer sobre esa conversación:
+      // su entrada son la conversación Y los textos.
+      const k = `${c.node_id}|${JSON.stringify(c.transcript)}|${JSON.stringify((c as any).vara_textos ?? null)}`;
       if (vistos.has(k)) repetidos.push(`${vistos.get(k)} y ${c.id}`);
       else vistos.set(k, c.id);
     }

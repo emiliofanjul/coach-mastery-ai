@@ -35,6 +35,8 @@ import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta, corregirPregunta
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, presupuestoJuez, TOPE_MAXIMO_JUEZ, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, juiciosConCitasValidas, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
+import { PROMPT_VARA, HERRAMIENTA_VARA, presupuestoVara, revisionesDeRespuesta, pasarPorLaVara, type RevisionVara } from "../_shared/vara_ejemplos.ts";
+import { completarYOrdenarObservaciones } from "../_shared/observaciones_rubrica.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
 import { quienLlama, respuestaNoAutorizado, type Llamante } from "../_shared/quien_llama.ts";
@@ -575,7 +577,7 @@ async function llamarAuditor(apiKey: string, system: string, user: string, maxTo
 }
 
 /** El juez de las pruebas contesta con una herramienta: un juicio por acusación. */
-async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama, acusaciones: number): Promise<Juicio[] | null> {
+async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama, acusaciones: number, fase: "juez" | "vara_juez" = "juez"): Promise<Juicio[] | null> {
   // Mensaje 130: el tope crece con las acusaciones; si aun así se corta, se
   // dice en el log y se intenta una vez con el doble (hasta el tope máximo).
   let tope = presupuestoJuez(acusaciones);
@@ -585,12 +587,22 @@ async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama, ac
       messages: [{ role: "user", content: entrada }],
       tools: [HERRAMIENTA_JUICIOS],
       tool_choice: { type: "tool", name: HERRAMIENTA_JUICIOS.name },
-    }, "juez", quien);
+    }, fase, quien);
     if (j?.stop_reason !== "max_tokens") return juiciosDeRespuesta(j);
     console.error("[closer-voice] al juez se le acabó el tope de tokens", { session_id: quien.session_id ?? null, acusaciones, max_tokens: tope, output_tokens: j?.usage?.output_tokens ?? null });
     if (tope >= TOPE_MAXIMO_JUEZ) throw new Error(`al juez se le acabó el tope de ${tope} tokens`);
     tope = Math.min(TOPE_MAXIMO_JUEZ, tope * 2);
   }
+}
+
+/** La misma vara (mensaje 163): lo que el coach propone decir pasa por las pruebas de las fallas del nodo. */
+async function llamarVara(apiKey: string, entrada: string, quien: QuienLlama, textos: number): Promise<RevisionVara[] | null> {
+  return revisionesDeRespuesta(await llamarModelo(apiKey, {
+    max_tokens: presupuestoVara(textos), temperature: 0, system: PROMPT_VARA,
+    messages: [{ role: "user", content: entrada }],
+    tools: [HERRAMIENTA_VARA],
+    tool_choice: { type: "tool", name: HERRAMIENTA_VARA.name },
+  }, "vara", quien));
 }
 
 function buildSystemPrompt(phase: Phase, company_brain: string, seller_name: string, practice_script: any, taught_skills: string[] = [], ficha: FichaCliente | null = null): string {
@@ -769,6 +781,13 @@ Deno.serve(async (req) => {
     body.seller_id = quien.sellerId;
   }
 
+  // Mensaje 164: la red prueba la vara con textos fijos (que un ejemplo bueno
+  // se quede igual y uno malo cambie). Solo con la llave de servicio.
+  if ((body as any).phase === "probar_vara") {
+    if (quien.tipo !== "servicio") return respuestaJson(403, { error: "probar_vara es solo para la red de seguridad" });
+    return await probarVara(body as any);
+  }
+
   // Mensaje 126: la calificación de una práctica guardada se calcula en
   // segundo plano y queda guardada, aunque el teléfono deje de esperar.
   const practiceSessionId = (body as any).practice_session_id;
@@ -777,6 +796,40 @@ Deno.serve(async (req) => {
   }
   return await atender(body);
 });
+
+/**
+ * Mensaje 164: corre la vara (los dos filtros) sobre textos fijos, con el guion
+ * resuelto del nodo y una conversación. Cada texto entra como el ejemplo de su
+ * propia observación, o como la misión. Devuelve lo que salió de cada uno.
+ */
+async function probarVara(body: { node_id?: unknown; conversation_history?: unknown; textos?: unknown }): Promise<Response> {
+  const nodeId = typeof body.node_id === "string" ? body.node_id.trim() : "";
+  const textos = (Array.isArray(body.textos) ? body.textos : [])
+    .filter((t: any) => t && (t.tipo === "ejemplo" || t.tipo === "mision") && typeof t.texto === "string" && t.texto.trim())
+    .slice(0, 8) as { tipo: "ejemplo" | "mision"; texto: string }[];
+  if (!nodeId || textos.length === 0) return respuestaJson(400, { error: "node_id y textos son obligatorios" });
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  const admin = getAdmin();
+  if (!apiKey || !admin) return respuestaJson(500, { error: "falta configuración" });
+  const { data, error } = await admin.from("v_nodes_resueltos").select("practice_script_resuelto").eq("id", nodeId).maybeSingle();
+  const guion = (data as any)?.practice_script_resuelto;
+  if (error || !guion) return respuestaJson(404, { error: `nodo ${nodeId} sin guion resuelto` });
+  const conversacion = (Array.isArray(body.conversation_history) ? body.conversation_history : []) as { role?: string; content?: unknown }[];
+  const ev: any = { observations: [], mision: "" };
+  const lugar: string[] = [];
+  for (const t of textos) {
+    if (t.tipo === "mision") { ev.mision = t.texto; lugar.push("mision"); }
+    else { lugar.push(`obs${ev.observations.length}`); ev.observations.push({ criterio_id: "prueba", error: "", mejora: "", ejemplo: t.texto }); }
+  }
+  const quienVara = { session_id: crypto.randomUUID(), company_id: null, seller_id: null };
+  const vara = await pasarPorLaVara({
+    ev, guion, paso: pasoPorMundo(nodeId), conversacion,
+    llamar: (entrada, n) => llamarVara(apiKey, entrada, quienVara, n),
+    juez: (entrada, n) => llamarJuez(apiKey, entrada, quienVara, n, "vara_juez"),
+  });
+  const salieron = lugar.map((l) => (l === "mision" ? String(ev.mision ?? "") : String(ev.observations[Number(l.slice(3))]?.ejemplo ?? "")));
+  return respuestaJson(200, { vara, textos: textos.map((t, i) => ({ tipo: t.tipo, entro: t.texto, salio: salieron[i] })), session_id: quienVara.session_id });
+}
 
 /**
  * La calificación de una práctica que ya está guardada en practice_sessions.
@@ -1482,6 +1535,30 @@ async function atender(body: ReqBody): Promise<Response> {
       if (fichaDePeticion((body as any).ficha_cliente)?.tipo !== "recurrente") {
         auditoria.recuerdos_quitados = sanearRecuerdos(evaluation, MISION_DE_RESPALDO);
       }
+      // LA MISMA VARA (mensaje 163): lo que Closer le propone decir al vendedor
+      // en este nodo —ejemplos, mejoras y misión, ya como van a salir— pasa por
+      // las pruebas de las fallas del nodo, las mismas con que se le califica.
+      // Lo que reprueba se corrige y se vuelve a medir; si no pasa, no llega.
+      // Al final de las revisiones, para medir el texto que de verdad sale.
+      // En la evaluación solo van conteos: los ids y las frases van al log (la
+      // red busca los ids de las fallas en toda la respuesta).
+      {
+        const tVara = Date.now();
+        const quienVara = { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null };
+        const vara = await pasarPorLaVara({
+          ev: evaluation,
+          guion: practice_script,
+          paso: pasoNodo ?? pasoPorMundo(node_id),
+          conversacion: fullHistory,
+          llamar: (entrada, textos) => llamarVara(apiKey, entrada, quienVara, textos),
+          // El segundo filtro es el mismo juez de las pruebas que califica al vendedor.
+          juez: (entrada, acusaciones) => llamarJuez(apiKey, entrada, quienVara, acusaciones, "vara_juez"),
+        });
+        const { detalle, ...conteos } = vara;
+        auditoria.vara = { ...conteos, latencia_ms: Date.now() - tVara };
+        if (vara.error) console.error("[closer-voice] la vara no pudo correr: los ejemplos de este nodo no salen", { session_id, node_id, ejemplos_quitados: vara.ejemplos_quitados });
+        if (detalle.length > 0) console.warn("[closer-voice] la misma vara: textos del coach que la vara sospechó, y lo que decidió el juez", { session_id, node_id, detalle });
+      }
       (evaluation as any).auditoria = auditoria;
 
       // El modelo juzga; el código calcula. La nota sale de una rúbrica fija
@@ -1539,6 +1616,17 @@ async function atender(body: ReqBody): Promise<Response> {
         evaluation.observations = (evaluation.observations ?? []).filter((o: any) => !completos.has(o?.criterio_id));
         if (evaluation.observations.length < antes) {
           console.warn("[closer-voice] observaciones sobre criterios cumplidos descartadas", { session_id, node_id, descartadas: antes - evaluation.observations.length });
+        }
+      }
+      // Mensaje 163: lo que bajó la nota se ve, y va primero. Todo criterio sin
+      // crédito completo tiene su observación (si el evaluador no la escribió,
+      // sale del motivo de su propio veredicto), y van ordenadas por los puntos
+      // que costó cada una. La pantalla muestra las tres primeras.
+      if (rubrica.valido) {
+        const { agregadas } = completarYOrdenarObservaciones(evaluation, rubrica.desglose);
+        if (agregadas.length > 0) {
+          (evaluation as any).auditoria.observaciones_de_la_rubrica = agregadas.length;
+          console.warn("[closer-voice] criterios que bajaron la nota sin observación del evaluador: se agregó la de la rúbrica", { session_id, node_id, agregadas });
         }
       }
       // Cada falla detectada, con lo que dijo el vendedor y cuánto costó: la

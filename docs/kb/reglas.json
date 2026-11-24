@@ -585,7 +585,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Balas: hechos positivos y concretos sobre el producto, el servicio (tú, tu empresa y cómo se lo haces llegar) o el precio. Con cada una subes el valor o bajas el costo. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción la bala que el vendedor escoja para ese momento. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
+  "resumen": "Balas: hechos positivos y concretos sobre el producto, el servicio (tú, tu empresa y cómo se lo haces llegar) o el precio. Con cada una subes el valor o bajas el costo. Se sueltan poco a poco, conforme hace falta subir el impulso: en la presentación unas tres cosas positivas antes del precio, y ante una objeción las que el vendedor escoja porque responden a lo que dijo el cliente: lo normal es una o dos, a veces tres, y más no es falla si todas apuntan a lo que dijo y le quedan para lo que venga. LA PRUEBA DE UNA BALA: ¿la competencia podría decir exactamente lo mismo? Si sí, no era bala. En la práctica todo es imaginario: no se califica si es real, sino si es concreto.",
   "cita_cerebro": "La persona con más balas claramente tiene el control, siempre y cuando conserve su munición",
   "severidad_sugerida": null
  },
@@ -875,7 +875,7 @@
   "tipo": "herramienta",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Feel, Felt, Found para la preocupación seria o personal: «entiendo cómo se siente», «otros sintieron lo mismo», «lo que encontraron fue…». No termina en la tercera F: sigue una bala y el cierre con acción. «Lo que encontraron» no es la bala: es la tercera F. LA PRUEBA: ante una objeción seria, ¿el vendedor la valida sin discutir, dice que otros sintieron lo mismo y lo que encontraron, y avanza? En la práctica los otros clientes se imaginan. Si falta una de las tres F, está a medias.",
+  "resumen": "Feel, Felt, Found para la preocupación seria o personal: «entiendo cómo se siente», «otros sintieron lo mismo», «lo que encontraron fue…». No termina en la tercera F: sigue una bala y el cierre con acción. «Lo que encontraron» por sí solo no es la bala: es la tercera F; si ahí nombra algo concreto suyo —de su producto, su servicio o su precio—, eso sí es bala. LA PRUEBA: ante una objeción seria, ¿el vendedor la valida sin discutir, dice que otros sintieron lo mismo y lo que encontraron, y avanza? En la práctica los otros clientes se imaginan. Si falta una de las tres F, está a medias.",
   "cita_cerebro": "FFF no termina en la tercera F",
   "severidad_sugerida": null
  },
@@ -885,7 +885,7 @@
   "tipo": "requisito",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "El Círculo de Cierre: atravesar la objeción, re-impulsar con una bala y volver a cerrar con acción. Atravesar solo detiene la caída del impulso: no lo sube. LA PRUEBA: después de atravesar la objeción, ¿el vendedor sube el impulso con una bala —la que escoja: una que no había dicho, o una ya dicha, aunque la repita tal cual— y vuelve a pedir la decisión con una pregunta de acción? «Lo que encontraron» de FFF no es la bala: es el paso anterior.",
+  "resumen": "El Círculo de Cierre: atravesar la objeción, re-impulsar con una bala y volver a cerrar con acción. Atravesar solo detiene la caída del impulso: no lo sube. LA PRUEBA: después de atravesar la objeción, ¿el vendedor sube el impulso con una bala —la que escoja: una que no había dicho, o una ya dicha, aunque la repita tal cual— y vuelve a pedir la decisión con una pregunta de acción? «Lo que encontraron» de FFF, por sí solo, no es la bala: es el paso anterior; si ahí nombra algo concreto suyo —de su producto, su servicio o su precio—, eso sí es bala.",
   "cita_cerebro": "atravesar solo detiene la caída del impulso",
   "severidad_sugerida": "major"
  },
@@ -895,7 +895,7 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "CAMPO",
-  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala: pides una decisión en el punto más bajo de la conversación. LA PRUEBA: después de atender la objeción, ¿el vendedor pide la decisión sin dar antes ninguna bala que suba el impulso? «Lo que encontraron» de FFF no cuenta como bala, aunque sea concreto: es la tercera F, y la bala va aparte. Una bala ya dicha, aunque la repita tal cual, sí cuenta.",
+  "resumen": "Atravesar la objeción y cerrar de inmediato, saltándose la bala: pides una decisión en el punto más bajo de la conversación. LA PRUEBA: después de atender la objeción, ¿el vendedor pide la decisión sin dar antes ninguna bala que suba el impulso? «Lo que encontraron» de FFF, por sí solo —«les convino», «dejaron de perder ventas»—, no cuenta como bala: es la tercera F. Pero si ahí nombra algo concreto suyo, de su producto, su servicio o su precio —«con la entrega cada martes nunca más perdieron una venta»—, eso sí es bala. Un precio con su motivo —«el primer pedido se lo dejo en mil cincuenta»— también es bala de precio. Una bala ya dicha, aunque la repita tal cual, sí cuenta.",
   "cita_cerebro": "El error más común: atravesar la objeción y cerrar de inmediato, saltándose la bala",
   "severidad_sugerida": "major"
  },
@@ -1375,8 +1375,8 @@
   "tipo": "error",
   "canal": "universal",
   "procedencia": "FUENTE",
-  "resumen": "Apilar argumentos en una respuesta: las balas se dosifican. LA PRUEBA: al atender una objeción, ¿el vendedor suelta dos o más balas en la misma respuesta, en vez de una sola antes de cerrar?",
-  "cita_cerebro": "Reserva algunas para que no importe cuántas balas tenga tu cliente",
+  "resumen": "Vaciar el cargador: gastar las balas sin cuidarlas. Ante una objeción, lo normal es re-impulsar con una o dos balas, a veces tres, que respondan a lo que dijo el cliente; cada objeción que venga después va a pedir otra. LA PRUEBA, al atender una objeción, bala por bala: (1) ¿esta bala apunta a algo que el cliente dijo —su objeción, su dolor, su situación—? Una bala que no apunta a nada de lo que dijo es una bala gastada: es falla. (2) ¿El vendedor le suelta de jalón una lista de todo lo que trae, en vez de escoger las que responden a lo que dijo? Es falla. Una, dos o tres balas que apuntan a lo que dijo el cliente no son falla. Cuatro o más en una sola respuesta es señal de alerta: revísalas una por una con más cuidado; si todas apuntan y las escogió, no es falla. Quedarse sin balas en la siguiente objeción no se califica con esta regla: se califica lo que se ve en ese turno (no dio bala, o dio aire). Si antes soltó muchas, la explicación le dice que ahí se le fueron: cada objeción pide la suya.",
+  "cita_cerebro": "Vaciar el cargador es soltar balas que no apuntan a nada de lo que dijo",
   "severidad_sugerida": "major"
  },
  {

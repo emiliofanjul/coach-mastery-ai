@@ -182,6 +182,20 @@ const CORTE: Record<string, string> = {
   scope_covered: "objetivo cumplido", evidence_sufficient: "evidencia suficiente", critical_failure: "falla crítica",
 };
 
+/**
+ * Cómo terminó la práctica. Mensaje 163: el Director corta por «falla crítica» con lo que él creyó ver en ese
+ * momento; después la calificación revisa con la prueba de la regla, y a veces no la confirma (8-nov, nodo
+ * 1.2: prácticas con nota 53 y 80 guardadas como «falla crítica» sin ninguna). El panel dice lo que pasó.
+ */
+function terminoDe(corte: unknown, ev: any): string | null {
+  if (typeof corte !== "string" || !corte.trim()) return null;
+  if (corte === "critical_failure") {
+    const hayCritica = lista(ev?.fallas).some((f) => (f?.severidad ?? f?.severity) === "critical");
+    return hayCritica ? CORTE.critical_failure : "el Director cortó por una falla crítica que la calificación no confirmó";
+  }
+  return CORTE[corte] ?? corte;
+}
+
 const txt = (x: unknown): string | null => (typeof x === "string" && x.trim() ? x.trim() : null);
 const lista = (x: unknown): any[] => (Array.isArray(x) ? x : []);
 
@@ -215,7 +229,7 @@ export function vistaDePractica(d: DetallePractica): VistaPractica {
       mejora: txt(f.mejora),
     })),
     mision: txt(ev.mision),
-    termino: txt(p.cut_reason) ? (CORTE[p.cut_reason] ?? p.cut_reason) : null,
+    termino: terminoDe(p.cut_reason, ev),
   };
 }
 

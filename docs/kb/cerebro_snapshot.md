@@ -563,6 +563,8 @@ Toda característica se traduce a una de tres cosas: **dinero** (gana más o gas
 ### Teoría de las Balas `FUENTE` `UNIVERSAL`
 > *"La persona con más balas claramente tiene el control, siempre y cuando conserve su munición."*
 
+**Por qué les decimos balas** `CAMPO`: en la conversación los dos traen munición. Las tuyas son razones para comprar; las del cliente, razones para no hacerlo. Cada bala que disparas sube el impulso, pero no son infinitas: el que se queda sin ellas se queda desarmado.
+
 **Las balas son TUYAS.** Son hechos positivos y concretos, y salen de tres lugares `CAMPO`:
 - **El producto** — lo que lo diferencia: presentación, marca, rendimiento, mejoras, datos, certificaciones
 - **El servicio** — tú y tu empresa (experiencia, años en la zona, casos de éxito, dedicación) y cómo se lo haces llegar (entrega, cada cuánto lo visitas, plazo, atención)
@@ -576,7 +578,7 @@ Con cada bala mueves la balanza: subes el valor o bajas el costo.
 
 > **Por qué se guardan:** más adelante el cliente va a poner razones para no comprar. Eso baja su impulso. Responderle bien solo **detiene la caída** — lo que vuelve a subirlo es **una bala**. Si las gastaste todas presumiendo al principio, llegas a ese momento con menos de dónde escoger.
 
-**Cómo se sueltan** `CAMPO`: sistemáticamente, poco a poco, conforme haga falta subir el impulso. En la presentación es normal decir unas tres cosas positivas antes del precio; ante una objeción se reimpulsa con la bala que escojas para ese momento. El error es soltarlas todas de jalón y quedarte sin munición cuando el impulso baje.
+**Cómo se sueltan** `CAMPO`: sistemáticamente, poco a poco, conforme haga falta subir el impulso. En la presentación es normal decir unas tres cosas positivas antes del precio; ante una objeción se re-impulsa con una o dos —a veces tres— que respondan a lo que te dijo. El error es soltarlas todas de jalón y quedarte sin munición cuando el impulso baje.
 
 ### FUJIES / FUJPIG — Factores de Impulso `FUENTE`
 *"El impulso es otra palabra para la emoción."*
@@ -736,7 +738,7 @@ En español: **Entiendo · Sintió · Encontramos**
 1. **"Entiendo cómo se siente"** — estar de acuerdo te vuelve distinto del vendedor promedio, **y por eso te escuchan**
 2. **"Mi último cliente sentía lo mismo"** — para que sepa que no está solo
 3. **"Lo que encontramos fue..."** — por qué dejaron de pensar así. **Esto usa Efecto Jones**
-4. **Re-impulsa con una bala** `CAMPO`: una sola, y cierras. Tres de golpe sería vaciar el cargador. «Lo que encontramos» no es la bala: es el paso 3. La bala va aparte, después.
+4. **Re-impulsa con la bala o las balas que respondan a lo que te dijo** `CAMPO`, y cierras. Una o dos es lo normal; a veces tres. Cada bala tiene que apuntar a algo que el cliente dijo: su objeción, su dolor, su situación. Y cuídalas: cada objeción que venga después te va a pedir otra. Vaciar el cargador es soltar balas que no apuntan a nada de lo que dijo, soltar de jalón todo lo que traes, o gastarte tantas que, cuando llega la siguiente objeción, ya no tienes con qué subir el impulso. «Lo que encontramos» es el paso 3, y por sí solo no es la bala: si te quedas en «les convino» y cierras, no re-impulsaste. Pero si ahí nombras algo concreto tuyo —de tu producto, tu servicio o tu precio, como «con la entrega cada martes nunca más perdieron una venta»—, eso sí es una bala. Un precio con su motivo —«el primer pedido se lo dejo en mil cincuenta»— también lo es, aunque ya lo hayas dicho.
 5. **Close With Action**
 
 > ⚠️ **FFF no termina en la tercera F.** El documento en español del sistema fuente está truncado y solo llega al paso 3 — por eso mucha gente aprendió un FFF incompleto, sin re-impulso y sin cierre. **Los pasos 4 y 5 son el Círculo de Cierre.**

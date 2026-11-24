@@ -51,11 +51,13 @@ describe("el cliente simulado no contradice lo que se califica", () => {
     expect(ps("5.10").phases.you_do.prompt).toContain("Si te repite tal cual algo que ya te habia dicho, si cuenta");
     expect(ps("5.12").phases.you_do.prompt).toContain("la MISMA bala de la primera para la segunda objeción → cuenta");
   });
-  it("el cargador se vacía desde dos argumentos, como la falla", () => {
+  it("el cargador no se cuenta desde dos: una, dos o tres balas que apuntan no abruman (mensaje 166)", () => {
     for (const n of ["5.8", "5.12"]) {
       expect(ps(n).phases.you_do.prompt).not.toContain("3+");
-      expect(ps(n).phases.you_do.prompt).toContain("dos o más argumentos");
+      expect(ps(n).phases.you_do.prompt).not.toContain("dos o más argumentos");
     }
+    expect(ps("5.8").phases.you_do.prompt).toContain("Una, dos o tres balas que le hablan a tu objeción NO te abruman");
+    expect(ps("5.12").phases.you_do.prompt).toContain("una, dos o tres balas que le hablan a tu duda no te abruman");
   });
   it("el ejemplo de la 5.12 ya no le pide al cliente que pruebe y compare", () => {
     expect(ps("5.12").phases.i_do.first_message).not.toMatch(/compare usted mismo/);

@@ -22,12 +22,13 @@ describe("la bala la escoge el vendedor", () => {
     expect(cerebro).not.toContain("una bala NUEVA");
     expect(cerebro).not.toContain("una bala nueva");
     expect(cerebro).toContain("Volver a decir una ya dicha, aunque sea tal cual, también se vale");
-    expect(cerebro).toContain("«Lo que encontramos» no es la bala: es el paso 3.");
+    // Emilio, 18-nov (mensaje 167): por sí solo no es la bala; si ahí nombra algo concreto suyo, sí lo es.
+    expect(cerebro).toContain("«Lo que encontramos» es el paso 3, y por sí solo no es la bala");
   });
   it("las reglas lo dicen igual, con su cita en el Cerebro", () => {
     for (const id of ["objection.bala_repetida", "objection.circulo_de_cierre", "objection.cierra_sin_bala", "objection.fff", "present.balas"])
       expect(cerebro).toContain(regla(id).cita_cerebro);
-    expect(regla("objection.cierra_sin_bala").resumen).toContain("«Lo que encontraron» de FFF no cuenta como bala");
+    expect(regla("objection.cierra_sin_bala").resumen).toContain("«Lo que encontraron» de FFF, por sí solo —«les convino», «dejaron de perder ventas»—, no cuenta como bala");
     expect(regla("objection.bala_repetida").severidad_sugerida).toBeNull();
   });
   it("ninguna práctica castiga repetir una bala", () => {
@@ -42,7 +43,7 @@ describe("la bala la escoge el vendedor", () => {
 });
 
 describe("la red", () => {
-  it("«lo que encontraron», aunque sea concreto, no es la bala", () => {
+  it("«lo que encontraron», sin nada concreto del vendedor, no es la bala", () => {
     expect(caso("G98_responde_sin_discutir").expected.must_flag).toEqual(["salta_la_bala"]);
   });
   it("una bala ya dicha, repetida tal cual, sí re-impulsa", () => {
