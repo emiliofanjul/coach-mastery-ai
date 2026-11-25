@@ -45,6 +45,7 @@ import { etiquetarPasos } from "../_shared/pasos.ts";
 import { quitarEspejosDeCriteriosCumplidos } from "../_shared/espejos.ts";
 import { armarEventoDePractica, guardarEventoDePractica, type PracticaGuardada } from "../_shared/evento_practica.ts";
 import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, recordatorioFallaCritica, type RevisionJuez } from "../_shared/replica_revisada.ts";
+import { explicarPorQue } from "../_shared/porque.ts";
 import { calcularSeguimiento, lineasDeSeguimiento, type Intento, type GuionDeNodo } from "../_shared/seguimiento.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
@@ -1715,6 +1716,27 @@ async function atender(body: ReqBody): Promise<Response> {
         }
       } catch (e) {
         console.warn("[closer-voice] sin etiquetas de paso (fail-open):", e);
+      }
+      // Mensaje 174: el porqué de cada falla y observación (su mecanismo del
+      // Cerebro), dónde va lo que se hizo antes de tiempo, y en qué paso de la
+      // línea recta está este nodo. Sale del doc aprobado «La línea recta y el
+      // porqué», guardado en la base. No toca la nota; si falla, sale igual.
+      try {
+        const adminPorque = getAdmin();
+        if (adminPorque) {
+          const [me, rm, vd] = await Promise.all([
+            adminPorque.from("mecanismos").select("id, nombre, porque"),
+            adminPorque.from("reglas_mecanismo").select("regla_id, mecanismo_id"),
+            adminPorque.from("va_despues").select("regla_id, va_en, porque"),
+          ]);
+          const errPorque = me.error ?? rm.error ?? vd.error;
+          if (errPorque) throw new Error(errPorque.message);
+          explicarPorQue(evaluation, practice_script, node_id, {
+            mecanismos: (me.data ?? []) as any[], reglas_mecanismo: (rm.data ?? []) as any[], va_despues: (vd.data ?? []) as any[],
+          });
+        }
+      } catch (e) {
+        console.warn("[closer-voice] sin porqué (fail-open):", e instanceof Error ? e.message : String(e));
       }
 
       // Estrellas a partir del score YA topado.

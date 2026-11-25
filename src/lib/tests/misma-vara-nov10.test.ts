@@ -421,7 +421,8 @@ describe("la red de pruebas lo protege", () => {
 describe("la pantalla y el panel", () => {
   it("una observación sin mejora ni ejemplo se muestra sin flecha: no hay nada que abrir", () => {
     const p = leer("src/routes/nodo.$nodeId.practica.tsx");
-    expect(p).toContain("const hayMas = Boolean(obs.mejora?.trim() || obs.ejemplo?.trim());");
+    // Mensaje 174: su porqué también se abre; sin mejora, ejemplo ni porqué, sigue sin flecha.
+    expect(p).toContain("const hayMas = Boolean(obs.mejora?.trim() || obs.ejemplo?.trim() || porQueValido(obs.porque));");
     expect(p).toContain("{obs.mejora?.trim() && <p");
   });
   it("el panel no llama «falla crítica» a un corte que la calificación no confirmó", () => {

@@ -90,10 +90,19 @@ const MAX_I_DO_USER_TURNS = 2;
 // diálogo de venta y qué dijo Closer con su propia voz.
 type TranscriptItem = TranscriptItemVenta;
 
+/** Mensaje 174: por qué importa (el mecanismo del Cerebro) y, si fue antes de tiempo, dónde sí va. */
+interface PorQueItem {
+  mecanismo: string;
+  texto: string;
+  va_en?: string;
+  va_despues?: string;
+}
+
 interface ObservationItem {
   error: string;
   mejora: string;
   ejemplo: string;
+  porque?: PorQueItem;
   /** El paso de la visita y el nombre de la habilidad (oct-2026). */
   paso?: string;
   habilidad?: string;
@@ -110,6 +119,7 @@ interface FallaItem {
   cita?: string;
   mejora?: string;
   ejemplo?: string;
+  porque?: PorQueItem;
 }
 
 interface FeedbackResult {
@@ -2821,8 +2831,74 @@ function FallaCard({ falla }: { falla: FallaItem }) {
       <p style={{ ...texto, fontSize: 16, color: "var(--c-text)", fontWeight: 600, lineHeight: 1.4 }}>{falla.error}</p>
       {falla.cita && <p style={{ ...texto, color: "var(--c-text-soft)" }}>Dijiste: «{falla.cita}»</p>}
       <p style={{ ...texto, fontSize: 14, color: "var(--c-danger)", fontWeight: 600 }}>{falla.efecto}</p>
+      <PorQueImporta porque={falla.porque} />
       {falla.mejora && <p style={{ ...texto, color: "var(--c-primary)", fontWeight: 600 }}>{falla.mejora}</p>}
-      {falla.ejemplo && <p style={{ ...texto, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{falla.ejemplo}»</p>}
+      {falla.ejemplo && <EjemploLibre ejemplo={falla.ejemplo} />}
+    </div>
+  );
+}
+
+// ── Mensaje 174: el porqué de cada falla ─────────────────────────────────
+// Carlos cambió una sola pregunta y pasó de 100 a 30. La pantalla le decía qué
+// hizo mal, pero no por qué ahí no funciona ni dónde sí va, y concluyó que le
+// calificábamos frases exactas. Los textos salen del doc aprobado «La línea
+// recta y el porqué», guardado en la base; aquí solo se pintan.
+function porQueValido(p: PorQueItem | undefined): p is PorQueItem {
+  return Boolean(p && typeof p.texto === "string" && p.texto.trim() && typeof p.mecanismo === "string" && p.mecanismo.trim());
+}
+
+function PorQueImporta({ porque }: { porque?: PorQueItem }) {
+  if (!porQueValido(porque)) return null;
+  const texto = { fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5, margin: 0 } as const;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "10px 12px", borderRadius: 10, background: "var(--c-elevated)" }}>
+      {porque.va_en && porque.va_despues && (
+        <p style={{ ...texto, color: "var(--c-text)" }}>
+          <strong>Esto va más adelante: en {porque.va_en}.</strong> {porque.va_despues}
+        </p>
+      )}
+      <p style={{ ...texto, color: "var(--c-text-soft)" }}>
+        <strong style={{ color: "var(--c-text-2)" }}>Por qué importa · {porque.mecanismo}. </strong>{porque.texto}
+      </p>
+    </div>
+  );
+}
+
+function EjemploLibre({ ejemplo }: { ejemplo: string }) {
+  const texto = { fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, margin: 0 } as const;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <span style={{ ...texto, fontSize: 13, color: "var(--c-text-2)" }}>Una forma de decirlo (con tus palabras está bien):</span>
+      <p style={{ ...texto, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{ejemplo}»</p>
+    </div>
+  );
+}
+
+const PASOS_LINEA = ["Introducción", "Historia breve", "Descubrimiento", "Presentación", "Cierre", "Consolidación"];
+
+/** En qué paso de la línea recta está esta práctica. null = la línea completa (mundo 7). */
+function pasoDeLinea(evaluation: any): number | null | undefined {
+  const l = evaluation?.linea;
+  if (!l || typeof l !== "object") return undefined;
+  const p = Number(l.paso);
+  return Number.isInteger(p) && p >= 1 && p <= 6 ? p : null;
+}
+
+function LineaRecta({ paso }: { paso: number | null }) {
+  const activo = (i: number) => paso === null || paso === i + 1;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center" }} aria-hidden>
+        {PASOS_LINEA.map((_, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", flex: i < PASOS_LINEA.length - 1 ? 1 : "none" }}>
+            <span style={{ width: 24, height: 24, borderRadius: 12, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, background: activo(i) ? "var(--c-primary)" : "var(--c-elevated)", color: activo(i) ? "var(--c-bg)" : "var(--c-text-2)" }}>{i + 1}</span>
+            {i < PASOS_LINEA.length - 1 && <span style={{ flex: 1, height: 2, background: paso === null ? "var(--c-primary)" : "var(--c-elevated)" }} />}
+          </div>
+        ))}
+      </div>
+      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "var(--c-text-2)" }}>
+        {paso === null ? "Estás aquí: la línea recta completa, de la introducción a la consolidación." : `Estás aquí: paso ${paso} · ${PASOS_LINEA.at(paso - 1) ?? ""}.`}
+      </span>
     </div>
   );
 }
@@ -2841,7 +2917,7 @@ function ObservationCard({ obs }: { obs: ObservationItem }) {
   const [open, setOpen] = useState(false);
   // Mensaje 163: una observación puede venir sin mejora ni ejemplo (salió de la rúbrica, o su texto no pasó
   // la vara del nodo). Entonces no hay nada que abrir: se muestra lo que pasó, sin flecha.
-  const hayMas = Boolean(obs.mejora?.trim() || obs.ejemplo?.trim());
+  const hayMas = Boolean(obs.mejora?.trim() || obs.ejemplo?.trim() || porQueValido(obs.porque));
   if (!hayMas) {
     return (
       <div style={{ borderTop: "1px solid var(--c-elevated)", padding: "12px 18px", display: "flex", flexDirection: "column", gap: 4, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.4, color: "var(--c-text)" }}>
@@ -2868,8 +2944,9 @@ function ObservationCard({ obs }: { obs: ObservationItem }) {
       </button>
       {open && (
         <div style={{ padding: "0 18px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+          <PorQueImporta porque={obs.porque} />
           {obs.mejora?.trim() && <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-primary)", fontWeight: 600 }}>{obs.mejora}</p>}
-          {obs.ejemplo && <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-text-soft)", fontStyle: "italic" }}>«{obs.ejemplo}»</p>}
+          {obs.ejemplo && <EjemploLibre ejemplo={obs.ejemplo} />}
         </div>
       )}
     </div>
@@ -3335,6 +3412,7 @@ function FeedbackPhase({
     const meta = metaDePractica(evaluation);
     const avance = lineasDeAvance(evaluation);
     const logro = veredictoDeLogro(stars);
+    const pasoLinea = pasoDeLinea(evaluation);
     const etiqueta = { fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" } as const;
     const tarjeta = { width: "100%", boxSizing: "border-box", padding: 18, borderRadius: "var(--r-tarjeta)", background: "var(--c-surface)", border: "1px solid var(--c-border)" } as const;
     return (
@@ -3351,6 +3429,7 @@ function FeedbackPhase({
             {/* Lo que buscamos en esta práctica, y si lo lograste (mensaje 171): es lo primero que lee. */}
             {meta && (
               <div style={{ ...tarjeta, display: "flex", flexDirection: "column", gap: 10 }}>
+                {pasoLinea !== undefined && <LineaRecta paso={pasoLinea} />}
                 <div style={{ ...etiqueta, color: "var(--c-primary)" }}>Lo que buscamos en esta práctica</div>
                 <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text)" }}>{meta.lo_que_buscamos}</p>
                 <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5, color: "var(--c-text-soft)" }}>
@@ -3370,6 +3449,13 @@ function FeedbackPhase({
             <p style={{ margin: 0, textAlign: "center", fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.45, color: "var(--c-text-soft)", maxWidth: 340 }}>
               {lineaDeEstrellas(stars, { yaLoHabiaPasado, esReto, esElUltimo: nodeId === NODO_CERTIFICACION })}
             </p>
+
+            {/* Mensaje 174: lo que se califica, dicho una vez (Emilio): sí cuenta lo que dice, pero no frases exactas. */}
+            {(fallas.length > 0 || observations.length > 0) && (
+              <p style={{ margin: "14px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5, color: "var(--c-text-2)", textAlign: "center", maxWidth: 360 }}>
+                No busco frases exactas: hay mil formas de decirlo bien. Lo que sí tiene que estar es la base: avanzar en la línea recta con lo que te enseñamos.
+              </p>
+            )}
 
             {/* Lo que te bajó la nota: va primero. Disputa 3.10 (oct-2026): una
                 falla crítica dejó la nota en 30 y la pantalla no la mencionaba. */}
