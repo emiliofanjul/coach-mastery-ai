@@ -1,0 +1,168 @@
+[
+ [
+  200,
+  {
+   "harness_version": "v3.48.0",
+   "prompt_version_expected": "v2",
+   "node_id": "2.7c",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 20271,
+     "mas_lentos": [
+      {
+       "id": "G38_no_pero_nada_mas_no_es_discutir",
+       "ms": 20271
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G38_no_pero_nada_mas_no_es_discutir",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 20271,
+     "ms_revision": 2071,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "air:cumple",
+      "dos_no_seguidos:cumple"
+     ],
+     "session_ids": [
+      "0c769e7a-2e20-4af2-822c-054b25652763"
+     ]
+    }
+   ]
+  }
+ ],
+ [
+  200,
+  {
+   "harness_version": "v3.48.0",
+   "prompt_version_expected": "v2",
+   "node_id": "2.7c",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 33451,
+     "mas_lentos": [
+      {
+       "id": "G38_no_pero_nada_mas_no_es_discutir",
+       "ms": 33451
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G38_no_pero_nada_mas_no_es_discutir",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 33451,
+     "ms_revision": 8854,
+     "juez": {
+      "acusaciones": 2,
+      "fallas_quitadas": 1,
+      "criterios_corregidos": 1,
+      "juzgadas": 2,
+      "intentos": 1,
+      "latencia_ms": 6437,
+      "descartados_por_cita": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "air:cumple",
+      "dos_no_seguidos:cumple"
+     ],
+     "session_ids": [
+      "b92f3355-396c-4c74-9e9f-953e236c1f6d"
+     ]
+    }
+   ]
+  }
+ ],
+ [
+  200,
+  {
+   "harness_version": "v3.48.0",
+   "prompt_version_expected": "v2",
+   "node_id": "2.7c",
+   "summary": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "tiempos": {
+     "casos_medidos": 1,
+     "promedio_ms": 19977,
+     "mas_lentos": [
+      {
+       "id": "G38_no_pero_nada_mas_no_es_discutir",
+       "ms": 19977
+      }
+     ],
+     "sobre_90s": 0
+    }
+   },
+   "results": [
+    {
+     "id": "G38_no_pero_nada_mas_no_es_discutir",
+     "status": "pass",
+     "reasons": [],
+     "score": 100,
+     "ms_total": 19977,
+     "ms_revision": 2430,
+     "juez": {
+      "acusaciones": 0,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0
+     },
+     "espejos_quitados": 0,
+     "por_hecho": {
+      "pregunta": 0,
+      "no": 0
+     },
+     "base": 100,
+     "restas": [],
+     "veredictos": [
+      "air:cumple",
+      "dos_no_seguidos:cumple"
+     ],
+     "session_ids": [
+      "e76bb4d1-62f8-451a-aa1c-6b288bb0117d"
+     ]
+    }
+   ]
+  }
+ ]
+]
