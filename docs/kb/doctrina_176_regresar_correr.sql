@@ -1,5 +1,5 @@
 -- Mensaje 176 · SOLO si hay que regresar: deja el Cerebro, la regla y los guiones como antes del 176,
--- y retira la guía del vendedor (activa = false) sin borrarla. Volver a correr doctrina_176_correr.sql la reactiva.
+-- y retira la guía del vendedor (activa = false) sin borrarla. Volver a correr doctrina_176_datos.sql la reactiva.
 -- Si algo no está como lo dejó el 176, falla y NO cambia nada.
 DO $do$
 DECLARE v int; n int; b text; ps jsonb; t text;

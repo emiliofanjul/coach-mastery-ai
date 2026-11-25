@@ -18,7 +18,8 @@ const nodos: any[] = JSON.parse(leer("docs/kb/nodos_snapshot.json"));
 const ps = (id: string) => nodos.find((n) => n.id === id).practice_script;
 const pitch = (id: string) => ps(id).failure_criteria.find((f: any) => f.id === "pitch_prematuro");
 const red = JSON.parse(leer("supabase/functions/_shared/eval_harness_v1.json"));
-const sql = leer("docs/kb/doctrina_176_correr.sql");
+// Mensaje 176-C: el SQL va en dos archivos (Lovable): la estructura de la guía y los datos.
+const sql = leer("docs/kb/doctrina_176_estructura.sql") + leer("docs/kb/doctrina_176_datos.sql");
 
 describe("una sola versión de la regla: Cerebro, regla y guiones", () => {
   it("el Cerebro dice cuándo empiezan las preguntas de su negocio", () => {

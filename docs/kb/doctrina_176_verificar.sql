@@ -1,4 +1,4 @@
--- Mensaje 176 · Verificación (correr después de doctrina_176_correr.sql).
+-- Mensaje 176 · Verificación (correr después de doctrina_176_estructura.sql y doctrina_176_datos.sql).
 SELECT 'cerebro' AS que, max(version)::text AS valor FROM public.doctrina WHERE is_active
 UNION ALL SELECT 'secciones activas', count(*)::text FROM public.doctrina WHERE is_active
 UNION ALL SELECT 'pasos', md5(body) FROM public.doctrina WHERE is_active AND section_key = 'pasos'

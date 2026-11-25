@@ -1,0 +1,6 @@
+{
+  "message": "Porque «los mejores» no contesta quién eres ni por qué estás ahí: es una credencial, y esas alargan la historia con algo que al cliente no le sirve para decidir si te escucha. Dijiste tu nombre, tu empresa, que andas visitando talleres, y preguntaste. Eso sí contesta quién eres y qué haces. «Los mejores» es de más: presume la empresa en lugar de mantenerlo corto. La falla curriculum resta 30 puntos. Y el turno 1 también trae pitch prematuro (le preguntaste por su operación comercial —cómo le hace con los aceites— en el mismo turno de tu historia breve): esa falla crítica resta otros 30 y topa la nota en 30.",
+  "prompt_version": "v2.9.9",
+  "model": "claude-sonnet-4-5",
+  "degraded": false
+}

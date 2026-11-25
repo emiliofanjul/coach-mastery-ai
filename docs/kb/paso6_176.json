@@ -1,0 +1,412 @@
+[
+  {
+    "case": "G124_operacion_en_la_historia_breve",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 29840,
+          "mas_lentos": [
+            {
+              "id": "G124_operacion_en_la_historia_breve",
+              "ms": 29840
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G124_operacion_en_la_historia_breve",
+          "status": "pass",
+          "reasons": [],
+          "score": 30,
+          "ms_total": 29840,
+          "ms_revision": 8126,
+          "juez": {
+            "acusaciones": 2,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 1,
+            "juzgadas": 2,
+            "intentos": 1,
+            "latencia_ms": 5300,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "historia_breve:cumple",
+            "brevedad:cumple",
+            "relevancia_cliente:cumple"
+          ],
+          "session_ids": [
+            "532b9041-07a1-4b07-a0c6-3c9557083a06"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": "G125_operacion_despues_de_presentarse",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 29596,
+          "mas_lentos": [
+            {
+              "id": "G125_operacion_despues_de_presentarse",
+              "ms": 29596
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G125_operacion_despues_de_presentarse",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 29596,
+          "ms_revision": 8797,
+          "juez": {
+            "acusaciones": 2,
+            "fallas_quitadas": 1,
+            "criterios_corregidos": 1,
+            "juzgadas": 2,
+            "intentos": 1,
+            "latencia_ms": 5977,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "relevancia_cliente:cumple"
+          ],
+          "session_ids": [
+            "dfa1a80a-f852-4b77-bf49-aa2bcd9b6230"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": "P2_8_perfecto",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 18015,
+          "mas_lentos": [
+            {
+              "id": "P2_8_perfecto",
+              "ms": 18015
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "P2_8_perfecto",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 18015,
+          "ms_revision": 1588,
+          "juez": {
+            "acusaciones": 0,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "mala_experiencia:cumple"
+          ],
+          "session_ids": [
+            "1869b8ce-cac4-4501-b78f-7a350c6e9a8d"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": "P2_1_perfecto",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 17848,
+          "mas_lentos": [
+            {
+              "id": "P2_1_perfecto",
+              "ms": 17848
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "P2_1_perfecto",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 17848,
+          "ms_revision": 2618,
+          "juez": {
+            "acusaciones": 0,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "historia_breve:cumple",
+            "brevedad:cumple",
+            "relevancia_cliente:cumple"
+          ],
+          "session_ids": [
+            "cff3c917-d847-47ae-9add-5d9b0d37bb08"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": "P2_2_perfecto",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 26749,
+          "mas_lentos": [
+            {
+              "id": "P2_2_perfecto",
+              "ms": 26749
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "P2_2_perfecto",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 26749,
+          "ms_revision": 8354,
+          "juez": {
+            "acusaciones": 1,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 1,
+            "juzgadas": 1,
+            "intentos": 1,
+            "latencia_ms": 3499,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "relevancia_cliente:cumple"
+          ],
+          "session_ids": [
+            "8f8e2fdc-1098-48d6-849c-6a0f7a013f31"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": "G33_intencion_en_voz_alta_no_es_pregunta",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 36032,
+          "mas_lentos": [
+            {
+              "id": "G33_intencion_en_voz_alta_no_es_pregunta",
+              "ms": 36032
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G33_intencion_en_voz_alta_no_es_pregunta",
+          "status": "pass",
+          "reasons": [],
+          "score": 0,
+          "ms_total": 36032,
+          "ms_revision": 7431,
+          "juez": {
+            "acusaciones": 3,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0,
+            "juzgadas": 3,
+            "intentos": 1,
+            "latencia_ms": 7430,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 0,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "relevancia_cliente:no_cumple(falta: Ningún turno termina con una pregunta que le devuelva la palabra al cliente. Todos cierran con afirmaciones o pensamient)"
+          ],
+          "session_ids": [
+            "20b4e615-4c49-46f0-9cd3-5d0cf4cfb68b"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "case": "G06_fuera_de_scope_discovery",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.48.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 28145,
+          "mas_lentos": [
+            {
+              "id": "G06_fuera_de_scope_discovery",
+              "ms": 28145
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G06_fuera_de_scope_discovery",
+          "status": "pass",
+          "reasons": [],
+          "score": 30,
+          "ms_total": 28145,
+          "ms_revision": 4212,
+          "juez": {
+            "acusaciones": 1,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0,
+            "juzgadas": 1,
+            "intentos": 1,
+            "latencia_ms": 4212,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 80,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "estructura_apertura:parcial(falta: La pregunta no cierra el turno: termina con un comentario en lugar de dejarle la palabra al cliente.)",
+            "personalizacion:e2",
+            "curiosidad_abierta:cumple"
+          ],
+          "session_ids": [
+            "d748fce0-1f6e-452f-927c-63478f6e37d7"
+          ]
+        }
+      ]
+    }
+  }
+]

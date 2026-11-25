@@ -1,0 +1,232 @@
+{
+  "practice_session_id": "751ede3b-f6dd-453f-b2c6-e7c7658c74b9",
+  "conversation": [
+    {
+      "role": "user",
+      "content": "Yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores. Ando visitando talleres de la zona. ¿Usted cómo le hace con los aceites?"
+    },
+    {
+      "role": "assistant",
+      "content": "Ajá. Mire, ando ocupado ahorita, tengo un carro que ya me urge entregar. Si trae algo que ofrecerme, dígame rápido de qué se trata."
+    },
+    {
+      "role": "user",
+      "content": "Claro. ¿Cuánto tiempo lleva con el taller?"
+    },
+    {
+      "role": "assistant",
+      "content": "Como seis años ya."
+    }
+  ],
+  "evaluation": {
+    "estado": "lista",
+    "resultado": {
+      "linea": {
+        "paso": 2
+      },
+      "model": "claude-sonnet-4-5",
+      "score": 23,
+      "stars": 0,
+      "fallas": [
+        {
+          "id": "pitch_prematuro",
+          "cita": "¿Usted cómo le hace con los aceites?",
+          "paso": "La Introducción",
+          "error": "Le preguntaste por su operación comercial (cómo le hace con los aceites) en el mismo turno de tu historia breve, cuando ahí la pregunta va sobre él o sobre cómo le va. Eso es trabajo comercial antes de tiempo",
+          "efecto": "Falla crítica: resta 30 puntos y deja tu nota en máximo 30.",
+          "porque": {
+            "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+            "va_en": "el paso 3 si es preguntar por su negocio, o el paso 4 si es ofrecer tu producto",
+            "mecanismo": "La atención en tres tercios",
+            "va_despues": "Ahí ya sabe quién eres y por qué pasaste, y tu pregunta suena a que quieres entender su negocio. Antes, suena a que vienes a venderle y se prende la alarma."
+          },
+          "ejemplo": "Yo soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona para conocer cómo les va. ¿Usted cómo ha estado?",
+          "severidad": "critical"
+        },
+        {
+          "id": "curriculum",
+          "cita": "Yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores.",
+          "paso": "La Historia Breve",
+          "error": "Presumiste la empresa (los mejores) en lugar de decir quién eres y por qué estás ahí. Suena a discurso y el cliente se desconecta",
+          "efecto": "Resta 30 puntos.",
+          "mejora": "Quita lo de «los mejores»: eso es presumir la empresa. Di quién eres, de dónde vienes y por qué estás ahí, sin credenciales.",
+          "porque": {
+            "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+            "mecanismo": "La atención en tres tercios"
+          },
+          "ejemplo": "Yo soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona para conocer cómo les va. ¿Usted cómo ha estado?",
+          "severidad": "major"
+        }
+      ],
+      "mision": "En tu próxima visita, di quién eres, de dónde vienes y por qué pasaste, sin presumir la empresa. Termina ese turno con una pregunta sobre el cliente: cómo le va, cómo ha estado la semana. Practica esa frase completa antes de entrar.",
+      "degraded": false,
+      "desglose": {
+        "base": 83,
+        "restas": [
+          {
+            "flag": "curriculum",
+            "puntos": 30,
+            "severidad": "major"
+          },
+          {
+            "flag": "pitch_prematuro",
+            "puntos": 30,
+            "severidad": "critical"
+          }
+        ],
+        "topado": false,
+        "criticos": [
+          "pitch_prematuro"
+        ],
+        "criterios": [
+          {
+            "peso": 0.4,
+            "nivel": "cumple",
+            "credito": 1,
+            "criterio_id": "story.historia_breve"
+          },
+          {
+            "peso": 0.35,
+            "falta": "Presume la empresa (los mejores) en lugar de mantenerlo corto: eso es credencial que no contesta quién es ni por qué est",
+            "nivel": "parcial",
+            "credito": 0.5,
+            "criterio_id": "story.brevedad"
+          },
+          {
+            "peso": 0.25,
+            "nivel": "cumple",
+            "credito": 1,
+            "criterio_id": "story.relevancia_cliente"
+          }
+        ],
+        "sin_veredicto": []
+      },
+      "auditoria": {
+        "juez": {
+          "intentos": 1,
+          "juzgadas": 5,
+          "acusaciones": 5,
+          "latencia_ms": 9936,
+          "fallas_quitadas": 0,
+          "criterios_corregidos": 2,
+          "descartados_por_cita": 0
+        },
+        "vara": {
+          "absueltos": 0,
+          "revisados": 6,
+          "corregidos": 1,
+          "confirmados": 1,
+          "descartados": 0,
+          "latencia_ms": 13729,
+          "sospechosos": 1
+        },
+        "intentos": 1,
+        "revisados": 11,
+        "corregidos": 2,
+        "descartados": 0,
+        "latencia_ms": 14476,
+        "fallas_por_no": 0,
+        "fallas_por_hecho": 0,
+        "segunda_revision": {
+          "revisados": 7,
+          "corregidos": 2,
+          "descartados": 1
+        },
+        "groserias_quitadas": 0,
+        "recuerdos_quitados": 0,
+        "ejemplos_con_permiso_quitados": 0
+      },
+      "cut_reason": "critical_failure",
+      "end_session": true,
+      "seguimiento": {
+        "lineas": [],
+        "corregido": [],
+        "se_repite": [],
+        "intentos_previos": 0
+      },
+      "observations": [
+        {
+          "paso": "La Historia Breve",
+          "error": "Presumiste la empresa (los mejores) en lugar de decir por qué estás ahí: eso alarga la historia con algo que no contesta quién eres ni qué haces",
+          "mejora": "Quita lo de «los mejores»: eso es presumir la empresa. Di quién eres, de dónde vienes y por qué estás ahí, sin credenciales.",
+          "porque": {
+            "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+            "mecanismo": "La atención en tres tercios"
+          },
+          "ejemplo": "Yo soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona para conocer cómo les va. ¿Usted cómo ha estado?",
+          "habilidad": "Brevedad",
+          "criterio_id": "story.brevedad"
+        }
+      ],
+      "meta_practica": {
+        "como_sabes": "Se relaja y sigue la conversación por su cuenta.",
+        "lo_que_buscamos": "Que digas quién eres en dos o tres frases, conectadas con algo que le importe a él, y le devuelvas la palabra. Si hablas de ti de más, el cliente se aburre y la guardia vuelve a subir."
+      },
+      "flags_detected": [
+        "curriculum",
+        "pitch_prematuro"
+      ],
+      "prompt_version": "v2.9.9",
+      "analisis_turnos": [
+        {
+          "se_va": "no",
+          "turno": 1,
+          "por_que": "Mete pregunta comercial (cómo le hace con los aceites) en el mismo turno de su historia breve, y presume la empresa (los mejores) en lugar de decir por qué está ahí",
+          "pregunta": "al_final",
+          "veredicto": "no cumple",
+          "ultima_frase": "¿Usted cómo le hace con los aceites?",
+          "cliente_antes": "no_hay",
+          "texto_literal": "Yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores. Ando visitando talleres de la zona. ¿Usted cómo le hace con los aceites?"
+        },
+        {
+          "se_va": "no",
+          "turno": 2,
+          "por_que": "Acepta la invitación del cliente y pregunta sobre él, no sobre su operación comercial",
+          "pregunta": "al_final",
+          "veredicto": "cumple",
+          "ultima_frase": "¿Cuánto tiempo lleva con el taller?",
+          "cliente_antes": "rechaza_e_invita",
+          "texto_literal": "Claro. ¿Cuánto tiempo lleva con el taller?"
+        }
+      ],
+      "evidencia_flags": [
+        {
+          "id": "curriculum",
+          "cita": "Yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores.",
+          "error": "Presumiste la empresa (los mejores) en lugar de decir quién eres y por qué estás ahí. Suena a discurso y el cliente se desconecta",
+          "mejora": "Quita lo de «los mejores»: eso es presumir la empresa. Di quién eres, de dónde vienes y por qué estás ahí, sin credenciales.",
+          "ejemplo": "Yo soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona para conocer cómo les va. ¿Usted cómo ha estado?"
+        },
+        {
+          "id": "pitch_prematuro",
+          "cita": "¿Usted cómo le hace con los aceites?",
+          "error": "Le preguntaste por su operación comercial (cómo le hace con los aceites) en el mismo turno de tu historia breve, cuando ahí la pregunta va sobre él o sobre cómo le va. Eso es trabajo comercial antes de tiempo",
+          "mejora": "",
+          "ejemplo": "Yo soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona para conocer cómo les va. ¿Usted cómo ha estado?"
+        }
+      ],
+      "siguiente_nivel": [],
+      "criterios_cumplidos": [
+        "story.historia_breve",
+        "story.relevancia_cliente"
+      ],
+      "veredictos_criterios": [
+        {
+          "nivel": "cumple",
+          "criterio_id": "story.historia_breve"
+        },
+        {
+          "falta": "Presume la empresa (los mejores) en lugar de mantenerlo corto: eso es credencial que no contesta quién es ni por qué está ahí",
+          "nivel": "parcial",
+          "criterio_id": "story.brevedad"
+        },
+        {
+          "nivel": "cumple",
+          "criterio_id": "story.relevancia_cliente"
+        }
+      ],
+      "regresiones_detectadas": []
+    },
+    "error": null
+  }
+}

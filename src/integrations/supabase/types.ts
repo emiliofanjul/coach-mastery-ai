@@ -882,6 +882,33 @@ export type Database = {
           },
         ]
       }
+      guia_del_vendedor: {
+        Row: {
+          activa: boolean
+          aprobada_el: string
+          clave: string
+          orden: number
+          texto: string
+          titulo: string
+        }
+        Insert: {
+          activa?: boolean
+          aprobada_el?: string
+          clave: string
+          orden: number
+          texto: string
+          titulo: string
+        }
+        Update: {
+          activa?: boolean
+          aprobada_el?: string
+          clave?: string
+          orden?: number
+          texto?: string
+          titulo?: string
+        }
+        Relationships: []
+      }
       invite_attempts: {
         Row: {
           actor_id: string | null

@@ -3,8 +3,11 @@
 - [x] Mensaje 176: Paso 0 exacto (1286/103, siete huellas, Cerebro 24/7, regla y seis guiones); cuatro entregas verificadas.
 - [x] Mensaje 176: dos funciones instaladas con editor e idénticas byte por byte; instalador una vez, diez archivos exactos; cuatro entregas retiradas; 1295/104 y build automático OK.
 - [x] Mensaje 176-B: cuatro SQL v2 y originales con MD5 exactos; reemplazos byte por byte y v2 retirados; 1295 pruebas en 104 archivos. No se repitió el instalador.
-- [ ] Mensaje 176: aplicar SQL íntegro y verificar; los permisos y el regreso ya están corregidos. Bloqueado porque el SQL mezcla estructura/RLS y cambios de datos, que las herramientas actuales exigen ejecutar por separado; se pidió a Emilio la separación sin reescribir su SQL. Base comprobada intacta: Cerebro 24/7, regla y seis guiones del Paso 0, guía inexistente.
-- [ ] Mensaje 176: desplegar solo closer-voice y harness-runner, publicar y comprobar siete casos y disputa con vendedor de prueba; pendiente del SQL compatible y regreso seguro.
+- [x] Mensaje 176-C: seis entregas con huellas exactas, tres SQL reemplazados, SQL combinado y copias retirados; prueba nueva exacta; 1295/104 y build automático OK. Instalador no repetido.
+- [x] Mensaje 176: estructura aplicada y datos ejecutados; error de transcripción «vendiendoendo» corregido de inmediato antes de verificar. Resultado: Cerebro 25/7, pasos e0560347b07d86aaf154556caff1f1e1, regla y seis guiones esperados; guía 11 activas/0 retiradas, huella a95837307a4564c87ffb5a85354d36ca, permisos y RLS exactos.
+- [x] Mensaje 176: solo closer-voice y harness-runner desplegados; publicación solicitada y URL responde HTTP 200. Siete casos pasan a la primera (30/100/100/100/100/0/30); resultados completos en paso6_176.json.
+- [x] Mensaje 176: práctica real por pantalla con vendedor temporal, nodo 2.1, sesión 751ede3b-f6dd-453f-b2c6-e7c7658c74b9, nota 23; pitch_prematuro y curriculum. Resultado leído también en /practicas; disputa directa con su sesión responde y se lee guardada, sin LA PRUEBA ni En este nodo. Sin reversión.
+- [ ] Mensaje 176: limpieza del vendedor temporal bloqueada por falta de borrado de prácticas, evaluaciones y consumo desde la app; no usar SQL ni borrar cuentas anteriores. Filas de esta prueba permanecen; comunicarlo a Emilio.
 
 - [x] Mensaje 174: Paso 0 y cuatro entregas verificados; 1273 pruebas en 102 archivos, huellas y base exactas.
 - [x] Mensaje 174: dos funciones instaladas con editor y MD5 exactos, instalador una vez: 7 archivos exactos, cuatro entregas retiradas; 1286 pruebas en 103 archivos y compilación automática OK.
