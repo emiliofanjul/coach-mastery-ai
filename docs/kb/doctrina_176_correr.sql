@@ -80,24 +80,32 @@ $do$;
 
 -- 5. La guía del vendedor: el molde de cada paso, «En cualquier paso», «Cuando el cliente…» y los factores de impulso.
 --    La lee todo el que escribe frases para el vendedor (el coach, las disputas, y después el Pitch Builder y los agentes).
-DO $do$
-BEGIN
-  IF to_regclass('public.guia_del_vendedor') IS NOT NULL THEN RAISE EXCEPTION '176 ya se aplicó: guia_del_vendedor ya existe'; END IF;
-END
-$do$;
-CREATE TABLE public.guia_del_vendedor (
+--    El regreso no borra la tabla: retira la guía (activa = false). Volver a correr este archivo la reactiva.
+CREATE TABLE IF NOT EXISTS public.guia_del_vendedor (
   clave text PRIMARY KEY,
   orden smallint NOT NULL UNIQUE,
   titulo text NOT NULL CHECK (length(btrim(titulo)) > 0),
   texto text NOT NULL CHECK (length(btrim(texto)) > 0),
+  activa boolean NOT NULL DEFAULT true,
   aprobada_el date NOT NULL DEFAULT DATE '2026-11-25'
 );
-COMMENT ON TABLE public.guia_del_vendedor IS 'Mensaje 176: la guía del vendedor (doc «Closer · El molde de cada paso», aprobado por Emilio el 25-nov-2026). Sale del Cerebro y las reglas; la recibe todo el que escribe frases para el vendedor. No califica.';
-ALTER TABLE public.guia_del_vendedor ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "cualquiera con sesión lee la guía" ON public.guia_del_vendedor FOR SELECT TO authenticated USING (true);
+DO $do$
+BEGIN
+  IF EXISTS (SELECT 1 FROM public.guia_del_vendedor WHERE activa) THEN RAISE EXCEPTION '176 ya se aplicó: la guía del vendedor ya está activa'; END IF;
+END
+$do$;
+COMMENT ON TABLE public.guia_del_vendedor IS 'Mensaje 176: la guía del vendedor (doc «Closer · El molde de cada paso», aprobado por Emilio el 25-nov-2026). Sale del Cerebro y las reglas; la recibe todo el que escribe frases para el vendedor. No califica. Solo cuentan las filas activas.';
 REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON public.guia_del_vendedor FROM anon, authenticated;
 GRANT SELECT ON public.guia_del_vendedor TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.guia_del_vendedor TO service_role;
+ALTER TABLE public.guia_del_vendedor ENABLE ROW LEVEL SECURITY;
+DO $do$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'guia_del_vendedor' AND policyname = 'cualquiera con sesión lee la guía activa') THEN
+    CREATE POLICY "cualquiera con sesión lee la guía activa" ON public.guia_del_vendedor FOR SELECT TO authenticated USING (activa);
+  END IF;
+END
+$do$;
 INSERT INTO public.guia_del_vendedor (clave, orden, titulo, texto) VALUES
   ($t$en_cualquier_paso$t$, 0, $t$En cualquier paso$t$, $t$Estas valen para toda frase, sea del paso que sea.
 
@@ -157,9 +165,10 @@ INSERT INTO public.guia_del_vendedor (clave, orden, titulo, texto) VALUES
 
 Dos herramientas más suben el impulso en la presentación:
 - Las balas: hechos concretos de tu producto, tu servicio o tu precio. Unas tres en la presentación, sin soltarlas todas de jalón; el resto se guarda para las objeciones.
-- Pintar la escena: ponerlo dentro de un momento concreto de su negocio con el problema resuelto. No argumenta: hace sentir.$t$);
+- Pintar la escena: ponerlo dentro de un momento concreto de su negocio con el problema resuelto. No argumenta: hace sentir.$t$)
+ON CONFLICT (clave) DO UPDATE SET orden = EXCLUDED.orden, titulo = EXCLUDED.titulo, texto = EXCLUDED.texto, activa = true;
 DO $do$
 BEGIN
-  IF (SELECT count(*) FROM public.guia_del_vendedor) <> 11 THEN RAISE EXCEPTION 'No quedaron las 11 partes de la guía'; END IF;
+  IF (SELECT count(*) FROM public.guia_del_vendedor WHERE activa) <> 11 OR (SELECT count(*) FROM public.guia_del_vendedor) <> 11 THEN RAISE EXCEPTION 'No quedaron exactamente las 11 partes de la guía, activas'; END IF;
 END
 $do$;

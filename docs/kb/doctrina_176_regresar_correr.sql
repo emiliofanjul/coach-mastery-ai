@@ -1,11 +1,6 @@
--- Mensaje 176 · SOLO si hay que regresar: quita la guía y deja el Cerebro, la regla y los guiones como antes del 176.
+-- Mensaje 176 · SOLO si hay que regresar: deja el Cerebro, la regla y los guiones como antes del 176,
+-- y retira la guía del vendedor (activa = false) sin borrarla. Volver a correr doctrina_176_correr.sql la reactiva.
 -- Si algo no está como lo dejó el 176, falla y NO cambia nada.
-DO $do$
-BEGIN
-  IF to_regclass('public.guia_del_vendedor') IS NULL THEN RAISE EXCEPTION 'No hay nada que regresar: guia_del_vendedor no existe'; END IF;
-END
-$do$;
-DROP TABLE public.guia_del_vendedor;
 DO $do$
 DECLARE v int; n int; b text; ps jsonb; t text;
 BEGIN
@@ -80,3 +75,9 @@ BEGIN
   IF n <> 7 THEN RAISE EXCEPTION 'el Cerebro activo tiene % secciones, no 7', n; END IF;
 END
 $do$;
+DO $do$
+BEGIN
+  IF to_regclass('public.guia_del_vendedor') IS NULL OR NOT EXISTS (SELECT 1 FROM public.guia_del_vendedor WHERE activa) THEN RAISE EXCEPTION 'No hay guía activa que retirar'; END IF;
+END
+$do$;
+UPDATE public.guia_del_vendedor SET activa = false WHERE activa;

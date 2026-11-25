@@ -2,7 +2,8 @@
 
 - [x] Mensaje 176: Paso 0 exacto (1286/103, siete huellas, Cerebro 24/7, regla y seis guiones); cuatro entregas verificadas.
 - [x] Mensaje 176: dos funciones instaladas con editor e idénticas byte por byte; instalador una vez, diez archivos exactos; cuatro entregas retiradas; 1295/104 y build automático OK.
-- [ ] Mensaje 176: aplicar SQL íntegro y verificar; bloqueado por orden obligatorio de GRANT antes de RLS/política y regreso con DROP TABLE prohibido. Espera SQL corregido de Emilio, sin reescribirlo.
+- [x] Mensaje 176-B: cuatro SQL v2 y originales con MD5 exactos; reemplazos byte por byte y v2 retirados; 1295 pruebas en 104 archivos. No se repitió el instalador.
+- [ ] Mensaje 176: aplicar SQL íntegro y verificar; los permisos y el regreso ya están corregidos. Bloqueado porque el SQL mezcla estructura/RLS y cambios de datos, que las herramientas actuales exigen ejecutar por separado; se pidió a Emilio la separación sin reescribir su SQL. Base comprobada intacta: Cerebro 24/7, regla y seis guiones del Paso 0, guía inexistente.
 - [ ] Mensaje 176: desplegar solo closer-voice y harness-runner, publicar y comprobar siete casos y disputa con vendedor de prueba; pendiente del SQL compatible y regreso seguro.
 
 - [x] Mensaje 174: Paso 0 y cuatro entregas verificados; 1273 pruebas en 102 archivos, huellas y base exactas.
