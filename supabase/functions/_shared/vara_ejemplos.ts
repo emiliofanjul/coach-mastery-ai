@@ -46,6 +46,13 @@
 // Es la única puerta: la usan la pantalla de resultados y las disputas, y la
 // usará lo que venga (Pitch Builder, agentes por teléfono o WhatsApp).
 //
+// Mensaje 178 (25-nov): un EJEMPLO es el turno completo que diría el vendedor.
+// En la prueba del 177, el ejemplo de «curriculum» del 2.1 quitó «los mejores»
+// pero terminó sin pregunta, y la vara lo dejó pasar porque trataba todo texto
+// como una pieza. Es lo mismo que reclamó Emilio en su disputa: «si respondo
+// así, me marca que no terminé en pregunta». Ahora el ejemplo se mide como turno
+// completo; la mejora y la misión siguen siendo piezas.
+//
 // Sin imports de Deno: funciona en Deno y en Node (se prueba ejecutándolo).
 import { LARGO_REGLA_JUEZ, armarEntradaJuez, citaEnConversacion, type Juicio } from "./juez_pruebas.ts";
 import { aplicarAuditoria, textosDeEvaluacion, type TextoAuditable, type VeredictoAuditor } from "./auditar_coaching.ts";
@@ -102,7 +109,7 @@ export const PROMPT_VARA = `Eres el juez de las pruebas de Closer, una app que e
 Para cada texto:
 1. Saca lo que el texto le propone DECIR al vendedor: el ejemplo completo, o las frases entre comillas. Si no trae una frase pero le pide preguntar o decir algo («pregúntale qué se le vende más»), eso es lo que propone decir. Si el texto no propone decir nada, "frase" va vacía y la conducta es "pasa".
 2. Aplica LA PRUEBA de CADA falla, tal como está escrita, a lo que propone decir, como si el vendedor lo dijera en esta práctica, en el momento de la visita que este nodo practica. LA PRUEBA ES EL ALCANCE: los ejemplos de la regla ilustran, no delimitan. No agregues requisitos que la prueba no escribe, ni quites los que sí escribe. Juzga lo que la frase HACE en ese momento, no palabras sueltas. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
-3. Un texto del coach es una pieza, no el turno completo. Repruébalo solo si lo que propone decir COMETE el error de la regla. Si el error de una regla es que FALTA algo (no hubo pregunta, no retomó, no cerró), un texto no lo comete por no traerlo todo.
+3. Repruébalo solo si lo que propone decir COMETE el error de la regla. Un EJEMPLO es el turno completo que el vendedor diría, aunque solo corrija una parte: se mide como turno completo, también con los errores de que FALTE algo (si la regla pide que el turno termine con pregunta, el ejemplo la trae). Una MEJORA o una MISIÓN son piezas, no el turno completo: no cometen un error por no traerlo todo (no hubo pregunta, no retomó, no cerró).
 4. Nombrar un error para evitarlo no es cometerlo: «no le preguntes qué se le vende» pasa. Citar lo que el vendedor dijo en la práctica («dijiste “quería ofrecerle”») tampoco: no es algo que el texto le proponga decir.
 5. Solo juzgas con las fallas del nodo y las reglas del paso que recibes. No revisas estilo ni lenguaje: de eso se encarga otra revisión.
 6. Lo que repruebes no se cambia todavía: lo revisa después el juez que califica al vendedor, con la conversación completa. Si una frase razonablemente podría cometer la falla, márcala; si claramente no la comete, déjala pasar.

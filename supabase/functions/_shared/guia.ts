@@ -52,7 +52,8 @@ Toda frase que le propongas DECIR al vendedor (un ejemplo, una frase entre comil
 2. Cumple también «En cualquier paso».
 3. Si el cliente bloqueó, objetó o dio una señal, sigue «Cuando el cliente…». Los factores de impulso se usan donde la guía dice, y siempre con verdad.
 4. Antes de escribirla, revisa que no cometa ninguna falla de este nodo ni del molde. Una frase que corrige una falla no puede cometer otra.
-5. No es una frase para copiar: es una forma de decirlo. Usa las palabras y el contexto de esta conversación.
+5. Un ejemplo es el turno completo que diría el vendedor, aunque solo corrija una parte: termina como manda su molde (desde la historia breve, con una pregunta). Si corrige una sola cosa, igual llega entero.
+6. No es una frase para copiar: es una forma de decirlo. Usa las palabras y el contexto de esta conversación.
 
 ${guia}`;
 }
