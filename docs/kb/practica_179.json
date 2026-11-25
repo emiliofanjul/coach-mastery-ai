@@ -1,0 +1,479 @@
+{
+ "practice_session_id": "7396ff05-8ae1-4247-8aec-4c5760cbb5ed",
+ "request": {
+  "practice_session_id": "7396ff05-8ae1-4247-8aec-4c5760cbb5ed",
+  "transcript": "",
+  "phase": "evaluate",
+  "node_id": "2.1",
+  "practice_script": {
+   "notes": "v2.0.0 El espejo es progresivo: el cliente no corta de golpe, se va apagando conforme la historia se alarga. Ensena la consecuencia real de perder la atencion. · 2.0.3 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
+   "scope": {
+    "skills_in_focus": [
+     "story.historia_breve",
+     "story.brevedad",
+     "story.relevancia_cliente"
+    ],
+    "out_of_scope_behavior": "redirect"
+   },
+   "limits": {
+    "max_turns": 5,
+    "max_duration_seconds": 150,
+    "min_turns_before_evaluation": 2
+   },
+   "phases": {
+    "i_do": {
+     "briefing": "Me van a preguntar quien soy.\n\nCuenta cuantas frases uso: tres. Quien soy, por que estoy aqui, y una pregunta que le devuelve la palabra.\n\nFijate en lo que NO digo: no cuento la historia de mi empresa, no enumero productos, no doy fechas ni cifras. Todo eso viene despues, y solo si el lo pide.",
+     "first_message": "Soy Emilio, ando trabajando con los negocios de esta zona. Me tocaba pasar por aqui y quise conocer el suyo.\n\nCuenteme, cuanto tiempo lleva con el?"
+    },
+    "you_do": {
+     "prompt": "REGLA NUMERO CERO, POR ENCIMA DE TODO LO DEMAS: en esta conversacion NO EXISTE el tema de que vende este senor, que trae, a que viene, ni en que te puede servir. Jamas preguntas eso. Ni con esas palabras ni con ninguna otra. Prohibidas de forma absoluta las frases: que se le ofrece, que necesita, que anda buscando, a que viene, que trae, de que se trata, en que le puedo servir, y cualquier variante. Tu no sabes que es vendedor y no te interesa averiguarlo. Si el menciona por su cuenta un producto o una marca, contestas ah orale y sigues con lo tuyo sin preguntar nada. Si te quedas sin saber que decir, hablas de tu propio negocio o del dia, nunca de el.\n\nEres el encargado de un negocio. La conversacion arranco bien y acabas de preguntarle al vendedor quien es. TU REGLA PRINCIPAL: reaccionas al LARGO y a la RELEVANCIA de su respuesta. Si contesta breve (dos o tres frases) y te dice algo que a TI te importa, te relajas, contestas con gusto y sigues la conversacion. Si se extiende — historia de la empresa, anos en el mercado, lista de productos, certificaciones, mas de cuatro frases seguidas — empiezas a desconectarte: contestas con ajam, miras a otro lado, dices que andas ocupado. No lo cortas de golpe, te vas apagando. Si te habla puro de el y de su empresa sin conectar con tu negocio, contestas cortes pero sin interes. Si termina con una pregunta abierta, la contestas con gusto. Si termina sin pregunta, te quedas callado esperando, y el silencio se siente incomodo. NUNCA preguntes por productos ni precios en este ejercicio. Responde en 1 o 2 frases.",
+     "objective": "El vendedor responde quien es en dos o tres frases, conectando su presencia con algo que le importe al cliente, y devuelve la palabra con una pregunta. El scope se cubre cuando el cliente se relaja y sigue la conversacion por su propia voluntad."
+    },
+    "closing": {
+     "message": "Eso es una historia breve. Quince segundos, dos piezas y un gancho. El cliente ya sabe con quien habla y sigue contigo, que es exactamente lo que este paso tiene que lograr. Vamos al detalle.",
+     "message_incomplete": "Ahi lo dejamos, ya vi como te presentas. Vamos al desglose y te digo que le sobraba o que le faltaba."
+    }
+   },
+   "version": "2.0.3",
+   "i_do_type": "demo",
+   "failure_criteria": [
+    {
+     "id": "historia_larga",
+     "regla_id": "story.kill",
+     "severity": "major",
+     "regla_tipo": "error",
+     "description": "Alargarse: cada frase de más gasta la atención recién ganada y suena a discurso. LA PRUEBA: ¿la historia breve trae frases que no contestan quién eres, qué estás haciendo ni por qué estás ahí —la trayectoria de la empresa, el catálogo, cifras, credenciales o explicar el producto—? Una frase que explica el porqué es parte de esa pieza: no es de más. Si lo que sobra es presumir la empresa (años, premios, tamaño, catálogo o certificaciones) y el nodo lo califica aparte con story.kill_curriculum, esa falla lo cubre: el mismo hecho no se cobra dos veces. — En este nodo: Mete frases que no contestan quien es, que hace ni por que esta ahi: da detalles de mas o le da vueltas. Si lo que sobra es presumir la empresa, eso es curriculum y no se cobra aqui otra vez. El cliente se desconecta.",
+     "regla_canal": "universal",
+     "cita_cerebro": "frase de más gasta la atención que acabas de ganar",
+     "contexto_nodo": "Mete frases que no contestan quien es, que hace ni por que esta ahi: da detalles de mas o le da vueltas. Si lo que sobra es presumir la empresa, eso es curriculum y no se cobra aqui otra vez. El cliente se desconecta.",
+     "regla_resumen": "Alargarse: cada frase de más gasta la atención recién ganada y suena a discurso. LA PRUEBA: ¿la historia breve trae frases que no contestan quién eres, qué estás haciendo ni por qué estás ahí —la trayectoria de la empresa, el catálogo, cifras, credenciales o explicar el producto—? Una frase que explica el porqué es parte de esa pieza: no es de más. Si lo que sobra es presumir la empresa (años, premios, tamaño, catálogo o certificaciones) y el nodo lo califica aparte con story.kill_curriculum, esa falla lo cubre: el mismo hecho no se cobra dos veces."
+    },
+    {
+     "id": "curriculum",
+     "regla_id": "story.kill_curriculum",
+     "severity": "major",
+     "regla_tipo": "error",
+     "description": "Historia breve inflada con credenciales. LA PRUEBA: ¿el vendedor presume su empresa —años, premios, tamaño, catálogo o certificaciones— en lugar de decir quién es él y por qué está ahí? — En este nodo: Presume la empresa —anos, premios, tamano, catalogo o certificaciones— en lugar de decir quien es y por que esta ahi. Suena a discurso y el cliente se desconecta.",
+     "regla_canal": "universal",
+     "cita_cerebro": "Lo que suena impresionante en tu cabeza suena a discurso en la de él",
+     "contexto_nodo": "Presume la empresa —anos, premios, tamano, catalogo o certificaciones— en lugar de decir quien es y por que esta ahi. Suena a discurso y el cliente se desconecta.",
+     "regla_resumen": "Historia breve inflada con credenciales. LA PRUEBA: ¿el vendedor presume su empresa —años, premios, tamaño, catálogo o certificaciones— en lugar de decir quién es él y por qué está ahí?"
+    },
+    {
+     "id": "sin_gancho",
+     "regla_id": "story.cierra_con_afirmacion",
+     "severity": "minor",
+     "regla_tipo": "error",
+     "description": "Terminar la historia breve sin pregunta deja al cliente sin qué contestar y le devuelve el control. LA PRUEBA: ¿el turno de la historia breve termina en afirmación, sin una pregunta que le devuelva la palabra? La pregunta se juzga por función: si invita a responder o el cliente la contestó, es pregunta. — En este nodo: Termina la historia sin devolver la palabra. Deja al cliente sin nada que contestar y la conversacion se queda en el aire.",
+     "regla_canal": "universal",
+     "cita_cerebro": "en la mayoría de los casos es más efectivo pasar directamente a las preguntas de calificación que dar una larga explicación",
+     "contexto_nodo": "Termina la historia sin devolver la palabra. Deja al cliente sin nada que contestar y la conversacion se queda en el aire.",
+     "regla_resumen": "Terminar la historia breve sin pregunta deja al cliente sin qué contestar y le devuelve el control. LA PRUEBA: ¿el turno de la historia breve termina en afirmación, sin una pregunta que le devuelva la palabra? La pregunta se juzga por función: si invita a responder o el cliente la contestó, es pregunta.",
+     "severity_override": {
+      "razon": "incidental: fuera del foco del nodo",
+      "default": "major"
+     }
+    },
+    {
+     "id": "pitch_prematuro",
+     "regla_id": "opening.pitch_prematuro",
+     "severity": "critical",
+     "regla_tipo": "error",
+     "description": "Hacer trabajo comercial antes de tiempo. LA PRUEBA: ¿esta frase le ofrece algo o le pide información de su operación comercial? Si la respuesta es sí y es antes de tiempo, es pitch prematuro, aunque no nombre ningún producto. ANTES DE TIEMPO: ofrecerle algo en la introducción o en la historia breve; o pedirle información de su operación mientras todavía no sabe quién eres y por qué pasaste, o en el mismo turno de tu historia breve, donde la pregunta va sobre él o sobre cómo le va. Ya que te presentaste y el cliente te contestó, preguntar por su operación es descubrimiento y no es esto. Tampoco cuando el cliente sacó una mala experiencia al llegar: ahí, después del motivo concreto de tu visita, se regresa al diagnóstico con una pregunta en el mismo turno. Ejemplos que ilustran —no delimitan—: ofrecer producto o promoción; preguntar por su proveedor, sus precios, sus marcas, su inventario, sus volúmenes o cada cuánto le surten. NO es esto decir quién eres o por qué pasaste (\"ando visitando talleres de la zona\"): eso es presentarse, y su momento es el Paso 2. Tampoco una pregunta sobre él o sobre cómo le va. — En este nodo: Aprovecha la presentacion para meter producto, promocion o motivo de venta, o le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) en el mismo turno de su historia breve: ahí la pregunta va sobre él o sobre cómo le va. La historia breve dice quien eres, no que vendes.",
+     "regla_canal": "universal",
+     "cita_cerebro": "no dices quién eres ni a qué vienes. Eso es el Paso 2.",
+     "contexto_nodo": "Aprovecha la presentacion para meter producto, promocion o motivo de venta, o le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) en el mismo turno de su historia breve: ahí la pregunta va sobre él o sobre cómo le va. La historia breve dice quien eres, no que vendes.",
+     "regla_resumen": "Hacer trabajo comercial antes de tiempo. LA PRUEBA: ¿esta frase le ofrece algo o le pide información de su operación comercial? Si la respuesta es sí y es antes de tiempo, es pitch prematuro, aunque no nombre ningún producto. ANTES DE TIEMPO: ofrecerle algo en la introducción o en la historia breve; o pedirle información de su operación mientras todavía no sabe quién eres y por qué pasaste, o en el mismo turno de tu historia breve, donde la pregunta va sobre él o sobre cómo le va. Ya que te presentaste y el cliente te contestó, preguntar por su operación es descubrimiento y no es esto. Tampoco cuando el cliente sacó una mala experiencia al llegar: ahí, después del motivo concreto de tu visita, se regresa al diagnóstico con una pregunta en el mismo turno. Ejemplos que ilustran —no delimitan—: ofrecer producto o promoción; preguntar por su proveedor, sus precios, sus marcas, su inventario, sus volúmenes o cada cuánto le surten. NO es esto decir quién eres o por qué pasaste (\"ando visitando talleres de la zona\"): eso es presentarse, y su momento es el Paso 2. Tampoco una pregunta sobre él o sobre cómo le va."
+    }
+   ],
+   "success_criteria": [
+    {
+     "id": "story.historia_breve",
+     "weight": 0.4,
+     "regla_id": "story.quien_eres_por_que",
+     "regla_tipo": "requisito",
+     "description": "Decir quién eres, qué estás haciendo y por qué necesitas su tiempo. LA PRUEBA: ¿el vendedor dice quién es —su nombre, y de qué empresa viene— y por qué está ahí, en términos humanos? Si falta una de las dos, está a medias. — En este nodo: Dice quien es y por que esta ahi: nombre, de donde viene, y el motivo de la visita en terminos humanos. Las dos piezas presentes.",
+     "regla_canal": "universal",
+     "cita_cerebro": "Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible",
+     "contexto_nodo": "Dice quien es y por que esta ahi: nombre, de donde viene, y el motivo de la visita en terminos humanos. Las dos piezas presentes.",
+     "regla_resumen": "Decir quién eres, qué estás haciendo y por qué necesitas su tiempo. LA PRUEBA: ¿el vendedor dice quién es —su nombre, y de qué empresa viene— y por qué está ahí, en términos humanos? Si falta una de las dos, está a medias."
+    },
+    {
+     "id": "story.brevedad",
+     "weight": 0.35,
+     "regla_id": "story.kiss",
+     "regla_tipo": "requisito",
+     "description": "Keep It Short and Simple: quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible. LA PRUEBA: ¿la historia breve trae sus piezas, cada una una vez, y nada que no conteste alguna de ellas? Se mide por piezas, no por frases: una frase que explica el porqué es parte de esa pieza. Si sobra algo —trayectoria, catálogo, cifras, credenciales, explicar el producto—, está a medias. — En este nodo: Corta: quien es, que hace y por que esta ahi, cada pieza una vez. Sin historia de la empresa, anos en el mercado, lista de productos ni certificaciones. Se mide por piezas, no por frases: explicar el porque es parte de esa pieza.",
+     "regla_canal": "universal",
+     "cita_cerebro": "Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible",
+     "contexto_nodo": "Corta: quien es, que hace y por que esta ahi, cada pieza una vez. Sin historia de la empresa, anos en el mercado, lista de productos ni certificaciones. Se mide por piezas, no por frases: explicar el porque es parte de esa pieza.",
+     "regla_resumen": "Keep It Short and Simple: quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso posible. LA PRUEBA: ¿la historia breve trae sus piezas, cada una una vez, y nada que no conteste alguna de ellas? Se mide por piezas, no por frases: una frase que explica el porqué es parte de esa pieza. Si sobra algo —trayectoria, catálogo, cifras, credenciales, explicar el producto—, está a medias."
+    },
+    {
+     "id": "story.relevancia_cliente",
+     "weight": 0.25,
+     "regla_id": "story.pregunta_despues",
+     "regla_tipo": "requisito",
+     "description": "Después de la historia, preguntas: la historia existe para ganarte el derecho de preguntarle a él. LA PRUEBA: ¿cada turno del vendedor termina con una pregunta que le devuelve la palabra al cliente? La pregunta se juzga por función: si invita a responder o el cliente la contestó, es pregunta. — En este nodo: Conecta su presencia con algo que le importe al cliente, no consigo mismo. Y devuelve la palabra con una pregunta abierta en lugar de quedarse esperando.",
+     "regla_canal": "universal",
+     "cita_cerebro": "Existe para ganarte el derecho de preguntarle a él",
+     "contexto_nodo": "Conecta su presencia con algo que le importe al cliente, no consigo mismo. Y devuelve la palabra con una pregunta abierta en lugar de quedarse esperando.",
+     "regla_resumen": "Después de la historia, preguntas: la historia existe para ganarte el derecho de preguntarle a él. LA PRUEBA: ¿cada turno del vendedor termina con una pregunta que le devuelve la palabra al cliente? La pregunta se juzga por función: si invita a responder o el cliente la contestó, es pregunta."
+    }
+   ]
+  },
+  "company_brain": "{\"RESTRICCIONES\":\"\",\"CLIENTE_TIPICO\":\"Talleres mecánicos que consumen aceites para motor, grasas y anticongelantes en su operación. Compran entre $5,000 y $50,000 al mes. Se les habla de usted.\",\"TONO_DETECTADO\":\"De usted\",\"CONTEXTO_DE_VENTA\":\"Canal: En persona. Trato: De usted. Compra mensual de sus clientes: $5,000 a $50,000\",\"OBJECIONES_REALES\":\"\",\"PRODUCTOS_ACTIVOS\":\"Aceites para motor, grasas, anticongelantes\",\"CANTIDADES_TIPICAS\":\"\",\"ARGUMENTOS_DE_VALOR\":\"\",\"COMPETENCIA_DIRECTA\":\"\",\"FRECUENCIA_DE_VISITA\":\"\",\"PRESENTACIONES_Y_PRECIOS\":\"\",\"PROMOCIONES_Y_CONDICIONES\":\"\",\"TIPOS_DE_CLIENTE_QUE_ATIENDE\":\"Giros: Talleres mecánicos. Qué hacen con lo que les vendemos: Lo consumen en su operación\",\"PRODUCTOS_QUE_SE_COMPRAN_JUNTOS\":\"\",\"NEGATIVOS_COMUNES_DEL_TERRITORIO\":\"\",\"PERFILES_DE_CLIENTE_Y_QUE_MUEVE_CADA_UNO\":\"\",\"FAMILIAS_QUE_SE_PIERDEN_CON_LA_COMPETENCIA\":\"\"}",
+  "seller_name": "agent-test+645c5bcb@example.com",
+  "conversation_history": [
+   {
+    "role": "user",
+    "content": "Hola, buenas tardes. ¿Cómo está? Oiga, eh, qué bonito tiene su local. ¿Cuánto tiempo lleva con él? ¿Usted es el dueño?"
+   },
+   {
+    "role": "assistant",
+    "content": "Buenas tardes. Sí, gracias. Pues ya voy para tres años con el taller. Sí, soy yo el dueño. ¿Y usted quién es?"
+   },
+   {
+    "role": "user",
+    "content": "Muy bien. Me da mucho gusto. Eeeh, yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores. Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar."
+   },
+   {
+    "role": "assistant",
+    "content": "Ajá, órale. Mire, ando ocupado ahorita, tengo que ver unos carros que están esperando. Si gusta deja tu tarjeta o pasa otro día."
+   }
+  ],
+  "session_id": "b8a1941b-fffc-471d-862c-15a2704e78fb",
+  "company_id": "00be1af2-582b-4baa-a4de-500aa75f8767",
+  "seller_id": "a4be716b-dd21-47ff-b561-16c1386cd944",
+  "taught_skills": [
+   "story.historia_breve",
+   "story.brevedad",
+   "story.relevancia_cliente"
+  ],
+  "ficha_cliente": {
+   "tipo": "nuevo",
+   "nombre": "Don Roberto",
+   "negocio": "taller mecánico"
+  },
+  "cut_reason": "critical_failure",
+  "director_user_turns": 2,
+  "evento": {
+   "skill_ids": [
+    "story.historia_breve",
+    "story.brevedad",
+    "story.relevancia_cliente"
+   ],
+   "input_mode": "text",
+   "transcript": [
+    {
+     "role": "user",
+     "text": "Hola, buenas tardes. ¿Cómo está? Oiga, eh, qué bonito tiene su local. ¿Cuánto tiempo lleva con él? ¿Usted es el dueño?",
+     "phase": "you_do"
+    },
+    {
+     "role": "agent",
+     "text": "Buenas tardes. Sí, gracias. Pues ya voy para tres años con el taller. Sí, soy yo el dueño. ¿Y usted quién es?",
+     "phase": "you_do"
+    },
+    {
+     "role": "user",
+     "text": "Muy bien. Me da mucho gusto. Eeeh, yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores. Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar.",
+     "phase": "you_do"
+    },
+    {
+     "role": "agent",
+     "text": "Ajá, órale. Mire, ando ocupado ahorita, tengo que ver unos carros que están esperando. Si gusta deja tu tarjeta o pasa otro día.",
+     "phase": "you_do"
+    },
+    {
+     "role": "agent",
+     "text": "Ahi lo dejamos, ya vi como te presentas. Vamos al desglose y te digo que le sobraba o que le faltaba.",
+     "phase": "you_do",
+     "fuera_de_la_venta": true
+    }
+   ],
+   "director_decisions": [
+    {
+     "turn": 1,
+     "decision": "continue",
+     "reason": "min_turns_gate",
+     "classifier_ran": false,
+     "classifier_result": null,
+     "latency_ms": 0,
+     "user_turns": 1,
+     "elapsed_seconds": 12,
+     "at": "2026-11-25T22:19:27.594Z"
+    },
+    {
+     "turn": 2,
+     "decision": "cut",
+     "reason": "critical_failure",
+     "classifier_ran": true,
+     "classifier_result": false,
+     "latency_ms": 1741,
+     "user_turns": 2,
+     "elapsed_seconds": 97,
+     "at": "2026-11-25T22:20:52.829Z"
+    }
+   ],
+   "incidentes_voz": [],
+   "audio_turnos": []
+  }
+ },
+ "evaluation": {
+  "practice_session_id": "7396ff05-8ae1-4247-8aec-4c5760cbb5ed",
+  "seller_id": "a4be716b-dd21-47ff-b561-16c1386cd944",
+  "estado": "lista",
+  "resultado": {
+   "linea": {
+    "paso": 2
+   },
+   "model": "claude-sonnet-4-5",
+   "score": 5,
+   "stars": 0,
+   "fallas": [
+    {
+     "id": "pitch_prematuro",
+     "cita": "Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar",
+     "paso": "La Introducción",
+     "error": "Metes producto en la historia breve, cuando ese momento es solo para decir quién eres y por qué pasaste. El cliente todavía no sabe por qué debería escucharte",
+     "efecto": "Falla crítica: resta 30 puntos y deja tu nota en máximo 30.",
+     "mejora": "Guarda el producto para después del descubrimiento. En la historia breve solo di quién eres, qué estás haciendo y por qué necesitas su tiempo",
+     "porque": {
+      "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+      "va_en": "el paso 3 si es preguntar por su negocio, o el paso 4 si es ofrecer tu producto",
+      "mecanismo": "La atención en tres tercios",
+      "va_despues": "Ahí ya sabe quién eres y por qué pasaste, y tu pregunta suena a que quieres entender su negocio. Antes, suena a que vienes a venderle y se prende la alarma."
+     },
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cuánto tiempo lleva con él?",
+     "severidad": "critical"
+    },
+    {
+     "id": "curriculum",
+     "cita": "yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores",
+     "paso": "La Historia Breve",
+     "error": "Presumes la empresa con «los mejores» en lugar de decir quién eres y por qué estás ahí. Suena a discurso y el cliente se desconecta",
+     "efecto": "Resta 30 puntos.",
+     "mejora": "Di tu nombre y de dónde vienes, sin presumir. La historia breve dice quién eres, no qué tan bueno eres",
+     "porque": {
+      "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+      "mecanismo": "La atención en tres tercios"
+     },
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cuánto tiempo lleva con él?",
+     "severidad": "major"
+    },
+    {
+     "id": "sin_gancho",
+     "cita": "Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar.",
+     "paso": "La Historia Breve",
+     "error": "Terminas la historia sin pregunta: dejas al cliente sin nada que contestar y la conversación se queda en el aire",
+     "efecto": "Resta 15 puntos.",
+     "mejora": "Cierra la historia con una pregunta que le devuelva la palabra, sobre él o sobre cómo le va",
+     "porque": {
+      "texto": "El que pregunta conduce. Si terminas en afirmación o te quedas callado esperando permiso, le devuelves el volante, y el cliente lo usa para cerrar la plática con amabilidad.",
+      "mecanismo": "El volante"
+     },
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cómo le ha ido con el negocio?",
+     "severidad": "minor"
+    }
+   ],
+   "mision": "En tu próxima práctica, di quién eres y por qué pasaste sin presumir la empresa ni meter producto, y termina con una pregunta sobre el cliente o sobre cómo le va",
+   "degraded": false,
+   "desglose": {
+    "base": 40,
+    "restas": [
+     {
+      "flag": "curriculum",
+      "puntos": 30,
+      "severidad": "major"
+     },
+     {
+      "flag": "pitch_prematuro",
+      "puntos": 30,
+      "severidad": "critical"
+     },
+     {
+      "flag": "sin_gancho",
+      "puntos": 15,
+      "severidad": "minor"
+     }
+    ],
+    "topado": false,
+    "criticos": [
+     "pitch_prematuro"
+    ],
+    "criterios": [
+     {
+      "peso": 0.4,
+      "nivel": "cumple",
+      "credito": 1,
+      "criterio_id": "story.historia_breve"
+     },
+     {
+      "peso": 0.35,
+      "falta": "Presume la empresa con 'los mejores' y mete producto en lugar de solo decir quién es y por qué está ahí",
+      "nivel": "no_cumple",
+      "credito": 0,
+      "criterio_id": "story.brevedad"
+     },
+     {
+      "peso": 0.25,
+      "falta": "Termina sin pregunta que le devuelva la palabra al cliente",
+      "nivel": "no_cumple",
+      "credito": 0,
+      "criterio_id": "story.relevancia_cliente"
+     }
+    ],
+    "sin_veredicto": []
+   },
+   "auditoria": {
+    "juez": {
+     "intentos": 1,
+     "juzgadas": 5,
+     "acusaciones": 5,
+     "latencia_ms": 9884,
+     "fallas_quitadas": 0,
+     "criterios_corregidos": 0,
+     "descartados_por_cita": 0
+    },
+    "vara": {
+     "absueltos": 0,
+     "revisados": 11,
+     "corregidos": 1,
+     "confirmados": 1,
+     "descartados": 0,
+     "latencia_ms": 17077,
+     "sospechosos": 1
+    },
+    "intentos": 1,
+    "revisados": 11,
+    "corregidos": 0,
+    "descartados": 0,
+    "latencia_ms": 9886,
+    "fallas_por_no": 0,
+    "fallas_por_hecho": 0,
+    "groserias_quitadas": 0,
+    "recuerdos_quitados": 0,
+    "ejemplos_con_permiso_quitados": 0
+   },
+   "cut_reason": "critical_failure",
+   "end_session": true,
+   "seguimiento": {
+    "lineas": [],
+    "corregido": [],
+    "se_repite": [],
+    "intentos_previos": 0
+   },
+   "observations": [
+    {
+     "paso": "La Historia Breve",
+     "error": "Presumes la empresa con «los mejores» y metes producto en la historia breve, cuando solo tenías que decir quién eres y por qué pasaste",
+     "mejora": "Di tu nombre, de dónde vienes y por qué estás ahí, sin presumir ni ofrecer nada todavía",
+     "porque": {
+      "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+      "mecanismo": "La atención en tres tercios"
+     },
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido con el negocio?",
+     "habilidad": "Brevedad",
+     "criterio_id": "story.brevedad"
+    },
+    {
+     "paso": "La Historia Breve",
+     "error": "Terminas la historia sin devolverle la palabra: dejas al cliente sin nada que contestar y la conversación se queda en el aire",
+     "mejora": "Después de decir quién eres y por qué pasaste, cierra con una pregunta sobre él o sobre cómo le va",
+     "porque": {
+      "texto": "El que pregunta conduce. Si terminas en afirmación o te quedas callado esperando permiso, le devuelves el volante, y el cliente lo usa para cerrar la plática con amabilidad.",
+      "mecanismo": "El volante"
+     },
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?",
+     "habilidad": "Relevancia al cliente",
+     "criterio_id": "story.relevancia_cliente"
+    }
+   ],
+   "meta_practica": {
+    "como_sabes": "Se relaja y sigue la conversación por su cuenta.",
+    "lo_que_buscamos": "Que digas quién eres en dos o tres frases, conectadas con algo que le importe a él, y le devuelvas la palabra. Si hablas de ti de más, el cliente se aburre y la guardia vuelve a subir."
+   },
+   "flags_detected": [
+    "curriculum",
+    "pitch_prematuro",
+    "sin_gancho"
+   ],
+   "prompt_version": "v2.9.9",
+   "analisis_turnos": [
+    {
+     "se_va": "no",
+     "turno": 1,
+     "por_que": "Saludo con energía, observación del lugar y pregunta que le devuelve la palabra",
+     "pregunta": "al_final",
+     "veredicto": "cumple",
+     "ultima_frase": "¿Usted es el dueño?",
+     "cliente_antes": "no_hay",
+     "texto_literal": "Hola, buenas tardes. ¿Cómo está? Oiga, eh, qué bonito tiene su local. ¿Cuánto tiempo lleva con él? ¿Usted es el dueño?"
+    },
+    {
+     "se_va": "no",
+     "turno": 2,
+     "por_que": "Mete producto en la historia breve, presume la empresa con 'los mejores', y termina sin pregunta",
+     "pregunta": "ninguna",
+     "veredicto": "no cumple",
+     "ultima_frase": "Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar.",
+     "cliente_antes": "no_rechaza",
+     "texto_literal": "Muy bien. Me da mucho gusto. Eeeh, yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores. Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar."
+    }
+   ],
+   "evidencia_flags": [
+    {
+     "id": "curriculum",
+     "cita": "yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores",
+     "error": "Presumes la empresa con «los mejores» en lugar de decir quién eres y por qué estás ahí. Suena a discurso y el cliente se desconecta",
+     "mejora": "Di tu nombre y de dónde vienes, sin presumir. La historia breve dice quién eres, no qué tan bueno eres",
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cuánto tiempo lleva con él?"
+    },
+    {
+     "id": "pitch_prematuro",
+     "cita": "Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar",
+     "error": "Metes producto en la historia breve, cuando ese momento es solo para decir quién eres y por qué pasaste. El cliente todavía no sabe por qué debería escucharte",
+     "mejora": "Guarda el producto para después del descubrimiento. En la historia breve solo di quién eres, qué estás haciendo y por qué necesitas su tiempo",
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cuánto tiempo lleva con él?"
+    },
+    {
+     "id": "sin_gancho",
+     "cita": "Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar.",
+     "error": "Terminas la historia sin pregunta: dejas al cliente sin nada que contestar y la conversación se queda en el aire",
+     "mejora": "Cierra la historia con una pregunta que le devuelva la palabra, sobre él o sobre cómo le va",
+     "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cómo le ha ido con el negocio?"
+    }
+   ],
+   "siguiente_nivel": [],
+   "criterios_cumplidos": [
+    "story.historia_breve"
+   ],
+   "veredictos_criterios": [
+    {
+     "falta": "",
+     "nivel": "cumple",
+     "criterio_id": "story.historia_breve"
+    },
+    {
+     "falta": "Presume la empresa con 'los mejores' y mete producto en lugar de solo decir quién es y por qué está ahí",
+     "nivel": "no_cumple",
+     "criterio_id": "story.brevedad"
+    },
+    {
+     "falta": "Termina sin pregunta que le devuelva la palabra al cliente",
+     "nivel": "no_cumple",
+     "criterio_id": "story.relevancia_cliente"
+    }
+   ],
+   "regresiones_detectadas": []
+  },
+  "error": null,
+  "intentos": 1,
+  "duracion_ms": 48890,
+  "empezada_en": "2026-11-25T22:21:13.608+00:00",
+  "actualizada_en": "2026-11-25T22:22:02.632+00:00",
+  "evento_id": "c2cc9ad3-5ee1-4acc-8f14-e14487bd7ea1",
+  "error_evento": null
+ }
+}

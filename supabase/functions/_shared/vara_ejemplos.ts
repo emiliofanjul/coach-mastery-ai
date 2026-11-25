@@ -111,7 +111,8 @@ Para cada texto:
 2. Aplica LA PRUEBA de CADA falla, tal como está escrita, a lo que propone decir, como si el vendedor lo dijera en esta práctica, en el momento de la visita que este nodo practica. LA PRUEBA ES EL ALCANCE: los ejemplos de la regla ilustran, no delimitan. No agregues requisitos que la prueba no escribe, ni quites los que sí escribe. Juzga lo que la frase HACE en ese momento, no palabras sueltas. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
 3. Repruébalo solo si lo que propone decir COMETE el error de la regla. Un EJEMPLO es el turno completo que el vendedor diría, aunque solo corrija una parte: se mide como turno completo, también con los errores de que FALTE algo (si la regla pide que el turno termine con pregunta, el ejemplo la trae). Una MEJORA o una MISIÓN son piezas, no el turno completo: no cometen un error por no traerlo todo (no hubo pregunta, no retomó, no cerró).
 4. Nombrar un error para evitarlo no es cometerlo: «no le preguntes qué se le vende» pasa. Citar lo que el vendedor dijo en la práctica («dijiste “quería ofrecerle”») tampoco: no es algo que el texto le proponga decir.
-5. Solo juzgas con las fallas del nodo y las reglas del paso que recibes. No revisas estilo ni lenguaje: de eso se encarga otra revisión.
+5. Si un texto trae «aviso», revísalo otra vez con cuidado en ese punto: el aviso no es un veredicto, la prueba manda.
+6. Solo juzgas con las fallas del nodo y las reglas del paso que recibes. No revisas estilo ni lenguaje: de eso se encarga otra revisión.
 6. Lo que repruebes no se cambia todavía: lo revisa después el juez que califica al vendedor, con la conversación completa. Si una frase razonablemente podría cometer la falla, márcala; si claramente no la comete, déjala pasar.
 
 Por cada texto entregas: su "id"; "frase", lo que propone decir, copiado del texto; "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba que decide; "conducta": "pasa" o "reprueba"; "falla": el id de la falla que comete, solo si reprueba. Si reprueba, "corregido": el mismo texto, con la misma intención del coach y la misma longitud aproximada, pero que pase TODAS las pruebas y siga el molde del paso que recibes («molde_del_paso»: lo que una frase de ese paso tiene que tener, lo que no puede tener y cómo termina); si no se puede sin cambiar la intención, déjalo vacío. Entrega todo con la herramienta "revisiones", una por texto.`;
@@ -149,7 +150,7 @@ export function presupuestoVara(textos: number): number {
   return Math.min(6000, 800 + 450 * Math.max(1, Math.floor(textos)));
 }
 
-export function armarEntradaVara(args: { paso: number | null; fallas: FallaConPrueba[]; reglas?: FallaConPrueba[]; molde?: string; textos: { id: string; tipo: string; texto: string }[]; conversacion?: { role?: string; content?: unknown }[] }): string {
+export function armarEntradaVara(args: { paso: number | null; fallas: FallaConPrueba[]; reglas?: FallaConPrueba[]; molde?: string; textos: { id: string; tipo: string; texto: string; aviso?: string }[]; conversacion?: { role?: string; content?: unknown }[] }): string {
   return JSON.stringify({
     paso_del_nodo: args.paso,
     // Mensaje 177: cómo suena una frase bien dicha en este paso (para corregir).
@@ -162,7 +163,7 @@ export function armarEntradaVara(args: { paso: number | null; fallas: FallaConPr
     fallas_del_nodo: args.fallas.map((f) => ({ id: f.id, severidad: f.severidad, regla: f.regla.slice(0, LARGO_REGLA_JUEZ), en_este_nodo: f.en_este_nodo.slice(0, 600) })),
     // Mensaje 177: los errores del paso y de toda la conversación, con su prueba.
     ...(args.reglas && args.reglas.length > 0 ? { reglas_del_paso: args.reglas.map((f) => ({ id: f.id, regla: f.regla.slice(0, LARGO_REGLA_JUEZ) })) } : {}),
-    textos: args.textos.map((t) => ({ id: t.id, tipo: t.tipo, texto: t.texto })),
+    textos: args.textos.map((t) => ({ id: t.id, tipo: t.tipo, texto: t.texto, ...(t.aviso ? { aviso: t.aviso } : {}) })),
   });
 }
 
@@ -331,11 +332,38 @@ export const VARA_EN_PARALELO = 6;
  * las reglas) y los demás de VARA_EN_PARALELO en VARA_EN_PARALELO. Si uno no
  * se pudo revisar, nada se da por bueno: null.
  */
+/**
+ * Mensaje 179 (25-nov): ¿el ejemplo termina sin pregunta? En el paso 1 basta con
+ * que traiga una; del 2 al 5 el turno termina con ella. En el 6 (la despedida) y
+ * en el mundo 7 no se mira: ahí un turno bien dicho puede terminar sin pregunta.
+ */
+export function ejemploSinPregunta(texto: string, paso: number | null): boolean {
+  if (paso === null || paso < 1 || paso > 5) return false;
+  const t = texto.trim().replace(/[\s"'»”)\].…]+$/u, "");
+  if (!t) return false;
+  return paso === 1 ? !t.includes("?") : !t.endsWith("?");
+}
+
+export const AVISO_SIN_PREGUNTA = "Este ejemplo termina sin pregunta. Un ejemplo es el turno completo: si en ese momento del paso el turno debe terminar con una pregunta que le devuelva la palabra, repruébalo con la falla del nodo o la regla del paso que lo pide, y corrígelo con su pregunta. Si en ese momento lo correcto es despedirse o quedar de regresar, pasa.";
+
+/** Misma frase, misma vara: si un texto reprueba, sus copias exactas también (con la misma corrección). */
+function mismaFraseMismaVara(textos: { id: string; texto: string }[], revisiones: RevisionVara[]): RevisionVara[] {
+  const clave = (s: string) => s.trim().replace(/\s+/g, " ").toLowerCase();
+  const textoDe = new Map(textos.map((t) => [t.id, clave(t.texto)]));
+  const reprobada = new Map<string, RevisionVara>();
+  for (const r of revisiones) if (r.conducta === "reprueba") { const k = textoDe.get(r.id); if (k && !reprobada.has(k)) reprobada.set(k, r); }
+  return revisiones.map((r) => {
+    const k = textoDe.get(r.id);
+    const otra = k ? reprobada.get(k) : undefined;
+    return r.conducta !== "reprueba" && otra ? { ...otra, id: r.id } : r;
+  });
+}
+
 async function revisarUnoPorUno(
   textos: { id: string; tipo: string; texto: string }[],
   a: { fallas: FallaConPrueba[]; reglas: FallaConPrueba[]; molde?: string; paso: number | null; conversacion?: Turno[]; llamar: LlamarVara; intentos: number },
 ): Promise<RevisionVara[] | null> {
-  const uno = (t: { id: string; tipo: string; texto: string }) =>
+  const uno = (t: { id: string; tipo: string; texto: string; aviso?: string }) =>
     conReintento(a.llamar, armarEntradaVara({ paso: a.paso, fallas: a.fallas, reglas: a.reglas, molde: a.molde, textos: [t], conversacion: a.conversacion }), [t], a.intentos);
   const out: RevisionVara[] = [];
   const [primero, ...resto] = textos;
@@ -351,7 +379,21 @@ async function revisarUnoPorUno(
       out.push(...r.filter((x) => x.id === resto[i + k].id));
     }
   }
-  return out;
+  // Mensaje 179: un ejemplo que termina sin pregunta y pasó se revisa otra vez,
+  // con el aviso. En el 2.1 (25-nov) el mismo texto sin pregunta reprobó como
+  // ejemplo de una observación y pasó como ejemplo de la falla «curriculum».
+  const revisarOtraVez = textos.filter((t) => t.tipo === "ejemplo" && ejemploSinPregunta(t.texto, a.paso)
+    && out.find((r) => r.id === t.id)?.conducta !== "reprueba");
+  for (let i = 0; i < revisarOtraVez.length; i += VARA_EN_PARALELO) {
+    const tanda = await Promise.all(revisarOtraVez.slice(i, i + VARA_EN_PARALELO).map((t) => uno({ ...t, aviso: AVISO_SIN_PREGUNTA })));
+    for (let k = 0; k < tanda.length; k++) {
+      const r = tanda[k];
+      if (!r) return null;
+      const nueva = r.find((x) => x.id === revisarOtraVez[i + k].id);
+      if (nueva) { const j = out.findIndex((x) => x.id === nueva.id); if (j >= 0) out[j] = nueva; }
+    }
+  }
+  return mismaFraseMismaVara(textos, out);
 }
 
 async function dosFiltros(
