@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.47.0",
+  "harness_version": "v3.48.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -7236,6 +7236,84 @@
       ],
       "expected": {
         "rationale": "La vara juzga el texto del coach, no los turnos de la práctica (mensaje 169)."
+      }
+    },
+    {
+      "id": "G124_operacion_en_la_historia_breve",
+      "node_id": "2.1",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias.",
+      "description": "Mensaje 176 (Emilio, 25-nov): el ejemplo que Closer le dio en el 2.1 terminaba la historia breve con una pregunta sobre su operación («¿usted cómo le hace con los aceites?»). En el mismo turno de la historia breve la pregunta va sobre él o sobre cómo le va: preguntar por su operación ahí es pitch prematuro.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Hola, buenas tardes. Qué bonito tiene su local, ¿cuánto tiempo lleva con él?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues mire, ya van como seis años. Oiga, ¿y usted quién es?"
+        },
+        {
+          "role": "user",
+          "text": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona para conocer cómo trabajan. ¿Usted cómo le hace con los aceites?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues ahí los compro con el de siempre."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pitch_prematuro"
+        ],
+        "score_range": [
+          0,
+          30
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "rationale": "Regla opening.pitch_prematuro (mensaje 176): pedirle información de su operación en el mismo turno de la historia breve es antes de tiempo."
+      }
+    },
+    {
+      "id": "G125_operacion_despues_de_presentarse",
+      "node_id": "2.2",
+      "seller_name": "Luis",
+      "company_brain": "Distribuidora del Golfo: Distribuidora de lubricantes y aditivos (aceites Bardahl) para talleres, refaccionarias y flotillas.",
+      "description": "Mensaje 176 (Emilio, 25-nov): ya que el vendedor se presentó y el cliente le contestó, preguntarle por su operación es descubrimiento, no pitch prematuro. Cada turno termina con pregunta.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "¡Buenas tardes! Me llamo Luis, vengo de Distribuidora del Golfo; ando conociendo los talleres de la zona. ¿Cuánto tiempo lleva con el taller?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ya van como doce años."
+        },
+        {
+          "role": "user",
+          "text": "¡Doce años! Eso es aguantar. ¿Y con quién se surte de aceite ahorita?"
+        },
+        {
+          "role": "assistant",
+          "text": "Con un distribuidor de Veracruz."
+        },
+        {
+          "role": "user",
+          "text": "Ah, mire. ¿Y cada cuánto le llegan?"
+        },
+        {
+          "role": "assistant",
+          "text": "Cada quince días, más o menos."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "pitch_prematuro",
+          "turno_sin_pregunta"
+        ],
+        "rationale": "Regla opening.pitch_prematuro (mensaje 176): ya que te presentaste y el cliente te contestó, preguntar por su operación es descubrimiento."
       }
     }
   ]

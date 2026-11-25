@@ -383,7 +383,7 @@
     "name": "Tu Historia Breve",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 El espejo es progresivo: el cliente no corta de golpe, se va apagando conforme la historia se alarga. Ensena la consecuencia real de perder la atencion.",
+      "notes": "v2.0.0 El espejo es progresivo: el cliente no corta de golpe, se va apagando conforme la historia se alarga. Ensena la consecuencia real de perder la atencion. · 2.0.3 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "story.historia_breve",
@@ -411,7 +411,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como te presentas. Vamos al desglose y te digo que le sobraba o que le faltaba."
         }
       },
-      "version": "2.0.2",
+      "version": "2.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -440,7 +440,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Aprovecha la presentacion para meter producto, promocion o motivo de venta. La historia breve dice quien eres, no que vendes."
+          "description": "Aprovecha la presentacion para meter producto, promocion o motivo de venta, o le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) en el mismo turno de su historia breve: ahí la pregunta va sobre él o sobre cómo le va. La historia breve dice quien eres, no que vendes."
         }
       ],
       "success_criteria": [
@@ -471,7 +471,7 @@
     "name": "Devuelve la Palabra",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 El Actor es deliberadamente pasivo. La ensenanza es por vacio: si el vendedor no pregunta, no pasa nada, y el silencio hace el trabajo pedagogico.",
+      "notes": "v2.0.0 El Actor es deliberadamente pasivo. La ensenanza es por vacio: si el vendedor no pregunta, no pasa nada, y el silencio hace el trabajo pedagogico. · 2.0.3 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "story.relevancia_cliente"
@@ -497,7 +497,7 @@
           "message_incomplete": "Ahi lo dejamos, ya vi como llevas la conversacion. Vamos al desglose."
         }
       },
-      "version": "2.0.2",
+      "version": "2.0.3",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -527,7 +527,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promocion o motivo de venta."
+          "description": "Mete producto, promocion o motivo de venta. O le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué pasó, o en el mismo turno en que se lo dice. Ya que se presentó y el cliente le contestó, preguntar por su negocio es descubrimiento y no es esta falla."
         }
       ],
       "success_criteria": [
@@ -560,7 +560,7 @@
     "name": "El Desvío con Regreso",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. El espejo mide LAS DOS MITADES: ignorar enfria, quedarse flotando estanca. Es la misma mecanica de espejo doble del 3.2. El dato personal sale al azar de los cinco territorios de FORMS.",
+      "notes": "v2.0.0 Nodo nuevo. El espejo mide LAS DOS MITADES: ignorar enfria, quedarse flotando estanca. Es la misma mecanica de espejo doble del 3.2. El dato personal sale al azar de los cinco territorios de FORMS. · 2.0.1 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "relationship.cpr",
@@ -587,7 +587,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo el desvio."
         }
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -620,7 +620,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promocion o motivo de venta."
+          "description": "Mete producto, promocion o motivo de venta. O le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué pasó, o en el mismo turno en que se lo dice. Ya que se presentó y el cliente le contestó, preguntar por su negocio es descubrimiento y no es esta falla."
         }
       ],
       "success_criteria": [
@@ -824,7 +824,7 @@
     "name": "La Mala Experiencia al Llegar",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v3.0.0 (oct-2026, doctrina de Emilio): la mala experiencia al llegar. Antes este nodo enseñaba a adelantar negativos al llegar; la doctrina cambió: con un cliente nuevo no se abre con negativos, y si el cliente saca una mala experiencia es una preocupación real, no un bloqueo. El espejo tiene cinco estados: recibirla en serio con motivo real y pregunta abre; ignorarla confirma; defenderse atrinchera; prometer en el aire no convence; inventar un cambio rompe la confianza.",
+      "notes": "v3.0.0 (oct-2026, doctrina de Emilio): la mala experiencia al llegar. Antes este nodo enseñaba a adelantar negativos al llegar; la doctrina cambió: con un cliente nuevo no se abre con negativos, y si el cliente saca una mala experiencia es una preocupación real, no un bloqueo. El espejo tiene cinco estados: recibirla en serio con motivo real y pregunta abre; ignorarla confirma; defenderse atrinchera; prometer en el aire no convence; inventar un cambio rompe la confianza. · 3.0.2 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "blocks.mala_experiencia"
@@ -850,7 +850,7 @@
           "message_incomplete": "Ahí lo dejamos. Vamos al desglose y te digo cómo recibiste su mala experiencia."
         }
       },
-      "version": "3.0.1",
+      "version": "3.0.2",
       "i_do_type": "demo",
       "success_criteria": [
         {
@@ -903,7 +903,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promoción o motivo de venta."
+          "description": "Mete producto, promoción o motivo de venta, o le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué viene. La pregunta que regresa al diagnóstico después del motivo concreto de su visita no es esta falla: es lo que pide este nodo."
         }
       ]
     }
@@ -914,7 +914,7 @@
     "name": "Seguir Avanzando",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 Nodo nuevo. Primera aparicion de Close With Action, en su version ligera: avanzar en la linea. Vuelve en M4 despues del precio y en M5 como cierre. El espejo castiga el silencio con la consecuencia real: el cliente se despide con amabilidad.",
+      "notes": "v2.0.0 Nodo nuevo. Primera aparicion de Close With Action, en su version ligera: avanzar en la linea. Vuelve en M4 despues del precio y en M5 como cierre. El espejo castiga el silencio con la consecuencia real: el cliente se despide con amabilidad. · 2.0.2 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "flow.close_with_action",
@@ -941,7 +941,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo donde se te fue el control."
         }
       },
-      "version": "2.0.1",
+      "version": "2.0.2",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -974,7 +974,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promocion o motivo de venta."
+          "description": "Mete producto, promocion o motivo de venta. O le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué pasó, o en el mismo turno en que se lo dice. Ya que se presentó y el cliente le contestó, preguntar por su negocio es descubrimiento y no es esta falla."
         }
       ],
       "success_criteria": [
@@ -999,7 +999,7 @@
     "name": "La Puerta Fría",
     "node_type": "boss",
     "practice_script": {
-      "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento.",
+      "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento. · 2.1.6 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "blocks.air",
@@ -1030,7 +1030,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.1.5",
+      "version": "2.1.6",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1081,7 +1081,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promocion o motivo de venta. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
+          "description": "Mete producto, promocion o motivo de venta. O le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué pasó, o en el mismo turno en que se lo dice. Ya que se presentó y el cliente le contestó, preguntar por su negocio es descubrimiento y no es esta falla. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
         },
         {
           "id": "insiste_tras_dos",

@@ -229,6 +229,8 @@ Quién eres, qué estás haciendo, por qué necesitas su tiempo. Lo más conciso
 
 Tu historia breve no existe para que te entiendan a ti. **Existe para ganarte el derecho de preguntarle a él.**
 
+**Cuándo empiezan las preguntas de su negocio** `CAMPO`: en el mismo turno de tu historia breve, la pregunta va sobre él o sobre cómo le va —*"¿cuánto tiempo lleva con el taller?"*—. Ya que te contestó, empiezan las preguntas de su negocio: su proveedor, qué se le mueve, cómo le hace. Eso ya es descubrimiento. Antes de que sepa quién eres y por qué pasaste, preguntarle por su operación es trabajo comercial antes de tiempo. La excepción es la mala experiencia al llegar: después del motivo concreto de tu visita, regresas al diagnóstico con una pregunta en el mismo turno.
+
 ### CPR — Create Personal Relations `FUENTE` `UNIVERSAL`
 > *"Eres tanto, si no más, el producto que los productos que representas."*
 

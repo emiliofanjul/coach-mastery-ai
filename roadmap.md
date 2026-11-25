@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Mensaje 176: Paso 0 exacto (1286/103, siete huellas, Cerebro 24/7, regla y seis guiones); cuatro entregas verificadas.
+- [x] Mensaje 176: dos funciones instaladas con editor e idénticas byte por byte; instalador una vez, diez archivos exactos; cuatro entregas retiradas; 1295/104 y build automático OK.
+- [ ] Mensaje 176: aplicar SQL íntegro y verificar; bloqueado por orden obligatorio de GRANT antes de RLS/política y regreso con DROP TABLE prohibido. Espera SQL corregido de Emilio, sin reescribirlo.
+- [ ] Mensaje 176: desplegar solo closer-voice y harness-runner, publicar y comprobar siete casos y disputa con vendedor de prueba; pendiente del SQL compatible y regreso seguro.
+
 - [x] Mensaje 174: Paso 0 y cuatro entregas verificados; 1273 pruebas en 102 archivos, huellas y base exactas.
 - [x] Mensaje 174: dos funciones instaladas con editor y MD5 exactos, instalador una vez: 7 archivos exactos, cuatro entregas retiradas; 1286 pruebas en 103 archivos y compilación automática OK.
 - [ ] Mensaje 174: SQL íntegro y tabla de verificación; bloqueado porque el SQL entregado no incluye GRANT para ninguna de sus tres tablas públicas; se pidió archivo corregido para respetar SQL tal cual. No se ejecutó SQL.

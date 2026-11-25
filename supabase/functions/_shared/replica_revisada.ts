@@ -182,11 +182,38 @@ export function recordatorioFallaCritica(a: {
   const cita = String(critica.cita ?? "").trim();
   if (cita && mencionaLaFrase(a.mensaje, cita)) return null;
   const turno = cita ? turnoDeLaFrase(a.conversacion, cita) : null;
-  const def = (Array.isArray(a.fallasDelNodo) ? a.fallasDelNodo : []).find((f) => f?.id === critica.id);
-  const porQue = String(def?.description ?? "").trim();
   const corta = cita.length > 160 ? `${cita.slice(0, 157).trimEnd()}…` : cita;
   const donde = cita
     ? `${turno ? `En el turno ${turno}` : "En la práctica"} dijiste «${corta}».`
     : "En la práctica cometiste la falla grave de este nodo.";
-  return `Lo que sí se sostiene: ${donde}${porQue ? ` ${porQue}` : ""} Esa es la falla grave de este nodo, y por eso la nota no pasa de 30.`;
+  return `Lo que sí se sostiene: ${donde}${explicacionParaElVendedor(critica, a.fallasDelNodo)} Esa es la falla grave de este nodo, y por eso la nota no pasa de 30.`;
+}
+
+/**
+ * Mensaje 176 (25-nov-2026): lo que se le explica al vendedor de la falla grave.
+ * Antes se pegaba la descripción de la falla tal como la lee el evaluador, y en
+ * vivo esa descripción trae la regla completa con «LA PRUEBA: …» y «— En este
+ * nodo: …»: texto para el juez, no para el vendedor. Ahora va lo que el vendedor
+ * ya vio en su pantalla: el error que le escribió el evaluador, y su porqué
+ * (mensaje 174). Si no hay, el contexto del nodo; nunca el texto de la prueba.
+ */
+export function explicacionParaElVendedor(critica: any, fallasDelNodo: any[]): string {
+  const limpio = (x: unknown) => (typeof x === "string" ? x.trim() : "");
+  const conPunto = (t: string) => (/[.!?…»]$/.test(t) ? t : `${t}.`);
+  const partes: string[] = [];
+  const error = limpio(critica?.error);
+  if (error) {
+    partes.push(conPunto(error));
+  } else {
+    const def = (Array.isArray(fallasDelNodo) ? fallasDelNodo : []).find((f) => f?.id === critica?.id);
+    const contexto = limpio(def?.contexto_nodo) || limpio(def?.description);
+    if (contexto && !/LA PRUEBA/i.test(contexto) && !contexto.includes("— En este nodo:")) partes.push(conPunto(contexto));
+  }
+  const p = critica?.porque;
+  if (limpio(p?.va_en) && limpio(p?.va_despues)) {
+    partes.push(`Esto va más adelante: en ${limpio(p.va_en)}. ${conPunto(limpio(p.va_despues))}`);
+  } else if (limpio(p?.texto)) {
+    partes.push(`Por qué importa: ${conPunto(limpio(p.texto))}`);
+  }
+  return partes.length ? ` ${partes.join(" ")}` : "";
 }

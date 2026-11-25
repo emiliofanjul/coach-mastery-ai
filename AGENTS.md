@@ -17,3 +17,4 @@
 - Reuse manager onboarding questions, direct brain mapping and existing save functions for personal practice setup, so commercial data stays grounded and both flows remain aligned.
 - Determine personal onboarding from company status rather than the manager label, and guard map redirects per session to avoid onboarding loops.
 - Attach mechanism explanations and later-step guidance from read-only catalogs after scoring, failing open so explanatory data never affects ratings.
+- Build critical-failure dispute reminders from saved seller-facing errors and explanations, not evaluator-only rule text, so internal instructions remain out of replies.
