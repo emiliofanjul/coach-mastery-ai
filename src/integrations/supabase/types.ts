@@ -1044,6 +1044,24 @@ export type Database = {
           },
         ]
       }
+      mecanismos: {
+        Row: {
+          id: number
+          nombre: string
+          porque: string
+        }
+        Insert: {
+          id: number
+          nombre: string
+          porque: string
+        }
+        Update: {
+          id?: number
+          nombre?: string
+          porque?: string
+        }
+        Relationships: []
+      }
       metas_practica: {
         Row: {
           actualizada_en: string
@@ -1864,6 +1882,36 @@ export type Database = {
         }
         Relationships: []
       }
+      reglas_mecanismo: {
+        Row: {
+          mecanismo_id: number
+          regla_id: string
+        }
+        Insert: {
+          mecanismo_id: number
+          regla_id: string
+        }
+        Update: {
+          mecanismo_id?: number
+          regla_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reglas_mecanismo_mecanismo_id_fkey"
+            columns: ["mecanismo_id"]
+            isOneToOne: false
+            referencedRelation: "mecanismos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reglas_mecanismo_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: true
+            referencedRelation: "reglas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seller_archetype_performance: {
         Row: {
           archetype_id: string
@@ -2438,6 +2486,32 @@ export type Database = {
             columns: ["seller_id"]
             isOneToOne: false
             referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      va_despues: {
+        Row: {
+          porque: string
+          regla_id: string
+          va_en: string
+        }
+        Insert: {
+          porque: string
+          regla_id: string
+          va_en: string
+        }
+        Update: {
+          porque?: string
+          regla_id?: string
+          va_en?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "va_despues_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: true
+            referencedRelation: "reglas"
             referencedColumns: ["id"]
           },
         ]

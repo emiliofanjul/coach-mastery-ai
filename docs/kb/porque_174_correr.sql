@@ -46,6 +46,9 @@ CREATE POLICY "cualquiera con sesión lee los mecanismos" ON public.mecanismos F
 CREATE POLICY "cualquiera con sesión lee el mecanismo de cada regla" ON public.reglas_mecanismo FOR SELECT TO authenticated USING (true);
 CREATE POLICY "cualquiera con sesión lee lo que va después" ON public.va_despues FOR SELECT TO authenticated USING (true);
 REVOKE INSERT, UPDATE, DELETE, TRUNCATE ON public.mecanismos, public.reglas_mecanismo, public.va_despues FROM anon, authenticated;
+-- Permisos explícitos (pedido de Lovable): la app solo lee; closer-voice lee con service_role.
+GRANT SELECT ON public.mecanismos, public.reglas_mecanismo, public.va_despues TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.mecanismos, public.reglas_mecanismo, public.va_despues TO service_role;
 
 INSERT INTO public.mecanismos (id, nombre, porque) VALUES
   (1, 'La atención en tres tercios', 'Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.'),
