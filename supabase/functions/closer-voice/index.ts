@@ -35,7 +35,7 @@ import { fallasPorHechoDePregunta, criteriosPorHechoDePregunta, corregirPregunta
 import { fallasPorHechoDeLosNo } from "../_shared/hechos_no.ts";
 import { PROMPT_JUEZ, HERRAMIENTA_JUICIOS, presupuestoJuez, TOPE_MAXIMO_JUEZ, acusacionesConPrueba, armarEntradaJuez, juiciosDeRespuesta, aplicarJuicios, juiciosConCitasValidas, type Juicio } from "../_shared/juez_pruebas.ts";
 import { PROMPT_AUDITOR, armarEntradaAuditor, textosDeEvaluacion, aplicarAuditoria, extraerJson, fallaCerrada, MISION_DE_RESPALDO, quitarEjemplosQuePidenPermiso, HERRAMIENTA_VEREDICTOS, veredictosDeRespuesta } from "../_shared/auditar_coaching.ts";
-import { PROMPT_VARA, HERRAMIENTA_VARA, presupuestoVara, revisionesDeRespuesta, pasarPorLaVara, type RevisionVara } from "../_shared/vara_ejemplos.ts";
+import { PROMPT_VARA, HERRAMIENTA_VARA, presupuestoVara, revisionesDeRespuesta, pasarPorLaVara, revisarRespuestaDeDisputa, type RevisionVara } from "../_shared/vara_ejemplos.ts";
 import { completarYOrdenarObservaciones } from "../_shared/observaciones_rubrica.ts";
 import { contieneGroserias, groseriasDelVendedor, sanearGroseriasEvaluacion } from "../_shared/lenguaje.ts";
 import { vendedorSePresento, empresaDelCerebro, sanearRecuerdos } from "../_shared/identidad.ts";
@@ -46,6 +46,7 @@ import { quitarEspejosDeCriteriosCumplidos } from "../_shared/espejos.ts";
 import { armarEventoDePractica, guardarEventoDePractica, type PracticaGuardada } from "../_shared/evento_practica.ts";
 import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, recordatorioFallaCritica, type RevisionJuez } from "../_shared/replica_revisada.ts";
 import { explicarPorQue } from "../_shared/porque.ts";
+import { bloqueParaEscribir, moldeDelPaso } from "../_shared/guia.ts";
 import { calcularSeguimiento, lineasDeSeguimiento, type Intento, type GuionDeNodo } from "../_shared/seguimiento.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
@@ -306,6 +307,7 @@ function buildEvaluateBlocks(
   radarSkills: RadarSkill[] = [],
   reglasSiguiente: { id: string; resumen: string }[] = [],
   ficha: FichaCliente | null = null,
+  guiaParaEscribir = "",
 ): PromptBlock[] {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
@@ -389,7 +391,11 @@ Es coaching hacia adelante DENTRO DEL MISMO PASO que entrena este nodo: cómo ej
 - Se escribe en tono de oportunidad, nunca de carencia: "lo que sigue", "aquí también cabía". Prohibido "te faltó", "no hiciste", "debiste".
 - Si no observaste nada de valor fuera de alcance, devuelve [].`;
 
-  return [cached(EVALUATE_STATIC_PROMPT), plain(variable)];
+  // Mensaje 177: la guía del vendedor, para escribir mejora, ejemplo y misión
+  // con el molde del paso. Es igual para todos los nodos: va cacheada.
+  return guiaParaEscribir
+    ? [cached(EVALUATE_STATIC_PROMPT), cached(guiaParaEscribir), plain(variable)]
+    : [cached(EVALUATE_STATIC_PROMPT), plain(variable)];
 }
 
 interface GenerateExampleResponse {
@@ -464,6 +470,7 @@ function buildReplicaSystemPrompt(
   practice_script: any,
   original_evaluation: any,
   conversation_history: { role: string; content: string }[],
+  guiaParaEscribir = "",
 ): string {
   const successCriteria = practice_script?.success_criteria ?? practice_script?.successCriteria ?? [];
   const failureCriteria = practice_script?.failure_criteria ?? practice_script?.failureCriteria ?? [];
@@ -513,7 +520,7 @@ ${JSON.stringify(evaluacion, null, 2)}
 
 TRANSCRIPT DE LA SESIÓN (numerado: "turno" es el número de cada mensaje, contando los del vendedor y los del cliente; el juez y la página de disputas usan esta misma numeración. Cuando digas «turno N», usa SIEMPRE este número):
 ${JSON.stringify(transcriptNumerado(conversation_history), null, 2)}
-
+${guiaParaEscribir ? `\n${guiaParaEscribir}\n\nEN ESTA RESPUESTA: si le propones al vendedor una frase para decir, escríbela con la guía de arriba, para el paso donde la diría. Antes de responder, revisa que esa frase no cometa ninguna falla de este nodo: corregir una falla nunca puede enseñar otra (25-nov, 2.1: un ejemplo sin pregunta al final, para corregir un pitch prematuro, enseñaba a terminar sin pregunta).\n` : ""}
 Responde JSON exacto:
 {
   "message": "lo que le dices al vendedor",
@@ -599,9 +606,22 @@ async function llamarJuez(apiKey: string, entrada: string, quien: QuienLlama, ac
 
 /** La misma vara (mensaje 163): lo que el coach propone decir pasa por las pruebas de las fallas del nodo. */
 async function llamarVara(apiKey: string, entrada: string, quien: QuienLlama, textos: number): Promise<RevisionVara[] | null> {
+  // Mensaje 177: la vara va frase por frase. Lo que es igual para todos los
+  // textos de una calificación (reglas, molde, conversación) va cacheado; el
+  // texto a revisar va aparte.
+  let contenido: unknown = entrada;
+  try {
+    const { textos: porRevisar, ...fijo } = JSON.parse(entrada);
+    contenido = [
+      { type: "text", text: JSON.stringify(fijo), cache_control: { type: "ephemeral" } },
+      { type: "text", text: JSON.stringify({ textos: porRevisar }) },
+    ];
+  } catch (_e) {
+    contenido = entrada;
+  }
   return revisionesDeRespuesta(await llamarModelo(apiKey, {
     max_tokens: presupuestoVara(textos), temperature: 0, system: PROMPT_VARA,
-    messages: [{ role: "user", content: entrada }],
+    messages: [{ role: "user", content: contenido }],
     tools: [HERRAMIENTA_VARA],
     tool_choice: { type: "tool", name: HERRAMIENTA_VARA.name },
   }, "vara", quien));
@@ -1150,12 +1170,27 @@ async function atender(body: ReqBody): Promise<Response> {
     // revisar el orden de los pasos (16-oct-2026: un ejemplo del 2.7c habló de
     // producto y pidió "dos minutos").
     let pasoNodo: number | null = null;
-    if (phase === "evaluate") {
+    // Mensaje 177: las reglas (para la vara: los errores del paso) y la guía del
+    // vendedor (para escribir con el molde), en la calificación y en las disputas.
+    let reglasBase: any[] = [];
+    let guiaPartes: any[] = [];
+    if (phase === "evaluate" || phase === "replica") {
+      try {
+        const adminGuia = getAdmin();
+        if (adminGuia) {
+          const { data, error } = await adminGuia.from("guia_del_vendedor").select("clave, orden, titulo, texto").eq("activa", true).order("orden");
+          if (error) throw new Error(error.message);
+          guiaPartes = data ?? [];
+        }
+      } catch (e) {
+        console.warn("[closer-voice] sin la guía del vendedor (fail-open: se escribe sin el molde):", e instanceof Error ? e.message : String(e));
+      }
       try {
         const adminReglas = getAdmin();
         const { data: todas } = adminReglas
-          ? await adminReglas.from("reglas").select("id, paso, resumen")
+          ? await adminReglas.from("reglas").select("id, paso, tipo, resumen")
           : { data: null as any };
+        reglasBase = todas ?? [];
         const pasoPorRegla = new Map<string, number>((todas ?? []).map((r: any) => [r.id, Number(r.paso)]));
         const paso = pasoDelNodo(practice_script?.success_criteria, pasoPorRegla);
         pasoNodo = paso;
@@ -1170,11 +1205,11 @@ async function atender(body: ReqBody): Promise<Response> {
     // El sistema se manda como bloques: lo FIJO primero (cacheado con
     // cache_control), lo variable después.
     const system: PromptBlock[] = phase === "evaluate"
-      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills, reglasSiguiente, fichaDePeticion((body as any).ficha_cliente))
+      ? buildEvaluateBlocks(practice_script, cut_reason, radarSkills, reglasSiguiente, fichaDePeticion((body as any).ficha_cliente), bloqueParaEscribir(guiaPartes))
       : phase === "generate_example"
         ? [plain(buildGenerateExampleSystemPrompt(card_type!, node_name ?? "", company_brain ?? "", seller_industry ?? "", scope?.skills_in_focus ?? [], card_title ?? "", card_body_brief ?? ""))]
         : phase === "replica"
-          ? [plain(buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : []))]
+          ? [plain(buildReplicaSystemPrompt(practice_script, body.original_evaluation ?? {}, Array.isArray(conversation_history) ? conversation_history : [], bloqueParaEscribir(guiaPartes)))]
           : [cached(buildSystemPrompt(phase, company_brain ?? "", seller_name ?? "", practice_script, taught_skills ?? [], fichaDePeticion((body as any).ficha_cliente)))];
 
     // Historial acotado SOLO para el Actor: últimos 6 turnos completos + una
@@ -1619,6 +1654,9 @@ async function atender(body: ReqBody): Promise<Response> {
           llamar: (entrada, textos) => llamarVara(apiKey, entrada, quienVara, textos),
           // El segundo filtro es el mismo juez de las pruebas que califica al vendedor.
           juez: (entrada, acusaciones) => llamarJuez(apiKey, entrada, quienVara, acusaciones, "vara_juez"),
+          // Mensaje 177: también los errores del paso, y el molde para corregir.
+          reglas: reglasBase,
+          molde: moldeDelPaso(guiaPartes, pasoNodo ?? pasoPorMundo(node_id)),
         });
         const { detalle, ...conteos } = vara;
         auditoria.vara = { ...conteos, latencia_ms: Date.now() - tVara };
@@ -1812,6 +1850,38 @@ async function atender(body: ReqBody): Promise<Response> {
           r1.concede_en = confirmadas;
           if (r1.concede !== null) r1.concede = confirmadas.length > 0;
           r1.criterio_id = confirmadas[0] ?? revisionJuez.sostenidas[0]?.id ?? revisionJuez.sin_revisar[0]?.id ?? r1.criterio_id ?? null;
+        }
+      }
+      // Mensaje 177: lo que la respuesta le propone DECIR al vendedor pasa por la
+      // misma vara que los ejemplos de la pantalla (25-nov, 2.1: para corregir un
+      // pitch prematuro, la respuesta enseñó a terminar sin pregunta). Si una
+      // frase propuesta reprueba, sale corregida si la corrección pasa; si no, se
+      // quitan las oraciones que la proponen. Antes del recordatorio de la falla
+      // grave, que cita lo que dijo el vendedor y lo escribe el código.
+      {
+        const r3: any = parsed;
+        const msg = String(r3.message ?? "");
+        if (msg.trim()) {
+          const quienVara = { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null };
+          const pasoReplica = pasoNodo ?? pasoPorMundo(node_id);
+          try {
+            const r = await revisarRespuestaDeDisputa({
+              mensaje: msg,
+              guion: practice_script,
+              paso: pasoReplica,
+              conversacion: fullHistory,
+              reglas: reglasBase,
+              molde: moldeDelPaso(guiaPartes, pasoReplica),
+              llamar: (entrada, textos) => llamarVara(apiKey, entrada, quienVara, textos),
+              juez: (entrada, acusaciones) => llamarJuez(apiKey, entrada, quienVara, acusaciones, "vara_juez"),
+            });
+            if (r.mensaje !== msg) {
+              r3.message = r.mensaje;
+              console.warn("[closer-voice] disputa: la vara cambió lo que la respuesta proponía decir", { session_id, node_id, quedo: r.quedo, detalle: r.detalle });
+            }
+          } catch (e) {
+            console.error("[closer-voice] disputa: la vara no pudo revisar la respuesta (sale como está):", e);
+          }
         }
       }
       // Mensaje 130: si una falla crítica dejó la nota en 30 y no se le

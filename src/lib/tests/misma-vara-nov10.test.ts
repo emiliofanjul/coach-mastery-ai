@@ -129,7 +129,9 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
     const r = await pasarPorLaVara({ ev, guion: guionDe("1.2"), paso: 1, conversacion, llamar: m.llamar, juez: j.juez });
     expect(r).toMatchObject({ revisados: 3, sospechosos: 0, confirmados: 0, absueltos: 0, corregidos: 0, descartados: 0 });
     expect(JSON.stringify(ev)).toBe(antes);
-    expect(m.entradas).toHaveLength(1);
+    // Mensaje 177: frase por frase, una llamada por texto.
+    expect(m.entradas).toHaveLength(3);
+    for (const e of m.entradas) expect(e.textos).toHaveLength(1);
     expect(j.entradas).toHaveLength(0);
   });
 
@@ -184,23 +186,25 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
 
   it("confirmada, sale la corrección, y la corrección pasa otra vez los dos filtros", async () => {
     const ev = evaluacion();
-    const m = modelo((ts, n) => (n === 1 ? ts.map((t) => (t.id === "obs0.ejemplo" ? sospecha({ corregido }) : pasa(t.id))) : ts.map((t) => pasa(t.id))));
+    const m = modelo((ts) => ts.map((t: any) => (t.texto === corregido ? pasa(t.id) : t.id === "obs0.ejemplo" ? sospecha({ corregido }) : pasa(t.id))));
     const j = juezQue((frase) => (/más se mueven/.test(frase) ? "reprueba" : "pasa"));
     const r = await pasarPorLaVara({ ev, guion: guionDe("1.2"), paso: 1, conversacion, llamar: m.llamar, juez: j.juez });
     expect(r).toMatchObject({ sospechosos: 1, confirmados: 1, absueltos: 0, corregidos: 1, descartados: 0 });
     expect(ev.observations[0].ejemplo).toBe(corregido);
-    expect(m.entradas).toHaveLength(2);
-    expect(m.entradas[1].textos).toEqual([{ id: "obs0.ejemplo", tipo: "ejemplo", texto: corregido }]);
+    // Mensaje 177: tres textos, uno por llamada, y la corrección en la suya.
+    expect(m.entradas).toHaveLength(4);
+    expect(m.entradas[3].textos).toEqual([{ id: "obs0.ejemplo", tipo: "ejemplo", texto: corregido }]);
     expect(r.detalle[0]).toMatchObject({ juez: "reprueba", quedo: "corregido" });
   });
 
   it("si la corrección también la confirma el juez como falla, no sale nada: mejor ningún ejemplo que uno que lo lleve a fallar", async () => {
     const ev = evaluacion();
     const malo = "¿y esos azules se le venden bien?";
-    const m = modelo((ts, n) => ts.map((t) => (t.id === "obs0.ejemplo" ? sospecha(n === 1 ? { corregido: malo } : { frase: malo }) : pasa(t.id))));
+    const m = modelo((ts) => ts.map((t: any) => (t.id === "obs0.ejemplo" ? sospecha(t.texto === malo ? { frase: malo } : { corregido: malo }) : pasa(t.id))));
     const j = juezQue(() => "reprueba");
     const r = await pasarPorLaVara({ ev, guion: guionDe("1.2"), paso: 1, conversacion, llamar: m.llamar, juez: j.juez });
     expect(r).toMatchObject({ confirmados: 1, corregidos: 0, descartados: 1 });
+    expect(m.entradas.some((e: any) => e.textos[0].texto === malo)).toBe(true);
     expect(ev.observations[0].ejemplo).toBe("");
     expect(ev.observations[0].mejora).toMatch(/^Nombra algo concreto/);
     expect(ev.mision).toMatch(/^Practica abrir/);
@@ -208,7 +212,7 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
 
   it("si la vara sospecha de la corrección pero el juez la absuelve, la corrección sale", async () => {
     const ev = evaluacion();
-    const m = modelo((ts, n) => ts.map((t) => (t.id === "obs0.ejemplo" ? sospecha(n === 1 ? { corregido } : { frase: corregido }) : pasa(t.id))));
+    const m = modelo((ts) => ts.map((t: any) => (t.id === "obs0.ejemplo" ? sospecha(t.texto === corregido ? { frase: corregido } : { corregido }) : pasa(t.id))));
     const j = juezQue((frase) => (/más se mueven/.test(frase) ? "reprueba" : "pasa"));
     const r = await pasarPorLaVara({ ev, guion: guionDe("1.2"), paso: 1, conversacion, llamar: m.llamar, juez: j.juez });
     expect(r).toMatchObject({ corregidos: 1, descartados: 0 });
@@ -223,7 +227,7 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
     expect(r).toMatchObject({ confirmados: 2, corregidos: 0, descartados: 2 });
     expect(ev.observations[0].ejemplo).toBe("");
     expect(ev.mision).toBe(MISION_DE_RESPALDO);
-    expect(m.entradas).toHaveLength(1);
+    expect(m.entradas).toHaveLength(3);
   });
 
   it("si el juez no puede revisar una sospecha, esa no sale; lo demás se queda", async () => {
@@ -248,7 +252,7 @@ describe("dos filtros: la vara sospecha, el juez de las pruebas confirma", () =>
   });
 
   it("si la vara no corre, o no revisa todos los textos, ningún ejemplo sin revisar llega", async () => {
-    for (const contesta of [() => null, (ts: any[]) => [pasa(ts[0].id)], () => { throw new Error("modelo HTTP 529"); }]) {
+    for (const contesta of [() => null, () => [], () => { throw new Error("modelo HTTP 529"); }]) {
       const ev = evaluacion();
       const m = modelo(contesta as any);
       const r = await pasarPorLaVara({ ev, guion: guionDe("1.2"), paso: 1, conversacion, llamar: m.llamar, juez: juezQue(() => "pasa").juez });

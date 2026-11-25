@@ -34,6 +34,18 @@
 //      frase en el momento que corresponde. Solo lo que ese juez confirma se
 //      cambia. Ahora sí es la misma vara.
 //
+// LA REVISIÓN ÚNICA (mensaje 177, 25-nov-2026). En el 2.1 la vara revisó 13
+// textos de un jalón, sospechó de uno y dejó pasar cinco ejemplos que terminaban
+// la historia breve con «¿usted cómo le hace con los aceites?»: la falla grave
+// del nodo. Y solo medía con las fallas del nodo. Emilio aprobó: revisar frase
+// por frase, con las pruebas de todas las reglas del paso. Ahora:
+//   · El primer filtro revisa CADA texto por separado (uno por llamada).
+//   · Mide con las fallas del nodo y además con los errores de su paso y de
+//     «toda la conversación» (reglas con LA PRUEBA): reglasParaLaVara.
+//   · Quien corrige recibe el molde del paso (la guía del vendedor, guia.ts).
+// Es la única puerta: la usan la pantalla de resultados y las disputas, y la
+// usará lo que venga (Pitch Builder, agentes por teléfono o WhatsApp).
+//
 // Sin imports de Deno: funciona en Deno y en Node (se prueba ejecutándolo).
 import { LARGO_REGLA_JUEZ, armarEntradaJuez, citaEnConversacion, type Juicio } from "./juez_pruebas.ts";
 import { aplicarAuditoria, textosDeEvaluacion, type TextoAuditable, type VeredictoAuditor } from "./auditar_coaching.ts";
@@ -47,6 +59,31 @@ export function fallasConPrueba(guion: any): FallaConPrueba[] {
     const regla = f?.regla_resumen ?? f?.description;
     if (typeof f?.id !== "string" || typeof regla !== "string" || !regla.includes("LA PRUEBA")) continue;
     out.push({ id: f.id, regla, en_este_nodo: String(f?.contexto_nodo ?? ""), severidad: String(f?.severity ?? "") });
+  }
+  return out;
+}
+
+export interface ReglaDeLaBase { id?: unknown; paso?: unknown; tipo?: unknown; resumen?: unknown }
+
+/**
+ * Mensaje 177: los errores del paso del nodo y los de toda la conversación
+ * (paso 0), con su prueba escrita, que no estén ya como falla del nodo. Paso
+ * null (mundo 7, que recorre toda la línea): solo los de toda la conversación;
+ * las fallas del nodo ya cubren sus pasos.
+ */
+export function reglasParaLaVara(reglas: ReglaDeLaBase[] | null | undefined, paso: number | null, guion: any): FallaConPrueba[] {
+  const yaEstan = new Set<string>();
+  for (const f of Array.isArray(guion?.failure_criteria) ? guion.failure_criteria : []) {
+    if (typeof f?.regla_id === "string") yaEstan.add(f.regla_id);
+  }
+  const out: FallaConPrueba[] = [];
+  for (const r of Array.isArray(reglas) ? reglas : []) {
+    const id = typeof r?.id === "string" ? r.id : "";
+    const resumen = typeof r?.resumen === "string" ? r.resumen : "";
+    const p = Number(r?.paso);
+    if (!id || r?.tipo !== "error" || !resumen.includes("LA PRUEBA") || yaEstan.has(id)) continue;
+    if (p !== 0 && (paso === null || p !== paso)) continue;
+    out.push({ id, regla: resumen, en_este_nodo: "", severidad: "regla" });
   }
   return out;
 }
@@ -66,11 +103,11 @@ Para cada texto:
 1. Saca lo que el texto le propone DECIR al vendedor: el ejemplo completo, o las frases entre comillas. Si no trae una frase pero le pide preguntar o decir algo («pregúntale qué se le vende más»), eso es lo que propone decir. Si el texto no propone decir nada, "frase" va vacía y la conducta es "pasa".
 2. Aplica LA PRUEBA de CADA falla, tal como está escrita, a lo que propone decir, como si el vendedor lo dijera en esta práctica, en el momento de la visita que este nodo practica. LA PRUEBA ES EL ALCANCE: los ejemplos de la regla ilustran, no delimitan. No agregues requisitos que la prueba no escribe, ni quites los que sí escribe. Juzga lo que la frase HACE en ese momento, no palabras sueltas. "En este nodo" dice cómo se aplica la regla aquí; si choca con la prueba, manda la prueba.
 3. Un texto del coach es una pieza, no el turno completo. Repruébalo solo si lo que propone decir COMETE el error de la regla. Si el error de una regla es que FALTA algo (no hubo pregunta, no retomó, no cerró), un texto no lo comete por no traerlo todo.
-4. Nombrar un error para evitarlo no es cometerlo: «no le preguntes qué se le vende» pasa.
-5. Solo juzgas con las fallas que recibes. No revisas estilo, lenguaje ni otras reglas: de eso se encarga otra revisión.
+4. Nombrar un error para evitarlo no es cometerlo: «no le preguntes qué se le vende» pasa. Citar lo que el vendedor dijo en la práctica («dijiste “quería ofrecerle”») tampoco: no es algo que el texto le proponga decir.
+5. Solo juzgas con las fallas del nodo y las reglas del paso que recibes. No revisas estilo ni lenguaje: de eso se encarga otra revisión.
 6. Lo que repruebes no se cambia todavía: lo revisa después el juez que califica al vendedor, con la conversación completa. Si una frase razonablemente podría cometer la falla, márcala; si claramente no la comete, déjala pasar.
 
-Por cada texto entregas: su "id"; "frase", lo que propone decir, copiado del texto; "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba que decide; "conducta": "pasa" o "reprueba"; "falla": el id de la falla que comete, solo si reprueba. Si reprueba, "corregido": el mismo texto, con la misma intención del coach y la misma longitud aproximada, pero que pase TODAS las pruebas; si no se puede sin cambiar la intención, déjalo vacío. Entrega todo con la herramienta "revisiones", una por texto.`;
+Por cada texto entregas: su "id"; "frase", lo que propone decir, copiado del texto; "respuesta", en menos de 30 palabras: la respuesta a la pregunta de la prueba que decide; "conducta": "pasa" o "reprueba"; "falla": el id de la falla que comete, solo si reprueba. Si reprueba, "corregido": el mismo texto, con la misma intención del coach y la misma longitud aproximada, pero que pase TODAS las pruebas y siga el molde del paso que recibes («molde_del_paso»: lo que una frase de ese paso tiene que tener, lo que no puede tener y cómo termina); si no se puede sin cambiar la intención, déjalo vacío. Entrega todo con la herramienta "revisiones", una por texto.`;
 
 export const HERRAMIENTA_VARA = {
   name: "revisiones",
@@ -105,15 +142,19 @@ export function presupuestoVara(textos: number): number {
   return Math.min(6000, 800 + 450 * Math.max(1, Math.floor(textos)));
 }
 
-export function armarEntradaVara(args: { paso: number | null; fallas: FallaConPrueba[]; textos: { id: string; tipo: string; texto: string }[]; conversacion?: { role?: string; content?: unknown }[] }): string {
+export function armarEntradaVara(args: { paso: number | null; fallas: FallaConPrueba[]; reglas?: FallaConPrueba[]; molde?: string; textos: { id: string; tipo: string; texto: string }[]; conversacion?: { role?: string; content?: unknown }[] }): string {
   return JSON.stringify({
     paso_del_nodo: args.paso,
+    // Mensaje 177: cómo suena una frase bien dicha en este paso (para corregir).
+    ...(args.molde ? { molde_del_paso: args.molde } : {}),
     // Para saber en qué momento de la visita se diría la frase, y con qué cliente.
     conversacion: (Array.isArray(args.conversacion) ? args.conversacion : []).slice(-12).map((t) => ({
       quien: t?.role === "user" ? "vendedor" : "cliente",
       dijo: String(t?.content ?? "").slice(0, 400),
     })),
     fallas_del_nodo: args.fallas.map((f) => ({ id: f.id, severidad: f.severidad, regla: f.regla.slice(0, LARGO_REGLA_JUEZ), en_este_nodo: f.en_este_nodo.slice(0, 600) })),
+    // Mensaje 177: los errores del paso y de toda la conversación, con su prueba.
+    ...(args.reglas && args.reglas.length > 0 ? { reglas_del_paso: args.reglas.map((f) => ({ id: f.id, regla: f.regla.slice(0, LARGO_REGLA_JUEZ) })) } : {}),
     textos: args.textos.map((t) => ({ id: t.id, tipo: t.tipo, texto: t.texto })),
   });
 }
@@ -242,8 +283,8 @@ async function confirmar(
   const out = new Map<string, { conducta: "reprueba" | "pasa" | "sin_juez"; razon: string }>();
   await Promise.all(sospechas.map(async (s) => {
     const falla = fallas.find((f) => f.id === s.falla);
-    // Una sospecha con una falla que el nodo no tiene no se sostiene: no hay prueba contra la cual medirla.
-    if (!falla) { out.set(s.id, { conducta: "pasa", razon: `la falla «${s.falla}» no es de este nodo` }); return; }
+    // Una sospecha con una falla que no está entre las que se midieron no se sostiene: no hay prueba contra la cual medirla.
+    if (!falla) { out.set(s.id, { conducta: "pasa", razon: `la falla «${s.falla}» no es de este nodo ni de su paso` }); return; }
     const frase = s.frase.trim() || s.original;
     const conv = conversacionConLaFrase(conversacion, s.original, frase);
     const entrada = armarEntradaJuez(
@@ -274,11 +315,43 @@ async function confirmar(
 }
 
 /** Los dos filtros sobre un grupo de textos: devuelve las sospechas y lo que decidió el juez de cada una. Null si la vara no corrió. */
+/** Cuántos textos se revisan a la vez (cada uno en su propia llamada). */
+export const VARA_EN_PARALELO = 6;
+
+/**
+ * Mensaje 177: el primer filtro, FRASE POR FRASE. Cada texto va en su propia
+ * llamada, con todas las pruebas. El primero va solo (deja lista la caché de
+ * las reglas) y los demás de VARA_EN_PARALELO en VARA_EN_PARALELO. Si uno no
+ * se pudo revisar, nada se da por bueno: null.
+ */
+async function revisarUnoPorUno(
+  textos: { id: string; tipo: string; texto: string }[],
+  a: { fallas: FallaConPrueba[]; reglas: FallaConPrueba[]; molde?: string; paso: number | null; conversacion?: Turno[]; llamar: LlamarVara; intentos: number },
+): Promise<RevisionVara[] | null> {
+  const uno = (t: { id: string; tipo: string; texto: string }) =>
+    conReintento(a.llamar, armarEntradaVara({ paso: a.paso, fallas: a.fallas, reglas: a.reglas, molde: a.molde, textos: [t], conversacion: a.conversacion }), [t], a.intentos);
+  const out: RevisionVara[] = [];
+  const [primero, ...resto] = textos;
+  if (!primero) return out;
+  const r0 = await uno(primero);
+  if (!r0) return null;
+  out.push(...r0.filter((r) => r.id === primero.id));
+  for (let i = 0; i < resto.length; i += VARA_EN_PARALELO) {
+    const tanda = await Promise.all(resto.slice(i, i + VARA_EN_PARALELO).map(uno));
+    for (let k = 0; k < tanda.length; k++) {
+      const r = tanda[k];
+      if (!r) return null;
+      out.push(...r.filter((x) => x.id === resto[i + k].id));
+    }
+  }
+  return out;
+}
+
 async function dosFiltros(
   textos: { id: string; tipo: string; texto: string }[],
-  a: { fallas: FallaConPrueba[]; paso: number | null; conversacion?: Turno[]; llamar: LlamarVara; juez: LlamarJuez; intentos: number },
+  a: { fallas: FallaConPrueba[]; reglas: FallaConPrueba[]; molde?: string; paso: number | null; conversacion?: Turno[]; llamar: LlamarVara; juez: LlamarJuez; intentos: number },
 ): Promise<{ sospechas: Sospecha[]; juicios: Map<string, { conducta: "reprueba" | "pasa" | "sin_juez"; razon: string }> } | null> {
-  const revisiones = await conReintento(a.llamar, armarEntradaVara({ paso: a.paso, fallas: a.fallas, textos, conversacion: a.conversacion }), textos, a.intentos);
+  const revisiones = await revisarUnoPorUno(textos, a);
   if (!revisiones) return null;
   const sospechas: Sospecha[] = [];
   for (const r of revisiones) {
@@ -286,7 +359,7 @@ async function dosFiltros(
     if (!t || r.conducta !== "reprueba") continue;
     sospechas.push({ id: t.id, tipo: t.tipo, original: t.texto, frase: r.frase, falla: r.falla ?? "", sospecha: r.respuesta, ...(r.corregido ? { corregido: r.corregido } : {}) });
   }
-  const juicios = sospechas.length > 0 ? await confirmar(sospechas, a.fallas, a.conversacion, a.juez, a.intentos) : new Map();
+  const juicios = sospechas.length > 0 ? await confirmar(sospechas, [...a.fallas, ...a.reglas], a.conversacion, a.juez, a.intentos) : new Map();
   return { sospechas, juicios };
 }
 
@@ -304,13 +377,18 @@ export async function pasarPorLaVara(args: {
   llamar: LlamarVara;
   juez: LlamarJuez;
   intentos?: number;
+  /** Mensaje 177: las reglas de la base (id, paso, tipo, resumen), para medir también con los errores del paso. */
+  reglas?: ReglaDeLaBase[];
+  /** Mensaje 177: el molde del paso (guía del vendedor), para corregir. */
+  molde?: string;
 }): Promise<ResultadoVara> {
   const out: ResultadoVara = { revisados: 0, sospechosos: 0, confirmados: 0, absueltos: 0, corregidos: 0, descartados: 0, detalle: [] };
   const fallas = fallasConPrueba(args.guion);
+  const reglas = reglasParaLaVara(args.reglas, args.paso, args.guion);
   const textos = textosParaLaVara(args.ev);
-  // Sin fallas con prueba no hay vara que aplicar; sin textos no hay qué medir.
-  if (fallas.length === 0 || textos.length === 0) return out;
-  const a = { fallas, paso: args.paso, conversacion: args.conversacion, llamar: args.llamar, juez: args.juez, intentos: args.intentos ?? 2 };
+  // Sin pruebas no hay vara que aplicar; sin textos no hay qué medir.
+  if ((fallas.length === 0 && reglas.length === 0) || textos.length === 0) return out;
+  const a = { fallas, reglas, molde: args.molde, paso: args.paso, conversacion: args.conversacion, llamar: args.llamar, juez: args.juez, intentos: args.intentos ?? 2 };
   out.revisados = textos.length;
 
   const primera = await dosFiltros(textos, a);
@@ -355,4 +433,66 @@ export async function pasarPorLaVara(args: {
     out.descartados = r.descartados;
   }
   return out;
+}
+
+/** Cada letra sin acento y en minúscula, sin cambiar el largo (para ubicar una frase en el texto original). */
+function plano(s: string): string {
+  return [...s].map((c) => (c.normalize("NFD")[0] ?? c).toLowerCase()).join("");
+}
+
+/**
+ * Quita del mensaje la propuesta que no pasó: la cita «…» que la contiene, con
+ * su etiqueta («Ejemplo:», «Algo como:») si la trae. Si no la encuentra, el
+ * mensaje queda igual (y se registra).
+ */
+export function quitarPropuesta(mensaje: string, frase: string): string {
+  const f = plano(frase.trim()).replace(/[«»"“”]/g, "").trim();
+  if (f.length < 8) return mensaje;
+  const m = plano(mensaje);
+  let i = m.indexOf(f);
+  if (i < 0) i = m.indexOf(f.slice(0, Math.min(40, f.length)));
+  if (i < 0) return mensaje;
+  const abre = mensaje.lastIndexOf("«", i);
+  const cierra = mensaje.indexOf("»", i);
+  let ini = abre >= 0 && abre >= mensaje.lastIndexOf("»", i) ? abre : i;
+  let fin = cierra >= 0 ? cierra + 1 : Math.min(mensaje.length, i + f.length);
+  // La etiqueta de antes («Ejemplo:», «Por ejemplo:», «Algo como:», «Di:»), si la hay.
+  const antes = mensaje.slice(Math.max(0, ini - 24), ini);
+  const etiqueta = /(por ejemplo|ejemplo|algo como|algo así como|di|dile|pregúntale)\s*:?\s*$/i.exec(antes);
+  if (etiqueta) ini = ini - etiqueta[0].length;
+  // Lo que cierra la oración justo después («.», « Y ya.»).
+  const despues = /^\s*(y ya\.?|\.)?/i.exec(mensaje.slice(fin));
+  if (despues) fin += despues[0].length;
+  return (mensaje.slice(0, ini).trimEnd() + " " + mensaje.slice(fin).trimStart()).replace(/\s{2,}/g, " ").trim();
+}
+
+/**
+ * Mensaje 177: la respuesta de una disputa pasa por la misma vara. Lo que
+ * propone decir se mide con las fallas del nodo y los errores del paso; si
+ * reprueba y la corrección pasa, sale corregida; si no, se quita la propuesta.
+ * Si la vara no corre, la respuesta sale como está (la disputa no se queda sin
+ * respuesta) y se registra.
+ */
+export async function revisarRespuestaDeDisputa(args: {
+  mensaje: string;
+  guion: any;
+  paso: number | null;
+  conversacion?: Turno[];
+  reglas?: ReglaDeLaBase[];
+  molde?: string;
+  llamar: LlamarVara;
+  juez: LlamarJuez;
+  intentos?: number;
+}): Promise<{ mensaje: string; quedo: "igual" | "corregido" | "propuesta_quitada" | "sin_vara"; detalle: ResultadoVara["detalle"] }> {
+  const ev: any = { observations: [{ criterio_id: "disputa", error: "", mejora: args.mensaje, ejemplo: "" }], mision: "" };
+  const r = await pasarPorLaVara({
+    ev, guion: args.guion, paso: args.paso, conversacion: args.conversacion, llamar: args.llamar, juez: args.juez,
+    intentos: args.intentos, reglas: args.reglas, molde: args.molde,
+  });
+  if (r.error) return { mensaje: args.mensaje, quedo: "sin_vara", detalle: [] };
+  const d = r.detalle.find((x) => x.id === "obs0.mejora");
+  if (!d || d.quedo === "igual") return { mensaje: args.mensaje, quedo: "igual", detalle: r.detalle };
+  const nuevo = String(ev.observations[0]?.mejora ?? "").trim();
+  if (d.quedo === "corregido" && nuevo) return { mensaje: nuevo, quedo: "corregido", detalle: r.detalle };
+  return { mensaje: quitarPropuesta(args.mensaje, d.frase), quedo: "propuesta_quitada", detalle: r.detalle };
 }
