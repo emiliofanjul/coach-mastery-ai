@@ -3184,6 +3184,31 @@ function ReplicaChat({
   );
 }
 
+// ── Mensaje 171: lo que buscamos, si lo lograste y tu avance ─────────────
+/** «Lo que buscamos» de esta práctica, si la calificación lo trae. */
+function metaDePractica(evaluation: any): { lo_que_buscamos: string; como_sabes: string } | null {
+  const m = evaluation?.meta_practica;
+  const a = typeof m?.lo_que_buscamos === "string" ? m.lo_que_buscamos.trim() : "";
+  const b = typeof m?.como_sabes === "string" ? m.como_sabes.trim() : "";
+  return a ? { lo_que_buscamos: a, como_sabes: b } : null;
+}
+
+/** Sí con 2 o 3 estrellas (dominado), casi con 1, todavía no con 0. */
+function veredictoDeLogro(stars: number): { titulo: string; color: string } {
+  if (stars >= 2) return { titulo: "Sí, lo lograste.", color: "var(--c-primary)" };
+  if (stars === 1) return { titulo: "Casi.", color: "var(--c-text)" };
+  return { titulo: "Todavía no.", color: "var(--c-text)" };
+}
+
+/** Las líneas de «Tu avance» que armó el servidor. */
+function lineasDeAvance(evaluation: any): { tipo: "corregido" | "se_repite"; texto: string; detalle: string }[] {
+  const ls = evaluation?.seguimiento?.lineas;
+  if (!Array.isArray(ls)) return [];
+  return ls
+    .filter((l: any) => (l?.tipo === "corregido" || l?.tipo === "se_repite") && typeof l?.texto === "string" && l.texto.trim())
+    .map((l: any) => ({ tipo: l.tipo, texto: l.texto.trim(), detalle: typeof l.detalle === "string" ? l.detalle.trim() : "" }));
+}
+
 function FeedbackPhase({
   nombresCriterio,
   closerMsgs,
@@ -3304,6 +3329,12 @@ function FeedbackPhase({
     // Fase 4 (mensaje 152): la calificación centrada en su anillo, las estrellas con brillo y lo que lograste;
     // luego lo que te bajó la nota, las observaciones, un consejo corto y tu misión. «Continuar» siempre a la mano.
     const consejos: any[] = Array.isArray((feedback as any)?.siguiente_nivel) ? (feedback as any).siguiente_nivel : [];
+    // Mensaje 171: lo que buscamos en esta práctica (el doc aprobado por Emilio),
+    // si lo lograste, y tu avance contra tus intentos anteriores. Lo arma el
+    // servidor junto con la calificación; aquí solo se pinta.
+    const meta = metaDePractica(evaluation);
+    const avance = lineasDeAvance(evaluation);
+    const logro = veredictoDeLogro(stars);
     const etiqueta = { fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" } as const;
     const tarjeta = { width: "100%", boxSizing: "border-box", padding: 18, borderRadius: "var(--r-tarjeta)", background: "var(--c-surface)", border: "1px solid var(--c-border)" } as const;
     return (
@@ -3316,6 +3347,21 @@ function FeedbackPhase({
         <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "max(12px, env(safe-area-inset-top)) var(--m-pantalla) 120px" }}>
           <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600, color: "var(--c-text)", padding: "10px 0" }}>Tu práctica</div>
+
+            {/* Lo que buscamos en esta práctica, y si lo lograste (mensaje 171): es lo primero que lee. */}
+            {meta && (
+              <div style={{ ...tarjeta, display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ ...etiqueta, color: "var(--c-primary)" }}>Lo que buscamos en esta práctica</div>
+                <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 16, lineHeight: 1.5, color: "var(--c-text)" }}>{meta.lo_que_buscamos}</p>
+                <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.5, color: "var(--c-text-soft)" }}>
+                  <strong style={{ color: "var(--c-text-2)" }}>Cómo sabes que lo lograste: </strong>{meta.como_sabes}
+                </p>
+                <div style={{ borderTop: "1px solid var(--c-border)", paddingTop: 10 }}>
+                  <div style={{ ...etiqueta, color: "var(--c-text-2)" }}>¿Lo lograste?</div>
+                  <p style={{ margin: "6px 0 0", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 20, color: logro.color }}>{logro.titulo}</p>
+                </div>
+              </div>
+            )}
 
             <AnilloCalificacion calificacion={score} />
             <div style={{ display: "flex", gap: 6, marginTop: 4 }} aria-label={`${stars} de 3 estrellas`}>
@@ -3353,6 +3399,23 @@ function FeedbackPhase({
                 ) : (
                   observations.map((o, i) => <ObservationCard key={i} obs={o} />)
                 )}
+              </div>
+            )}
+
+            {/* Tu avance (mensaje 171): lo que ya corregiste primero; lo que se repite después. */}
+            {avance.length > 0 && (
+              <div style={{ ...tarjeta, display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ ...etiqueta, color: "var(--c-text-2)" }}>Tu avance</div>
+                {avance.map((l, i) => (
+                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 10, borderLeft: `3px solid ${l.tipo === "corregido" ? "var(--c-success)" : "var(--c-gold)"}` }}>
+                    <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 600, lineHeight: 1.45, color: "var(--c-text)" }}>{l.texto}</p>
+                    {l.detalle && (
+                      <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45, color: "var(--c-text-soft)" }}>
+                        {l.tipo === "corregido" ? "Lo que te pasaba: " : ""}{l.detalle}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
 

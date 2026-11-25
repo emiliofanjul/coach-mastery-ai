@@ -45,6 +45,7 @@ import { etiquetarPasos } from "../_shared/pasos.ts";
 import { quitarEspejosDeCriteriosCumplidos } from "../_shared/espejos.ts";
 import { armarEventoDePractica, guardarEventoDePractica, type PracticaGuardada } from "../_shared/evento_practica.ts";
 import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, recordatorioFallaCritica, type RevisionJuez } from "../_shared/replica_revisada.ts";
+import { calcularSeguimiento, lineasDeSeguimiento, type Intento, type GuionDeNodo } from "../_shared/seguimiento.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
 const corsHeaders = {
@@ -893,6 +894,13 @@ async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessio
       const texto = await r.text();
       if (r.ok) {
         resultado = JSON.parse(texto);
+        // Mensaje 171: lo que buscamos en esta práctica y el seguimiento entre
+        // intentos. No cambia la nota. Si falla, la calificación sale igual.
+        try {
+          await agregarMetaYSeguimiento(admin, resultado, practica as any, String(practiceSessionId));
+        } catch (e) {
+          console.warn("[closer-voice] sin meta ni seguimiento (fail-open):", e instanceof Error ? e.message : String(e));
+        }
         // Mensaje 129: la práctica entra al historial AQUÍ, antes de marcar la
         // calificación como lista, sin depender de que el teléfono lo logre.
         // Si esto falla, la calificación igual se entrega y el teléfono
@@ -926,6 +934,59 @@ async function evaluacionGuardada(body: ReqBody, quien: Llamante, practiceSessio
     if (errFin) console.error("[closer-voice] no se pudo guardar la calificación", { practice_session_id: practiceSessionId, error: errFin.message });
   })());
   return respuestaJson(202, { estado: "procesando" });
+}
+
+// Mensaje 171 (24-nov-2026): las calificaciones anteriores que se leen para el
+// seguimiento. Basta para los últimos 3 de este nodo y la última vez que la
+// misma regla falló en otro.
+const PREVIAS_PARA_SEGUIMIENTO = 60;
+
+/**
+ * Agrega a la calificación «lo que buscamos» de su nodo (metas_practica, el doc
+ * aprobado por Emilio) y el seguimiento contra los intentos anteriores del
+ * vendedor (seguimiento.ts). Solo lee; no toca la nota.
+ */
+async function agregarMetaYSeguimiento(admin: any, resultado: any, practica: any, practiceSessionId: string): Promise<void> {
+  const nodeId = typeof practica?.node_id === "string" ? practica.node_id : "";
+  const sellerId = typeof practica?.seller_id === "string" ? practica.seller_id : "";
+  if (!nodeId || !sellerId || !resultado || typeof resultado !== "object") return;
+
+  const { data: meta, error: errMeta } = await admin
+    .from("metas_practica").select("lo_que_buscamos, como_sabes").eq("node_id", nodeId).maybeSingle();
+  if (errMeta) console.warn("[closer-voice] no se pudo leer lo que buscamos", { node_id: nodeId, error: errMeta.message });
+  if (meta) resultado.meta_practica = { lo_que_buscamos: meta.lo_que_buscamos, como_sabes: meta.como_sabes };
+
+  const { data: previas, error: errPrevias } = await admin
+    .from("evaluaciones_practica")
+    .select("practice_session_id, fallas:resultado->fallas, desglose:resultado->desglose, observations:resultado->observations")
+    .eq("seller_id", sellerId).eq("estado", "lista").neq("practice_session_id", practiceSessionId)
+    .order("actualizada_en", { ascending: false }).limit(PREVIAS_PARA_SEGUIMIENTO);
+  if (errPrevias) throw new Error(`calificaciones anteriores: ${errPrevias.message}`);
+  const filas: any[] = Array.isArray(previas) ? previas : [];
+  const ids = filas.map((p) => p.practice_session_id).filter((x) => typeof x === "string");
+  const nodoDe = new Map<string, string>();
+  if (ids.length > 0) {
+    const { data: sesiones, error: errSesiones } = await admin.from("practice_sessions").select("id, node_id").in("id", ids);
+    if (errSesiones) throw new Error(`prácticas anteriores: ${errSesiones.message}`);
+    for (const s of (sesiones ?? []) as any[]) if (typeof s?.node_id === "string") nodoDe.set(s.id, s.node_id);
+  }
+  const anteriores: Intento[] = filas
+    .map((p) => ({ node_id: nodoDe.get(p.practice_session_id) ?? "", fallas: p.fallas, desglose: p.desglose, observations: p.observations }))
+    .filter((a) => a.node_id);
+  const nodos = [...new Set([nodeId, ...anteriores.map((a) => a.node_id)])];
+  const { data: guionesFilas, error: errGuiones } = await admin.from("nodes").select("id, name, practice_script").in("id", nodos);
+  if (errGuiones) throw new Error(`guiones: ${errGuiones.message}`);
+  const guiones: Record<string, GuionDeNodo> = {};
+  for (const g of (guionesFilas ?? []) as any[]) {
+    guiones[g.id] = { nombre: g.name ?? null, failure_criteria: g.practice_script?.failure_criteria ?? null, success_criteria: g.practice_script?.success_criteria ?? null };
+  }
+  const seguimiento = calcularSeguimiento(
+    { node_id: nodeId, fallas: resultado.fallas, desglose: resultado.desglose, observations: resultado.observations },
+    anteriores,
+    guiones,
+  );
+  resultado.seguimiento = { ...seguimiento, lineas: lineasDeSeguimiento(seguimiento) };
+  console.log("[closer-voice] seguimiento", { practice_session_id: practiceSessionId, node_id: nodeId, intentos_previos: seguimiento.intentos_previos, corregido: seguimiento.corregido.map((c) => c.clave), se_repite: seguimiento.se_repite.map((r) => r.clave) });
 }
 
 async function atender(body: ReqBody): Promise<Response> {

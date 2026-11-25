@@ -1044,6 +1044,52 @@ export type Database = {
           },
         ]
       }
+      metas_practica: {
+        Row: {
+          actualizada_en: string
+          aprobada_el: string
+          como_sabes: string
+          lo_que_buscamos: string
+          node_id: string
+        }
+        Insert: {
+          actualizada_en?: string
+          aprobada_el?: string
+          como_sabes: string
+          lo_que_buscamos: string
+          node_id: string
+        }
+        Update: {
+          actualizada_en?: string
+          aprobada_el?: string
+          como_sabes?: string
+          lo_que_buscamos?: string
+          node_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_practica_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: true
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_practica_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: true
+            referencedRelation: "v_nodes_resueltos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_practica_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: true
+            referencedRelation: "v_severidad_overrides"
+            referencedColumns: ["nodo"]
+          },
+        ]
+      }
       node_cards: {
         Row: {
           audience: string | null

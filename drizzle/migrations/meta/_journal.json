@@ -92,6 +92,13 @@
       "when": 1795554895344,
       "tag": "0012_seguridad_170_correr",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1795568924030,
+      "tag": "0013_metas_171_correr",
+      "breakpoints": true
     }
   ]
 }
