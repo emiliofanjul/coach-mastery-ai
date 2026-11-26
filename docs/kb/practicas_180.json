@@ -1,0 +1,561 @@
+{
+ "2.1": {
+  "psid": "9bd921cb-a1d9-42b9-9942-cd7fd1d92911",
+  "session_id": "6275d84e-885a-449d-9d4d-d1642d28554b",
+  "row": {
+   "practice_session_id": "9bd921cb-a1d9-42b9-9942-cd7fd1d92911",
+   "seller_id": "3aa90f64-a156-40e4-abc9-46df3812fe87",
+   "estado": "lista",
+   "resultado": {
+    "linea": {
+     "paso": 2
+    },
+    "model": "claude-sonnet-4-5",
+    "score": 5,
+    "stars": 0,
+    "fallas": [
+     {
+      "id": "pitch_prematuro",
+      "cita": "quería ofrecerle nuestro producto para ver cómo lo podemos ayudar",
+      "paso": "La Introducción",
+      "error": "Ofreciste producto en la historia breve: ahí dices quién eres, no qué vendes. El cliente todavía no sabe por qué debería escucharte",
+      "efecto": "Falla crítica: resta 30 puntos y deja tu nota en máximo 30.",
+      "mejora": "Di quién eres y por qué pasaste, sin ofrecer nada. Las preguntas sobre su operación vienen después, cuando ya te contestó",
+      "porque": {
+       "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+       "va_en": "el paso 3 si es preguntar por su negocio, o el paso 4 si es ofrecer tu producto",
+       "mecanismo": "La atención en tres tercios",
+       "va_despues": "Ahí ya sabe quién eres y por qué pasaste, y tu pregunta suena a que quieres entender su negocio. Antes, suena a que vienes a venderle y se prende la alarma."
+      },
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cuánto tiempo lleva con él?",
+      "severidad": "critical"
+     },
+     {
+      "id": "curriculum",
+      "cita": "yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores",
+      "paso": "La Historia Breve",
+      "error": "Presumir la empresa con 'los mejores' suena a discurso y el cliente se desconecta",
+      "efecto": "Resta 30 puntos.",
+      "mejora": "Di tu nombre y tu empresa sin presumir: el cliente te va a juzgar por cómo lo tratas, no por lo que digas de ti",
+      "porque": {
+       "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+       "mecanismo": "La atención en tres tercios"
+      },
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cuánto tiempo lleva con el suyo?",
+      "severidad": "major"
+     },
+     {
+      "id": "sin_gancho",
+      "cita": "quería ofrecerle nuestro producto para ver cómo lo podemos ayudar",
+      "paso": "La Historia Breve",
+      "error": "Terminaste sin pregunta: dejaste al cliente sin nada que contestar y la conversación se quedó en el aire",
+      "efecto": "Resta 15 puntos.",
+      "mejora": "Termina la historia breve con una pregunta que le devuelva la palabra",
+      "porque": {
+       "texto": "El que pregunta conduce. Si terminas en afirmación o te quedas callado esperando permiso, le devuelves el volante, y el cliente lo usa para cerrar la plática con amabilidad.",
+       "mecanismo": "El volante"
+      },
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cómo le ha ido con el negocio?",
+      "severidad": "minor"
+     }
+    ],
+    "mision": "Practica tu historia breve hasta que te salga en una sola respiración: tu nombre, tu empresa, por qué pasaste y una pregunta sobre el cliente. Sin presumir la empresa, sin ofrecer producto, sin pedir permiso. Grábate diciéndola en voz alta hasta que suene natural.",
+    "degraded": false,
+    "desglose": {
+     "base": 20,
+     "restas": [
+      {
+       "flag": "curriculum",
+       "puntos": 30,
+       "severidad": "major"
+      },
+      {
+       "flag": "pitch_prematuro",
+       "puntos": 30,
+       "severidad": "critical"
+      },
+      {
+       "flag": "sin_gancho",
+       "puntos": 15,
+       "severidad": "minor"
+      }
+     ],
+     "topado": false,
+     "criticos": [
+      "pitch_prematuro"
+     ],
+     "criterios": [
+      {
+       "peso": 0.4,
+       "falta": "Dice quién es y de dónde viene, pero el porqué de la visita es 'ofrecerle nuestro producto': eso es motivo de venta, no ",
+       "nivel": "parcial",
+       "credito": 0.5,
+       "criterio_id": "story.historia_breve"
+      },
+      {
+       "peso": 0.35,
+       "falta": "Presume la empresa con 'los mejores' y ofrece producto: eso no contesta quién es, qué hace ni por qué está ahí",
+       "nivel": "no_cumple",
+       "credito": 0,
+       "criterio_id": "story.brevedad"
+      },
+      {
+       "peso": 0.25,
+       "falta": "Termina ofreciendo producto en lugar de devolver la palabra con una pregunta sobre el cliente",
+       "nivel": "no_cumple",
+       "credito": 0,
+       "criterio_id": "story.relevancia_cliente"
+      }
+     ],
+     "sin_veredicto": []
+    },
+    "auditoria": {
+     "juez": {
+      "intentos": 1,
+      "juzgadas": 6,
+      "acusaciones": 6,
+      "latencia_ms": 11200,
+      "fallas_quitadas": 0,
+      "criterios_corregidos": 0,
+      "descartados_por_cita": 0
+     },
+     "vara": {
+      "absueltos": 0,
+      "revisados": 13,
+      "corregidos": 1,
+      "confirmados": 1,
+      "descartados": 0,
+      "latencia_ms": 16511,
+      "sospechosos": 1
+     },
+     "alcance": {
+      "aviso": false,
+      "latencia_ms": 1193
+     },
+     "intentos": 1,
+     "revisados": 13,
+     "corregidos": 0,
+     "descartados": 0,
+     "latencia_ms": 11203,
+     "fallas_por_no": 0,
+     "fallas_por_hecho": 0,
+     "groserias_quitadas": 0,
+     "recuerdos_quitados": 0,
+     "ejemplos_con_permiso_quitados": 0
+    },
+    "cut_reason": "critical_failure",
+    "end_session": true,
+    "seguimiento": {
+     "lineas": [],
+     "corregido": [],
+     "se_repite": [],
+     "intentos_previos": 0
+    },
+    "observations": [
+     {
+      "paso": "La Historia Breve",
+      "error": "Presumiste la empresa con 'los mejores' y ofreciste producto: eso no es parte de quién eres ni por qué estás ahí",
+      "mejora": "Di solo tu nombre, tu empresa y por qué pasaste, sin presumir ni ofrecer nada todavía",
+      "porque": {
+       "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+       "mecanismo": "La atención en tres tercios"
+      },
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cuánto tiempo lleva con el negocio?",
+      "habilidad": "Brevedad",
+      "criterio_id": "story.brevedad"
+     },
+     {
+      "paso": "La Historia Breve",
+      "error": "Terminaste ofreciendo producto en lugar de devolverle la palabra con una pregunta sobre él",
+      "mejora": "Después de decir quién eres y por qué pasaste, hazle una pregunta sobre él o sobre cómo le va",
+      "porque": {
+       "texto": "El que pregunta conduce. Si terminas en afirmación o te quedas callado esperando permiso, le devuelves el volante, y el cliente lo usa para cerrar la plática con amabilidad.",
+       "mecanismo": "El volante"
+      },
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cómo le ha ido últimamente con el negocio?",
+      "habilidad": "Relevancia al cliente",
+      "criterio_id": "story.relevancia_cliente"
+     },
+     {
+      "paso": "La Historia Breve",
+      "error": "Dijiste 'quería ofrecerle nuestro producto': eso es motivo de venta, no el porqué de tu visita en términos humanos",
+      "mejora": "Di por qué pasaste sin mencionar el producto: qué estás haciendo en la zona o con qué tipo de negocios andas",
+      "porque": {
+       "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+       "mecanismo": "La atención en tres tercios"
+      },
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. Cuénteme, ¿cuánto tiempo lleva con él?",
+      "habilidad": "Historia breve",
+      "criterio_id": "story.historia_breve"
+     }
+    ],
+    "meta_practica": {
+     "como_sabes": "Se relaja y sigue la conversación por su cuenta.",
+     "lo_que_buscamos": "Que digas quién eres en dos o tres frases, conectadas con algo que le importe a él, y le devuelvas la palabra. Si hablas de ti de más, el cliente se aburre y la guardia vuelve a subir."
+    },
+    "flags_detected": [
+     "curriculum",
+     "pitch_prematuro",
+     "sin_gancho"
+    ],
+    "prompt_version": "v2.9.9",
+    "analisis_turnos": [
+     {
+      "se_va": "no",
+      "turno": 1,
+      "por_que": "Es introducción, no historia breve: no dice quién es ni por qué está ahí",
+      "pregunta": "al_final",
+      "veredicto": "no cumple",
+      "ultima_frase": "¿Usted es el dueño?",
+      "cliente_antes": "no_hay",
+      "texto_literal": "Hola, buenas tardes. ¿Cómo está? Oiga, eh, qué bonito tiene su local. ¿Cuánto tiempo lleva con él? ¿Usted es el dueño?"
+     },
+     {
+      "se_va": "no",
+      "turno": 2,
+      "por_que": "Dice quién es pero presume la empresa ('los mejores') y ofrece producto en lugar de devolver la palabra con una pregunta",
+      "pregunta": "ninguna",
+      "veredicto": "no cumple",
+      "ultima_frase": "Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar.",
+      "cliente_antes": "no_rechaza",
+      "texto_literal": "Muy bien. Me da mucho gusto. Eeeh, yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores. Y quería ofrecerle nuestro producto para ver cómo lo podemos ayudar."
+     }
+    ],
+    "evidencia_flags": [
+     {
+      "id": "curriculum",
+      "cita": "yo soy Emilio, de Aceites y Lubricantes Dalfán, los mejores",
+      "error": "Presumir la empresa con 'los mejores' suena a discurso y el cliente se desconecta",
+      "mejora": "Di tu nombre y tu empresa sin presumir: el cliente te va a juzgar por cómo lo tratas, no por lo que digas de ti",
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cuánto tiempo lleva con el suyo?"
+     },
+     {
+      "id": "pitch_prematuro",
+      "cita": "quería ofrecerle nuestro producto para ver cómo lo podemos ayudar",
+      "error": "Ofreciste producto en la historia breve: ahí dices quién eres, no qué vendes. El cliente todavía no sabe por qué debería escucharte",
+      "mejora": "Di quién eres y por qué pasaste, sin ofrecer nada. Las preguntas sobre su operación vienen después, cuando ya te contestó",
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cuánto tiempo lleva con él?"
+     },
+     {
+      "id": "sin_gancho",
+      "cita": "quería ofrecerle nuestro producto para ver cómo lo podemos ayudar",
+      "error": "Terminaste sin pregunta: dejaste al cliente sin nada que contestar y la conversación se quedó en el aire",
+      "mejora": "Termina la historia breve con una pregunta que le devuelva la palabra",
+      "ejemplo": "Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona. ¿Cómo le ha ido con el negocio?"
+     }
+    ],
+    "siguiente_nivel": [],
+    "criterios_cumplidos": [],
+    "veredictos_criterios": [
+     {
+      "falta": "Dice quién es y de dónde viene, pero el porqué de la visita es 'ofrecerle nuestro producto': eso es motivo de venta, no el porqué en términos humanos",
+      "nivel": "parcial",
+      "criterio_id": "story.historia_breve"
+     },
+     {
+      "falta": "Presume la empresa con 'los mejores' y ofrece producto: eso no contesta quién es, qué hace ni por qué está ahí",
+      "nivel": "no_cumple",
+      "criterio_id": "story.brevedad"
+     },
+     {
+      "falta": "Termina ofreciendo producto en lugar de devolver la palabra con una pregunta sobre el cliente",
+      "nivel": "no_cumple",
+      "criterio_id": "story.relevancia_cliente"
+     }
+    ],
+    "regresiones_detectadas": []
+   },
+   "error": null,
+   "intentos": 1,
+   "duracion_ms": 56070,
+   "empezada_en": "2026-11-26T02:54:19.21+00:00",
+   "actualizada_en": "2026-11-26T02:55:15.407+00:00",
+   "evento_id": "21db7839-33e5-4837-bcff-84abf2868774",
+   "error_evento": null
+  }
+ },
+ "2.7a": {
+  "psid": "50f73816-2cb8-4e4c-9198-59e31caf534a",
+  "session_id": "6bd1e9ce-dd94-4d46-b7bc-ae0f98191e96",
+  "row": {
+   "practice_session_id": "50f73816-2cb8-4e4c-9198-59e31caf534a",
+   "seller_id": "3aa90f64-a156-40e4-abc9-46df3812fe87",
+   "estado": "lista",
+   "resultado": {
+    "linea": {
+     "paso": 2
+    },
+    "model": "claude-sonnet-4-5",
+    "score": 100,
+    "stars": 3,
+    "fallas": [],
+    "mision": "En tu próxima práctica, cuando el cliente te bloquee al inicio, acepta lo que dijo con un «entiendo» o «claro». No lo discutas. Sigue directo con tu plática sin pedir permiso.",
+    "alcance": {
+     "que": "preguntar por su operación comercial",
+     "cita": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+     "paso": 3,
+     "texto": "Preguntar por su operación comercial es del paso 3, el descubrimiento: lo vemos más adelante en el mapa. Esto no te bajó la nota.",
+     "turno": 3
+    },
+    "degraded": false,
+    "desglose": {
+     "base": 100,
+     "restas": [],
+     "topado": false,
+     "criticos": [],
+     "criterios": [
+      {
+       "peso": 1,
+       "nivel": "cumple",
+       "credito": 1,
+       "criterio_id": "blocks.air"
+      }
+     ],
+     "sin_veredicto": []
+    },
+    "auditoria": {
+     "juez": {
+      "intentos": 1,
+      "juzgadas": 2,
+      "acusaciones": 2,
+      "latencia_ms": 6270,
+      "fallas_quitadas": 1,
+      "criterios_corregidos": 1,
+      "descartados_por_cita": 0
+     },
+     "vara": {
+      "absueltos": 0,
+      "revisados": 1,
+      "corregidos": 0,
+      "confirmados": 0,
+      "descartados": 0,
+      "latencia_ms": 3505,
+      "sospechosos": 0
+     },
+     "alcance": {
+      "aviso": true,
+      "latencia_ms": 2110
+     },
+     "intentos": 1,
+     "revisados": 5,
+     "corregidos": 2,
+     "descartados": 0,
+     "latencia_ms": 8580,
+     "fallas_por_no": 0,
+     "fallas_por_hecho": 0,
+     "segunda_revision": {
+      "revisados": 1,
+      "corregidos": 1,
+      "descartados": 0
+     },
+     "groserias_quitadas": 0,
+     "recuerdos_quitados": 0,
+     "ejemplos_con_permiso_quitados": 0
+    },
+    "cut_reason": "scope_covered",
+    "end_session": true,
+    "seguimiento": {
+     "lineas": [],
+     "corregido": [],
+     "se_repite": [],
+     "intentos_previos": 0
+    },
+    "observations": [],
+    "meta_practica": {
+     "como_sabes": "Después del bloqueo, el cliente sigue participando con naturalidad.",
+     "lo_que_buscamos": "Que un bloqueo no te saque de la conversación: lo aceptas, no lo peleas y retomas tu tema sin pedir permiso."
+    },
+    "flags_detected": [],
+    "prompt_version": "v2.9.9",
+    "analisis_turnos": [
+     {
+      "se_va": "no",
+      "turno": 1,
+      "por_que": "No hubo bloqueo todavía, es el primer turno de apertura",
+      "pregunta": "al_final",
+      "veredicto": "no cumple",
+      "ultima_frase": "¿Cómo le ha ido últimamente?",
+      "cliente_antes": "no_hay",
+      "texto_literal": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+     },
+     {
+      "se_va": "no",
+      "turno": 2,
+      "por_que": "Acepta el bloqueo pero después intenta convencer al cliente de que sí le interesa, discutiendo el no",
+      "pregunta": "al_final",
+      "veredicto": "no cumple",
+      "ultima_frase": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+      "cliente_antes": "rechaza",
+      "texto_literal": "Lo entiendo perfectamente, y qué bueno que ya tenga a alguien que lo atienda. Muchos de los talleres con los que trabajo me decían lo mismo al principio. Fuera de eso, ¿qué es lo que más cuida usted cuando elige a quién comprarle?"
+     }
+    ],
+    "evidencia_flags": [],
+    "siguiente_nivel": [],
+    "criterios_cumplidos": [
+     "blocks.air"
+    ],
+    "veredictos_criterios": [
+     {
+      "nivel": "cumple",
+      "criterio_id": "blocks.air"
+     }
+    ],
+    "regresiones_detectadas": []
+   },
+   "error": null,
+   "intentos": 1,
+   "duracion_ms": 29800,
+   "empezada_en": "2026-11-26T02:58:29.084+00:00",
+   "actualizada_en": "2026-11-26T02:58:59.219+00:00",
+   "evento_id": "0b71cc4d-0f6e-4ae8-bd75-b43a10e5f9ef",
+   "error_evento": null
+  }
+ },
+ "2.7": {
+  "psid": "221c6914-a661-407c-8dc6-e162a474ffd4",
+  "session_id": "25ff6aa4-f959-40f6-bdc6-4bf76d5c9f64",
+  "row": {
+   "practice_session_id": "221c6914-a661-407c-8dc6-e162a474ffd4",
+   "seller_id": "3aa90f64-a156-40e4-abc9-46df3812fe87",
+   "estado": "lista",
+   "resultado": {
+    "linea": {
+     "paso": 2
+    },
+    "model": "claude-sonnet-4-5",
+    "score": 100,
+    "stars": 3,
+    "fallas": [],
+    "mision": "En tu próxima visita, cuando el cliente te bloquee al inicio, practica los tres movimientos de AIR: acepta con un «claro» o «entiendo», no discutas su no, y sigue con una pregunta sobre él o su negocio. Todo en el mismo turno, sin pedir permiso.",
+    "alcance": {
+     "que": "pedir el pedido",
+     "cita": "Oiga, le dejo diez cubetas de 15W40, ¿se las bajo de una vez?",
+     "paso": 5,
+     "texto": "Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa. Esto no te bajó la nota.",
+     "turno": 3
+    },
+    "degraded": false,
+    "desglose": {
+     "base": 100,
+     "restas": [],
+     "topado": false,
+     "criticos": [],
+     "criterios": [
+      {
+       "peso": 1,
+       "nivel": "cumple",
+       "credito": 1,
+       "criterio_id": "blocks.air"
+      }
+     ],
+     "sin_veredicto": []
+    },
+    "auditoria": {
+     "juez": {
+      "intentos": 1,
+      "juzgadas": 2,
+      "acusaciones": 2,
+      "latencia_ms": 5849,
+      "fallas_quitadas": 1,
+      "criterios_corregidos": 1,
+      "descartados_por_cita": 0
+     },
+     "vara": {
+      "absueltos": 0,
+      "revisados": 1,
+      "corregidos": 0,
+      "confirmados": 0,
+      "descartados": 0,
+      "latencia_ms": 3052,
+      "sospechosos": 0
+     },
+     "alcance": {
+      "aviso": true,
+      "latencia_ms": 2289
+     },
+     "intentos": 1,
+     "revisados": 5,
+     "corregidos": 0,
+     "descartados": 0,
+     "latencia_ms": 8559,
+     "fallas_por_no": 0,
+     "fallas_por_hecho": 0,
+     "segunda_revision": {
+      "revisados": 1,
+      "corregidos": 1,
+      "descartados": 0
+     },
+     "groserias_quitadas": 0,
+     "recuerdos_quitados": 0,
+     "ejemplos_con_permiso_quitados": 0
+    },
+    "cut_reason": "evidence_sufficient",
+    "end_session": true,
+    "seguimiento": {
+     "lineas": [],
+     "corregido": [],
+     "se_repite": [],
+     "intentos_previos": 1
+    },
+    "observations": [],
+    "meta_practica": {
+     "como_sabes": "Después del bloqueo, el cliente sigue participando con naturalidad.",
+     "lo_que_buscamos": "Que un bloqueo no te saque de la conversación: lo aceptas, no lo peleas y retomas tu tema sin pedir permiso."
+    },
+    "flags_detected": [],
+    "prompt_version": "v2.9.9",
+    "analisis_turnos": [
+     {
+      "se_va": "no",
+      "turno": 1,
+      "por_que": "No hay bloqueo todavía, este criterio no aplica en el primer turno",
+      "pregunta": "al_final",
+      "veredicto": "no cumple",
+      "ultima_frase": "¿Cómo le ha ido últimamente?",
+      "cliente_antes": "no_hay",
+      "texto_literal": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+     },
+     {
+      "se_va": "no",
+      "turno": 2,
+      "por_que": "Acepta el bloqueo pero no retoma su plática: salta directo a ofrecer producto sin haber descubierto nada",
+      "pregunta": "al_final",
+      "veredicto": "no cumple",
+      "ultima_frase": "¿se las bajo de una vez?",
+      "cliente_antes": "rechaza",
+      "texto_literal": "Claro, lo entiendo, se ve que hay chamba. Oiga, le dejo diez cubetas de 15W40, ¿se las bajo de una vez?"
+     },
+     {
+      "se_va": "no",
+      "turno": 3,
+      "por_que": "Repite la oferta sin aceptar el segundo no: insiste en lugar de salir bien después de dos no seguidos",
+      "pregunta": "al_final",
+      "veredicto": "no cumple",
+      "ultima_frase": "¿se las bajo de una vez?",
+      "cliente_antes": "rechaza",
+      "texto_literal": "Le dejo diez cubetas de 15W40, ¿se las bajo de una vez?"
+     }
+    ],
+    "evidencia_flags": [],
+    "siguiente_nivel": [],
+    "criterios_cumplidos": [
+     "blocks.air"
+    ],
+    "veredictos_criterios": [
+     {
+      "nivel": "cumple",
+      "criterio_id": "blocks.air"
+     }
+    ],
+    "regresiones_detectadas": []
+   },
+   "error": null,
+   "intentos": 1,
+   "duracion_ms": 35820,
+   "empezada_en": "2026-11-26T03:00:51.522+00:00",
+   "actualizada_en": "2026-11-26T03:01:27.482+00:00",
+   "evento_id": "81b05024-4eb8-40ab-a1e3-c4562774c870",
+   "error_evento": null
+  }
+ }
+}
