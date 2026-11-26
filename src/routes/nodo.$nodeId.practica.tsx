@@ -13,6 +13,7 @@ import { CloserCharacter } from "@/components/closer/CloserCharacter";
 import VictoryScreen from "@/components/VictoryScreen";
 import { setNodeCompletionSignal } from "@/lib/node-completion";
 import { NODO_CERTIFICACION } from "@/lib/certificacion";
+import { avisoDeAlcance } from "@/lib/alcance-practica";
 import { avanzarNodo, textoDeRechazo, type ResultadoAvance } from "@/lib/avanzar-nodo";
 import { toast } from "sonner";
 import RetryScreen from "@/components/RetryScreen";
@@ -2084,6 +2085,7 @@ function PracticaPage() {
             evaluation={rawEvaluationRef.current}
             companyId={sellerData?.company_id ?? null}
             sellerId={sellerData?.id ?? null}
+            nodeName={infoMapa?.nombre_corto || nodeData?.name || ""}
             onLeaveWithoutEval={() => navigate({ to: "/mapa" })}
             onContinue={async (stars) => {
               setSaving(true);
@@ -3305,6 +3307,7 @@ function FeedbackPhase({
   sellerId,
   evalError,
   onRetryEvaluation,
+  nodeName = "",
 }: {
   nombresCriterio?: Record<string, string>;
   closerMsgs: Set<string>;
@@ -3328,8 +3331,21 @@ function FeedbackPhase({
   sellerId?: string | null;
   evalError?: string | null;
   onRetryEvaluation?: () => void;
+  /** El nombre del nodo, para el aviso de alcance (mensaje 180). */
+  nodeName?: string;
 }) {
   const [step, setStep] = useState<FeedbackStep>("analyzing");
+  // Mensaje 180: lo que buscamos en esta práctica, para leerlo mientras se califica.
+  const [metaEspera, setMetaEspera] = useState<{ lo_que_buscamos: string; como_sabes: string } | null>(null);
+  useEffect(() => {
+    let vivo = true;
+    restGetMaybeSingle<{ lo_que_buscamos: string; como_sabes: string }>(
+      `metas_practica?select=lo_que_buscamos,como_sabes&node_id=eq.${encodeURIComponent(nodeId)}&limit=1`,
+    )
+      .then((fila) => { if (vivo) setMetaEspera(metaDePractica({ meta_practica: fila })); })
+      .catch(() => { /* sin meta: la pantalla de espera sale como antes */ });
+    return () => { vivo = false; };
+  }, [nodeId]);
   const [msgIdx, setMsgIdx] = useState(0);
   const mensajes = mensajesDeAnalisis(practiceScript, nombresCriterio ?? {});
   const [slowNotice, setSlowNotice] = useState(false);
@@ -3411,6 +3427,7 @@ function FeedbackPhase({
     // servidor junto con la calificación; aquí solo se pinta.
     const meta = metaDePractica(evaluation);
     const avance = lineasDeAvance(evaluation);
+    const alcance = avisoDeAlcance(evaluation, nodeName);
     const logro = veredictoDeLogro(stars);
     const pasoLinea = pasoDeLinea(evaluation);
     const etiqueta = { fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" } as const;
@@ -3502,6 +3519,19 @@ function FeedbackPhase({
                     )}
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Te pasaste del alcance (mensaje 180): un aviso tranquilo, no baja la nota. */}
+            {alcance && (
+              <div style={{ ...tarjeta, display: "flex", flexDirection: "column", gap: 8, borderLeft: "3px solid var(--c-border)" }}>
+                <div style={{ ...etiqueta, color: "var(--c-text-2)" }}>Fuera de esta práctica</div>
+                <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.5, color: "var(--c-text)" }}>{alcance.texto}</p>
+                {alcance.cita && (
+                  <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45, color: "var(--c-text-soft)" }}>
+                    Lo que dijiste: «{alcance.cita}»
+                  </p>
+                )}
               </div>
             )}
 
@@ -3712,6 +3742,18 @@ function FeedbackPhase({
             ? "Lo estoy revisando con calma: puede tardar un par de minutos. No cierres la app."
             : "Toma un minuto. Mientras, relee lo que dijiste."}
         </p>
+        {/* Mensaje 180: lo que buscamos, para que lo lea mientras espera. */}
+        {metaEspera && (
+          <div style={{ marginTop: 16, padding: 14, borderRadius: "var(--r-tarjeta)", background: "var(--c-surface)", border: "1px solid var(--c-border)", display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--c-primary)" }}>Lo que buscamos en esta práctica</div>
+            <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 15, lineHeight: 1.45, color: "var(--c-text)" }}>{metaEspera.lo_que_buscamos}</p>
+            {metaEspera.como_sabes && (
+              <p style={{ margin: 0, fontFamily: "'DM Sans', sans-serif", fontSize: 14, lineHeight: 1.45, color: "var(--c-text-soft)" }}>
+                <strong style={{ color: "var(--c-text-2)" }}>Cómo sabes que lo lograste: </strong>{metaEspera.como_sabes}
+              </p>
+            )}
+          </div>
+        )}
         <div style={{ marginTop: 18 }}>
           <ListaRevision pasos={mensajes.map((m) => m.replace(/^Revisando: /, "").replace(/…$/, ""))} actual={Math.min(msgIdx, mensajes.length - 1)} />
         </div>

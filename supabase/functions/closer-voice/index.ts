@@ -47,6 +47,7 @@ import { armarEventoDePractica, guardarEventoDePractica, type PracticaGuardada }
 import { idsConcedidos, acusacionesARevisar, entradaJuezConArgumento, clasificarRevision, hayQueReescribir, bloqueRevisionJuez, recordatorioFallaCritica, type RevisionJuez } from "../_shared/replica_revisada.ts";
 import { explicarPorQue } from "../_shared/porque.ts";
 import { bloqueParaEscribir, moldeDelPaso } from "../_shared/guia.ts";
+import { PROMPT_ALCANCE, HERRAMIENTA_ALCANCE, hayAlcanceQueRevisar, armarEntradaAlcance, loQuePideElNodo, moldesDesde, alcanceDeRespuesta } from "../_shared/alcance.ts";
 import { calcularSeguimiento, lineasDeSeguimiento, type Intento, type GuionDeNodo } from "../_shared/seguimiento.ts";
 import { PROMPT_FICHA, validarFicha, catalogoDelCerebro, fichaDeRespaldo, fichaDePeticion, bloqueActor, bloqueEvaluador, type FichaCliente } from "../_shared/ficha_cliente.ts";
 
@@ -1775,6 +1776,42 @@ async function atender(body: ReqBody): Promise<Response> {
         }
       } catch (e) {
         console.warn("[closer-voice] sin porqué (fail-open):", e instanceof Error ? e.message : String(e));
+      }
+      // Mensaje 180: si el vendedor hizo algo de un paso POSTERIOR al de este
+      // nodo (y no es una falla ya calificada), un aviso tranquilo: aquí solo
+      // practicamos este paso, eso lo vemos más adelante. Decisión de Emilio
+      // (opción A): no baja la nota ni se califica. Es una llamada aparte; el
+      // código revisa el paso y la cita. Si falla, sale sin aviso.
+      {
+        const pasoAlcance = pasoNodo !== null && pasoNodo >= 1 ? pasoNodo : pasoPorMundo(node_id);
+        // Lo que es de cada paso sale de la guía: sin guía, no hay aviso.
+        const moldesAlcance = hayAlcanceQueRevisar(pasoAlcance) ? moldesDesde(guiaPartes, pasoAlcance) : "";
+        if (hayAlcanceQueRevisar(pasoAlcance) && moldesAlcance) {
+          const tAlcance = Date.now();
+          const fallasHechas = ((evaluation as any).fallas ?? []) as { error?: string; cita?: string }[];
+          try {
+            const j = await llamarModelo(apiKey, {
+              max_tokens: 400, temperature: 0, system: PROMPT_ALCANCE,
+              messages: [{ role: "user", content: armarEntradaAlcance({
+                paso: pasoAlcance,
+                nodo: String(practice_script?.name ?? node_name ?? node_id ?? ""),
+                pide: loQuePideElNodo(practice_script),
+                moldes: moldesAlcance,
+                fallas: fallasHechas,
+                conversacion: fullHistory,
+              }) }],
+              tools: [HERRAMIENTA_ALCANCE],
+              tool_choice: { type: "tool", name: HERRAMIENTA_ALCANCE.name },
+            }, "alcance", { session_id: session_id ?? null, company_id: body.company_id ?? null, seller_id: body.seller_id ?? null });
+            const alcance = alcanceDeRespuesta(j, pasoAlcance, fullHistory, fallasHechas);
+            if (alcance) (evaluation as any).alcance = alcance;
+            const aud = ((evaluation as any).auditoria ??= {});
+            aud.alcance = { aviso: alcance !== null, latencia_ms: Date.now() - tAlcance };
+            if (alcance) console.log("[closer-voice] alcance: hizo algo de un paso posterior", { session_id, node_id, paso_nodo: pasoAlcance, paso: alcance.paso, que: alcance.que, turno: alcance.turno });
+          } catch (e) {
+            console.warn("[closer-voice] sin aviso de alcance (fail-open):", e instanceof Error ? e.message : String(e));
+          }
+        }
       }
 
       // Estrellas a partir del score YA topado.
