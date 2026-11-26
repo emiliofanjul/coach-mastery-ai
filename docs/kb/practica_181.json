@@ -1,0 +1,199 @@
+[
+  {
+    "practice_session_id": "8d41ab05-47b0-48f5-8278-33378f536d5a",
+    "seller_id": "11d265f4-d3c1-4ed0-9b84-c16bc1c7a60c",
+    "estado": "lista",
+    "resultado": {
+      "linea": {
+        "paso": 2
+      },
+      "model": "claude-sonnet-4-5",
+      "score": 0,
+      "stars": 0,
+      "fallas": [
+        {
+          "id": "discute_el_bloqueo",
+          "cita": "Lo entiendo perfectamente, y qué bueno que ya tenga a alguien que lo atienda.",
+          "paso": "La Historia Breve",
+          "error": "Discutiste el bloqueo al interpretar que el cliente ya tiene proveedor cuando solo dijo que está ocupado. Le creaste un no que no tenía.",
+          "efecto": "Falla crítica: resta 30 puntos y deja tu nota en máximo 30.",
+          "mejora": "Acepta lo que el cliente dijo sin interpretarlo ni discutirlo, y sigue con tu plática.",
+          "porque": {
+            "texto": "Un cierre no es algo que le haces al cliente: el cliente se lo hace solo. Si empujas o ruegas, se defiende. Si asumes con calma y te da igual el resultado, la resistencia se disuelve.",
+            "mecanismo": "La presión genera resistencia"
+          },
+          "ejemplo": "Claro, lo entiendo. ¿Cómo le ha ido con el movimiento esta semana?",
+          "severidad": "critical"
+        },
+        {
+          "id": "pitch_prematuro",
+          "cita": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+          "paso": "La Introducción",
+          "error": "Preguntaste por su operación comercial (cómo elige proveedor) justo después del bloqueo, antes de que el cliente aceptara la conversación. Eso es trabajo comercial antes de tiempo.",
+          "efecto": "Falla crítica: resta 30 puntos y deja tu nota en máximo 30.",
+          "mejora": "Después del AIR, sigue con una pregunta sobre él o sobre cómo le va, no sobre su negocio.",
+          "porque": {
+            "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+            "va_en": "el paso 3 si es preguntar por su negocio, o el paso 4 si es ofrecer tu producto",
+            "mecanismo": "La atención en tres tercios",
+            "va_despues": "Ahí ya sabe quién eres y por qué pasaste, y tu pregunta suena a que quieres entender su negocio. Antes, suena a que vienes a venderle y se prende la alarma."
+          },
+          "ejemplo": "Claro, lo entiendo. ¿Cómo le ha ido últimamente con el taller?",
+          "severidad": "critical"
+        }
+      ],
+      "mision": "Practica AIR sin discutir: cuando el cliente te bloquee, acepta lo que dijo sin interpretarlo. No lo discutas. Sigue con una pregunta sobre él o sobre cómo le va. Grábate y verifica que después del «entiendo» no estés tratando de cambiar su no.",
+      "degraded": false,
+      "desglose": {
+        "base": 0,
+        "restas": [
+          {
+            "flag": "discute_el_bloqueo",
+            "puntos": 30,
+            "severidad": "critical"
+          },
+          {
+            "flag": "pitch_prematuro",
+            "puntos": 30,
+            "severidad": "critical"
+          }
+        ],
+        "topado": false,
+        "criticos": [
+          "discute_el_bloqueo",
+          "pitch_prematuro"
+        ],
+        "criterios": [
+          {
+            "peso": 1,
+            "falta": "Discute el bloqueo al interpretar que el cliente ya tiene proveedor cuando solo dijo que está ocupado, y después pregunt",
+            "nivel": "no_cumple",
+            "credito": 0,
+            "criterio_id": "blocks.air"
+          }
+        ],
+        "sin_veredicto": []
+      },
+      "auditoria": {
+        "juez": {
+          "intentos": 1,
+          "juzgadas": 3,
+          "acusaciones": 3,
+          "latencia_ms": 9798,
+          "fallas_quitadas": 0,
+          "criterios_corregidos": 0,
+          "descartados_por_cita": 0
+        },
+        "vara": {
+          "absueltos": 0,
+          "revisados": 7,
+          "corregidos": 0,
+          "confirmados": 0,
+          "descartados": 0,
+          "latencia_ms": 5922,
+          "sospechosos": 0
+        },
+        "alcance": {
+          "aviso": false,
+          "latencia_ms": 1164
+        },
+        "intentos": 1,
+        "revisados": 7,
+        "corregidos": 2,
+        "descartados": 0,
+        "latencia_ms": 9801,
+        "fallas_por_no": 0,
+        "fallas_por_hecho": 0,
+        "groserias_quitadas": 0,
+        "recuerdos_quitados": 0,
+        "ejemplos_con_permiso_quitados": 0
+      },
+      "cut_reason": "critical_failure",
+      "end_session": true,
+      "seguimiento": {
+        "lineas": [],
+        "corregido": [],
+        "se_repite": [],
+        "intentos_previos": 0
+      },
+      "observations": [
+        {
+          "paso": "La Historia Breve",
+          "error": "Discutiste el bloqueo al decir «qué bueno que ya tenga a alguien que lo atienda» cuando el cliente solo dijo que está ocupado, no que ya tiene proveedor. Convertiste un reflejo en una posición.",
+          "mejora": "Acepta lo que el cliente dijo sin interpretarlo ni discutirlo. Sigue con tu plática: con otra pregunta sobre él o sobre cómo le va. No sobre su operación comercial.",
+          "porque": {
+            "texto": "El que pregunta conduce. Si terminas en afirmación o te quedas callado esperando permiso, le devuelves el volante, y el cliente lo usa para cerrar la plática con amabilidad.",
+            "mecanismo": "El volante"
+          },
+          "ejemplo": "Claro, lo entiendo. ¿Cómo le ha ido con el movimiento esta semana?",
+          "habilidad": "AIR para Bloqueos",
+          "criterio_id": "blocks.air"
+        }
+      ],
+      "meta_practica": {
+        "como_sabes": "Después del bloqueo, el cliente sigue participando con naturalidad.",
+        "lo_que_buscamos": "Que un bloqueo no te saque de la conversación: lo aceptas, no lo peleas y retomas tu tema sin pedir permiso."
+      },
+      "flags_detected": [
+        "discute_el_bloqueo",
+        "pitch_prematuro"
+      ],
+      "prompt_version": "v2.9.9",
+      "analisis_turnos": [
+        {
+          "se_va": "no",
+          "turno": 1,
+          "por_que": "No hay bloqueo todavía, este criterio no aplica en el primer turno",
+          "pregunta": "al_final",
+          "veredicto": "no cumple",
+          "ultima_frase": "¿Cómo le ha ido últimamente?",
+          "cliente_antes": "no_hay",
+          "texto_literal": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+        },
+        {
+          "se_va": "no",
+          "turno": 2,
+          "por_que": "Discute el bloqueo al decir que ya tiene a alguien que lo atienda, cuando el cliente solo dijo que está ocupado; y después pregunta por su operación comercial antes de que el cliente haya aceptado la conversación",
+          "pregunta": "al_final",
+          "veredicto": "no cumple",
+          "ultima_frase": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+          "cliente_antes": "rechaza",
+          "texto_literal": "Lo entiendo perfectamente, y qué bueno que ya tenga a alguien que lo atienda. Muchos de los talleres con los que trabajo me decían lo mismo al principio. Fuera de eso, ¿qué es lo que más cuida usted cuando elige a quién comprarle?"
+        }
+      ],
+      "evidencia_flags": [
+        {
+          "id": "discute_el_bloqueo",
+          "cita": "Lo entiendo perfectamente, y qué bueno que ya tenga a alguien que lo atienda.",
+          "error": "Discutiste el bloqueo al interpretar que el cliente ya tiene proveedor cuando solo dijo que está ocupado. Le creaste un no que no tenía.",
+          "mejora": "Acepta lo que el cliente dijo sin interpretarlo ni discutirlo, y sigue con tu plática.",
+          "ejemplo": "Claro, lo entiendo. ¿Cómo le ha ido con el movimiento esta semana?"
+        },
+        {
+          "id": "pitch_prematuro",
+          "cita": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+          "error": "Preguntaste por su operación comercial (cómo elige proveedor) justo después del bloqueo, antes de que el cliente aceptara la conversación. Eso es trabajo comercial antes de tiempo.",
+          "mejora": "Después del AIR, sigue con una pregunta sobre él o sobre cómo le va, no sobre su negocio.",
+          "ejemplo": "Claro, lo entiendo. ¿Cómo le ha ido últimamente con el taller?"
+        }
+      ],
+      "siguiente_nivel": [],
+      "criterios_cumplidos": [],
+      "veredictos_criterios": [
+        {
+          "falta": "Discute el bloqueo al interpretar que el cliente ya tiene proveedor cuando solo dijo que está ocupado, y después pregunta por su operación comercial en lugar de seguir con su plática",
+          "nivel": "no_cumple",
+          "criterio_id": "blocks.air"
+        }
+      ],
+      "regresiones_detectadas": []
+    },
+    "error": null,
+    "intentos": 1,
+    "duracion_ms": 36796,
+    "empezada_en": "2026-11-26T03:49:43.628+00:00",
+    "actualizada_en": "2026-11-26T03:50:20.743+00:00",
+    "evento_id": "33508eed-46af-481f-97de-d7663f88e18d",
+    "error_evento": null
+  }
+]

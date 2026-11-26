@@ -1,0 +1,595 @@
+[
+  {
+    "id": "P2_7_perfecto",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 17503,
+          "mas_lentos": [
+            {
+              "id": "P2_7_perfecto",
+              "ms": 17503
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "P2_7_perfecto",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 17503,
+          "ms_revision": 2526,
+          "juez": {
+            "acusaciones": 0,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "air:cumple"
+          ],
+          "session_ids": [
+            "f84a4b9a-886f-4d3a-a8f2-68e0b76223bd"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "P2_7c_perfecto",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 18134,
+          "mas_lentos": [
+            {
+              "id": "P2_7c_perfecto",
+              "ms": 18134
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "P2_7c_perfecto",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 18134,
+          "ms_revision": 1431,
+          "juez": {
+            "acusaciones": 0,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "air:cumple",
+            "dos_no_seguidos:cumple"
+          ],
+          "session_ids": [
+            "16584410-7cd4-4ff7-b776-08be30828d7b"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G35_insiste_tras_dos_no",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 42687,
+          "mas_lentos": [
+            {
+              "id": "G35_insiste_tras_dos_no",
+              "ms": 42687
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G35_insiste_tras_dos_no",
+          "status": "pass",
+          "reasons": [],
+          "score": 10,
+          "ms_total": 42687,
+          "ms_revision": 11268,
+          "juez": {
+            "acusaciones": 3,
+            "fallas_quitadas": 1,
+            "criterios_corregidos": 0,
+            "juzgadas": 3,
+            "intentos": 1,
+            "latencia_ms": 8023,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 40,
+          "restas": [
+            "insiste_tras_dos (critical): -30"
+          ],
+          "veredictos": [
+            "air:cumple",
+            "dos_no_seguidos:no_cumple(falta: Después del segundo bloqueo seguido sigue insistiendo en vez de quedar de regresar o despedirse)"
+          ],
+          "session_ids": [
+            "ccb9a5a9-07dd-4b2c-8c09-d05289852d2f"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G36_se_va_al_primer_no",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 38065,
+          "mas_lentos": [
+            {
+              "id": "G36_se_va_al_primer_no",
+              "ms": 38065
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G36_se_va_al_primer_no",
+          "status": "pass",
+          "reasons": [],
+          "score": 0,
+          "ms_total": 38065,
+          "ms_revision": 6183,
+          "juez": {
+            "acusaciones": 3,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0,
+            "juzgadas": 3,
+            "intentos": 1,
+            "latencia_ms": 6182,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 0,
+          "restas": [
+            "se_va_al_primero (critical): -30",
+            "se_va_con_disculpa (minor): -15"
+          ],
+          "veredictos": [
+            "air:no_cumple(falta: No hizo AIR: se disculpó y se fue sin aceptar, sin seguir con su plática)",
+            "dos_no_seguidos:no_aplica"
+          ],
+          "session_ids": [
+            "7548cf8c-996d-43df-a9ad-2597713a36ee"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G37_de_volada_no_es_permiso",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 16949,
+          "mas_lentos": [
+            {
+              "id": "G37_de_volada_no_es_permiso",
+              "ms": 16949
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G37_de_volada_no_es_permiso",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 16949,
+          "ms_revision": 1408,
+          "juez": {
+            "acusaciones": 0,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "air:cumple",
+            "dos_no_seguidos:cumple"
+          ],
+          "session_ids": [
+            "30b115b0-e644-4cf7-94dc-e589b3cff706"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G38_no_pero_nada_mas_no_es_discutir",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 30658,
+          "mas_lentos": [
+            {
+              "id": "G38_no_pero_nada_mas_no_es_discutir",
+              "ms": 30658
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G38_no_pero_nada_mas_no_es_discutir",
+          "status": "fail",
+          "reasons": [
+            "score 30 outside range [70, 100]"
+          ],
+          "score": 30,
+          "ms_total": 30658,
+          "ms_revision": 8293,
+          "juez": {
+            "acusaciones": 2,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 1,
+            "juzgadas": 2,
+            "intentos": 1,
+            "latencia_ms": 5991,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "air:cumple",
+            "dos_no_seguidos:cumple"
+          ],
+          "session_ids": [
+            "f8da46c1-ff0d-49d8-b08f-99430a5107ca"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G43_practica_real_2_7c_texto",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 36316,
+          "mas_lentos": [
+            {
+              "id": "G43_practica_real_2_7c_texto",
+              "ms": 36316
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G43_practica_real_2_7c_texto",
+          "status": "pass",
+          "reasons": [],
+          "score": 100,
+          "ms_total": 36316,
+          "ms_revision": 10188,
+          "juez": {
+            "acusaciones": 3,
+            "fallas_quitadas": 2,
+            "criterios_corregidos": 1,
+            "juzgadas": 3,
+            "intentos": 1,
+            "latencia_ms": 7735,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [],
+          "veredictos": [
+            "air:cumple",
+            "dos_no_seguidos:cumple"
+          ],
+          "session_ids": [
+            "4edded99-15ae-44ca-9b1e-a44c62fad46e"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G107_no_que_invita",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 27045,
+          "mas_lentos": [
+            {
+              "id": "G107_no_que_invita",
+              "ms": 27045
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G107_no_que_invita",
+          "status": "pass",
+          "reasons": [],
+          "score": 30,
+          "ms_total": 27045,
+          "ms_revision": 4646,
+          "juez": {
+            "acusaciones": 1,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0,
+            "juzgadas": 1,
+            "intentos": 1,
+            "latencia_ms": 4644,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "air:cumple",
+            "dos_no_seguidos:no_aplica"
+          ],
+          "session_ids": [
+            "4d10e2ce-ac8e-4991-a09a-54fefb55ee53"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G126_ofrece_despues_del_air",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 31254,
+          "mas_lentos": [
+            {
+              "id": "G126_ofrece_despues_del_air",
+              "ms": 31254
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G126_ofrece_despues_del_air",
+          "status": "pass",
+          "reasons": [],
+          "score": 0,
+          "ms_total": 31254,
+          "ms_revision": 8769,
+          "juez": {
+            "acusaciones": 2,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 0,
+            "juzgadas": 2,
+            "intentos": 1,
+            "latencia_ms": 8768,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 0,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "air:no_cumple(falta: Después de aceptar el bloqueo, mete producto y pide el pedido en lugar de seguir con su plática)"
+          ],
+          "session_ids": [
+            "e29579fd-b6d4-4b1f-9b7e-9d54e3002f6f"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "G127_air_y_pregunta_de_su_negocio",
+    "http": 200,
+    "response": {
+      "harness_version": "v3.49.0",
+      "prompt_version_expected": "v2",
+      "node_id": "1.2",
+      "summary": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skipped": 0,
+        "tiempos": {
+          "casos_medidos": 1,
+          "promedio_ms": 34776,
+          "mas_lentos": [
+            {
+              "id": "G127_air_y_pregunta_de_su_negocio",
+              "ms": 34776
+            }
+          ],
+          "sobre_90s": 0
+        }
+      },
+      "results": [
+        {
+          "id": "G127_air_y_pregunta_de_su_negocio",
+          "status": "fail",
+          "reasons": [
+            "score 30 outside range [85, 100]",
+            "forbidden flag present: pitch_prematuro"
+          ],
+          "score": 30,
+          "ms_total": 34776,
+          "ms_revision": 9526,
+          "juez": {
+            "acusaciones": 2,
+            "fallas_quitadas": 0,
+            "criterios_corregidos": 1,
+            "juzgadas": 2,
+            "intentos": 1,
+            "latencia_ms": 6515,
+            "descartados_por_cita": 0
+          },
+          "espejos_quitados": 0,
+          "por_hecho": {
+            "pregunta": 0,
+            "no": 0
+          },
+          "base": 100,
+          "restas": [
+            "pitch_prematuro (critical): -30"
+          ],
+          "veredictos": [
+            "air:cumple"
+          ],
+          "session_ids": [
+            "ebafedf4-db30-464c-816f-3d338e4e3645"
+          ]
+        }
+      ]
+    }
+  }
+]

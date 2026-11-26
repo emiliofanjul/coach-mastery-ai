@@ -1,5 +1,13 @@
 # Roadmap
 
+- [x] Mensaje 181: paso 0 exacto, 1336 pruebas/108 archivos, siete MD5, prueba nueva ausente y guiones 2.0.4/1.0.5; cuatro entregas exactas.
+- [x] Mensaje 181: dos archivos exactos, instalador una vez («Listo: 9 archivos»), tres SQL conservados; 1345/109 y compilación automática OK.
+- [x] Mensaje 181: SQL aplicado tal cual, versiones/5 y 6 fallas/MD5 exactos; solo closer-voice y harness-runner desplegados; publicación solicitada.
+- [x] Mensaje 181: red 8/10; G38=30 con pitch_prematuro y G127=30 con pitch_prematuro prohibido. Práctica temporal 2.7 lista, score 0, discute_el_bloqueo y pitch_prematuro indebido por pregunta permitida; alcance null, aviso false/1164 ms, calificación 36796 ms.
+- [x] Mensaje 181: reversión por práctica mal calificada; SQL de regreso íntegro, guiones 2.0.4/4 y 1.0.5/5 sin pitch; siete MD5 previos exactos y prueba nueva retirada; 1336/108, build OK; ambas funciones anteriores redesplegadas y publicación de regreso solicitada.
+- [ ] Mensaje 181: ignorar alerta crítica metas_practica con razón literal; la herramienta exige confirmación final en tarjeta. Invitaciones solo lectura, informe conservado.
+- [ ] Mensaje 181: limpieza de filas del vendedor temporal bloqueada por falta de borrado de prácticas desde la app; no usar SQL ni tocar vendedores temporales anteriores.
+
 - [x] Mensaje 176: Paso 0 exacto (1286/103, siete huellas, Cerebro 24/7, regla y seis guiones); cuatro entregas verificadas.
 - [x] Mensaje 176: dos funciones instaladas con editor e idénticas byte por byte; instalador una vez, diez archivos exactos; cuatro entregas retiradas; 1295/104 y build automático OK.
 - [x] Mensaje 176-B: cuatro SQL v2 y originales con MD5 exactos; reemplazos byte por byte y v2 retirados; 1295 pruebas en 104 archivos. No se repitió el instalador.
