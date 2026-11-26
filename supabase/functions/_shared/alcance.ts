@@ -17,6 +17,14 @@
 // Si algo no cuadra, no sale aviso. Nunca toca la nota, las fallas ni las
 // observaciones. Lo que es de cada paso sale de la guía del vendedor (el molde
 // de cada paso), la misma fuente con que se escriben los ejemplos.
+//
+// Mensaje 182: el revisor no recibía «En cualquier paso» ni «Cuando el
+// cliente…», y marcaba como «de un paso posterior» cosas que la guía dice que
+// se hacen en ese momento. Ahora las recibe, y lo que la guía dice que toca en
+// ese momento no es pasarse. Lo que es antes de tiempo (pitch prematuro) es
+// una falla, no un aviso. Y el aviso dice que más adelante se aprende cómo se
+// hace (Emilio: «¿se las bajo?» es una pregunta de sí o no): no da por bueno
+// lo que cita.
 // Sin imports: funciona en Deno y en Node.
 
 export interface Alcance {
@@ -55,12 +63,13 @@ Contestas una sola pregunta: ¿el vendedor hizo, en sus turnos, algo que pertene
 
 Reglas:
 1. Solo lo que el vendedor de verdad le dijo al cliente. Cítalo tal cual, con su turno. Nunca lo que dijo el cliente, ni lo que el vendedor le dice a Closer o a la app fuera de la venta (pedir ayuda, preguntar cómo se hace algo): eso no es hacerlo.
-2. Lo que pertenece a cada paso sale del molde de cada paso que recibes (el de este nodo y los posteriores). Algo cuenta como de un paso posterior solo si es lo que ese molde pide hacer (por ejemplo: preguntar por su operación o su dolor es del 3; hablar del producto o de una solución es del 4; pedir el pedido o una decisión es del 5). Saludar, presentarse, decir por qué pasó, despedirse o quedar de regresar no es de un paso posterior.
-3. No cuentes lo que ya se calificó como falla en esta práctica: eso ya tiene su explicación. Tampoco lo que este nodo pide hacer.
-4. No juzgues si estuvo bien o mal: solo de qué paso es.
-5. Si hizo cosas de varios pasos posteriores, reporta la del paso más adelante.
-6. En «que_hizo» escribe lo que hizo en infinitivo y en minúsculas, corto, como lo entendería el vendedor: «pedir el pedido», «hablar del producto», «preguntar por su operación». Sin nombres de reglas ni palabras técnicas.
-7. Si no hizo nada de un paso posterior, o tienes duda, se_paso es false.`;
+2. Lo que pertenece a cada paso sale de la guía que recibes: el molde de este paso y de los posteriores, «En cualquier paso» y «Cuando el cliente…». Algo cuenta como de un paso posterior solo si es lo que ese molde pide hacer (por ejemplo: hablar del producto o de una solución es del 4; pedir el pedido o una decisión es del 5). Saludar, presentarse, decir por qué pasó, despedirse o quedar de regresar no es de un paso posterior.
+3. Lo que la guía dice que se hace en ese momento NO es pasarse. Ya que el vendedor se presentó y el cliente le contestó (un bloqueo no es contestarle), preguntarle por su negocio es lo que sigue, no un paso posterior. Después de aceptar un bloqueo, seguir con su plática con una pregunta sobre él o sobre cómo le va es lo que pide la guía.
+4. No cuentes lo que ya se calificó como falla en esta práctica: eso ya tiene su explicación. Tampoco lo que este nodo pide hacer.
+5. No juzgues si estuvo bien o mal: solo de qué paso es.
+6. Si hizo cosas de varios pasos posteriores, reporta la del paso más adelante.
+7. En «que_hizo» escribe lo que hizo en infinitivo y en minúsculas, corto, como lo entendería el vendedor: «pedir el pedido», «hablar del producto», «presentar la solución». Sin nombres de reglas ni palabras técnicas.
+8. Si no hizo nada de un paso posterior, o tienes duda, se_paso es false.`;
 
 export const HERRAMIENTA_ALCANCE = {
   name: "alcance",
@@ -94,7 +103,7 @@ export function armarEntradaAlcance(args: {
     nombre_del_paso: NOMBRE_DEL_PASO[args.paso] ?? "",
     nodo: args.nodo.slice(0, 120),
     lo_que_pide_este_nodo: args.pide.map((p) => p.slice(0, 300)).slice(0, 12),
-    molde_de_este_paso_y_los_posteriores: args.moldes.slice(0, 12000),
+    guia_de_este_paso_y_los_posteriores: args.moldes.slice(0, 16000),
     ya_calificado_como_falla: args.fallas.map((f) => ({ error: str(f?.error).slice(0, 300), cita: str(f?.cita).slice(0, 300) })),
     conversacion: (Array.isArray(args.conversacion) ? args.conversacion : []).slice(-40).map((t, i) => ({
       turno: i + 1,
@@ -110,21 +119,28 @@ export function loQuePideElNodo(guion: any): string[] {
   return cs.map((c: any) => str(c?.description) || str(c?.descripcion) || str(c?.name)).filter(Boolean);
 }
 
-/** El molde del paso del nodo y de los posteriores, de la guía del vendedor: lo que es de aquí y lo que es de más adelante. */
+/**
+ * De la guía del vendedor: «En cualquier paso», el molde del paso del nodo y de
+ * los posteriores, y «Cuando el cliente…» (bloqueos, objeciones, señales): lo
+ * que es de aquí, lo que es de más adelante y lo que se hace en cada momento.
+ * Los factores de impulso no: no dicen de qué paso es algo.
+ */
 export function moldesDesde(partes: unknown, paso: number): string {
   const ps = (Array.isArray(partes) ? partes : [])
     .filter((p: any) => str(p?.clave) && str(p?.titulo) && str(p?.texto))
     .sort((a: any, b: any) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
   return ps
     .filter((p: any) => {
-      const m = /^paso_([1-6])$/.exec(str(p.clave));
+      const clave = str(p.clave);
+      if (clave === "en_cualquier_paso" || clave.startsWith("cuando_")) return true;
+      const m = /^paso_([1-6])$/.exec(clave);
       return m !== null && Number(m[1]) >= paso;
     })
     .map((p: any) => `## ${str(p.titulo)}\n${str(p.texto)}`)
     .join("\n\n");
 }
 
-const normaliza = (s: string) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zñ0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+const normaliza = (s: string) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zñ0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
 const palabras = (s: string) => normaliza(s).split(" ").filter((w) => w.length >= 3);
 
 /** ¿La cita está en ese turno del vendedor? Casi todas sus palabras (el revisor puede omitir signos o una palabra). */
@@ -154,9 +170,9 @@ export function yaEsFalla(cita: string, fallas: { cita?: string }[]): boolean {
 /** «pedir el pedido» → «Pedir el pedido». */
 const conMayuscula = (s: string) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 
-/** El aviso, sin el nombre del nodo: «Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa. Esto no te bajó la nota.» */
+/** El aviso, sin el nombre del nodo: «Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa, y ahí aprendes cómo se hace. Esto no te bajó la nota.» */
 export function textoDelAlcance(paso: number, que: string): string {
-  return `${conMayuscula(que)} es del paso ${paso}, ${NOMBRE_DEL_PASO[paso]}: lo vemos más adelante en el mapa. Esto no te bajó la nota.`;
+  return `${conMayuscula(que)} es del paso ${paso}, ${NOMBRE_DEL_PASO[paso]}: lo vemos más adelante en el mapa, y ahí aprendes cómo se hace. Esto no te bajó la nota.`;
 }
 
 /**

@@ -147,7 +147,7 @@ describe("Quedarse sin balas se califica por lo que se ve (mensaje 168)", () => 
 
 describe("La red (v3.46.0 en adelante)", () => {
   it("dos y tres que apuntan no son falla; desarmado sí; cuatro que apuntan y le quedan, no", () => {
-    expect(["v3.46.0", "v3.47.0", "v3.48.0"]).toContain(harness.harness_version);
+    expect(["v3.46.0", "v3.47.0", "v3.48.0", "v3.50.0"]).toContain(harness.harness_version);
     expect(caso("G119_dos_balas_que_apuntan").expected.must_not_flag).toContain("vacia_el_cargador");
     expect(caso("G120_tres_balas_que_apuntan").expected.must_not_flag).toContain("vacia_el_cargador");
     expect(caso("G121_se_queda_desarmado").expected.must_flag).toEqual(["salta_la_bala"]);

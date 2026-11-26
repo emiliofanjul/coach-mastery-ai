@@ -1,0 +1,161 @@
+{
+ "practice_session_id": "e8b3e70e-b4e1-4332-a497-792d4723ffa9",
+ "seller_id": "7c6c8457-7ca3-4a6a-9089-9eb02a546578",
+ "estado": "lista",
+ "resultado": {
+  "linea": {
+   "paso": 2
+  },
+  "model": "claude-sonnet-4-5",
+  "score": 30,
+  "stars": 1,
+  "fallas": [
+   {
+    "id": "pitch_prematuro",
+    "cita": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+    "paso": "La Introducción",
+    "error": "Le preguntas por su operación comercial (a quién le compra) justo después del bloqueo. Un bloqueo no es contestarte: después de aceptarlo, la pregunta va sobre él o sobre cómo le va",
+    "efecto": "Falla crítica: resta 30 puntos y deja tu nota en máximo 30.",
+    "mejora": "Acepta el bloqueo y sigue con una pregunta sobre él o sobre cómo le va. Cuando te conteste esa, ahí sí preguntas de su negocio.",
+    "porque": {
+     "texto": "Cuando llegas, el cliente sigue un tercio en lo suyo y otro tercio preguntándose quién eres y qué quieres. Solo un tercio te escucha. Cada paso recupera un pedazo: si te saltas pasos, le hablas a un tercio de persona.",
+     "va_en": "el paso 3 si es preguntar por su negocio, o el paso 4 si es ofrecer tu producto",
+     "mecanismo": "La atención en tres tercios",
+     "va_despues": "Ahí ya sabe quién eres y por qué pasaste, y tu pregunta suena a que quieres entender su negocio. Antes, suena a que vienes a venderle y se prende la alarma."
+    },
+    "ejemplo": "Claro, lo entiendo, se ve que hay chamba. ¿Cómo le ha ido con el taller últimamente?",
+    "severidad": "critical"
+   }
+  ],
+  "mision": "En tu próxima práctica, cuando el cliente te bloquee, acepta con un «claro» o «entiendo». Sigue con una pregunta sobre él o sobre cómo le va. Nada de su proveedor, sus precios ni sus marcas. Eso viene después de que te conteste.",
+  "degraded": false,
+  "desglose": {
+   "base": 100,
+   "restas": [
+    {
+     "flag": "pitch_prematuro",
+     "puntos": 30,
+     "severidad": "critical"
+    }
+   ],
+   "topado": true,
+   "criticos": [
+    "pitch_prematuro"
+   ],
+   "criterios": [
+    {
+     "peso": 1,
+     "nivel": "cumple",
+     "credito": 1,
+     "criterio_id": "blocks.air"
+    }
+   ],
+   "sin_veredicto": []
+  },
+  "auditoria": {
+   "juez": {
+    "intentos": 1,
+    "juzgadas": 2,
+    "acusaciones": 2,
+    "latencia_ms": 5713,
+    "fallas_quitadas": 0,
+    "criterios_corregidos": 1,
+    "descartados_por_cita": 0
+   },
+   "vara": {
+    "absueltos": 0,
+    "revisados": 3,
+    "corregidos": 0,
+    "confirmados": 0,
+    "descartados": 0,
+    "latencia_ms": 6172,
+    "sospechosos": 0
+   },
+   "alcance": {
+    "aviso": false,
+    "latencia_ms": 1177
+   },
+   "intentos": 1,
+   "revisados": 5,
+   "corregidos": 3,
+   "descartados": 0,
+   "latencia_ms": 9234,
+   "fallas_por_no": 0,
+   "fallas_por_hecho": 0,
+   "segunda_revision": {
+    "revisados": 3,
+    "corregidos": 2,
+    "descartados": 0
+   },
+   "groserias_quitadas": 0,
+   "recuerdos_quitados": 0,
+   "ejemplos_con_permiso_quitados": 0
+  },
+  "cut_reason": "critical_failure",
+  "end_session": true,
+  "seguimiento": {
+   "lineas": [],
+   "corregido": [],
+   "se_repite": [],
+   "intentos_previos": 1
+  },
+  "observations": [],
+  "meta_practica": {
+   "como_sabes": "Después del bloqueo, el cliente sigue participando con naturalidad.",
+   "lo_que_buscamos": "Que un bloqueo no te saque de la conversación: lo aceptas, no lo peleas y retomas tu tema sin pedir permiso."
+  },
+  "flags_detected": [
+   "pitch_prematuro"
+  ],
+  "prompt_version": "v2.9.9",
+  "analisis_turnos": [
+   {
+    "se_va": "no",
+    "turno": 1,
+    "por_que": "No hubo bloqueo en este turno, así que AIR no aplica todavía",
+    "pregunta": "al_final",
+    "veredicto": "no cumple",
+    "ultima_frase": "¿Cómo le ha ido últimamente?",
+    "cliente_antes": "no_hay",
+    "texto_literal": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+   },
+   {
+    "se_va": "no",
+    "turno": 2,
+    "por_que": "Acepta el bloqueo pero después le pregunta por su operación comercial, que es pitch prematuro: un bloqueo no es contestarte",
+    "pregunta": "al_final",
+    "veredicto": "no cumple",
+    "ultima_frase": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+    "cliente_antes": "rechaza",
+    "texto_literal": "Claro, lo entiendo, se ve que hay chamba. Fuera de eso, ¿qué es lo que más cuida usted cuando elige a quién comprarle?"
+   }
+  ],
+  "evidencia_flags": [
+   {
+    "id": "pitch_prematuro",
+    "cita": "¿qué es lo que más cuida usted cuando elige a quién comprarle?",
+    "error": "Le preguntas por su operación comercial (a quién le compra) justo después del bloqueo. Un bloqueo no es contestarte: después de aceptarlo, la pregunta va sobre él o sobre cómo le va",
+    "mejora": "Acepta el bloqueo y sigue con una pregunta sobre él o sobre cómo le va. Cuando te conteste esa, ahí sí preguntas de su negocio.",
+    "ejemplo": "Claro, lo entiendo, se ve que hay chamba. ¿Cómo le ha ido con el taller últimamente?"
+   }
+  ],
+  "siguiente_nivel": [],
+  "criterios_cumplidos": [
+   "blocks.air"
+  ],
+  "veredictos_criterios": [
+   {
+    "nivel": "cumple",
+    "criterio_id": "blocks.air"
+   }
+  ],
+  "regresiones_detectadas": []
+ },
+ "error": null,
+ "intentos": 1,
+ "duracion_ms": 36937,
+ "empezada_en": "2026-11-26T19:05:43.238+00:00",
+ "actualizada_en": "2026-11-26T19:06:20.505+00:00",
+ "evento_id": "7f9d1a79-9735-4052-bc52-57217ce17745",
+ "error_evento": null
+}

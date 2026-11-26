@@ -1,0 +1,118 @@
+{
+ "practice_session_id": "5b8cdf02-c792-467a-a20a-5092a96d629e",
+ "seller_id": "7c6c8457-7ca3-4a6a-9089-9eb02a546578",
+ "estado": "lista",
+ "resultado": {
+  "linea": {
+   "paso": 2
+  },
+  "model": "claude-sonnet-4-5",
+  "score": 100,
+  "stars": 3,
+  "fallas": [],
+  "mision": "Practica el AIR en cada bloqueo: acepta con un «claro» o «entiendo», no discutas nada y sigue con tu pregunta en el mismo turno. Hazlo hasta que te salga sin pensar.",
+  "degraded": false,
+  "desglose": {
+   "base": 100,
+   "restas": [],
+   "topado": false,
+   "criticos": [],
+   "criterios": [
+    {
+     "peso": 1,
+     "nivel": "cumple",
+     "credito": 1,
+     "criterio_id": "blocks.air"
+    }
+   ],
+   "sin_veredicto": []
+  },
+  "auditoria": {
+   "juez": {
+    "acusaciones": 0,
+    "fallas_quitadas": 0,
+    "criterios_corregidos": 0
+   },
+   "vara": {
+    "absueltos": 0,
+    "revisados": 1,
+    "corregidos": 0,
+    "confirmados": 0,
+    "descartados": 0,
+    "latencia_ms": 3690,
+    "sospechosos": 0
+   },
+   "alcance": {
+    "aviso": false,
+    "latencia_ms": 998
+   },
+   "intentos": 1,
+   "revisados": 1,
+   "corregidos": 1,
+   "descartados": 0,
+   "latencia_ms": 2096,
+   "fallas_por_no": 0,
+   "fallas_por_hecho": 0,
+   "groserias_quitadas": 0,
+   "recuerdos_quitados": 0,
+   "ejemplos_con_permiso_quitados": 0
+  },
+  "cut_reason": "scope_covered",
+  "end_session": true,
+  "seguimiento": {
+   "lineas": [],
+   "corregido": [],
+   "se_repite": [],
+   "intentos_previos": 0
+  },
+  "observations": [],
+  "meta_practica": {
+   "como_sabes": "Después del bloqueo, el cliente sigue participando con naturalidad.",
+   "lo_que_buscamos": "Que un bloqueo no te saque de la conversación: lo aceptas, no lo peleas y retomas tu tema sin pedir permiso."
+  },
+  "flags_detected": [],
+  "prompt_version": "v2.9.9",
+  "analisis_turnos": [
+   {
+    "se_va": "no",
+    "turno": 1,
+    "por_que": "Todavía no hay bloqueo: el cliente no ha dicho nada, así que no hay nada que aceptar ni retomar",
+    "pregunta": "al_final",
+    "veredicto": "no cumple",
+    "ultima_frase": "¿Cómo le ha ido últimamente?",
+    "cliente_antes": "no_hay",
+    "texto_literal": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+   },
+   {
+    "se_va": "no",
+    "turno": 2,
+    "por_que": "Acepta con 'claro, lo entiendo', no discute el bloqueo y sigue con una pregunta sobre cómo le va, sin pedir permiso",
+    "pregunta": "al_final",
+    "veredicto": "cumple",
+    "ultima_frase": "¿Así ha estado toda la semana?",
+    "cliente_antes": "rechaza",
+    "texto_literal": "Claro, lo entiendo, se ve que hay chamba. ¿Así ha estado toda la semana?"
+   }
+  ],
+  "evidencia_flags": [],
+  "siguiente_nivel": [],
+  "criterios_cumplidos": [
+   "blocks.air"
+  ],
+  "veredictos_criterios": [
+   {
+    "falta": "",
+    "nivel": "cumple",
+    "criterio_id": "blocks.air"
+   }
+  ],
+  "regresiones_detectadas": []
+ },
+ "error": null,
+ "intentos": 1,
+ "duracion_ms": 17645,
+ "empezada_en": "2026-11-26T19:04:03.173+00:00",
+ "actualizada_en": "2026-11-26T19:04:20.998+00:00",
+ "evento_id": "950ad2b1-9a69-453e-95e1-dab030618d40",
+ "error_evento": null
+}

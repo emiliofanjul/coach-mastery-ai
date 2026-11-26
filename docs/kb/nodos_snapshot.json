@@ -652,7 +652,7 @@
     "name": "AIR en Vivo",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v2.0.0 El espejo ensena la doctrina completa: el bloqueo se endurece si lo peleas y se disuelve si lo aceptas. La consecuencia hace el trabajo, no el feedback.",
+      "notes": "v2.0.0 El espejo ensena la doctrina completa: el bloqueo se endurece si lo peleas y se disuelve si lo aceptas. La consecuencia hace el trabajo, no el feedback. · 2.1.1 (mensaje 182, 25-nov-2026): pitch_prematuro también aquí, como en el resto del mundo 2. Un bloqueo no es contestarte: después del AIR, la pregunta va sobre él o sobre cómo le va (Emilio).",
       "scope": {
         "skills_in_focus": [
           "blocks.air"
@@ -678,7 +678,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedo ese bloqueo."
         }
       },
-      "version": "2.0.4",
+      "version": "2.1.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -708,6 +708,12 @@
             "razon": "incidental: fuera del foco del nodo",
             "default": "major"
           }
+        },
+        {
+          "id": "pitch_prematuro",
+          "regla_id": "opening.pitch_prematuro",
+          "severity": "critical",
+          "description": "Mete producto, promoción o motivo de venta, o le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo escoge a quién comprarle) antes de tiempo. Aceptar el bloqueo no da permiso de ofrecer ni de preguntarle por su negocio: un bloqueo no es contestarte. Después del AIR sigue con su plática, con una pregunta sobre él o sobre cómo le va; no con producto, no pidiendo el pedido y no con preguntas de su operación. Tampoco le pregunta por su operación antes de haberle dicho quién es y por qué pasó. Preguntarle cómo le va (la semana, el negocio, la venta, el movimiento) es sobre él aunque mencione sus productos, y no es esta falla."
         }
       ],
       "success_criteria": [
@@ -733,7 +739,7 @@
     "name": "Dos No en Vivo",
     "node_type": "skill_drill",
     "practice_script": {
-      "notes": "v1.0.0 Dos no seguidos en la puerta (Emilio, 15-oct-2026). El primer bloqueo se pasa con AIR; el segundo, seguido, ya es un hoy no: se queda de regresar o se despide con amabilidad. El espejo ensena: si insiste, el cliente se cierra; si se va bien, queda la puerta abierta.",
+      "notes": "v1.0.0 Dos no seguidos en la puerta (Emilio, 15-oct-2026). El primer bloqueo se pasa con AIR; el segundo, seguido, ya es un hoy no: se queda de regresar o se despide con amabilidad. El espejo ensena: si insiste, el cliente se cierra; si se va bien, queda la puerta abierta. · 1.1.1 (mensaje 182, 25-nov-2026): pitch_prematuro también aquí, como en el resto del mundo 2. Un bloqueo no es contestarte: después del AIR, la pregunta va sobre él o sobre cómo le va (Emilio).",
       "scope": {
         "skills_in_focus": [
           "blocks.air",
@@ -760,7 +766,7 @@
           "message_incomplete": "Ahi lo dejamos. Vamos al desglose y te digo como quedaron esos dos no."
         }
       },
-      "version": "1.0.5",
+      "version": "1.1.1",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -800,6 +806,12 @@
             "razon": "incidental: fuera del foco del nodo",
             "default": "critical"
           }
+        },
+        {
+          "id": "pitch_prematuro",
+          "regla_id": "opening.pitch_prematuro",
+          "severity": "critical",
+          "description": "Mete producto, promoción o motivo de venta, o le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo escoge a quién comprarle) antes de tiempo. Aceptar el bloqueo no da permiso de ofrecer ni de preguntarle por su negocio: un bloqueo no es contestarte. Después del AIR sigue con su plática, con una pregunta sobre él o sobre cómo le va; no con producto, no pidiendo el pedido y no con preguntas de su operación. Tampoco le pregunta por su operación antes de haberle dicho quién es y por qué pasó. Preguntarle cómo le va (la semana, el negocio, la venta, el movimiento) es sobre él aunque mencione sus productos, y no es esta falla. Después del segundo bloqueo, quedar de regresar con dos opciones de día («¿el jueves o el viernes?») no es ofrecer: no es esta falla."
         }
       ],
       "success_criteria": [
@@ -999,7 +1011,7 @@
     "name": "La Puerta Fría",
     "node_type": "boss",
     "practice_script": {
-      "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento. · 2.1.6 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio).",
+      "notes": "v2.0.0 BOSS del Mundo 2. Sin pistas garantizadas (R9). Acumulativo: el Mundo 1 se examina implicitamente porque una apertura mal hecha no abre la conversacion. La senal de exito es que el cliente pregunte en que le puede servir, que es la puerta al Descubrimiento. · 2.1.6 (mensaje 176, 25-nov-2026): pitch_prematuro dice hasta cuándo, como la regla (Emilio). · 2.1.7 (mensaje 182, 25-nov-2026): un bloqueo no es contestarte, como la regla (Emilio).",
       "scope": {
         "skills_in_focus": [
           "blocks.air",
@@ -1030,7 +1042,7 @@
           "message_incomplete": "Hasta aqui la sesion. Ya tengo lo que necesito para tu analisis. Vamos al desglose y te digo donde estuvo la diferencia."
         }
       },
-      "version": "2.1.6",
+      "version": "2.1.7",
       "i_do_type": "demo",
       "failure_criteria": [
         {
@@ -1081,7 +1093,7 @@
           "id": "pitch_prematuro",
           "regla_id": "opening.pitch_prematuro",
           "severity": "critical",
-          "description": "Mete producto, promocion o motivo de venta. O le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué pasó, o en el mismo turno en que se lo dice. Ya que se presentó y el cliente le contestó, preguntar por su negocio es descubrimiento y no es esta falla. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
+          "description": "Mete producto, promocion o motivo de venta. O le pregunta por su operación comercial (su proveedor, sus precios, sus marcas, qué se le mueve, cómo le hace con un producto) antes de haberle dicho quién es y por qué pasó, o en el mismo turno en que se lo dice. Ya que se presentó y el cliente le contestó, preguntar por su negocio es descubrimiento y no es esta falla. Un bloqueo no es contestarte: después de aceptarlo, la pregunta va sobre él o sobre cómo le va. Identificarse con nombre y empresa es el trabajo de este paso, no una excepción: aquí SÍ se dice quién eres y por qué estás."
         },
         {
           "id": "insiste_tras_dos",

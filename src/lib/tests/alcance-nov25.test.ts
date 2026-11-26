@@ -1,7 +1,7 @@
 // Mensaje 180 (25-nov-2026) · Te pasaste del alcance.
 // Si en una práctica del paso 1 al 5 el vendedor hace algo de un paso posterior que no es una falla
 // del nodo, la pantalla le dice, tranquila: «Aquí solo practicamos «…». Pedir el pedido es del paso
-// 5, el cierre: lo vemos más adelante en el mapa. Esto no te bajó la nota.» Opción A de Emilio: sin
+// 5, el cierre: lo vemos más adelante en el mapa, y ahí aprendes cómo se hace. Esto no te bajó la nota.» Opción A de Emilio: sin
 // bajar la nota y sin calificar eso extra. Además, «Lo que buscamos» se ve mientras se califica.
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
@@ -66,7 +66,7 @@ describe("el código revisa lo que contesta", () => {
   const bien = { se_paso: true, paso: 5, que_hizo: "pedir el pedido", cita: "¿Le dejo diez cubetas de una vez?", turno: 3 };
   it("si cuadra, sale el aviso con su texto", () => {
     const a = alcanceDeRespuesta(respuesta(bien), 2, conversacion, fallaPitch);
-    expect(a).toEqual({ paso: 5, que: "pedir el pedido", cita: "¿Le dejo diez cubetas de una vez?", turno: 3, texto: "Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa. Esto no te bajó la nota." });
+    expect(a).toEqual({ paso: 5, que: "pedir el pedido", cita: "¿Le dejo diez cubetas de una vez?", turno: 3, texto: "Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa, y ahí aprendes cómo se hace. Esto no te bajó la nota." });
   });
   it("no sale si dice que no se pasó", () => {
     expect(alcanceDeRespuesta(respuesta({ se_paso: false }), 2, conversacion, [])).toBeNull();
@@ -98,7 +98,7 @@ describe("el código revisa lo que contesta", () => {
     expect(alcanceDeRespuesta(null, 2, conversacion, [])).toBeNull();
   });
   it("nombra cada paso como en la línea recta", () => {
-    expect(textoDelAlcance(3, "preguntar por su operación")).toBe("Preguntar por su operación es del paso 3, el descubrimiento: lo vemos más adelante en el mapa. Esto no te bajó la nota.");
+    expect(textoDelAlcance(3, "preguntar por su operación")).toBe("Preguntar por su operación es del paso 3, el descubrimiento: lo vemos más adelante en el mapa, y ahí aprendes cómo se hace. Esto no te bajó la nota.");
     expect(textoDelAlcance(4, "hablar del producto")).toContain("del paso 4, la presentación:");
   });
 });
@@ -127,7 +127,7 @@ describe("en la pantalla", () => {
   it("el aviso lleva el nombre del nodo", () => {
     const ev = { alcance: { texto: textoDelAlcance(5, "pedir el pedido"), cita: "¿Le dejo diez cubetas?" } };
     expect(avisoDeAlcance(ev, "La primera frase")).toEqual({
-      texto: "Aquí solo practicamos «La primera frase». Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa. Esto no te bajó la nota.",
+      texto: "Aquí solo practicamos «La primera frase». Pedir el pedido es del paso 5, el cierre: lo vemos más adelante en el mapa, y ahí aprendes cómo se hace. Esto no te bajó la nota.",
       cita: "¿Le dejo diez cubetas?",
     });
     expect(avisoDeAlcance(ev, "")?.texto.startsWith("Aquí solo practicamos este paso.")).toBe(true);

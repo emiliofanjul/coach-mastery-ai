@@ -1,6 +1,6 @@
 {
   "$schema_note": "Eval harness v1 — Closer nodo 0.1 (SCE). 21 casos. Cada caso define un transcript de entrada y el comportamiento esperado del sistema. Un cambio de prompt que rompa un caso dorado NO se despliega. Reglas de sistema codificadas: (1) el Actor nunca presenta desafíos que requieren herramientas no enseñadas; (2) coaching a media práctica solo dentro del scope del nodo.",
-  "harness_version": "v3.48.0",
+  "harness_version": "v3.50.0",
   "target_node": "1.2",
   "target_skills": [
     "opening.estructura_apertura",
@@ -932,7 +932,8 @@
           "discute_el_bloqueo",
           "se_disculpa_o_se_va",
           "pide_permiso_de_nuevo",
-          "ignora_sin_aceptar"
+          "ignora_sin_aceptar",
+          "pitch_prematuro"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
@@ -988,7 +989,8 @@
           "discute_el_bloqueo",
           "se_va_al_primero",
           "pide_permiso_de_nuevo",
-          "se_va_con_disculpa"
+          "se_va_con_disculpa",
+          "pitch_prematuro"
         ],
         "rationale": "Si una conversación construida para cumplir cada criterio escrito no saca 85 o más, el criterio está mal redactado o el evaluador lo lee mal."
       }
@@ -7314,6 +7316,130 @@
           "turno_sin_pregunta"
         ],
         "rationale": "Regla opening.pitch_prematuro (mensaje 176): ya que te presentaste y el cliente te contestó, preguntar por su operación es descubrimiento."
+      }
+    },
+    {
+      "id": "G126_ofrece_despues_del_air",
+      "node_id": "2.7",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias.",
+      "description": "Mensaje 182 (Emilio, 25-nov): en la prueba del 180, el vendedor aceptó el bloqueo y en el mismo turno ofreció diez cubetas. Sacó 100 porque el 2.7 no calificaba el pitch prematuro. Aceptar el bloqueo no da permiso de ofrecer.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita ando ocupado, amigo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, lo entiendo, se ve que hay chamba. Oiga, le dejo diez cubetas de 15W40, ¿se las bajo de una vez?"
+        },
+        {
+          "role": "assistant",
+          "text": "No no, ya tengo con quien, gracias. Ahorita no necesito nada."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pitch_prematuro"
+        ],
+        "score_range": [
+          0,
+          30
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "rationale": "Regla opening.pitch_prematuro: ofrecerle algo en la introducción o en la historia breve es antes de tiempo, también justo después de un bloqueo."
+      }
+    },
+    {
+      "id": "G127_air_y_pregunta_de_su_negocio",
+      "node_id": "2.7",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias.",
+      "description": "Mensaje 182 (Emilio, 25-nov): un bloqueo no es contestarte. Ya se presentó, pero después de aceptar el bloqueo pregunta cómo escoge a quién comprarle: eso es su operación, y ahí todavía es antes de tiempo.",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita ando ocupado, amigo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, lo entiendo, se ve que hay chamba. Fuera de eso, ¿qué es lo que más cuida usted cuando elige a quién comprarle?"
+        },
+        {
+          "role": "assistant",
+          "text": "Pues que me cumpla con la entrega, la verdad."
+        }
+      ],
+      "expected": {
+        "must_flag": [
+          "pitch_prematuro"
+        ],
+        "score_range": [
+          0,
+          30
+        ],
+        "fallas_con_cita": [
+          "pitch_prematuro"
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple"
+        },
+        "rationale": "Regla opening.pitch_prematuro (mensaje 182): un bloqueo no es contestarte; después de aceptarlo, la pregunta va sobre él o sobre cómo le va."
+      }
+    },
+    {
+      "id": "G128_air_y_como_le_va",
+      "node_id": "2.7",
+      "seller_name": "Emilio",
+      "company_brain": "DALFAN: distribuidora de lubricantes Repsol, Bardahl y Mexlub para talleres y refaccionarias.",
+      "description": "Mensaje 182 (Emilio, 25-nov): después de aceptar el bloqueo, una pregunta sobre cómo le va es lo que pide el nodo. Ni pitch prematuro ni aviso de «fuera de esta práctica».",
+      "transcript": [
+        {
+          "role": "user",
+          "text": "Buenas tardes, ¿cómo está? Soy Emilio, de Aceites y Lubricantes Dalfán. Ando visitando talleres de la zona y quise conocer el suyo. ¿Cómo le ha ido últimamente?"
+        },
+        {
+          "role": "assistant",
+          "text": "Ahorita ando ocupado, amigo."
+        },
+        {
+          "role": "user",
+          "text": "Claro, lo entiendo, se ve que hay chamba. ¿Así ha estado toda la semana?"
+        },
+        {
+          "role": "assistant",
+          "text": "Uy, sí, desde el lunes no paramos. Es por las lluvias, todos traen el carro fallando."
+        }
+      ],
+      "expected": {
+        "must_not_flag": [
+          "pitch_prematuro",
+          "discute_el_bloqueo",
+          "se_disculpa_o_se_va",
+          "pide_permiso_de_nuevo",
+          "ignora_sin_aceptar"
+        ],
+        "score_range": [
+          85,
+          100
+        ],
+        "niveles_esperados": {
+          "blocks.air": "cumple"
+        },
+        "feedback_must_not_match": [
+          "es del paso [3-6]"
+        ],
+        "rationale": "Regla opening.pitch_prematuro (mensaje 182): preguntarle cómo le va después del bloqueo es sobre él. Es lo que pide el 2.7."
       }
     }
   ]
